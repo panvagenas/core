@@ -1,4 +1,3 @@
-Core
-====
+# WebSharks™ Core
 
 WebSharks™ Core framework.

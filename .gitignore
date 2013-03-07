@@ -1,0 +1,28 @@
+# Local Dev Files
+._*
+
+# JetBrains
+.idea/
+
+# VC Systems
+.svn/
+CVS/
+.cvsignore
+.hg/
+.hgignore
+
+# Annoying PC Files
+[Dd]esktop.ini
+[Ee][Hh][Tt]humbs.db
+[Tt]humbs.db
+$RECYCLE.BIN/
+
+# Annoying Mac Files
+.Spotlight-V100
+.AppleDouble
+.LSOverride
+._.DS_Store
+.DS_Store
+.Trashes
+Icon
+._*
