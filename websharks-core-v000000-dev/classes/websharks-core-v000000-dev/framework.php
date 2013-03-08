@@ -1662,7 +1662,7 @@ namespace websharks_core_v000000_dev
 					 *    Format as follows: ``check_extension_arg_types('[type]', '[type]' ..., $default_args, $args)``.
 					 *    Where type hint arguments MUST be ordered exactly the same as each argument in the array of ``$default_args``.
 					 *    However, it's fine to exclude certain arguments from the end (i.e. any we don't need to check), or via exclusion w/ an empty string.
-					 *    This method uses ``check_extension_arg_types()``. Please see ``check_arg_types()`` to learn more about type hints in the WebSharks™ Core.
+					 *    This method uses ``check_arg_types()``. Please see ``check_arg_types()`` to learn more about type hints in the WebSharks™ Core.
 					 *
 					 * @note Ordinarily, the last argument to this method is an associative array of all arguments that were passed in through a single function/method parameter.
 					 *    For example: ``check_extension_arg_types('[type]', '[type]' ..., $default_args, array('hello' => 'hello', 'world' => 'world')``.
