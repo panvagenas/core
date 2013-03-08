@@ -5,7 +5,7 @@
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
  *
- * @author Jason Caldwell
+ * @author JasWSInc
  * @package WebSharks\Core
  * @since 120329
  */
@@ -317,6 +317,20 @@ namespace websharks_core_v000000_dev
 					$class = trim($class, '-');
 
 					return $class;
+				}
+
+			/**
+			 * Gets a file extension (lowercase).
+			 *
+			 * @param string $file A file path, or just a file name.
+			 *
+			 * @return string File extension (lowercase).
+			 */
+			public function extension($file)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					return strtolower(ltrim(strrchr(basename($file), '.'), '.'));
 				}
 		}
 	}

@@ -5,7 +5,7 @@
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
  *
- * @author Jason Caldwell
+ * @author JasWSInc
  * @package WebSharks\Core
  * @since 120329
  */
@@ -1350,6 +1350,7 @@ namespace websharks_core_v000000_dev
 					if($this->©options->get('compressor.try_yui_compressor') && $this->©commands->java_possible())
 						{
 							$yui = dirname(__FILE__).'/externals/yui-compressor/yui-compressor.jar';
+							// @TODO This is NOT compatible with PHAR; because Java will not get the jar file here.
 							$yui = $this->©commands->java.' -jar '.$this->©commands->esa($yui).' --type css --charset utf-8';
 
 							if(($compressed_css = (string)$this->©commands->exec($yui, $css)))
@@ -1382,6 +1383,7 @@ namespace websharks_core_v000000_dev
 					if($this->©options->get('compressor.try_yui_compressor') && $this->©commands->java_possible())
 						{
 							$yui = dirname(__FILE__).'/externals/yui-compressor/yui-compressor.jar';
+							// @TODO This is NOT compatible with PHAR; because Java will not get the jar file here.
 							$yui = $this->©commands->java.' -jar '.$this->©commands->esa($yui).' --type js --charset utf-8';
 
 							if(($compressed_js = (string)$this->©commands->exec($yui, $js)))

@@ -322,14 +322,16 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('mbstring')) // Multibyte extension for PHP.
+					if(!extension_loaded('phar'))
 						{
 							$errors[] = array(
-								'title'   => self::i18n('Multibyte String Extension'),
+								'title'   => self::i18n('Default Phar Extension (PHP Archives)'),
 								'message' => sprintf(
 									self::i18n(
-										'Missing PHP extension. %1$s needs the <a href="http://www.php.net/manual/en/book.mbstring.php" target="_blank" rel="xlink">mbstring</a> extension for PHP.'.
-										' This will add multibyte support to your installation of PHP, allowing UTF-8 character conversion.'.
+										'Missing Phar extension. %1$s needs the <a href="http://php.net/manual/en/book.phar.php" target="_blank" rel="xlink">Phar</a> extension for PHP.'.
+										' The Phar extension provides a way for developers to put large portions (or even entire PHP applications) into a single file called a "phar" (PHP Archive) for easy distribution and installation.'.
+										' In addition to providing this service, the phar extension also provides a file-format abstraction method for creating and manipulating tar and zip files through the PharData class.'.
+										' Note, this extension should have been enabled with just a default installation of PHP v5.3+.'.
 										' Please consult with your web hosting company about this message.'
 									), htmlspecialchars($plugin_name)
 								)
@@ -338,11 +340,11 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 					else // Pass on this check.
 						{
 							$passes[] = array(
-								'title'   => self::i18n('Multibyte String Extension'),
+								'title'   => self::i18n('Default Phar Extension (PHP Archives)'),
 								'message' => sprintf(
 									self::i18n(
-										'The <a href="http://www.php.net/manual/en/book.mbstring.php" target="_blank" rel="xlink">mbstring</a> extension is installed.'.
-										' Your server supports UTF-8 character conversion.'
+										'The <a href="http://php.net/manual/en/book.phar.php" target="_blank" rel="xlink">Phar</a> extension is installed.'.
+										' Comes with every installation of PHP 5.3+. Your server supports PHP archives.'
 									), NULL
 								)
 							);
@@ -350,7 +352,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('zlib')) // ZLib extension for PHP (GZIP).
+					if(!extension_loaded('zlib'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('ZLib Extension (GZIP)'),
@@ -378,7 +380,35 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('hash')) // Hash extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('mbstring'))
+						{
+							$errors[] = array(
+								'title'   => self::i18n('Multibyte String Extension'),
+								'message' => sprintf(
+									self::i18n(
+										'Missing PHP extension. %1$s needs the <a href="http://www.php.net/manual/en/book.mbstring.php" target="_blank" rel="xlink">mbstring</a> extension for PHP.'.
+										' This will add multibyte support to your installation of PHP, allowing UTF-8 character conversion.'.
+										' Please consult with your web hosting company about this message.'
+									), htmlspecialchars($plugin_name)
+								)
+							);
+						}
+					else // Pass on this check.
+						{
+							$passes[] = array(
+								'title'   => self::i18n('Multibyte String Extension'),
+								'message' => sprintf(
+									self::i18n(
+										'The <a href="http://www.php.net/manual/en/book.mbstring.php" target="_blank" rel="xlink">mbstring</a> extension is installed.'.
+										' Your server supports UTF-8 character conversion.'
+									), NULL
+								)
+							);
+						}
+
+					/*********************************************************************************************/
+
+					if(!extension_loaded('hash'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default Hash Extension'),
@@ -407,7 +437,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('xml')) // XML extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('xml'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default XML Parser Extension'),
@@ -436,7 +466,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('libxml')) // libXML extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('libxml'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default libXML Extension'),
@@ -465,7 +495,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('simplexml')) // Simple XML extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('simplexml'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default Simple XML Extension'),
@@ -494,7 +524,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('xmlreader')) // XML Reader extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('xmlreader'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default XML Reader Extension'),
@@ -523,7 +553,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('xmlwriter')) // XML Writer extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('xmlwriter'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default XML Writer Extension'),
@@ -552,7 +582,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('dom')) // DOM extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('dom'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default DOM Extension'),
@@ -581,7 +611,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('session')) // Sessions extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('session'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default Sessions Extension'),
@@ -610,7 +640,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('mysql')) // MySQL extension for PHP.
+					if(!extension_loaded('mysql'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('MySQL Database Extension'),
@@ -638,7 +668,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('mcrypt')) // Mcrypt extension for PHP.
+					if(!extension_loaded('mcrypt'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Mcrypt/Encryption Extension'),
@@ -666,7 +696,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!extension_loaded('json')) // JSON extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('json'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default JSON Extension'),
@@ -697,7 +727,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					$gd_info = ($this->is_function_possible('gd_info')) ? gd_info() : array();
 
-					if(!extension_loaded('gd')) // GD extension for PHP.
+					if(!extension_loaded('gd'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('GD Image Extension'),
@@ -710,7 +740,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 								)
 							);
 						}
-					else if(empty($gd_info['FreeType Support'])) // FreeType Support?
+					else if(empty($gd_info['FreeType Support']))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('GD Image Extension (FreeType Support)'),
@@ -723,7 +753,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 								)
 							);
 						}
-					else if(empty($gd_info['JPG Support']) && empty($gd_info['JPEG Support'])) // JPEG Support?
+					else if(empty($gd_info['JPG Support']) && empty($gd_info['JPEG Support']))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('GD Image Extension (JPEG Support)'),
@@ -736,7 +766,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 								)
 							);
 						}
-					else if(empty($gd_info['PNG Support'])) // PNG Support?
+					else if(empty($gd_info['PNG Support']))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('GD Image Extension (PNG Support)'),
@@ -764,36 +794,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(version_compare($php_version_required, '5.3', '>=') && !extension_loaded('fileinfo'))
-						{
-							$errors[] = array(
-								'title'   => self::i18n('Default Fileinfo Extension'),
-								'message' => sprintf(
-									self::i18n(
-										'Missing Fileinfo extension. %1$s needs the <a href="http://php.net/manual/en/book.fileinfo.php" target="_blank" rel="xlink">Fileinfo</a> extension for PHP.'.
-										' This will add MIME type support to your installation of PHP, allowing PHP applications to detect a files\' MIME type.'.
-										' Note, this extension should have been enabled with just a default installation of PHP v5.3+.'.
-										' Please consult with your web hosting company about this message.'
-									), htmlspecialchars($plugin_name)
-								)
-							);
-						}
-					else // Pass on this check.
-						{
-							$passes[] = array(
-								'title'   => self::i18n('Default Fileinfo Extension'),
-								'message' => sprintf(
-									self::i18n(
-										'The <a href="http://php.net/manual/en/book.fileinfo.php" target="_blank" rel="xlink">Fileinfo</a> extension is installed.'.
-										' Comes with every installation of PHP 5.3+. Your server supports MIME type detection.'
-									), NULL
-								)
-							);
-						}
-
-					/*********************************************************************************************/
-
-					if(!extension_loaded('ctype')) // Ctype extension for PHP (enabled by default, make sure it was NOT disabled).
+					if(!extension_loaded('ctype'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('Default Ctype Extension'),
@@ -822,7 +823,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!$this->is_function_possible('eval')) // Hosting company disabled this?
+					if(!$this->is_function_possible('eval'))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('PHP <code>eval()</code> Function'),
@@ -851,7 +852,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
-					if(!($ini_get_possible = $this->is_function_possible('ini_get'))) // Hosting company disabled this?
+					if(!($ini_get_possible = $this->is_function_possible('ini_get')))
 						{
 							$errors[] = array(
 								'title'   => self::i18n('PHP <code>ini_get()</code> Function'),
@@ -1008,7 +1009,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 							unset($_fopen_test_resource); // Housekeeping.
 						}
 
-					if(!$curl_possible && !$fopen_url_possible) // Must have one of these available (cURL or streams via `fopen()`).
+					if(!$curl_possible && !$fopen_url_possible)
 						{
 							$errors[] = array(
 								'title'   => self::i18n('cURL Extension / Or <code>fopen()</code> URL'),
@@ -1022,7 +1023,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 								)
 							);
 						}
-					else if(!$curl_over_ssl_possible && !$fopen_url_over_ssl_possible) // Must have one of these available (cURL or streams via `fopen()`).
+					else if(!$curl_over_ssl_possible && !$fopen_url_over_ssl_possible)
 						{
 							$errors[] = array(
 								'title'   => self::i18n('cURL Extension / Or <code>fopen()</code> URL'),
@@ -1036,7 +1037,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 								)
 							);
 						}
-					else if(!$curl_over_ssl_test_success && !$fopen_url_over_ssl_test_success) // A connection test must succeed over HTTPS.
+					else if(!$curl_over_ssl_test_success && !$fopen_url_over_ssl_test_success)
 						{
 							$errors[] = array(
 								'title'   => self::i18n('cURL Extension / Or <code>fopen()</code> URL'),
@@ -1053,7 +1054,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 								)
 							);
 						}
-					else if(!$curl_localhost_test_success && !$fopen_url_localhost_test_success) // A localhost connection test must succeed also.
+					else if(!$curl_localhost_test_success && !$fopen_url_localhost_test_success)
 						{
 							$errors[] = array(
 								'title'   => self::i18n('cURL Extension / Or <code>fopen()</code> URL'),
@@ -1161,17 +1162,15 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					/*********************************************************************************************/
 
+					$temp_dir = ''; // Initialize; in case we're unable to locate.
+
 					if(($sys_temp_dir = sys_get_temp_dir()) && ($sys_temp_dir = realpath($sys_temp_dir))
 					   && is_readable($sys_temp_dir) && is_writable($sys_temp_dir)
-					) // Ideal location for temporary files (best security here).
-						$temp_dir = $sys_temp_dir;
+					) $temp_dir = $sys_temp_dir; // Ideal location.
 
 					else if($this->is_function_possible('ini_get') && ($upload_temp_dir = ini_get('upload_tmp_dir'))
 					        && ($upload_temp_dir = realpath($upload_temp_dir)) && is_readable($upload_temp_dir) && is_writable($upload_temp_dir)
-					) // Secondary location for temporary files.
-						$temp_dir = $upload_temp_dir;
-
-					else $temp_dir = ''; // This will result in an issue.
+					) $temp_dir = $upload_temp_dir; // Secondary (ok, but not as secure).
 
 					if(!$temp_dir) // Unable to find a readable/writable temp directory.
 						{
@@ -1394,14 +1393,14 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 												$plugin_checksum_dirs[] = WP_PLUGIN_DIR.'/'.$_plugin_dir_name;
 									unset($_plugin_dir_name); // Housekeeping.
 
-									if(!empty($plugin_checksum_dirs) && is_array($plugin_checksum_dirs))
+									if(!empty($plugin_checksum_dirs) && is_array($plugin_checksum_dirs)) // Have plugin directories?
 										{
 											foreach($plugin_checksum_dirs as $_plugin_checksum_dir) // Check each plugin directory.
 												{
 													$_checksum         = $this->dir_checksum($_plugin_checksum_dir);
 													$_release_checksum = file_get_contents($_plugin_checksum_dir.'/checksum.txt');
 
-													if($_checksum !== $_release_checksum) // Invalid?
+													if($_checksum !== $_release_checksum) // Plugin has an invalid checksum?
 														{
 															$warnings[] = array(
 																'title'   => sprintf(self::i18n('Plugin Directory Checksum (<code>%1$s</code>)'),
@@ -1469,7 +1468,6 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 													), htmlspecialchars($_mailer->Subject), htmlspecialchars($plugin_name)
 												)
 											);
-
 											$_mailer->Send();
 										}
 									catch(phpmailerException $mail_exception)
@@ -1517,7 +1515,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 										           )
 									);
 								}
-							else if($is_wp_loaded && $is_test_email) // Pass on this check.
+							else if($is_wp_loaded && $is_test_email) // Pass.
 								{
 									array_unshift( // Push this to the top of the stack.
 										$passes, array( // Also applying `hilite` class.
@@ -1783,7 +1781,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 							if($is_wp_loaded && !is_multisite() && !empty($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST']))
 								{
-									// Bypass on Multisite Networks (because networks may use domain mapping, and this could produce false positives).
+									// Bypass on Multisite Networks (w/ domain mapping; this could produce false positives).
 
 									$configured_home_host_name = preg_replace('/\:[0-9]+$/', '', strtolower((string)parse_url(home_url('/'), PHP_URL_HOST)));
 									$configured_site_host_name = preg_replace('/\:[0-9]+$/', '', strtolower((string)parse_url(site_url('/'), PHP_URL_HOST)));

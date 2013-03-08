@@ -5,7 +5,7 @@
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
  *
- * @author Jason Caldwell
+ * @author JasWSInc
  * @package WebSharks\Core
  * @since 120329
  */

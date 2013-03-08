@@ -51,7 +51,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function can_phar()
 				{
-					return (class_exists('Phar') || extension_loaded('Phar'));
+					return extension_loaded('phar');
 				}
 
 			/**

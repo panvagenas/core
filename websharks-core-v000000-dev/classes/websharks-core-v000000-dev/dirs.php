@@ -628,10 +628,10 @@ namespace websharks_core_v000000_dev
 							$cache_type_sub_dir = $this->n_seps($cache_dir.'/'.$type.$app_data_sub_dir.$sub_dir);
 
 							// Need to create the ``$cache_dir``?
-							if(!is_dir($cache_dir)) // Create if missing.
+							if(!is_dir($cache_dir))
 								{
 									mkdir($cache_dir, 0775, TRUE);
-									clearstatcache(); // Clear cache (makes other routines aware).
+									clearstatcache();
 
 									if(!is_dir($cache_dir) || !is_readable($cache_dir) || !is_writable($cache_dir))
 										throw $this->©exception(
@@ -642,10 +642,10 @@ namespace websharks_core_v000000_dev
 								}
 
 							// Need to create the ``$cache_type_sub_dir``?
-							if(!is_dir($cache_type_sub_dir)) // Create if missing.
+							if(!is_dir($cache_type_sub_dir))
 								{
 									mkdir($cache_type_sub_dir, 0775, TRUE);
-									clearstatcache(); // Clear cache (makes other routines aware).
+									clearstatcache();
 
 									if(!is_dir($cache_type_sub_dir) || !is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
 										throw $this->©exception(
@@ -747,10 +747,10 @@ namespace websharks_core_v000000_dev
 							$log_type_sub_dir = $this->n_seps($logs_dir.'/'.$type.$app_data_sub_dir.$sub_dir);
 
 							// Need to create the ``$logs_dir``?
-							if(!is_dir($logs_dir)) // Create if missing.
+							if(!is_dir($logs_dir))
 								{
 									mkdir($logs_dir, 0775, TRUE);
-									clearstatcache(); // Clear cache (makes other routines aware).
+									clearstatcache();
 
 									if(!is_dir($logs_dir) || !is_readable($logs_dir) || !is_writable($logs_dir))
 										throw $this->©exception(
@@ -761,10 +761,10 @@ namespace websharks_core_v000000_dev
 								}
 
 							// Need to create the ``$log_type_sub_dir``?
-							if(!is_dir($log_type_sub_dir)) // Create if missing.
+							if(!is_dir($log_type_sub_dir))
 								{
 									mkdir($log_type_sub_dir, 0775, TRUE);
-									clearstatcache(); // Clear cache (makes other routines aware).
+									clearstatcache();
 
 									if(!is_dir($log_type_sub_dir) || !is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
 										throw $this->©exception(
@@ -856,11 +856,25 @@ namespace websharks_core_v000000_dev
 					$app_data_sub_dir = ($this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
 					$media_sub_dir    = $this->n_seps($media_dir.$app_data_sub_dir.$sub_dir);
 
+					// Need to create the ``$media_dir``?
+					if(!is_dir($media_dir))
+						{
+							mkdir($media_dir, 0775, TRUE);
+							clearstatcache();
+
+							if(!is_dir($media_dir) || !is_readable($media_dir) || !is_writable($media_dir))
+								throw $this->©exception(
+									__METHOD__.'#read_write_issues', compact('media_dir'),
+									$this->i18n('Unable to create a readable/writable `media` directory.').
+									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_dir)
+								);
+						}
+
 					// Need to create the ``$media_sub_dir``?
-					if(!is_dir($media_sub_dir)) // Create if missing.
+					if(!is_dir($media_sub_dir))
 						{
 							mkdir($media_sub_dir, 0775, TRUE);
-							clearstatcache(); // Clear cache (makes other routines aware).
+							clearstatcache();
 
 							if(!is_dir($media_sub_dir) || !is_readable($media_sub_dir) || !is_writable($media_sub_dir))
 								throw $this->©exception(
@@ -910,12 +924,13 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string $dir A full directory path to empty and remove.
 			 *
-			 * @return boolean TRUE if the directory was successfully removed, else FALSE.
+			 * @return boolean TRUE if the directory was successfully removed, else an exception is thrown.
 			 *    Also returns TRUE if ``$dir`` is already non-existent (i.e. nothing to remove).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If the ``$dir`` given, is NOT readable/writable, or CANNOT be opened for any reason.
 			 * @throws exception If any sub-directory or file within ``$dir`` is NOT readable/writable, or CANNOT be opened for any reason.
+			 * @throws exception If any failure occurs during processing (e.g. we only return TRUE on success).
 			 *
 			 * @assert ($this->object->___instance_config->plugin_data_dir) === TRUE
 			 * @assert ('foo') === TRUE
@@ -933,14 +948,12 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to remove a directory; not readable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $dir)
 						);
-
 					else if(!is_writable($dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', compact('dir'),
 							$this->i18n('Unable to remove a directory; not writable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $dir)
 						);
-
 					else if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', compact('dir'),
@@ -954,28 +967,30 @@ namespace websharks_core_v000000_dev
 								{
 									$_dir_file = $dir.'/'.$_dir_file; // We need the full path now.
 
-									if(is_dir($_dir_file)) // Recursive call for sub-directories.
-										{
-											if(!$this->empty_and_remove($_dir_file))
-												return FALSE; // This failed for some reason.
-										}
+									if(is_dir($_dir_file)) // Recursion for sub-directories.
+										$this->empty_and_remove($_dir_file);
+
 									else if(is_writable($_dir_file)) // File MUST be writable.
 										unlink($_dir_file); // We should be able to remove this file.
 
 									else throw $this->©exception(
-										__METHOD__.'#read_write_issues', compact('_dir_file'),
+										__METHOD__.'#read_write_issues', compact('dir', '_dir_file'),
 										$this->i18n('Unable to remove a file, due to permission issues.').
 										sprintf($this->i18n(' Need this file to be writable please: `%1$s`.'), $_dir_file)
 									);
 								}
 						}
-					closedir($_open_dir); // Close directory.
-					unset($open_dir, $_dir_file); // Housekeeping.
+					closedir($_open_dir); // Close resource handle now.
+					unset($_open_dir, $_dir_file); // And also unset (e.g. unlocking this directory).
 
-					$rmdir = rmdir($dir); // Remove empty directory now.
-					clearstatcache(); // Clear cache (makes other routines aware).
+					$rmdir = rmdir($dir); // We should be able to delete the directory now.
+					clearstatcache(); // This makes other routines aware. Very important to clear the cache.
 
-					return ($rmdir) ? TRUE : FALSE; // It's a good day in Eureka?
+					if(!$rmdir) throw $this->©exception(
+						__METHOD__.'#possible_read_write_or_existing_resource_handle_issues', compact('dir'),
+						sprintf($this->i18n('Unable to remove this directory: `%1$s`.'), $dir)
+					);
+					return TRUE; // It's a good day in Eureka!
 				}
 
 			/**
@@ -990,7 +1005,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 *    • A list of files/directories to ignore (using FNMATCH wildcard patterns).
 			 *       The `FNM_PATHNAME` flag is NOT in use for any wildcard patterns you specify here.
-			 *       A wildcard `*` WILL match directory separators. TODO: Make this a configurable option.
+			 *       A wildcard `*` WILL match directory separators (by default). See: ``$exclusions_fnm_pathname``.
 			 *
 			 *    • Special case handler for `.gitignore` files (VERY useful).
 			 *       If ``$exclusions['.gitignore']`` === `/path/to/.gitignore`; we will attempt to process GIT via command line.
@@ -1022,9 +1037,13 @@ namespace websharks_core_v000000_dev
 			 *    If TRUE, wildcard pattern matching is NOT case sensitive.
 			 *    The `FNM_CASEFOLD` flag is enabled if this is TRUE.
 			 *
+			 * @param boolean     $exclusions_fnm_pathname Optional. Defaults to a FALSE value.
+			 *    If this is set to a value of TRUE; a wildcard `*` will NOT match a directory separator.
+			 *    Use with caution. This is NOT compatible with `.gitignore` exclusions.
+			 *
 			 * @param null|string $___initial_dir Internal use only. Please do NOT pass this in directly.
 			 *
-			 * @return boolean TRUE if the directory was successfully copied, else FALSE.
+			 * @return boolean TRUE if the directory was successfully copied, else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If the ``$dir`` given, is NOT a readable directory, or CANNOT be opened for any reason.
@@ -1036,6 +1055,8 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but the `git` command is currently NOT possible.
 			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but `git` returns a non-zero status or error msg.
 			 *
+			 * @throws exception If a copy failure (of any kind) occurs (e.g. we are NOT successful).
+			 *
 			 * @see \websharks_core_v000000_dev\strings\in_wildcard_patterns()
 			 * @see http://linux.die.net/man/3/fnmatch The underlying functionality applied to exclusions.
 			 *
@@ -1044,9 +1065,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert ($this->object->___instance_config->plugin_dir, $this->object->___instance_config->plugin_dir.'-copy') === TRUE
 			 */
-			public function copy_to($dir, $to, $exclusions = array(), $exclusions_case_insensitive = FALSE, $___initial_dir = NULL)
+			public function copy_to($dir, $to, $exclusions = array(), $exclusions_case_insensitive = FALSE, $exclusions_fnm_pathname = FALSE, $___initial_dir = NULL)
 				{
-					$this->check_arg_types('string:!empty', 'string:!empty', 'array', 'boolean', array('null', 'string'), func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty', 'array', 'boolean', 'boolean', array('null', 'string'), func_get_args());
 
 					if(!($dir = $this->n_seps($dir)) || !is_dir($dir))
 						throw $this->©exception(
@@ -1100,7 +1121,7 @@ namespace websharks_core_v000000_dev
 					if($dir === $___initial_dir // Only do this ONE time.
 					   && isset($exclusions['.gitignore']) && $this->©string->is_not_empty($exclusions['.gitignore'])
 					   && basename($exclusions['.gitignore']) === '.gitignore' // It MUST actually be a `.gitignore` file.
-					) // This special array element is a `.gitignore` file; triggering this routine. Further validation occurs below.
+					) // This special array element is a `.gitignore` file; triggering this routine. Further validation below.
 						{
 							$_gitignore_file = $exclusions['.gitignore'];
 							$_gitignore_dir  = $this->©dir->n_seps(dirname($_gitignore_file));
@@ -1123,6 +1144,12 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#git_command_not_possible', get_defined_vars(),
 									sprintf($this->i18n('You specified the following `.gitignore` file: `%1$s`.'), $_gitignore_file).
 									$this->i18n(' However, the `git` command is NOT possible in the current environment.')
+								);
+							else if($exclusions_fnm_pathname)
+								throw $this->©exception(
+									__METHOD__.'#gitignore_not_compatible_w/fnm_pathname', get_defined_vars(),
+									sprintf($this->i18n('You specified the following `.gitignore` file: `%1$s`.'), $_gitignore_file).
+									$this->i18n(' You\'re attempting to mix `.gitignore` functionality w/ `FNM_PATHNAME`; these are NOT compatible.')
 								);
 
 							$_gitignore_files = $this->©command->exec($_git_ls_files, '', TRUE, FALSE, $_gitignore_dir);
@@ -1158,15 +1185,12 @@ namespace websharks_core_v000000_dev
 									$_dir_file_abs_relative_path .= ($_dir_file_is_dir) ? '/' : ''; // Trailing dir separator on actual directories.
 									$_dir_file_to = $to.'/'.basename($_dir_file); // New copy location.
 
-									if(!$exclusions || !$this->©string->in_wildcard_patterns
-										($_dir_file_abs_relative_path, $exclusions, $exclusions_case_insensitive)
-									) // Only if this directory/file has NOT been excluded via the ``$exclusions`` array.
-										{
+									if(!$exclusions || !$this->©string->in_wildcard_patterns($_dir_file_abs_relative_path, $exclusions, $exclusions_case_insensitive, FALSE, (($exclusions_fnm_pathname) ? FNM_PATHNAME : NULL)))
+										{ // Only if this directory/file has NOT been excluded via the ``$exclusions`` array.
+
 											if($_dir_file_is_dir) // Recursive sub-directories.
-												{
-													if(!$this->copy_to($_dir_file, $_dir_file_to, $exclusions, $exclusions_case_insensitive, $___initial_dir))
-														return FALSE; // Return false. We failed for some reason.
-												}
+												$this->copy_to($_dir_file, $_dir_file_to, $exclusions, $exclusions_case_insensitive, $exclusions_fnm_pathname, $___initial_dir);
+
 											else if(!is_readable($_dir_file) || !copy($_dir_file, $_dir_file_to))
 												throw $this->©exception(
 													__METHOD__.'#copy_to_failure', compact('to', '_dir_file', '_dir_file_to'),
@@ -1177,18 +1201,14 @@ namespace websharks_core_v000000_dev
 								}
 						}
 					closedir($_open_dir); // Close directory resource handle before we unset these.
-					unset($open_dir, $_dir_file, $_dir_file_is_dir, $_dir_file_abs_relative_path, $_dir_file_to);
-
-					clearstatcache(); // Clear cache (makes other routines aware).
+					unset($_open_dir, $_dir_file, $_dir_file_is_dir, $_dir_file_abs_relative_path, $_dir_file_to);
+					clearstatcache(); // This makes other routines aware. Very important to clear the cache.
 
 					return TRUE; // It's a good day in Eureka!
 				}
 
 			/**
 			 * Creates a PHAR (PHP Archive) file from an entire directory.
-			 *
-			 * @note The entire directory (all files) will be archived recursively;
-			 *    and GZIP compression will be applied intuitively (e.g. to textual files only).
 			 *
 			 * @param string         $dir The directory we want to create a PHAR file for.
 			 * @param string         $to The new PHAR file location. This is actually a temporary location;
@@ -1198,21 +1218,32 @@ namespace websharks_core_v000000_dev
 			 *    By default, we use the WebSharks™ Core stub. However, this can be set to a specific stub file;
 			 *    for which the contents will be read; and set as the stub for the resulting PHAR file.
 			 *
-			 * @param boolean|string $phpify Optional. Defaults to a TRUE value (recommended).
+			 * @param boolean|string $phpify Optional. Defaults to a TRUE value (highly recommended).
 			 *    By default, we rename the PHAR file w/ a PHP extension; making it executable on most hosting platforms.
 			 *    If this is set to FALSE; the resulting PHAR file will NOT be renamed; and it will remain in the ``$to`` location as-is.
 			 *    This can be passed as TRUE|FALSE. Or, if the intention is TRUE; and a string is supplied;
 			 *    the file will be renamed with the string extension provided by ``$phpify``.
 			 *
+			 * @param boolean        $strip_ws Optional. Defaults to a value of TRUE (recommended).
+			 *    If this is TRUE; any PHP files in the archive will be further reduced in filesize by this routine.
+			 *    This is made possible by the ``php_strip_whitespace()`` function.
+			 *
+			 * @param boolean        $compress Optional. Defaults to a value of TRUE (highly recommended).
+			 *    If this is TRUE; any textual files in the archive will be further reduced in filesize by this routine.
+			 *    GZIP compression will be applied intuitively (e.g. to textual/GZIP-compatible files only).
+			 *    This is made possible by the ZLIB extension (e.g. GZIP applied to each file inside the archive).
+			 *
 			 * @return string The new PHAR file path (either a `.phar` file, or a `.phar.php` file; depending on ``$phpify`` value).
-			 *    See: ``$phpify`` parameter; it impacts the return value of this routine.
+			 *    See: ``$phpify`` parameter — which directly impacts the return value of this routine.
+			 *    Otherwise, an exception will be throw on any type of failure.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$dir`` does NOT exist; or is NOT readable.
+			 * @throws exception If ``$dir`` does NOT exist; or is NOT readable for any reason.
 			 * @throws exception If ``$to`` is NOT specified (at least initially) with a `.phar` extension.
 			 * @throws exception If ``$to`` parent directory does NOT exist; or is not writable.
-			 * @throws \exception If any Phar class failures occur.
+			 * @throws \exception If any Phar class failures occur. The Phar class may throw exceptions.
 			 * @throws exception If ``$phpify`` is TRUE; but a rename failure occurs.
+			 * @throws exception On any type of failure (e.g. NOT successful).
 			 *
 			 * @WARNING This routine can become resource intensive on large directories.
 			 *    Mostly because of the compression routines applied here intuitively. It takes some time.
@@ -1232,9 +1263,9 @@ namespace websharks_core_v000000_dev
 			 *       • If you want to protect a directory on IIS; place files inside an `/app_data/` directory.
 			 *          The WebSharks™ webPhar stub will automatically protect files inside directories with this name.
 			 */
-			public function phar_to($dir, $to, $stub = self::core, $phpify = TRUE)
+			public function phar_to($dir, $to, $stub = self::core, $phpify = TRUE, $strip_ws = TRUE, $compress = TRUE)
 				{
-					$this->check_arg_types('string:!empty', 'string:!empty', 'string:!empty', array('string', 'boolean'), func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty', 'string:!empty', array('string', 'boolean'), 'boolean', 'boolean', func_get_args());
 
 					if(!($dir = $this->n_seps($dir)) || !is_dir($dir))
 						throw $this->©exception(
@@ -1267,6 +1298,18 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to PHAR a directory; destination not writable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), dirname($to))
 						);
+					else if(file_exists($to))
+						throw $this->©exception(
+							__METHOD__.'#existing_phar', compact('to'),
+							$this->i18n('Unable to PHAR a directory; destination PHAR file already exists.').
+							sprintf($this->i18n(' Please delete this file first: `%1$s`.'), $to)
+						);
+					else if(!\Phar::canWrite())
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', array('phar.readonly' => ini_get('phar.readonly')),
+							$this->i18n('Unable to PHAR a directory; PHP configuration does NOT allow write access.').
+							$this->i18n(' Need this INI setting please: `phar.readonly = 0`.')
+						);
 
 					if($stub === $this::core)
 						$stub_file = dirname(dirname(dirname(__FILE__))).'/stub.php';
@@ -1286,42 +1329,77 @@ namespace websharks_core_v000000_dev
 						);
 
 					// Phar classes throw exceptions on failure.
-					// NOTE: This requires `php.ini` with `phar.readonly = no` (a NON-default setting).
 
-					$_stub_file_contents = file_get_contents($stub_file);
-					$_stub_is_phar       = '/static\s+\$is_phar\s*\=\s*[^;]+;\s*\/\/\s*\!#is\-phar#\!/i';
-					$_stub_file_contents = preg_replace($_stub_is_phar, 'static $is_phar = TRUE;', $_stub_file_contents, 1);
+					$_stub_file_contents = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
+					$_stub_file_contents = preg_replace('/static\s+\$is_phar\s*\=\s*[^;]+;(?P<comment>\s*\/\/\s*\!#is\-phar#\!)?/i',
+					                                    'static $is_phar = TRUE;', $_stub_file_contents, 1);
+					// The `!#is-phar#!` comment is optional (comments may get stripped away here).
 
 					$_phar = new \Phar($to);
-					$_phar->buildFromDirectory($dir);
+					$_phar->startBuffering();
 					$_phar->setStub($_stub_file_contents);
-					unset($_phar, $_stub_is_phar, $_stub_file_contents);
 
-					$_phar = new \Phar($to);
-					foreach(new \RecursiveIteratorIterator($_phar) as $_file)
+					if($strip_ws || $compress) // Stripping whitespace or compressing?
 						{
-							/** @var $_file \PharFileInfo Inherits from SplFileInfo class. */
-							$_extension = strtolower(ltrim(strrchr($_file->getFilename(), '.'), '.'));
+							$_strippable_extensions   = array('php');
+							$_compressable_extensions = array('txt', 'html', 'php', 'css', 'js',
+							                                  'ini', 'csv', 'sql', 'json', 'xml', 'svg');
+							$_temp_dir                = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id();
 
-							// TODO: This takes MUCH longer than the Phar:compressAllFiles(). Why?
-							if(in_array($_extension, array('txt', 'sql', 'html', 'xml', 'php', 'css', 'js'), TRUE))
-								$_file->compress(\Phar::GZ);
+							$this->copy_to($dir, $_temp_dir);
+							$_temp_dir_iterator = $this->iterate($_temp_dir);
+
+							if($strip_ws) // Stripping whitespace?
+								foreach($_temp_dir_iterator as $_dir_file)
+									{
+										if(!$_dir_file->isFile()) continue;
+
+										$_path      = $_dir_file->getPathname();
+										$_phar_path = $_dir_file->getSubPathName();
+										$_extension = $this->©file->extension($_path);
+
+										if(in_array($_extension, $_strippable_extensions, TRUE))
+											file_put_contents($_path, php_strip_whitespace($_path));
+									}
+							unset($_dir_file, $_path, $_phar_path, $_extension);
+
+							$_phar->buildFromDirectory($_temp_dir, '/\.(?:'.implode('|', $_compressable_extensions).')$/i');
+							if($compress && $_phar->count()) // Compressing files?
+								$_phar->compressFiles(\Phar::GZ);
+
+							foreach($_temp_dir_iterator as $_dir_file)
+								{
+									if(!$_dir_file->isFile()) continue;
+
+									$_path      = $_dir_file->getPathname();
+									$_phar_path = $_dir_file->getSubPathName();
+									$_extension = $this->©file->extension($_path);
+
+									if(!in_array($_extension, $_compressable_extensions, TRUE))
+										$_phar->addFile($_path, $_phar_path);
+								}
+							unset($_dir_file, $_path, $_phar_path, $_extension);
 						}
-					unset($_phar, $_file, $_extension); // Housekeeping.
+					else $_phar->buildFromDirectory($dir); // All files (simple).
 
-					if(!$phpify) // Makes PHAR file executable on most hosting platforms.
-						return $to; // Nothing more to do in this case.
+					$_phar->stopBuffering(); // Write PHAR file contents to disk now.
+					if(!empty($_temp_dir)) $this->empty_and_remove($_temp_dir); // Delete temp directory.
+
+					unset($_phar, $_stub_regex_is_phar, $_stub_file_contents); // Unset ``$_phar`` (e.g. unlocking the archive).
+					unset($_strippable_extensions, $_compressable_extensions, $_temp_dir_iterator, $_temp_dir);
+
+					if(!$phpify) return $to; // We can stop here.
 
 					if(is_string($phpify)) // A specific string extension?
 						$php = preg_replace('/\.phar$/i', '.'.trim($phpify, '.'), $to);
 					else $php = preg_replace('/\.phar$/i', '.phar.php', $to);
 
-					if(!rename($to, $php))
+					if(!rename($to, $php) || !file_exists($php))
 						throw $this->©exception(
 							__METHOD__.'#rename_failure', compact('to', 'php'),
 							sprintf($this->i18n('Failed to rename PHAR archive w/PHP extension: `%1$s`.'), $php)
 						);
-					return $php; // New PHP file location.
+					return $php; // New PHP file location (now with a new file name).
 				}
 
 			/**
@@ -1340,6 +1418,7 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If the ``$to`` ZIP already exists, or CANNOT be created by this routine for any reason.
 			 * @throws exception If the ``$to`` ZIP does NOT end with the proper `.zip` extension.
 			 * @throws exception If the ``$to`` ZIP parent directory does NOT exist or is not writable.
+			 * @throws \exception The PclZip class may throw exceptions of it's own here.
 			 */
 			public function zip_to($dir, $to)
 				{
@@ -1439,6 +1518,41 @@ namespace websharks_core_v000000_dev
 						dirname(dirname(dirname(__FILE__))).'/templates/'
 					);
 					return $this->apply_filters('where_templates_may_reside', $dirs);
+				}
+
+			/**
+			 * A recursive directory iterator.
+			 *
+			 * @param string       $dir A full directory path.
+			 *
+			 * @param null|integer $x_flags The defaults are recommended; but extra flags can be passed in.
+			 *
+			 * @param null|integer $flags The defaults are recommended; but specific flags can be passed in if you prefer.
+			 *    The difference between ``$x_flags`` and ``$flags``; is that ``$flags`` will override all defaults;
+			 *    whereas ``$x_flags`` will simply add additional flags to the existing defaults.
+			 *
+			 * @return \RecursiveIteratorIterator|\RecursiveDirectoryIterator[]|\SplFileInfo[]
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$dir`` is NOT a directory.
+			 */
+			public function iterate($dir, $x_flags = NULL, $flags = NULL)
+				{
+					$this->check_arg_types('string:!empty', array('null', 'integer'), array('null', 'integer'), func_get_args());
+
+					if(!($dir = $this->n_seps($dir)) || !is_dir($dir))
+						throw $this->©exception(
+							__METHOD__.'#source_dir_missing', compact('dir'),
+							$this->i18n('Unable to iterate a directory (source `dir` missing).').
+							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
+						);
+
+					if(!isset($flags)) // WebSharks™ defaults.
+						$flags = \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_SELF |
+						         \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+					if(isset($x_flags)) $flags = $flags | $x_flags;
+
+					return new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, $flags));
 				}
 
 			/**

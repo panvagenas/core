@@ -106,7 +106,7 @@ namespace websharks_core_v000000_dev
 			 * @var string Requires at least PHP version.
 			 * @by-constructor Set dynamically by class constructor.
 			 */
-			public $requires_at_least_php_v = '5.3';
+			public $requires_at_least_php_v = '5.3.1';
 
 			/**
 			 * @var boolean Compile core into a PHAR file?
