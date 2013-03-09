@@ -404,6 +404,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						{
 							$temp_deps          = $temp_dir.'/ws-wp-temp-deps.tmp';
 							$temp_deps_contents = base64_decode(self::$ws_wp_temp_deps);
+							$temp_deps_contents = str_ireplace('_websharks'.'_core_v000000_dev', get_class(), $temp_deps_contents);
 							$temp_deps_contents = str_ireplace('%%notice%%', str_replace("'", "\\'", self::cant_phar_msg()), $temp_deps_contents);
 
 							if(!file_exists($temp_deps) || (is_writable($temp_deps) && unlink($temp_deps)))
