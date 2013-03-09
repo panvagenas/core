@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSharks™ Core Plugin Builder.
+ * WebSharks™ Core (Build Routines).
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -15,7 +15,7 @@ namespace websharks_core_v000000_dev
 			exit('Do NOT access this file directly: '.basename(__FILE__));
 
 		/**
-		 * WebSharks™ Core Plugin Builder.
+		 * WebSharks™ Core (Build Routines).
 		 *
 		 * @package WebSharks\Core
 		 * @since 120318
@@ -921,12 +921,12 @@ namespace websharks_core_v000000_dev
 											sprintf($this->i18n('Permission issues with old server scanner file: `%1$s`.'), $_new_server_scanner_file)
 										);
 
-									if(!($_new_core_deps_x_file_contents = preg_replace('/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_NAME\'\s*,\s*\')(.*?)(\'\s*;\s*#\!stand\-alone\-plugin\-name\!#)/i', '${1}'.$this->©string->esc_refs($this->©string->esc_sq($this->plugin_name)).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
+									if(!($_new_core_deps_x_file_contents = preg_replace('/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_NAME\'\s*,\s*\')(.*?)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-name\!#)/i', '${1}'.$this->©string->esc_refs($this->©string->esc_sq($this->plugin_name)).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#new_core_deps_x_file_plugin_name_replacements', get_defined_vars(),
 											$this->i18n('Unable to set `___STAND_ALONE__PLUGIN_NAME` in new core `deps-x.php` file.')
 										);
-									else if(!($_new_core_deps_x_file_contents = preg_replace('/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_DIR_NAMES\'\s*,\s*\')([0-9a-z\-]*)(\'\s*;\s*#\!stand\-alone\-plugin\-dir\-names\!#)/i', '${1}'.$this->©string->esc_refs($this->©string->esc_sq($_new_server_scanner_plugin_dirs)).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
+									else if(!($_new_core_deps_x_file_contents = preg_replace('/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_DIR_NAMES\'\s*,\s*\')([0-9a-z\-]*)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-dir\-names\!#)/i', '${1}'.$this->©string->esc_refs($this->©string->esc_sq($_new_server_scanner_plugin_dirs)).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#new_core_deps_x_file_plugin_dir_names_replacements', get_defined_vars(),
 											$this->i18n('Unable to set `___STAND_ALONE__PLUGIN_DIR_NAMES` in new core `deps-x.php` file.')
