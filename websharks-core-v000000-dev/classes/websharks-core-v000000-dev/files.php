@@ -164,12 +164,23 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert () === dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))).'/wp-load.php'
 			 */
-			public function get_wp_load($check_abspath = TRUE, $fallback_on_dev_dir = NULL)
+			public function wp_load($check_abspath = TRUE, $fallback_on_dev_dir = NULL)
 				{
 					$this->check_arg_types('boolean', array('null', 'boolean', 'string'), func_get_args());
 
+					if(!isset($fallback_on_dev_dir))
+						$fallback_on_dev_dir = defined('___DEV_KEY_OK');
+
+					$cache_entry = '_'.(integer)$check_abspath;
+					if($fallback_on_dev_dir && is_string($fallback_on_dev_dir))
+						$cache_entry .= $fallback_on_dev_dir;
+					else $cache_entry .= (integer)$fallback_on_dev_dir;
+
+					if(isset($this->static['wp_load'][$cache_entry]))
+						return $this->static['wp_load'][$cache_entry];
+
 					if($check_abspath && defined('ABSPATH') && file_exists(ABSPATH.'wp-load.php'))
-						return ABSPATH.'wp-load.php';
+						return ($this->static['wp_load'][$cache_entry] = ABSPATH.'wp-load.php');
 
 					for($_i = 0, $_dirname = dirname(__FILE__); $_i <= 100; $_i++)
 						{
@@ -177,25 +188,22 @@ namespace websharks_core_v000000_dev
 								$_dir = dirname($_dir);
 
 							if(file_exists($_dir.'/wp-load.php'))
-								return $_dir.'/wp-load.php';
+								return ($this->static['wp_load'][$cache_entry] = $_dir.'/wp-load.php');
 
 							if(!$_dir || $_dir === '.') break;
 						}
 					unset($_i, $__i, $_dirname, $_dir);
 
-					if(!isset($fallback_on_dev_dir) && defined('___DEV_KEY_OK'))
-						$fallback_on_dev_dir = TRUE;
-
-					if($fallback_on_dev_dir) // Can we fallback in this case?
+					if($fallback_on_dev_dir) // Fallback on development copy?
 						{
 							if(is_string($fallback_on_dev_dir))
 								$dev_dir = $fallback_on_dev_dir;
 							else $dev_dir = 'E:/EasyPHP/wordpress';
 
 							if(file_exists($dev_dir.'/wp-load.php'))
-								return $dev_dir.'/wp-load.php';
+								return ($this->static['wp_load'][$cache_entry] = $dev_dir.'/wp-load.php');
 						}
-					return ''; // Nadda.
+					return ($this->static['wp_load'][$cache_entry] = '');
 				}
 
 			/**
@@ -247,6 +255,42 @@ namespace websharks_core_v000000_dev
 								);
 						}
 					return $file; // Reverberate ``$file``.
+				}
+
+			/**
+			 * Deletes files from a shell glob pattern.
+			 *
+			 * @param string|array|boolean $glob A glob pattern; or an array of absolute file paths.
+			 *    If this is a string; it must NOT be empty. Arrays CAN be empty however.
+			 *    A boolean is also accepted; in case an input ``glob()`` fails.
+			 *
+			 * @return integer Number of files deleted; else an exception is thrown.
+			 *
+			 * @note This will NOT delete directories; only files.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$glob`` is an empty string. That's invalid.
+			 * @throws exception If unable to delete a file for any reason.
+			 */
+			public function unlink_glob($glob)
+				{
+					$this->check_arg_types(array('string:!empty', 'array', 'boolean'), func_get_args());
+
+					$deleted_files = 0; // Initialize.
+					if(is_bool($glob)) return $deleted_files; // Ignore.
+					$glob = (is_array($glob)) ? $glob : (array)glob($glob);
+
+					foreach($glob as $_dir_file) if($this->©string->is_not_empty($_dir_file) && is_file($_dir_file))
+						{
+							if(!is_writable($_dir_file) || !unlink($_dir_file))
+								throw $this->©exception(
+									__METHOD__.'#read_write_issues', compact('glob', '_dir_file'),
+									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $_dir_file).
+									$this->i18n(' Possible permission issues. Please delete this file manually.')
+								);
+							$deleted_files++;
+						}
+					return $deleted_files; // Total.
 				}
 
 			/**

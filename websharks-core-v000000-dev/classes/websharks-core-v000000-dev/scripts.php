@@ -196,7 +196,7 @@ namespace websharks_core_v000000_dev
 					$data .= "plugin_data_dir_url:'".$this->©string->esc_js_sq($this->©url->to_plugin_data_dir_or_file())."',";
 					$data .= "plugin_pro_dir_url:'".$this->©string->esc_js_sq($this->©url->to_plugin_pro_dir_or_file())."',";
 
-					$data .= "wp_load_url:'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_or_file($this->©files->get_wp_load()))."',";
+					$data .= "wp_load_url:'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_or_file($this->©files->wp_load()))."',";
 					$data .= "has_pro:".(($this->©plugin->has_pro()) ? 'true' : 'false').",";
 
 					$data = rtrim($data, ',').'};'; // Trim and close curly bracket.

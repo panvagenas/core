@@ -318,12 +318,12 @@ namespace websharks_core_v000000_dev
 
 					if($this->plugin_dir) // Building a plugin.
 						{
-							// Validate plugin pro directory.
+							// Validate core directory.
 
-							if(!is_readable($this->plugin_dir) || !is_writable($this->plugin_dir))
+							if(!is_readable($this->core_dir))
 								throw $this->©exception(
-									__METHOD__.'#plugin_dir_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with plugin directory: `%1$s`.'), $this->plugin_dir)
+									__METHOD__.'#core_dir_permissions', get_defined_vars(),
+									sprintf($this->i18n('Permission issues with core directory: `%1$s`.'), $this->core_dir)
 								);
 
 							// Validate core `.gitignore` file.
@@ -334,10 +334,17 @@ namespace websharks_core_v000000_dev
 									sprintf($this->i18n('Invalid core directory. Missing `.gitignore` file: `%1$s`.'), dirname($this->core_dir).'/.gitignore')
 								);
 
+							// Validate plugin pro directory.
+
+							if(!is_readable($this->plugin_dir) || !is_writable($this->plugin_dir))
+								throw $this->©exception(
+									__METHOD__.'#plugin_dir_permissions', get_defined_vars(),
+									sprintf($this->i18n('Permission issues with plugin directory: `%1$s`.'), $this->plugin_dir)
+								);
+
 							// WebSharks™ Core replication.
 
-							$_replication  = $this->©replicate($this->plugin_dir, TRUE, 0,
-							                                   array('.gitignore' => dirname($this->core_dir).'/.gitignore'));
+							$_replication  = $this->©replicate($this->plugin_dir, TRUE, 0, array('.gitignore' => dirname($this->core_dir).'/.gitignore'));
 							$_new_core_dir = $_replication->to_dir; // We'll need this below.
 							unset($_replication); // Housekeeping.
 
@@ -377,66 +384,80 @@ namespace websharks_core_v000000_dev
 							$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_dir', get_defined_vars(),
 							                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this plugin directory: `%1$s`.'), $_new_core_dir).
 							                $this->i18n(' This directory has also been added to the list of GIT-tracked files in this repo (but only temporarily).').
-							                sprintf($this->i18n(' Every file in the entire plugin directory has now been updated to use version `%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_ns_v_with_dashes)
+							                sprintf($this->i18n(' Every file in the entire plugin directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_ns_v_with_dashes)
 							);
 
 							// Copy WebSharks™ Core stub into the main plugin directory.
 
-							if(!file_exists($_new_core_dir.'/stub.php'))
-								throw $this->©exception(
-									__METHOD__.'#unable_to_find_stub_in_new_core_dir', get_defined_vars(),
-									sprintf($this->i18n('Unable to find a `stub.php` file here: `%1$s`.'), $_new_core_dir.'/stub.php')
-								);
-							else if(file_exists($this->plugin_dir.'/websharks-core.php') && (!is_writable($this->plugin_dir.'/websharks-core.php') || !unlink($this->plugin_dir.'/websharks-core.php')))
-								throw $this->©exception(
-									__METHOD__.'#unable_to_delete_existing_core_stub_in_plugin_dir', get_defined_vars(),
-									sprintf($this->i18n('Unable to delete existing `websharks-core.php` file: `%1$s`.'), $this->plugin_dir.'/websharks-core.php')
-								);
-							else if(!copy($_new_core_dir.'/stub.php', $this->plugin_dir.'/websharks-core.php'))
-								throw $this->©exception(
-									__METHOD__.'#unable_to_copy_new_core_stub_into_plugin_dir', get_defined_vars(),
-									sprintf($this->i18n('Unable to copy `stub.php` stub into: `%1$s`.'), $this->plugin_dir.'/websharks-core.php')
-								);
-							$this->©command->git('add --intent-to-add '.escapeshellarg($this->plugin_dir.'/websharks-core.php'), dirname($this->plugin_dir));
+							$_core_stub                  = $this->core_dir.'/stub.php';
+							$_new_core_stub              = $this->plugin_dir.'/'.$this->___instance_config->core_ns_with_dashes.'.php';
+							$_old_core_stub_glob_pattern = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'-v[0-9]*.php';
 
-							$successes->add(__METHOD__.'#new_core_stub_copied_into_plugin_dir', get_defined_vars(),
-							                sprintf($this->i18n('The WebSharks™ Core stub has been added to the plugin directory: `%1$s`.'), $this->plugin_dir.'/websharks-core.php').
+							if(!file_exists($_core_stub))
+								throw $this->©exception(
+									__METHOD__.'#unable_to_find_core_stub', get_defined_vars(),
+									sprintf($this->i18n('Unable to find core stub: `%1$s`.'), $_core_stub)
+								);
+							else if(!is_integer($this->©file->unlink_glob($_old_core_stub_glob_pattern)))
+								throw $this->©exception(
+									__METHOD__.'#unable_to_delete_old_core_stub_glob_pattern', get_defined_vars(),
+									sprintf($this->i18n('Unable to delete old core stub glob pattern: `%1$s`.'), $_old_core_stub_glob_pattern)
+								);
+							else if(!copy($_core_stub, $_new_core_stub))
+								throw $this->©exception(
+									__METHOD__.'#unable_to_copy_core_stub_into_plugin_dir', get_defined_vars(),
+									sprintf($this->i18n('Unable to copy core stub into plugin directory: `%1$s`.'), $_new_core_stub)
+								);
+							$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_stub), dirname($this->plugin_dir));
+
+							$successes->add(__METHOD__.'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
+							                sprintf($this->i18n('The WebSharks™ Core stub has been added to the plugin directory: `%1$s`.'), $_new_core_stub).
 							                $this->i18n(' This file has also been added to the list of GIT-tracked files in this repo.')
 							);
+							unset($_core_stub, $_new_core_stub, $_old_core_stub_glob_pattern);
 
 							// Bundle the WebSharks™ Core PHP Archive stub; instead of the full directory?
 
 							if($this->use_core_phar) // Optional (this is only applicable to plugins).
 								{
-									if(!file_exists($this->core_dir.'/core.phar.php'))
+									$_core_phar_stub                  = dirname($this->core_dir).'/'.$this->___instance_config->core_ns_with_dashes.'.phar.php';
+									$_new_core_phar_stub              = $this->plugin_dir.'/'.$this->___instance_config->core_ns_with_dashes.'.php';
+									$_old_core_phar_stub_glob_pattern = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'-v[0-9]*.php';
+									$_plugin_dir_htaccess_file        = $this->plugin_dir.'/.htaccess';
+
+									if(!file_exists($_core_phar_stub))
 										throw $this->©exception(
-											__METHOD__.'#unable_to_find_core_phar_stub_in_this_core_dir', get_defined_vars(),
-											sprintf($this->i18n('Unable to find a `core.phar.php` file here: `%1$s`.'), $this->core_dir.'/core.phar.php')
+											__METHOD__.'#unable_to_find_core_phar_stub', get_defined_vars(),
+											sprintf($this->i18n('Unable to find core PHAR stub: `%1$s`.'), $_core_phar_stub)
 										);
-									else if(!file_exists($this->plugin_dir.'/.htaccess') || !is_readable($this->plugin_dir.'/.htaccess') || strpos(file_get_contents($this->plugin_dir.'/.htaccess'), 'AcceptPathInfo') === FALSE)
-										throw $this->©exception(
-											__METHOD__.'#unable_to_find_htaccess_file_in_plugin_dir', get_defined_vars(),
-											sprintf($this->i18n('Unable to find a valid `.htaccess` file here: `%1$s`.'), $this->plugin_dir.'/.htaccess').
+									else if(!file_exists($_plugin_dir_htaccess_file)
+									        || !is_readable($_plugin_dir_htaccess_file)
+									        || FALSE === strpos(file_get_contents($_plugin_dir_htaccess_file), 'AcceptPathInfo')
+									) throw $this->©exception(
+											__METHOD__.'#unable_to_find_valid_htaccess_file_in_plugin_dir', get_defined_vars(),
+											sprintf($this->i18n('Unable to find a valid `.htaccess` file here: `%1$s`.'), $_plugin_dir_htaccess_file).
 											$this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 										);
-									else if(file_exists($this->plugin_dir.'/websharks-core.php') && (!is_writable($this->plugin_dir.'/websharks-core.php') || !unlink($this->plugin_dir.'/websharks-core.php')))
+									else if(!is_integer($this->©file->unlink_glob($_old_core_phar_stub_glob_pattern)))
 										throw $this->©exception(
-											__METHOD__.'#unable_to_delete_existing_core_stub_in_plugin_dir', get_defined_vars(),
-											sprintf($this->i18n('Unable to delete existing `websharks-core.php` stub: `%1$s`.'), $this->plugin_dir.'/websharks-core.php')
+											__METHOD__.'#unable_to_delete_old_core_phar_stub_glob_pattern', get_defined_vars(),
+											sprintf($this->i18n('Unable to delete old core PHAR stub glob pattern: `%1$s`.'), $_old_core_phar_stub_glob_pattern)
 										);
-									else if(!copy($this->core_dir.'/core.phar.php', $this->plugin_dir.'/websharks-core.php'))
+									else if(!copy($_core_phar_stub, $_new_core_phar_stub))
 										throw $this->©exception(
-											__METHOD__.'#unable_to_copy_this_core_phar_stub_into_plugin_dir', get_defined_vars(),
-											sprintf($this->i18n('Unable to copy `%1$s` into `%2$s`.'), $this->core_dir.'/core.phar.php', $this->plugin_dir.'/websharks-core.php')
+											__METHOD__.'#unable_to_copy_core_phar_stub_into_plugin_dir', get_defined_vars(),
+											sprintf($this->i18n('Unable to copy `%1$s` into `%2$s`.'), $_core_phar_stub, $_new_core_phar_stub)
 										);
 									$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), dirname($this->plugin_dir));
+									$this->©command->git('rm -r --cached '.escapeshellarg($_old_core_phar_stub_glob_pattern), dirname($this->plugin_dir));
+									$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_phar_stub), dirname($this->plugin_dir));
 
-									$successes->add(__METHOD__.'#this_core_phar_stub_copied_into_plugin_dir', get_defined_vars(),
-									                sprintf($this->i18n('The WebSharks™ Core PHAR stub for v%1$s; has been copied to: `%2$s`.'), $this->___instance_config->core_ns_v_with_dashes, $this->plugin_dir.'/websharks-core.php').
-									                $this->i18n(' This file (now a compressed PHP Archive); has been added (again) to the list of GIT-tracked files in this repo.').
-									                sprintf($this->i18n(' The original full WebSharks™ Core directory has now been removed from the list of GIT-tracked files in this repo: `%1$s`.'), $_new_core_dir).
-									                $this->i18n(' This ensures it will NOT be copied over into the final distro for this plugin. This PHP Archive file will suffice; just one file :-)')
+									$successes->add(__METHOD__.'#new_core_phar_stub_added_to_plugin_dir', get_defined_vars(),
+									                sprintf($this->i18n('The WebSharks™ Core PHAR stub for `v%1$s`; has been copied to: `%2$s`.'), $this->___instance_config->core_ns_v_with_dashes, $_new_core_phar_stub).
+									                $this->i18n(' This file (a compressed PHP Archive); has been added to the list of GIT-tracked files in this repo. The original stub file was deleted; and removed from GIT-tracked files in this repo.').
+									                sprintf($this->i18n(' The original full WebSharks™ Core directory has also been removed from the list of GIT-tracked files in this repo: `%1$s`.'), $_new_core_dir)
 									);
+									unset($_core_phar_stub, $_new_core_phar_stub, $_old_core_phar_stub_glob_pattern, $_plugin_dir_htaccess_file);
 								}
 
 							// Update various plugin files w/ version numbers and other requirements.
@@ -482,58 +503,58 @@ namespace websharks_core_v000000_dev
 							$_plugin_framework_file_contents = file_get_contents($_plugin_framework_file);
 							$_plugin_readme_file_contents    = file_get_contents($_plugin_readme_file);
 
-							if(!($_plugin_file_contents = preg_replace('/^((?:Version|Stable tag)\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->version), $_plugin_file_contents, -1, $_replacements)) || !$_replacements)
+							if(!($_plugin_file_contents = preg_replace('/^((?:Version|Stable\s+tag)\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->version), $_plugin_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#plugin_file_version_replacements', get_defined_vars(),
-									$this->i18n('Build failure. Unable to replace `Version|Stable tag` in plugin file.')
+									$this->i18n('Unable to replace `Version|Stable tag` in plugin file.')
 								);
-							else if(!($_plugin_framework_file_contents = preg_replace('/(\')([0-9a-z\.\-]+)(\'\s*[;,]?\s*\/\/\s*\!#version#\!)/i', '${1}'.$this->©string->esc_refs($this->version).'${3}', $_plugin_framework_file_contents, -1, $_replacements)) || !$_replacements)
+							else if(!($_plugin_framework_file_contents = preg_replace('/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!version\!#)/i', '${1}'.$this->©string->esc_refs($this->version).'${3}', $_plugin_framework_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#plugin_framework_file_version_replacements', get_defined_vars(),
-									$this->i18n('Build failure. Unable to replace `!#version#!` in plugin `framework.php` file.')
+									$this->i18n('Unable to replace `#!version!#` in plugin `framework.php` file.')
 								);
-							else if(!($_plugin_readme_file_contents = preg_replace('/^((?:Version|Stable tag)\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->version), $_plugin_readme_file_contents, -1, $_replacements)) || !$_replacements)
+							else if(!($_plugin_readme_file_contents = preg_replace('/^((?:Version|Stable\s+tag)\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->version), $_plugin_readme_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#plugin_readme_file_version_replacements', get_defined_vars(),
-									$this->i18n('Build failure. Unable to replace `Version|Stable tag` in plugin `readme.txt` file.')
+									$this->i18n('Unable to replace `Version|Stable tag` in plugin `readme.txt` file.')
 								);
 
-							if(!($_plugin_file_contents = preg_replace('/^(Tested up to\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->tested_up_to_wp_v), $_plugin_file_contents, -1, $_replacements)) || !$_replacements)
+							if(!($_plugin_file_contents = preg_replace('/^(Tested\s+up\s+to\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->tested_up_to_wp_v), $_plugin_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#plugin_file_tested_up_to_wp_v_replacements', get_defined_vars(),
-									$this->i18n('Build failure. Unable to replace `Tested up to` version in plugin file.')
+									$this->i18n('Unable to replace `Tested up to` version in plugin file.')
 								);
-							else if(!($_plugin_readme_file_contents = preg_replace('/^(Tested up to\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->tested_up_to_wp_v), $_plugin_readme_file_contents, -1, $_replacements)) || !$_replacements)
+							else if(!($_plugin_readme_file_contents = preg_replace('/^(Tested\s+up\s+to\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->tested_up_to_wp_v), $_plugin_readme_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#plugin_readme_file_tested_up_to_wp_v_replacements', get_defined_vars(),
-									$this->i18n('Build failure. Unable to replace `Tested up to` version in plugin `readme.txt` file.')
+									$this->i18n('Unable to replace `Tested up to` version in plugin `readme.txt` file.')
 								);
 
-							if(!($_plugin_file_contents = preg_replace('/^(Requires at least\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v), $_plugin_file_contents, -1, $_replacements)) || !$_replacements)
+							if(!($_plugin_file_contents = preg_replace('/^(Requires\s+at\s+least\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v), $_plugin_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#plugin_file_requires_at_least_wp_v_replacements', get_defined_vars(),
-									$this->i18n('Build failure. Unable to replace `Requires at least` version in plugin file.')
+									$this->i18n('Unable to replace `Requires at least` version in plugin file.')
 								);
-							else if(!($_plugin_readme_file_contents = preg_replace('/^(Requires at least\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v), $_plugin_readme_file_contents, -1, $_replacements)) || !$_replacements)
+							else if(!($_plugin_readme_file_contents = preg_replace('/^(Requires\s+at\s+least\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v), $_plugin_readme_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#plugin_readme_file_requires_at_least_wp_v_replacements', get_defined_vars(),
-									$this->i18n('Build failure. Unable to replace `Requires at least` version in plugin `readme.txt` file.')
+									$this->i18n('Unable to replace `Requires at least` version in plugin `readme.txt` file.')
 								);
 
 							if(!file_put_contents($_plugin_file, $_plugin_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#plugin_file_write_error', get_defined_vars(),
-									$this->i18n('Build failure. Unable to write (update) the plugin file.')
+									$this->i18n('Unable to write (update) the plugin file.')
 								);
 							else if(!file_put_contents($_plugin_framework_file, $_plugin_framework_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#plugin_framework_file_write_error', get_defined_vars(),
-									$this->i18n('Build failure. Unable to write (update) the plugin `framework.php` file.')
+									$this->i18n('Unable to write (update) the plugin `framework.php` file.')
 								);
 							else if(!file_put_contents($_plugin_readme_file, $_plugin_readme_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#plugin_readme_file_write_error', get_defined_vars(),
-									$this->i18n('Build failure. Unable to write (update) the plugin `readme.txt` file.')
+									$this->i18n('Unable to write (update) the plugin `readme.txt` file.')
 								);
 
 							$successes->add(__METHOD__.'#plugin_file_updates', get_defined_vars(),
@@ -542,7 +563,7 @@ namespace websharks_core_v000000_dev
 							                sprintf($this->i18n(' Plugin tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v).
 							                sprintf($this->i18n(' Plugin requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
 							                sprintf($this->i18n(' Plugin requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_v).
-							                sprintf($this->i18n(' Depends on WebSharks™ Core version: `%1$s`.'), $this->___instance_config->core_ns_v_with_dashes)
+							                sprintf($this->i18n(' Depends on WebSharks™ Core: `v%1$s`.'), $this->___instance_config->core_ns_v_with_dashes)
 							);
 							unset($_plugin_file, $_plugin_framework_file, $_plugin_readme_file, $_replacements);
 							unset($_plugin_file_contents, $_plugin_framework_file_contents, $_plugin_readme_file_contents);
@@ -644,8 +665,7 @@ namespace websharks_core_v000000_dev
 									// WebSharks™ Core replication here too.
 									// This way all pro files are updated also.
 
-									$_replication      = $this->©replicate($this->plugin_pro_dir, TRUE, 0,
-									                                       array('.gitignore' => dirname($this->core_dir).'/.gitignore'));
+									$_replication      = $this->©replicate($this->plugin_pro_dir, TRUE, 0, array('.gitignore' => dirname($this->core_dir).'/.gitignore'));
 									$_new_pro_core_dir = $_replication->to_dir; // We'll need this below.
 
 									$successes->add(__METHOD__.'#new_pro_core_dir_replication', get_defined_vars(),
@@ -708,58 +728,58 @@ namespace websharks_core_v000000_dev
 									$_plugin_pro_class_file_contents  = file_get_contents($_plugin_pro_class_file);
 									$_plugin_pro_readme_file_contents = file_get_contents($_plugin_pro_readme_file);
 
-									if(!($_plugin_pro_file_contents = preg_replace('/^((?:Version|Stable tag)\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->version), $_plugin_pro_file_contents, -1, $_replacements)) || !$_replacements)
+									if(!($_plugin_pro_file_contents = preg_replace('/^((?:Version|Stable\s+tag)\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->version), $_plugin_pro_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_file_version_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to replace `Version|Stable tag` in plugin pro file.')
+											$this->i18n('Unable to replace `Version|Stable tag` in plugin pro file.')
 										);
-									else if(!($_plugin_pro_class_file_contents = preg_replace('/(\')([0-9a-z\.\-]+)(\'\s*[;,]?\s*\/\/\s*\!#version#\!)/i', '${1}'.$this->©string->esc_refs($this->version).'${3}', $_plugin_pro_class_file_contents, -1, $_replacements)) || !$_replacements)
+									else if(!($_plugin_pro_class_file_contents = preg_replace('/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!version\!#)/i', '${1}'.$this->©string->esc_refs($this->version).'${3}', $_plugin_pro_class_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_class_file_version_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to replace `!#version#!` in plugin `pro.php` class file.')
+											$this->i18n('Unable to replace `#!version!#` in plugin `pro.php` class file.')
 										);
-									else if(!($_plugin_pro_readme_file_contents = preg_replace('/^((?:Version|Stable tag)\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->version), $_plugin_pro_readme_file_contents, -1, $_replacements)) || !$_replacements)
+									else if(!($_plugin_pro_readme_file_contents = preg_replace('/^((?:Version|Stable\s+tag)\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->version), $_plugin_pro_readme_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_readme_file_version_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to replace `Version|Stable tag` in plugin pro `readme.txt` file.')
+											$this->i18n('Unable to replace `Version|Stable tag` in plugin pro `readme.txt` file.')
 										);
 
-									if(!($_plugin_pro_file_contents = preg_replace('/^(Tested up to\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->tested_up_to_wp_v), $_plugin_pro_file_contents, -1, $_replacements)) || !$_replacements)
+									if(!($_plugin_pro_file_contents = preg_replace('/^(Tested\s+up\s+to\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->tested_up_to_wp_v), $_plugin_pro_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_file_tested_up_to_wp_v_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to replace `Tested up to` version in plugin pro file.')
+											$this->i18n('Unable to replace `Tested up to` version in plugin pro file.')
 										);
-									else if(!($_plugin_pro_readme_file_contents = preg_replace('/^(Tested up to\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->tested_up_to_wp_v), $_plugin_pro_readme_file_contents, -1, $_replacements)) || !$_replacements)
+									else if(!($_plugin_pro_readme_file_contents = preg_replace('/^(Tested\s+up\s+to\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->tested_up_to_wp_v), $_plugin_pro_readme_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_readme_file_tested_up_to_wp_v_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to replace `Tested up to` version in plugin pro `readme.txt` file.')
+											$this->i18n('Unable to replace `Tested up to` version in plugin pro `readme.txt` file.')
 										);
 
-									if(!($_plugin_pro_file_contents = preg_replace('/^(Requires at least\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v), $_plugin_pro_file_contents, -1, $_replacements)) || !$_replacements)
+									if(!($_plugin_pro_file_contents = preg_replace('/^(Requires\s+at\s+least\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v), $_plugin_pro_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_file_requires_at_least_wp_v_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to replace `Requires at least` version in plugin pro file.')
+											$this->i18n('Unable to replace `Requires at least` version in plugin pro file.')
 										);
-									else if(!($_plugin_pro_readme_file_contents = preg_replace('/^(Requires at least\: )[0-9a-z\.\-]+$/im', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v), $_plugin_pro_readme_file_contents, -1, $_replacements)) || !$_replacements)
+									else if(!($_plugin_pro_readme_file_contents = preg_replace('/^(Requires\s+at\s+least\:\s*)([0-9a-z\.\-]*)$/im', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v), $_plugin_pro_readme_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_readme_file_requires_at_least_wp_v_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to replace `Requires at least` version in plugin pro `readme.txt` file.')
+											$this->i18n('Unable to replace `Requires at least` version in plugin pro `readme.txt` file.')
 										);
 
 									if(!file_put_contents($_plugin_pro_file, $_plugin_pro_file_contents))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_file_write_error', get_defined_vars(),
-											$this->i18n('Build failure. Unable to write (update) the plugin pro file.')
+											$this->i18n('Unable to write (update) the plugin pro file.')
 										);
 									else if(!file_put_contents($_plugin_pro_class_file, $_plugin_pro_class_file_contents))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_class_file_write_error', get_defined_vars(),
-											$this->i18n('Build failure. Unable to write (update) the plugin `pro.php` class file.')
+											$this->i18n('Unable to write (update) the plugin `pro.php` class file.')
 										);
 									else if(!file_put_contents($_plugin_pro_readme_file, $_plugin_pro_readme_file_contents))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_readme_file_write_error', get_defined_vars(),
-											$this->i18n('Build failure. Unable to write (update) the plugin pro `readme.txt` file.')
+											$this->i18n('Unable to write (update) the plugin pro `readme.txt` file.')
 										);
 
 									$successes->add(__METHOD__.'#plugin_pro_file_updates', get_defined_vars(),
@@ -768,7 +788,7 @@ namespace websharks_core_v000000_dev
 									                sprintf($this->i18n(' Pro add-on tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v).
 									                sprintf($this->i18n(' Pro add-on requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
 									                sprintf($this->i18n(' Pro add-on requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_v).
-									                sprintf($this->i18n(' Depends on WebSharks™ Core version: `%1$s`.'), $this->___instance_config->core_ns_v_with_dashes)
+									                sprintf($this->i18n(' Depends on WebSharks™ Core: `v%1$s`.'), $this->___instance_config->core_ns_v_with_dashes)
 									);
 									unset($_plugin_pro_file, $_plugin_pro_class_file, $_plugin_pro_readme_file, $_replacements);
 									unset($_plugin_pro_file_contents, $_plugin_pro_class_file_contents, $_plugin_pro_readme_file_contents);
@@ -858,8 +878,7 @@ namespace websharks_core_v000000_dev
 									// WebSharks™ Core replication here too.
 									// This way all extra files are updated also.
 
-									$_replication         = $this->©replicate($this->plugin_extras_dir, TRUE, 0,
-									                                          array('.gitignore' => dirname($this->core_dir).'/.gitignore'));
+									$_replication         = $this->©replicate($this->plugin_extras_dir, TRUE, 0, array('.gitignore' => dirname($this->core_dir).'/.gitignore'));
 									$_new_extras_core_dir = $_replication->to_dir; // We'll need this below.
 
 									$successes->add(__METHOD__.'#new_extras_core_dir_replication', get_defined_vars(),
@@ -880,9 +899,9 @@ namespace websharks_core_v000000_dev
 
 									// Update various extra files w/ version numbers and other requirements.
 
-									$_new_core_deps_x_file         = $_new_core_dir.'/classes/'.basename($_new_core_dir).'/deps-x.php';
-									$_plugin_server_scanner_file   = $this->plugin_extras_dir.'/'.basename($this->plugin_dir).'-server-scanner.php';
-									$_plugin_dirs_commas_delimited = basename($this->plugin_dir).(($this->plugin_pro_dir) ? ','.basename($this->plugin_pro_dir) : '');
+									$_new_core_deps_x_file           = $_new_core_dir.'/classes/'.$this->___instance_config->core_ns_with_dashes.'/deps-x.php';
+									$_new_server_scanner_file        = $_old_server_scanner_file = $this->plugin_extras_dir.'/'.basename($this->plugin_dir).'-server-scanner.php';
+									$_new_server_scanner_plugin_dirs = basename($this->plugin_dir).(($this->plugin_pro_dir) ? ','.basename($this->plugin_pro_dir) : '');
 
 									if(!file_exists($_new_core_deps_x_file))
 										throw $this->©exception(
@@ -894,38 +913,36 @@ namespace websharks_core_v000000_dev
 											__METHOD__.'#new_core_deps_x_file_permissions', get_defined_vars(),
 											sprintf($this->i18n('Permission issues with new core `deps-x.php` file: `%1$s`.'), $_new_core_deps_x_file)
 										);
-
-									if(file_exists($_plugin_server_scanner_file) && (!is_writable($_plugin_server_scanner_file) || !unlink($_plugin_server_scanner_file)))
-										throw $this->©exception(
-											__METHOD__.'#existing_plugin_server_scanner_file_permissions', get_defined_vars(),
-											sprintf($this->i18n('Permission issues with existing plugin server scanner file: `%1$s`.'), $_plugin_server_scanner_file)
-										);
-
 									$_new_core_deps_x_file_contents = file_get_contents($_new_core_deps_x_file);
 
-									if(!($_new_core_deps_x_file_contents = preg_replace('/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_NAME\'\s*,\s*\')(.*?)(\')/i', '${1}'.$this->©string->esc_refs($this->©string->esc_sq($this->plugin_name)).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
+									if(file_exists($_old_server_scanner_file) && (!is_writable($_old_server_scanner_file) || !unlink($_old_server_scanner_file)))
+										throw $this->©exception(
+											__METHOD__.'#old_server_scanner_file_permissions', get_defined_vars(),
+											sprintf($this->i18n('Permission issues with old server scanner file: `%1$s`.'), $_new_server_scanner_file)
+										);
+
+									if(!($_new_core_deps_x_file_contents = preg_replace('/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_NAME\'\s*,\s*\')(.*?)(\'\s*;\s*#\!stand\-alone\-plugin\-name\!#)/i', '${1}'.$this->©string->esc_refs($this->©string->esc_sq($this->plugin_name)).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#new_core_deps_x_file_plugin_name_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to set `___STAND_ALONE__PLUGIN_NAME` in new core `deps-x.php` file.')
+											$this->i18n('Unable to set `___STAND_ALONE__PLUGIN_NAME` in new core `deps-x.php` file.')
 										);
-									else if(!($_new_core_deps_x_file_contents = preg_replace('/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_DIR_NAMES\'\s*,\s*\')([0-9a-z\-]*)(\')/i', '${1}'.$this->©string->esc_refs($this->©string->esc_sq($_plugin_dirs_commas_delimited)).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
+									else if(!($_new_core_deps_x_file_contents = preg_replace('/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_DIR_NAMES\'\s*,\s*\')([0-9a-z\-]*)(\'\s*;\s*#\!stand\-alone\-plugin\-dir\-names\!#)/i', '${1}'.$this->©string->esc_refs($this->©string->esc_sq($_new_server_scanner_plugin_dirs)).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#new_core_deps_x_file_plugin_dir_names_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to set `___STAND_ALONE__PLUGIN_DIR_NAMES` in new core `deps-x.php` file.')
+											$this->i18n('Unable to set `___STAND_ALONE__PLUGIN_DIR_NAMES` in new core `deps-x.php` file.')
 										);
-									else if(!($_new_core_deps_x_file_contents = preg_replace('/(class\s+deps_x)(_'.ltrim(rtrim($this->©string->regex_valid_ws_core_ns_version, '$/'), '/^').')/i', '${1}'.'_stand_alone'.'${2}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
+									else if(!($_new_core_deps_x_file_contents = preg_replace('/(class\s+deps_x_'.ltrim(rtrim($this->©string->regex_valid_ws_core_ns_version, '$/'), '/^').')(\s*#\!stand\-alone\!#)/i', '${1}'.'_stand_alone'.'${2}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
 										throw $this->©exception(
 											__METHOD__.'#new_core_deps_x_file_stand_alone_replacements', get_defined_vars(),
-											$this->i18n('Build failure. Unable to set `_stand_alone` in new core `deps-x.php` file.')
+											$this->i18n('Unable to set `_stand_alone` in new core `deps-x.php` file.')
 										);
 
-									if(!file_put_contents($_plugin_server_scanner_file, $_new_core_deps_x_file_contents))
+									if(!file_put_contents($_new_server_scanner_file, $_new_core_deps_x_file_contents))
 										throw $this->©exception(
-											__METHOD__.'#plugin_server_scanner_file_write_error', get_defined_vars(),
-											$this->i18n('Build failure. Unable to write the plugin server scanner file.')
+											__METHOD__.'#new_server_scanner_file_write_error', get_defined_vars(),
+											$this->i18n('Unable to write the new plugin server scanner file.')
 										);
-
-									$this->©command->git('add --intent-to-add '.escapeshellarg($_plugin_server_scanner_file), dirname($this->plugin_dir));
+									$this->©command->git('add --intent-to-add '.escapeshellarg($_new_server_scanner_file), dirname($this->plugin_dir));
 
 									$successes->add(__METHOD__.'#plugin_extra_file_updates', get_defined_vars(),
 									                $this->i18n('Plugin extra files updated with versions/requirements/etc.').
@@ -933,10 +950,10 @@ namespace websharks_core_v000000_dev
 									                sprintf($this->i18n(' Extras tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v).
 									                sprintf($this->i18n(' Extras require at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
 									                sprintf($this->i18n(' Extras require at least PHP version: `%1$s`.'), $this->requires_at_least_php_v).
-									                sprintf($this->i18n(' They depend on WebSharks™ Core version: `%1$s`.'), $this->___instance_config->core_ns_v_with_dashes).
-									                sprintf($this->i18n(' Plugin server scanner file: `%1$s`.'), $_plugin_server_scanner_file)
+									                sprintf($this->i18n(' They depend on WebSharks™ Core: `v%1$s`.'), $this->___instance_config->core_ns_v_with_dashes).
+									                sprintf($this->i18n(' New server scanner file: `%1$s`.'), $_new_server_scanner_file)
 									);
-									unset($_new_core_deps_x_file, $_plugin_server_scanner_file, $_plugin_dirs_commas_delimited);
+									unset($_new_core_deps_x_file, $_new_server_scanner_file, $_old_server_scanner_file, $_new_server_scanner_plugin_dirs);
 									unset($_new_core_deps_x_file_contents, $_replacements); // Housekeeping.
 
 									// Copy distribution files into the distros directory.
@@ -948,8 +965,7 @@ namespace websharks_core_v000000_dev
 											__METHOD__.'#existing_plugin_extras_distro_dir_permissions', get_defined_vars(),
 											sprintf($this->i18n('Permission issues with existing plugin extras distro directory: `%1$s`.'), $_plugin_extras_distro_dir)
 										);
-
-									if(!$this->©dir->copy_to($this->plugin_extras_dir, $_plugin_extras_distro_dir))
+									else if(!$this->©dir->copy_to($this->plugin_extras_dir, $_plugin_extras_distro_dir))
 										throw $this->©exception(
 											__METHOD__.'#plugin_extras_distro_dir_copy_failure', get_defined_vars(),
 											sprintf($this->i18n('Unable to copy plugin extras dir into distro directory: `%1$s`.'), $_plugin_extras_distro_dir)
@@ -1026,7 +1042,7 @@ namespace websharks_core_v000000_dev
 						{
 							// Validate core directory.
 
-							if(!is_readable($this->core_dir) || !is_writable($this->core_dir))
+							if(!is_readable($this->core_dir))
 								throw $this->©exception(
 									__METHOD__.'#core_dir_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with core directory: `%1$s`.'), $this->core_dir)
@@ -1042,7 +1058,7 @@ namespace websharks_core_v000000_dev
 
 							// WebSharks™ Core replication.
 
-							$_replication  = $this->©replicate('', FALSE, $this->version);
+							$_replication  = $this->©replicate('', FALSE, $this->version); // No exclusions.
 							$_new_core_dir = $_replication->to_dir; // Need this below.
 
 							$successes->add($_replication->success->get_code().'#core_dir', $_replication->success->get_data(),
@@ -1052,8 +1068,8 @@ namespace websharks_core_v000000_dev
 
 							// Update various core files w/ version numbers and other requirements.
 
-							$_new_core_framework_file = $_new_core_dir.'/classes/'.basename($_new_core_dir).'/framework.php';
-							$_new_core_deps_x_file    = $_new_core_dir.'/classes/'.basename($_new_core_dir).'/deps-x.php';
+							$_new_core_framework_file = $_new_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'/framework.php';
+							$_new_core_deps_x_file    = $_new_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'/deps-x.php';
 
 							if(!file_exists($_new_core_framework_file))
 								throw $this->©exception(
@@ -1080,22 +1096,20 @@ namespace websharks_core_v000000_dev
 							$_new_core_framework_file_contents = file_get_contents($_new_core_framework_file);
 							$_new_core_deps_x_file_contents    = file_get_contents($_new_core_deps_x_file);
 
-							if(!($_new_core_framework_file_contents = preg_replace('/(\')([0-9a-z\.\-]+)(\'\s*[;,]?\s*\/\/\s*\!#version#\!)/i', '${1}'.$this->©string->esc_refs($this->version).'${3}', $_new_core_framework_file_contents, -1, $_replacements)) || !$_replacements)
+							if(!($_new_core_framework_file_contents = preg_replace('/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!version\!#)/i', '${1}'.$this->©string->esc_refs($this->version).'${3}', $_new_core_framework_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#new_core_framework_file_version_replacements', get_defined_vars(),
-									$this->i18n('Unable to replace `!#version#!` in new core `framework.php` file.')
+									$this->i18n('Unable to replace `#!version!#` in new core `framework.php` file.')
 								);
-
-							if(!($_new_core_deps_x_file_contents = preg_replace('/(\')([0-9a-z\.\-]+)(\'\s*[;,]?\s*\/\/\s*\!#requires-php-version#\!)/i', '${1}'.$this->©string->esc_refs($this->requires_at_least_php_v).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
+							else if(!($_new_core_deps_x_file_contents = preg_replace('/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!php\-version\-required\!#)/i', '${1}'.$this->©string->esc_refs($this->requires_at_least_php_v).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#new_core_deps_x_file_requires_at_least_php_v_replacements', get_defined_vars(),
-									$this->i18n('Unable to replace `!#requires-php-version#!` in new core `deps-x.php` file.')
+									$this->i18n('Unable to replace `#!php-version-required!#` in new core `deps-x.php` file.')
 								);
-
-							if(!($_new_core_deps_x_file_contents = preg_replace('/(\')([0-9a-z\.\-]+)(\'\s*[;,]?\s*\/\/\s*\!#requires-wp-version#\!)/i', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
+							else if(!($_new_core_deps_x_file_contents = preg_replace('/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!wp\-version\-required\!#)/i', '${1}'.$this->©string->esc_refs($this->requires_at_least_wp_v).'${3}', $_new_core_deps_x_file_contents, -1, $_replacements)) || !$_replacements)
 								throw $this->©exception(
 									__METHOD__.'#new_core_deps_x_file_requires_at_least_wp_v_replacements', get_defined_vars(),
-									$this->i18n('Unable to replace `!#requires-wp-version#!` in new core `deps-x.php` file.')
+									$this->i18n('Unable to replace `#!wp-version-required!#` in new core `deps-x.php` file.')
 								);
 
 							if(!file_put_contents($_new_core_framework_file, $_new_core_framework_file_contents))
@@ -1111,7 +1125,7 @@ namespace websharks_core_v000000_dev
 
 							$successes->add(__METHOD__.'#new_core_file_updates', get_defined_vars(),
 							                $this->i18n('New core files updated with versions/requirements.').
-							                sprintf($this->i18n(' New core version: `%1$s`.'), $this->version).
+							                sprintf($this->i18n(' New core version: `v%1$s`.'), $this->version).
 							                sprintf($this->i18n(' New core directory: `%1$s`.'), $_new_core_dir).
 							                sprintf($this->i18n(' New core tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v).
 							                sprintf($this->i18n(' New core requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
@@ -1158,60 +1172,65 @@ namespace websharks_core_v000000_dev
 
 							// Compress the new core directory into a single PHP Archive.
 
-							$_new_core_distro_temp_dir = $this->©dir->get_sys_temp_dir().'/'.basename($_new_core_dir);
+							$_new_core_phar_stub                = dirname($this->core_dir).'/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'.phar';
+							$_new_core_distro_temp_dir          = $this->©dir->get_sys_temp_dir().'/'.basename($_new_core_dir);
+							$_new_core_distro_temp_dir_stub     = $_new_core_distro_temp_dir.'/stub.php';
+							$_new_core_distro_temp_dir_htaccess = $_new_core_distro_temp_dir.'/.htaccess';
+							$_new_core_phar_stub_php            = $_new_core_phar_stub.'.php';
+							$_old_core_phar_stub_glob_pattern   = $_new_core_phar_stub.'*';
 
-							if(file_exists($_new_core_dir.'/core.phar'))
-								throw $this->©exception(
-									__METHOD__.'#new_core_dir_already_contains_phar', get_defined_vars(),
-									sprintf($this->i18n('Mishap ~ the new core directory already contains: `%1$s`.'), $_new_core_dir.'/core.phar').
-									$this->i18n(' This is unexpected. We\'ve NOT built this file yet. It must have slipped through replication somehow.')
-								);
-							else if(file_exists($_new_core_dir.'/core.phar.php'))
-								throw $this->©exception(
-									__METHOD__.'#new_core_dir_already_contains_phar_stub', get_defined_vars(),
-									sprintf($this->i18n('Mishap ~ the new core directory already contains: `%1$s`.'), $_new_core_dir.'/core.phar.php').
-									$this->i18n(' This is unexpected. We\'ve NOT built this file yet. It must have slipped through replication somehow.')
-								);
-							else if(!file_exists($_new_core_dir.'/.htaccess') || !is_readable($_new_core_dir.'/.htaccess') || strpos(file_get_contents($_new_core_dir.'/.htaccess'), 'AcceptPathInfo') === FALSE)
-								throw $this->©exception(
-									__METHOD__.'#unable_to_find_htaccess_file_in_new_core_dir', get_defined_vars(),
-									sprintf($this->i18n('Unable to find a valid `.htaccess` file here: `%1$s`.'), $_new_core_dir.'/.htaccess').
-									$this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
-								);
-							else if(!$this->©dir->copy_to($_new_core_dir, $_new_core_distro_temp_dir, array('.gitignore' => dirname($this->core_dir).'/.gitignore')))
+							if(!$this->©dir->copy_to($_new_core_dir, $_new_core_distro_temp_dir, array('.gitignore' => dirname($this->core_dir).'/.gitignore')))
 								throw $this->©exception(
 									__METHOD__.'#new_core_copy_to_distro_temp_dir_failure', get_defined_vars(),
 									sprintf($this->i18n('Unable to create a temporary distro directory for the new core: `%1$s`.'), $_new_core_distro_temp_dir)
 								);
-							else if($this->©dir->phar_to($_new_core_distro_temp_dir, $_new_core_dir.'/core.phar', $_new_core_distro_temp_dir.'/stub.php') !== $_new_core_dir.'/core.phar.php')
+							else if(!file_exists($_new_core_distro_temp_dir_htaccess)
+							        || !is_readable($_new_core_distro_temp_dir_htaccess)
+							        || FALSE === strpos(file_get_contents($_new_core_distro_temp_dir_htaccess), 'AcceptPathInfo')
+							) throw $this->©exception(
+									__METHOD__.'#unable_to_find_valid_htaccess_file_in_new_core_distro_temp_dir', get_defined_vars(),
+									sprintf($this->i18n('Unable to find a valid `.htaccess` file here: `%1$s`.'), $_new_core_distro_temp_dir_htaccess).
+									$this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
+								);
+							else if(!is_integer($this->©file->unlink_glob($_old_core_phar_stub_glob_pattern)))
 								throw $this->©exception(
-									__METHOD__.'#unable_to_phar_new_core_distro_temp_dir_into_new_core_dir_stub', get_defined_vars(),
-									sprintf($this->i18n('Unable to PHAR new temporary core distro into: `%1$s`.'), $_new_core_dir.'/core.phar.php')
+									__METHOD__.'#unable_to_delete_old_core_phar_stub_glob_pattern', get_defined_vars(),
+									sprintf($this->i18n('Unable to delete old core PHAR stub glob pattern: `%1$s`.'), $_old_core_phar_stub_glob_pattern)
+								);
+							else if($this->©dir->phar_to($_new_core_distro_temp_dir, $_new_core_phar_stub, $_new_core_distro_temp_dir_stub) !== $_new_core_phar_stub_php)
+								throw $this->©exception(
+									__METHOD__.'#unable_to_phar_new_core_distro_temp_dir_into_new_core_phar_stub_php', get_defined_vars(),
+									sprintf($this->i18n('Unable to PHAR new temporary core distro into: `%1$s`.'), $_new_core_phar_stub_php)
 								);
 							else if(!$this->©dir->empty_and_remove($_new_core_distro_temp_dir))
 								throw $this->©exception(
 									__METHOD__.'#unable_to_delete_new_core_distro_temp_dir', get_defined_vars(),
 									sprintf($this->i18n('Unable delete new temporary core distro directory: `%1$s`.'), $_new_core_distro_temp_dir)
 								);
-							$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_dir.'/core.phar.php'), dirname($this->core_dir));
+							$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_phar_stub_php), dirname($this->core_dir));
 
-							$successes->add(__METHOD__.'#new_core_distro_phar_stub_built_for_new_core_dir', get_defined_vars(),
-							                sprintf($this->i18n('A temporary distro copy of the WebSharks™ Core has been compressed into a single PHP Archive file here: `%1$s`.'), $_new_core_dir.'/core.phar.php').
+							$successes->add(__METHOD__.'#new_core_phar_stub_php_built_for_new_core_distro_temp_dir', get_defined_vars(),
+							                sprintf($this->i18n('A temporary distro copy of the WebSharks™ Core has been compressed into a single PHP Archive file here: `%1$s`.'), $_new_core_phar_stub_php).
 							                $this->i18n(' This file has been added to the list of GIT-tracked files in the WebSharks™ Core repo.').
 							                $this->i18n(' The temporary distro copy of the WebSharks™ Core was deleted after processing.')
 							);
+							unset($_new_core_phar_stub, $_new_core_phar_stub_php, $_old_core_phar_stub_glob_pattern);
+							unset($_new_core_distro_temp_dir, $_new_core_distro_temp_dir_stub, $_new_core_distro_temp_dir_htaccess);
 
 							// Directory junction updates for project development (e.g. for plugins).
 
 							if($this->update_core_jctn) // Update core directory junction?
 								{
-									$this->©dir->create_win_jctn(dirname($this->core_dir).'/'.$this->___instance_config->core_ns_stub_with_dashes, $_new_core_dir);
+									$_core_jctn = dirname($this->core_dir).'/'.$this->___instance_config->core_ns_stub_with_dashes;
 
-									$successes->add(__METHOD__.'#updated_new_core_dir_junction', get_defined_vars(),
-									                sprintf($this->i18n('Updating `'.$this->___instance_config->core_ns_stub_with_dashes.'` directory junction to: `%1$s`.'), $_new_core_dir)
+									$this->©dir->create_win_jctn($_core_jctn, $_new_core_dir);
+
+									$successes->add(__METHOD__.'#updated_core_dir_junction', get_defined_vars(),
+									                sprintf($this->i18n('Updating `%1$s` directory junction to: `%2$s`.'), $_core_jctn, $_new_core_dir)
 									);
+									unset($_core_jctn); // Housekeeping.
 								}
-							unset($_new_core_dir, $_new_core_distro_temp_dir); // Housekeeping.
+							unset($_new_core_dir); // Some final housekeeping.
 
 							$successes->add(__METHOD__.'#core_build_complete', get_defined_vars(), $this->i18n('Core build complete!'));
 						}

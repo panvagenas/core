@@ -116,13 +116,9 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 							$check_last_ok = FALSE; // We just checked this above. No reason to check again.
 							return $x->check($plugin_name, $plugin_dir_names, $report_notices, $report_warnings, $check_last_ok, $maybe_display_wp_admin_notices);
 						}
-					else // Throw exception (invalid arguments).
-						{
-							$args = func_get_args();
-							throw new exception(
-								sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-							);
-						}
+					else throw new exception( // Detected invalid arguments.
+						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					);
 				}
 
 			/**
@@ -155,13 +151,9 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 								}
 							return FALSE; // Default return value.
 						}
-					else // Throw exception (invalid arguments).
-						{
-							$args = func_get_args();
-							throw new exception(
-								sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-							);
-						}
+					else throw new exception( // Detected invalid arguments.
+						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					);
 				}
 
 			/**

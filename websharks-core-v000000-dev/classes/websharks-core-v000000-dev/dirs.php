@@ -1262,6 +1262,11 @@ namespace websharks_core_v000000_dev
 			 *
 			 *       • If you want to protect a directory on IIS; place files inside an `/app_data/` directory.
 			 *          The WebSharks™ webPhar stub will automatically protect files inside directories with this name.
+			 *
+			 * @note This routine also handles a dynamic replacement code (using a WebSharks™ Standard comment-replace marker).
+			 *    If you have `static $is_phar; #!is-phar!#` in your stub file; that will be set to: `static $is_phar = TRUE; #!is-phar!#`.
+			 *    This allows a stub file to serve multiple purposes (perhaps); and yet still be clearly marked as a PHAR stub when used here.
+			 *    See the ``$stub`` parameter for further details about PHAR stub files.
 			 */
 			public function phar_to($dir, $to, $stub = self::core, $phpify = TRUE, $strip_ws = TRUE, $compress = TRUE)
 				{
@@ -1331,9 +1336,8 @@ namespace websharks_core_v000000_dev
 					// Phar classes throw exceptions on failure.
 
 					$_stub_file_contents = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
-					$_stub_file_contents = preg_replace('/static\s+\$is_phar\s*\=\s*[^;]+;(?P<comment>\s*\/\/\s*\!#is\-phar#\!)?/i',
-					                                    'static $is_phar = TRUE;', $_stub_file_contents, 1);
-					// The `!#is-phar#!` comment is optional (comments may get stripped away here).
+					$_stub_file_contents = preg_replace('/(static\s+\$is_phar\s*)([^;]*)(;)(\s*#\!is\-phar\!#)?/i', '${1}'.' = TRUE'.'${3}'.'${4}', $_stub_file_contents, 1);
+					// The `#!is-phar!#` comment is optional here; because whitespace/comments may get stripped via ``php_strip_whitespace()`` call above.
 
 					$_phar = new \Phar($to);
 					$_phar->startBuffering();

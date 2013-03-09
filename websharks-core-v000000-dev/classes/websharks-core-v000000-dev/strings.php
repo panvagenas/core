@@ -2649,8 +2649,11 @@ namespace websharks_core_v000000_dev
 			 */
 			public $regex_valid_ws_plugin_var_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
 
-			public static /** @noinspection PhpMissingDocCommentInspection */
-				$_4fwc_regex_valid_ws_plugin_var_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
+			/**
+			 * @var string WebSharks™ plugin variable namespace validation pattern.
+			 * @note Same as above. This is a static version for the core framework constructor.
+			 */
+			public static $_4fwc_regex_valid_ws_plugin_var_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
 
 			/**
 			 * @var string WebSharks™ plugin root namespace validation pattern.
@@ -2662,8 +2665,11 @@ namespace websharks_core_v000000_dev
 			 */
 			public $regex_valid_ws_plugin_root_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
 
-			public static /** @noinspection PhpMissingDocCommentInspection */
-				$_4fwc_regex_valid_ws_plugin_root_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
+			/**
+			 * @var string WebSharks™ plugin root namespace validation pattern.
+			 * @note Same as above. This is a static version for the core framework constructor.
+			 */
+			public static $_4fwc_regex_valid_ws_plugin_root_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
 
 			/**
 			 * @var string WebSharks™ namespace\class path validation pattern.
@@ -2676,8 +2682,11 @@ namespace websharks_core_v000000_dev
 			 */
 			public $regex_valid_ws_ns_class = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])(?:\\\\(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))+$/';
 
-			public static /** @noinspection PhpMissingDocCommentInspection */
-				$_4fwc_regex_valid_ws_ns_class = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])(?:\\\\(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))+$/';
+			/**
+			 * @var string WebSharks™ namespace\class path validation pattern.
+			 * @note Same as above. This is a static version for the core framework constructor.
+			 */
+			public static $_4fwc_regex_valid_ws_ns_class = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])(?:\\\\(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))+$/';
 
 			/**
 			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern).
@@ -2695,8 +2704,11 @@ namespace websharks_core_v000000_dev
 			 */
 			public $regex_valid_ws_core_ns_version = '/^websharks_core_v[0-9]{6}(?:_(?:[a-zA-Z](?:[a-zA-Z0-9]|_(?!_))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
 
-			public static /** @noinspection PhpMissingDocCommentInspection */
-				$_4fwc_regex_valid_ws_core_ns_version = '/^websharks_core_v[0-9]{6}(?:_(?:[a-zA-Z](?:[a-zA-Z0-9]|_(?!_))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
+			/**
+			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern).
+			 * @note Same as above. This is a static version for the core framework constructor.
+			 */
+			public static $_4fwc_regex_valid_ws_core_ns_version = '/^websharks_core_v[0-9]{6}(?:_(?:[a-zA-Z](?:[a-zA-Z0-9]|_(?!_))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
 
 			/**
 			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern with a dashed variation).
@@ -2709,10 +2721,13 @@ namespace websharks_core_v000000_dev
 			 *       5. MUST always end with an alphanumeric value.
 			 *       4. May NOT contain double underscores.
 			 */
-			public $regex_valid_ws_core_version = '/^websharks\-core\-v[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
+			public $regex_valid_ws_core_ns_version_with_dashes = '/^websharks\-core\-v[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
 
-			public static /** @noinspection PhpMissingDocCommentInspection */
-				$_4fwc_regex_valid_ws_core_version = '/^websharks\-core\-v[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
+			/**
+			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern with a dashed variation).
+			 * @note Same as above. This is a static version for the core framework constructor.
+			 */
+			public static $_4fwc_regex_valid_ws_core_ns_version_with_dashes = '/^websharks\-core\-v[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
 
 			/**
 			 * @var string Valid WebSharks™ flavored PHP version string (regex pattern).
@@ -2727,8 +2742,11 @@ namespace websharks_core_v000000_dev
 			 */
 			public $regex_valid_ws_version = '/^[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
 
-			public static /** @noinspection PhpMissingDocCommentInspection */
-				$_4fwc_regex_valid_ws_version = '/^[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
+			/**
+			 * @var string Valid WebSharks™ flavored PHP version string (regex pattern).
+			 * @note Same as above. This is a static version for the core framework constructor.
+			 */
+			public static $_4fwc_regex_valid_ws_version = '/^[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
 
 			/**
 			 * @var string Valid PHP version string (regex pattern).

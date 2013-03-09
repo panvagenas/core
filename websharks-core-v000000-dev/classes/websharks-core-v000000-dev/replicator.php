@@ -136,8 +136,7 @@ namespace websharks_core_v000000_dev
 					$this->plugin_dir          = ($plugin_dir) ? $this->©dir->n_seps($plugin_dir) : '';
 					$this->updating_plugin_dir = ($this->plugin_dir && $update_plugin_dir) ? TRUE : FALSE;
 					$this->to_version          = ($version) ? (string)$version : $this->___instance_config->core_ns_v_with_dashes;
-					$this->to_exclusions       = ($exclusions) ? $exclusions : array(); // Always exclude `core.phar*`.
-					$this->to_exclusions[]     = '/'.basename($this->core_dir).'/core.phar*';
+					$this->to_exclusions       = ($exclusions) ? $exclusions : array();
 
 					if(!preg_match($this->©string->regex_valid_ws_version, $this->to_version))
 						throw $this->©exception(
@@ -255,9 +254,9 @@ namespace websharks_core_v000000_dev
 					$new_core_ns_v_with_dashes = $this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->to_version;
 
 					$regex_core_ns_v                          = '/'.ltrim(rtrim($this->©string->regex_valid_ws_core_ns_version, '$/'), '/^').'/';
-					$regex_core_ns_v_with_dashes              = '/'.ltrim(rtrim($this->©string->regex_valid_ws_core_version, '$/'), '/^').'/';
-					$regex_core_ns_v_dir_with_dashes          = '/\/'.ltrim(rtrim($this->©string->regex_valid_ws_core_version, '$/'), '/^').'\//';
-					$regex_core_ns_v_dir_basename_with_dashes = $this->©string->regex_valid_ws_core_version;
+					$regex_core_ns_v_with_dashes              = '/'.ltrim(rtrim($this->©string->regex_valid_ws_core_ns_version_with_dashes, '$/'), '/^').'/';
+					$regex_core_ns_v_dir_with_dashes          = '/\/'.ltrim(rtrim($this->©string->regex_valid_ws_core_ns_version_with_dashes, '$/'), '/^').'\//';
+					$regex_core_ns_v_dir_basename_with_dashes = $this->©string->regex_valid_ws_core_ns_version_with_dashes;
 
 					// This routine will NOT search/replace inside any past or present core directory.
 					// With ONE exception, we DO allow search/replace inside the directory containing our newly replicated core.

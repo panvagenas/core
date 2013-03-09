@@ -57,6 +57,11 @@ namespace websharks_core_v000000_dev
 				 * @method \websharks_core_v000000_dev\captchas ©captchas()
 				 * @method \websharks_core_v000000_dev\captchas ©captcha()
 				 *
+				 * @property \websharks_core_v000000_dev\classes                 $©classes
+				 * @property \websharks_core_v000000_dev\classes                 $©class
+				 * @method \websharks_core_v000000_dev\classes ©classes()
+				 * @method \websharks_core_v000000_dev\classes ©class()
+				 *
 				 * @property \websharks_core_v000000_dev\commands                $©commands
 				 * @property \websharks_core_v000000_dev\commands                $©command
 				 * @method \websharks_core_v000000_dev\commands ©commands()
@@ -379,6 +384,7 @@ namespace websharks_core_v000000_dev
 						'build'      => 'builder',
 						'cap'        => 'caps',
 						'captcha'    => 'captchas',
+						'class'      => 'classes',
 						'command'    => 'commands',
 						'cookie'     => 'cookies',
 						'cron'       => 'crons',
@@ -2082,16 +2088,17 @@ namespace websharks_core_v000000_dev
 				 *
 				 * @var framework $GLOBALS[__NAMESPACE__] Global framework instance.
 				 */
-				$GLOBALS[__NAMESPACE__] = new framework(
+				$GLOBALS[__NAMESPACE__]                                              = new framework(
 					array(
-					     'plugin_var_ns'         => 'ws',
+					     'plugin_var_ns'         => 'websharks_core',
 					     'plugin_root_ns'        => __NAMESPACE__,
 					     'plugin_name'           => 'WebSharks™ Core',
-					     'plugin_version'        => '000000-dev', // !#version#!
+					     'plugin_version'        => '000000-dev', #!version!#
 					     'plugin_dir'            => dirname(dirname(dirname(__FILE__))),
 					     'plugin_site'           => 'http://www.websharks-inc.com',
 					     'dynamic_class_aliases' => framework::$___dynamic_class_aliases
 					)
 				);
+				$GLOBALS[$GLOBALS[__NAMESPACE__]->___instance_config->plugin_var_ns] =& $GLOBALS[__NAMESPACE__];
 			}
 	}

@@ -20,29 +20,26 @@
  * @note Replicates into `[...-]stand-alone.php`.
  * @note Class name MUST be modified before running stand-alone.
  */
-if(basename(__FILE__) !== 'deps-x.php'
-   && class_exists('deps_x_stand_alone_websharks_core_v000000_dev')
-) // Stand-alone class: ``deps_x_stand_alone_websharks_core_v000000_dev``.
+if(basename(__FILE__) !== 'deps-x.php' && class_exists('deps_x_stand_alone_websharks_core_v000000_dev'))
 	{
 		/**
-		 * @var string Plugin name.
+		 * @var string Plugin name. Set by WebSharks™ Core build routines.
 		 */
-		define('___STAND_ALONE__PLUGIN_NAME', 'WebSharks™ Core');
+		define('___STAND_ALONE__PLUGIN_NAME', 'WebSharks™ Core'); #!stand-alone-plugin-name!#
 		/**
 		 * @var string Plugin directory names (comma-delimited).
 		 */
-		define('___STAND_ALONE__PLUGIN_DIR_NAMES', 'websharks-core-v000000-dev');
+		define('___STAND_ALONE__PLUGIN_DIR_NAMES', 'websharks-core-v000000-dev'); #!stand-alone-plugin-dir-names!#
 		/**
 		 * @var deps_x_websharks_core_v000000_dev $deps_x_stand_alone_websharks_core_v000000_dev
 		 */
-		/** @noinspection PhpUndefinedClassInspection ~ See: ``class_exists()`` check above please :-) */
+		/** @noinspection PhpUndefinedClassInspection ~ See ``class_exists()`` check :-) */
 		$deps_x_stand_alone_websharks_core_v000000_dev = new deps_x_stand_alone_websharks_core_v000000_dev();
 		/**
 		 * Attempt to load WordPress®.
 		 */
-		if(!defined('WPINC')) // Try to load the closest WordPress® installation.
-			if(($___WP_LOAD = $deps_x_stand_alone_websharks_core_v000000_dev->get_wp_load()))
-				include_once $___WP_LOAD;
+		if(!defined('WPINC') && $deps_x_stand_alone_websharks_core_v000000_dev->wp_load())
+			include_once $deps_x_stand_alone_websharks_core_v000000_dev->wp_load();
 		/**
 		 * Run automatic ``check()``.
 		 */
@@ -61,9 +58,11 @@ else if(!defined('WPINC')) // Require WordPress®.
  * @package WebSharks\Core
  * @since 120318
  */
-class deps_x_websharks_core_v000000_dev // !#stand-alone#!
+class deps_x_websharks_core_v000000_dev #!stand-alone!#
 {
 	/**
+	 * A static cache (for all instances).
+	 *
 	 * @var array A static cache (for all instances).
 	 */
 	public static $static = array();
@@ -212,8 +211,8 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 					$php_version = PHP_VERSION; // Installed PHP version.
 					global $wp_version; // Global made available by WordPress®.
 
-					$php_version_required = '5.3'; // !#requires-php-version#! Required PHP version.
-					$wp_version_required  = '3.5'; // !#requires-wp-version#! Required WordPress® version.
+					$php_version_required = '5.3.1'; #!php-version-required!# Required PHP version.
+					$wp_version_required  = '3.5'; #!wp-version-required!# Required WordPress® version.
 
 					// Look for possible filtration against this routine.
 
@@ -2057,13 +2056,9 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					return $this->check; // Array with report details, or TRUE (nothing to report).
 				}
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
@@ -2115,13 +2110,9 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 
 					return md5(implode('', $checksums));
 				}
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
@@ -2188,13 +2179,9 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 							);
 					}
 				}
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
@@ -2273,13 +2260,9 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 						' Please set permissions on this file to <code>777</code>, and try again.'
 					);
 				}
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
@@ -2288,11 +2271,15 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 	 *
 	 * @return null Nothing. Simply displays the report, and then exits script execution.
 	 *
+	 * @throws exception If called upon in an invalid/unexpected scenario.
+	 *
 	 * @stand-alone-assertion Tested via `[...-]stand-alone.php`.
 	 */
 	public function display_stand_alone_report()
 		{
-			if(basename(__FILE__) !== 'deps-x.php' && __CLASS__ === 'deps_x_stand_alone_websharks_core_v000000_dev' && is_array($this->check))
+			if(basename(__FILE__) !== 'deps-x.php' // Sanity check.
+			   && __CLASS__ === 'deps_x_stand_alone_websharks_core_v000000_dev' && is_array($this->check)
+			) // If this is NOT the case; we throw an exception down below.
 				{
 					if(ob_get_level()) // Cleans output buffers.
 						while(ob_get_level()) ob_end_clean();
@@ -2518,6 +2505,10 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 					echo '</body>';
 					exit('</html>');
 				}
+			else throw new exception( // What the heck!?
+				self::i18n('Unknown error. Invalid/unexpected scenario.').
+				self::i18n(' Cannot stand-alone report data here. This method should NOT have been called upon.')
+			);
 		}
 
 	/**
@@ -2528,7 +2519,9 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 	 *
 	 * @return null Nothing.
 	 *
-	 * @wp-assertion This is tested via WordPress.
+	 * @throws exception If called upon in an invalid/unexpected scenario.
+	 *
+	 * @wp-assertion This is tested via WordPress®.
 	 */
 	public function maybe_display_wp_admin_notices()
 		{
@@ -2695,6 +2688,11 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 					echo '</div>';
 					echo '</div>';
 				}
+			else if(!defined('WPINC'))
+				throw new exception( // What the heck!?
+					self::i18n('Unknown error. Invalid/unexpected scenario.').
+					self::i18n(' Cannot display notices. This method should NOT have been called upon.')
+				);
 		}
 
 	/**
@@ -2729,13 +2727,9 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 						}
 					return self::$static['is_function_possible'][$function];
 				}
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
@@ -2818,19 +2812,18 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 						}
 					return (float)0; // Default return value.
 				}
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
 	 * Normalizes directory separators in directory/file paths.
 	 *
-	 * @param string $path Directory or file path.
+	 * @param string  $path Directory or file path.
+	 *
+	 * @param boolean $allow_trailing_slash Defaults to FALSE.
+	 *    If TRUE; and ``$path`` contains a trailing slash; we'll leave it there.
 	 *
 	 * @return string Directory or file path, after having been normalized by this routine.
 	 *
@@ -2839,19 +2832,23 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 	 * @assert ('\\path/to\\something\\') === '/path/to/something'
 	 * @assert ('\\path//to\\some\\file.php') === '/path/to/some/file.php'
 	 */
-	public function n_dir_seps($path)
+	public function n_dir_seps($path, $allow_trailing_slash = FALSE)
 		{
-			if(is_string($path)) // Require input string argument value.
+			if(is_string($path) && is_bool($allow_trailing_slash))
 				{
-					return rtrim(preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $path)), '/');
+					preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
+					$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
+
+					$path = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $path));
+					$path = ($allow_trailing_slash) ? $path : rtrim($path, '/');
+
+					$path = (!empty($_path['scheme'])) ? strtolower($_path['scheme']).$path : $path; // Lowercase.
+
+					return $path; // Normalized now.
 				}
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
@@ -2879,12 +2876,25 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 	 *
 	 * @assert () === dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))).'/wp-load.php'
 	 */
-	public function get_wp_load($check_abspath = TRUE, $fallback_on_dev_dir = NULL)
+	public function wp_load($check_abspath = TRUE, $fallback_on_dev_dir = NULL)
 		{
-			if(is_bool($check_abspath) && (is_null($fallback_on_dev_dir) || is_bool($fallback_on_dev_dir) || is_string($fallback_on_dev_dir)))
+			if(is_bool($check_abspath) && (is_null($fallback_on_dev_dir)
+			                               || is_bool($fallback_on_dev_dir) || is_string($fallback_on_dev_dir))
+			) // Results from this function are cached statically with these vars.
 				{
+					if(!isset($fallback_on_dev_dir))
+						$fallback_on_dev_dir = defined('___DEV_KEY_OK');
+
+					$cache_entry = '_'.(integer)$check_abspath;
+					if($fallback_on_dev_dir && is_string($fallback_on_dev_dir))
+						$cache_entry .= $fallback_on_dev_dir;
+					else $cache_entry .= (integer)$fallback_on_dev_dir;
+
+					if(isset(self::$static['wp_load'][$cache_entry]))
+						return self::$static['wp_load'][$cache_entry];
+
 					if($check_abspath && defined('ABSPATH') && file_exists(ABSPATH.'wp-load.php'))
-						return ABSPATH.'wp-load.php';
+						return (self::$static['wp_load'][$cache_entry] = ABSPATH.'wp-load.php');
 
 					for($_i = 0, $_dirname = dirname(__FILE__); $_i <= 100; $_i++)
 						{
@@ -2892,33 +2902,26 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 								$_dir = dirname($_dir);
 
 							if(file_exists($_dir.'/wp-load.php'))
-								return $_dir.'/wp-load.php';
+								return (self::$static['wp_load'][$cache_entry] = $_dir.'/wp-load.php');
 
 							if(!$_dir || $_dir === '.') break;
 						}
 					unset($_i, $__i, $_dirname, $_dir);
 
-					if(!isset($fallback_on_dev_dir) && defined('___DEV_KEY_OK'))
-						$fallback_on_dev_dir = TRUE;
-
-					if($fallback_on_dev_dir) // Can we fallback in this case?
+					if($fallback_on_dev_dir) // Fallback on development copy?
 						{
 							if(is_string($fallback_on_dev_dir))
 								$dev_dir = $fallback_on_dev_dir;
 							else $dev_dir = 'E:/EasyPHP/wordpress';
 
 							if(file_exists($dev_dir.'/wp-load.php'))
-								return $dev_dir.'/wp-load.php';
+								return (self::$static['wp_load'][$cache_entry] = $dev_dir.'/wp-load.php');
 						}
-					return ''; // Default return value (empty string).
+					return (self::$static['wp_load'][$cache_entry] = '');
 				}
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
@@ -2935,13 +2938,9 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 			if(is_string($value))
 				return md5($this->security_salt().$value);
 
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
@@ -2960,13 +2959,9 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 			if(is_string($value) && is_string($checksum))
 				return ($checksum === $this->generate_checksum($value));
 
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
@@ -2991,9 +2986,7 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 			if(!empty($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST']))
 				return md5($_SERVER['HTTP_HOST']);
 
-			throw new exception(
-				self::i18n('Unable to generate a security salt.')
-			);
+			throw new exception(self::i18n('Unable to generate a security salt.'));
 		}
 
 	/**
@@ -3022,13 +3015,9 @@ class deps_x_websharks_core_v000000_dev // !#stand-alone#!
 						}
 					return FALSE; // Default return value.
 				}
-			else // Throw exception (invalid arguments).
-				{
-					$args = func_get_args();
-					throw new exception(
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r($args, TRUE))
-					);
-				}
+			else throw new exception( // Detected invalid arguments.
+				sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
 		}
 
 	/**
