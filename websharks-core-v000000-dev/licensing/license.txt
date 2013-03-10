@@ -1,0 +1,5 @@
+Copyright: © 2012 WebSharks, Inc. (coded in the USA)
+<mailto:support@websharks-inc.com> <http://www.websharks-inc.com>
+
+Released under the terms of the GNU General Public License.
+<http://www.gnu.org/licenses/> - attached as [gpl.txt].

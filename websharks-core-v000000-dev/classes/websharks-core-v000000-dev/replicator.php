@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSharks™ Core Framework Replicator.
+ * WebSharks™ Core Replicator.
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -15,7 +15,7 @@ namespace websharks_core_v000000_dev
 			exit('Do NOT access this file directly: '.basename(__FILE__));
 
 		/**
-		 * WebSharks™ Core Framework Replicator.
+		 * WebSharks™ Core Replicator.
 		 *
 		 * @package WebSharks\Core
 		 * @since 120318

@@ -224,13 +224,13 @@ namespace websharks_core_v000000_dev
 						}
 					if($this->ID && (!$this->wp || !$this->wp->user_email || !$this->wp->user_login || !$this->wp->user_nicename))
 						{
-							$this->©error( // For diagnostics.
+							$this->©error( // For diagnostics reports.
 								__METHOD__, array('args' => $this->args, 'ID' => $this->ID, 'wp' => $this->wp),
-								sprintf($this->i18n('User ID: `%1$s`, is missing vital components.'), $this->ID).
+								sprintf($this->i18n('User ID: `%1$s` is missing vital components.'), $this->ID).
 								$this->i18n(' Possible database corruption.')
 							);
 							$this->ID = 0; // User is corrupt in some way.
-							$this->wp = NULL; // Force a NULL value.
+							$this->wp = NULL; // Force a NULL value in this case.
 						}
 					$this->populate(); // Populate (if possible).
 				}
@@ -303,8 +303,7 @@ namespace websharks_core_v000000_dev
 							if($this->has_id() && $this->ip && $this->ip !== $this->get_meta('ip'))
 								$this->update_meta('ip', $this->ip);
 						}
-					else if($this->has_id()) // Has a user ID?
-						$this->ip = (string)$this->get_meta('ip');
+					else if($this->has_id()) $this->ip = (string)$this->get_meta('ip');
 
 					// Standardize these additional properties (for users w/ an ID).
 

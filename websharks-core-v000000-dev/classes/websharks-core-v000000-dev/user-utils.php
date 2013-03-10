@@ -474,7 +474,7 @@ namespace websharks_core_v000000_dev
 							$this->translate('Missing email address (empty).')
 						);
 
-					else if(is_multisite()) // A multisite network?
+					else if(is_multisite()) // A network?
 						{
 							if(!preg_match($this->regex_valid_email, $email)
 							   || !is_email($email)
@@ -504,7 +504,7 @@ namespace websharks_core_v000000_dev
 									$this->translate(' We are having problems with this domain blocking some of our email.'.
 									                 ' Please use another email service provider.')
 								);
-							else if(strcasecmp($email, $existing_email) !== 0) // Check the WordPress® `signups` table too.
+							else if(strcasecmp($email, $existing_email) !== 0) // Check the WordPress® `signups` table.
 								{
 									$query = // Checks the WordPress® `signups` table.
 										"SELECT".
@@ -539,7 +539,7 @@ namespace websharks_core_v000000_dev
 										}
 								}
 						}
-					else // This is a standard WordPress® installation (e.g. it is NOT a multisite network).
+					else // This is a standard WordPress® installation.
 						{
 							if(!preg_match($this->regex_valid_email, $email)
 							   || !is_email($email)
@@ -1100,14 +1100,13 @@ namespace websharks_core_v000000_dev
 								$user->update_option('on_activation_send_welcome', TRUE);
 							else $user->delete_option('on_activation_send_welcome');
 
-							$this->©mail->send(
-								array(
-								     'from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
-								     'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
-								     'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->translate('Activation Required (For: %1$s)'), get_bloginfo('name'))),
-								     'recipients' => $template->config->recipients,
-								     'message'    => $template->content
-								));
+							$this->©mail->send(array(
+							                        'from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
+							                        'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
+							                        'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->translate('Activation Required (For: %1$s)'), get_bloginfo('name'))),
+							                        'recipients' => $template->config->recipients,
+							                        'message'    => $template->content
+							                   ));
 						}
 				}
 
@@ -1140,14 +1139,13 @@ namespace websharks_core_v000000_dev
 						$template->config->subject, $template->config->recipients, $template->content)
 					) // OK. We've got everything we need to send this email message.
 						{
-							$this->©mail->send(
-								array(
-								     'from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
-								     'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
-								     'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->translate('Login Details (Welcome To: %1$s)'), get_bloginfo('name'))),
-								     'recipients' => $template->config->recipients,
-								     'message'    => $template->content
-								));
+							$this->©mail->send(array(
+							                        'from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
+							                        'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
+							                        'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->translate('Login Details (Welcome To: %1$s)'), get_bloginfo('name'))),
+							                        'recipients' => $template->config->recipients,
+							                        'message'    => $template->content
+							                   ));
 						}
 				}
 
@@ -1206,8 +1204,7 @@ namespace websharks_core_v000000_dev
 								$wp_signon->get_error_message() // Message from ``wp_signon()``.
 							);
 						}
-
-					if(!($user = $this->get_by('id', $wp_signon->ID)))
+					else if(!($user = $this->get_by('id', $wp_signon->ID)))
 						throw $this->©exception(
 							__METHOD__.'#unable_to_acquire_user', get_defined_vars(),
 							sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $wp_signon->ID)
@@ -1374,7 +1371,7 @@ namespace websharks_core_v000000_dev
 
 							return array('ID' => $user->ID, 'user' => $user, 'activation_key' => $user->activation_key);
 						}
-					else return $this->©error(
+					return $this->©error(
 						__METHOD__.'#username_email_not_found', get_defined_vars(),
 						$this->translate('Username (or email address) is NOT associated with a user of this site.')
 					);
@@ -1459,14 +1456,13 @@ namespace websharks_core_v000000_dev
 						$template->config->subject, $template->config->recipients, $template->content)
 					) // OK. We've got everything we need to send this email message.
 						{
-							$this->©mail->send(
-								array(
-								     'from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
-								     'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
-								     'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->translate('Password Reset (%1$s)'), get_bloginfo('name'))),
-								     'recipients' => $template->config->recipients,
-								     'message'    => $template->content
-								));
+							$this->©mail->send(array(
+							                        'from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
+							                        'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
+							                        'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->translate('Password Reset (%1$s)'), get_bloginfo('name'))),
+							                        'recipients' => $template->config->recipients,
+							                        'message'    => $template->content
+							                   ));
 						}
 				}
 
@@ -1503,7 +1499,7 @@ namespace websharks_core_v000000_dev
 
 							return array('ID' => $user->ID, 'user' => $user, 'activation_key' => $activation_key, 'password' => $password);
 						}
-					else return $this->©error(
+					return $this->©error(
 						__METHOD__.'#invalid_activation_key', get_defined_vars(),
 						$this->translate('Password reset failure. Invalid (or expired) activation key.').
 						sprintf($this->translate(' Got: `%1$s`.'), $activation_key)
