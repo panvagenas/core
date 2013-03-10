@@ -1,0 +1,24 @@
+{
+	"name"       : "websharks/core",
+	"type"       : "wordpress-plugin",
+	"require"    : {
+		"php"                : ">=5.3.1",
+		"composer/installers": "~1.0"
+	},
+	"description": "WebSharks™ Core framework for WordPress® plugin development.",
+	"keywords"   : ["websharks", "websharks core", "wordpress", "wordpress plugins"],
+	"homepage"   : "http://github.com/WebSharks/Core",
+	"license"    : "GPL-2.0+",
+	"authors"    : [
+		{
+			"role"    : "Company",
+			"name"    : "WebSharks™",
+			"email"   : "websharks@websharks-inc.com",
+			"homepage": "http://www.websharks-inc.com"
+		}
+	],
+	"support"    : {
+		"email" : "websharks@websharks-inc.com",
+		"source": "http://github.com/WebSharks/Core"
+	}
+}

@@ -284,7 +284,7 @@
 
 /* Overlays */
 .websharks-core.ui.ui-theme-eggplant .ui-widget-overlay { background: #eeeeee url(images/ui-bg_flat_0_eeeeee_40x100.png) 50% 50% repeat-x; opacity: .80;filter:Alpha(Opacity=80); }
-.websharks-core.ui.ui-theme-eggplant .ui-widget-shadow { margin: -4px 0 0 -4px; padding: 4px; background: #aaaaaa url(images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .60;filter:Alpha(Opacity=60); -moz-border-radius: 0px; -khtml-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; }/*!
+.websharks-core.ui.ui-theme-eggplant .ui-widget-shadow { margin: -4px 0 0 -4px; padding: 4px; background: #aaaaaa url(images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .60;filter:Alpha(Opacity=60); -moz-border-radius: 0; -khtml-border-radius: 0; -webkit-border-radius: 0; border-radius: 0; }/*!
  * jQuery UI Resizable 1.8.20
  *
  * Copyright 2012, AUTHORS.txt (http://jqueryui.com/about)
@@ -526,7 +526,7 @@
 .websharks-core.ui.ui-theme-eggplant .ui-datepicker-multi .ui-datepicker-group-last .ui-datepicker-header { border-left-width:0; }
 .websharks-core.ui.ui-theme-eggplant .ui-datepicker-multi .ui-datepicker-group-middle .ui-datepicker-header { border-left-width:0; }
 .websharks-core.ui.ui-theme-eggplant .ui-datepicker-multi .ui-datepicker-buttonpane { clear:left; }
-.websharks-core.ui.ui-theme-eggplant .ui-datepicker-row-break { clear:both; width:100%; font-size:0em; }
+.websharks-core.ui.ui-theme-eggplant .ui-datepicker-row-break { clear:both; width:100%; font-size:0; }
 
 /* RTL support */
 .websharks-core.ui.ui-theme-eggplant .ui-datepicker-rtl { direction: rtl; }

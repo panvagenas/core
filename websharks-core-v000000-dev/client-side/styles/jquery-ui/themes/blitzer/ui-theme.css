@@ -526,7 +526,7 @@
 .websharks-core.ui.ui-theme-blitzer .ui-datepicker-multi .ui-datepicker-group-last .ui-datepicker-header { border-left-width:0; }
 .websharks-core.ui.ui-theme-blitzer .ui-datepicker-multi .ui-datepicker-group-middle .ui-datepicker-header { border-left-width:0; }
 .websharks-core.ui.ui-theme-blitzer .ui-datepicker-multi .ui-datepicker-buttonpane { clear:left; }
-.websharks-core.ui.ui-theme-blitzer .ui-datepicker-row-break { clear:both; width:100%; font-size:0em; }
+.websharks-core.ui.ui-theme-blitzer .ui-datepicker-row-break { clear:both; width:100%; font-size:0; }
 
 /* RTL support */
 .websharks-core.ui.ui-theme-blitzer .ui-datepicker-rtl { direction: rtl; }
