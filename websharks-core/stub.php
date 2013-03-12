@@ -58,12 +58,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(!self::is_phar())
 						return FALSE;
 
-					$file      = self::n_dir_seps((string)$file);
-					$phar_file = self::n_dir_seps(__FILE__);
+					$file = self::n_dir_seps((string)$file);
+					$phar = 'phar://'.self::n_dir_seps(__FILE__);
 
-					echo $file.'<br />'.$phar_file;
-
-					return ($file === $phar_file.'/stub.php');
+					return ($file === $phar.'/stub.php');
 				}
 
 			/**
