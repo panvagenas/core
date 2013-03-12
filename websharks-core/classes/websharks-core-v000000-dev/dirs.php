@@ -1223,20 +1223,24 @@ namespace websharks_core_v000000_dev
 			 *    By default, we use the WebSharks™ Core stub. However, this can be set to a specific stub file;
 			 *    for which the contents will be read; and set as the stub for the resulting PHAR file.
 			 *
-			 * @param boolean|string $phpify Optional. Defaults to a TRUE value (highly recommended).
-			 *    By default, we rename the PHAR file w/ a PHP extension; making it executable on most hosting platforms.
+			 * @param boolean        $strip_ws Optional. Defaults to a TRUE value.
+			 *    If this is TRUE; any PHP files in the archive will be further reduced in filesize by this routine.
+			 *    This is made possible by the ``php_strip_whitespace()`` function.
+			 *
+			 * @param boolean        $compress Optional. Defaults to a TRUE value.
+			 *    If this is TRUE; any textual files in the archive will be further reduced in filesize by this routine.
+			 *    GZIP compression will be applied intuitively (e.g. to textual/GZIP-compatible files only).
+			 *    This is made possible by the ZLIB extension (e.g. GZIP applied to each file inside the archive).
+			 *
+			 * @param boolean|string $phpify Optional. Defaults to a FALSE value.
+			 *    If TRUE, we will rename the PHAR file w/ a PHP extension; making it executable on more hosting platforms.
 			 *    If this is set to FALSE; the resulting PHAR file will NOT be renamed; and it will remain in the ``$to`` location as-is.
 			 *    This can be passed as TRUE|FALSE. Or, if the intention is TRUE; and a string is supplied;
 			 *    the file will be renamed with the string extension provided by ``$phpify``.
 			 *
-			 * @param boolean        $strip_ws Optional. Defaults to a value of TRUE (recommended).
-			 *    If this is TRUE; any PHP files in the archive will be further reduced in filesize by this routine.
-			 *    This is made possible by the ``php_strip_whitespace()`` function.
-			 *
-			 * @param boolean        $compress Optional. Defaults to a value of TRUE (highly recommended).
-			 *    If this is TRUE; any textual files in the archive will be further reduced in filesize by this routine.
-			 *    GZIP compression will be applied intuitively (e.g. to textual/GZIP-compatible files only).
-			 *    This is made possible by the ZLIB extension (e.g. GZIP applied to each file inside the archive).
+			 *    It's important to NOTE that renaming a PHP Archive (which is always a binary file); with a PHP extension
+			 *    can have negative repercussions. The file might be treated as purely textual; instead of treating it as a binary.
+			 *    For instance, FTP uploads may result in corruption of a PHAR file with a `.php` extension.
 			 *
 			 * @return string The new PHAR file path (either a `.phar` file, or a `.phar.php` file; depending on ``$phpify`` value).
 			 *    See: ``$phpify`` parameter — which directly impacts the return value of this routine.
@@ -1273,9 +1277,9 @@ namespace websharks_core_v000000_dev
 			 *    This allows a stub file to serve multiple purposes (perhaps); and yet still be clearly marked as a PHAR stub when used here.
 			 *    See the ``$stub`` parameter for further details about PHAR stub files.
 			 */
-			public function phar_to($dir, $to, $stub = self::core, $phpify = TRUE, $strip_ws = TRUE, $compress = TRUE)
+			public function phar_to($dir, $to, $stub = self::core, $strip_ws = TRUE, $compress = TRUE, $phpify = FALSE)
 				{
-					$this->check_arg_types('string:!empty', 'string:!empty', 'string:!empty', array('string', 'boolean'), 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty', 'string:!empty', 'boolean', 'boolean', array('string', 'boolean'), func_get_args());
 
 					$dir = $this->n_seps($dir);
 					$to  = $this->n_seps($to);

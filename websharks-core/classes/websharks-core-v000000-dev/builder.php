@@ -1045,14 +1045,14 @@ namespace websharks_core_v000000_dev
 								$this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 							);
 
-							$this->©file->unlink($_this_core_phar_stub, $_this_core_phar_stub.'.php');
-							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar_stub, $_this_core_distro_temp_dir_stub);
+							$this->©file->unlink($_this_core_phar_stub); // In case it already exists.
+							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar_stub, $_this_core_distro_temp_dir_stub, FALSE, TRUE);
 							$this->©dir->empty_and_remove($_this_core_distro_temp_dir);
 
-							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar_stub.'.php'), dirname($this->core_dir));
+							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar_stub), dirname($this->core_dir));
 
 							$successes->add(__METHOD__.'#'.$new_slug.'core_phar_stub_php_built_for_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
-							                sprintf($this->i18n('A temporary distro copy of the WebSharks™ Core has been compressed into a single PHP Archive file here: `%1$s`.'), $_this_core_phar_stub.'.php').
+							                sprintf($this->i18n('A temporary distro copy of the WebSharks™ Core has been compressed into a single PHP Archive file here: `%1$s`.'), $_this_core_phar_stub).
 							                $this->i18n(' This file has been added to the list of GIT-tracked files in the WebSharks™ Core repo.').
 							                $this->i18n(' The temporary distro copy of the WebSharks™ Core was deleted after processing.')
 							);

@@ -90,12 +90,22 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(isset(self::$static['is_autoload']))
 						return self::$static['is_autoload'];
 
-					$autoload = 'autoload_'.__CLASS__; // Global autoload flag.
+					$autoload = self::autoload_var(); // Global autoload flag.
 
 					if(!self::is_webphar() && (!isset($GLOBALS[$autoload]) || $GLOBALS[$autoload]))
 						return (self::$static['is_autoload'] = TRUE);
 
 					return (self::$static['is_autoload'] = FALSE);
+				}
+
+			/**
+			 * Global autoload var for WebSharks™ Core.
+			 *
+			 * @return string Autoload var for WebSharks™ Core.
+			 */
+			public static function autoload_var()
+				{
+					return 'autoload_'.__CLASS__;
 				}
 
 			/**
@@ -500,7 +510,7 @@ if(websharks_core_v000000_dev::is_autoload())
  */
 if(defined('WPINC')) // We can stop here.
 	{
-		unset($GLOBALS['autoload_websharks_core_v000000_dev']);
+		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 
 		return; // We can stop here.
 	}
