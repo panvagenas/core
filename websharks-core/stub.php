@@ -39,7 +39,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 				{
 					$is_phar = self::is_phar_var();
 
-					return (!empty($GLOBALS[$is_phar]) && $GLOBALS[$is_phar] === __FILE__);
+					if(!empty($GLOBALS[$is_phar]))
+						if($GLOBALS[$is_phar] === __FILE__)
+							return TRUE;
+
+					return FALSE;
 				}
 
 			/**
@@ -54,7 +58,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(!self::is_phar())
 						return FALSE;
 
-					return ($file === __FILE__.'/stub.php');
+					$file      = self::n_dir_seps((string)$file);
+					$phar_file = self::n_dir_seps(__FILE__);
+
+					return ($file === $phar_file.'/stub.php');
 				}
 
 			/**
@@ -134,9 +141,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static function deps()
 				{
 					if(self::is_phar() && self::can_phar())
-						if(is_file($_phar_deps = 'phar://'.__FILE__.'/deps.php'))
-							return $_phar_deps;
-
+						{
+							$phar = 'phar://'.self::n_dir_seps(__FILE__);
+							if(is_file($_phar_deps = $phar.'/deps.php'))
+								return $_phar_deps;
+						}
 					if(($_deps = self::locate('/websharks-core/deps.php')))
 						return $_deps; // Official location on live sites.
 
@@ -165,9 +174,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static function framework()
 				{
 					if(self::is_phar() && self::can_phar())
-						if(is_file($_phar_framework = 'phar://'.__FILE__.'/framework.php'))
-							return $_phar_framework;
-
+						{
+							$phar = 'phar://'.self::n_dir_seps(__FILE__);
+							if(is_file($_phar_framework = $phar.'/framework.php'))
+								return $_phar_framework;
+						}
 					if(($_framework = self::locate('/websharks-core/framework.php')))
 						return $_framework; // Official location on live sites.
 
@@ -229,7 +240,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(strpos($internal_uri, '..') !== FALSE)
 						return FALSE; // 403 (forbidden).
 
-					$phar = 'phar://'.__FILE__; // Current PHAR file.
+					// Current `phar://` file w/stream prefix.
+
+					$phar = 'phar://'.self::n_dir_seps(__FILE__);
 
 					// Handle directory indexes gracefully.
 
@@ -349,7 +362,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						return self::$static['wp_load'];
 
 					if($check_abspath && defined('ABSPATH') && is_file($_wp_load = ABSPATH.'wp-load.php'))
-						return (self::$static['wp_load'] = $_wp_load);
+						return (self::$static['wp_load'] = self::n_dir_seps($_wp_load));
 
 					if(($_wp_load = self::locate('/wp-load.php')))
 						return (self::$static['wp_load'] = $_wp_load);
