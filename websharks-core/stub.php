@@ -517,6 +517,54 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			/**
+			 * MIME type mapping for webPhar.
+			 *
+			 * @var array MIME type mapping for webPhar.
+			 */
+			public static $webPhar_mimes = array(
+				'phps'  => Phar::PHPS,
+				'c'     => 'text/plain',
+				'cc'    => 'text/plain',
+				'cpp'   => 'text/plain',
+				'c++'   => 'text/plain',
+				'dtd'   => 'text/plain',
+				'h'     => 'text/plain',
+				'log'   => 'text/plain',
+				'rng'   => 'text/plain',
+				'txt'   => 'text/plain',
+				'xsd'   => 'text/plain',
+				'php'   => Phar::PHP,
+				'inc'   => Phar::PHP,
+				'avi'   => 'video/avi',
+				'bmp'   => 'image/bmp',
+				'css'   => 'text/css',
+				'gif'   => 'image/gif',
+				'htm'   => 'text/html',
+				'html'  => 'text/html',
+				'htmls' => 'text/html',
+				'ico'   => 'image/x-ico',
+				'jpe'   => 'image/jpeg',
+				'jpg'   => 'image/jpeg',
+				'jpeg'  => 'image/jpeg',
+				'js'    => Phar::PHP,
+				'midi'  => 'audio/midi',
+				'mid'   => 'audio/midi',
+				'mod'   => 'audio/mod',
+				'mov'   => 'movie/quicktime',
+				'mp3'   => 'audio/mp3',
+				'mpg'   => 'video/mpeg',
+				'mpeg'  => 'video/mpeg',
+				'pdf'   => 'application/pdf',
+				'png'   => 'image/png',
+				'swf'   => 'application/shockwave-flash',
+				'tif'   => 'image/tiff',
+				'tiff'  => 'image/tiff',
+				'wav'   => 'audio/wav',
+				'xbm'   => 'image/xbm',
+				'xml'   => 'text/xml',
+			);
+
+			/**
 			 * Regarding a lack of support for Php Archives.
 			 *
 			 * WebSharks™ temporary WP deps class (base64 encoded).
@@ -540,7 +588,8 @@ if(websharks_core_v000000_dev::is_webphar())
 		if(websharks_core_v000000_dev::is_phar_stub(__FILE__))
 			exit('Do NOT access this file directly: '.basename(__FILE__));
 
-		Phar::webPhar('', '', '', array(), 'websharks_core_v000000_dev::webPhar_rewriter');
+		Phar::webPhar('', '', '', websharks_core_v000000_dev::$webPhar_mimes,
+		              'websharks_core_v000000_dev::webPhar_rewriter');
 
 		return; // We can stop here.
 	}
