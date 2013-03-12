@@ -484,6 +484,90 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Search/replace data in a file.
+			 *
+			 * @param string  $pattern A regular expression to search for.
+			 *    IMPORTANT: Search/replace is always performed ONE line at a time.
+			 *    This means a regex pattern which includes `^$` will match against a line;
+			 *    even without the `m` (multiline) modifier having been applied to the pattern.
+			 *
+			 * @param string  $replacement A regular expression replacement string.
+			 *    Remember to use {@link \websharks_core_v000000_dev\strings\esc_refs()}
+			 *
+			 * @param string  $file The file to search/replace in.
+			 *
+			 * @return integer Total number of replacements performed. This may return `0` in some cases.
+			 *    An exception is thrown otherwise; e.g. we either succeed or fail with an exception.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$pattern`` is empty.
+			 * @throws exception If ``$file`` is NOT actually a file.
+			 */
+			public function preg_replace($pattern, $replacement, $file)
+				{
+					$this->check_arg_types('string:!empty', 'string', 'string:!empty', func_get_args());
+
+					$file      = $this->©dir->n_seps($file);
+					$temp_file = $this->©dir->get_sys_temp_dir(TRUE).'/'.
+					             $this->©string->unique_id().'-'.basename($file);
+
+					if(!is_file($file))
+						throw $this->©exception(
+							__METHOD__.'#nonexistent_source', get_defined_vars(),
+							sprintf($this->i18n('Unable to change EOLs. Nonexistent source: `%1$s`.'), $file)
+						);
+					else if(!is_readable($file))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							sprintf($this->i18n('Unable to change EOLs in this file: `%1$s`.'), $file).
+							$this->i18n(' Possible permission issues. This file is not readable.')
+						);
+					else if(!is_writable($file))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							sprintf($this->i18n('Unable to change EOLs in this file: `%1$s`.'), $file).
+							$this->i18n(' Possible permission issues. This file is not writable.')
+						);
+
+					if(!is_resource($_file_resource = fopen($file, 'rb')))
+						throw $this->©exception(
+							__METHOD__.'#file_resource', get_defined_vars(),
+							sprintf($this->i18n('Unable to open file resource: `%1$s`.'), $file)
+						);
+					else if(!is_resource($_temp_file_resource = fopen($temp_file, 'ab')))
+						throw $this->©exception(
+							__METHOD__.'#temp_file_resource', get_defined_vars(),
+							sprintf($this->i18n('Unable to open temp file resource: `%1$s`.'), $temp_file)
+						);
+
+					$replacements = 0; // Initialize counter.
+
+					while(!feof($_file_resource))
+						{
+							$_line = fgets($_file_resource); // One line at a time.
+							$_line = preg_replace($pattern, $replacement, $_line, -1, $_replacements);
+							$replacements += $_replacements;
+
+							if(!fwrite($_temp_file_resource, $_line))
+								throw $this->©exception(
+									__METHOD__.'#temp_write_failure', get_defined_vars(),
+									sprintf($this->i18n('Failed to write a chunk of bytes to: `%1$s`.'), $temp_file)
+								);
+						}
+					fclose($_file_resource);
+					fclose($_temp_file_resource); // Housekeeping.
+					unset($_file_resource, $_temp_file_resource, $_line, $_replacements);
+
+					$this->rename_to($temp_file, $file.'~temp'); // Let's make sure this works.
+					// If this throws an exception; the original file remains intact (e.g. no data loss).
+
+					$this->unlink($file); // Delete the original file now (we will replace it here).
+					$this->rename_to($file.'~temp', $file); // Temp file takes its place.
+
+					return $replacements; // Total replacements.
+				}
+
+			/**
 			 * Locates a template file (in one of many possible locations).
 			 *
 			 * @param string $file Template file name (relative path).

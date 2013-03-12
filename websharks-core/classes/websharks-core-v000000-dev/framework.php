@@ -700,6 +700,20 @@ namespace websharks_core_v000000_dev
 					const direct_call = '___direct_call';
 
 					/**
+					 * Represents ``preg_replace()`` type.
+					 *
+					 * @var string Used by some class methods.
+					 */
+					const preg_replace_type = '___preg_replace_type';
+
+					/**
+					 * Represents ``str_replace()`` type.
+					 *
+					 * @var string Used by some class methods.
+					 */
+					const str_replace_type = '___str_replace_type';
+
+					/**
 					 * Represents PHP regex flavor.
 					 *
 					 * @var string Used by some class methods.

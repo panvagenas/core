@@ -460,7 +460,7 @@ namespace websharks_core_v000000_dev
 			 *    If TRUE, we'll fall back on the WordPress® ``get_temp_dir()`` function. A fallback may occur when/if we're unable
 			 *    to find the system's temporary directory. Or, if the system's temporary directory is NOT readable/writable.
 			 *
-			 * @return string Full path to a readable/writable temp directory, else an empty string on failure.
+			 * @return string Full path to a readable/writable temp directory, else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If unable to find a readable/writable directory, for any reason.
@@ -501,7 +501,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Get temporary directory for WordPress®.
 			 *
-			 * @return string Full path to a readable/writable temp directory, else an empty string on failure.
+			 * @return string Full path to a readable/writable temp directory; else an exception is thrown.
 			 *
 			 * @throws exception If unable to find a readable/writable directory, for any reason.
 			 *
