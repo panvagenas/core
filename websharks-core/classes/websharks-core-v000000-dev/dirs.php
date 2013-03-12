@@ -1376,8 +1376,8 @@ namespace websharks_core_v000000_dev
 							unset($_dir_file, $_path, $_phar_path, $_extension);
 
 							$_phar->buildFromDirectory($_temp_dir, '/\.(?:'.implode('|', $_compressable_extensions).')$/i');
-							if($compress && $_phar->count()) // Compressing files?
-								$_phar->compressFiles(\Phar::GZ);
+							#if($compress && $_phar->count()) // Compressing files?
+							#	$_phar->compressFiles(\Phar::GZ);
 
 							foreach($_temp_dir_iterator as $_dir_file)
 								{
