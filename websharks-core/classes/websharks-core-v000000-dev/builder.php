@@ -1050,7 +1050,7 @@ namespace websharks_core_v000000_dev
 							);
 
 							$this->©file->unlink($_this_core_phar_stub); // In case it already exists.
-							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar_stub, $_this_core_distro_temp_dir_stub);
+							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar_stub, $_this_core_distro_temp_dir_stub, TRUE, FALSE);
 							$this->©dir->empty_and_remove($_this_core_distro_temp_dir);
 
 							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar_stub), dirname($this->core_dir));

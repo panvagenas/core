@@ -1360,7 +1360,6 @@ namespace websharks_core_v000000_dev
 							$_compressable_extensions = array('txt', 'html', 'htmls',
 							                                  'php', 'phps', 'inc', 'css', 'js',
 							                                  'ini', 'csv', 'sql', 'json', 'xml', 'svg');
-							$_compressable_extensions = array('php');
 							$_temp_dir                = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
