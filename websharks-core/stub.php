@@ -74,6 +74,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 						return self::$static['is_webphar'];
 
 					if(!defined('WPINC') && self::is_phar()
+					   && basename(__FILE__) !== 'stub.php' // Exclude `stub.php`.
+					   // ↑ Exclude `stub.php` in case it's loaded from a PHAR file.
 					   && realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)
 					) return (self::$static['is_webphar'] = TRUE);
 
