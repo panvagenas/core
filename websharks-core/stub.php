@@ -61,6 +61,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 					$file      = self::n_dir_seps((string)$file);
 					$phar_file = self::n_dir_seps(__FILE__);
 
+					echo $file.'<br />'.$phar_file;
+
 					return ($file === $phar_file.'/stub.php');
 				}
 
@@ -530,6 +532,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 	}
 /*
  * A WebSharks™ Core webPhar instance?
+ * This serves files straight from the PHP Archive.
  */
 if(websharks_core_v000000_dev::is_webphar())
 	{
@@ -545,6 +548,7 @@ if(websharks_core_v000000_dev::is_webphar())
 	}
 /*
  * A WebSharks™ Core autoload instance?
+ * This is enabled by default (disable w/ a global var).
  */
 if(websharks_core_v000000_dev::is_autoload())
 	{
@@ -561,17 +565,18 @@ unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 
 /*
  * The WebSharks™ Core is in WordPress?
+ * If we're in WordPress®; it is NOT direct access.
  */
-if(defined('WPINC')) // This is NOT direct access.
-	{
-		return; // We can stop here.
-	}
+if(defined('WPINC')) return; // We can stop here.
+
 /*
- * Disallow direct file access in all other cases.
+ * WordPress® did NOT load up in this scenario.
+ * By default, we disallow direct file access.
  */
 exit('Do NOT access this file directly: '.basename(__FILE__));
+
 /*
  * For a possible `phar://` stream wrapper (do NOT remove this).
- *    The Phar class wants this w/ all UPPERCASE letters.
+ *    The PHAR class wants this w/ all UPPERCASE letters.
  */
 __HALT_COMPILER();
