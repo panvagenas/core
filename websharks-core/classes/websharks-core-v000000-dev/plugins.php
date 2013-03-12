@@ -10,450 +10,450 @@
  * @since 120318
  */
 namespace websharks_core_v000000_dev
-{
-	if(!defined('WPINC'))
-		exit('Do NOT access this file directly: '.basename(__FILE__));
-
-	/**
-	 * Plugin Utilities.
-	 *
-	 * @package WebSharks\Core
-	 * @since 120318
-	 *
-	 * @assert ($GLOBALS[__NAMESPACE__])
-	 */
-	class plugins extends framework
 	{
-		/**
-		 * Performs loading sequence.
-		 */
-		public function load()
-		{
-			if(isset($this->cache['loaded']))
-				return; // Already loaded.
-
-			// Fires hook before loading.
-			$this->do_action('before_loaded');
-
-			// Loads plugin.
-			$this->load_api_class();
-			$this->load_pro_class();
-			$this->check_force_activation();
-			$this->©initializer->prepare_hooks();
-
-			// Completes loading sequence.
-			$this->cache['loaded'] = TRUE;
-			$this->do_action('loaded'); // We're loaded now.
-			$this->do_action('after_loaded'); // Fully loaded now.
-		}
+		if(!defined('WPINC'))
+			exit('Do NOT access this file directly: '.basename(__FILE__));
 
 		/**
-		 * Checks to see if the current plugin has it's pro add-on loaded up.
+		 * Plugin Utilities.
 		 *
-		 * @return boolean TRUE if the current plugin has it's pro addon loaded up, else FALSE.
+		 * @package WebSharks\Core
+		 * @since 120318
 		 *
-		 * @assert () === FALSE
+		 * @assert ($GLOBALS[__NAMESPACE__])
 		 */
-		public function has_pro()
+		class plugins extends framework
 		{
-			if(isset($GLOBALS[$this->___instance_config->plugin_pro_var])
-			   && $GLOBALS[$this->___instance_config->plugin_pro_var] instanceof framework
-			) return TRUE; // Yes.
-
-			return FALSE; // Default return value.
-		}
-
-		/**
-		 * Collects an array of all currently active plugins.
-		 *
-		 * @note This also includes active sitewide plugins in a multisite installation.
-		 *
-		 * @return array All currently active plugins.
-		 *
-		 * @assert () !empty TRUE
-		 */
-		public function active()
-		{
-			if(!isset($this->static['active']))
-			{
-				$active = (is_array($active = get_option('active_plugins'))) ? $active : array();
-
-				if(is_multisite() && is_array($active_sitewide_plugins = get_site_option('active_sitewide_plugins')))
-					$active = array_unique(array_merge($active, $active_sitewide_plugins));
-
-				$this->static['active'] = $active;
-			}
-			return $this->static['active'];
-		}
-
-		/**
-		 * Loads plugin API class.
-		 */
-		public function load_api_class()
-		{
-			if(isset($this->cache['load_api_class']))
-				return; // Already attempted this once.
-
-			$this->cache['load_api_class'] = TRUE;
-
-			if(is_file($this->___instance_config->plugin_api_class_file))
-			{
-				include_once $this->___instance_config->plugin_api_class_file;
-
-				/** @var $framework framework The current plugin object instance. */
-
-				$api_class                = $plugin_api_var = $this->___instance_config->plugin_api_var;
-				$api_class::$framework    = $GLOBALS[$this->___instance_config->plugin_root_ns];
-				$GLOBALS[$plugin_api_var] = new $api_class();
-			}
-		}
-
-		/**
-		 * Loads pro class.
-		 */
-		public function load_pro_class()
-		{
-			if(isset($this->cache['load_pro_class']))
-				return; // Already attempted this once.
-
-			$this->cache['load_pro_class'] = TRUE;
-
-			if(is_file($this->___instance_config->plugin_pro_include_file)
-			   && (in_array($this->___instance_config->plugin_pro_dir_file_basename, $this->active(), TRUE)
-			       || defined('___UNIT_TEST')) // Also load pro add-on for unit tests.
-			) // If pro add-on exists, it MUST be an active WordPress® plugin, like any other.
-			{
-				include_once $this->___instance_config->plugin_pro_include_file;
-				$pro_class = $this->___instance_config->plugin_root_ns_prefix.'\\pro';
-
-				/** @var $for_plugin_version string Matching plugin version. */
-
-				if($this->___instance_config->plugin_version === $pro_class::$for_plugin_version)
+			/**
+			 * Performs loading sequence.
+			 */
+			public function load()
 				{
-					autoloader::add_classes_dir($this->___instance_config->plugin_pro_dir.'/classes');
-					$GLOBALS[$this->___instance_config->plugin_pro_var] = $GLOBALS[$this->___instance_config->plugin_root_ns];
+					if(isset($this->cache['loaded']))
+						return; // Already loaded.
+
+					// Fires hook before loading.
+					$this->do_action('before_loaded');
+
+					// Loads plugin.
+					$this->load_api_class();
+					$this->load_pro_class();
+					$this->check_force_activation();
+					$this->©initializer->prepare_hooks();
+
+					// Completes loading sequence.
+					$this->cache['loaded'] = TRUE;
+					$this->do_action('loaded'); // We're loaded now.
+					$this->do_action('after_loaded'); // Fully loaded now.
 				}
-				else $this->enqueue_pro_update_sync_notice(); // Pro add-on needs to be synchronized with current version.
-			}
-		}
 
-		/**
-		 * Enqueues pro update/sync notice.
-		 *
-		 * @note This does NOT perform any tests against the current framework and/or pro add-on.
-		 *    Tests should be performed BEFORE calling upon this method. See ``load_pro_include_file_if_active()``.
-		 */
-		public function enqueue_pro_update_sync_notice()
-		{
-			if(class_exists($this->___instance_config->plugin_root_ns_prefix.'\\menu_pages\\update_sync'))
-			{
-				$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
-					'<p>'.$this->i18n('Your pro add-on MUST be updated now.').
-					sprintf($this->i18n(' Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
-					'</p>'
-				);
-			}
-		}
-
-		/**
-		 * Checks/forces activation of the current plugin.
-		 *
-		 * @note If the current plugin is NOT active at it's currently installed version;
-		 *    we force activation and/or reactivation to occur on the WordPress® `setup_theme` hook, at priority `1`.
-		 *    We attach to `setup_theme`, so that activation occurs before `init`, and before theme functions are loaded up.
-		 *    Theme functions may include code which has plugin dependencies, so this is always a good idea.
-		 */
-		public function check_force_activation()
-		{
-			if(!$this->is_active_at_current_version())
-				add_action('setup_theme', array($this, '©installer.activation'), 1);
-		}
-
-		/**
-		 * Gets the last active version of the current plugin.
-		 *
-		 * @note This is set by install/activation routines for the current plugin.
-		 *    This method returns the last version that was successfully activated (i.e. fully active).
-		 *
-		 * @return string Last active version string, else an empty string.
-		 *
-		 * @assert () === ''
-		 */
-		public function last_active_version()
-		{
-			return (string)get_option($this->___instance_config->plugin_root_ns_stub.'__version');
-		}
-
-		/**
-		 * Checks if the current plugin is active, at the currently installed version.
-		 *
-		 * @param string $reconsider Optional. Empty string default (e.g. do NOT reconsider).
-		 *    You MUST use class constant ``\websharks_core_v000000_dev\framework::reconsider`` for this argument value.
-		 *    If this is ``\websharks_core_v000000_dev\framework::reconsider``, we force a reconsideration.
-		 *
-		 * @return boolean TRUE if the current plugin is active, at the currently installed version, else FALSE.
-		 *
-		 * @assert () === FALSE
-		 * @assert (\websharks_core_v000000_dev\framework::reconsider) === FALSE
-		 * @assert () === FALSE
-		 */
-		public function is_active_at_current_version($reconsider = '')
-		{
-			$this->check_arg_types('string', func_get_args());
-
-			if(!isset($this->cache['is_active_at_current_version']) || $reconsider === $this::reconsider)
-			{
-				$this->cache['is_active_at_current_version'] = FALSE;
-
-				if(($last_active_version = $this->last_active_version())
-				   && version_compare($last_active_version, $this->___instance_config->plugin_version, '>=')
-				) $this->cache['is_active_at_current_version'] = TRUE;
-			}
-			return $this->cache['is_active_at_current_version'];
-		}
-
-		/**
-		 * Filters site transients, to allow for custom ZIP files during plugin updates.
-		 *
-		 * @attaches-to WordPress® filter `pre_site_transient_update_plugins`.
-		 * @filter-priority `11` (after other default filters).
-		 *
-		 * @param boolean|mixed $transient This is passed by WordPress® as a FALSE value (initially).
-		 *    However, it could be filtered by other plugins, so we need to check for an array.
-		 *
-		 * @return array|boolean|mixed A modified array, else the original value.
-		 */
-		public function pre_site_transient_update_plugins($transient)
-		{
-			if(is_admin() && $this->©env->is_admin_page('update.php'))
-			{
-				$plugin_update_zip     = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_update_zip');
-				$plugin_pro_update_zip = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_pro_update_zip');
-
-				if($this->©string->is_not_empty($plugin_update_zip))
+			/**
+			 * Checks to see if the current plugin has it's pro add-on loaded up.
+			 *
+			 * @return boolean TRUE if the current plugin has it's pro addon loaded up, else FALSE.
+			 *
+			 * @assert () === FALSE
+			 */
+			public function has_pro()
 				{
-					if(!is_array($transient)) $transient = new \stdClass();
+					if(isset($GLOBALS[$this->___instance_config->plugin_pro_var])
+					   && $GLOBALS[$this->___instance_config->plugin_pro_var] instanceof framework
+					) return TRUE; // Yes.
 
-					$transient->last_checked                                                  = time();
-					$transient->checked[$this->___instance_config->plugin_dir_file_basename]  = '000000';
-					$transient->response[$this->___instance_config->plugin_dir_file_basename] = (object)array(
-						'id'          => 0, # N/A
-						'slug'        => $this->___instance_config->plugin_dir_basename,
-						'new_version' => $this->___instance_config->plugin_version,
-						'url'         => $this->©menu_page->url('update_sync'),
-						'package'     => $plugin_update_zip
+					return FALSE; // Default return value.
+				}
+
+			/**
+			 * Collects an array of all currently active plugins.
+			 *
+			 * @note This also includes active sitewide plugins in a multisite installation.
+			 *
+			 * @return array All currently active plugins.
+			 *
+			 * @assert () !empty TRUE
+			 */
+			public function active()
+				{
+					if(!isset($this->static['active']))
+						{
+							$active = (is_array($active = get_option('active_plugins'))) ? $active : array();
+
+							if(is_multisite() && is_array($active_sitewide_plugins = get_site_option('active_sitewide_plugins')))
+								$active = array_unique(array_merge($active, $active_sitewide_plugins));
+
+							$this->static['active'] = $active;
+						}
+					return $this->static['active'];
+				}
+
+			/**
+			 * Loads plugin API class.
+			 */
+			public function load_api_class()
+				{
+					if(isset($this->cache['load_api_class']))
+						return; // Already attempted this once.
+
+					$this->cache['load_api_class'] = TRUE;
+
+					if(is_file($this->___instance_config->plugin_api_class_file))
+						{
+							include_once $this->___instance_config->plugin_api_class_file;
+
+							/** @var $framework framework The current plugin object instance. */
+
+							$api_class                = $plugin_api_var = $this->___instance_config->plugin_api_var;
+							$api_class::$framework    = $GLOBALS[$this->___instance_config->plugin_root_ns];
+							$GLOBALS[$plugin_api_var] = new $api_class();
+						}
+				}
+
+			/**
+			 * Loads pro class.
+			 */
+			public function load_pro_class()
+				{
+					if(isset($this->cache['load_pro_class']))
+						return; // Already attempted this once.
+
+					$this->cache['load_pro_class'] = TRUE;
+
+					if(is_file($this->___instance_config->plugin_pro_class_file)
+					   && (in_array($this->___instance_config->plugin_pro_dir_file_basename, $this->active(), TRUE)
+					       || defined('___UNIT_TEST')) // Also load pro add-on for unit tests.
+					) // If pro add-on exists, it MUST be an active WordPress® plugin, like any other.
+						{
+							include_once $this->___instance_config->plugin_pro_class_file;
+							$pro_class = $this->___instance_config->plugin_root_ns_prefix.'\\pro';
+
+							/** @var $for_plugin_version string Matching plugin version. */
+
+							if($this->___instance_config->plugin_version === $pro_class::$for_plugin_version)
+								{
+									autoloader::add_classes_dir($this->___instance_config->plugin_pro_dir.'/classes');
+									$GLOBALS[$this->___instance_config->plugin_pro_var] = $GLOBALS[$this->___instance_config->plugin_root_ns];
+								}
+							else $this->enqueue_pro_update_sync_notice(); // Pro add-on needs to be synchronized with current version.
+						}
+				}
+
+			/**
+			 * Enqueues pro update/sync notice.
+			 *
+			 * @note This does NOT perform any tests against the current framework and/or pro add-on.
+			 *    Tests should be performed BEFORE calling upon this method. See ``load_pro_include_file_if_active()``.
+			 */
+			public function enqueue_pro_update_sync_notice()
+				{
+					if(class_exists($this->___instance_config->plugin_root_ns_prefix.'\\menu_pages\\update_sync'))
+						{
+							$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
+								'<p>'.$this->i18n('Your pro add-on MUST be updated now.').
+								sprintf($this->i18n(' Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
+								'</p>'
+							);
+						}
+				}
+
+			/**
+			 * Checks/forces activation of the current plugin.
+			 *
+			 * @note If the current plugin is NOT active at it's currently installed version;
+			 *    we force activation and/or reactivation to occur on the WordPress® `setup_theme` hook, at priority `1`.
+			 *    We attach to `setup_theme`, so that activation occurs before `init`, and before theme functions are loaded up.
+			 *    Theme functions may include code which has plugin dependencies, so this is always a good idea.
+			 */
+			public function check_force_activation()
+				{
+					if(!$this->is_active_at_current_version())
+						add_action('setup_theme', array($this, '©installer.activation'), 1);
+				}
+
+			/**
+			 * Gets the last active version of the current plugin.
+			 *
+			 * @note This is set by install/activation routines for the current plugin.
+			 *    This method returns the last version that was successfully activated (i.e. fully active).
+			 *
+			 * @return string Last active version string, else an empty string.
+			 *
+			 * @assert () === ''
+			 */
+			public function last_active_version()
+				{
+					return (string)get_option($this->___instance_config->plugin_root_ns_stub.'__version');
+				}
+
+			/**
+			 * Checks if the current plugin is active, at the currently installed version.
+			 *
+			 * @param string $reconsider Optional. Empty string default (e.g. do NOT reconsider).
+			 *    You MUST use class constant ``\websharks_core_v000000_dev\framework::reconsider`` for this argument value.
+			 *    If this is ``\websharks_core_v000000_dev\framework::reconsider``, we force a reconsideration.
+			 *
+			 * @return boolean TRUE if the current plugin is active, at the currently installed version, else FALSE.
+			 *
+			 * @assert () === FALSE
+			 * @assert (\websharks_core_v000000_dev\framework::reconsider) === FALSE
+			 * @assert () === FALSE
+			 */
+			public function is_active_at_current_version($reconsider = '')
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					if(!isset($this->cache['is_active_at_current_version']) || $reconsider === $this::reconsider)
+						{
+							$this->cache['is_active_at_current_version'] = FALSE;
+
+							if(($last_active_version = $this->last_active_version())
+							   && version_compare($last_active_version, $this->___instance_config->plugin_version, '>=')
+							) $this->cache['is_active_at_current_version'] = TRUE;
+						}
+					return $this->cache['is_active_at_current_version'];
+				}
+
+			/**
+			 * Filters site transients, to allow for custom ZIP files during plugin updates.
+			 *
+			 * @attaches-to WordPress® filter `pre_site_transient_update_plugins`.
+			 * @filter-priority `11` (after other default filters).
+			 *
+			 * @param boolean|mixed $transient This is passed by WordPress® as a FALSE value (initially).
+			 *    However, it could be filtered by other plugins, so we need to check for an array.
+			 *
+			 * @return array|boolean|mixed A modified array, else the original value.
+			 */
+			public function pre_site_transient_update_plugins($transient)
+				{
+					if(is_admin() && $this->©env->is_admin_page('update.php'))
+						{
+							$plugin_update_zip     = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_update_zip');
+							$plugin_pro_update_zip = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_pro_update_zip');
+
+							if($this->©string->is_not_empty($plugin_update_zip))
+								{
+									if(!is_array($transient)) $transient = new \stdClass();
+
+									$transient->last_checked                                                  = time();
+									$transient->checked[$this->___instance_config->plugin_dir_file_basename]  = '000000';
+									$transient->response[$this->___instance_config->plugin_dir_file_basename] = (object)array(
+										'id'          => 0, # N/A
+										'slug'        => $this->___instance_config->plugin_dir_basename,
+										'new_version' => $this->___instance_config->plugin_version,
+										'url'         => $this->©menu_page->url('update_sync'),
+										'package'     => $plugin_update_zip
+									);
+								}
+							else if($this->©string->is_not_empty($plugin_pro_update_zip))
+								{
+									if(!is_array($transient)) $transient = new \stdClass();
+
+									$transient->last_checked                                                      = time();
+									$transient->checked[$this->___instance_config->plugin_pro_dir_file_basename]  = '000000';
+									$transient->response[$this->___instance_config->plugin_pro_dir_file_basename] = (object)array(
+										'id'          => 0, # N/A
+										'slug'        => $this->___instance_config->plugin_pro_dir_basename,
+										'new_version' => $this->___instance_config->plugin_version,
+										'url'         => $this->©menu_page->url('update_sync'),
+										'package'     => $plugin_pro_update_zip
+									);
+								}
+						}
+					return $transient; // Possibly modified now.
+				}
+
+			/**
+			 * Gets plugin site credentials (i.e. username/password for the plugin site).
+			 *
+			 * @param string  $username Optional. A new (i.e. recently submitted) username for the plugin site.
+			 *
+			 * @param string  $password Optional. A new (i.e. recently submitted) password for the plugin site (plain text).
+			 *
+			 * @param boolean $update Optional. This defaults to a FALSE value.
+			 *    If this is TRUE, and ``$username`` or ``$password`` are passed in, we'll update the database with the new values.
+			 *
+			 * @return array Array containing two elements: `username`, `password` (plain text).
+			 *
+			 * @see ``$this->___instance_config->plugin_site``.
+			 * @see ``$this->©url->to_plugin_site()``.
+			 */
+			public function get_site_credentials($username = '', $password = '', $update = FALSE)
+				{
+					$this->check_arg_types('string', 'string', 'boolean', func_get_args());
+
+					$credentials = array(
+						'username' => $this->©options->get('plugin_site.username'),
+						'password' => $this->©encryption->decrypt($this->©options->get('plugin_site.password'))
 					);
+					if($username || $password) // Have new (i.e. recently submitted) values?
+						{
+							if($username) $credentials['username'] = $username;
+							if($password) $credentials['password'] = $password;
+
+							if($update) // Now, are we updating to these new values?
+								$this->set_site_credentials($credentials['username'], $credentials['password']);
+						}
+					return $credentials; // Two elements: `username`, `password`.
 				}
-				else if($this->©string->is_not_empty($plugin_pro_update_zip))
+
+			/**
+			 * Updates plugin site credentials (i.e. username/password for the plugin site).
+			 *
+			 * @param string $username Username for the plugin site.
+			 *
+			 * @param string $password Password for the plugin site (plain text).
+			 *    This is encrypted before we store it in the database.
+			 *
+			 * @see ``$this->___instance_config->plugin_site``.
+			 * @see ``$this->©url->to_plugin_site()``.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function set_site_credentials($username, $password)
 				{
-					if(!is_array($transient)) $transient = new \stdClass();
+					$this->check_arg_types('string', 'string', func_get_args());
 
-					$transient->last_checked                                                      = time();
-					$transient->checked[$this->___instance_config->plugin_pro_dir_file_basename]  = '000000';
-					$transient->response[$this->___instance_config->plugin_pro_dir_file_basename] = (object)array(
-						'id'          => 0, # N/A
-						'slug'        => $this->___instance_config->plugin_pro_dir_basename,
-						'new_version' => $this->___instance_config->plugin_version,
-						'url'         => $this->©menu_page->url('update_sync'),
-						'package'     => $plugin_pro_update_zip
+					$credentials = array(
+						'plugin_site.username' => $username,
+						'plugin_site.password' => $this->©encryption->encrypt($password)
 					);
+					$this->©options->update($credentials);
 				}
-			}
-			return $transient; // Possibly modified now.
-		}
 
-		/**
-		 * Gets plugin site credentials (i.e. username/password for the plugin site).
-		 *
-		 * @param string  $username Optional. A new (i.e. recently submitted) username for the plugin site.
-		 *
-		 * @param string  $password Optional. A new (i.e. recently submitted) password for the plugin site (plain text).
-		 *
-		 * @param boolean $update Optional. This defaults to a FALSE value.
-		 *    If this is TRUE, and ``$username`` or ``$password`` are passed in, we'll update the database with the new values.
-		 *
-		 * @return array Array containing two elements: `username`, `password` (plain text).
-		 *
-		 * @see ``$this->___instance_config->plugin_site``.
-		 * @see ``$this->©url->to_plugin_site()``.
-		 */
-		public function get_site_credentials($username = '', $password = '', $update = FALSE)
-		{
-			$this->check_arg_types('string', 'string', 'boolean', func_get_args());
+			/**
+			 * Sets selective loading status for front-side styles.
+			 *
+			 * @param boolean $needs TRUE if the plugin needs front-side styles (or FALSE if it does NOT need them).
+			 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side styles.
+			 *
+			 * @param string  $theme Optional. Defaults to an empty string.
+			 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
+			 */
+			public function needs_front_side_styles($needs, $theme = '')
+				{
+					$this->check_arg_types('boolean', 'string', func_get_args());
 
-			$credentials = array(
-				'username' => $this->©options->get('plugin_site.username'),
-				'password' => $this->©encryption->decrypt($this->©options->get('plugin_site.password'))
-			);
-			if($username || $password) // Have new (i.e. recently submitted) values?
-			{
-				if($username) $credentials['username'] = $username;
-				if($password) $credentials['password'] = $password;
+					if(!$this->©options->get('styles.front_side.load'))
+						return; // Nothing to do here.
 
-				if($update) // Now, are we updating to these new values?
-					$this->set_site_credentials($credentials['username'], $credentials['password']);
-			}
-			return $credentials; // Two elements: `username`, `password`.
-		}
+					$filter = ($needs) ? '__return_true' : '__return_false';
+					remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__styles__front_side');
+					add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__front_side', $filter);
 
-		/**
-		 * Updates plugin site credentials (i.e. username/password for the plugin site).
-		 *
-		 * @param string $username Username for the plugin site.
-		 *
-		 * @param string $password Password for the plugin site (plain text).
-		 *    This is encrypted before we store it in the database.
-		 *
-		 * @see ``$this->___instance_config->plugin_site``.
-		 * @see ``$this->©url->to_plugin_site()``.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 */
-		public function set_site_credentials($username, $password)
-		{
-			$this->check_arg_types('string', 'string', func_get_args());
+					$components = $this->©styles->front_side_components;
+					if($theme) // A specific theme will be enqueued or dequeued (depending on ``$needs``).
+						$components[] = $theme; // Add to components.
 
-			$credentials = array(
-				'plugin_site.username' => $username,
-				'plugin_site.password' => $this->©encryption->encrypt($password)
-			);
-			$this->©options->update($credentials);
-		}
+					if($needs) // Enqueue or dequeue.
+						$this->©styles->enqueue($components);
+					else $this->©styles->dequeue($components);
+				}
 
-		/**
-		 * Sets selective loading status for front-side styles.
-		 *
-		 * @param boolean $needs TRUE if the plugin needs front-side styles (or FALSE if it does NOT need them).
-		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side styles.
-		 *
-		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
-		 */
-		public function needs_front_side_styles($needs, $theme = '')
-		{
-			$this->check_arg_types('boolean', 'string', func_get_args());
+			/**
+			 * Sets selective loading status for stand-alone styles.
+			 *
+			 * @param boolean $needs TRUE if the plugin needs stand-alone styles (or FALSE if it does NOT need them).
+			 *    The internal default is FALSE. This MUST be set to TRUE, to enable stand-alone styles.
+			 *
+			 * @param string  $theme Optional. Defaults to an empty string.
+			 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
+			 */
+			public function needs_stand_alone_styles($needs, $theme = '')
+				{
+					$this->check_arg_types('boolean', 'string', func_get_args());
 
-			if(!$this->©options->get('styles.front_side.load'))
-				return; // Nothing to do here.
+					if(!$this->©options->get('styles.front_side.load'))
+						return; // Nothing to do here.
 
-			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__styles__front_side');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__front_side', $filter);
+					$filter = ($needs) ? '__return_true' : '__return_false';
+					remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__styles__stand_alone');
+					add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__stand_alone', $filter);
 
-			$components = $this->©styles->front_side_components;
-			if($theme) // A specific theme will be enqueued or dequeued (depending on ``$needs``).
-				$components[] = $theme; // Add to components.
+					$components = $this->©styles->stand_alone_components;
+					if($theme) // A specific theme will be enqueued or dequeued (depending on ``$needs``).
+						$components[] = $theme; // Add to components.
 
-			if($needs) // Enqueue or dequeue.
-				$this->©styles->enqueue($components);
-			else $this->©styles->dequeue($components);
-		}
+					if($needs) // Enqueue or dequeue.
+						$this->©styles->enqueue($components);
+					else $this->©styles->dequeue($components);
+				}
 
-		/**
-		 * Sets selective loading status for stand-alone styles.
-		 *
-		 * @param boolean $needs TRUE if the plugin needs stand-alone styles (or FALSE if it does NOT need them).
-		 *    The internal default is FALSE. This MUST be set to TRUE, to enable stand-alone styles.
-		 *
-		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
-		 */
-		public function needs_stand_alone_styles($needs, $theme = '')
-		{
-			$this->check_arg_types('boolean', 'string', func_get_args());
+			/**
+			 * Sets selective loading status for front-side scripts.
+			 *
+			 * @param boolean $needs TRUE if the plugin needs front-side scripts (or FALSE if it does NOT need them).
+			 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side scripts.
+			 */
+			public function needs_front_side_scripts($needs)
+				{
+					$this->check_arg_types('boolean', func_get_args());
 
-			if(!$this->©options->get('styles.front_side.load'))
-				return; // Nothing to do here.
+					if(!$this->©options->get('scripts.front_side.load'))
+						return; // Nothing to do here.
 
-			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__styles__stand_alone');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__stand_alone', $filter);
+					$filter = ($needs) ? '__return_true' : '__return_false';
+					remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side');
+					add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side', $filter);
 
-			$components = $this->©styles->stand_alone_components;
-			if($theme) // A specific theme will be enqueued or dequeued (depending on ``$needs``).
-				$components[] = $theme; // Add to components.
+					if($needs) // Enqueue or dequeue (based on ``$needs``).
+						$this->©scripts->enqueue($this->©scripts->front_side_components);
+					else $this->©scripts->dequeue($this->©scripts->front_side_components);
+				}
 
-			if($needs) // Enqueue or dequeue.
-				$this->©styles->enqueue($components);
-			else $this->©styles->dequeue($components);
-		}
+			/**
+			 * Sets selective loading status for stand-alone scripts.
+			 *
+			 * @param boolean $needs TRUE if the plugin needs stand-alone scripts (or FALSE if it does NOT need them).
+			 *    The internal default is FALSE. This MUST be set to TRUE, to enable stand-alone scripts.
+			 */
+			public function needs_stand_alone_scripts($needs)
+				{
+					$this->check_arg_types('boolean', func_get_args());
 
-		/**
-		 * Sets selective loading status for front-side scripts.
-		 *
-		 * @param boolean $needs TRUE if the plugin needs front-side scripts (or FALSE if it does NOT need them).
-		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side scripts.
-		 */
-		public function needs_front_side_scripts($needs)
-		{
-			$this->check_arg_types('boolean', func_get_args());
+					if(!$this->©options->get('scripts.front_side.load'))
+						return; // Nothing to do here.
 
-			if(!$this->©options->get('scripts.front_side.load'))
-				return; // Nothing to do here.
+					$filter = ($needs) ? '__return_true' : '__return_false';
+					remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__stand_alone');
+					add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__stand_alone', $filter);
 
-			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side', $filter);
+					if($needs) // Enqueue or dequeue (based on ``$needs``).
+						$this->©scripts->enqueue($this->©scripts->stand_alone_components);
+					else $this->©scripts->dequeue($this->©scripts->stand_alone_components);
+				}
 
-			if($needs) // Enqueue or dequeue (based on ``$needs``).
-				$this->©scripts->enqueue($this->©scripts->front_side_components);
-			else $this->©scripts->dequeue($this->©scripts->front_side_components);
-		}
+			/**
+			 * Sets selective loading status for front-side scripts/styles (both at the same time).
+			 *
+			 * @param boolean $needs TRUE if the plugin needs front-side scripts/styles (or FALSE if it does NOT need them).
+			 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side scripts/styles.
+			 *
+			 * @param string  $theme Optional. Defaults to an empty string.
+			 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
+			 */
+			public function needs_front_side_styles_scripts($needs, $theme = '')
+				{
+					$this->check_arg_types('boolean', 'string', func_get_args());
 
-		/**
-		 * Sets selective loading status for stand-alone scripts.
-		 *
-		 * @param boolean $needs TRUE if the plugin needs stand-alone scripts (or FALSE if it does NOT need them).
-		 *    The internal default is FALSE. This MUST be set to TRUE, to enable stand-alone scripts.
-		 */
-		public function needs_stand_alone_scripts($needs)
-		{
-			$this->check_arg_types('boolean', func_get_args());
+					$this->needs_front_side_styles($needs, $theme);
+					$this->needs_front_side_scripts($needs);
+				}
 
-			if(!$this->©options->get('scripts.front_side.load'))
-				return; // Nothing to do here.
+			/**
+			 * Sets selective loading status for stand-alone scripts/styles (both at the same time).
+			 *
+			 * @param boolean $needs TRUE if the plugin needs stand-alone scripts/styles (or FALSE if it does NOT need them).
+			 *    The internal default is FALSE. This MUST be set to TRUE, to enable stand-alone scripts/styles.
+			 *
+			 * @param string  $theme Optional. Defaults to an empty string.
+			 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
+			 */
+			public function needs_stand_alone_styles_scripts($needs, $theme = '')
+				{
+					$this->check_arg_types('boolean', 'string', func_get_args());
 
-			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__stand_alone');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__stand_alone', $filter);
-
-			if($needs) // Enqueue or dequeue (based on ``$needs``).
-				$this->©scripts->enqueue($this->©scripts->stand_alone_components);
-			else $this->©scripts->dequeue($this->©scripts->stand_alone_components);
-		}
-
-		/**
-		 * Sets selective loading status for front-side scripts/styles (both at the same time).
-		 *
-		 * @param boolean $needs TRUE if the plugin needs front-side scripts/styles (or FALSE if it does NOT need them).
-		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side scripts/styles.
-		 *
-		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
-		 */
-		public function needs_front_side_styles_scripts($needs, $theme = '')
-		{
-			$this->check_arg_types('boolean', 'string', func_get_args());
-
-			$this->needs_front_side_styles($needs, $theme);
-			$this->needs_front_side_scripts($needs);
-		}
-
-		/**
-		 * Sets selective loading status for stand-alone scripts/styles (both at the same time).
-		 *
-		 * @param boolean $needs TRUE if the plugin needs stand-alone scripts/styles (or FALSE if it does NOT need them).
-		 *    The internal default is FALSE. This MUST be set to TRUE, to enable stand-alone scripts/styles.
-		 *
-		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
-		 */
-		public function needs_stand_alone_styles_scripts($needs, $theme = '')
-		{
-			$this->check_arg_types('boolean', 'string', func_get_args());
-
-			$this->needs_stand_alone_styles($needs, $theme);
-			$this->needs_stand_alone_scripts($needs);
+					$this->needs_stand_alone_styles($needs, $theme);
+					$this->needs_stand_alone_scripts($needs);
+				}
 		}
 	}
-}

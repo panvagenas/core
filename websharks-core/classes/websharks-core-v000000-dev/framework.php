@@ -948,7 +948,7 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/plugin.php';
 									$this->___instance_config->plugin_data_dir          = apply_filters($this->___instance_config->plugin_root_ns_stub.'__data_dir', $this->___instance_config->plugin_dir.'-data');
 									$this->___instance_config->plugin_file              = $this->___instance_config->plugin_dir.'/plugin.php';
-									$this->___instance_config->plugin_include_file      = $this->___instance_config->plugin_dir.'/include.php';
+									$this->___instance_config->plugin_framework_file    = $this->___instance_config->plugin_dir.'/framework.php';
 									$this->___instance_config->plugin_api_class_file    = $this->___instance_config->plugin_dir.'/classes/api.php';
 
 									// Based on the current plugin, establish properties for a pro add-on.
@@ -957,7 +957,7 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->plugin_pro_dir_basename      = basename($this->___instance_config->plugin_pro_dir);
 									$this->___instance_config->plugin_pro_dir_file_basename = $this->___instance_config->plugin_pro_dir_basename.'/plugin.php';
 									$this->___instance_config->plugin_pro_file              = $this->___instance_config->plugin_pro_dir.'/plugin.php';
-									$this->___instance_config->plugin_pro_include_file      = $this->___instance_config->plugin_pro_dir.'/include.php';
+									$this->___instance_config->plugin_pro_class_file        = $this->___instance_config->plugin_pro_dir.'/pro.php';
 								}
 							// Based on `plugin_root_ns_stub`.
 							// AND, also on `namespace\sub_namespace\class_name` for ``$this`` class.

@@ -1377,9 +1377,9 @@ namespace websharks_core_v000000_dev
 
 					// Phar classes throw exceptions on failure.
 
-					$_stub_file_contents = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
-					$_stub_file_contents = preg_replace('/(static\s+\$is_phar\s*)([^;]*)(;)(\s*#\!is\-phar\!#)?/i', '${1}'.' = TRUE'.'${3}'.'${4}', $_stub_file_contents, 1);
-					// The `#!is-phar!#` comment is optional here; because whitespace/comments may get stripped via ``php_strip_whitespace()`` call above.
+					$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$this->___instance_config->core_ns.'\'] = TRUE;';
+					$_stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
+					$_stub_file_contents    = $this->©string->ireplace_once('<?php', '<?php '.$_stub_file_is_phar_var.' ', $_stub_file_contents);
 
 					$_phar = new \Phar($to, $this->iteration_flags());
 					$_phar->startBuffering(); // Buffer until we're done here.

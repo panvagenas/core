@@ -31,36 +31,25 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static $static = array();
 
 			/**
-			 * Php Archives are possible?
-			 *
-			 * @return boolean Php Archives are possible?
-			 */
-			public static function can_phar()
-				{
-					if(isset(self::$static['can_phar']))
-						return self::$static['can_phar'];
-
-					return (self::$static['can_phar'] = extension_loaded('phar'));
-				}
-
-			/**
-			 * This this file a PHP Archive?
+			 * This file a PHP Archive?
 			 *
 			 * @return boolean A PHP Archive file?
 			 */
 			public static function is_phar()
 				{
-					static $is_phar; #!is-phar!#
+					$is_phar = self::is_phar_var();
 
-					if(isset($is_phar)) return $is_phar;
+					return (!empty($GLOBALS[$is_phar]));
+				}
 
-					else if(isset(self::$static['is_phar']))
-						return self::$static['is_phar'];
-
-					if(stripos(basename(__FILE__), '.phar') !== FALSE)
-						return (self::$static['is_phar'] = TRUE);
-
-					return (self::$static['is_phar'] = FALSE);
+			/**
+			 * Global PHAR variable for the WebSharks™ Core.
+			 *
+			 * @return string The PHAR variable for the WebSharks™ Core.
+			 */
+			public static function is_phar_var()
+				{
+					return 'is_phar_'.__CLASS__;
 				}
 
 			/**
@@ -70,16 +59,26 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function is_webphar()
 				{
-					if(isset(self::$static['is_webphar']))
-						return self::$static['is_webphar'];
+					if(!defined('WPINC') && self::is_phar())
+						if(realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__))
+							return TRUE;
 
-					if(!defined('WPINC') && self::is_phar()
-					   && basename(__FILE__) !== 'stub.php' // Exclude `stub.php`.
-					   // ↑ Exclude `stub.php` in case it's loaded from a PHAR file.
-					   && realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)
-					) return (self::$static['is_webphar'] = TRUE);
+					return FALSE;
+				}
 
-					return (self::$static['is_webphar'] = FALSE);
+			/**
+			 * Php Archives are possible?
+			 *
+			 * @return boolean Php Archives are possible?
+			 */
+			public static function can_phar()
+				{
+					if(isset(self::$static['can_phar']))
+						return self::$static['can_phar'];
+
+					self::$static['can_phar'] = extension_loaded('phar');
+
+					return self::$static['can_phar'];
 				}
 
 			/**
@@ -89,15 +88,14 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function is_autoload()
 				{
-					if(isset(self::$static['is_autoload']))
-						return self::$static['is_autoload'];
+					if(!self::is_webphar())
+						{
+							$autoload = self::autoload_var();
 
-					$autoload = self::autoload_var(); // Global autoload flag.
-
-					if(!self::is_webphar() && (!isset($GLOBALS[$autoload]) || $GLOBALS[$autoload]))
-						return (self::$static['is_autoload'] = TRUE);
-
-					return (self::$static['is_autoload'] = FALSE);
+							if(!isset($GLOBALS[$autoload]) || $GLOBALS[$autoload])
+								return TRUE;
+						}
+					return FALSE;
 				}
 
 			/**
@@ -123,18 +121,17 @@ if(!class_exists('websharks_core_v000000_dev'))
 						if(is_file($_phar_deps = 'phar://'.__FILE__.'/deps.php'))
 							return $_phar_deps;
 
-					foreach(array('plugin'     => dirname(__FILE__).'/websharks-core/deps.php',
-					              'core-dev'   => dirname(dirname(dirname(__FILE__))).'/core/websharks-core/deps.php',
-					              'plugin-dev' => dirname(dirname(dirname(dirname(__FILE__)))).'/core/websharks-core/deps.php')
-					        as $_key => $_file)
-						if((in_array($_key, array('plugin'), TRUE) || defined('___DEV_KEY_OK')) && is_file($_file))
-							return $_file;
+					if(($_deps = self::locate('/websharks-core/deps.php')))
+						return $_deps; // Official location on live sites.
+
+					if(defined('___DEV_KEY_OK') && ($_deps = self::locate('/core/websharks-core/deps.php')))
+						return $_deps; // Development copy (for authenticated developers).
 
 					if(self::is_phar() && !self::can_phar() && defined('WPINC'))
 						if(($_temp_deps = self::cant_phar_msg_notice_in_ws_wp_temp_deps()))
 							return $_temp_deps;
 
-					unset($_phar_deps, $_key, $_file, $_temp_deps);
+					unset($_phar_deps, $_deps, $_temp_deps); // A little housekeeping.
 
 					if(self::is_phar() && !self::can_phar()) // Be verbose.
 						throw new exception(self::cant_phar_msg());
@@ -143,31 +140,30 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			/**
-			 * Gets WebSharks™ Core `include.php` file.
+			 * Gets WebSharks™ Core `framework.php` file.
 			 *
-			 * @return string Absolute path to `include.php` file.
+			 * @return string Absolute path to `framework.php` file.
 			 *
-			 * @throws exception If unable to locate the WebSharks™ Core `include.php` file.
+			 * @throws exception If unable to locate the WebSharks™ Core `framework.php` file.
 			 */
 			public static function framework()
 				{
 					if(self::is_phar() && self::can_phar())
-						if(is_file($_phar_include = 'phar://'.__FILE__.'/include.php'))
-							return $_phar_include;
+						if(is_file($_phar_framework = 'phar://'.__FILE__.'/framework.php'))
+							return $_phar_framework;
 
-					foreach(array('plugin'     => dirname(__FILE__).'/websharks-core/include.php',
-					              'core-dev'   => dirname(dirname(dirname(__FILE__))).'/core/websharks-core/include.php',
-					              'plugin-dev' => dirname(dirname(dirname(dirname(__FILE__)))).'/core/websharks-core/include.php')
-					        as $_key => $_file)
-						if((in_array($_key, array('plugin'), TRUE) || defined('___DEV_KEY_OK')) && is_file($_file))
-							return $_file;
+					if(($_framework = self::locate('/websharks-core/framework.php')))
+						return $_framework; // Official location on live sites.
 
-					unset($_phar_include, $_key, $_file);
+					if(defined('___DEV_KEY_OK') && ($_framework = self::locate('/core/websharks-core/framework.php')))
+						return $_framework; // Development copy (for authenticated developers).
+
+					unset($_phar_framework, $_framework); // A little housekeeping.
 
 					if(self::is_phar() && !self::can_phar()) // Be verbose.
 						throw new exception(self::cant_phar_msg());
 
-					throw new exception(self::i18n('Unable to locate WebSharks™ Core `include.php` file.'));
+					throw new exception(self::i18n('Unable to locate WebSharks™ Core `framework.php` file.'));
 				}
 
 			/**
@@ -207,52 +203,47 @@ if(!class_exists('websharks_core_v000000_dev'))
 					$path_info = (!empty($path_info)) ? $path_info : '/'.basename(__FILE__);
 
 					// Normalize directory separators; and force a leading slash on all URIs.
-					// Allow trailing slash in URIs; it's easier to parse directory indexes this way.
+					// Allow trailing slash; it's easier to parse directory indexes this way.
 
-					$internal_uri_value = self::n_dir_seps($path_info, TRUE); // Start w/ path info and clean things up.
-					$internal_uri_value = '/'.ltrim($internal_uri_value, '\\/'); // This SHOULD already be the case.
+					$internal_uri = self::n_dir_seps($path_info, TRUE);
+					$internal_uri = '/'.ltrim($internal_uri, '/');
 
 					// Do NOT allow double dots in a URI value.
 
-					if(strpos($internal_uri_value, '..') !== FALSE)
+					if(strpos($internal_uri, '..') !== FALSE)
 						return FALSE; // 403 (forbidden).
 
-					// Current PHAR file with stream prefix.
-
-					$phar = 'phar://'.__FILE__;
+					$phar = 'phar://'.__FILE__; // Current PHAR file.
 
 					// Handle directory indexes gracefully.
 
-					if(substr($internal_uri_value, -1) === '/' // A directory explicitly.
-					   || !is_file($phar.$internal_uri_value) // It's NOT a file; assume directory.
-					) $internal_uri_value = rtrim($internal_uri_value, '\\/').'/index.php';
+					if(substr($internal_uri, -1) === '/' // A directory explicitly.
+					   || !is_file($phar.$internal_uri) // It's NOT a file; assume directory.
+					) $internal_uri = rtrim($internal_uri, '\\/').'/index.php';
 
-					// Let's make webPhar a little more security-conscious here.
+					// Now, let's make webPhar a little more security-conscious here.
 
-					for($_i = 0, $_dirname = dirname($phar.$internal_uri_value); $_i <= 100; $_i++)
+					for($_i = 0, $_dir = dirname($phar.$internal_uri); $_i <= 100; $_i++)
 						{
-							for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
-								$_dir = dirname($_dir);
-
-							if(!$_dir || $_dir === '.') break;
+							if($_i > 0) $_dir = dirname($_dir); // Up a directory.
+							if(!$_dir || $_dir === '.') break; // Search complete?
 
 							if(strcasecmp(basename($_dir), 'app_data') === 0)
-								return FALSE; // Windows® 403 (forbidden).
+								return FALSE; // Windows®; 403 (forbidden).
 
-							else if(is_file($_dir.'/.htaccess')) // Apache.
+							if(is_file($_dir.'/.htaccess')) // Apache™ compatible.
 								{
 									if(!is_readable($_dir.'/.htaccess'))
 										return FALSE; // 403 (forbidden).
 
-									if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
+									$_htaccess = file_get_contents($_dir.'/.htaccess');
+									if(stripos($_htaccess, 'deny from all') !== FALSE)
 										return FALSE; // 403 (forbidden).
 								}
 						}
-					unset($_i, $__i, $_dirname, $_dir);
+					unset($_i, $_dir, $_htaccess); // A little housekeeping.
 
-					// Let's wrap this up now :-)
-
-					return $internal_uri_value;
+					return $internal_uri; // Final return value (internal URI).
 				}
 
 			/**
@@ -270,7 +261,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 					   && is_readable($wp_temp_dir) && is_writable($wp_temp_dir)
 					) return self::n_dir_seps($wp_temp_dir);
 
-					return ''; // Default return value.
+					return ''; // Failure.
 				}
 
 			/**
@@ -287,96 +278,118 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function n_dir_seps($path, $allow_trailing_slash = FALSE)
 				{
-					if(is_string($path) && is_bool($allow_trailing_slash))
-						{
-							if(!strlen($path)) return ''; // Catch empty strings.
+					if(!is_string($path) || !is_bool($allow_trailing_slash))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					if(!strlen($path)) return ''; // Catch empty strings.
 
-							preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
-							$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
+					preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
+					$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
 
-							$path = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $path));
-							$path = ($allow_trailing_slash) ? $path : rtrim($path, '/');
+					$path = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $path));
+					$path = ($allow_trailing_slash) ? $path : rtrim($path, '/');
 
-							$path = (!empty($_path['scheme'])) ? strtolower($_path['scheme']).$path : $path; // Lowercase.
+					$path = (!empty($_path['scheme'])) ? strtolower($_path['scheme']).$path : $path; // Lowercase.
 
-							return $path; // Normalized now.
-						}
-					else throw new exception( // Detected invalid arguments.
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
-					);
+					return $path; // Normalized now.
 				}
 
 			/**
-			 * Attempts to get `wp-load.php`.
+			 * Attempts to get `/wp-load.php`.
+			 *
+			 * @param boolean             $get_last_value Defaults to a FALSE value.
+			 *    This function stores it's last return value for quicker access on repeated calls.
+			 *    If this is TRUE; no search will take place. We simply return the last/previous value.
 			 *
 			 * @param boolean             $check_abspath Defaults to TRUE (recommended).
-			 *    If TRUE, first check ABSPATH for `/wp-load.php`.
+			 *    If TRUE, we will first check the `ABSPATH` constant (if defined) for `/wp-load.php`.
 			 *
-			 * @param null|boolean|string $fallback_on_dev_dir Defaults to NULL (recommended).
+			 * @param null|boolean|string $fallback Defaults to NULL (recommended).
 			 *
-			 *    • If NULL — and WordPress® cannot be located anywhere else;
+			 *    • If NULL, and WordPress® cannot be located anywhere else;
 			 *       and `___DEV_KEY_OK` is TRUE; automatically fallback on a local development copy.
 			 *
-			 *    • If TRUE — and WordPress® cannot be located anywhere else;
+			 *    • If TRUE, and WordPress® cannot be located anywhere else;
 			 *       automatically fallback on a local development copy.
 			 *
-			 *    • If NULL|TRUE — we'll look inside: `E:/EasyPHP/wordpress` (a default WebSharks™ Core location).
-			 *       If STRING — we'll look inside the directory path defined by the string value.
+			 *    • If NULL|TRUE, we'll look inside: `E:/EasyPHP/wordpress` (a default WebSharks™ Core location).
+			 *       If STRING, we'll look inside the directory path defined by the string value.
 			 *
 			 *    • If FALSE — we will NOT fallback under any circumstance.
 			 *
-			 * @return string Full server path to `wp-load.php` on success, else an empty string.
+			 * @return string Full server path to `/wp-load.php` on success, else an empty string.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert () === dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))).'/wp-load.php'
 			 */
-			public static function wp_load($check_abspath = TRUE, $fallback_on_dev_dir = NULL)
+			public static function wp_load($get_last_value = FALSE, $check_abspath = TRUE, $fallback = NULL)
 				{
-					if(is_bool($check_abspath) && (is_null($fallback_on_dev_dir)
-					                               || is_bool($fallback_on_dev_dir) || is_string($fallback_on_dev_dir))
-					) // Results from this function are cached statically with these vars.
-						{
-							if(!isset($fallback_on_dev_dir))
-								$fallback_on_dev_dir = defined('___DEV_KEY_OK');
-
-							$cache_entry = '_'.(integer)$check_abspath;
-							if($fallback_on_dev_dir && is_string($fallback_on_dev_dir))
-								$cache_entry .= $fallback_on_dev_dir;
-							else $cache_entry .= (integer)$fallback_on_dev_dir;
-
-							if(isset(self::$static['wp_load'][$cache_entry]))
-								return self::$static['wp_load'][$cache_entry];
-
-							if($check_abspath && defined('ABSPATH') && is_file(ABSPATH.'wp-load.php'))
-								return (self::$static['wp_load'][$cache_entry] = ABSPATH.'wp-load.php');
-
-							for($_i = 0, $_dirname = dirname(__FILE__); $_i <= 100; $_i++)
-								{
-									for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
-										$_dir = dirname($_dir);
-
-									if(!$_dir || $_dir === '.') break;
-
-									if(is_file($_dir.'/wp-load.php'))
-										return (self::$static['wp_load'][$cache_entry] = $_dir.'/wp-load.php');
-								}
-							unset($_i, $__i, $_dirname, $_dir);
-
-							if($fallback_on_dev_dir) // Fallback on dev copy?
-								{
-									if(is_string($fallback_on_dev_dir))
-										$dev_dir = $fallback_on_dev_dir;
-									else $dev_dir = 'E:/EasyPHP/wordpress';
-
-									if(is_file($dev_dir.'/wp-load.php'))
-										return (self::$static['wp_load'][$cache_entry] = $dev_dir.'/wp-load.php');
-								}
-							return (self::$static['wp_load'][$cache_entry] = '');
-						}
-					else throw new exception( // Detected invalid arguments.
+					if(!is_bool($get_last_value) || !is_bool($check_abspath)
+					   || !(is_null($fallback) || is_bool($fallback) || is_string($fallback))
+					) throw new exception( // Fail here; detected invalid arguments.
 						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 					);
+					if($get_last_value && isset(self::$static['wp_load']))
+						return self::$static['wp_load'];
+
+					if($check_abspath && defined('ABSPATH') && is_file($_wp_load = ABSPATH.'wp-load.php'))
+						return (self::$static['wp_load'] = $_wp_load);
+
+					if(($_wp_load = self::locate('/wp-load.php')))
+						return (self::$static['wp_load'] = $_wp_load);
+
+					if(!isset($fallback)) // Auto-detection.
+						$fallback = defined('___DEV_KEY_OK');
+
+					if($fallback) // Fallback on dev copy?
+						{
+							if(is_string($fallback))
+								$dev_dir = self::n_dir_seps($fallback);
+							else $dev_dir = 'E:/EasyPHP/wordpress';
+
+							if(is_file($_wp_load = $dev_dir.'/wp-load.php'))
+								return (self::$static['wp_load'] = $_wp_load);
+						}
+					unset($_wp_load); // Housekeeping.
+
+					return (self::$static['wp_load'] = ''); // Failure.
+				}
+
+			/**
+			 * Locates a specific directory/file path.
+			 *
+			 * @param string $dir_file A specific directory/file path.
+			 *
+			 * @param string $starting_dir Optional. A specific directory to start searching from.
+			 *    Defaults to the directory of this file (e.g. `__DIR__`).
+			 *
+			 * @return string Directory/file path (if found); else an empty string.
+			 *    The search will continue until there are no more directories to search through.
+			 *    However, there is an upper limit of 100 directories maximum.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$dir_file`` or ``$starting_dir`` are empty.
+			 */
+			public static function locate($dir_file, $starting_dir = __DIR__)
+				{
+					if(!is_string($dir_file) || !$dir_file || !is_string($starting_dir) || !$starting_dir)
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					$dir_file     = ltrim(self::n_dir_seps($dir_file), '/');
+					$starting_dir = self::n_dir_seps($starting_dir);
+
+					for($_i = 0, $_dir = $starting_dir; $_i <= 100; $_i++)
+						{
+							if($_i > 0) $_dir = dirname($_dir); // Up a directory.
+							if(!$_dir || $_dir === '.') break; // Search complete?
+
+							if(is_file($_dir.'/'.$dir_file))
+								return $_dir.'/'.$dir_file;
+						}
+					unset($_i, $_dir); // Housekeeping.
+
+					return ''; // Failure.
 				}
 
 			/**
@@ -431,7 +444,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 								if(file_put_contents($temp_deps, $temp_deps_contents))
 									return $temp_deps;
 						}
-					return ''; // Default return value.
+					return ''; // Failure.
 				}
 
 			/**
@@ -507,7 +520,7 @@ if(websharks_core_v000000_dev::is_autoload())
 			throw new exception(websharks_core_v000000_dev::no_wp_msg());
 
 		if(!defined('WPINC')) // Need to load WordPress?
-			include_once websharks_core_v000000_dev::wp_load();
+			include_once websharks_core_v000000_dev::wp_load(TRUE);
 
 		if(!class_exists('\\websharks_core_v000000_dev\\framework'))
 			include_once websharks_core_v000000_dev::framework();
@@ -515,7 +528,7 @@ if(websharks_core_v000000_dev::is_autoload())
 /**
  * The WebSharks™ Core is in WordPress?
  */
-if(defined('WPINC')) // We can stop here.
+if(defined('WPINC')) // This is NOT direct access.
 	{
 		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 

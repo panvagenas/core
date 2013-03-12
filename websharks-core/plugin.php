@@ -46,7 +46,7 @@ if(!defined('WPINC'))
 include_once dirname(__FILE__).'/deps.php';
 
 /**
- * Check dependencies (and load/include plugin; if possible).
+ * Check dependencies (and load framework; if possible).
  */
 if(deps_websharks_core_v000000_dev::check('WebSharks™ Core', 'websharks-core') === TRUE)
-	include_once dirname(__FILE__).'/include.php';
+	include_once dirname(__FILE__).'/framework.php';
