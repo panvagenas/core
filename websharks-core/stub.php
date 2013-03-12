@@ -492,7 +492,7 @@ if(websharks_core_v000000_dev::is_webphar())
 		if(!websharks_core_v000000_dev::can_phar())
 			throw new exception(websharks_core_v000000_dev::cant_phar_msg());
 
-		Phar::webPhar();
+		Phar::webPhar('', '', '', array(), 'websharks_core_v000000_dev::webPhar_rewriter');
 
 		return; // We can stop here.
 	}

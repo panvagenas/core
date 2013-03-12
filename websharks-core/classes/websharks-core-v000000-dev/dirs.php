@@ -1357,9 +1357,8 @@ namespace websharks_core_v000000_dev
 
 					if($strip_ws || $compress) // Stripping whitespace or compressing?
 						{
-							$_strippable_extensions   = array('php');
-							$_compressable_extensions = array('txt', 'html', 'php', 'css', 'js',
-							                                  'ini', 'csv', 'sql', 'json', 'xml', 'svg');
+							$_strippable_extensions   = array('inc', 'php');
+							$_compressable_extensions = array('inc', 'php', 'phps'); // These are supported by webPhar.
 							$_temp_dir                = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
