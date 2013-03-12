@@ -1391,7 +1391,10 @@ namespace websharks_core_v000000_dev
 							$_compressable_extensions = array('txt', 'html', 'htmls',
 							                                  'php', 'phps', 'inc', 'css', 'js',
 							                                  'ini', 'csv', 'sql', 'json', 'xml', 'svg');
-							$_temp_dir                = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
+							// While MANY extensions are easily compressable; webPhar auto-decompresses PHP files only.
+							$_compressable_extensions = array('php', 'phps', 'inc'); // webPhar-compatible compression.
+
+							$_temp_dir = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
 							$_temp_dir_iterator = $this->iterate($_temp_dir);
