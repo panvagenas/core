@@ -213,7 +213,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 					// Do NOT allow double dots in a URI value.
 
 					if(strpos($internal_uri_value, '..') !== FALSE)
-						exit('dots'); // return FALSE; // 403 (forbidden).
+						return FALSE; // 403 (forbidden).
 
 					// Current PHAR file with stream prefix.
 
@@ -233,15 +233,15 @@ if(!class_exists('websharks_core_v000000_dev'))
 								$_dir = dirname($_dir);
 
 							if(strcasecmp(basename($_dir), 'app_data') === 0) // Windows®
-								exit('app_data'); // return FALSE; // 403 (forbidden) response.
+								return FALSE; // 403 (forbidden) response.
 
 							else if(is_file($_dir.'/.htaccess')) // Apache-compatible servers.
 								{
 									if(!is_readable($_dir.'/.htaccess'))
-										exit('htaccess'); // return FALSE; // 403 (forbidden); deny if unreadable.
+										return FALSE; // 403 (forbidden); deny if unreadable.
 
 									if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
-										exit('htaccess'); // return FALSE; // 403 (forbidden).
+										exit($phar.$internal_uri_value); // return FALSE; // 403 (forbidden).
 								}
 							if(!$_dir || $_dir === '.') break;
 						}
