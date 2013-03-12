@@ -250,6 +250,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					// Let's wrap this up now :-)
 
+					readfile($phar.$internal_uri_value);
+					exit;
+
 					return $internal_uri_value;
 				}
 

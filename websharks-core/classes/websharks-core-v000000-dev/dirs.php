@@ -1352,7 +1352,7 @@ namespace websharks_core_v000000_dev
 					// The `#!is-phar!#` comment is optional here; because whitespace/comments may get stripped via ``php_strip_whitespace()`` call above.
 
 					$_phar = new \Phar($to, $this->iteration_flags());
-					$_phar->startBuffering();
+					$_phar->startBuffering(); // Buffer until we're done here.
 					$_phar->setStub($_stub_file_contents);
 
 					if($strip_ws || $compress) // Stripping whitespace or compressing?
