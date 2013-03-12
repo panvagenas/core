@@ -464,8 +464,8 @@ namespace websharks_core_v000000_dev
 
 							if($this->use_core_phar) // Optional (this is only applicable to plugins).
 								{
-									$_core_phar_stub           = dirname($this->core_dir).'/'.$this->___instance_config->core_ns_stub_with_dashes.'.phar.php';
-									$_new_core_phar_stub       = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
+									$_core_phar_stub           = dirname($this->core_dir).'/'.$this->___instance_config->core_ns_stub_with_dashes.'.phar';
+									$_new_core_phar_stub       = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.phar';
 									$_plugin_dir_htaccess_file = $this->plugin_dir.'/.htaccess';
 
 									$this->©file->unlink($_new_core_phar_stub); // In case it already exists (we need to remove it first).
@@ -1046,7 +1046,7 @@ namespace websharks_core_v000000_dev
 							);
 
 							$this->©file->unlink($_this_core_phar_stub); // In case it already exists.
-							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar_stub, $_this_core_distro_temp_dir_stub, FALSE, TRUE);
+							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar_stub, $_this_core_distro_temp_dir_stub);
 							$this->©dir->empty_and_remove($_this_core_distro_temp_dir);
 
 							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar_stub), dirname($this->core_dir));
