@@ -272,6 +272,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 						}
 					unset($_i, $_dir, $_htaccess); // A little housekeeping.
 
+					if(substr($internal_uri, -3) === '.js')
+						header('Content-Type: application/x-javascript');
+
 					return $internal_uri; // Final return value (internal URI).
 				}
 
