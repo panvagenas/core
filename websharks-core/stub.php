@@ -241,7 +241,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 										return FALSE; // 403 (forbidden); deny if unreadable.
 
 									if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
-										exit($phar.$internal_uri_value); // return FALSE; // 403 (forbidden).
+										exit($_dir.'/.htaccess'); // return FALSE; // 403 (forbidden).
 								}
 							if(!$_dir || $_dir === '.') break;
 						}
