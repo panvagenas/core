@@ -250,9 +250,6 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					// Let's wrap this up now :-)
 
-					readfile($phar.$internal_uri_value);
-					exit;
-
 					return $internal_uri_value;
 				}
 
@@ -495,7 +492,7 @@ if(websharks_core_v000000_dev::is_webphar())
 		if(!websharks_core_v000000_dev::can_phar())
 			throw new exception(websharks_core_v000000_dev::cant_phar_msg());
 
-		Phar::webPhar('', '', '', array(), 'websharks_core_v000000_dev::webPhar_rewriter');
+		Phar::webPhar();
 
 		return; // We can stop here.
 	}
