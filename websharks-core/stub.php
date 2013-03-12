@@ -52,9 +52,16 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @param string $file An absolute file path.
 			 *
 			 * @return boolean Stub file loaded by the PHAR stub?
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
 			 */
 			public static function is_phar_stub($file)
 				{
+					if(!is_string($file) || !$file)
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+
 					if(!self::is_phar())
 						return FALSE;
 
@@ -205,10 +212,16 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @return string|boolean Boolean An internal URI; else FALSE if denying access.
 			 *
+			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If this is somehow called upon w/o Phar being enabled or even possible.
 			 */
-			public static function webPhar_rewriter($uri_or_path_info)
+			public static function web_phar_rewriter($uri_or_path_info)
 				{
+					if(!is_string($uri_or_path_info) || !strlen($uri_or_path_info))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+
 					if(!self::is_phar() || !self::can_phar() || !self::is_webphar())
 						if(self::is_phar() && !self::can_phar()) // Be verbose.
 							throw new exception(self::cant_phar_msg());
@@ -272,10 +285,117 @@ if(!class_exists('websharks_core_v000000_dev'))
 						}
 					unset($_i, $_dir, $_htaccess); // A little housekeeping.
 
-					if(substr($internal_uri, -3) === '.js')
-						header('Content-Type: application/x-javascript');
+					// Process MIME type headers.
+
+					$mime_types = self::mime_types();
+					$extension  = self::extension($internal_uri);
+
+					if($extension && !empty($mime_types[$extension]))
+						header('Content-Type: '.$mime_types[$extension]);
 
 					return $internal_uri; // Final return value (internal URI).
+				}
+
+			/**
+			 * A map of MIME types (for webPhar).
+			 *
+			 * @return array A map of MIME types (for webPhar).
+			 */
+			public static function web_phar_mime_types()
+				{
+					$mime_types = self::mime_types();
+
+					foreach(self::web_phar_compressable_extensions() as $_extension)
+						$mime_types[$_extension] = Phar::PHP;
+					unset($_extension);
+
+					$mime_types['phps'] = $mime_types['htmls'] = Phar::PHPS;
+
+					return $mime_types;
+				}
+
+			/**
+			 * Compressable extensions.
+			 *
+			 * @return array Those we make compatible.
+			 *
+			 * @see \websharks_core_v000000_dev\dirs\phar_to()
+			 */
+			public static function web_phar_compressable_extensions()
+				{
+					return array(
+						'txt', 'md',
+						'ini', 'csv',
+						'log', 'sql', 'pot',
+						'css', 'js', 'json',
+						'php', 'phps', 'inc',
+						'xml', 'html', 'htm', 'htmls',
+						'svg'
+					);
+				}
+
+			/**
+			 * A map of MIME types (for headers).
+			 *
+			 * @return array A map of MIME types (for headers).
+			 */
+			public static function mime_types()
+				{
+					$utf8 = '; charset=UTF-8';
+
+					return array(
+						'txt'  => 'text/plain'.$utf8, 'md' => 'text/plain'.$utf8,
+						'ini'  => 'text/plain'.$utf8, 'csv' => 'text/csv'.$utf8,
+						'log'  => 'text/plain'.$utf8, 'sql' => 'text/plain'.$utf8, 'pot' => 'text/plain'.$utf8,
+
+						'css'  => 'text/css'.$utf8, 'js' => 'application/x-javascript'.$utf8, 'json' => 'application/json'.$utf8,
+
+						'php'  => 'text/html'.$utf8, 'phps' => 'text/html'.$utf8, 'inc' => 'text/html'.$utf8,
+						'xml'  => 'text/xml'.$utf8, 'html' => 'text/html'.$utf8, 'htm' => 'text/html'.$utf8, 'htmls' => 'text/html'.$utf8,
+
+						'pdf'  => 'application/pdf', 'odt' => 'application/vnd.oasis.opendocument.text', 'doc' => 'application/msword',
+
+						'bmp'  => 'image/bmp',
+						'png'  => 'image/png', 'gif' => 'image/gif',
+						'jpg'  => 'image/jpeg', 'jpeg' => 'image/jpeg', 'jpe' => 'image/jpeg',
+						'tif'  => 'image/tiff', 'tiff' => 'image/tiff',
+						'ico'  => 'image/x-icon', 'svg' => 'image/svg+xml',
+
+						'ttf'  => 'application/x-font-ttf', 'otf' => 'application/x-font-otf',
+						'woff' => 'application/x-font-woff', 'eot' => 'application/vnd.ms-fontobject',
+
+						'tar'  => 'application/x-tar', 'tgz' => 'application/x-gtar', 'gz' => 'application/gzip',
+						'7z'   => 'application/x-7z-compressed', 'zip' => 'application/zip', 'phar' => 'application/php',
+
+						'swf'  => 'application/x-shockwave-flash',
+
+						'midi' => 'audio/midi', 'mid' => 'audio/midi',
+						'mp3'  => 'audio/mp3', 'wav' => 'audio/wav',
+
+						'avi'  => 'video/avi',
+						'mov'  => 'movie/quicktime', 'qt' => 'video/quicktime',
+						'mpg'  => 'video/mpeg', 'mpeg' => 'video/mpeg', 'mp4' => 'video/mp4', 'webm' => 'video/webm',
+						'ogg'  => 'video/ogg', 'ogv' => 'video/ogg',
+						'flv'  => 'video/x-flv',
+					);
+				}
+
+			/**
+			 * Gets a file extension (lowercase).
+			 *
+			 * @param string $file A file path, or just a file name.
+			 *
+			 * @return string File extension (lowercase).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public static function extension($file)
+				{
+					if(!is_string($file) || !$file)
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					return strtolower(ltrim((string)strrchr(basename($file), '.'), '.'));
 				}
 
 			/**
@@ -393,7 +513,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @param string $dir_file A specific directory/file path.
 			 *
 			 * @param string $starting_dir Optional. A specific directory to start searching from.
-			 *    Defaults to the directory of this file (e.g. `__DIR__`).
+			 *    `__DIR__` is NOT PHP v5.2 compatible; so we use a string value and convert it dynamically.
+			 *    Defaults to the directory of this file (e.g. `'__DIR__'`).
 			 *
 			 * @return string Directory/file path (if found); else an empty string.
 			 *    The search will continue until there are no more directories to search through.
@@ -402,13 +523,14 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$dir_file`` or ``$starting_dir`` are empty.
 			 */
-			public static function locate($dir_file, $starting_dir = __DIR__)
+			public static function locate($dir_file, $starting_dir = '__DIR__')
 				{
 					if(!is_string($dir_file) || !$dir_file || !is_string($starting_dir) || !$starting_dir)
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
 					$dir_file     = ltrim(self::n_dir_seps($dir_file), '/');
+					$starting_dir = ($starting_dir === '__DIR__') ? dirname(__FILE__) : $starting_dir;
 					$starting_dir = self::n_dir_seps($starting_dir);
 
 					for($_i = 0, $_dir = $starting_dir; $_i <= 100; $_i++)
@@ -520,54 +642,6 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			/**
-			 * MIME type mapping for webPhar.
-			 *
-			 * @var array MIME type mapping for webPhar.
-			 */
-			public static $webPhar_mimes = array(
-				'phps'  => Phar::PHPS,
-				'c'     => 'text/plain',
-				'cc'    => 'text/plain',
-				'cpp'   => 'text/plain',
-				'c++'   => 'text/plain',
-				'dtd'   => 'text/plain',
-				'h'     => 'text/plain',
-				'log'   => 'text/plain',
-				'rng'   => 'text/plain',
-				'txt'   => 'text/plain',
-				'xsd'   => 'text/plain',
-				'php'   => Phar::PHP,
-				'inc'   => Phar::PHP,
-				'avi'   => 'video/avi',
-				'bmp'   => 'image/bmp',
-				'css'   => 'text/css',
-				'gif'   => 'image/gif',
-				'htm'   => 'text/html',
-				'html'  => 'text/html',
-				'htmls' => 'text/html',
-				'ico'   => 'image/x-ico',
-				'jpe'   => 'image/jpeg',
-				'jpg'   => 'image/jpeg',
-				'jpeg'  => 'image/jpeg',
-				'js'    => Phar::PHP,
-				'midi'  => 'audio/midi',
-				'mid'   => 'audio/midi',
-				'mod'   => 'audio/mod',
-				'mov'   => 'movie/quicktime',
-				'mp3'   => 'audio/mp3',
-				'mpg'   => 'video/mpeg',
-				'mpeg'  => 'video/mpeg',
-				'pdf'   => 'application/pdf',
-				'png'   => 'image/png',
-				'swf'   => 'application/shockwave-flash',
-				'tif'   => 'image/tiff',
-				'tiff'  => 'image/tiff',
-				'wav'   => 'audio/wav',
-				'xbm'   => 'image/xbm',
-				'xml'   => 'text/xml',
-			);
-
-			/**
 			 * Regarding a lack of support for Php Archives.
 			 *
 			 * WebSharks™ temporary WP deps class (base64 encoded).
@@ -591,8 +665,8 @@ if(websharks_core_v000000_dev::is_webphar())
 		if(websharks_core_v000000_dev::is_phar_stub(__FILE__))
 			exit('Do NOT access this file directly: '.basename(__FILE__));
 
-		Phar::webPhar('', '', '', websharks_core_v000000_dev::$webPhar_mimes,
-		              'websharks_core_v000000_dev::webPhar_rewriter');
+		Phar::webPhar('', '', '', websharks_core_v000000_dev::web_phar_mime_types(),
+		              'websharks_core_v000000_dev::web_phar_rewriter');
 
 		return; // We can stop here.
 	}

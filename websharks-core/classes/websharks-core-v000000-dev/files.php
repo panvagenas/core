@@ -668,18 +668,23 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Common file extensions.
+			 * A map of MIME types (for headers).
 			 *
-			 * @var array Common file extensions.
+			 * @return array A map of MIME types (for headers).
 			 */
-			public $extensions = array(
-				'txt', 'html', 'htmls',
-				'php', 'phps', 'inc',
-				'css', 'js',
-				'png', 'jpg', 'jpeg', 'gif',
-				'swf', 'flv', 'mp4', 'webm',
-				'mp3', 'wav',
-				'zip', 'tar', 'gz', 'phar'
-			);
+			public function mime_types()
+				{
+					return \websharks_core_v000000_dev::mime_types();
+				}
+
+			/**
+			 * An array of known file extensions.
+			 *
+			 * @return array Extensions.
+			 */
+			public function extensions()
+				{
+					return array_keys($this->mime_types());
+				}
 		}
 	}

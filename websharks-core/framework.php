@@ -15,6 +15,12 @@ namespace websharks_core_v000000_dev
 			exit('Do NOT access this file directly: '.basename(__FILE__));
 
 		/**
+		 * Load WebSharks™ Core.
+		 */
+		if(!class_exists('\\'.__NAMESPACE__))
+			include_once dirname(__FILE__).'/stub.php';
+
+		/**
 		 * Load WebSharks™ Core framework.
 		 */
 		if(!class_exists('\\'.__NAMESPACE__.'\\framework'))
