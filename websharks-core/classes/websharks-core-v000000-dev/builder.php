@@ -443,22 +443,25 @@ namespace websharks_core_v000000_dev
 							                sprintf($this->i18n(' Every file in the entire plugin directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version)
 							);
 
-							// Copy WebSharks™ Core stub into the main plugin directory.
+							// Copy WebSharks™ Core stub into the main plugin directory?
 
-							$_core_stub     = $this->core_dir.'/stub.php';
-							$_new_core_stub = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
+							if(!$this->use_core_phar) // Only if NOT using the core as a single PHAR file.
+								{
+									$_core_stub     = $this->core_dir.'/stub.php';
+									$_new_core_stub = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
 
-							$this->©file->unlink($_new_core_stub); // In case it already exists (we need to remove it first).
-							$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_stub), dirname($this->plugin_dir));
+									$this->©file->unlink($_new_core_stub); // In case it already exists (we need to remove it first).
+									$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_stub), dirname($this->plugin_dir));
 
-							$this->©file->copy_to($_core_stub, $_new_core_stub);
-							$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_stub), dirname($this->plugin_dir));
+									$this->©file->copy_to($_core_stub, $_new_core_stub);
+									$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_stub), dirname($this->plugin_dir));
 
-							$successes->add(__METHOD__.'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
-							                sprintf($this->i18n('The WebSharks™ Core stub has been added to the plugin directory: `%1$s`.'), $_new_core_stub).
-							                $this->i18n(' This file has also been added to the list of GIT-tracked files in this plugin repo.')
-							);
-							unset($_core_stub, $_new_core_stub);
+									$successes->add(__METHOD__.'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
+									                sprintf($this->i18n('The WebSharks™ Core stub has been added to the plugin directory: `%1$s`.'), $_new_core_stub).
+									                $this->i18n(' This file has also been added to the list of GIT-tracked files in this plugin repo.')
+									);
+									unset($_core_stub, $_new_core_stub);
+								}
 
 							// Bundle the WebSharks™ Core PHP Archive stub; instead of the full directory?
 
@@ -486,8 +489,9 @@ namespace websharks_core_v000000_dev
 
 									$successes->add(__METHOD__.'#new_core_phar_stub_added_to_plugin_dir', get_defined_vars(),
 									                sprintf($this->i18n('The WebSharks™ Core PHAR stub for `v%1$s`; has been copied to: `%2$s`.'), $this->___instance_config->core_version, $_new_core_phar_stub).
-									                $this->i18n(' This file (a compressed PHP Archive); has been added to the list of GIT-tracked files in this plugin repo. The original stub file has been replaced by this PHAR file.').
-									                sprintf($this->i18n(' The original full WebSharks™ Core directory has been removed from the list of GIT-tracked files in this repo: `%1$s`. It will be excluded from the final distro.'), $_new_core_dir)
+									                $this->i18n(' This file (a compressed PHP Archive); has been added to the list of GIT-tracked files in this plugin repo.').
+									                sprintf($this->i18n(' The original full WebSharks™ Core directory has been removed from the list of GIT-tracked files'.
+									                                    ' in this repo: `%1$s`. It will be excluded from the final distro.'), $_new_core_dir)
 									);
 									unset($_core_phar_stub, $_new_core_phar_stub, $_plugin_dir_htaccess_file);
 								}
@@ -1046,7 +1050,7 @@ namespace websharks_core_v000000_dev
 							);
 
 							$this->©file->unlink($_this_core_phar_stub); // In case it already exists.
-							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar_stub, $_this_core_distro_temp_dir_stub);
+							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar_stub, $_this_core_distro_temp_dir_stub, FALSE, TRUE);
 							$this->©dir->empty_and_remove($_this_core_distro_temp_dir);
 
 							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar_stub), dirname($this->core_dir));
