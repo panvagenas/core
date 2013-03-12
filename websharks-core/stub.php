@@ -198,8 +198,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 						{
 							$_apache_lookup = apache_lookup_uri((string)$_SERVER['REQUEST_URI']);
 
-							if(!empty($_apache_lookup['path_info']))
-								$path_info = (string)$_apache_lookup['path_info'];
+							if(!empty($_apache_lookup->path_info))
+								$path_info = (string)$_apache_lookup->path_info;
 							unset($_apache_lookup); // Housekeeping.
 						}
 					$path_info = (!empty($path_info)) ? $path_info : '/'.basename(__FILE__);
