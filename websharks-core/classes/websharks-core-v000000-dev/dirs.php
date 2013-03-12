@@ -1356,7 +1356,7 @@ namespace websharks_core_v000000_dev
 							$_strippable_extensions   = array('php');
 							$_compressable_extensions = array('txt', 'html', 'php', 'css', 'js',
 							                                  'ini', 'csv', 'sql', 'json', 'xml', 'svg');
-							$_temp_dir                = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id();
+							$_temp_dir                = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
 							$_temp_dir_iterator = $this->iterate($_temp_dir);
@@ -1376,8 +1376,8 @@ namespace websharks_core_v000000_dev
 							unset($_dir_file, $_path, $_phar_path, $_extension);
 
 							$_phar->buildFromDirectory($_temp_dir, '/\.(?:'.implode('|', $_compressable_extensions).')$/i');
-							#if($compress && $_phar->count()) // Compressing files?
-							#	$_phar->compressFiles(\Phar::GZ);
+							if($compress && $_phar->count()) // Compressing files?
+								$_phar->compressFiles(\Phar::GZ);
 
 							foreach($_temp_dir_iterator as $_dir_file)
 								{
@@ -1618,9 +1618,7 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);
 
-					if(!isset($flags)) // Defaults.
-						$flags = $this->iteration_flags();
-					if(isset($x_flags)) $flags = $flags | $x_flags;
+					$flags = $this->iteration_flags($x_flags, $flags);
 
 					return new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, $flags));
 				}
@@ -1628,12 +1626,24 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Default directory iteration flags.
 			 *
-			 * @return integer Default flags for ``\RecursiveDirectoryIterator``.
+			 * @param null|integer $x_flags The defaults are recommended; but extra flags can be passed in.
+			 *
+			 * @param null|integer $flags The defaults are recommended; but specific flags can be passed in if you prefer.
+			 *    The difference between ``$x_flags`` and ``$flags``; is that ``$flags`` will override all defaults;
+			 *    whereas ``$x_flags`` will simply add additional flags to the existing defaults.
+			 *
+			 * @return integer Flags for ``\RecursiveDirectoryIterator``.
 			 */
-			public function iteration_flags()
+			public function iteration_flags($x_flags = NULL, $flags = NULL)
 				{
-					return \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_SELF |
-					       \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+					$this->check_arg_types(array('null', 'integer'), array('null', 'integer'), func_get_args());
+
+					if(!isset($flags)) // Defaults.
+						$flags = \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_SELF |
+						         \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+					if(isset($x_flags)) $flags = $flags | $x_flags;
+
+					return $flags;
 				}
 
 			/**
