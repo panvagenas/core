@@ -2909,10 +2909,10 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 							for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
 								$_dir = dirname($_dir);
 
+							if(!$_dir || $_dir === '.') break;
+
 							if(is_file($_dir.'/wp-load.php'))
 								return (self::$static['wp_load'][$cache_entry] = $_dir.'/wp-load.php');
-
-							if(!$_dir || $_dir === '.') break;
 						}
 					unset($_i, $__i, $_dirname, $_dir);
 

@@ -232,24 +232,25 @@ if(!class_exists('websharks_core_v000000_dev'))
 							for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
 								$_dir = dirname($_dir);
 
-							if(strcasecmp(basename($_dir), 'app_data') === 0) // Windows®
-								return FALSE; // 403 (forbidden) response.
+							if(!$_dir || $_dir === '.') break;
 
-							else if(is_file($_dir.'/.htaccess')) // Apache-compatible servers.
+							if(strcasecmp(basename($_dir), 'app_data') === 0)
+								return FALSE; // Windows® 403 (forbidden).
+
+							else if(is_file($_dir.'/.htaccess')) // Apache.
 								{
 									if(!is_readable($_dir.'/.htaccess'))
-										return FALSE; // 403 (forbidden); deny if unreadable.
+										return FALSE; // 403 (forbidden).
 
 									if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
-										exit($_dir.'/.htaccess'); // return FALSE; // 403 (forbidden).
+										return FALSE; // 403 (forbidden).
 								}
-							if(!$_dir || $_dir === '.') break;
 						}
 					unset($_i, $__i, $_dirname, $_dir);
 
 					// Let's wrap this up now :-)
 
-					return $internal_uri_value; // Rewritten.
+					return $internal_uri_value;
 				}
 
 			/**
@@ -353,10 +354,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 									for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
 										$_dir = dirname($_dir);
 
+									if(!$_dir || $_dir === '.') break;
+
 									if(is_file($_dir.'/wp-load.php'))
 										return (self::$static['wp_load'][$cache_entry] = $_dir.'/wp-load.php');
-
-									if(!$_dir || $_dir === '.') break;
 								}
 							unset($_i, $__i, $_dirname, $_dir);
 
