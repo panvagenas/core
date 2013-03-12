@@ -1347,7 +1347,7 @@ namespace websharks_core_v000000_dev
 					$_stub_file_contents = preg_replace('/(static\s+\$is_phar\s*)([^;]*)(;)(\s*#\!is\-phar\!#)?/i', '${1}'.' = TRUE'.'${3}'.'${4}', $_stub_file_contents, 1);
 					// The `#!is-phar!#` comment is optional here; because whitespace/comments may get stripped via ``php_strip_whitespace()`` call above.
 
-					$_phar = new \Phar($to);
+					$_phar = new \Phar($to, $this->iteration_flags());
 					$_phar->startBuffering();
 					$_phar->setStub($_stub_file_contents);
 
@@ -1618,12 +1618,22 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);
 
-					if(!isset($flags)) // WebSharks™ defaults.
-						$flags = \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_SELF |
-						         \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+					if(!isset($flags)) // Defaults.
+						$flags = $this->iteration_flags();
 					if(isset($x_flags)) $flags = $flags | $x_flags;
 
 					return new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, $flags));
+				}
+
+			/**
+			 * Default directory iteration flags.
+			 *
+			 * @return integer Default flags for ``\RecursiveDirectoryIterator``.
+			 */
+			public function iteration_flags()
+				{
+					return \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_SELF |
+					       \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
 				}
 
 			/**
