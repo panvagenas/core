@@ -650,5 +650,36 @@ namespace websharks_core_v000000_dev
 
 					return strtolower(ltrim((string)strrchr(basename($file), '.'), '.'));
 				}
+
+			/**
+			 * File has a common (known) extension?
+			 *
+			 * @param string $file A file path, or just a file name.
+			 *
+			 * @return boolean TRUE if the ``$file`` has a common extension.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function has_extension($file)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return in_array($this->extension($file), $this->extensions, TRUE);
+				}
+
+			/**
+			 * Common file extensions.
+			 *
+			 * @var array Common file extensions.
+			 */
+			public $extensions = array(
+				'txt', 'html', 'htmls',
+				'php', 'phps', 'inc',
+				'css', 'js',
+				'png', 'jpg', 'jpeg', 'gif',
+				'swf', 'flv', 'mp4', 'webm',
+				'mp3', 'wav',
+				'zip', 'tar', 'gz', 'phar'
+			);
 		}
 	}

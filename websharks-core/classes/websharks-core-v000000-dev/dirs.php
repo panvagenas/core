@@ -198,8 +198,7 @@ namespace websharks_core_v000000_dev
 						}
 					unset($_real_from, $_real_to); // Housekeeping.
 
-					$from = (is_file($from) || // Or if we can match one of these common extensions.
-					         preg_match('/\.(:?txt|html|php|css|js|png|jpg|gif|swf|mp[34]|wav|zip|tar|gz)$/', $from)) ? dirname($from) : $from;
+					$from = (is_file($from) || $this->©file->has_extension($from)) ? dirname($from) : $from;
 					$from = preg_split('/\//', $this->n_seps($from));
 					$to   = preg_split('/\//', $this->n_seps($to));
 
@@ -1357,8 +1356,10 @@ namespace websharks_core_v000000_dev
 
 					if($strip_ws || $compress) // Stripping whitespace or compressing?
 						{
-							$_strippable_extensions   = array('inc', 'php');
-							$_compressable_extensions = array('inc', 'php', 'phps'); // These are supported by webPhar.
+							$_strippable_extensions   = array('php');
+							$_compressable_extensions = array('txt', 'html', 'htmls',
+							                                  'php', 'phps', 'inc', 'css', 'js',
+							                                  'ini', 'csv', 'sql', 'json', 'xml', 'svg');
 							$_temp_dir                = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
