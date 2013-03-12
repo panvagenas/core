@@ -81,7 +81,7 @@ namespace websharks_core_v000000_dev
 							if(defined('LOCALHOST') && LOCALHOST)
 								$this->static['is_localhost'] = TRUE;
 
-							else if(preg_match('/localhost|127\.0\.0\.1/i', $this->©url->current_host()))
+							else if(preg_match('/(?:localhost|127\.0\.0\.1|\.loc$)/i', $this->©url->current_host()))
 								$this->static['is_localhost'] = TRUE;
 						}
 					return $this->static['is_localhost'];
@@ -459,7 +459,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function prep_for_cli_dev_procedure()
 				{
-					if(PHP_SAPI !== 'cli')
+					if(!$this->is_cli())
 						throw $this->©exception(
 							__METHOD__.'#not_cli', NULL,
 							$this->i18n('NOT a command-line interface.')

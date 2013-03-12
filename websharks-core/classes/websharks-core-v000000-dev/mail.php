@@ -110,7 +110,7 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Email failure. Missing and/or invalid attachment `path` value.').
 									sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
 								);
-							else if(!file_exists($_attachment['path']))
+							else if(!is_file($_attachment['path']))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_attachment_path', compact('mail', '_attachment'),
 									$this->i18n('Email failure. Nonexistent attachment `path` value.').

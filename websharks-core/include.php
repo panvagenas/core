@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSharks™ Core Framework.
+ * Framework.
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -18,5 +18,5 @@ namespace websharks_core_v000000_dev
 		 * Load WebSharks™ Core framework.
 		 */
 		if(!class_exists('\\'.__NAMESPACE__.'\\framework'))
-			include_once dirname(__FILE__).'/classes/websharks-core-v000000-dev/framework.php';
+			include_once dirname(__FILE__).'/classes/'.str_replace('_', '-', __NAMESPACE__).'/framework.php';
 	}

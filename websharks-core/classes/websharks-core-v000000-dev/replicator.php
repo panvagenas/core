@@ -112,7 +112,7 @@ namespace websharks_core_v000000_dev
 
 					// Set property value ``$this->can_replicate``, upon class construction.
 
-					if(PHP_SAPI !== 'cli')
+					if(!$this->©env->is_cli())
 						$this->can_replicate = FALSE; // Not the command line.
 
 					else if(!defined('___REPLICATOR') || !___REPLICATOR)
@@ -135,7 +135,7 @@ namespace websharks_core_v000000_dev
 					$this->core_dir            = $this->©dir->n_seps(dirname(dirname(dirname(__FILE__))));
 					$this->plugin_dir          = ($plugin_dir) ? $this->©dir->n_seps($plugin_dir) : '';
 					$this->updating_plugin_dir = ($this->plugin_dir && $update_plugin_dir) ? TRUE : FALSE;
-					$this->to_version          = ($version) ? (string)$version : $this->___instance_config->core_ns_v_with_dashes;
+					$this->to_version          = ($version) ? (string)$version : $this->___instance_config->core_version;
 					$this->to_exclusions       = ($exclusions) ? $exclusions : array();
 
 					if(!preg_match($this->©string->regex_valid_ws_version, $this->to_version))

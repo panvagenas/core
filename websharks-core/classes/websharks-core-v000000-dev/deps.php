@@ -103,9 +103,8 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 							if($check_last_ok
 							   && is_array($last_ok = get_option('websharks_core__deps__last_ok'))
 							   && isset($last_ok['websharks_core_v000000_dev'], $last_ok['time'], $last_ok['php_version'], $last_ok['wp_version'])
-							   && $last_ok['time'] >= strtotime('-24 hours') && $last_ok['php_version'] === $php_version && $last_ok['wp_version'] === $wp_version
-							) // Return TRUE. A re-scan is NOT necessary; everything is still OK.
-								return TRUE;
+							   && $last_ok['time'] >= strtotime('-7 days') && $last_ok['php_version'] === $php_version && $last_ok['wp_version'] === $wp_version
+							) return TRUE; // Return TRUE. A re-scan is NOT necessary; everything is still OK.
 
 							// Else we need to run a full scan now.
 

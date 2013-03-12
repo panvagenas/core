@@ -61,7 +61,7 @@ namespace websharks_core_v000000_dev
 							if(static::is_handling_class_root_ns($ns_class)) // Handling class namespace?
 								{
 									foreach(static::$class_dirs as $_classes_dir)
-										if(file_exists($_classes_dir.'/'.$ns_class_file))
+										if(is_file($_classes_dir.'/'.$ns_class_file))
 											return include_once $_classes_dir.'/'.$ns_class_file;
 									unset($_classes_dir); // Housekeeping.
 								}

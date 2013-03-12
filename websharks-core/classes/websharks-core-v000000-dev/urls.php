@@ -598,7 +598,7 @@ namespace websharks_core_v000000_dev
 
 					$dir_or_file = $this->©dirs->n_seps($dir_or_file);
 
-					if($dir_or_file && ($realpath = @realpath($dir_or_file)))
+					if($dir_or_file && ($realpath = realpath($dir_or_file)))
 						$realpath = $this->©dirs->n_seps($dir_or_file);
 					else $realpath = '';
 
@@ -631,7 +631,7 @@ namespace websharks_core_v000000_dev
 
 					$dir_or_file = $this->©dirs->n_seps($dir_or_file);
 
-					if($dir_or_file && ($realpath = @realpath($dir_or_file)))
+					if($dir_or_file && ($realpath = realpath($dir_or_file)))
 						$realpath = $this->©dirs->n_seps($dir_or_file);
 					else $realpath = '';
 
@@ -662,7 +662,7 @@ namespace websharks_core_v000000_dev
 
 					$dir_or_file = $this->©dirs->n_seps($dir_or_file);
 
-					if($dir_or_file && ($realpath = @realpath($dir_or_file)))
+					if($dir_or_file && ($realpath = realpath($dir_or_file)))
 						$realpath = $this->©dirs->n_seps($dir_or_file);
 					else $realpath = '';
 
@@ -693,7 +693,7 @@ namespace websharks_core_v000000_dev
 
 					$dir_or_file = $this->©dirs->n_seps($dir_or_file);
 
-					if($dir_or_file && ($realpath = @realpath($dir_or_file)))
+					if($dir_or_file && ($realpath = realpath($dir_or_file)))
 						$realpath = $this->©dirs->n_seps($dir_or_file);
 					else $realpath = '';
 

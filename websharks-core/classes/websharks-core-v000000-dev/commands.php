@@ -328,6 +328,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return string The output from GIT; always a string.
 			 *
+			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If GIT returns a non-zero status; or an error message.
 			 */
 			public function git($args, $cwd_repo_dir)
@@ -349,10 +350,152 @@ namespace websharks_core_v000000_dev
 					if($git_status !== 0 || $git_errors->exist())
 						throw $this->©exception(
 							__METHOD__.'#issue', get_defined_vars(),
-							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status or error. Git said: `%2$s`'),
-							        $git_args, $git_errors->get_message())
+							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status (%2$s) or error. Git said: `%3$s`'),
+							        $git_args, $git_status, $git_errors->get_message())
 						);
 					return $git['output'];
+				}
+
+			/**
+			 * Gets current GIT branch for a given repo directory.
+			 *
+			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return string The current branch name; else an exception is thrown.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If GIT returns a non-zero status; or an error message.
+			 * @throws exception If unable to acquire the current GIT branch name.
+			 */
+			public function git_current_branch($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					if(!($branch = trim($this->git(($args = 'rev-parse --abbrev-ref HEAD'), $cwd_repo_dir))))
+						throw $this->©exception(
+							__METHOD__.'#issue', get_defined_vars(),
+							sprintf($this->i18n('Unable to acquire current GIT branch name for repo directory: `%1$s`.'), $cwd_repo_dir)
+						);
+					return $branch;
+				}
+
+			/**
+			 * Gets current GIT branches for a given repo directory.
+			 *
+			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return array The current branches; else an exception is thrown.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If GIT returns a non-zero status; or an error message.
+			 * @throws exception If unable to acquire the current GIT branches.
+			 */
+			public function git_current_branches($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					if(!($branches = trim($this->git(($args = 'branch'), $cwd_repo_dir))))
+						throw $this->©exception(
+							__METHOD__.'#issue', get_defined_vars(),
+							sprintf($this->i18n('Unable to acquire current GIT branches for repo directory: `%1$s`.'), $cwd_repo_dir)
+						);
+					$branches = preg_split('/[\*'."\r\n".']+/', $branches, -1, PREG_SPLIT_NO_EMPTY);
+					$branches = $this->©array->remove_empty_values_deep($this->©strings->trim_deep($branches));
+
+					foreach($branches as &$_branch) // Cleanup symbolic reference pointers.
+						if(strpos($_branch, '->') !== FALSE)
+							$_branch = trim(strstr($_branch, '->', TRUE));
+					unset($_branch); // Housekeeping.
+
+					return $branches;
+				}
+
+			/**
+			 * Gets latest GIT branch for a given repo directory.
+			 *
+			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return string The latest branch; else the `master` branch.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If GIT returns a non-zero status; or an error message.
+			 */
+			public function git_latest_branch($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					$branches = $this->git_current_branches($cwd_repo_dir);
+
+					usort($branches, 'version_compare');
+
+					if(($latest = array_pop($branches)))
+						return $latest;
+
+					return 'master'; // Default value.
+				}
+
+			/**
+			 * Gets latest GIT dev branch for a given repo directory.
+			 *
+			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return string The latest dev branch; else the `master` branch.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If GIT returns a non-zero status; or an error message.
+			 */
+			public function git_latest_dev_branch($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					$branches = $this->git_current_branches($cwd_repo_dir);
+
+					foreach($branches as $_key => $_branch)
+						if(!preg_match('/\-dev$/i', $_branch))
+							unset($branches[$_key]);
+					unset($_key, $_branch); // Housekeeping.
+
+					usort($branches, 'version_compare');
+
+					if(($latest = array_pop($branches)))
+						return $latest;
+
+					return 'master'; // Default value.
+				}
+
+			/**
+			 * Gets latest GIT stable branch for a given repo directory.
+			 *
+			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return string The latest stable branch; else the `master` branch.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If GIT returns a non-zero status; or an error message.
+			 */
+			public function git_latest_stable_branch($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					$branches = $this->git_current_branches($cwd_repo_dir);
+
+					foreach($branches as $_key => $_branch)
+						if(FALSE !== strpos($_branch, '-'))
+							if(!preg_match('/\-stable$/i', $_branch))
+								unset($branches[$_key]);
+					unset($_key, $_branch); // Housekeeping.
+
+					usort($branches, 'version_compare');
+
+					if(($latest = array_pop($branches)))
+						return $latest;
+
+					return 'master'; // Default value.
 				}
 
 			/**

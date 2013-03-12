@@ -213,7 +213,7 @@ namespace websharks_core_v000000_dev
 								{
 									foreach($_cache_files_glob as $_cache_file)
 										{
-											if(file_exists($_cache_file) && filemtime($_cache_file) < $max_age)
+											if(is_file($_cache_file) && filemtime($_cache_file) < $max_age)
 												if(is_writable($_cache_file) && unlink($_cache_file))
 													clearstatcache();
 										}
@@ -226,7 +226,7 @@ namespace websharks_core_v000000_dev
 								{
 									foreach($_cache_files_glob as $_cache_file)
 										{
-											if(file_exists($_cache_file) && filemtime($_cache_file) < $max_age - 3600)
+											if(is_file($_cache_file) && filemtime($_cache_file) < $max_age - 3600)
 												if(is_writable($_cache_file) && unlink($_cache_file))
 													clearstatcache();
 										}
@@ -438,7 +438,7 @@ namespace websharks_core_v000000_dev
 					$cache_part_file_path = $cache_dir.'/'.$cache_part_file;
 					$cache_part_file_url  = $this->©url->to_wp_abs_dir_or_file($cache_dir.'/'.$cache_part_file);
 
-					if(file_exists($cache_parts_file_path) && filemtime($cache_parts_file_path) > strtotime('-'.$this->©options->get('compressor.cache_expiration')))
+					if(is_file($cache_parts_file_path) && filemtime($cache_parts_file_path) > strtotime('-'.$this->©options->get('compressor.cache_expiration')))
 						if(is_array($_cached_parts = maybe_unserialize(file_get_contents($cache_parts_file_path))))
 							return $_cached_parts;
 					unset ($_cached_parts);
@@ -545,7 +545,7 @@ namespace websharks_core_v000000_dev
 					$cache_part_file_path = $cache_dir.'/'.$cache_part_file;
 					$cache_part_file_url  = $this->©url->to_wp_abs_dir_or_file($cache_dir.'/'.$cache_part_file);
 
-					if(file_exists($cache_parts_file_path) && filemtime($cache_parts_file_path) > strtotime('-'.$this->©options->get('compressor.cache_expiration')))
+					if(is_file($cache_parts_file_path) && filemtime($cache_parts_file_path) > strtotime('-'.$this->©options->get('compressor.cache_expiration')))
 						if(is_array($_cached_parts = maybe_unserialize(file_get_contents($cache_parts_file_path))))
 							return $_cached_parts;
 					unset ($_cached_parts);

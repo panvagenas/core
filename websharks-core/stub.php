@@ -21,7 +21,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 * @package WebSharks\Core
 		 * @since 130302
 		 */
-		class websharks_core_v000000_dev // Stand-alone stub class.
+		class websharks_core_v000000_dev
 		{
 			/**
 			 * A static cache (for all instances).
@@ -90,9 +90,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(isset(self::$static['is_autoload']))
 						return self::$static['is_autoload'];
 
-					if(!self::is_webphar() // An autoload stub?
-					   && (!isset($GLOBALS['autoload_websharks_core_v000000_dev']) || $GLOBALS['autoload_websharks_core_v000000_dev'])
-					) return (self::$static['is_autoload'] = TRUE);
+					$autoload = 'autoload_'.__CLASS__; // Global autoload flag.
+
+					if(!self::is_webphar() && (!isset($GLOBALS[$autoload]) || $GLOBALS[$autoload]))
+						return (self::$static['is_autoload'] = TRUE);
 
 					return (self::$static['is_autoload'] = FALSE);
 				}
@@ -107,14 +108,14 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static function deps()
 				{
 					if(self::is_phar() && self::can_phar())
-						if(file_exists($_phar_deps = 'phar://'.__FILE__.'/deps.php'))
+						if(is_file($_phar_deps = 'phar://'.__FILE__.'/deps.php'))
 							return $_phar_deps;
 
-					foreach(array('plugin'     => dirname(__FILE__).'/websharks-core-v000000-dev/deps.php',
-					              'core-dev'   => dirname(dirname(dirname(__FILE__))).'/core/websharks-core-v000000-dev/deps.php',
-					              'plugin-dev' => dirname(dirname(dirname(dirname(__FILE__)))).'/core/websharks-core-v000000-dev/deps.php')
+					foreach(array('plugin'     => dirname(__FILE__).'/websharks-core/deps.php',
+					              'core-dev'   => dirname(dirname(dirname(__FILE__))).'/core/websharks-core/deps.php',
+					              'plugin-dev' => dirname(dirname(dirname(dirname(__FILE__)))).'/core/websharks-core/deps.php')
 					        as $_key => $_file)
-						if((in_array($_key, array('plugin'), TRUE) || defined('___DEV_KEY_OK')) && file_exists($_file))
+						if((in_array($_key, array('plugin'), TRUE) || defined('___DEV_KEY_OK')) && is_file($_file))
 							return $_file;
 
 					if(self::is_phar() && !self::can_phar() && defined('WPINC'))
@@ -139,14 +140,14 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static function framework()
 				{
 					if(self::is_phar() && self::can_phar())
-						if(file_exists($_phar_include = 'phar://'.__FILE__.'/include.php'))
+						if(is_file($_phar_include = 'phar://'.__FILE__.'/include.php'))
 							return $_phar_include;
 
-					foreach(array('plugin'     => dirname(__FILE__).'/websharks-core-v000000-dev/include.php',
-					              'core-dev'   => dirname(dirname(dirname(__FILE__))).'/core/websharks-core-v000000-dev/include.php',
-					              'plugin-dev' => dirname(dirname(dirname(dirname(__FILE__)))).'/core/websharks-core-v000000-dev/include.php')
+					foreach(array('plugin'     => dirname(__FILE__).'/websharks-core/include.php',
+					              'core-dev'   => dirname(dirname(dirname(__FILE__))).'/core/websharks-core/include.php',
+					              'plugin-dev' => dirname(dirname(dirname(dirname(__FILE__)))).'/core/websharks-core/include.php')
 					        as $_key => $_file)
-						if((in_array($_key, array('plugin'), TRUE) || defined('___DEV_KEY_OK')) && file_exists($_file))
+						if((in_array($_key, array('plugin'), TRUE) || defined('___DEV_KEY_OK')) && is_file($_file))
 							return $_file;
 
 					unset($_phar_include, $_key, $_file);
@@ -224,7 +225,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 							if(strcasecmp(basename($_dir), 'app_data') === 0)
 								return FALSE; // 403 (forbidden) response.
 
-							else if(file_exists($_dir.'/.htaccess'))
+							else if(is_file($_dir.'/.htaccess'))
 								if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
 									return FALSE; // 403 (forbidden).
 
@@ -271,6 +272,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 				{
 					if(is_string($path) && is_bool($allow_trailing_slash))
 						{
+							if(!strlen($path)) return ''; // Catch empty strings.
+
 							preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
 							$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
 
@@ -328,7 +331,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 							if(isset(self::$static['wp_load'][$cache_entry]))
 								return self::$static['wp_load'][$cache_entry];
 
-							if($check_abspath && defined('ABSPATH') && file_exists(ABSPATH.'wp-load.php'))
+							if($check_abspath && defined('ABSPATH') && is_file(ABSPATH.'wp-load.php'))
 								return (self::$static['wp_load'][$cache_entry] = ABSPATH.'wp-load.php');
 
 							for($_i = 0, $_dirname = dirname(__FILE__); $_i <= 100; $_i++)
@@ -336,20 +339,20 @@ if(!class_exists('websharks_core_v000000_dev'))
 									for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
 										$_dir = dirname($_dir);
 
-									if(file_exists($_dir.'/wp-load.php'))
+									if(is_file($_dir.'/wp-load.php'))
 										return (self::$static['wp_load'][$cache_entry] = $_dir.'/wp-load.php');
 
 									if(!$_dir || $_dir === '.') break;
 								}
 							unset($_i, $__i, $_dirname, $_dir);
 
-							if($fallback_on_dev_dir) // Fallback on development copy?
+							if($fallback_on_dev_dir) // Fallback on dev copy?
 								{
 									if(is_string($fallback_on_dev_dir))
 										$dev_dir = $fallback_on_dev_dir;
 									else $dev_dir = 'E:/EasyPHP/wordpress';
 
-									if(file_exists($dev_dir.'/wp-load.php'))
+									if(is_file($dev_dir.'/wp-load.php'))
 										return (self::$static['wp_load'][$cache_entry] = $dev_dir.'/wp-load.php');
 								}
 							return (self::$static['wp_load'][$cache_entry] = '');
@@ -404,10 +407,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 						{
 							$temp_deps          = $temp_dir.'/ws-wp-temp-deps.tmp';
 							$temp_deps_contents = base64_decode(self::$ws_wp_temp_deps);
-							$temp_deps_contents = str_ireplace('websharks'.'_core_v000000_dev', get_class(), $temp_deps_contents);
+							$temp_deps_contents = str_ireplace('websharks_core'.'_v000000_dev', __CLASS__, $temp_deps_contents);
 							$temp_deps_contents = str_ireplace('%%notice%%', str_replace("'", "\\'", self::cant_phar_msg()), $temp_deps_contents);
 
-							if(!file_exists($temp_deps) || (is_writable($temp_deps) && unlink($temp_deps)))
+							if(!is_file($temp_deps) || (is_writable($temp_deps) && unlink($temp_deps)))
 								if(file_put_contents($temp_deps, $temp_deps_contents))
 									return $temp_deps;
 						}

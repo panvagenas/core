@@ -225,9 +225,8 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 					if($is_wp_loaded && !$is_stand_alone && $check_last_ok
 					   && is_array($last_ok = get_option('websharks_core__deps__last_ok'))
 					   && isset($last_ok['websharks_core_v000000_dev'], $last_ok['time'], $last_ok['php_version'], $last_ok['wp_version'])
-					   && $last_ok['time'] >= strtotime('-24 hours') && $last_ok['php_version'] === $php_version && $last_ok['wp_version'] === $wp_version
-					) // Return TRUE. A re-scan is NOT necessary; everything is still OK.
-						return ($this->check = TRUE);
+					   && $last_ok['time'] >= strtotime('-7 days') && $last_ok['php_version'] === $php_version && $last_ok['wp_version'] === $wp_version
+					) return ($this->check = TRUE); // Return TRUE. A re-scan is NOT necessary; everything is still OK.
 
 					// Else we need to run a full scan now.
 
@@ -983,7 +982,7 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 										                           CURLOPT_FAILONERROR    => TRUE, CURLOPT_FORBID_REUSE => TRUE, CURLOPT_SSL_VERIFYPEER => FALSE
 										                      )
 									);
-									if(stripos((string)curl_exec($_curl_test_resource), $curl_fopen_localhost_test_url_return_string_frag) !== FALSE)
+									if($this->is_cli() || $this->is_localhost() || stripos((string)curl_exec($_curl_test_resource), $curl_fopen_localhost_test_url_return_string_frag) !== FALSE)
 										$curl_localhost_test_success = TRUE;
 
 									curl_close($_curl_test_resource);
@@ -1002,7 +1001,7 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 
 							if(is_resource($_fopen_test_resource = stream_context_create(array('http' => array('timeout' => 5.0, 'ignore_errors' => FALSE)))))
 								{
-									if(stripos((string)file_get_contents($curl_fopen_localhost_test_url, NULL, $_fopen_test_resource), $curl_fopen_localhost_test_url_return_string_frag) !== FALSE)
+									if($this->is_cli() || $this->is_localhost() || stripos((string)file_get_contents($curl_fopen_localhost_test_url, NULL, $_fopen_test_resource), $curl_fopen_localhost_test_url_return_string_frag) !== FALSE)
 										$fopen_url_localhost_test_success = TRUE;
 								}
 							unset($_fopen_test_resource); // Housekeeping.
@@ -1198,154 +1197,159 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 
 					/*********************************************************************************************/
 
-					if(empty($_SERVER['DOCUMENT_ROOT']) || !is_string($_SERVER['DOCUMENT_ROOT']))
-						{
-							$errors[] = array(
-								'title'   => self::i18n('Missing <code>$_SERVER[\'DOCUMENT_ROOT\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'DOCUMENT_ROOT\']</code> environment variable.'.
-										' This is the document root directory under which the current script is executing. It should be defined in the server\'s configuration file.'.
-										' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
-									), NULL
-								)
-							);
-						}
-					else // Pass on this check.
-						{
-							$passes[] = array(
-								'title'   => self::i18n('<code>$_SERVER[\'DOCUMENT_ROOT\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your server reports this value: <code>%1$s</code>'
-									), htmlspecialchars($_SERVER['DOCUMENT_ROOT'])
-								)
-							);
-						}
+					if(!$this->is_cli())
+						if(empty($_SERVER['DOCUMENT_ROOT']) || !is_string($_SERVER['DOCUMENT_ROOT']))
+							{
+								$errors[] = array(
+									'title'   => self::i18n('Missing <code>$_SERVER[\'DOCUMENT_ROOT\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'DOCUMENT_ROOT\']</code> environment variable.'.
+											' This is the document root directory under which the current script is executing. It should be defined in the server\'s configuration file.'.
+											' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+										), NULL
+									)
+								);
+							}
+						else // Pass on this check.
+							{
+								$passes[] = array(
+									'title'   => self::i18n('<code>$_SERVER[\'DOCUMENT_ROOT\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your server reports this value: <code>%1$s</code>'
+										), htmlspecialchars($_SERVER['DOCUMENT_ROOT'])
+									)
+								);
+							}
 
 					/*********************************************************************************************/
 
-					if(empty($_SERVER['HTTP_HOST']) || !is_string($_SERVER['HTTP_HOST']))
-						{
-							$errors[] = array(
-								'title'   => self::i18n('Missing <code>$_SERVER[\'HTTP_HOST\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'HTTP_HOST\']</code> environment variable.'.
-										' This is the host domain name used to access any given page of your web site (available for each page). It should be defined by your server dynamically.'.
-										' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
-									), NULL
-								)
-							);
-						}
-					else // Pass on this check.
-						{
-							$passes[] = array(
-								'title'   => self::i18n('<code>$_SERVER[\'HTTP_HOST\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your server reports this value: <code>%1$s</code>'
-									), htmlspecialchars($_SERVER['HTTP_HOST'])
-								)
-							);
-						}
+					if(!$this->is_cli())
+						if(empty($_SERVER['HTTP_HOST']) || !is_string($_SERVER['HTTP_HOST']))
+							{
+								$errors[] = array(
+									'title'   => self::i18n('Missing <code>$_SERVER[\'HTTP_HOST\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'HTTP_HOST\']</code> environment variable.'.
+											' This is the host domain name used to access any given page of your web site (available for each page). It should be defined by your server dynamically.'.
+											' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+										), NULL
+									)
+								);
+							}
+						else // Pass on this check.
+							{
+								$passes[] = array(
+									'title'   => self::i18n('<code>$_SERVER[\'HTTP_HOST\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your server reports this value: <code>%1$s</code>'
+										), htmlspecialchars($_SERVER['HTTP_HOST'])
+									)
+								);
+							}
 
 					/*********************************************************************************************/
 
-					if(empty($_SERVER['REQUEST_URI']) || !is_string($_SERVER['REQUEST_URI']))
-						{
-							$errors[] = array(
-								'title'   => self::i18n('Missing <code>$_SERVER[\'REQUEST_URI\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'REQUEST_URI\']</code> environment variable.'.
-										' This is the URI used to access any given page of your web site (available for each page). It should be defined by your server dynamically.'.
-										' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
-									), NULL
-								)
-							);
-						}
-					else // Pass on this check.
-						{
-							$passes[] = array(
-								'title'   => self::i18n('<code>$_SERVER[\'REQUEST_URI\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your server reports this value: <code>%1$s</code>'
-									), htmlspecialchars($_SERVER['REQUEST_URI'])
-								)
-							);
-						}
+					if(!$this->is_cli())
+						if(empty($_SERVER['REQUEST_URI']) || !is_string($_SERVER['REQUEST_URI']))
+							{
+								$errors[] = array(
+									'title'   => self::i18n('Missing <code>$_SERVER[\'REQUEST_URI\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'REQUEST_URI\']</code> environment variable.'.
+											' This is the URI used to access any given page of your web site (available for each page). It should be defined by your server dynamically.'.
+											' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+										), NULL
+									)
+								);
+							}
+						else // Pass on this check.
+							{
+								$passes[] = array(
+									'title'   => self::i18n('<code>$_SERVER[\'REQUEST_URI\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your server reports this value: <code>%1$s</code>'
+										), htmlspecialchars($_SERVER['REQUEST_URI'])
+									)
+								);
+							}
 
 					/*********************************************************************************************/
 
-					if(empty($_SERVER['REMOTE_ADDR']) || !is_string($_SERVER['REMOTE_ADDR']))
-						{
-							$errors[] = array(
-								'title'   => self::i18n('Missing <code>$_SERVER[\'REMOTE_ADDR\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'REMOTE_ADDR\']</code> environment variable.'.
-										' This is the IP address from which the user is viewing the current page. It should be defined by your server dynamically.'.
-										' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
-									), NULL
-								)
-							);
-						}
-					else if(!empty($_SERVER['SERVER_ADDR']) && is_string($_SERVER['SERVER_ADDR']) && $_SERVER['REMOTE_ADDR'] === $_SERVER['SERVER_ADDR'] && (!defined('LOCALHOST') || !LOCALHOST) && !preg_match('/localhost|127\.0\.0\.1/i', (string)$_SERVER['HTTP_HOST']))
-						{
-							$errors[] = array(
-								'title'   => self::i18n('Invalid <code>$_SERVER[\'REMOTE_ADDR\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your installation of PHP is misconfigured, with an invalid value for it\'s <code>$_SERVER[\'REMOTE_ADDR\']</code> environment variable.'.
-										' This is the IP address from which the user is viewing the current page. It should be defined by your server dynamically (for the current user).'.
-										' The problem is... your server reports the current user as having the same IP address as the server itself? Something is wrong here.'.
-										' Your server reports its own IP as: <code>%1$s</code>, and the current user\'s IP as: <code>%2$s</code>.'.
-										' Please contact your hosting provider about this issue. See also: <a href="http://stackoverflow.com/questions/4262081/serverremote-addr-gives-server-ip-rather-than-visitor-ip" target="_blank" rel="xlink">this helpful article</a>.'.
-										' <strong>Developers:</strong> If the server itself is currently in a localhost environment (this explains it, and that\'s fine). Please add this to your <code>/wp-config.php</code> file, so you can avoid this message while development is underway: <code>define(\'LOCALHOST\', TRUE);</code>'
-									), htmlspecialchars($_SERVER['SERVER_ADDR']), htmlspecialchars($_SERVER['REMOTE_ADDR'])
-								)
-							);
-						}
-					else // Pass on this check.
-						{
-							$passes[] = array(
-								'title'   => self::i18n('<code>$_SERVER[\'REMOTE_ADDR\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your server reports this value: <code>%1$s</code>'
-									), htmlspecialchars($_SERVER['REMOTE_ADDR'])
-								)
-							);
-						}
+					if(!$this->is_cli())
+						if(empty($_SERVER['REMOTE_ADDR']) || !is_string($_SERVER['REMOTE_ADDR']))
+							{
+								$errors[] = array(
+									'title'   => self::i18n('Missing <code>$_SERVER[\'REMOTE_ADDR\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'REMOTE_ADDR\']</code> environment variable.'.
+											' This is the IP address from which the user is viewing the current page. It should be defined by your server dynamically.'.
+											' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+										), NULL
+									)
+								);
+							}
+						else if(!empty($_SERVER['SERVER_ADDR']) && is_string($_SERVER['SERVER_ADDR']) && $_SERVER['REMOTE_ADDR'] === $_SERVER['SERVER_ADDR'] && !$this->is_localhost())
+							{
+								$errors[] = array(
+									'title'   => self::i18n('Invalid <code>$_SERVER[\'REMOTE_ADDR\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your installation of PHP is misconfigured, with an invalid value for it\'s <code>$_SERVER[\'REMOTE_ADDR\']</code> environment variable.'.
+											' This is the IP address from which the user is viewing the current page. It should be defined by your server dynamically (for the current user).'.
+											' The problem is... your server reports the current user as having the same IP address as the server itself? Something is wrong here.'.
+											' Your server reports its own IP as: <code>%1$s</code>, and the current user\'s IP as: <code>%2$s</code>.'.
+											' Please contact your hosting provider about this issue. See also: <a href="http://stackoverflow.com/questions/4262081/serverremote-addr-gives-server-ip-rather-than-visitor-ip" target="_blank" rel="xlink">this helpful article</a>.'.
+											' <strong>Developers:</strong> If the server itself is currently in a localhost environment (this explains it, and that\'s fine). Please add this to your <code>/wp-config.php</code> file, so you can avoid this message while development is underway: <code>define(\'LOCALHOST\', TRUE);</code>'
+										), htmlspecialchars($_SERVER['SERVER_ADDR']), htmlspecialchars($_SERVER['REMOTE_ADDR'])
+									)
+								);
+							}
+						else // Pass on this check.
+							{
+								$passes[] = array(
+									'title'   => self::i18n('<code>$_SERVER[\'REMOTE_ADDR\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your server reports this value: <code>%1$s</code>'
+										), htmlspecialchars($_SERVER['REMOTE_ADDR'])
+									)
+								);
+							}
 
 					/*********************************************************************************************/
 
-					if(empty($_SERVER['HTTP_USER_AGENT']) || !is_string($_SERVER['HTTP_USER_AGENT']))
-						{
-							$errors[] = array(
-								'title'   => self::i18n('Missing <code>$_SERVER[\'HTTP_USER_AGENT\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'HTTP_USER_AGENT\']</code> environment variable.'.
-										' This is the browser and operating system the current user is viewing the current page with. It should be defined by your server dynamically.'.
-										' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
-									), NULL
-								)
-							);
-						}
-					else // Pass on this check.
-						{
-							$passes[] = array(
-								'title'   => self::i18n('<code>$_SERVER[\'HTTP_USER_AGENT\']</code>'),
-								'message' => sprintf(
-									self::i18n(
-										'Your server reports this value: <code>%1$s</code>'
-									), htmlspecialchars($_SERVER['HTTP_USER_AGENT'])
-								)
-							);
-						}
+					if(!$this->is_cli())
+						if(empty($_SERVER['HTTP_USER_AGENT']) || !is_string($_SERVER['HTTP_USER_AGENT']))
+							{
+								$errors[] = array(
+									'title'   => self::i18n('Missing <code>$_SERVER[\'HTTP_USER_AGENT\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'HTTP_USER_AGENT\']</code> environment variable.'.
+											' This is the browser and operating system the current user is viewing the current page with. It should be defined by your server dynamically.'.
+											' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+										), NULL
+									)
+								);
+							}
+						else // Pass on this check.
+							{
+								$passes[] = array(
+									'title'   => self::i18n('<code>$_SERVER[\'HTTP_USER_AGENT\']</code>'),
+									'message' => sprintf(
+										self::i18n(
+											'Your server reports this value: <code>%1$s</code>'
+										), htmlspecialchars($_SERVER['HTTP_USER_AGENT'])
+									)
+								);
+							}
 
 					/*********************************************************************************************/
 
@@ -1353,41 +1357,42 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 						{
 							/***************************************************************************************/
 
-							if(empty($_SERVER['SERVER_ADDR']) || !is_string($_SERVER['SERVER_ADDR']))
-								{
-									// Note... this got moved into the warnings section,
-									// because some installations of PHP just do NOT have this available.
-									// FatCow is one example of this (no $_SERVER['SERVER_ADDR']).
+							if(!$this->is_cli())
+								if(empty($_SERVER['SERVER_ADDR']) || !is_string($_SERVER['SERVER_ADDR']))
+									{
+										// Note... this got moved into the warnings section,
+										// because some installations of PHP just do NOT have this available.
+										// FatCow is one example of this (no $_SERVER['SERVER_ADDR']).
 
-									$warnings[] = array(
-										'title'   => self::i18n('Missing <code>$_SERVER[\'SERVER_ADDR\']</code>'),
-										'message' => sprintf(
-											self::i18n(
-												'Although NOT required, %1$s recommends that your installation of PHP be configured with a <code>$_SERVER[\'SERVER_ADDR\']</code> environment variable.'.
-												' This is the IP address of the server, under which the current script is executing. It should be defined by your server dynamically.'.
-												' Please contact your hosting provider about this message. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
-											), htmlspecialchars($plugin_name)
-										)
-									);
-								}
-							else // Pass on this check.
-								{
-									$passes[] = array(
-										'title'   => self::i18n('<code>$_SERVER[\'SERVER_ADDR\']</code>'),
-										'message' => sprintf(
-											self::i18n(
-												'Your server reports this value: <code>%1$s</code>'
-											), htmlspecialchars($_SERVER['SERVER_ADDR'])
-										)
-									);
-								}
+										$warnings[] = array(
+											'title'   => self::i18n('Missing <code>$_SERVER[\'SERVER_ADDR\']</code>'),
+											'message' => sprintf(
+												self::i18n(
+													'Although NOT required, %1$s recommends that your installation of PHP be configured with a <code>$_SERVER[\'SERVER_ADDR\']</code> environment variable.'.
+													' This is the IP address of the server, under which the current script is executing. It should be defined by your server dynamically.'.
+													' Please contact your hosting provider about this message. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+												), htmlspecialchars($plugin_name)
+											)
+										);
+									}
+								else // Pass on this check.
+									{
+										$passes[] = array(
+											'title'   => self::i18n('<code>$_SERVER[\'SERVER_ADDR\']</code>'),
+											'message' => sprintf(
+												self::i18n(
+													'Your server reports this value: <code>%1$s</code>'
+												), htmlspecialchars($_SERVER['SERVER_ADDR'])
+											)
+										);
+									}
 
 							/***************************************************************************************/
 
 							if($is_wp_loaded && $plugin_dir_names)
 								{
 									foreach(preg_split('/[,;\s]+/', $plugin_dir_names, -1, PREG_SPLIT_NO_EMPTY) as $_plugin_dir_name)
-										if(is_dir(WP_PLUGIN_DIR.'/'.$_plugin_dir_name) && file_exists(WP_PLUGIN_DIR.'/'.$_plugin_dir_name.'/checksum.txt'))
+										if(is_dir(WP_PLUGIN_DIR.'/'.$_plugin_dir_name) && is_file(WP_PLUGIN_DIR.'/'.$_plugin_dir_name.'/checksum.txt'))
 											if(is_readable(WP_PLUGIN_DIR.'/'.$_plugin_dir_name) && is_readable(WP_PLUGIN_DIR.'/'.$_plugin_dir_name.'/checksum.txt'))
 												$plugin_checksum_dirs[] = WP_PLUGIN_DIR.'/'.$_plugin_dir_name;
 									unset($_plugin_dir_name); // Housekeeping.
@@ -1778,7 +1783,7 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 
 							/***************************************************************************************/
 
-							if($is_wp_loaded && !is_multisite() && !empty($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST']))
+							if(!$this->is_cli() && $is_wp_loaded && !is_multisite() && !empty($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST']))
 								{
 									// Bypass on Multisite Networks (w/ domain mapping; this could produce false positives).
 
@@ -1989,7 +1994,7 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 
 							/***************************************************************************************/
 
-							if($report_warnings && $report_notices && !$issues) // Everything OK?
+							if(($report_warnings && $report_notices && !$issues) || ($this->is_cli() && !$errors))
 								{
 									update_option(
 										'websharks_core__deps__last_ok', array(
@@ -2047,6 +2052,14 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 								}
 							else if($is_wp_loaded && $maybe_display_wp_admin_notices)
 								add_action('all_admin_notices', array($this, 'maybe_display_wp_admin_notices'));
+
+							if($this->is_cli())
+								if($errors) // Only deal with errors on command-line.
+									{
+										printf(self::translate('%1$s (Dependency Issues)'), $plugin_name)."\n\n";
+										exit(print_r($this->check['issues'], TRUE));
+									}
+								else return TRUE; // Let everything else slide in this case.
 						}
 					else $this->check = TRUE; // TRUE indicates there is nothing to report.
 
@@ -2066,7 +2079,7 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 	 *
 	 * @param string  $dir The directory we should begin with.
 	 *
-	 * @param string  $root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
+	 * @param string  $___root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
 	 *    Recursive calls to this method will automatically pass this value, indicating the main root directory value.
 	 *
 	 * @return string An MD5 checksum established collectively, based on all directories/files.
@@ -2075,38 +2088,31 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 	 *
 	 * @wp-assertion This is tested via WordPress.
 	 */
-	public function dir_checksum($dir, $root_dir = '')
+	public function dir_checksum($dir, $___root_dir = '')
 		{
-			if(is_string($dir) && $dir && is_string($root_dir))
+			if(is_string($dir) && $dir && is_string($___root_dir))
 				{
-					$checksums = array(); // Initialize array.
+					$checksums                = array(); // Initialize array.
+					$dir                      = $this->n_dir_seps((string)realpath($dir));
+					$___root_dir              = (!$___root_dir) ? $dir : $___root_dir;
+					$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
+					$checksums[$relative_dir] = md5($relative_dir); // Establish relative directory checksum.
 
-					if(!is_dir($dir) || !is_readable($dir) || !($handle = opendir($dir)))
+					if(!$dir || !is_dir($dir) || !is_readable($dir) || !($handle = opendir($dir)))
 						throw new exception(
 							sprintf(self::i18n('Unable to read directory: `%1$s`'), $dir)
 						);
-
-					$dir          = $this->n_dir_seps(realpath($dir));
-					$root_dir     = (!$root_dir) ? $dir : $this->n_dir_seps(realpath($root_dir));
-					$relative_dir = preg_replace('/^'.preg_quote($root_dir, '/').'(?:\/|$)/', '', $dir);
-
-					$checksums[$relative_dir] = md5($relative_dir); // Establish relative directory checksum.
-
 					while(($entry = readdir($handle)) !== FALSE)
 						if($entry !== '.' && $entry !== '..') // Ignore single/double dots.
-							if($entry !== 'checksum.txt' || $dir !== $root_dir) // Skip in root directory.
+							if($entry !== 'checksum.txt' || $dir !== $___root_dir) // Skip in root directory.
 								{
 									if(is_dir($dir.'/'.$entry))
-										$checksums[$relative_dir.'/'.$entry] = $this->dir_checksum($dir.'/'.$entry, $root_dir);
+										$checksums[$relative_dir.'/'.$entry] = $this->dir_checksum($dir.'/'.$entry, $___root_dir);
 									else $checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
 								}
 					closedir($handle); // Close directory handle now.
 
 					ksort($checksums, SORT_STRING); // In case order changes from one server to another.
-
-					#if(basename($root_dir) === '')
-					#	foreach($checksums as $_key => $_value)
-					#		file_put_contents('manifest-server.txt', $_key.' -> '.$_value."\n", FILE_APPEND);
 
 					return md5(implode('', $checksums));
 				}
@@ -2233,7 +2239,7 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 
 					$wp_config_file['path']                 = ABSPATH.'wp-config.php';
 					$wp_config_file['is_readable_writable'] = ( // WordPress® config file is readable/writable?
-						file_exists($wp_config_file['path']) && is_readable($wp_config_file['path']) && is_writable($wp_config_file['path'])
+						is_file($wp_config_file['path']) && is_readable($wp_config_file['path']) && is_writable($wp_config_file['path'])
 					);
 
 					if($wp_config_file['is_readable_writable'] && ($wp_config_file['contents'] = file_get_contents($wp_config_file['path'])))
@@ -2836,6 +2842,8 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 		{
 			if(is_string($path) && is_bool($allow_trailing_slash))
 				{
+					if(!strlen($path)) return ''; // Catch empty strings.
+
 					preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
 					$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
 
@@ -2893,7 +2901,7 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 					if(isset(self::$static['wp_load'][$cache_entry]))
 						return self::$static['wp_load'][$cache_entry];
 
-					if($check_abspath && defined('ABSPATH') && file_exists(ABSPATH.'wp-load.php'))
+					if($check_abspath && defined('ABSPATH') && is_file(ABSPATH.'wp-load.php'))
 						return (self::$static['wp_load'][$cache_entry] = ABSPATH.'wp-load.php');
 
 					for($_i = 0, $_dirname = dirname(__FILE__); $_i <= 100; $_i++)
@@ -2901,7 +2909,7 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 							for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
 								$_dir = dirname($_dir);
 
-							if(file_exists($_dir.'/wp-load.php'))
+							if(is_file($_dir.'/wp-load.php'))
 								return (self::$static['wp_load'][$cache_entry] = $_dir.'/wp-load.php');
 
 							if(!$_dir || $_dir === '.') break;
@@ -2914,7 +2922,7 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 								$dev_dir = $fallback_on_dev_dir;
 							else $dev_dir = 'E:/EasyPHP/wordpress';
 
-							if(file_exists($dev_dir.'/wp-load.php'))
+							if(is_file($dev_dir.'/wp-load.php'))
 								return (self::$static['wp_load'][$cache_entry] = $dev_dir.'/wp-load.php');
 						}
 					return (self::$static['wp_load'][$cache_entry] = '');
@@ -2987,6 +2995,47 @@ class deps_x_websharks_core_v000000_dev #!stand-alone!#
 				return md5($_SERVER['HTTP_HOST']);
 
 			throw new exception(self::i18n('Unable to generate a security salt.'));
+		}
+
+	/**
+	 * Checks to see if we're in a localhost environment.
+	 *
+	 * @return boolean TRUE if we're in a localhost environment, else FALSE.
+	 *
+	 * @assert () === FALSE
+	 */
+	public function is_localhost()
+		{
+			if(!isset(self::$static['is_localhost']))
+				{
+					self::$static['is_localhost'] = FALSE;
+
+					if(defined('LOCALHOST') && LOCALHOST)
+						self::$static['is_localhost'] = TRUE;
+
+					else if(preg_match('/(?:localhost|127\.0\.0\.1|\.loc$)/i', $_SERVER['HTTP_HOST']))
+						self::$static['is_localhost'] = TRUE;
+				}
+			return self::$static['is_localhost'];
+		}
+
+	/**
+	 * Checks to see if we're running under a command line interface.
+	 *
+	 * @return boolean TRUE if we're running under a command line interface, else FALSE.
+	 *
+	 * @assert () === FALSE
+	 */
+	public function is_cli()
+		{
+			if(!isset(self::$static['is_cli']))
+				{
+					self::$static['is_cli'] = FALSE;
+
+					if(PHP_SAPI === 'cli')
+						self::$static['is_cli'] = TRUE;
+				}
+			return self::$static['is_cli'];
 		}
 
 	/**

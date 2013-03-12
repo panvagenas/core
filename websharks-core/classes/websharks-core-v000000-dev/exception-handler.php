@@ -142,11 +142,11 @@ namespace websharks_core_v000000_dev
 				{
 					$file = (string)$file;
 
-					if(file_exists($path = get_stylesheet_directory().'/'.$file) && is_readable($path))
+					if(is_file($path = get_stylesheet_directory().'/'.$file) && is_readable($path))
 						return $path;
-					else if(file_exists($path = get_template_directory().'/'.$file) && is_readable($path))
+					else if(is_file($path = get_template_directory().'/'.$file) && is_readable($path))
 						return $path;
-					else if(file_exists($path = dirname(dirname(dirname(__FILE__))).'/templates/'.$file) && is_readable($path))
+					else if(is_file($path = dirname(dirname(dirname(__FILE__))).'/templates/'.$file) && is_readable($path))
 						return $path;
 
 					trigger_error(sprintf(static::i18n('Unable to locate template file: `%1$s`.'), $file), E_USER_ERROR);

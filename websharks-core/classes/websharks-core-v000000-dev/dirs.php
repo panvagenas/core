@@ -43,6 +43,8 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', 'boolean', func_get_args());
 
+					if(!strlen($path)) return ''; // Catch empty strings.
+
 					preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
 					$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
 
@@ -72,6 +74,8 @@ namespace websharks_core_v000000_dev
 			public static function _4fwc_n_seps($path, $allow_trailing_slash = FALSE)
 				{
 					$path = (string)$path;
+
+					if(!strlen($path)) return ''; // Catch empty strings.
 
 					preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
 					$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
@@ -147,11 +151,11 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', 'boolean', 'boolean', func_get_args());
 
-					if(is_string($doc_root = $this->©vars->_SERVER('DOCUMENT_ROOT')) && $doc_root)
+					if($this->©string->¤is_not_empty($doc_root = $this->©vars->_SERVER('DOCUMENT_ROOT')))
 						return $this->get_rel_path($doc_root, $to, $try_realpaths, $use_win_diff_drive_jctn);
 
-					else throw $this->©exception(
-						__METHOD__.'#doc_root_missing', compact('doc_root'),
+					throw $this->©exception(
+						__METHOD__.'#doc_root_missing', get_defined_vars(),
 						$this->i18n('Invalid and/or empty `DOCUMENT_ROOT` (expecting string NOT empty).')
 					);
 				}
@@ -195,8 +199,7 @@ namespace websharks_core_v000000_dev
 					unset($_real_from, $_real_to); // Housekeeping.
 
 					$from = (is_file($from) || // Or if we can match one of these common extensions.
-					         preg_match('/\.(:?txt|html|php|css|js|png|jpg|gif|swf|mp[34]|wav|zip|tar|gz)$/', $from))
-						? dirname($from) : $from;
+					         preg_match('/\.(:?txt|html|php|css|js|png|jpg|gif|swf|mp[34]|wav|zip|tar|gz)$/', $from)) ? dirname($from) : $from;
 					$from = preg_split('/\//', $this->n_seps($from));
 					$to   = preg_split('/\//', $this->n_seps($to));
 
@@ -245,7 +248,7 @@ namespace websharks_core_v000000_dev
 														array_unshift($to, $_jctn_dir);
 												}
 											else throw $this->©exception(
-												__METHOD__.'#windows_drive', compact('_from_drive', '_to_drive'),
+												__METHOD__.'#windows_drive', get_defined_vars(),
 												$this->i18n('Unable to generate a relative path across different Windows® drives.').
 												sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $_from_drive_jctn, $_to_drive.':/')
 											);
@@ -254,7 +257,7 @@ namespace websharks_core_v000000_dev
 							else if(isset($_from_drive, $_to_drive) && strcasecmp($_from_drive, $_to_drive) !== 0)
 								{
 									throw $this->©exception(
-										__METHOD__.'#windows_drive', compact('_from_drive', '_to_drive'),
+										__METHOD__.'#windows_drive', get_defined_vars(),
 										$this->i18n('Unable to generate a relative path across different Windows® drives.').
 										sprintf($this->i18n(' Drive from: `%1$s`, drive to: `%2$s`.'), $_from_drive.':/', $_to_drive.':/')
 									);
@@ -290,7 +293,7 @@ namespace websharks_core_v000000_dev
 					if(!$dir_file) return FALSE; // Catch empty values here.
 
 					$dir_file = $this->n_seps($dir_file);
-					$realpath = (is_dir($dir_file) || is_file($dir_file)) ? $this->n_seps(realpath($dir_file)) : '';
+					$realpath = (file_exists($dir_file)) ? $this->n_seps((string)realpath($dir_file)) : '';
 
 					return ($dir_file && $realpath && $dir_file !== $realpath);
 				}
@@ -327,29 +330,28 @@ namespace websharks_core_v000000_dev
 					$is_target_dir = is_dir($target);
 					$is_jctn_link  = $this->is_link($jctn);
 
-					$realpath_jctn   = ($is_jctn_dir) ? $this->n_seps(realpath($jctn)) : '';
-					$realpath_target = ($is_target_dir) ? $this->n_seps(realpath($target)) : '';
+					$realpath_jctn   = ($is_jctn_dir) ? $this->n_seps((string)realpath($jctn)) : '';
+					$realpath_target = ($is_target_dir) ? $this->n_seps((string)realpath($target)) : '';
 
-					if($is_jctn_link && $is_jctn_dir && $is_target_dir && $realpath_jctn && $realpath_target && $realpath_jctn === $realpath_target)
+					if($is_jctn_dir && $is_target_dir && $is_jctn_link && $realpath_jctn && $realpath_target && $realpath_jctn === $realpath_target)
 						return $jctn; // It already exists; and it's already pointing to the proper location.
 
-					if(!$this->delete_win_jctn($jctn))
+					if(!$is_target_dir)
 						throw $this->©exception(
-							__METHOD__.'#jctn_exists', compact('jctn', 'target'),
-							$this->i18n('Unable to create a Windows® Directory Junction. Already exists.').
-							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target)
-						);
-					else if(!$is_target_dir)
-						throw $this->©exception(
-							__METHOD__.'#target_not_dir', compact('jctn', 'target'),
+							__METHOD__.'#target_not_dir', get_defined_vars(),
 							$this->i18n('Unable to create a Windows® Directory Junction. Invalid target.').
 							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target)
 						);
-
-					if(!$this->©commands->windows_possible())
+					else if(!$this->©commands->windows_possible())
 						throw $this->©exception(
-							__METHOD__.'#not_possible', compact('jctn', 'target'),
+							__METHOD__.'#not_possible', get_defined_vars(),
 							$this->i18n('Not possible to create a Windows® Directory Junction.').
+							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target)
+						);
+					else if(!$this->delete_win_jctn($jctn))
+						throw $this->©exception(
+							__METHOD__.'#jctn_exists', get_defined_vars(),
+							$this->i18n('Unable to create a Windows® Directory Junction. Already exists.').
 							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target)
 						);
 					$mklink_args = $this->©commands->mklink.' /J '.escapeshellarg($jctn).' '.escapeshellarg($target);
@@ -365,12 +367,11 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status or error. Mklink said: `%2$s`'),
 							        $mklink_args, $mklink_errors->get_message())
 						);
-
 					clearstatcache(); // Clear cache.
 
 					if(!is_dir($jctn)) // Now we test this again.
 						throw $this->©exception(
-							__METHOD__.'#failure', compact('jctn', 'target'),
+							__METHOD__.'#failure', get_defined_vars(),
 							$this->i18n('Failed to create a Windows® Directory Junction.').
 							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target)
 						);
@@ -404,33 +405,33 @@ namespace websharks_core_v000000_dev
 
 					if($is_jctn_file)
 						throw $this->©exception(
-							__METHOD__.'#file', compact('jctn'),
+							__METHOD__.'#file', get_defined_vars(),
 							$this->i18n('Unable to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' This is NOT a Directory Junction (it\'s a file): `%1$s`.'), $jctn)
 						);
 					else if(!$is_jctn_dir)
 						throw $this->©exception(
-							__METHOD__.'#not_dir', compact('jctn'),
+							__METHOD__.'#not_dir', get_defined_vars(),
 							$this->i18n('Unable to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' This is NOT a Directory Junction: `%1$s`.'), $jctn)
 						);
 					else if(!$is_jctn_link)
 						throw $this->©exception(
-							__METHOD__.'#not_link', compact('jctn'),
+							__METHOD__.'#not_link', get_defined_vars(),
 							$this->i18n('Unable to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' This is NOT a Directory Junction: `%1$s`.'), $jctn)
 						);
 
 					if(!is_writable($jctn))
 						throw $this->©exception(
-							__METHOD__.'#permissions', compact('jctn'),
+							__METHOD__.'#permissions', get_defined_vars(),
 							$this->i18n('Unable to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' This Directory Junction is NOT writable: `%1$s`.'), $jctn)
 						);
 
 					if(!$this->©commands->windows_possible())
 						throw $this->©exception(
-							__METHOD__.'#not_possible', compact('jctn'),
+							__METHOD__.'#not_possible', get_defined_vars(),
 							$this->i18n('Not possible to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' Please delete this Directory Junction: `%1$s`.'), $jctn)
 						);
@@ -447,6 +448,8 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status or error. Rmdir said: `%2$s`'),
 							        $rmdir_args, $rmdir_errors->get_message())
 						);
+					clearstatcache(); // Clear cache.
+
 					return TRUE; // Default return value.
 				}
 
@@ -490,7 +493,7 @@ namespace websharks_core_v000000_dev
 						return $this->n_seps($wp_temp_dir);
 
 					throw $this->©exception(
-						__METHOD__.'#missing', compact('sys_temp_dir', 'upload_temp_dir', 'wp_temp_dir'),
+						__METHOD__.'#missing', get_defined_vars(),
 						$this->i18n('Unable to find a readable/writable temp directory (please check server configuration).')
 					);
 				}
@@ -512,7 +515,7 @@ namespace websharks_core_v000000_dev
 					) return $this->n_seps($wp_temp_dir);
 
 					throw $this->©exception(
-						__METHOD__.'#missing', compact('wp_temp_dir'),
+						__METHOD__.'#missing', get_defined_vars(),
 						$this->i18n('Unable to find a readable/writable temp directory (please check server configuration).')
 					);
 				}
@@ -526,40 +529,38 @@ namespace websharks_core_v000000_dev
 			 *    If this is TRUE, the `checksum.txt` file in the root directory @ ``$depth`` zero, will be updated.
 			 *    If the `checksum.txt` file does NOT exist yet, this routine will attempt to create it.
 			 *
-			 * @param string  $root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
+			 * @param string  $___root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
 			 *    Recursive calls to this method will automatically pass this value, indicating the main root directory value.
 			 *
 			 * @return string An MD5 checksum established collectively, based on all directories/files.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$dir`` is NOT a directory, or is not readable.
+			 * @throws exception If ``$dir`` is empty; is NOT a directory; or is not readable.
 			 * @throws exception If ``$update_checksum_file`` is TRUE, ``$depth`` is zero,
 			 *    and permission issues (of any kind) prevent the update or creation of the `checksum.txt` file.
 			 */
-			public function checksum($dir, $update_checksum_file = FALSE, $root_dir = '')
+			public function checksum($dir, $update_checksum_file = FALSE, $___root_dir = '')
 				{
-					$this->check_arg_types('string', 'boolean', 'string', func_get_args());
+					$this->check_arg_types('string:!empty', 'boolean', 'string', func_get_args());
 
-					$checksums = array(); // Initialize array.
+					$checksums                = array(); // Initialize array.
+					$dir                      = $this->n_seps((string)realpath($dir));
+					$___root_dir              = (!$___root_dir) ? $dir : $___root_dir;
+					$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
+					$checksums[$relative_dir] = md5($relative_dir); // Relative directory checksum.
 
-					if(!is_dir($dir) || !is_readable($dir) || !($handle = opendir($dir)))
+					if(!$dir || !is_dir($dir) || !is_readable($dir) || !($handle = opendir($dir)))
 						throw $this->©exception(
 							__METHOD__.'#cannot_read_dir', NULL,
 							sprintf($this->i18n('Unable to read directory: `%1$s`'), $dir)
 						);
 
-					$dir          = $this->n_seps(realpath($dir));
-					$root_dir     = (!$root_dir) ? $dir : $this->n_seps(realpath($root_dir));
-					$relative_dir = preg_replace('/^'.preg_quote($root_dir, '/').'(?:\/|$)/', '', $dir);
-
-					$checksums[$relative_dir] = md5($relative_dir); // Relative directory checksum.
-
 					while(($entry = readdir($handle)) !== FALSE)
 						if($entry !== '.' && $entry !== '..') // Ignore single/double dots.
-							if($entry !== 'checksum.txt' || $dir !== $root_dir) // Skip in root directory.
+							if($entry !== 'checksum.txt' || $dir !== $___root_dir) // Skip in root directory.
 								{
 									if(is_dir($dir.'/'.$entry))
-										$checksums[$relative_dir.'/'.$entry] = $this->checksum($dir.'/'.$entry, FALSE, $root_dir);
+										$checksums[$relative_dir.'/'.$entry] = $this->checksum($dir.'/'.$entry, FALSE, $___root_dir);
 									else $checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
 								}
 					closedir($handle); // Close directory handle now.
@@ -567,16 +568,16 @@ namespace websharks_core_v000000_dev
 					ksort($checksums, SORT_STRING); // In case order changes from one server to another.
 					$checksum = md5(implode('', $checksums)); // Collective checksum.
 
-					if($update_checksum_file && $dir === $root_dir) // Updating?
+					if($update_checksum_file && $dir === $___root_dir)
 						{
-							if(!file_exists($dir.'/checksum.txt') && !is_writable($dir))
+							if(!is_file($dir.'/checksum.txt') && !is_writable($dir))
 								throw $this->©exception(
-									__METHOD__.'#permission_issue', compact('dir'),
+									__METHOD__.'#permission_issue', get_defined_vars(),
 									sprintf($this->i18n('Need this directory to be writable: `%1$s`'), $dir)
 								);
-							else if(file_exists($dir.'/checksum.txt') && !is_writable($dir.'/checksum.txt'))
+							else if(is_file($dir.'/checksum.txt') && !is_writable($dir.'/checksum.txt'))
 								throw $this->©exception(
-									__METHOD__.'#permission_issue', compact('dir'),
+									__METHOD__.'#permission_issue', get_defined_vars(),
 									sprintf($this->i18n('Need this file to be writable: `%1$s`'), $dir.'/checksum.txt')
 								);
 							file_put_contents($dir.'/checksum.txt', $checksum);
@@ -602,76 +603,85 @@ namespace websharks_core_v000000_dev
 			 * @assert ('public') === $GLOBALS[__NAMESPACE__]->___instance_config->plugin_data_dir.'/cache/public'
 			 * @assert ('private') === $GLOBALS[__NAMESPACE__]->___instance_config->plugin_data_dir.'/cache/private'
 			 * @assert ('foo') throws exception
+			 *
+			 * @TODO Update this so it's using WebSharks™ Core constants for public/private types.
+			 * @TODO Optimize this function further. There are repeated ``is_()`` checks here.
 			 */
 			public function get_cache_dir($type, $sub_dir = '')
 				{
-					$this->check_arg_types('string', 'string', func_get_args());
+					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					if(in_array($type, array('public', 'private'), TRUE))
+					// Check cache directory type.
+
+					if(!in_array($type, array('public', 'private'), TRUE))
+						throw $this->©exception(
+							__METHOD__.'#invalid_type', get_defined_vars(),
+							$this->i18n('Invalid cache type sub-directory. Expecting `public` or `private`.').
+							sprintf($this->i18n(' Instead got: `%1$s`.'), $type)
+						);
+
+					// Creates a possible ``$sub_dir`` appendage.
+
+					if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
 						{
-							// Creates a possible ``$sub_dir`` appendage.
-							if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
-								{
-									if(strpos($sub_dir, '..') === FALSE) // No relative paths please.
-										$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
-
-									else throw $this->©exception(
-										__METHOD__.'#relative_paths', compact('sub_dir'),
-										$this->i18n('Expecting a sub-directory with NO relative paths.').
-										sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
-									);
-								}
-
-							// Clean these up and piece them together.
-							$cache_dir          = $this->n_seps($this->___instance_config->plugin_data_dir.'/cache');
-							$app_data_sub_dir   = ($type === 'private' && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
-							$cache_type_sub_dir = $this->n_seps($cache_dir.'/'.$type.$app_data_sub_dir.$sub_dir);
-
-							// Need to create the ``$cache_dir``?
-							if(!is_dir($cache_dir))
-								{
-									mkdir($cache_dir, 0775, TRUE);
-									clearstatcache();
-
-									if(!is_dir($cache_dir) || !is_readable($cache_dir) || !is_writable($cache_dir))
-										throw $this->©exception(
-											__METHOD__.'#read_write_issues', compact('cache_dir'),
-											$this->i18n('Unable to create a readable/writable `cache` directory.').
-											sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_dir)
-										);
-								}
-
-							// Need to create the ``$cache_type_sub_dir``?
-							if(!is_dir($cache_type_sub_dir))
-								{
-									mkdir($cache_type_sub_dir, 0775, TRUE);
-									clearstatcache();
-
-									if(!is_dir($cache_type_sub_dir) || !is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
-										throw $this->©exception(
-											__METHOD__.'#read_write_issues', compact('cache_type_sub_dir'),
-											$this->i18n('Unable to create a readable/writable cache type sub-directory.').
-											sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
-										);
-
-									if(is_dir($cache_dir.'/private') && !file_exists($cache_dir.'/private/.htaccess'))
-										file_put_contents($cache_dir.'/private/.htaccess', 'deny from all');
-								}
-
-							// Is ``$cache_type_sub_dir`` writable?
-							if(is_readable($cache_type_sub_dir) && is_writable($cache_type_sub_dir))
-								return $cache_type_sub_dir; // It's a good day in Eureka!
+							if(strpos($sub_dir, '..') === FALSE) // No relative paths please.
+								$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
 
 							else throw $this->©exception(
-								__METHOD__.'#read_write_issues', compact('cache_type_sub_dir'),
-								$this->i18n('Unable to find a readable/writable cache type sub-directory.').
-								sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
+								__METHOD__.'#relative_paths', get_defined_vars(),
+								$this->i18n('Expecting a sub-directory with NO relative paths.').
+								sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
 							);
 						}
-					else throw $this->©exception(
-						__METHOD__.'#invalid_type', compact('type'),
-						$this->i18n('Invalid cache type sub-directory. Expecting `public` or `private`.').
-						sprintf($this->i18n(' Instead got: `%1$s`.'), $type)
+
+					// Clean these up and piece them together.
+
+					$cache_dir          = $this->n_seps($this->___instance_config->plugin_data_dir.'/cache');
+					$app_data_sub_dir   = ($type === 'private' && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
+					$cache_type_sub_dir = $this->n_seps($cache_dir.'/'.$type.$app_data_sub_dir.$sub_dir);
+
+					// Need to create the ``$cache_dir``?
+
+					if(!is_dir($cache_dir))
+						{
+							mkdir($cache_dir, 0775, TRUE);
+							clearstatcache();
+
+							if(!is_dir($cache_dir) || !is_readable($cache_dir) || !is_writable($cache_dir))
+								throw $this->©exception(
+									__METHOD__.'#read_write_issues', get_defined_vars(),
+									$this->i18n('Unable to create a readable/writable `cache` directory.').
+									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_dir)
+								);
+						}
+
+					// Need to create the ``$cache_type_sub_dir``?
+
+					if(!is_dir($cache_type_sub_dir))
+						{
+							mkdir($cache_type_sub_dir, 0775, TRUE);
+							clearstatcache();
+
+							if(!is_dir($cache_type_sub_dir) || !is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
+								throw $this->©exception(
+									__METHOD__.'#read_write_issues', get_defined_vars(),
+									$this->i18n('Unable to create a readable/writable cache type sub-directory.').
+									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
+								);
+
+							if(is_dir($cache_dir.'/private') && !is_file($cache_dir.'/private/.htaccess'))
+								file_put_contents($cache_dir.'/private/.htaccess', 'deny from all');
+						}
+
+					// Is ``$cache_type_sub_dir`` writable?
+
+					if(is_dir($cache_type_sub_dir) && is_readable($cache_type_sub_dir) && is_writable($cache_type_sub_dir))
+						return $cache_type_sub_dir; // It's a good day in Eureka!
+
+					throw $this->©exception(
+						__METHOD__.'#read_write_issues', get_defined_vars(),
+						$this->i18n('Unable to find a readable/writable cache type sub-directory.').
+						sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
 					);
 				}
 
@@ -698,7 +708,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function del_cache_dir($type, $sub_dir = '')
 				{
-					$this->check_arg_types('string', 'string', func_get_args());
+					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
 					return $this->empty_and_remove($this->get_cache_dir($type, $sub_dir));
 				}
@@ -721,76 +731,85 @@ namespace websharks_core_v000000_dev
 			 * @assert ('public') === $GLOBALS[__NAMESPACE__]->___instance_config->plugin_data_dir.'/logs/public'
 			 * @assert ('private') === $GLOBALS[__NAMESPACE__]->___instance_config->plugin_data_dir.'/logs/private'
 			 * @assert ('foo') throws exception
+			 *
+			 * @TODO Update this so it's using WebSharks™ Core constants for public/private types.
+			 * @TODO Optimize this function further. There are repeated ``is_()`` checks here.
 			 */
 			public function get_log_dir($type, $sub_dir = '')
 				{
-					$this->check_arg_types('string', 'string', func_get_args());
+					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					if(in_array($type, array('public', 'private'), TRUE))
+					// Check log directory type.
+
+					if(!in_array($type, array('public', 'private'), TRUE))
+						throw $this->©exception(
+							__METHOD__.'#invalid_type', get_defined_vars(),
+							$this->i18n('Invalid log type sub-directory. Expecting `public` or `private`.').
+							sprintf($this->i18n(' Instead got: `%1$s`.'), $type)
+						);
+
+					// Creates a possible ``$sub_dir`` appendage.
+
+					if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
 						{
-							// Creates a possible ``$sub_dir`` appendage.
-							if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
-								{
-									if(strpos($sub_dir, '..') === FALSE) // No relative paths please.
-										$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
-
-									else throw $this->©exception(
-										__METHOD__.'#relative_paths', compact('sub_dir'),
-										$this->i18n('Expecting a sub-directory with NO relative paths.').
-										sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
-									);
-								}
-
-							// Clean these up and piece them together.
-							$logs_dir         = $this->n_seps($this->___instance_config->plugin_data_dir.'/logs');
-							$app_data_sub_dir = ($type === 'private' && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
-							$log_type_sub_dir = $this->n_seps($logs_dir.'/'.$type.$app_data_sub_dir.$sub_dir);
-
-							// Need to create the ``$logs_dir``?
-							if(!is_dir($logs_dir))
-								{
-									mkdir($logs_dir, 0775, TRUE);
-									clearstatcache();
-
-									if(!is_dir($logs_dir) || !is_readable($logs_dir) || !is_writable($logs_dir))
-										throw $this->©exception(
-											__METHOD__.'#read_write_issues', compact('logs_dir'),
-											$this->i18n('Unable to create a readable/writable `logs` directory.').
-											sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $logs_dir)
-										);
-								}
-
-							// Need to create the ``$log_type_sub_dir``?
-							if(!is_dir($log_type_sub_dir))
-								{
-									mkdir($log_type_sub_dir, 0775, TRUE);
-									clearstatcache();
-
-									if(!is_dir($log_type_sub_dir) || !is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
-										throw $this->©exception(
-											__METHOD__.'#read_write_issues', compact('log_type_sub_dir'),
-											$this->i18n('Unable to create a readable/writable log type sub-directory.').
-											sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
-										);
-
-									if(is_dir($logs_dir.'/private') && !file_exists($logs_dir.'/private/.htaccess'))
-										file_put_contents($logs_dir.'/private/.htaccess', 'deny from all');
-								}
-
-							// Is ``$log_type_sub_dir`` readable/writable?
-							if(is_readable($log_type_sub_dir) && is_writable($log_type_sub_dir))
-								return $log_type_sub_dir; // It's a good day in Eureka!
+							if(strpos($sub_dir, '..') === FALSE) // No relative paths please.
+								$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
 
 							else throw $this->©exception(
-								__METHOD__.'#read_write_issues', compact('log_type_sub_dir'),
-								$this->i18n('Unable to find a readable/writable log type sub-directory.').
-								sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
+								__METHOD__.'#relative_paths', get_defined_vars(),
+								$this->i18n('Expecting a sub-directory with NO relative paths.').
+								sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
 							);
 						}
-					else throw $this->©exception(
-						__METHOD__.'#invalid_type', compact('type'),
-						$this->i18n('Invalid log type sub-directory. Expecting `public` or `private`.').
-						sprintf($this->i18n(' Instead got: `%1$s`.'), $type)
+
+					// Clean these up and piece them together.
+
+					$logs_dir         = $this->n_seps($this->___instance_config->plugin_data_dir.'/logs');
+					$app_data_sub_dir = ($type === 'private' && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
+					$log_type_sub_dir = $this->n_seps($logs_dir.'/'.$type.$app_data_sub_dir.$sub_dir);
+
+					// Need to create the ``$logs_dir``?
+
+					if(!is_dir($logs_dir))
+						{
+							mkdir($logs_dir, 0775, TRUE);
+							clearstatcache();
+
+							if(!is_dir($logs_dir) || !is_readable($logs_dir) || !is_writable($logs_dir))
+								throw $this->©exception(
+									__METHOD__.'#read_write_issues', get_defined_vars(),
+									$this->i18n('Unable to create a readable/writable `logs` directory.').
+									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $logs_dir)
+								);
+						}
+
+					// Need to create the ``$log_type_sub_dir``?
+
+					if(!is_dir($log_type_sub_dir))
+						{
+							mkdir($log_type_sub_dir, 0775, TRUE);
+							clearstatcache();
+
+							if(!is_dir($log_type_sub_dir) || !is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
+								throw $this->©exception(
+									__METHOD__.'#read_write_issues', get_defined_vars(),
+									$this->i18n('Unable to create a readable/writable log type sub-directory.').
+									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
+								);
+
+							if(is_dir($logs_dir.'/private') && !is_file($logs_dir.'/private/.htaccess'))
+								file_put_contents($logs_dir.'/private/.htaccess', 'deny from all');
+						}
+
+					// Is ``$log_type_sub_dir`` readable/writable?
+
+					if(is_readable($log_type_sub_dir) && is_writable($log_type_sub_dir))
+						return $log_type_sub_dir; // It's a good day in Eureka!
+
+					throw $this->©exception(
+						__METHOD__.'#read_write_issues', get_defined_vars(),
+						$this->i18n('Unable to find a readable/writable log type sub-directory.').
+						sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
 					);
 				}
 
@@ -817,7 +836,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function del_log_dir($type, $sub_dir = '')
 				{
-					$this->check_arg_types('string', 'string', func_get_args());
+					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
 					return $this->empty_and_remove($this->get_log_dir($type, $sub_dir));
 				}
@@ -833,30 +852,35 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 * @throws exception If the requested private media directory is NOT readable/writable, or CANNOT be created for any reason.
+			 *
+			 * @TODO Optimize this function further. There are repeated ``is_()`` checks here.
 			 */
 			public function get_private_media_dir($sub_dir = '')
 				{
 					$this->check_arg_types('string', func_get_args());
 
 					// Creates a possible ``$sub_dir`` appendage.
+
 					if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
 						{
 							if(strpos($sub_dir, '..') === FALSE) // No relative paths please.
 								$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
 
 							else throw $this->©exception(
-								__METHOD__.'#relative_paths', compact('sub_dir'),
+								__METHOD__.'#relative_paths', get_defined_vars(),
 								$this->i18n('Expecting a sub-directory with NO relative paths.').
 								sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
 							);
 						}
 
 					// Clean these up and piece them together.
+
 					$media_dir        = $this->n_seps($this->___instance_config->plugin_data_dir.'/media');
 					$app_data_sub_dir = ($this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
 					$media_sub_dir    = $this->n_seps($media_dir.$app_data_sub_dir.$sub_dir);
 
 					// Need to create the ``$media_dir``?
+
 					if(!is_dir($media_dir))
 						{
 							mkdir($media_dir, 0775, TRUE);
@@ -864,13 +888,14 @@ namespace websharks_core_v000000_dev
 
 							if(!is_dir($media_dir) || !is_readable($media_dir) || !is_writable($media_dir))
 								throw $this->©exception(
-									__METHOD__.'#read_write_issues', compact('media_dir'),
+									__METHOD__.'#read_write_issues', get_defined_vars(),
 									$this->i18n('Unable to create a readable/writable `media` directory.').
 									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_dir)
 								);
 						}
 
 					// Need to create the ``$media_sub_dir``?
+
 					if(!is_dir($media_sub_dir))
 						{
 							mkdir($media_sub_dir, 0775, TRUE);
@@ -878,21 +903,22 @@ namespace websharks_core_v000000_dev
 
 							if(!is_dir($media_sub_dir) || !is_readable($media_sub_dir) || !is_writable($media_sub_dir))
 								throw $this->©exception(
-									__METHOD__.'#read_write_issues', compact('media_sub_dir'),
+									__METHOD__.'#read_write_issues', get_defined_vars(),
 									$this->i18n('Unable to create a private readable/writable `media` directory.').
 									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_sub_dir)
 								);
 
-							if(is_dir($media_dir) && !file_exists($media_dir.'/.htaccess'))
+							if(is_dir($media_dir) && !is_file($media_dir.'/.htaccess'))
 								file_put_contents($media_dir.'/.htaccess', 'deny from all');
 						}
 
 					// Is ``$media_sub_dir`` readable/writable?
+
 					if(is_readable($media_sub_dir) && is_writable($media_sub_dir))
 						return $media_sub_dir; // It's a good day in Eureka!
 
-					else throw $this->©exception(
-						__METHOD__.'#read_write_issues', compact('media_sub_dir'),
+					throw $this->©exception(
+						__METHOD__.'#read_write_issues', get_defined_vars(),
 						$this->i18n('Unable to find a private readable/writable media directory.').
 						sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_sub_dir)
 					);
@@ -928,6 +954,7 @@ namespace websharks_core_v000000_dev
 			 *    Also returns TRUE if ``$dir`` is already non-existent (i.e. nothing to remove).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$dir`` is NOT a string; or it's an empty string.
 			 * @throws exception If the ``$dir`` given, is NOT readable/writable, or CANNOT be opened for any reason.
 			 * @throws exception If any sub-directory or file within ``$dir`` is NOT readable/writable, or CANNOT be opened for any reason.
 			 * @throws exception If any failure occurs during processing (e.g. we only return TRUE on success).
@@ -937,26 +964,34 @@ namespace websharks_core_v000000_dev
 			 */
 			public function empty_and_remove($dir)
 				{
-					$this->check_arg_types('string', func_get_args());
+					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(!($dir = $this->n_seps($dir)) || !is_dir($dir))
-						return TRUE; // It's already gone.
+					$dir = $this->n_seps($dir);
 
+					if(!file_exists($dir))
+						return TRUE;
+
+					else if(!is_dir($dir))
+						throw $this->©exception(
+							__METHOD__.'#not_a_directory', get_defined_vars(),
+							$this->i18n('Unable to remove a directory; argument value is NOT a directory path.').
+							sprintf($this->i18n(' The invalid directory path given: `%1$s`.'), $dir)
+						);
 					else if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', compact('dir'),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; not readable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $dir)
 						);
 					else if(!is_writable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', compact('dir'),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; not writable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $dir)
 						);
 					else if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', compact('dir'),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; cannot open, for some unknown reason.').
 							sprintf($this->i18n(' Make this directory readable/writable please: `%1$s`.'), $dir)
 						);
@@ -969,15 +1004,7 @@ namespace websharks_core_v000000_dev
 
 									if(is_dir($_dir_file)) // Recursion for sub-directories.
 										$this->empty_and_remove($_dir_file);
-
-									else if(is_writable($_dir_file)) // File MUST be writable.
-										unlink($_dir_file); // We should be able to remove this file.
-
-									else throw $this->©exception(
-										__METHOD__.'#read_write_issues', compact('dir', '_dir_file'),
-										$this->i18n('Unable to remove a file, due to permission issues.').
-										sprintf($this->i18n(' Need this file to be writable please: `%1$s`.'), $_dir_file)
-									);
+									else $this->©file->unlink($_dir_file);
 								}
 						}
 					closedir($_open_dir); // Close resource handle now.
@@ -987,7 +1014,7 @@ namespace websharks_core_v000000_dev
 					clearstatcache(); // This makes other routines aware. Very important to clear the cache.
 
 					if(!$rmdir) throw $this->©exception(
-						__METHOD__.'#possible_read_write_or_existing_resource_handle_issues', compact('dir'),
+						__METHOD__.'#possible_read_write_or_existing_resource_handle_issues', get_defined_vars(),
 						sprintf($this->i18n('Unable to remove this directory: `%1$s`.'), $dir)
 					);
 					return TRUE; // It's a good day in Eureka!
@@ -1069,40 +1096,37 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string:!empty', 'array', 'boolean', 'boolean', array('null', 'string'), func_get_args());
 
-					if(!($dir = $this->n_seps($dir)) || !is_dir($dir))
+					$dir = $this->n_seps($dir);
+					$to  = $this->n_seps($to);
+
+					if(!is_dir($dir))
 						throw $this->©exception(
-							__METHOD__.'#source_dir_missing', compact('dir'),
+							__METHOD__.'#source_dir_missing', get_defined_vars(),
 							$this->i18n('Unable to copy a directory (source `dir` missing).').
 							sprintf($this->i18n('Non-existent source directory: `%1$s`.'), $dir)
 						);
 					else if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', compact('dir'),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; not readable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 					else if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', compact('dir'),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; cannot open for some unknown reason.').
 							sprintf($this->i18n(' Make this directory readable please: `%1$s`.'), $dir)
 						);
 
-					if(!($to = $this->n_seps($to)))
+					if(file_exists($to))
 						throw $this->©exception(
-							__METHOD__.'#destination_to_missing', compact('to'),
-							$this->i18n('Unable to copy a directory (destination undefined).').
-							sprintf($this->i18n('Undefined destination directory: `%1$s`.'), $to)
-						);
-					else if(is_dir($to))
-						throw $this->©exception(
-							__METHOD__.'#destination_to_exists', compact('to'),
+							__METHOD__.'#destination_to_exists', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; destination already exists.').
-							sprintf($this->i18n(' Please delete this directory: `%1$s`.'), $to)
+							sprintf($this->i18n(' Please delete this file or directory: `%1$s`.'), $to)
 						);
 					else if(!is_writable(dirname($to)))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', array('to' => $to, 'dirname' => dirname($to)),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; destination not writable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), dirname($to))
 						);
@@ -1111,7 +1135,7 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($to))
 						throw $this->©exception(
-							__METHOD__.'#mkdir_to_failure', compact('to'),
+							__METHOD__.'#mkdir_to_failure', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; destination creation failure.').
 							sprintf($this->i18n(' Please create this directory: `%1$s`.'), $to)
 						);
@@ -1125,10 +1149,9 @@ namespace websharks_core_v000000_dev
 						{
 							$_gitignore_file = $exclusions['.gitignore'];
 							$_gitignore_dir  = $this->©dir->n_seps(dirname($_gitignore_file));
-							$_git_ls_files   = $this->©command->git.' ls-files --others --directory';
 							unset($exclusions['.gitignore']); // Remove this now.
 
-							if(!file_exists($_gitignore_file))
+							if(!is_file($_gitignore_file))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_gitignore_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent `.gitignore` file: `%1$s`.'), $_gitignore_file)
@@ -1139,7 +1162,7 @@ namespace websharks_core_v000000_dev
 									sprintf($this->i18n('Invalid `.gitignore` file: `%1$s`.'), $_gitignore_file).
 									sprintf($this->i18n('Your `.gitignore` file MUST exist here: `%1$s`.'), dirname($___initial_dir).'/.gitignore')
 								);
-							else if(!$this->©command->git_possible()) // Possible to use GIT?
+							else if(!$this->©command->git_possible())
 								throw $this->©exception(
 									__METHOD__.'#git_command_not_possible', get_defined_vars(),
 									sprintf($this->i18n('You specified the following `.gitignore` file: `%1$s`.'), $_gitignore_file).
@@ -1151,29 +1174,17 @@ namespace websharks_core_v000000_dev
 									sprintf($this->i18n('You specified the following `.gitignore` file: `%1$s`.'), $_gitignore_file).
 									$this->i18n(' You\'re attempting to mix `.gitignore` functionality w/ `FNM_PATHNAME`; these are NOT compatible.')
 								);
+							$_gitignore_files = $this->©command->git('ls-files --others --directory', $_gitignore_dir);
 
-							$_gitignore_files = $this->©command->exec($_git_ls_files, '', TRUE, FALSE, $_gitignore_dir);
-
-							$_gitignore_files_status = $_gitignore_files['status'];
-							$_gitignore_files_errors = $_gitignore_files['errors'];
-							/** @var errors $_gitignore_files_errors */
-
-							if($_gitignore_files_status !== 0 || $_gitignore_files_errors->exist())
-								throw $this->©exception(
-									__METHOD__.'#gitignore_files_command_exec_issue', get_defined_vars(),
-									sprintf($this->i18n('You specified the following `.gitignore` file: `%1$s`.'), $_gitignore_file).
-									sprintf($this->i18n(' However, the command: `%1$s`, returned a non-zero status or error. Git said: `%2$s`'),
-									        $_git_ls_files, $_gitignore_files_errors->get_message())
-								);
-							if($_gitignore_files['output']) // Do we have output (e.g. a list of ignored files)?
+							if($_gitignore_files) // Do we have output (e.g. a list of ignored files)?
 								{
-									foreach(preg_split('/['."\r\n".']+/', $_gitignore_files['output'], -1, PREG_SPLIT_NO_EMPTY) as $_path)
+									foreach(preg_split('/['."\r\n".']+/', $_gitignore_files, -1, PREG_SPLIT_NO_EMPTY) as $_path)
 										// No need to normalize directory separators here; GIT already does that for us.
 										// Directories returned by GIT always include a trailing slash (easy to identify).
 										// The list provided by GIT does NOT include leading slashes though (we add those).
 										$exclusions[] = (substr($_path, -1) === '/') ? '/'.$_path.'*' : '/'.$_path;
 								}
-							unset($_gitignore_file, $_gitignore_dir, $_git_ls_files, $_gitignore_files, $_gitignore_files_status, $_gitignore_files_errors, $_path);
+							unset($_gitignore_file, $_gitignore_dir, $_gitignore_files, $_path);
 						}
 					while(($_dir_file = readdir($_open_dir)) !== FALSE) // Recursively copy all sub-directories/files.
 						{
@@ -1190,13 +1201,7 @@ namespace websharks_core_v000000_dev
 
 											if($_dir_file_is_dir) // Recursive sub-directories.
 												$this->copy_to($_dir_file, $_dir_file_to, $exclusions, $exclusions_case_insensitive, $exclusions_fnm_pathname, $___initial_dir);
-
-											else if(!is_readable($_dir_file) || !copy($_dir_file, $_dir_file_to))
-												throw $this->©exception(
-													__METHOD__.'#copy_to_failure', compact('to', '_dir_file', '_dir_file_to'),
-													sprintf($this->i18n('Unable to copy to: `%1$s`, possible permission issues.'), $_dir_file_to).
-													sprintf($this->i18n(' Need this file to be readable please: `%1$s`.'), $_dir_file)
-												);
+											else $this->©file->copy_to($_dir_file, $_dir_file_to);
 										}
 								}
 						}
@@ -1272,46 +1277,49 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string:!empty', 'string:!empty', array('string', 'boolean'), 'boolean', 'boolean', func_get_args());
 
-					if(!($dir = $this->n_seps($dir)) || !is_dir($dir))
+					$dir = $this->n_seps($dir);
+					$to  = $this->n_seps($to);
+
+					if(!is_dir($dir))
 						throw $this->©exception(
-							__METHOD__.'#source_dir_missing', compact('dir'),
+							__METHOD__.'#source_dir_missing', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory (source `dir` missing).').
 							sprintf($this->i18n('Non-existent source directory: `%1$s`.'), $dir)
 						);
 					else if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', compact('dir'),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; not readable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 
-					if(!($to = $this->n_seps($to)))
+					if(file_exists($to))
 						throw $this->©exception(
-							__METHOD__.'#destination_to_missing', compact('to'),
-							$this->i18n('Unable to PHAR a directory (destination undefined).').
-							sprintf($this->i18n('Undefined destination directory: `%1$s`.'), $to)
-						);
-					else if(!preg_match('/\.phar$/i', $to))
-						throw $this->©exception(
-							__METHOD__.'#invalid_phar_file', compact('to'),
-							$this->i18n('Unable to PHAR a directory; invalid destination PHAR file.').
-							sprintf($this->i18n(' Please use a `.phar` file extension instead of: `%1$s`.'), $to)
-						);
-					else if(!is_writable(dirname($to)))
-						throw $this->©exception(
-							__METHOD__.'#read_write_issues', array('to' => $to, 'dirname' => dirname($to)),
-							$this->i18n('Unable to PHAR a directory; destination not writable due to permission issues.').
-							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), dirname($to))
-						);
-					else if(file_exists($to))
-						throw $this->©exception(
-							__METHOD__.'#existing_phar', compact('to'),
+							__METHOD__.'#existing_phar', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; destination PHAR file already exists.').
 							sprintf($this->i18n(' Please delete this file first: `%1$s`.'), $to)
 						);
+					else if(!preg_match('/\.phar$/i', $to))
+						throw $this->©exception(
+							__METHOD__.'#invalid_phar_file', get_defined_vars(),
+							$this->i18n('Unable to PHAR a directory; invalid destination PHAR file.').
+							sprintf($this->i18n(' Please use a `.phar` file extension instead of: `%1$s`.'), $to)
+						);
+					else if(!is_dir(dirname($to)))
+						throw $this->©exception(
+							__METHOD__.'#phar_to_dir_missing', get_defined_vars(),
+							$this->i18n('Destination PHAR directory does NOT exist yet.').
+							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
+						);
+					else if(!is_writable(dirname($to)))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->i18n('Unable to PHAR a directory; destination not writable due to permission issues.').
+							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), dirname($to))
+						);
 					else if(!\Phar::canWrite())
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', array('phar.readonly' => ini_get('phar.readonly')),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; PHP configuration does NOT allow write access.').
 							$this->i18n(' Need this INI setting please: `phar.readonly = 0`.')
 						);
@@ -1320,15 +1328,15 @@ namespace websharks_core_v000000_dev
 						$stub_file = dirname(dirname(dirname(__FILE__))).'/stub.php';
 					else $stub_file = $stub; // A specific file path.
 
-					if(!$stub_file || !file_exists($stub_file))
+					if(!is_file($stub_file))
 						throw $this->©exception(
-							__METHOD__.'#missing_stub_file', compact('stub', 'stub_file'),
+							__METHOD__.'#missing_stub_file', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; missing stub.').
 							sprintf($this->i18n(' File does NOT exist: `%1$s`.'), $stub_file)
 						);
 					else if(!is_readable($stub_file))
 						throw $this->©exception(
-							__METHOD__.'#stub_file_issues', compact('stub', 'stub_file'),
+							__METHOD__.'#stub_file_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; permission issues with stub file.').
 							sprintf($this->i18n(' Need this file to be writable please: `%1$s`.'), $stub_file)
 						);
@@ -1398,12 +1406,7 @@ namespace websharks_core_v000000_dev
 						$php = preg_replace('/\.phar$/i', '.'.trim($phpify, '.'), $to);
 					else $php = preg_replace('/\.phar$/i', '.phar.php', $to);
 
-					if(!rename($to, $php) || !file_exists($php))
-						throw $this->©exception(
-							__METHOD__.'#rename_failure', compact('to', 'php'),
-							sprintf($this->i18n('Failed to rename PHAR archive w/PHP extension: `%1$s`.'), $php)
-						);
-					return $php; // New PHP file location (now with a new file name).
+					return $this->©file->rename_to($to, $php);
 				}
 
 			/**
@@ -1415,7 +1418,7 @@ namespace websharks_core_v000000_dev
 			 *    The directory this lives in MUST already exist and be writable.
 			 *    If this file already exists, an exception will be thrown.
 			 *
-			 * @return boolean TRUE if the directory was successfully zipped, else an exception is thrown.
+			 * @return string New ZIP file location; else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If the ``$dir`` is NOT a readable directory, or CANNOT be zipped for any reason.
@@ -1428,39 +1431,36 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
 
+					$dir = $this->n_seps($dir);
+					$to  = $this->n_seps($to);
+
 					if(!class_exists('\\PclZip'))
 						include_once ABSPATH.'wp-admin/includes/class-pclzip.php';
 
-					if(!($dir = $this->n_seps($dir)) || !is_dir($dir))
+					if(!is_dir($dir))
 						throw $this->©exception(
-							__METHOD__.'#source_dir_missing', compact('dir'),
+							__METHOD__.'#source_dir_missing', get_defined_vars(),
 							$this->i18n('Unable to ZIP a directory (source `dir` missing).').
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);
 					else if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', compact('dir'),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to ZIP a directory; not readable; due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 
-					if(!($to = $this->n_seps($to)))
+					if(file_exists($to))
 						throw $this->©exception(
-							__METHOD__.'#zip_to_missing', compact('to'),
-							$this->i18n('Unable to ZIP a directory (destination undefined).').
-							sprintf($this->i18n(' Undefined destination ZIP file: `%1$s`.'), $to)
+							__METHOD__.'#existing_zip', get_defined_vars(),
+							$this->i18n('Destination ZIP exists; it MUST first be deleted please.').
+							sprintf($this->i18n(' Please check this ZIP archive: `%1$s`.'), $to)
 						);
 					else if(substr($to, -4) !== '.zip')
 						throw $this->©exception(
 							__METHOD__.'#invalid_zip', get_defined_vars(),
 							$this->i18n('Invalid ZIP extension. The destination must end with `.zip`.').
 							sprintf($this->i18n(' Instead got: `%1$s`.'), $to)
-						);
-					else if(file_exists($to))
-						throw $this->©exception(
-							__METHOD__.'#existing_zip', get_defined_vars(),
-							$this->i18n('Destination ZIP exists; it MUST first be deleted please.').
-							sprintf($this->i18n(' Please check this ZIP archive: `%1$s`.'), $to)
 						);
 					else if(!is_dir(dirname($to)))
 						throw $this->©exception(
@@ -1481,7 +1481,74 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#pclzip_archive_failure#'.$archive->errorCode(), get_defined_vars(),
 							sprintf($this->i18n('PclZip archive failure: `%1$s`.'), $archive->errorInfo(TRUE))
 						);
-					return TRUE; // Default return value.
+					return $to; // It's a good day in Eureka!
+				}
+
+			/**
+			 * Rename a directory.
+			 *
+			 * @param string $dir A full directory path.
+			 * @param string $to A new full directory path.
+			 *
+			 * @return string Path to new directory location; else an exception is thrown.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If the ``$dir`` does NOT exist; or is NOT a readable/writable directory.
+			 * @throws exception If the ``$to`` directory already exists (either as a file or directory).
+			 * @throws exception If the ``$to`` parent directory does NOT exist or is NOT writable.
+			 * @throws exception If the underlying call to PHP's ``rename()`` function fails for any reason.
+			 */
+			public function rename_to($dir, $to)
+				{
+					$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
+
+					$dir = $this->n_seps($dir);
+					$to  = $this->n_seps($to);
+
+					if(!is_dir($dir))
+						throw $this->©exception(
+							__METHOD__.'#source_dir_missing', get_defined_vars(),
+							$this->i18n('Unable to rename a directory (source `dir` missing).').
+							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
+						);
+					else if(!is_readable($dir))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->i18n('Unable to rename a directory; not readable; due to permission issues.').
+							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
+						);
+					else if(!is_writable($dir))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->i18n('Unable to rename a directory; not writable; due to permission issues.').
+							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), $dir)
+						);
+
+					if(file_exists($to))
+						throw $this->©exception(
+							__METHOD__.'#destination_exists', get_defined_vars(),
+							$this->i18n('Destination exists; it MUST first be deleted please.').
+							sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
+						);
+					else if(!is_dir(dirname($to)))
+						throw $this->©exception(
+							__METHOD__.'#destination_dir_missing', get_defined_vars(),
+							$this->i18n('Destination\'s parent directory does NOT exist yet.').
+							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
+						);
+					else if(!is_writable(dirname($to)))
+						throw $this->©exception(
+							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
+							$this->i18n('Destination\'s directory is not writable.').
+							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), dirname($to))
+						);
+
+					if(!rename($dir, $to))
+						throw $this->©exception(
+							__METHOD__.'#rename_failure', get_defined_vars(),
+							sprintf($this->i18n('Rename failure. Could NOT rename: `%1$s`; to: `%2$s`.'), $dir, $to)
+						);
+					return $to; // It's a good day in Eureka!
 				}
 
 			/**
@@ -1544,9 +1611,9 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', array('null', 'integer'), array('null', 'integer'), func_get_args());
 
-					if(!($dir = $this->n_seps($dir)) || !is_dir($dir))
+					if(!is_dir($dir = $this->n_seps($dir)))
 						throw $this->©exception(
-							__METHOD__.'#source_dir_missing', compact('dir'),
+							__METHOD__.'#source_dir_missing', get_defined_vars(),
 							$this->i18n('Unable to iterate a directory (source `dir` missing).').
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);

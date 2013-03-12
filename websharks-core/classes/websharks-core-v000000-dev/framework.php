@@ -762,10 +762,8 @@ namespace websharks_core_v000000_dev
 					 * @throws \exception If the plugin's version does NOT match this regex pattern validation.
 					 *    See: {@link websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_version}
 					 *
-					 * @throws \exception If the plugin's directory is non-existent (e.g. the plugin's directory MUST actually exist).
-					 *    In addition, the plugin's directory MUST contain a main plugin file matching the basename of this directory.
-					 *    For example, a plugin with directory basename `plugin`, should have a main plugin file: `plugin.php`.
-					 *       Note: the WebSharks™ Core itself is NOT required to carry this file; it's NOT an actual plugin.
+					 * @throws \exception If the plugin's directory is missing (e.g. the plugin's directory MUST actually exist).
+					 *    In addition, the plugin's directory MUST contain a main plugin file with the name `plugin.php`.
 					 *
 					 * @throws \exception If the plugin's site URL, is NOT valid (MUST start with `http://.+`).
 					 *
@@ -827,9 +825,7 @@ namespace websharks_core_v000000_dev
 
 							        && !empty($___instance_config['plugin_dir']) && is_string($___instance_config['plugin_dir'])
 							        && is_dir($___instance_config['plugin_dir'] = dirs::_4fwc_n_seps($___instance_config['plugin_dir']))
-
-							        && ($___instance_config['plugin_root_ns'] === __NAMESPACE__ // Core does NOT need a plugin file.
-							            || file_exists($___instance_config['plugin_dir'].'/'.basename($___instance_config['plugin_dir']).'.php'))
+							        && is_file($___instance_config['plugin_dir'].'/plugin.php')
 
 							        && !empty($___instance_config['plugin_site']) && is_string($___instance_config['plugin_site'])
 							        && preg_match('/^http\:\/\/.+/i', $___instance_config['plugin_site'])
@@ -881,6 +877,7 @@ namespace websharks_core_v000000_dev
 
 									$this->___instance_config->core_ns_v             = substr($this->___instance_config->core_ns, strlen($this->___instance_config->core_ns_stub) + 2);
 									$this->___instance_config->core_ns_v_with_dashes = str_replace('_', '-', $this->___instance_config->core_ns_v);
+									$this->___instance_config->core_version          =& $this->___instance_config->core_ns_v_with_dashes;
 
 									// Check core ``__NAMESPACE__`` for validation issues.
 									if(!preg_match(strings::$_4fwc_regex_valid_ws_core_ns_version, $this->___instance_config->core_ns))
@@ -934,9 +931,9 @@ namespace websharks_core_v000000_dev
 										}
 									// Based on the plugin's directory (i.e. `plugin_dir`).
 									$this->___instance_config->plugin_dir_basename      = basename($this->___instance_config->plugin_dir);
-									$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/'.$this->___instance_config->plugin_dir_basename.'.php';
+									$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/plugin.php';
 									$this->___instance_config->plugin_data_dir          = apply_filters($this->___instance_config->plugin_root_ns_stub.'__data_dir', $this->___instance_config->plugin_dir.'-data');
-									$this->___instance_config->plugin_file              = $this->___instance_config->plugin_dir.'/'.$this->___instance_config->plugin_dir_basename.'.php';
+									$this->___instance_config->plugin_file              = $this->___instance_config->plugin_dir.'/plugin.php';
 									$this->___instance_config->plugin_include_file      = $this->___instance_config->plugin_dir.'/include.php';
 									$this->___instance_config->plugin_api_class_file    = $this->___instance_config->plugin_dir.'/classes/api.php';
 
@@ -944,8 +941,8 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->plugin_pro_var               = $this->___instance_config->plugin_root_ns.'_pro';
 									$this->___instance_config->plugin_pro_dir               = $this->___instance_config->plugin_dir.'-pro';
 									$this->___instance_config->plugin_pro_dir_basename      = basename($this->___instance_config->plugin_pro_dir);
-									$this->___instance_config->plugin_pro_dir_file_basename = $this->___instance_config->plugin_pro_dir_basename.'/'.$this->___instance_config->plugin_pro_dir_basename.'.php';
-									$this->___instance_config->plugin_pro_file              = $this->___instance_config->plugin_pro_dir.'/'.$this->___instance_config->plugin_pro_dir_basename.'.php';
+									$this->___instance_config->plugin_pro_dir_file_basename = $this->___instance_config->plugin_pro_dir_basename.'/plugin.php';
+									$this->___instance_config->plugin_pro_file              = $this->___instance_config->plugin_pro_dir.'/plugin.php';
 									$this->___instance_config->plugin_pro_include_file      = $this->___instance_config->plugin_pro_dir.'/include.php';
 								}
 							// Based on `plugin_root_ns_stub`.
@@ -2088,7 +2085,7 @@ namespace websharks_core_v000000_dev
 				 *
 				 * @var framework $GLOBALS[__NAMESPACE__] Global framework instance.
 				 */
-				$GLOBALS[__NAMESPACE__]                                              = new framework(
+				$GLOBALS[__NAMESPACE__] = new framework(
 					array(
 					     'plugin_var_ns'         => 'websharks_core',
 					     'plugin_root_ns'        => __NAMESPACE__,
@@ -2097,8 +2094,37 @@ namespace websharks_core_v000000_dev
 					     'plugin_dir'            => dirname(dirname(dirname(__FILE__))),
 					     'plugin_site'           => 'http://www.websharks-inc.com',
 					     'dynamic_class_aliases' => framework::$___dynamic_class_aliases
-					)
-				);
-				$GLOBALS[$GLOBALS[__NAMESPACE__]->___instance_config->plugin_var_ns] =& $GLOBALS[__NAMESPACE__];
+					));
+				if(!isset($GLOBALS['websharks_core']->___instance_config->core_version)
+				   || version_compare($GLOBALS['websharks_core']->___instance_config->core_version,
+				                      $GLOBALS[__NAMESPACE__]->___instance_config->core_version, '<')
+				) $GLOBALS['websharks_core'] = $GLOBALS[__NAMESPACE__];
+			}
+	}
+namespace // Global namespace.
+	{
+		if(!class_exists('websharks_core'))
+			{
+				/**
+				 * WebSharks™ Core.
+				 */
+				class websharks_core extends
+					\websharks_core_v000000_dev\framework
+				{
+					// Easier access to those w/o concern for versions.
+				}
+			}
+		if(!function_exists('websharks_core'))
+			{
+				/**
+				 * WebSharks™ Core instance.
+				 *
+				 * @return \websharks_core_v000000_dev\framework
+				 *  Or the latest version available at runtime (in the case of multiple instances).
+				 */
+				function websharks_core()
+					{
+						return $GLOBALS['websharks_core'];
+					}
 			}
 	}

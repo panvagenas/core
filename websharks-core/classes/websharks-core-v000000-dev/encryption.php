@@ -353,11 +353,11 @@ namespace websharks_core_v000000_dev
 			if(($signature = $this->_rsa_sha1_shell_sign($string, $key)))
 				return $signature; // Most reliable.
 
-			if($this->©commands->windows_possible() && file_exists(($openssl = 'c:/openssl-win32/bin/openssl.exe')))
+			if($this->©commands->windows_possible() && is_file(($openssl = 'c:/openssl-win32/bin/openssl.exe')))
 				if(($signature = $this->_rsa_sha1_shell_sign($string, $key, $openssl)))
 					return $signature;
 
-			if($this->©commands->windows_possible() && file_exists(($openssl = 'c:/openssl-win64/bin/openssl.exe')))
+			if($this->©commands->windows_possible() && is_file(($openssl = 'c:/openssl-win64/bin/openssl.exe')))
 				if(($signature = $this->_rsa_sha1_shell_sign($string, $key, $openssl)))
 					return $signature;
 

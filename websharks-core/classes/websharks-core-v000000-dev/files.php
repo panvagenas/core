@@ -39,7 +39,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if($file && file_exists($file))
+					if($file && is_file($file))
 						return $this->bytes_abbr((float)filesize($file));
 
 					return '';
@@ -179,7 +179,7 @@ namespace websharks_core_v000000_dev
 					if(isset($this->static['wp_load'][$cache_entry]))
 						return $this->static['wp_load'][$cache_entry];
 
-					if($check_abspath && defined('ABSPATH') && file_exists(ABSPATH.'wp-load.php'))
+					if($check_abspath && defined('ABSPATH') && is_file(ABSPATH.'wp-load.php'))
 						return ($this->static['wp_load'][$cache_entry] = ABSPATH.'wp-load.php');
 
 					for($_i = 0, $_dirname = dirname(__FILE__); $_i <= 100; $_i++)
@@ -187,7 +187,7 @@ namespace websharks_core_v000000_dev
 							for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
 								$_dir = dirname($_dir);
 
-							if(file_exists($_dir.'/wp-load.php'))
+							if(is_file($_dir.'/wp-load.php'))
 								return ($this->static['wp_load'][$cache_entry] = $_dir.'/wp-load.php');
 
 							if(!$_dir || $_dir === '.') break;
@@ -200,7 +200,7 @@ namespace websharks_core_v000000_dev
 								$dev_dir = $fallback_on_dev_dir;
 							else $dev_dir = 'E:/EasyPHP/wordpress';
 
-							if(file_exists($dev_dir.'/wp-load.php'))
+							if(is_file($dev_dir.'/wp-load.php'))
 								return ($this->static['wp_load'][$cache_entry] = $dev_dir.'/wp-load.php');
 						}
 					return ($this->static['wp_load'][$cache_entry] = '');
@@ -225,36 +225,223 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(!file_exists($file))
+					if(!is_file($file))
 						return $file;
 
 					else if(!is_readable($file) || !is_writable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', compact('file'),
+							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Expecting a readable/writable file (permission issues).').
 							sprintf($this->i18n(' Got: `%1$s`.'), $file)
 						);
+					else if(filesize($file) < 1048576 * 2) // Two megabytes.
+						return $file;
 
-					else if(filesize($file) > 1048576 * 2) // Two megabytes.
+					$extension    = $this->extension($file);
+					$extension    = ($extension) ? '.'.$extension : '';
+					$archive_file = dirname($file).'/'.basename($file, $extension).'-archived-'.time().$extension;
+
+					return $this->rename_to($file, $archive_file);
+				}
+
+			/**
+			 * Copy a file.
+			 *
+			 * @param string $file Path to file.
+			 * @param string $to Path to new copy location.
+			 *
+			 * @return string New copy location; else an exception is thrown.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$file`` is NOT a string; or is an empty string.
+			 * @throws exception If ``$file`` is NOT actually a file.
+			 * @throws exception If ``$file`` is NOT readable.
+			 * @throws exception If ``$to`` is NOT a string; or is an empty string.
+			 * @throws exception If ``$to`` already exists.
+			 * @throws exception If ``$to`` parent directory does NOT exist; or is NOT writable.
+			 * @throws exception If the underlying call to PHP's ``copy()`` function fails for any reason.
+			 *
+			 * @note This will NOT copy directories; only a single file.
+			 */
+			public function copy_to($file, $to)
+				{
+					$this->check_arg_types('string:!empty', 'string!empty', func_get_args());
+
+					$file = $this->©dir->n_seps($file);
+					$to   = $this->©dir->n_seps($to);
+
+					if(!is_file($file))
+						throw $this->©exception(
+							__METHOD__.'#nonexistent_source', get_defined_vars(),
+							sprintf($this->i18n('Unable to copy. Nonexistent source: `%1$s`.'), $file)
+						);
+					else if(!is_readable($file))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							sprintf($this->i18n('Unable to copy this file: `%1$s`.'), $file).
+							$this->i18n(' Possible permission issues. This file is not readable.')
+						);
+
+					if(file_exists($to))
+						throw $this->©exception(
+							__METHOD__.'#destination_exists', get_defined_vars(),
+							$this->i18n('Destination exists; it MUST first be deleted please.').
+							sprintf($this->i18n(' Please check this file: `%1$s`.'), $to)
+						);
+					else if(!is_dir(dirname($to)))
+						throw $this->©exception(
+							__METHOD__.'#destination_dir_missing', get_defined_vars(),
+							$this->i18n('Destination\'s parent directory does NOT exist yet.').
+							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
+						);
+					else if(!is_writable(dirname($to)))
+						throw $this->©exception(
+							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
+							$this->i18n('Destination\'s directory is not writable.').
+							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), dirname($to))
+						);
+
+					if(!copy($file, $to))
+						throw $this->©exception(
+							__METHOD__.'#failure', get_defined_vars(),
+							sprintf($this->i18n('Unable to copy this file: `%1$s`; to `%2$s`.'), $file, $to).
+							$this->i18n(' Possible permission issues. Please copy this file manually.')
+						);
+					clearstatcache(); // Make other routines aware.
+
+					return $to; // It's a good day in Eureka!
+				}
+
+			/**
+			 * Rename a file.
+			 *
+			 * @param string $file A full file path.
+			 * @param string $to A new full file path.
+			 *
+			 * @return string Path to new location; else an exception is thrown.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$file`` is NOT a string; or is an empty string.
+			 * @throws exception If ``$file`` is NOT actually a file.
+			 * @throws exception If ``$file`` is NOT a readable/writable file.
+			 * @throws exception If ``$to`` is NOT a string; or is an empty string.
+			 * @throws exception If ``$to`` already exists.
+			 * @throws exception If ``$to`` parent directory does NOT exist; or is NOT writable.
+			 * @throws exception If the underlying call to PHP's ``rename()`` function fails for any reason.
+			 *
+			 * @note This will NOT rename directories; only a single file.
+			 */
+			public function rename_to($file, $to)
+				{
+					$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
+
+					$file = $this->©dir->n_seps($file);
+					$to   = $this->©dir->n_seps($to);
+
+					if(!is_file($file))
+						throw $this->©exception(
+							__METHOD__.'#nonexistent_source', get_defined_vars(),
+							sprintf($this->i18n('Unable to rename. Nonexistent source: `%1$s`.'), $file)
+						);
+					else if(!is_readable($file))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
+							$this->i18n(' Possible permission issues. This file is not readable.')
+						);
+					else if(!is_writable($file))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
+							$this->i18n(' Possible permission issues. This file is not writable.')
+						);
+
+					if(file_exists($to))
+						throw $this->©exception(
+							__METHOD__.'#destination_exists', get_defined_vars(),
+							$this->i18n('Destination exists; it MUST first be deleted please.').
+							sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
+						);
+					else if(!is_dir(dirname($to)))
+						throw $this->©exception(
+							__METHOD__.'#destination_dir_missing', get_defined_vars(),
+							$this->i18n('Destination\'s parent directory does NOT exist yet.').
+							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
+						);
+					else if(!is_writable(dirname($to)))
+						throw $this->©exception(
+							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
+							$this->i18n('Destination\'s directory is not writable.').
+							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), dirname($to))
+						);
+
+					if(!rename($file, $to))
+						throw $this->©exception(
+							__METHOD__.'#rename_failure', get_defined_vars(),
+							sprintf($this->i18n('Rename failure. Could NOT rename: `%1$s`; to: `%2$s`.'), $file, $to)
+						);
+					clearstatcache(); // Make other routines aware.
+
+					return $to; // It's a good day in Eureka!
+				}
+
+			/**
+			 * File deletion.
+			 *
+			 * @param string|array $file Path to file (or an array of file paths).
+			 *
+			 * @params-variable-length This function accepts a variable-length list of arguments.
+			 *    You can pass in any number of file paths for deletion (even string/array mixtures).
+			 *
+			 * @return boolean TRUE if all files are deleted; else an exception is thrown.
+			 *    Also returns TRUE for any files that do NOT even exist.
+			 *
+			 * @note This will NOT delete directories; only files.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If any ``$file`` is NOT a string|array; or is an empty string|array.
+			 * @throws exception If any ``$file`` exists; but it is NOT actually a file.
+			 * @throws exception If any ``$file`` is NOT writable.
+			 * @throws exception If the underlying call to PHP's ``unlink()`` function fails for any reason.
+			 */
+			public function unlink($file)
+				{
+					$this->check_arg_types(array('string:!empty', 'array:!empty'), func_get_args());
+
+					$files = array();
+					foreach(func_get_args() as $_file)
+						if(is_array($_file)) $files = array_merge($files, $_file);
+						else $files[] = $_file;
+
+					$files = array_map(array($this, '©dir.n_seps'), $files);
+					$files = array_unique($files);
+
+					foreach($files as $_file)
 						{
-							$path              = pathinfo($file);
-							$path['extension'] = (!empty($path['extension'])) ? '.'.$path['extension'] : '';
-							$archive_file      = $path['dirname'].'/'.$path['filename'].'-archived-'.time().$path['extension'];
-
-							if(!is_readable($path['dirname']) || !is_writable($path['dirname']))
+							if(!$this->©string->is_not_empty($_file))
 								throw $this->©exception(
-									__METHOD__.'#read_write_issues', compact('file', 'path'),
-									$this->i18n('Expecting a readable/writable directory to contain `$file`.').
-									sprintf($this->i18n(' Got: `%1$s`.'), $path['dirname'])
+									__METHOD__.'#invalid_file', get_defined_vars(),
+									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $this->©var->dump($_file)).
+									$this->i18n(' Each file MUST be represented by a (string) that is NOT empty.')
 								);
+							else if(!file_exists($_file)) continue; // Already gone.
 
-							else if(!rename($file, $archive_file))
+							else if(!is_file($_file))
 								throw $this->©exception(
-									__METHOD__.'#rename_failure', compact('file', 'path', 'archive_file'),
-									$this->i18n('Unable to archive file. PHP `rename()` failure (FALSE return value).')
+									__METHOD__.'#invalid_file', get_defined_vars(),
+									sprintf($this->i18n('Unable to delete this file path. NOT a file: `%1$s`.'), $_file)
+								);
+							else if(!is_writable($_file) || !unlink($_file))
+								throw $this->©exception(
+									__METHOD__.'#read_write_issues', get_defined_vars(),
+									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $_file).
+									$this->i18n(' Possible permission issues. Please delete this file manually.')
 								);
 						}
-					return $file; // Reverberate ``$file``.
+					unset($_file); // Housekeeping.
+					clearstatcache(); // Make other routines aware.
+
+					return TRUE; // Default return value.
 				}
 
 			/**
@@ -265,11 +452,13 @@ namespace websharks_core_v000000_dev
 			 *    A boolean is also accepted; in case an input ``glob()`` fails.
 			 *
 			 * @return integer Number of files deleted; else an exception is thrown.
+			 *    Files that do NOT even exist; do NOT get counted in this.
+			 *    This function may often return a `0` value.
 			 *
 			 * @note This will NOT delete directories; only files.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$glob`` is an empty string. That's invalid.
+			 * @throws exception If ``$glob`` is an empty string.
 			 * @throws exception If unable to delete a file for any reason.
 			 */
 			public function unlink_glob($glob)
@@ -284,13 +473,15 @@ namespace websharks_core_v000000_dev
 						{
 							if(!is_writable($_dir_file) || !unlink($_dir_file))
 								throw $this->©exception(
-									__METHOD__.'#read_write_issues', compact('glob', '_dir_file'),
+									__METHOD__.'#read_write_issues', get_defined_vars(),
 									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $_dir_file).
 									$this->i18n(' Possible permission issues. Please delete this file manually.')
 								);
 							$deleted_files++;
 						}
-					return $deleted_files; // Total.
+					clearstatcache(); // Make other routines aware.
+
+					return $deleted_files; // Total deleted files.
 				}
 
 			/**
@@ -309,12 +500,12 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string:!empty', func_get_args());
 
 					foreach(($dirs = $this->©dirs->where_templates_may_reside()) as $_dir)
-						if(file_exists($path = $_dir.'/'.$file) && is_readable($path))
+						if(is_file($path = $_dir.'/'.$file) && is_readable($path))
 							return $path;
 					unset($_dir); // Housekeeping.
 
 					throw $this->©exception(
-						__METHOD__.'#file_missing', compact('file', 'dirs'),
+						__METHOD__.'#file_missing', get_defined_vars(),
 						sprintf($this->i18n('Unable to locate template file: `%1$s`.'), $file)
 					);
 				}
@@ -374,7 +565,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					return strtolower(ltrim(strrchr(basename($file), '.'), '.'));
+					return strtolower(ltrim((string)strrchr(basename($file), '.'), '.'));
 				}
 		}
 	}

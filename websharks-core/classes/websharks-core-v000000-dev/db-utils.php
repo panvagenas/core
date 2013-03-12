@@ -396,7 +396,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(preg_match('/\.sql$/', $sql_file) && file_exists($sql_file))
+					if(preg_match('/\.sql$/', $sql_file) && is_file($sql_file))
 						{
 							$table_prefix  = $this->©db_table->prefix;
 							$plugin_prefix = $this->___instance_config->plugin_prefix;

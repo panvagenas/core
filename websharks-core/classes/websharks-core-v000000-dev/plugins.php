@@ -96,7 +96,7 @@ namespace websharks_core_v000000_dev
 
 			$this->cache['load_api_class'] = TRUE;
 
-			if(file_exists($this->___instance_config->plugin_api_class_file))
+			if(is_file($this->___instance_config->plugin_api_class_file))
 			{
 				include_once $this->___instance_config->plugin_api_class_file;
 
@@ -118,7 +118,7 @@ namespace websharks_core_v000000_dev
 
 			$this->cache['load_pro_class'] = TRUE;
 
-			if(file_exists($this->___instance_config->plugin_pro_include_file)
+			if(is_file($this->___instance_config->plugin_pro_include_file)
 			   && (in_array($this->___instance_config->plugin_pro_dir_file_basename, $this->active(), TRUE)
 			       || defined('___UNIT_TEST')) // Also load pro add-on for unit tests.
 			) // If pro add-on exists, it MUST be an active WordPress® plugin, like any other.
