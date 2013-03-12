@@ -147,11 +147,10 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param null|boolean|string $fallback_on_dev_dir Defaults to NULL (recommended).
 			 *
-			 *    • If NULL — and WordPress® cannot be located anywhere else;
+			 *    • If NULL — and WordPress® cannot be located anywhere;
 			 *       and `___DEV_KEY_OK` is TRUE; automatically fallback on a local development copy.
 			 *
-			 *    • If TRUE — and WordPress® cannot be located anywhere else;
-			 *       automatically fallback on a local development copy.
+			 *    • If TRUE — and WordPress® cannot be located anywhere; automatically fallback on a local development copy.
 			 *
 			 *    • If NULL|TRUE — we'll look inside: `E:/EasyPHP/wordpress` (a default WebSharks™ Core location).
 			 *       If STRING — we'll look inside the directory path defined by the string value.
@@ -182,7 +181,7 @@ namespace websharks_core_v000000_dev
 					if($check_abspath && defined('ABSPATH') && is_file(ABSPATH.'wp-load.php'))
 						return ($this->static['wp_load'][$cache_entry] = ABSPATH.'wp-load.php');
 
-					for($_i = 0, $_dirname = dirname(__FILE__); $_i <= 100; $_i++)
+					for($_i = 0, $_dirname = dirname(dirname(dirname(__FILE__))); $_i <= 100; $_i++)
 						{
 							for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
 								$_dir = dirname($_dir);
@@ -265,7 +264,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function copy_to($file, $to)
 				{
-					$this->check_arg_types('string:!empty', 'string!empty', func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
 
 					$file = $this->©dir->n_seps($file);
 					$to   = $this->©dir->n_seps($to);
