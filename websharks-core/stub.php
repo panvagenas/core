@@ -31,7 +31,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static $static = array();
 
 			/**
-			 * This file a PHP Archive?
+			 * This file is a PHP Archive?
 			 *
 			 * @return boolean A PHP Archive file?
 			 */
@@ -39,11 +39,22 @@ if(!class_exists('websharks_core_v000000_dev'))
 				{
 					$is_phar = self::is_phar_var();
 
-					if(!empty($GLOBALS[$is_phar]))
-						if(basename(__FILE__) !== 'stub.php')
-							return TRUE;
+					return (!empty($GLOBALS[$is_phar]) && $GLOBALS[$is_phar] === __FILE__);
+				}
 
-					return FALSE;
+			/**
+			 * Stub file loaded by the PHAR stub?
+			 *
+			 * @param string $file An absolute file path.
+			 *
+			 * @return boolean Stub file loaded by the PHAR stub?
+			 */
+			public static function is_phar_stub($file)
+				{
+					if(!self::is_phar())
+						return FALSE;
+
+					return ($file === __FILE__.'/stub.php');
 				}
 
 			/**
@@ -63,7 +74,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function is_webphar()
 				{
-					if(!defined('WPINC') && self::is_phar())
+					if(!defined('WPINC') && self::is_phar() && !empty($_SERVER['SCRIPT_FILENAME']))
 						if(realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__))
 							return TRUE;
 
@@ -92,14 +103,14 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function is_autoload()
 				{
-					if(!self::is_webphar())
-						{
-							$autoload = self::autoload_var();
+					if(self::is_webphar())
+						return FALSE;
 
-							if(!isset($GLOBALS[$autoload]) || $GLOBALS[$autoload])
-								if(!self::is_phar() || basename(__FILE__) !== 'stub.php')
-									return TRUE;
-						}
+					$autoload = self::autoload_var();
+
+					if(!isset($GLOBALS[$autoload]) || $GLOBALS[$autoload])
+						return TRUE;
+
 					return FALSE;
 				}
 
@@ -504,8 +515,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static $ws_wp_temp_deps = 'PD9waHAKaWYoIWRlZmluZWQoJ1dQSU5DJykpCglleGl0KCdEbyBOT1QgYWNjZXNzIHRoaXMgZmlsZSBkaXJlY3RseTogJy5iYXNlbmFtZShfX0ZJTEVfXykpOwoKaWYoIWNsYXNzX2V4aXN0cygnZGVwc193ZWJzaGFya3NfY29yZV92MDAwMDAwX2RldicpKQoJewoJCWNsYXNzIGRlcHNfd2Vic2hhcmtzX2NvcmVfdjAwMDAwMF9kZXYKCQl7CgkJCXB1YmxpYyBmdW5jdGlvbiBjaGVjaygkcGx1Z2luX25hbWUgPSAnJykKCQkJCXsKCQkJCQlpZighaXNfYWRtaW4oKSB8fCAhY3VycmVudF91c2VyX2NhbignaW5zdGFsbF9wbHVnaW5zJykpCgkJCQkJCXJldHVybiBGQUxTRTsgLy8gTm90aGluZyB0byBkbyBoZXJlLgoKCQkJCQkkbm90aWNlID0gJzxkaXYgY2xhc3M9ImVycm9yIGZhZGUiPic7CgkJCQkJJG5vdGljZSAuPSAnPHA+JzsKCgkJCQkJJG5vdGljZSAuPSAoJHBsdWdpbl9uYW1lKSA/CgkJCQkJCSdSZWdhcmRpbmcgPHN0cm9uZz4nLmVzY19odG1sKCRwbHVnaW5fbmFtZSkuJzo8L3N0cm9uZz4nLgoJCQkJCQknJm5ic3A7Jm5ic3A7Jm5ic3A7JyA6ICcnOwoKCQkJCQkkbm90aWNlIC49ICclJW5vdGljZSUlJzsKCgkJCQkJJG5vdGljZSAuPSAnPC9wPic7CgkJCQkJJG5vdGljZSAuPSAnPC9kaXY+JzsKCgkJCQkJYWRkX2FjdGlvbignYWxsX2FkbWluX25vdGljZXMnLCAvLyBOb3RpZnkgaW4gYWxsIGFkbWluIG5vdGljZXMuCgkJCQkJICAgICAgICAgICBjcmVhdGVfZnVuY3Rpb24oJycsICdlY2hvIFwnJy5zdHJfcmVwbGFjZSgiJyIsICJcXCciLCAkbm90aWNlKS4nXCc7JykpOwoKCQkJCQlyZXR1cm4gRkFMU0U7IC8vIEFsd2F5cyByZXR1cm4gYSBGQUxTRSB2YWx1ZSBpbiB0aGlzIHNjZW5hcmlvLgoJCQkJfQoJCX0KCX0=';
 		}
 	}
-echo __FILE__."\n";
-/**
+/*
  * A WebSharks™ Core webPhar instance?
  */
 if(websharks_core_v000000_dev::is_webphar())
@@ -513,11 +523,14 @@ if(websharks_core_v000000_dev::is_webphar())
 		if(!websharks_core_v000000_dev::can_phar())
 			throw new exception(websharks_core_v000000_dev::cant_phar_msg());
 
+		if(websharks_core_v000000_dev::is_phar_stub(__FILE__))
+			exit('Do NOT access this file directly: '.basename(__FILE__));
+
 		Phar::webPhar('', '', '', array(), 'websharks_core_v000000_dev::webPhar_rewriter');
 
 		return; // We can stop here.
 	}
-/**
+/*
  * A WebSharks™ Core autoload instance?
  */
 if(websharks_core_v000000_dev::is_autoload())
@@ -531,20 +544,20 @@ if(websharks_core_v000000_dev::is_autoload())
 		if(!class_exists('\\websharks_core_v000000_dev\\framework'))
 			include_once websharks_core_v000000_dev::framework();
 	}
-/**
+unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
+
+/*
  * The WebSharks™ Core is in WordPress?
  */
 if(defined('WPINC')) // This is NOT direct access.
 	{
-		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
-
 		return; // We can stop here.
 	}
-/**
+/*
  * Disallow direct file access in all other cases.
  */
 exit('Do NOT access this file directly: '.basename(__FILE__));
-/**
+/*
  * For a possible `phar://` stream wrapper (do NOT remove this).
  *    The Phar class wants this w/ all UPPERCASE letters.
  */

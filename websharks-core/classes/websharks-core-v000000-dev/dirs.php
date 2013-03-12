@@ -1377,7 +1377,7 @@ namespace websharks_core_v000000_dev
 
 					// Phar classes throw exceptions on failure.
 
-					$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$this->___instance_config->core_ns.'\'] = TRUE;';
+					$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$this->___instance_config->core_ns.'\'] = __FILE__;';
 					$_stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
 					$_stub_file_contents    = $this->©string->ireplace_once('<?php', '<?php '.$_stub_file_is_phar_var.' ', $_stub_file_contents);
 
