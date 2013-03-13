@@ -298,9 +298,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					if(!empty($cacheable_mime_types[$extension]))
 						{
-							header('Expires: '.gmdate('D, d M Y H:i:s', strtotime('+90 days')).' GMT');
+							header('Expires: '.gmdate('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
 							header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-							header('Cache-Control: max-age='.(86400 * 90));
+							header('Cache-Control: max-age='.(86400 * 365));
 							header('Pragma: public');
 						}
 					return $internal_uri; // Final return value (internal URI).
