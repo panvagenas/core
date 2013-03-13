@@ -2119,7 +2119,7 @@ namespace websharks_core_v000000_dev
 				 * Easier access for those who don't care about the version.
 				 */
 				if(!class_exists('\\websharks_core'))
-					class_alias('\\'.__NAMESPACE__.'\\framework', '\\websharks_core');
+					class_alias('\\'.__NAMESPACE__.'\\framework', 'websharks_core');
 			}
 	}
 namespace // Global namespace.

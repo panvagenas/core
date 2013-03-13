@@ -69,7 +69,8 @@ Now create this directory and file: `/wp-content/plugins/rocketship/classes/fram
 namespace rocketship;
 
 // Include your bundled copy of the WebSharks™ Core.
-include_once dirname(__FILE__).'/websharks-core.phar.php';
+// Assuming: `/wp-content/plugins/rocketship/websharks-core.phar.php`.
+include_once dirname(dirname(__FILE__)).'/websharks-core.phar.php';
 
 // Tell the WebSharks™ Core Autoloader about your PHP classes.
 \websharks_core_autoloader::add_classes_dir(dirname(__FILE__));

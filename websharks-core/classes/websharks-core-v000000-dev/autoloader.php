@@ -214,5 +214,5 @@ namespace websharks_core_v000000_dev
 		 * Easier access for those who don't care about the version.
 		 */
 		if(!class_exists('\\websharks_core_autoloader'))
-			class_alias('\\'.__NAMESPACE__.'\\autoloader', '\\websharks_core_autoloader');
+			class_alias('\\'.__NAMESPACE__.'\\autoloader', 'websharks_core_autoloader');
 	}
