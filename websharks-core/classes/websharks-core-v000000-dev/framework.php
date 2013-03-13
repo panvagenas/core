@@ -2083,24 +2083,22 @@ namespace websharks_core_v000000_dev
 						}
 				}
 
-				/**
+				/*
 				 * Centralized autoload handler.
 				 *
 				 * @note Calls ``spl_autoload_register()``.
 				 */
 				include_once dirname(__FILE__).'/autoloader.php';
 
-				/**
+				/*
 				 * Centralized exception handler.
 				 *
 				 * @note Calls ``set_exception_handler()``.
 				 */
 				include_once dirname(__FILE__).'/exception-handler.php';
 
-				/**
+				/*
 				 * Creates global framework instance.
-				 *
-				 * @var framework $GLOBALS[__NAMESPACE__] Global framework instance.
 				 */
 				$GLOBALS[__NAMESPACE__] = new framework(
 					array(
@@ -2116,28 +2114,25 @@ namespace websharks_core_v000000_dev
 				   || version_compare($GLOBALS['websharks_core']->___instance_config->core_version,
 				                      $GLOBALS[__NAMESPACE__]->___instance_config->core_version, '<')
 				) $GLOBALS['websharks_core'] = $GLOBALS[__NAMESPACE__];
+
+				/*
+				 * Easier access for those who don't care about the version.
+				 */
+				if(!class_exists('\\websharks_core'))
+					class_alias('\\'.__NAMESPACE__.'\\framework', '\\websharks_core');
 			}
 	}
 namespace // Global namespace.
 	{
-		if(!class_exists('websharks_core'))
-			{
-				/**
-				 * WebSharks™ Core.
-				 */
-				class websharks_core extends
-					\websharks_core_v000000_dev\framework
-				{
-					// Easier access to those w/o concern for versions.
-				}
-			}
 		if(!function_exists('websharks_core'))
 			{
 				/**
 				 * WebSharks™ Core instance.
 				 *
-				 * @return \websharks_core_v000000_dev\framework
-				 *  Or the latest version available at runtime (in the case of multiple instances).
+				 * Easier access for those who don't care about the version.
+				 *
+				 * @return \websharks_core The latest version available
+				 *    at runtime (in the case of multiple instances).
 				 */
 				function websharks_core()
 					{
