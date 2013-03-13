@@ -289,12 +289,20 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					// Process MIME type headers.
 
-					$mime_types = self::mime_types();
-					$extension  = self::extension($internal_uri);
+					$mime_types           = self::mime_types();
+					$cacheable_mime_types = self::cacheable_mime_types();
+					$extension            = self::extension($internal_uri);
 
 					if($extension && !empty($mime_types[$extension]))
 						header('Content-Type: '.$mime_types[$extension]);
 
+					if(isset($cacheable_mime_types[$extension]))
+						{
+							header('Expires: '.gmdate('D, d M Y H:i:s', strtotime('+1 week')).' GMT');
+							header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+							header('Cache-Control: max-age=604800');
+							header('Pragma: public');
+						}
 					return $internal_uri; // Final return value (internal URI).
 				}
 
@@ -337,6 +345,20 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			/**
+			 * Cacheable extensions.
+			 *
+			 * @return array Those we make cacheable.
+			 */
+			public static function cacheable_mime_types()
+				{
+					$extensions = array_keys(self::mime_types());
+
+					unset($extensions['php']);
+
+					return $extensions;
+				}
+
+			/**
 			 * A map of MIME types (for headers).
 			 *
 			 * @return array A map of MIME types (for headers).
@@ -345,7 +367,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 				{
 					$utf8 = '; charset=UTF-8';
 
-					return array(
+					if(isset(self::$static['mime_types']))
+						return self::$static['mime_types'];
+
+					return (self::$static['mime_types'] = array(
 						'txt'  => 'text/plain'.$utf8, 'md' => 'text/plain'.$utf8,
 						'ini'  => 'text/plain'.$utf8, 'csv' => 'text/csv'.$utf8,
 						'log'  => 'text/plain'.$utf8, 'sql' => 'text/plain'.$utf8, 'pot' => 'text/plain'.$utf8,
@@ -379,7 +404,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						'mpg'  => 'video/mpeg', 'mpeg' => 'video/mpeg', 'mp4' => 'video/mp4', 'webm' => 'video/webm',
 						'ogg'  => 'video/ogg', 'ogv' => 'video/ogg',
 						'flv'  => 'video/x-flv',
-					);
+					));
 				}
 
 			/**
