@@ -25,67 +25,16 @@ namespace websharks_core_v000000_dev
 		class dirs extends framework
 		{
 			/**
-			 * Normalizes directory separators in directory/file paths.
+			 * Normalizes directory separators.
 			 *
-			 * @param string  $path Directory or file path.
+			 * @return array {@inheritdoc}
 			 *
-			 * @param boolean $allow_trailing_slash Defaults to FALSE.
-			 *    If TRUE; and ``$path`` contains a trailing slash; we'll leave it there.
-			 *
-			 * @return string Directory or file path, after having been normalized by this routine.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('\\path/to\\something\\') === '/path/to/something'
-			 * @assert ('\\path//to\\some\\file.php') === '/path/to/some/file.php'
+			 * @see \websharks_core_v000000_dev::n_dir_seps()
+			 * @inheritdoc \websharks_core_v000000_dev::n_dir_seps()
 			 */
-			public function n_seps($path, $allow_trailing_slash = FALSE)
+			public function n_seps() // Arguments are NOT listed here.
 				{
-					$this->check_arg_types('string', 'boolean', func_get_args());
-
-					if(!strlen($path)) return ''; // Catch empty strings.
-
-					preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
-					$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
-
-					$path = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $path));
-					$path = ($allow_trailing_slash) ? $path : rtrim($path, '/');
-
-					$path = (!empty($_path['scheme'])) ? strtolower($_path['scheme']).$path : $path; // Lowercase.
-
-					return $path; // Normalized now.
-				}
-
-			/**
-			 * Normalizes directory separators in directory/file paths.
-			 *
-			 * @static For the WebSharks™ Core framework constructor.
-			 *    Must NOT have any other core dependencies.
-			 *
-			 * @param string  $path Directory or file path.
-			 *
-			 * @param boolean $allow_trailing_slash Defaults to FALSE.
-			 *    If TRUE; and ``$path`` contains a trailing slash; we'll leave it there.
-			 *
-			 * @return string Directory or file path, after having been normalized by this routine.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 */
-			public static function _4fwc_n_seps($path, $allow_trailing_slash = FALSE)
-				{
-					$path = (string)$path;
-
-					if(!strlen($path)) return ''; // Catch empty strings.
-
-					preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
-					$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
-
-					$path = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $path));
-					$path = ($allow_trailing_slash) ? $path : rtrim($path, '/');
-
-					$path = (!empty($_path['scheme'])) ? strtolower($_path['scheme']).$path : $path; // Lowercase.
-
-					return $path; // Normalized now.
+					return call_user_func_array('\\'.__NAMESPACE__.'::n_dir_seps', func_get_args());
 				}
 
 			/**
@@ -500,18 +449,17 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Get temporary directory for WordPress®.
 			 *
-			 * @return string Full path to a readable/writable temp directory; else an exception is thrown.
+			 * @return string {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::get_wp_temp_dir()
+			 * @inheritdoc \websharks_core_v000000_dev::get_wp_temp_dir()
 			 *
 			 * @throws exception If unable to find a readable/writable directory, for any reason.
-			 *
-			 * @assert () !== ''
 			 */
 			public function get_wp_temp_dir()
 				{
-					if(($wp_temp_dir = get_temp_dir())
-					   && ($wp_temp_dir = realpath($wp_temp_dir))
-					   && is_readable($wp_temp_dir) && is_writable($wp_temp_dir)
-					) return $this->n_seps($wp_temp_dir);
+					if(($wp_temp_dir = call_user_func_array('\\'.__NAMESPACE__.'::get_wp_temp_dir', func_get_args())))
+						return $wp_temp_dir;
 
 					throw $this->©exception(
 						__METHOD__.'#missing', get_defined_vars(),
@@ -537,6 +485,8 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$dir`` is empty; is NOT a directory; or is not readable.
 			 * @throws exception If ``$update_checksum_file`` is TRUE, ``$depth`` is zero,
 			 *    and permission issues (of any kind) prevent the update or creation of the `checksum.txt` file.
+			 *
+			 * @see deps_x_websharks_core_v000000_dev::dir_checksum()
 			 */
 			public function checksum($dir, $update_checksum_file = FALSE, $___root_dir = '')
 				{
@@ -565,6 +515,7 @@ namespace websharks_core_v000000_dev
 					closedir($handle); // Close directory handle now.
 
 					ksort($checksums, SORT_STRING); // In case order changes from one server to another.
+
 					$checksum = md5(implode('', $checksums)); // Collective checksum.
 
 					if($update_checksum_file && $dir === $___root_dir)
@@ -1701,23 +1652,23 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							if($this->data_dir_readable_writable())
-								return TRUE;
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							$this->©notice->enqueue(
-								'<p>'.
-								sprintf(
-									$this->i18n('Please create this directory: <code>%1$s</code>.'),
-									$this->©dirs->get_doc_root_path($this->___instance_config->plugin_data_dir)
-								).
-								$this->i18n(' You\'ll need to log in via FTP, and set directory permissions to <code>777</code>.').
-								$this->i18n(' Please use an application like <a href="http://filezilla-project.org/" target="_blank">FileZilla™</a>.').
-								$this->i18n(' See also: <a href="http://www.youtube.com/watch?v=oq0oM2w9lcQ" target="_blank">this video tutorial</a>').
-								'</p>'
-							);
-						}
+					if($this->data_dir_readable_writable())
+						return TRUE; // That's it! We're good here.
+
+					$this->©notice->enqueue(
+						'<p>'.
+						sprintf(
+							$this->i18n('Please create this directory: <code>%1$s</code>.'),
+							$this->©dirs->get_doc_root_path($this->___instance_config->plugin_data_dir)
+						).
+						$this->i18n(' You\'ll need to log in via FTP, and set directory permissions to <code>777</code>.').
+						$this->i18n(' Please use an application like <a href="http://filezilla-project.org/" target="_blank">FileZilla™</a>.').
+						$this->i18n(' See also: <a href="http://www.youtube.com/watch?v=oq0oM2w9lcQ" target="_blank">this video tutorial</a>').
+						'</p>'
+					);
 					return FALSE; // Default return value.
 				}
 
@@ -1738,13 +1689,12 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->empty_and_remove($this->___instance_config->plugin_data_dir);
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->empty_and_remove($this->___instance_config->plugin_data_dir);
+
+					return TRUE;
 				}
 		}
 	}

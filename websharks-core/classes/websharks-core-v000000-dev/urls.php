@@ -485,6 +485,8 @@ namespace websharks_core_v000000_dev
 			 * URL to WebSharks™ Core PHAR file stub.
 			 *
 			 * @return string URL to WebSharks™ Core stub file; else an empty string.
+			 *
+			 * @see \websharks_core_v000000_dev::is_phar()
 			 */
 			public function to_core_phar()
 				{

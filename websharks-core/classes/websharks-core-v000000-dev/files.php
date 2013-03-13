@@ -95,6 +95,8 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
+			 * @see \deps_x_websharks_core_v000000_dev::abbr_bytes()
+			 *
 			 * @assert ('200TB') === (float)(200*1024*1024*1024*1024)
 			 * @assert ('2TB') === (float)(2*1024*1024*1024*1024)
 			 * @assert ('2GB') === (float)(2*1024*1024*1024)
@@ -112,97 +114,56 @@ namespace websharks_core_v000000_dev
 
 					$notation = '/^(?P<value>[0-9\.]+)\s*(?P<modifier>bytes|byte|kbs|kb|k|mb|m|gb|g|tb|t)$/i';
 
-					if(preg_match($notation, $string, $_op))
-						{
-							$value    = (float)$_op['value'];
-							$modifier = strtolower($_op['modifier']);
-							unset($_op); // Housekeeping.
+					if(!preg_match($notation, $string, $_op))
+						return (float)0;
 
-							switch($modifier) // Fall through based on modifier.
-							{
-								case 't': // Multiplied four times.
-								case 'tb':
-										$value *= 1024;
-								case 'g': // Multiplied three times.
-								case 'gb':
-										$value *= 1024;
-								case 'm': // Multiple two times.
-								case 'mb':
-										$value *= 1024;
-								case 'k': // One time only.
-								case 'kb':
-								case 'kbs':
-										$value *= 1024;
-							}
-							return (float)$value;
-						}
-					return (float)0;
+					$value    = (float)$_op['value'];
+					$modifier = strtolower($_op['modifier']);
+					unset($_op); // Housekeeping.
+
+					switch($modifier) // Fall through based on modifier.
+					{
+						case 't': // Multiplied four times.
+						case 'tb':
+								$value *= 1024;
+						case 'g': // Multiplied three times.
+						case 'gb':
+								$value *= 1024;
+						case 'm': // Multiple two times.
+						case 'mb':
+								$value *= 1024;
+						case 'k': // One time only.
+						case 'kb':
+						case 'kbs':
+								$value *= 1024;
+					}
+					return (float)$value;
 				}
 
 			/**
-			 * Attempts to get `wp-load.php`.
+			 * Attempts to get `/wp-load.php`.
 			 *
-			 * @param boolean             $check_abspath Defaults to TRUE (recommended).
-			 *    If TRUE, first check ABSPATH for `/wp-load.php`.
+			 * @return string {@inheritdoc}
 			 *
-			 * @param null|boolean|string $fallback_on_dev_dir Defaults to NULL (recommended).
-			 *
-			 *    • If NULL — and WordPress® cannot be located anywhere;
-			 *       and `___DEV_KEY_OK` is TRUE; automatically fallback on a local development copy.
-			 *
-			 *    • If TRUE — and WordPress® cannot be located anywhere; automatically fallback on a local development copy.
-			 *
-			 *    • If NULL|TRUE — we'll look inside: `E:/EasyPHP/wordpress` (a default WebSharks™ Core location).
-			 *       If STRING — we'll look inside the directory path defined by the string value.
-			 *
-			 *    • If FALSE — we will NOT fallback under any circumstance.
-			 *
-			 * @return string Full server path to `wp-load.php` on success, else an empty string.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert () === dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))).'/wp-load.php'
+			 * @see \websharks_core_v000000_dev::wp_load()
+			 * @inheritdoc \websharks_core_v000000_dev::wp_load()
 			 */
-			public function wp_load($check_abspath = TRUE, $fallback_on_dev_dir = NULL)
+			public function wp_load() // Arguments are NOT listed here.
 				{
-					$this->check_arg_types('boolean', array('null', 'boolean', 'string'), func_get_args());
+					return call_user_func_array('\\'.__NAMESPACE__.'::wp_load', func_get_args());
+				}
 
-					if(!isset($fallback_on_dev_dir))
-						$fallback_on_dev_dir = defined('___DEV_KEY_OK');
-
-					$cache_entry = '_'.(integer)$check_abspath;
-					if($fallback_on_dev_dir && is_string($fallback_on_dev_dir))
-						$cache_entry .= $fallback_on_dev_dir;
-					else $cache_entry .= (integer)$fallback_on_dev_dir;
-
-					if(isset($this->static['wp_load'][$cache_entry]))
-						return $this->static['wp_load'][$cache_entry];
-
-					if($check_abspath && defined('ABSPATH') && is_file(ABSPATH.'wp-load.php'))
-						return ($this->static['wp_load'][$cache_entry] = ABSPATH.'wp-load.php');
-
-					for($_i = 0, $_dirname = dirname(dirname(dirname(__FILE__))); $_i <= 100; $_i++)
-						{
-							for($_dir = $_dirname, $__i = 0; $__i < $_i; $__i++)
-								$_dir = dirname($_dir);
-
-							if(!$_dir || $_dir === '.') break;
-
-							if(is_file($_dir.'/wp-load.php'))
-								return ($this->static['wp_load'][$cache_entry] = $_dir.'/wp-load.php');
-						}
-					unset($_i, $__i, $_dirname, $_dir);
-
-					if($fallback_on_dev_dir) // Fallback on development copy?
-						{
-							if(is_string($fallback_on_dev_dir))
-								$dev_dir = $fallback_on_dev_dir;
-							else $dev_dir = 'E:/EasyPHP/wordpress';
-
-							if(is_file($dev_dir.'/wp-load.php'))
-								return ($this->static['wp_load'][$cache_entry] = $dev_dir.'/wp-load.php');
-						}
-					return ($this->static['wp_load'][$cache_entry] = '');
+			/**
+			 * Locates a specific directory/file path.
+			 *
+			 * @return string {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::locate()
+			 * @inheritdoc \websharks_core_v000000_dev::locate()
+			 */
+			public function locate() // Arguments are NOT listed here.
+				{
+					return call_user_func_array('\\'.__NAMESPACE__.'::locate', func_get_args());
 				}
 
 			/**
@@ -648,17 +609,16 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Gets a file extension (lowercase).
+			 * Gets a file extension.
 			 *
-			 * @param string $file A file path, or just a file name.
+			 * @return string {@inheritdoc}
 			 *
-			 * @return string File extension (lowercase).
+			 * @see \websharks_core_v000000_dev::extension()
+			 * @inheritdoc \websharks_core_v000000_dev::extension()
 			 */
-			public function extension($file)
+			public function extension() // Arguments are NOT listed here.
 				{
-					$this->check_arg_types('string:!empty', func_get_args());
-
-					return strtolower(ltrim((string)strrchr(basename($file), '.'), '.'));
+					return call_user_func_array('\\'.__NAMESPACE__.'::extension', func_get_args());
 				}
 
 			/**
@@ -680,11 +640,14 @@ namespace websharks_core_v000000_dev
 			/**
 			 * A map of MIME types (for headers).
 			 *
-			 * @return array A map of MIME types (for headers).
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::mime_types()
 			 */
-			public function mime_types()
+			public function mime_types() // Arguments are NOT listed here.
 				{
-					return \websharks_core_v000000_dev::mime_types();
+					return call_user_func_array('\\'.__NAMESPACE__.'::mime_types', func_get_args());
 				}
 		}
 	}

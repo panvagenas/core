@@ -261,7 +261,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
-			 * @note Important... this is called upon by the ``deactivation_uninstall()`` method below.
+			 * @note Called by the ``deactivation_uninstall()`` method below.
 			 *
 			 * @assert () === 0
 			 * @assert $this->object->©crons->config($this->object->cron_jobs);
@@ -271,10 +271,10 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						return $this->©crons->delete(TRUE, $this->cron_jobs);
+					if(!$confirmation)
+						return 0; // Added security.
 
-					return 0; // Default return value.
+					return $this->©crons->delete(TRUE, $this->cron_jobs);
 				}
 
 			/**
@@ -294,14 +294,13 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->delete_cron_jobs(TRUE);
-							$this->purge_cache();
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->delete_cron_jobs(TRUE);
+					$this->purge_cache();
+
+					return TRUE;
 				}
 
 			/**
@@ -321,14 +320,13 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->delete_cron_jobs(TRUE);
-							$this->purge_cache();
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->delete_cron_jobs(TRUE);
+					$this->purge_cache();
+
+					return TRUE;
 				}
 
 			/**

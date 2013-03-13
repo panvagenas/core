@@ -70,6 +70,8 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return boolean TRUE if we're in a localhost environment, else FALSE.
 			 *
+			 * @see \deps_x_websharks_core_v000000_dev::is_localhost()
+			 *
 			 * @assert () === FALSE
 			 */
 			public function is_localhost()
@@ -169,6 +171,8 @@ namespace websharks_core_v000000_dev
 			 * Checks to see if we're running under a command line interface.
 			 *
 			 * @return boolean TRUE if we're running under a command line interface, else FALSE.
+			 *
+			 * @see \deps_x_websharks_core_v000000_dev::is_cli()
 			 *
 			 * @assert () === FALSE
 			 */

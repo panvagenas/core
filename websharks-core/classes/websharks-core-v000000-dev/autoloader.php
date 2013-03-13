@@ -24,7 +24,7 @@ namespace websharks_core_v000000_dev
 		 * @package WebSharks\Core
 		 * @since 120318
 		 */
-		final class autoloader // Stand-alone.
+		final class autoloader // Static methods only.
 		{
 			/**
 			 * Root namespaces to autoload for.
@@ -53,23 +53,21 @@ namespace websharks_core_v000000_dev
 			 */
 			public static function load_ns_class($ns_class)
 				{
-					if(is_string($ns_class) && $ns_class)
-						{
-							$ns_class      = strtolower(trim($ns_class, '\\'));
-							$ns_class_file = str_replace(array('\\', '_'), array('/', '-'), $ns_class).'.php';
+					if(!is_string($ns_class) || !$ns_class)
+						throw new \exception( // Fail here; detected invalid arguments.
+							sprintf(static::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					$ns_class      = strtolower(trim($ns_class, '\\'));
+					$ns_class_file = str_replace(array('\\', '_'), array('/', '-'), $ns_class).'.php';
 
-							if(static::is_handling_class_root_ns($ns_class)) // Handling class namespace?
-								{
-									foreach(static::$class_dirs as $_classes_dir)
-										if(is_file($_classes_dir.'/'.$ns_class_file))
-											return include_once $_classes_dir.'/'.$ns_class_file;
-									unset($_classes_dir); // Housekeeping.
-								}
-							return NULL; // Default return value.
+					if(static::is_handling_class_root_ns($ns_class)) // Handling class namespace?
+						{
+							foreach(static::$class_dirs as $_classes_dir)
+								if(is_file($_classes_dir.'/'.$ns_class_file))
+									return include_once $_classes_dir.'/'.$ns_class_file;
+							unset($_classes_dir); // Housekeeping.
 						}
-					else throw new \exception(
-						static::i18n('Expecting `$ns_class` as a string argument value (NOT empty).')
-					);
+					return NULL; // Default return value.
 				}
 
 			/**
@@ -98,16 +96,14 @@ namespace websharks_core_v000000_dev
 			 */
 			public static function add_classes_dir($classes_dir)
 				{
-					if(is_string($classes_dir) && basename($classes_dir) === 'classes' && is_dir($classes_dir))
-						{
-							if(!in_array($classes_dir, static::$class_dirs, TRUE))
-								array_unshift(static::$class_dirs, $classes_dir);
+					if(!is_string($classes_dir) || basename($classes_dir) !== 'classes' || !is_dir($classes_dir))
+						throw new \exception( // Fail here; detected invalid arguments.
+							sprintf(static::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					if(!in_array($classes_dir, static::$class_dirs, TRUE))
+						array_unshift(static::$class_dirs, $classes_dir);
 
-							return $classes_dir; // Useful when debugging.
-						}
-					else throw new \exception(
-						static::i18n('Expecting `$classes_dir` as a string argument value; with a `classes` dir.')
-					);
+					return $classes_dir; // Useful when debugging.
 				}
 
 			/**
@@ -122,18 +118,16 @@ namespace websharks_core_v000000_dev
 			 */
 			public static function add_root_ns($root_ns)
 				{
-					if(is_string($root_ns) && $root_ns && strpos($root_ns, '\\') === FALSE)
-						{
-							$root_ns = strtolower($root_ns);
+					if(!is_string($root_ns) || !$root_ns || strpos($root_ns, '\\') !== FALSE)
+						throw new \exception( // Fail here; detected invalid arguments.
+							sprintf(static::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					$root_ns = strtolower($root_ns);
 
-							if(!in_array($root_ns, static::$ns_roots, TRUE))
-								array_unshift(static::$ns_roots, $root_ns);
+					if(!in_array($root_ns, static::$ns_roots, TRUE))
+						array_unshift(static::$ns_roots, $root_ns);
 
-							return $root_ns; // Useful when debugging.
-						}
-					else throw new \exception(
-						static::i18n('Expecting `$root_ns` as a string argument value; with a root namespace.')
-					);
+					return $root_ns; // Useful when debugging.
 				}
 
 			/**
@@ -147,59 +141,45 @@ namespace websharks_core_v000000_dev
 			 */
 			public static function is_handling_class_root_ns($path)
 				{
-					if(is_string($path))
-						{
-							$path    = strtolower(trim($path, '\\'));
-							$root_ns = ($root_ns = strstr($path, '\\', TRUE)) ? $root_ns : $path;
+					if(!is_string($path))
+						throw new \exception( // Fail here; detected invalid arguments.
+							sprintf(static::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					if(!$path) return FALSE;
 
-							if(in_array($root_ns, static::$ns_roots, TRUE))
-								return TRUE; // Yes.
+					$path    = strtolower(trim($path, '\\'));
+					$root_ns = ($root_ns = strstr($path, '\\', TRUE)) ? $root_ns : $path;
 
-							return FALSE; // Default return value.
-						}
-					else throw new \exception(
-						static::i18n('Expecting `$path` as a string argument value.')
-					);
+					if(in_array($root_ns, static::$ns_roots, TRUE))
+						return TRUE; // Yes.
+
+					return FALSE; // Default return value.
 				}
 
 			/**
-			 * Handles core translations for this class (context: admin-side).
+			 * Handles core translations (context: admin-side).
 			 *
-			 * @param string  $string String to translate.
+			 * @return string {@inheritdoc}
 			 *
-			 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
-			 *    Contextual slugs normally follow the standard of being written with dashes.
-			 *
-			 * @return string Translated string.
+			 * @see \websharks_core_v000000_dev::i18n()
+			 * @inheritdoc \websharks_core_v000000_dev::i18n()
 			 */
-			public static function i18n($string, $other_contextuals = '')
+			public static function i18n() // Arguments are NOT listed here.
 				{
-					$core_ns_stub_with_dashes = 'websharks-core'; // Core namespace stub w/ dashes.
-					$string                   = (string)$string; // Typecasting this to a string value.
-					$other_contextuals        = (string)$other_contextuals; // Typecasting this to a string value.
-					$context                  = $core_ns_stub_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
-
-					return _x($string, $context, $core_ns_stub_with_dashes);
+					return call_user_func_array('\\'.__NAMESPACE__.'::i18n', func_get_args());
 				}
 
 			/**
-			 * Handles core translations for this class (context: front-side).
+			 * Handles core translations (context: front-side).
 			 *
-			 * @param string  $string String to translate.
+			 * @return string {@inheritdoc}
 			 *
-			 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
-			 *    Contextual slugs normally follow the standard of being written with dashes.
-			 *
-			 * @return string Translated string.
+			 * @see \websharks_core_v000000_dev::translate()
+			 * @inheritdoc \websharks_core_v000000_dev::translate()
 			 */
-			public static function translate($string, $other_contextuals = '')
+			public static function translate() // Arguments are NOT listed here.
 				{
-					$core_ns_stub_with_dashes = 'websharks-core'; // Core namespace stub w/ dashes.
-					$string                   = (string)$string; // Typecasting this to a string value.
-					$other_contextuals        = (string)$other_contextuals; // Typecasting this to a string value.
-					$context                  = $core_ns_stub_with_dashes.'--front-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
-
-					return _x($string, $context, $core_ns_stub_with_dashes);
+					return call_user_func_array('\\'.__NAMESPACE__.'::translate', func_get_args());
 				}
 		}
 

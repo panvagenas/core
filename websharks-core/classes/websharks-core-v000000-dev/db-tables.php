@@ -158,39 +158,38 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$install = $upgrade = NULL;
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							$this->©db->is_modifying_plugin_tables(TRUE /* Flag DB class. */);
+					$install = $upgrade = NULL;
 
-							if($this->install_file)
-								foreach($this->©db_utils->prep_sql_file_queries($this->install_file) as $_query)
-									if(($install = $this->©db->query($_query)) === FALSE)
-										break;
-							unset($_query); // Housekeeping.
+					$this->©db->is_modifying_plugin_tables(TRUE /* Flag DB class. */);
 
-							if($this->upgrade_file)
-								foreach($this->©db_utils->prep_sql_file_queries($this->upgrade_file) as $_query)
-									if(($upgrade = $this->©db->query($_query)) === FALSE)
-										break;
-							unset($_query); // Housekeeping.
+					if($this->install_file)
+						foreach($this->©db_utils->prep_sql_file_queries($this->install_file) as $_query)
+							if(($install = $this->©db->query($_query)) === FALSE)
+								break;
+					unset($_query); // Housekeeping.
 
-							$this->©db->is_modifying_plugin_tables(FALSE /* Unflag. */);
+					if($this->upgrade_file)
+						foreach($this->©db_utils->prep_sql_file_queries($this->upgrade_file) as $_query)
+							if(($upgrade = $this->©db->query($_query)) === FALSE)
+								break;
+					unset($_query); // Housekeeping.
 
-							if($install === FALSE)
-								throw $this->©exception(
-									__METHOD__.'#install_failure', compact('install'),
-									$this->i18n('Unable to install DB tables (install failure).')
-								);
-							if($upgrade === FALSE)
-								throw $this->©exception(
-									__METHOD__.'#upgrade_failure', compact('upgrade'),
-									$this->i18n('Unable to upgrade DB tables (upgrade failure).')
-								);
-							return TRUE;
-						}
-					return FALSE;
+					$this->©db->is_modifying_plugin_tables(FALSE /* Unflag. */);
+
+					if($install === FALSE)
+						throw $this->©exception(
+							__METHOD__.'#install_failure', compact('install'),
+							$this->i18n('Unable to install DB tables (install failure).')
+						);
+					if($upgrade === FALSE)
+						throw $this->©exception(
+							__METHOD__.'#upgrade_failure', compact('upgrade'),
+							$this->i18n('Unable to upgrade DB tables (upgrade failure).')
+						);
+					return TRUE;
 				}
 
 			/**
@@ -210,28 +209,27 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$uninstall = NULL;
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							$this->©db->is_modifying_plugin_tables(TRUE /* Flag DB class. */);
+					$uninstall = NULL;
 
-							if($this->uninstall_file)
-								foreach($this->©db_utils->prep_sql_file_queries($this->uninstall_file) as $_query)
-									if(($uninstall = $this->©db->query($_query)) === FALSE)
-										break;
-							unset($_query); // Housekeeping.
+					$this->©db->is_modifying_plugin_tables(TRUE /* Flag DB class. */);
 
-							$this->©db->is_modifying_plugin_tables(FALSE /* Unflag. */);
+					if($this->uninstall_file)
+						foreach($this->©db_utils->prep_sql_file_queries($this->uninstall_file) as $_query)
+							if(($uninstall = $this->©db->query($_query)) === FALSE)
+								break;
+					unset($_query); // Housekeeping.
 
-							if($uninstall === FALSE)
-								throw $this->©exception(
-									__METHOD__.'#uninstall_failure', compact('uninstall'),
-									$this->i18n('Unable to uninstall DB tables (uninstall failure).')
-								);
-							return TRUE;
-						}
-					return FALSE;
+					$this->©db->is_modifying_plugin_tables(FALSE /* Unflag. */);
+
+					if($uninstall === FALSE)
+						throw $this->©exception(
+							__METHOD__.'#uninstall_failure', compact('uninstall'),
+							$this->i18n('Unable to uninstall DB tables (uninstall failure).')
+						);
+					return TRUE;
 				}
 
 			/**
@@ -317,13 +315,12 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->install_upgrade(TRUE);
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->install_upgrade(TRUE);
+
+					return TRUE;
 				}
 
 			/**
@@ -343,13 +340,12 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->uninstall(TRUE);
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->uninstall(TRUE);
+
+					return TRUE;
 				}
 		}
 	}

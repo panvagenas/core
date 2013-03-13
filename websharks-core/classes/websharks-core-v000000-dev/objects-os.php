@@ -20,7 +20,7 @@ namespace websharks_core_v000000_dev
 		 * @package WebSharks\Core
 		 * @since 120318
 		 */
-		class objects_os // Stand-alone. Keep this out of scope.
+		class objects_os // Keep this out of scope.
 		{
 			/**
 			 * Plugin/framework instance.
@@ -52,7 +52,8 @@ namespace websharks_core_v000000_dev
 					) $this->plugin = $GLOBALS[$___instance_config->plugin_root_ns];
 
 					else throw new \exception(
-						sprintf(static::i18n('Invalid `$___instance_config` to constructor: `%1$s`'), print_r($___instance_config, TRUE))
+						sprintf(static::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
+						        print_r($___instance_config, TRUE))
 					);
 				}
 
@@ -85,21 +86,19 @@ namespace websharks_core_v000000_dev
 			 */
 			public function get_all_visible_default_properties($class_object)
 				{
-					if(is_string($class_object) || is_object($class_object))
-						{
-							if(is_object($class_object))
-								$class_name = get_class($class_object);
-							else $class_name = $class_object;
+					if(!!is_string($class_object) && !is_object($class_object))
+						throw $this->plugin->©exception(
+							__METHOD__.'#invalid_args', array('args' => func_get_args()),
+							$this->plugin->i18n('Expecting argument with string or object instance.')
+						);
+					if(is_object($class_object))
+						$class_name = get_class($class_object);
+					else $class_name = $class_object;
 
-							if(is_array($get_class_vars = get_class_vars($class_name)))
-								return $get_class_vars;
+					if(is_array($get_class_vars = get_class_vars($class_name)))
+						return $get_class_vars;
 
-							return array(); // Default return value.
-						}
-					else throw $this->plugin->©exception(
-						__METHOD__.'#invalid_args', array('args' => func_get_args()),
-						$this->plugin->i18n('Expecting argument with string or object instance.')
-					);
+					return array(); // Default return value.
 				}
 
 			/**
@@ -122,17 +121,15 @@ namespace websharks_core_v000000_dev
 			 */
 			public function get_non_static_visible_properties($object)
 				{
-					if(is_object($object)) // Need an object instance here.
-						{
-							if(is_array($get_object_vars = get_object_vars($object)))
-								return $get_object_vars;
+					if(!is_object($object))
+						throw $this->plugin->©exception(
+							__METHOD__.'#invalid_args', array('args' => func_get_args()),
+							$this->plugin->i18n('Expecting argument with object instance.')
+						);
+					if(is_array($get_object_vars = get_object_vars($object)))
+						return $get_object_vars;
 
-							return array(); // Default return value.
-						}
-					else throw $this->plugin->©exception(
-						__METHOD__.'#invalid_args', array('args' => func_get_args()),
-						$this->plugin->i18n('Expecting argument with object instance.')
-					);
+					return array(); // Default return value.
 				}
 
 			/**
@@ -164,17 +161,15 @@ namespace websharks_core_v000000_dev
 			 */
 			public function get_all_visible_methods($class_object)
 				{
-					if(is_string($class_object) || is_object($class_object))
-						{
-							if(is_array($get_class_methods = get_class_methods($class_object)))
-								return $get_class_methods;
+					if(!is_string($class_object) && !is_object($class_object))
+						throw $this->plugin->©exception(
+							__METHOD__.'#invalid_args', array('args' => func_get_args()),
+							$this->plugin->i18n('Expecting argument with string or object instance.')
+						);
+					if(is_array($get_class_methods = get_class_methods($class_object)))
+						return $get_class_methods;
 
-							return array(); // Default return value.
-						}
-					else throw $this->plugin->©exception(
-						__METHOD__.'#invalid_args', array('args' => func_get_args()),
-						$this->plugin->i18n('Expecting argument with string or object instance.')
-					);
+					return array(); // Default return value.
 				}
 
 			/**
@@ -231,43 +226,29 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Handles core translations for this class (context: admin-side).
+			 * Handles core translations (context: admin-side).
 			 *
-			 * @param string  $string String to translate.
+			 * @return string {@inheritdoc}
 			 *
-			 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
-			 *    Contextual slugs normally follow the standard of being written with dashes.
-			 *
-			 * @return string Translated string.
+			 * @see \websharks_core_v000000_dev::i18n()
+			 * @inheritdoc \websharks_core_v000000_dev::i18n()
 			 */
-			public static function i18n($string, $other_contextuals = '')
+			public static function i18n() // Arguments are NOT listed here.
 				{
-					$core_ns_stub_with_dashes = 'websharks-core'; // Core namespace stub w/ dashes.
-					$string                   = (string)$string; // Typecasting this to a string value.
-					$other_contextuals        = (string)$other_contextuals; // Typecasting this to a string value.
-					$context                  = $core_ns_stub_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
-
-					return _x($string, $context, $core_ns_stub_with_dashes);
+					return call_user_func_array('\\'.__NAMESPACE__.'::i18n', func_get_args());
 				}
 
 			/**
-			 * Handles core translations for this class (context: front-side).
+			 * Handles core translations (context: front-side).
 			 *
-			 * @param string  $string String to translate.
+			 * @return string {@inheritdoc}
 			 *
-			 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
-			 *    Contextual slugs normally follow the standard of being written with dashes.
-			 *
-			 * @return string Translated string.
+			 * @see \websharks_core_v000000_dev::translate()
+			 * @inheritdoc \websharks_core_v000000_dev::translate()
 			 */
-			public static function translate($string, $other_contextuals = '')
+			public static function translate() // Arguments are NOT listed here.
 				{
-					$core_ns_stub_with_dashes = 'websharks-core'; // Core namespace stub w/ dashes.
-					$string                   = (string)$string; // Typecasting this to a string value.
-					$other_contextuals        = (string)$other_contextuals; // Typecasting this to a string value.
-					$context                  = $core_ns_stub_with_dashes.'--front-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
-
-					return _x($string, $context, $core_ns_stub_with_dashes);
+					return call_user_func_array('\\'.__NAMESPACE__.'::translate', func_get_args());
 				}
 		}
 	}

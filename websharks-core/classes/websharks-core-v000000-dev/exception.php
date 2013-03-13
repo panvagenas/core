@@ -20,7 +20,7 @@ namespace websharks_core_v000000_dev
 		 * @package WebSharks\Core
 		 * @since 120318
 		 */
-		class exception extends \exception
+		class exception extends \exception // Allow extenders.
 		{
 			/**
 			 * @var boolean Enable debug file logging?
@@ -154,43 +154,29 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Handles core translations for this class (context: admin-side).
+			 * Handles core translations (context: admin-side).
 			 *
-			 * @param string  $string String to translate.
+			 * @return string {@inheritdoc}
 			 *
-			 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
-			 *    Contextual slugs normally follow the standard of being written with dashes.
-			 *
-			 * @return string Translated string.
+			 * @see \websharks_core_v000000_dev::i18n()
+			 * @inheritdoc \websharks_core_v000000_dev::i18n()
 			 */
-			public static function i18n($string, $other_contextuals = '')
+			public static function i18n() // Arguments are NOT listed here.
 				{
-					$core_ns_stub_with_dashes = 'websharks-core'; // Core namespace stub w/ dashes.
-					$string                   = (string)$string; // Typecasting this to a string value.
-					$other_contextuals        = (string)$other_contextuals; // Typecasting this to a string value.
-					$context                  = $core_ns_stub_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
-
-					return _x($string, $context, $core_ns_stub_with_dashes);
+					return call_user_func_array('\\'.__NAMESPACE__.'::i18n', func_get_args());
 				}
 
 			/**
-			 * Handles core translations for this class (context: front-side).
+			 * Handles core translations (context: front-side).
 			 *
-			 * @param string  $string String to translate.
+			 * @return string {@inheritdoc}
 			 *
-			 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
-			 *    Contextual slugs normally follow the standard of being written with dashes.
-			 *
-			 * @return string Translated string.
+			 * @see \websharks_core_v000000_dev::translate()
+			 * @inheritdoc \websharks_core_v000000_dev::translate()
 			 */
-			public static function translate($string, $other_contextuals = '')
+			public static function translate() // Arguments are NOT listed here.
 				{
-					$core_ns_stub_with_dashes = 'websharks-core'; // Core namespace stub w/ dashes.
-					$string                   = (string)$string; // Typecasting this to a string value.
-					$other_contextuals        = (string)$other_contextuals; // Typecasting this to a string value.
-					$context                  = $core_ns_stub_with_dashes.'--front-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
-
-					return _x($string, $context, $core_ns_stub_with_dashes);
+					return call_user_func_array('\\'.__NAMESPACE__.'::translate', func_get_args());
 				}
 		}
 	}

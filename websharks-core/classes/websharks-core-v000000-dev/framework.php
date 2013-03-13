@@ -841,7 +841,7 @@ namespace websharks_core_v000000_dev
 							        && preg_match(strings::$_4fwc_regex_valid_ws_version, $___instance_config['plugin_version'])
 
 							        && !empty($___instance_config['plugin_dir']) && is_string($___instance_config['plugin_dir'])
-							        && is_dir($___instance_config['plugin_dir'] = dirs::_4fwc_n_seps($___instance_config['plugin_dir']))
+							        && is_dir($___instance_config['plugin_dir'] = \websharks_core_v000000_dev::n_dir_seps($___instance_config['plugin_dir']))
 							        && is_file($___instance_config['plugin_dir'].'/plugin.php')
 
 							        && !empty($___instance_config['plugin_site']) && is_string($___instance_config['plugin_site'])

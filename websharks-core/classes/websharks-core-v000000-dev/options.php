@@ -740,13 +740,12 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->update();
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->update();
+
+					return TRUE;
 				}
 
 			/**
@@ -766,13 +765,12 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->delete(TRUE);
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->delete(TRUE);
+
+					return TRUE;
 				}
 		}
 	}

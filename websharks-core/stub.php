@@ -21,7 +21,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 * @package WebSharks\Core
 		 * @since 130302
 		 */
-		class websharks_core_v000000_dev
+		final class websharks_core_v000000_dev
 		{
 			/**
 			 * A static cache (for all instances).
@@ -503,11 +503,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function wp_load($get_last_value = FALSE, $check_abspath = TRUE, $fallback = NULL)
 				{
-					if(!is_bool($get_last_value) || !is_bool($check_abspath)
-					   || !(is_null($fallback) || is_bool($fallback) || is_string($fallback))
-					) throw new exception( // Fail here; detected invalid arguments.
-						sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
-					);
+					if(!is_bool($get_last_value) || !is_bool($check_abspath) || !(is_null($fallback) || is_bool($fallback) || is_string($fallback)))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
 					if($get_last_value && isset(self::$static['wp_load']))
 						return self::$static['wp_load'];
 
@@ -557,6 +556,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
 					$dir_file     = ltrim(self::n_dir_seps($dir_file), '/');
+					$starting_dir = ($starting_dir === 'getcwd()') ? getcwd() : $starting_dir;
 					$starting_dir = ($starting_dir === '__DIR__') ? dirname(__FILE__) : $starting_dir;
 					$starting_dir = self::n_dir_seps($starting_dir);
 

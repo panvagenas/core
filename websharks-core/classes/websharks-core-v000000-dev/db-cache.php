@@ -138,13 +138,12 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->purge();
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->purge();
+
+					return TRUE;
 				}
 
 			/**
@@ -164,13 +163,12 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->delete();
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->delete();
+
+					return TRUE;
 				}
 		}
 	}

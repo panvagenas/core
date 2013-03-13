@@ -693,23 +693,22 @@ namespace websharks_core_v000000_dev
 					$transient_prefix         = '_'.$this->___instance_config->plugin_prefix.'transient_';
 					$transient_timeout_prefix = '_'.$this->___instance_config->plugin_prefix.'transient_timeout_';
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$query = // Purge all transients (for the current plugin).
+					if(!$confirmation)
+						return 0; // Added security.
 
-								"DELETE".
-								" `transients`".
+					$query = // Purge all transients (for the current plugin).
 
-								" FROM".
-								" `".$this->©db_tables->get_wp('options')."` AS `transients`".
+						"DELETE".
+						" `transients`".
 
-								" WHERE".
-								" `transients`.`option_name` LIKE '".$this->©string->esc_sql(like_escape($transient_prefix))."%'".
-								" OR `transients`.`option_name` LIKE '".$this->©string->esc_sql(like_escape($transient_timeout_prefix))."%'";
+						" FROM".
+						" `".$this->©db_tables->get_wp('options')."` AS `transients`".
 
-							return (integer)$this->©db->query($query);
-						}
-					return 0; // Default return value.
+						" WHERE".
+						" `transients`.`option_name` LIKE '".$this->©string->esc_sql(like_escape($transient_prefix))."%'".
+						" OR `transients`.`option_name` LIKE '".$this->©string->esc_sql(like_escape($transient_timeout_prefix))."%'";
+
+					return (integer)$this->©db->query($query);
 				}
 
 			/**
@@ -723,16 +722,16 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
-			 * @note Important... this is called upon by the ``deactivation_uninstall()`` method below.
+			 * @note Called upon by the ``deactivation_uninstall()`` method below.
 			 */
 			public function delete_cron_jobs($confirmation = FALSE)
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						return $this->©crons->delete(TRUE, $this->cron_jobs);
+					if(!$confirmation)
+						return 0; // Added security.
 
-					return 0; // Default return value.
+					return $this->©crons->delete(TRUE, $this->cron_jobs);
 				}
 
 			/**
@@ -752,14 +751,13 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->cleanup_expired_transients();
-							$this->delete_cron_jobs(TRUE);
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->cleanup_expired_transients();
+					$this->delete_cron_jobs(TRUE);
+
+					return TRUE;
 				}
 
 			/**
@@ -779,14 +777,13 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if($confirmation) // Do we have confirmation?
-						{
-							$this->delete_transients(TRUE);
-							$this->delete_cron_jobs(TRUE);
+					if(!$confirmation)
+						return FALSE; // Added security.
 
-							return TRUE;
-						}
-					return FALSE; // Default return value.
+					$this->delete_transients(TRUE);
+					$this->delete_cron_jobs(TRUE);
+
+					return TRUE;
 				}
 		}
 	}

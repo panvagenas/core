@@ -64,6 +64,8 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$function`` is empty.
 			 *
+			 * @see \deps_x_websharks_core_v000000_dev::is_function_possible()
+			 *
 			 * @assert ('is_integer') === TRUE
 			 * @assert ('is_string') === TRUE
 			 * @assert ('eval') === TRUE
@@ -77,7 +79,7 @@ namespace websharks_core_v000000_dev
 					if(!isset($this->static['is_possible'][$function]) || $reconsider === $this::reconsider)
 						{
 							$this->static['is_possible'][$function] = FALSE;
-							$function                                     = strtolower($function);
+							$function                               = strtolower($function);
 
 							if((in_array($function, $this->constructs, TRUE) || is_callable($function) || function_exists($function))
 							   && !in_array($function, $this->disabled(), TRUE) // And it is NOT disabled in some way.
@@ -91,28 +93,31 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return array An array of all disabled functions, else an empty array.
 			 *
+			 * @see \deps_x_websharks_core_v000000_dev::disabled_functions()
+			 *
 			 * @assert () is-type 'array'
 			 */
 			public function disabled()
 				{
-					if(!isset($this->static['disabled']))
-						{
-							$this->static['disabled'] = array();
+					if(isset($this->static['disabled']))
+						return $this->static['disabled'];
 
-							if(function_exists('ini_get'))
-								{
-									if(($_ini_val = trim(strtolower(ini_get('disable_functions')))))
-										$this->static['disabled'] = array_merge($this->static['disabled'], preg_split('/[\s;,]+/', $_ini_val, -1, PREG_SPLIT_NO_EMPTY));
-									unset($_ini_val); // Housekeeping.
+					$this->static['disabled'] = array();
 
-									if(($_ini_val = trim(strtolower(ini_get('suhosin.executor.func.blacklist')))))
-										$this->static['disabled'] = array_merge($this->static['disabled'], preg_split('/[\s;,]+/', $_ini_val, -1, PREG_SPLIT_NO_EMPTY));
-									unset($_ini_val); // Housekeeping.
+					if(!function_exists('ini_get')) // Is this even possible?
+						return $this->static['disabled'];
 
-									if($this->©string->is_true(ini_get('suhosin.executor.disable_eval')))
-										$this->static['disabled'] = array_merge($this->static['disabled'], array('eval'));
-								}
-						}
+					if(($_ini_val = trim(strtolower(ini_get('disable_functions')))))
+						$this->static['disabled'] = array_merge($this->static['disabled'], preg_split('/[\s;,]+/', $_ini_val, -1, PREG_SPLIT_NO_EMPTY));
+					unset($_ini_val); // Housekeeping.
+
+					if(($_ini_val = trim(strtolower(ini_get('suhosin.executor.func.blacklist')))))
+						$this->static['disabled'] = array_merge($this->static['disabled'], preg_split('/[\s;,]+/', $_ini_val, -1, PREG_SPLIT_NO_EMPTY));
+					unset($_ini_val); // Housekeeping.
+
+					if($this->©string->is_true(ini_get('suhosin.executor.disable_eval')))
+						$this->static['disabled'] = array_merge($this->static['disabled'], array('eval'));
+
 					return $this->static['disabled'];
 				}
 
