@@ -296,9 +296,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if($extension && !empty($mime_types[$extension]))
 						header('Content-Type: '.$mime_types[$extension]);
 
-					if(isset($cacheable_mime_types[$extension]))
+					if(!empty($cacheable_mime_types[$extension]))
 						{
-							header('Expires: '.gmdate('D, d M Y H:i:s', strtotime('+1 week')).' GMT');
+							header('Expires: '.gmdate('D, d M Y H:i:s', strtotime('+2 weeks')).' GMT');
 							header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 							header('Cache-Control: max-age=604800');
 							header('Pragma: public');
@@ -351,11 +351,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function cacheable_mime_types()
 				{
-					$extensions = array_keys(self::mime_types());
+					$mime_types = self::mime_types();
 
-					unset($extensions['php']);
+					unset($mime_types['php']);
 
-					return $extensions;
+					return $mime_types;
 				}
 
 			/**
