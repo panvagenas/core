@@ -949,14 +949,23 @@ namespace websharks_core_v000000_dev
 									// Based on the plugin's directory (i.e. `plugin_dir`).
 									$this->___instance_config->plugin_dir_basename      = basename($this->___instance_config->plugin_dir);
 									$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/plugin.php';
-									$this->___instance_config->plugin_data_dir          = apply_filters($this->___instance_config->plugin_root_ns_stub.'__data_dir', $this->___instance_config->plugin_dir.'-data');
-									$this->___instance_config->plugin_file              = $this->___instance_config->plugin_dir.'/plugin.php';
-									$this->___instance_config->plugin_framework_file    = $this->___instance_config->plugin_dir.'/framework.php';
-									$this->___instance_config->plugin_api_class_file    = $this->___instance_config->plugin_dir.'/classes/api.php';
+									$this->___instance_config->plugin_data_dir          = $this->___instance_config->plugin_dir.'-data';
+
+									if(stripos($this->___instance_config->plugin_data_dir, 'phar://' === 0))
+										$this->___instance_config->plugin_data_dir = substr($this->___instance_config->plugin_data_dir, 7);
+									$this->___instance_config->plugin_data_dir = // Give filters a chance to modify this if they'd like to.
+										apply_filters($this->___instance_config->plugin_root_ns_stub.'__data_dir', $this->___instance_config->plugin_data_dir);
+
+									$this->___instance_config->plugin_file           = $this->___instance_config->plugin_dir.'/plugin.php';
+									$this->___instance_config->plugin_api_class_file = $this->___instance_config->plugin_dir.'/classes/api.php';
 
 									// Based on the current plugin, establish properties for a pro add-on.
-									$this->___instance_config->plugin_pro_var               = $this->___instance_config->plugin_root_ns.'_pro';
-									$this->___instance_config->plugin_pro_dir               = $this->___instance_config->plugin_dir.'-pro';
+									$this->___instance_config->plugin_pro_var = $this->___instance_config->plugin_root_ns.'_pro';
+									$this->___instance_config->plugin_pro_dir = $this->___instance_config->plugin_dir.'-pro';
+
+									if(stripos($this->___instance_config->plugin_pro_dir, 'phar://' === 0))
+										$this->___instance_config->plugin_pro_dir = substr($this->___instance_config->plugin_pro_dir, 7);
+
 									$this->___instance_config->plugin_pro_dir_basename      = basename($this->___instance_config->plugin_pro_dir);
 									$this->___instance_config->plugin_pro_dir_file_basename = $this->___instance_config->plugin_pro_dir_basename.'/plugin.php';
 									$this->___instance_config->plugin_pro_file              = $this->___instance_config->plugin_pro_dir.'/plugin.php';

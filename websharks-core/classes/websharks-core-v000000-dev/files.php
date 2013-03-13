@@ -638,6 +638,16 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * An array of known file extensions.
+			 *
+			 * @return array Extensions.
+			 */
+			public function extensions()
+				{
+					return array_keys($this->mime_types());
+				}
+
+			/**
 			 * Gets a file extension (lowercase).
 			 *
 			 * @param string $file A file path, or just a file name.
@@ -664,7 +674,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					return in_array($this->extension($file), $this->extensions, TRUE);
+					return in_array($this->extension($file), $this->extensions(), TRUE);
 				}
 
 			/**
@@ -675,16 +685,6 @@ namespace websharks_core_v000000_dev
 			public function mime_types()
 				{
 					return \websharks_core_v000000_dev::mime_types();
-				}
-
-			/**
-			 * An array of known file extensions.
-			 *
-			 * @return array Extensions.
-			 */
-			public function extensions()
-				{
-					return array_keys($this->mime_types());
 				}
 		}
 	}
