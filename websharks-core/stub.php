@@ -570,6 +570,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @return string Error message w/ details about the `Phar` class and PHP v5.3+.
 			 *    This error message will also include details about Suhosin; when/if applicable.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
 			 */
 			public static function cant_phar_msg($markdown = FALSE)
 				{
