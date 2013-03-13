@@ -300,7 +300,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						{
 							header('Expires: '.gmdate('D, d M Y H:i:s', strtotime('+2 weeks')).' GMT');
 							header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-							header('Cache-Control: max-age=604800');
+							header('Cache-Control: max-age=1209600');
 							header('Pragma: public');
 						}
 					return $internal_uri; // Final return value (internal URI).
