@@ -27,17 +27,17 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Regular expression matches a valid `host` name.
 			 */
-			public $host_regex_snippet = '[a-zA-Z0-9]+(?:-*[a-zA-Z0-9]+)*(?:\.[a-zA-Z0-9]+(?:-*[a-zA-Z0-9]+)*)*\.[a-zA-Z]{2,6}';
+			public $host_regex_snippet = '[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*(?:\.[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*)*(?:\.[a-zA-Z]{2,6})?';
 
 			/**
-			 * @var string Regular expression matches a valid `host:port` combination (port is optional).
+			 * @var string Regular expression matches a valid `host:port` combination (TLD and port are optional).
 			 */
-			public $host_port_regex_snippet = '[a-zA-Z0-9]+(?:-*[a-zA-Z0-9]+)*(?:\.[a-zA-Z0-9]+(?:-*[a-zA-Z0-9]+)*)*\.[a-zA-Z]{2,6}(?:\:[0-9]+)?';
+			public $host_port_regex_snippet = '[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*(?:\.[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*)*(?:\.[a-zA-Z]{2,6})?(?:\:[0-9]+)?';
 
 			/**
-			 * @var string Regular expression matches a valid `scheme://host:port*` URL (port is optional).
+			 * @var string Regular expression matches a valid `scheme://host:port*` URL (TLD and port are optional).
 			 */
-			public $regex_pattern = '/^https?\:\/\/[a-zA-Z0-9]+(?:-*[a-zA-Z0-9]+)*(?:\.[a-zA-Z0-9]+(?:-*[a-zA-Z0-9]+)*)*\.[a-zA-Z]{2,6}(?:\:[0-9]+)?.*$/';
+			public $regex_pattern = '/^https?\:\/\/[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*(?:\.[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*)*(?:\.[a-zA-Z]{2,6})?(?:\:[0-9]+)?.*$/';
 
 			/**
 			 * Gets the current URL (via environment variables).
@@ -174,7 +174,7 @@ namespace websharks_core_v000000_dev
 			 * @assert ('//example.com:80#a', -1, FALSE, FALSE) === array('fragment' => 'a', 'host' => 'example.com', 'pass' => '', 'path' => '', 'port' => 80, 'query' => '', 'scheme' => '', 'user' => '')
 			 * @assert ('//example.com:80#a', -1, FALSE, TRUE) === array('fragment' => 'a', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 80, 'query' => '', 'scheme' => '', 'user' => '')
 			 * @assert ('/#a') === array('fragment' => 'a', 'host' => '', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('//#a') === array('fragment' => 'a', 'host' => '', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => '', 'scheme' => '', 'user' => '')
+			 * @assert ('//#a') === NULL
 			 */
 			public function parse($url_uri, $component = -1, $n_scheme = FALSE, $n_path = TRUE)
 				{
@@ -359,7 +359,7 @@ namespace websharks_core_v000000_dev
 			 * @assert ('http://example.com//a/b/c/file.php') === '/a/b/c/file.php'
 			 * @assert ('/a/b/c/file.php') === '/a/b/c/file.php'
 			 * @assert ('a/b/c/file.php') === '/a/b/c/file.php'
-			 * @assert ('//a/b/c/file.php?a=a&b=b') === '/a/b/c/file.php?a=a&b=b'
+			 * @assert ('//a/b/c/file.php?a=a&b=b') === '/b/c/file.php?a=a&b=b'
 			 * @assert ('a/b/c/file.php?a=a&b=b') === '/a/b/c/file.php?a=a&b=b'
 			 * @assert ('?a=a&b=b') === '/?a=a&b=b'
 			 * @assert ('a=a&b=b') === '/a=a&b=b'

@@ -94,7 +94,12 @@ namespace websharks_core_v000000_dev
 								exit(str_replace('<pre>', '<pre style="max-height:200px; overflow:auto;">', $_m['template_content_body']));
 						}
 					echo sprintf(static::$plugin->translate('Exception Code: %1$s'), static::$exception->getCode())."\n";
-					exit(sprintf(static::$plugin->translate('Exception Message: %1$s'), static::$exception->getMessage()));
+					echo sprintf(static::$plugin->translate('Exception Message: %1$s'), static::$exception->getMessage());
+
+					if(static::$plugin->©env->is_in_wp_debug_mode() || is_super_admin())
+						echo static::$exception->getTraceAsString();
+
+					exit(); // Clean exit now.
 				}
 
 			/**
@@ -126,7 +131,12 @@ namespace websharks_core_v000000_dev
 								exit(str_replace('<pre>', '<pre style="max-height:200px; overflow:auto;">', $_m['template_content_body']));
 						}
 					echo sprintf(static::translate('Exception Code: %1$s'), static::$exception->getCode())."\n";
-					exit(sprintf(static::translate('Exception Message: %1$s'), static::$exception->getMessage()));
+					echo sprintf(static::translate('Exception Message: %1$s'), static::$exception->getMessage());
+
+					if((defined('WP_DEBUG') && WP_DEBUG) || is_super_admin())
+						echo static::$exception->getTraceAsString();
+
+					exit(); // Clean exit now.
 				}
 
 			/**

@@ -32,7 +32,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function no_cache()
 				{
-					if(headers_sent())
+					if(headers_sent() && !defined('___UNIT_TEST'))
 						throw $this->©exception(
 							__METHOD__.'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
@@ -49,7 +49,7 @@ namespace websharks_core_v000000_dev
 							unset($_header); // A little housekeeping.
 
 							if(!isset($no_cache_header_already_sent_via_php))
-								if(!defined('___UNIT_TEST')) // NOT while unit testing this routine.
+								if(!defined('___UNIT_TEST'))
 									nocache_headers();
 
 							$this->static['no_cache_header_sent'] = TRUE;

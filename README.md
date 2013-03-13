@@ -90,7 +90,7 @@ $GLOBALS[__NAMESPACE__] = new framework(
 	     'plugin_site'           => 'http://www.example.com/rocketship-plugin', // URL to plugin site.
 	     'dynamic_class_aliases' => array(), // We'll get into this in a later tutorial; just use an empty array.
 
-	     'plugin_dir'            => dirname(__FILE__) // Your plugin directory.
+	     'plugin_dir'            => dirname(dirname(__FILE__)) // Your plugin directory.
 	     /* This directory MUST contain a WordPress® plugin file w/ name: `plugin.php`.
 	      * If you have this plugin directory: `/wp-content/plugins/rocketship/`
 	      * This file MUST exist: `/wp-content/plugins/rocketship/plugin.php` */

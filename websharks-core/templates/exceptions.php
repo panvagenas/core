@@ -123,7 +123,7 @@ $exception  = $static::$exception;
 			<div class="content container">
 
 				<!-- BEGIN: Content Body -->
-				<!-- ↑ For exception handler (leave intact). -->
+				<!-- ? For exception handler (leave intact). -->
 
 				<a name="exception" class="anchor"></a>
 
@@ -177,7 +177,7 @@ $exception  = $static::$exception;
 
 				<div style="clear:both;"></div>
 
-				<!-- ↓ For exception handler (leave intact). -->
+				<!-- ? For exception handler (leave intact). -->
 				<!-- / END: Content Body -->
 
 			</div>
