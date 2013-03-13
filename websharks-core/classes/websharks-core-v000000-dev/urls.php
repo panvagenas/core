@@ -8,6 +8,8 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120329
+ *
+ * @TODO Unit test all of these against PHAR files.
  */
 namespace websharks_core_v000000_dev
 	{
@@ -480,6 +482,22 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * URL to WebSharks™ Core PHAR file stub.
+			 *
+			 * @return string URL to WebSharks™ Core stub file; else an empty string.
+			 */
+			public function to_core_phar()
+				{
+					if(!isset($this->static['to_phar']))
+						{
+							if(($phar = \websharks_core_v000000_dev::is_phar()))
+								$this->static['to_phar'] = $this->to_wp_abs_dir_or_file($phar);
+							else $this->static['to_phar'] = '';
+						}
+					return $this->static['to_phar'];
+				}
+
+			/**
 			 * URL leading to a WordPress® `/directory-or-file`.
 			 *
 			 * @param string  $dir_or_file Absolute server path to a WordPress® `/directory-or-file`.
@@ -503,29 +521,37 @@ namespace websharks_core_v000000_dev
 
 					// Standardize and get real ``$file``, ``$dir`` locations.
 
-					if(is_file($dir_or_file) || preg_match('/\.(:?html|php|css|js)$/', $dir_or_file))
+					if(is_file($dir_or_file) || $this->©file->has_extension($dir_or_file))
 						{
-							$file = '/'.basename($dir_or_file);
-							$dir  = $this->©dirs->n_seps(dirname($dir_or_file));
+							$file         = '/'.basename($dir_or_file);
+							$dir          = $this->©dirs->n_seps(dirname($dir_or_file));
+							$dir_realpath = $possible_real_file = '';
 
-							if(($dir_realpath = realpath($dir)))
+							if(($dir_realpath = realpath($dir)) && $dir_realpath !== $dir)
 								{
 									$dir_realpath = $this->©dirs->n_seps($dir_realpath);
 									if(($possible_real_file = realpath($dir.$file)))
 										$possible_real_file = '/'.basename($possible_real_file);
 									else $possible_real_file = $file;
 								}
-							else $dir_realpath = $possible_real_file = '';
 						}
 					else // Else, there is NO file (e.g. it's a directory path).
 						{
 							$file = $possible_real_file = '';
 							$dir  = $this->©dirs->n_seps($dir_or_file);
 
-							if(($dir_realpath = realpath($dir)))
+							if(($dir_realpath = realpath($dir)) && $dir_realpath !== $dir)
 								$dir_realpath = $this->©dirs->n_seps($dir_realpath);
 							else $dir_realpath = '';
 						}
+
+					// Handle PHAR files here.
+
+					if($dir && stripos($dir, 'phar://') === 0)
+						$dir = substr($dir, 7);
+
+					if($dir_realpath && stripos($dir_realpath, 'phar://') === 0)
+						$dir_realpath = substr($dir_realpath, 7);
 
 					// Check WordPress® absolute/root directory.
 

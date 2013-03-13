@@ -1390,8 +1390,7 @@ namespace websharks_core_v000000_dev
 							$_strippable_extensions   = array('php');
 							$_compressable_extensions = array('php', 'phps'); // webPhar-compatible.
 							// Our own webPhar implementation makes some additional extensions possible.
-							if(is_callable('\\websharks_core_v000000_dev::web_phar_compressable_extensions'))
-								$_compressable_extensions = \websharks_core_v000000_dev::web_phar_compressable_extensions();
+							$_compressable_extensions = \websharks_core_v000000_dev::web_phar_compressable_extensions();
 
 							$_temp_dir = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
 

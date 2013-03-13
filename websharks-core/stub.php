@@ -33,7 +33,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			/**
 			 * This file is a PHP Archive?
 			 *
-			 * @return boolean A PHP Archive file?
+			 * @return string A PHP Archive file?
 			 */
 			public static function is_phar()
 				{
@@ -41,9 +41,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					if(!empty($GLOBALS[$is_phar]))
 						if($GLOBALS[$is_phar] === __FILE__)
-							return TRUE;
+							return $GLOBALS[$is_phar];
 
-					return FALSE;
+					return '';
 				}
 
 			/**
