@@ -106,6 +106,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 						return self::$static['can_phar'];
 
 					self::$static['can_phar'] = extension_loaded('phar');
+					if(extension_loaded('suhosin') && stripos(ini_get('suhosin.executor.include.whitelist'), 'phar') === FALSE)
+						self::$static['can_phar'] = FALSE;
 
 					return self::$static['can_phar'];
 				}
@@ -560,15 +562,39 @@ if(!class_exists('websharks_core_v000000_dev'))
 			/**
 			 * Regarding a lack of support for Php Archives.
 			 *
+			 * @param boolean $markdown Defaults to a FALSE value.
+			 *    If this is TRUE; we'll parse some basic markdown syntax to
+			 *    produce HTML output that is easier to read in a browser.
+			 *
 			 * @see \websharks_core_v000000_dev\cant_phar_msg_notice_in_ws_wp_temp_deps()
 			 *
 			 * @return string Error message w/ details about the `Phar` class and PHP v5.3+.
+			 *    This error message will also include details about Suhosin; when/if applicable.
 			 */
-			public static function cant_phar_msg()
+			public static function cant_phar_msg($markdown = FALSE)
 				{
-					return self::i18n('Unable to load the WebSharks™ Core. This installation of PHP is missing the `Phar` extension.'.
+					if(!is_bool($markdown))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					$msg = self::i18n('Unable to load the WebSharks™ Core. This installation of PHP is missing the `Phar` extension.'.
 					                  ' The WebSharks™ Core (and WP plugins powered by it); requires PHP v5.3+ — which has `Phar` built-in.'.
 					                  ' Please upgrade to PHP v5.3 (or higher) to get rid of this message.');
+
+					$can_phar              = extension_loaded('phar');
+					$suhosin_running       = extension_loaded('suhosin');
+					$suhosin_blocking_phar = ($suhosin_running && stripos(ini_get('suhosin.executor.include.whitelist'), 'phar') === FALSE);
+
+					if($suhosin_running && $suhosin_blocking_phar) // Be verbose.
+						{
+							$verbose = ($can_phar) ? self::i18n('THE PROBLEM') : self::i18n('ALSO');
+							$msg .= "\n\n".sprintf(self::i18n('%1$s: On your installation the `Phar` extension needs to be ENABLED by adding'.
+							                                  ' the following line to your `php.ini` file: `suhosin.executor.include.whitelist = phar`.'.
+							                                  ' If you need assistance, please contact your hosting company about this message.'), $verbose);
+						}
+					if($markdown) $msg = nl2br(preg_replace('/`(.*?)`/', '<code>'.'${1}'.'</code>', $msg), TRUE);
+
+					return $msg; // Final message.
 				}
 
 			/**

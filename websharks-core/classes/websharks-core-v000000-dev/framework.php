@@ -16,7 +16,10 @@ namespace websharks_core_v000000_dev
 
 		if(!class_exists('\\'.__NAMESPACE__.'\\framework'))
 			{
-				if(!class_exists('deps_websharks_core_v000000_dev'))
+				if(!class_exists('\\'.__NAMESPACE__))
+					include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
+
+				if(!class_exists('\\deps_'.__NAMESPACE__.''))
 					include_once dirname(__FILE__).'/deps.php';
 				/**
 				 * WebSharks™ Core Framework.
