@@ -133,4 +133,86 @@ echo $rocketship->©blaster->says();
 
 ### Why Base My Plugin on the WebSharks™ Core?
 
-The WebSharks™ Core makes plugin development SUPER easy. Everything from installation, to options, to database interactity; along with MANY utilities that can make development much easier for you. We'll get into additional examples soon :-)
+The WebSharks™ Core makes plugin development SUPER easy. Everything from installation, options, menu pages, UI enhancements; to database interactity; along with MANY utilities that can make development much easier for you. We'll get into additional examples soon :-) Once the Codex is ready-to-go, it will make things a little simpler for everyone. That being said, extending the WebSharks™ Core classes in creative ways, is what makes this powerful. The source code is already very well documented. So, if you're feeling adventurous you can start learning ahead of time if you like.
+
+### Another Quick Example (Extending a WebSharks™ Core Class)
+
+Let's say that you're navigating the WebSharks™ Core source code and you find it has a powerful class file `/websharks-core/classes/strings.php`; with several methods you'd like to use. If you've built your plugin on the WebSharks™ Core; all of those methods are alreay available in your plugin. To call upon the `strings` class in your plugin, you simply use the `©` (dynamic class symbol). It's a copyright symbol, but the WebSharks™ Core associates this symbol with dynamic class instances (singletons). It can also instantiate new class instances; but we'll get into that later.
+
+##### Example of this usage.
+```php
+echo $rocketship->©strings->unique_id();
+```
+
+Almost all of the WebSharks™ Core classes are aliased too (with both singular and plural forms); so you can make your code a little easier to understand; depending on the way you're using a particular class; or on the way you're using a particular method in that class. I can use `©strings` by calling the class absolutely; or I can call it's alias `©string` to make things a little prettier in some cases.
+
+##### Example of this usage (singular and plural forms).
+
+```php
+$a = '0'; $b = array('hello'); $c = 'there';
+
+if($rocketship->©strings->are_not_empty($a, $b, $c)) // false
+	echo $a.' '.$b.' '.$c;
+
+else if($rocketship->©string->is_not_empty($a)) // false
+	echo $a; // This is empty.
+
+else // First `string` that is NOT empty.
+	echo $rocketship->©strings->not_empty_coalesce($a, $b, $c); # there
+```
+
+What if I don't like the way a particular method works? Or what if I want to add a new method of my own? You can either create an entirely new class (as shown in a previous example); or you can extend an existing WebSharks™ Core class. Here is how you would extend the `strings` class.
+
+Create this file in your plugin directory: /wp-content/plugins/rocketship/classes/strings.php
+
+```php
+<?php
+namespace rocketship;
+
+class strings extends \websharks_core_v000000_dev\strings
+// Make sure you get the version right :-) Change v000000_dev to the version you're using.
+{
+	public function write_line($line) // My new class member.
+		{
+			echo $line.'<br />';
+		}
+	public function write_p($paragraph) // Another new member.
+		{
+			echo '<p>'.$paragraph.'</p>';
+		}
+	public function is_not_empty(&$var) // Overwrites existing class member.
+		{
+			return (!empty($var) && is_string($var));
+		}
+	public function markdown($string) // Another new member (w/ `$this` examples).
+		{
+			$this->check_arg_types('string:!empty', func_get_args());
+
+			$string = $this->trim($string);
+
+			return $this->©markdown->parse($string);
+		}
+}
+```
+
+##### Now you can do everything you could before; but with some new options.
+
+```php
+$line = 'I love to write code at GitHub.';
+echo $rocketship->©string->write_line($line);
+```
+
+```php
+$line = 'I love to write code at GitHub.';
+echo $rocketship->©string->write_p($line);
+```
+
+```php
+$line = 'I love to write `code` @ [GitHub](http://github.com)';
+echo $rocketship->©string->markdown($line);
+```
+
+```php
+$line = 'I love to write `code` @ [GitHub](http://github.com)';
+echo $rocketship->©markdown->parse($line);
+```

@@ -36,7 +36,8 @@ namespace websharks_core_v000000_dev
 					$this->do_action('before_loaded');
 
 					// Loads plugin.
-					$this->load_api_class();
+					$this->check_globals();
+					$this->load_api_classes();
 					$this->load_pro_class();
 					$this->check_force_activation();
 					$this->©initializer->prepare_hooks();
@@ -48,64 +49,41 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Checks to see if the current plugin has it's pro add-on loaded up.
+			 * Checks the namespace globals for the current plugin.
 			 *
-			 * @return boolean TRUE if the current plugin has it's pro addon loaded up, else FALSE.
-			 *
-			 * @assert () === FALSE
+			 * @throws exception If missing ``$GLOBALS[__NAMESPACE__]`` for the plugin.
 			 */
-			public function has_pro()
+			public function check_globals()
 				{
-					if(isset($GLOBALS[$this->___instance_config->plugin_pro_var])
-					   && $GLOBALS[$this->___instance_config->plugin_pro_var] instanceof framework
-					) return TRUE; // Yes.
-
-					return FALSE; // Default return value.
+					if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns])
+					   || !($GLOBALS[$this->___instance_config->plugin_root_ns] instanceof framework)
+					) throw $this->©exception(
+						__METHOD__.'#missing_plugin_root_ns_global_var', NULL,
+						sprintf($this->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'),
+						        $this->___instance_config->plugin_root_ns)
+					);
+					if(!isset($GLOBALS[$this->___instance_config->plugin_api_var]))
+						$GLOBALS[$this->___instance_config->plugin_api_var] = $GLOBALS[$this->___instance_config->plugin_root_ns];
 				}
 
 			/**
-			 * Collects an array of all currently active plugins.
-			 *
-			 * @note This also includes active sitewide plugins in a multisite installation.
-			 *
-			 * @return array All currently active plugins.
-			 *
-			 * @assert () !empty TRUE
+			 * Loads plugin API classes.
 			 */
-			public function active()
+			public function load_api_classes()
 				{
-					if(!isset($this->static['active']))
-						{
-							$active = (is_array($active = get_option('active_plugins'))) ? $active : array();
-
-							if(is_multisite() && is_array($active_sitewide_plugins = get_site_option('active_sitewide_plugins')))
-								$active = array_unique(array_merge($active, $active_sitewide_plugins));
-
-							$this->static['active'] = $active;
-						}
-					return $this->static['active'];
-				}
-
-			/**
-			 * Loads plugin API class.
-			 */
-			public function load_api_class()
-				{
-					if(isset($this->cache['load_api_class']))
+					if(isset($this->cache['load_api_classes']))
 						return; // Already attempted this once.
 
-					$this->cache['load_api_class'] = TRUE;
+					$this->cache['load_api_classes'] = TRUE;
 
 					if(is_file($this->___instance_config->plugin_api_class_file))
-						{
-							include_once $this->___instance_config->plugin_api_class_file;
+						include_once $this->___instance_config->plugin_api_class_file;
 
-							/** @var $framework framework The current plugin object instance. */
+					if(!class_exists('\\'.$this->___instance_config->plugin_root_ns))
+						eval('class '.$this->___instance_config->plugin_root_ns.' extends \\'.__NAMESPACE__.'\\api');
 
-							$api_class                = $plugin_api_var = $this->___instance_config->plugin_api_var;
-							$api_class::$framework    = $GLOBALS[$this->___instance_config->plugin_root_ns];
-							$GLOBALS[$plugin_api_var] = new $api_class();
-						}
+					if(!class_exists('\\'.$this->___instance_config->plugin_api_var))
+						eval('class '.$this->___instance_config->plugin_api_var.' extends \\'.__NAMESPACE__.'\\api');
 				}
 
 			/**
@@ -127,7 +105,6 @@ namespace websharks_core_v000000_dev
 							$pro_class = $this->___instance_config->plugin_root_ns_prefix.'\\pro';
 
 							/** @var $for_plugin_version string Matching plugin version. */
-
 							if($this->___instance_config->plugin_version === $pro_class::$for_plugin_version)
 								{
 									autoloader::add_classes_dir($this->___instance_config->plugin_pro_dir.'/classes');
@@ -170,21 +147,6 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Gets the last active version of the current plugin.
-			 *
-			 * @note This is set by install/activation routines for the current plugin.
-			 *    This method returns the last version that was successfully activated (i.e. fully active).
-			 *
-			 * @return string Last active version string, else an empty string.
-			 *
-			 * @assert () === ''
-			 */
-			public function last_active_version()
-				{
-					return (string)get_option($this->___instance_config->plugin_root_ns_stub.'__version');
-				}
-
-			/**
 			 * Checks if the current plugin is active, at the currently installed version.
 			 *
 			 * @param string $reconsider Optional. Empty string default (e.g. do NOT reconsider).
@@ -210,6 +172,37 @@ namespace websharks_core_v000000_dev
 							) $this->cache['is_active_at_current_version'] = TRUE;
 						}
 					return $this->cache['is_active_at_current_version'];
+				}
+
+			/**
+			 * Gets the last active version of the current plugin.
+			 *
+			 * @note This is set by install/activation routines for the current plugin.
+			 *    This method returns the last version that was successfully activated (i.e. fully active).
+			 *
+			 * @return string Last active version string, else an empty string.
+			 *
+			 * @assert () === ''
+			 */
+			public function last_active_version()
+				{
+					return (string)get_option($this->___instance_config->plugin_root_ns_stub.'__version');
+				}
+
+			/**
+			 * Checks to see if the current plugin has it's pro add-on loaded up.
+			 *
+			 * @return boolean TRUE if the current plugin has it's pro addon loaded up, else FALSE.
+			 *
+			 * @assert () === FALSE
+			 */
+			public function has_pro()
+				{
+					if(isset($GLOBALS[$this->___instance_config->plugin_pro_var])
+					   && $GLOBALS[$this->___instance_config->plugin_pro_var] instanceof framework
+					) return TRUE; // Yes.
+
+					return FALSE; // Default return value.
 				}
 
 			/**
@@ -263,6 +256,30 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Updates plugin site credentials (i.e. username/password for the plugin site).
+			 *
+			 * @param string $username Username for the plugin site.
+			 *
+			 * @param string $password Password for the plugin site (plain text).
+			 *    This is encrypted before we store it in the database.
+			 *
+			 * @see ``$this->___instance_config->plugin_site``.
+			 * @see ``$this->©url->to_plugin_site()``.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function set_site_credentials($username, $password)
+				{
+					$this->check_arg_types('string', 'string', func_get_args());
+
+					$credentials = array(
+						'plugin_site.username' => $username,
+						'plugin_site.password' => $this->©encryption->encrypt($password)
+					);
+					$this->©options->update($credentials);
+				}
+
+			/**
 			 * Gets plugin site credentials (i.e. username/password for the plugin site).
 			 *
 			 * @param string  $username Optional. A new (i.e. recently submitted) username for the plugin site.
@@ -294,30 +311,6 @@ namespace websharks_core_v000000_dev
 								$this->set_site_credentials($credentials['username'], $credentials['password']);
 						}
 					return $credentials; // Two elements: `username`, `password`.
-				}
-
-			/**
-			 * Updates plugin site credentials (i.e. username/password for the plugin site).
-			 *
-			 * @param string $username Username for the plugin site.
-			 *
-			 * @param string $password Password for the plugin site (plain text).
-			 *    This is encrypted before we store it in the database.
-			 *
-			 * @see ``$this->___instance_config->plugin_site``.
-			 * @see ``$this->©url->to_plugin_site()``.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 */
-			public function set_site_credentials($username, $password)
-				{
-					$this->check_arg_types('string', 'string', func_get_args());
-
-					$credentials = array(
-						'plugin_site.username' => $username,
-						'plugin_site.password' => $this->©encryption->encrypt($password)
-					);
-					$this->©options->update($credentials);
 				}
 
 			/**
@@ -454,6 +447,29 @@ namespace websharks_core_v000000_dev
 
 					$this->needs_stand_alone_styles($needs, $theme);
 					$this->needs_stand_alone_scripts($needs);
+				}
+
+			/**
+			 * Collects an array of all currently active plugins.
+			 *
+			 * @note This also includes active sitewide plugins in a multisite installation.
+			 *
+			 * @return array All currently active plugins.
+			 *
+			 * @assert () !empty TRUE
+			 */
+			public function active()
+				{
+					if(!isset($this->static['active']))
+						{
+							$active = (is_array($active = get_option('active_plugins'))) ? $active : array();
+
+							if(is_multisite() && is_array($active_sitewide_plugins = get_site_option('active_sitewide_plugins')))
+								$active = array_unique(array_merge($active, $active_sitewide_plugins));
+
+							$this->static['active'] = $active;
+						}
+					return $this->static['active'];
 				}
 		}
 	}

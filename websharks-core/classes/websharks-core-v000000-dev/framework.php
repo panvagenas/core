@@ -271,6 +271,7 @@ namespace websharks_core_v000000_dev
 				 * @property \websharks_core_v000000_dev\strings                 $©string
 				 * @method \websharks_core_v000000_dev\strings ©strings()
 				 * @method \websharks_core_v000000_dev\strings ©string()
+				 * @method static \websharks_core_v000000_dev\strings string()
 				 *
 				 * @property \websharks_core_v000000_dev\styles                  $©styles
 				 * @property \websharks_core_v000000_dev\styles                  $©style
@@ -536,8 +537,8 @@ namespace websharks_core_v000000_dev
 
 							if((!is_string($key) && !is_integer($key)) || !strlen($key))
 								throw new \exception(
-									_x('Invalid `$key` to `static::cache()` method in core.',
-									   'websharks-core--admin-side core-cache', 'websharks-core')
+									\websharks_core_v000000_dev::i18n
+										('Invalid `$key` to `static::cache()` method in core.')
 								);
 							if(!isset(static::$___statics[$class][$key]))
 								static::$___statics[$class][$key] = NULL;
@@ -770,11 +771,11 @@ namespace websharks_core_v000000_dev
 					 * @throws \exception If there is a missing and/or invalid ``$___instance_config``.
 					 * @throws \exception If more than 7 configuration elements exist in an ``$__instance_config`` array.
 					 *
-					 * @throws \exception If the plugin's variable namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_plugin_var_ns}
-					 *
 					 * @throws \exception If the plugin's root namespace does NOT match this regex pattern validation.
 					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_plugin_root_ns}
+					 *
+					 * @throws \exception If the plugin's variable namespace does NOT match this regex pattern validation.
+					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_plugin_var_ns}
 					 *
 					 * @throws \exception If the plugin's version does NOT match this regex pattern validation.
 					 *    See: {@link websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_version}
@@ -799,12 +800,12 @@ namespace websharks_core_v000000_dev
 					 *       and it MUST call upon this core constructor using: ``parent::__construct($___instance_config)``.
 					 *
 					 * @note This method should NOT rely directly or indirectly on any other core class objects.
-					 *    HOWEVER: It is OK for this constructor to call upon static properties (like regex patterns).
+					 *    However, it is OK for this constructor to call upon static properties/methods (like regex patterns).
 					 *    Or anything designed specifically for the framework constructor (i.e. it includes this prefix: `_4fwc`).
+					 *    Any static methods in the WebSharks™ Core stub file will be fine to call upon also.
 					 */
 					public function __construct($___instance_config)
 						{
-							// Instance-based reference to global/static cache.
 							$this->static =& static::___static();
 
 							// Have a parent object instance?
@@ -831,18 +832,18 @@ namespace websharks_core_v000000_dev
 
 							        && !empty($___instance_config['plugin_name']) && is_string($___instance_config['plugin_name'])
 
-							        && !empty($___instance_config['plugin_var_ns']) && is_string($___instance_config['plugin_var_ns'])
-							        && preg_match(strings::$_4fwc_regex_valid_ws_plugin_var_ns, $___instance_config['plugin_var_ns'])
-
 							        && !empty($___instance_config['plugin_root_ns']) && is_string($___instance_config['plugin_root_ns'])
 							        && preg_match(strings::$_4fwc_regex_valid_ws_plugin_root_ns, $___instance_config['plugin_root_ns'])
+
+							        && !empty($___instance_config['plugin_var_ns']) && is_string($___instance_config['plugin_var_ns'])
+							        && preg_match(strings::$_4fwc_regex_valid_ws_plugin_var_ns, $___instance_config['plugin_var_ns'])
 
 							        && !empty($___instance_config['plugin_version']) && is_string($___instance_config['plugin_version'])
 							        && preg_match(strings::$_4fwc_regex_valid_ws_version, $___instance_config['plugin_version'])
 
 							        && !empty($___instance_config['plugin_dir']) && is_string($___instance_config['plugin_dir'])
 							        && is_dir($___instance_config['plugin_dir'] = \websharks_core_v000000_dev::n_dir_seps($___instance_config['plugin_dir']))
-							        && is_file($___instance_config['plugin_dir'].'/plugin.php')
+							        && is_file($___instance_config['plugin_dir'].'/plugin.php') // A file with this name MUST exist at all times.
 
 							        && !empty($___instance_config['plugin_site']) && is_string($___instance_config['plugin_site'])
 							        && preg_match('/^http\:\/\/.+/i', $___instance_config['plugin_site'])
@@ -860,11 +861,15 @@ namespace websharks_core_v000000_dev
 											$this->___instance_config = static::$___instance_config_cache[$cache_entry];
 											return; // Using cache (nothing more to do here).
 										}
+									if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns]))
+										{
+											$load_plugin                                        = TRUE;
+											$GLOBALS[$this->___instance_config->plugin_root_ns] = $this;
+										}
 								}
 							else throw new \exception(
-								sprintf(_x('Invalid `$___instance_config` to core constructor: `%1$s`',
-								           'websharks-core--admin-side core-constructor', 'websharks-core'),
-								        print_r($___instance_config, TRUE))
+								sprintf(\websharks_core_v000000_dev::i18n
+									        ('Invalid `$___instance_config` to core constructor: `%1$s`'), print_r($___instance_config, TRUE))
 							);
 
 							// Based on `namespace\sub_namespace\class_name` for ``$this`` class.
@@ -876,9 +881,8 @@ namespace websharks_core_v000000_dev
 							// Check `namespace\sub_namespace\class_name` for validation issues.
 							if(!preg_match(strings::$_4fwc_regex_valid_ws_ns_class, $this->___instance_config->ns_class))
 								throw new \exception(
-									sprintf(_x('Namespace\\class contains invalid chars: `%1$s`.',
-									           'websharks-core--admin-side core-constructor', 'websharks-core'),
-									        $this->___instance_config->ns_class)
+									sprintf(\websharks_core_v000000_dev::i18n
+										        ('Namespace\\class contains invalid chars: `%1$s`.'), $this->___instance_config->ns_class)
 								);
 
 							// Based on this core ``__NAMESPACE__``. These properties will NOT change from one class instance to another.
@@ -899,9 +903,8 @@ namespace websharks_core_v000000_dev
 									// Check core ``__NAMESPACE__`` for validation issues.
 									if(!preg_match(strings::$_4fwc_regex_valid_ws_core_ns_version, $this->___instance_config->core_ns))
 										throw new \exception(
-											sprintf(_x('Core namespace contains invalid chars: `%1$s`.',
-											           'websharks-core--admin-side core-constructor', 'websharks-core'),
-											        $this->___instance_config->core_ns)
+											sprintf(\websharks_core_v000000_dev::i18n
+												        ('Core namespace contains invalid chars: `%1$s`.'), $this->___instance_config->core_ns)
 										);
 								}
 
@@ -991,12 +994,14 @@ namespace websharks_core_v000000_dev
 
 							// Now let's cache ``$this->___instance_config`` for easy re-use.
 							static::$___instance_config_cache[$cache_entry] = $this->___instance_config;
+
+							if(!empty($load_plugin)) $this->©plugin->load(); // Load up the plugin in first instance.
 						}
 
 					/**
 					 * Checks overload properties (and dynamic singleton class instances).
 					 *
-					 * @param string  $property Name of a valid overload property.
+					 * @param string $property Name of a valid overload property.
 					 *    Or a dynamic class to check, using the special class `©` prefix.
 					 *
 					 * @return boolean TRUE if the overload property (or dynamic singleton class instance) is set.
@@ -1018,7 +1023,7 @@ namespace websharks_core_v000000_dev
 					/**
 					 * Handles overload properties (and dynamic singleton class instances).
 					 *
-					 * @param string  $property Name of a valid overload property.
+					 * @param string $property Name of a valid overload property.
 					 *    Or a dynamic class to return an instance of, using the special class `©` prefix.
 					 *
 					 *    When a class `©` prefix is present, we look for the class to exist first in the current plugin's root namespace, else in the core namespace.
@@ -1960,9 +1965,9 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @final This method may NOT be overridden by extenders.
 					 *
-					 * @param string  $string String to translate.
+					 * @param string $string String to translate.
 					 *
-					 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
+					 * @param string $other_contextuals Optional. Other contextual slugs relevant to this translation.
 					 *    Contextual slugs normally follow the standard of being written with dashes.
 					 *
 					 * @return string Translated string.
@@ -1993,11 +1998,11 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @final This method may NOT be overridden by extenders.
 					 *
-					 * @param string          $string_singular String to translate (in singular format).
-					 * @param string          $string_plural String to translate (in plural format).
-					 * @param string|integer  $numeric_value Value to translate (always a numeric value).
+					 * @param string         $string_singular String to translate (in singular format).
+					 * @param string         $string_plural String to translate (in plural format).
+					 * @param string|integer $numeric_value Value to translate (always a numeric value).
 					 *
-					 * @param string          $other_contextuals Optional. Other contextual slugs relevant to this translation.
+					 * @param string         $other_contextuals Optional. Other contextual slugs relevant to this translation.
 					 *    Contextual slugs normally follow the standard of being written with dashes.
 					 *
 					 * @return string Translated string.
@@ -2030,9 +2035,9 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @final This method may NOT be overridden by extenders.
 					 *
-					 * @param string  $string String to translate.
+					 * @param string $string String to translate.
 					 *
-					 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
+					 * @param string $other_contextuals Optional. Other contextual slugs relevant to this translation.
 					 *    Contextual slugs normally follow the standard of being written with dashes.
 					 *
 					 * @return string Translated string.
@@ -2063,11 +2068,11 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @final This method may NOT be overridden by extenders.
 					 *
-					 * @param string          $string_singular String to translate (in singular format).
-					 * @param string          $string_plural String to translate (in plural format).
-					 * @param string|integer  $numeric_value Value to translate (always a numeric value).
+					 * @param string         $string_singular String to translate (in singular format).
+					 * @param string         $string_plural String to translate (in plural format).
+					 * @param string|integer $numeric_value Value to translate (always a numeric value).
 					 *
-					 * @param string          $other_contextuals Optional. Other contextual slugs relevant to this translation.
+					 * @param string         $other_contextuals Optional. Other contextual slugs relevant to this translation.
 					 *    Contextual slugs normally follow the standard of being written with dashes.
 					 *
 					 * @return string Translated string.
@@ -2127,18 +2132,311 @@ namespace websharks_core_v000000_dev
 				/*
 				 * Easier access for those who don't care about the version.
 				 */
-				if(!class_exists('\\websharks_core'))
-					class_alias('\\'.__NAMESPACE__.'\\framework', 'websharks_core');
+				if(!class_exists('\\websharks_core_framework'))
+					class_alias('\\'.__NAMESPACE__.'\\framework', 'websharks_core_framework');
 			}
 	}
 namespace // Global namespace.
 	{
+		if(!class_exists('websharks_core'))
+			{
+				/**
+				 * WebSharks™ Core API class. The latest version available
+				 *    at runtime (in the case of multiple instances).
+				 *
+				 * @note Dynamic properties/methods are defined explicitly here.
+				 *    This way IDEs jive with ``__get()`` and ``__call()``.
+				 *
+				 * @property \websharks_core_v000000_dev\actions                 $actions
+				 * @property \websharks_core_v000000_dev\actions                 $action
+				 * @method static \websharks_core_v000000_dev\actions actions()
+				 * @method static \websharks_core_v000000_dev\actions action()
+				 *
+				 * @property \websharks_core_v000000_dev\arrays                  $arrays
+				 * @property \websharks_core_v000000_dev\arrays                  $array
+				 * @method static \websharks_core_v000000_dev\arrays arrays()
+				 * @method static \websharks_core_v000000_dev\arrays array()
+				 *
+				 * @property \websharks_core_v000000_dev\booleans                $booleans
+				 * @property \websharks_core_v000000_dev\booleans                $boolean
+				 * @method static \websharks_core_v000000_dev\booleans booleans()
+				 * @method static \websharks_core_v000000_dev\booleans boolean()
+				 *
+				 * @method static \websharks_core_v000000_dev\builder builder()
+				 * @method static \websharks_core_v000000_dev\builder build()
+				 *
+				 * @property \websharks_core_v000000_dev\caps                    $caps
+				 * @property \websharks_core_v000000_dev\caps                    $cap
+				 * @method static \websharks_core_v000000_dev\caps caps()
+				 * @method static \websharks_core_v000000_dev\caps cap()
+				 *
+				 * @property \websharks_core_v000000_dev\captchas                $captchas
+				 * @property \websharks_core_v000000_dev\captchas                $captcha
+				 * @method static \websharks_core_v000000_dev\captchas captchas()
+				 * @method static \websharks_core_v000000_dev\captchas captcha()
+				 *
+				 * @property \websharks_core_v000000_dev\classes                 $classes
+				 * @property \websharks_core_v000000_dev\classes                 $class
+				 * @method static \websharks_core_v000000_dev\classes classes()
+				 * @method static \websharks_core_v000000_dev\classes class()
+				 *
+				 * @property \websharks_core_v000000_dev\commands                $commands
+				 * @property \websharks_core_v000000_dev\commands                $command
+				 * @method static \websharks_core_v000000_dev\commands commands()
+				 * @method static \websharks_core_v000000_dev\commands command()
+				 *
+				 * @property \websharks_core_v000000_dev\compressor              $compressor
+				 * @method static \websharks_core_v000000_dev\compressor compressor()
+				 *
+				 * @property \websharks_core_v000000_dev\cookies                 $cookies
+				 * @property \websharks_core_v000000_dev\cookies                 $cookie
+				 * @method static \websharks_core_v000000_dev\cookies cookies()
+				 * @method static \websharks_core_v000000_dev\cookies cookie()
+				 *
+				 * @property \websharks_core_v000000_dev\css_minifier            $css_minifier
+				 * @method static \websharks_core_v000000_dev\css_minifier css_minifier()
+				 *
+				 * @property \websharks_core_v000000_dev\crons                   $crons
+				 * @property \websharks_core_v000000_dev\crons                   $cron
+				 * @method static \websharks_core_v000000_dev\crons crons()
+				 * @method static \websharks_core_v000000_dev\crons cron()
+				 *
+				 * @property \websharks_core_v000000_dev\currencies              $currencies
+				 * @property \websharks_core_v000000_dev\currencies              $currency
+				 * @method static \websharks_core_v000000_dev\currencies currencies()
+				 * @method static \websharks_core_v000000_dev\currencies currency()
+				 *
+				 * @property \websharks_core_v000000_dev\dates                   $dates
+				 * @property \websharks_core_v000000_dev\dates                   $date
+				 * @method static \websharks_core_v000000_dev\dates dates()
+				 * @method static \websharks_core_v000000_dev\dates date()
+				 *
+				 * @property \wpdb|\websharks_core_v000000_dev\db                $db
+				 * @method static \wpdb|\websharks_core_v000000_dev\db db()
+				 *
+				 * @property \websharks_core_v000000_dev\db_cache                $db_cache
+				 * @method static \websharks_core_v000000_dev\db_cache db_cache()
+				 *
+				 * @property \websharks_core_v000000_dev\db_tables               $db_tables
+				 * @property \websharks_core_v000000_dev\db_tables               $db_table
+				 * @method static \websharks_core_v000000_dev\db_tables db_tables()
+				 * @method static \websharks_core_v000000_dev\db_tables db_table()
+				 *
+				 * @property \websharks_core_v000000_dev\db_utils                $db_utils
+				 * @property \websharks_core_v000000_dev\db_utils                $db_util
+				 * @method static \websharks_core_v000000_dev\db_utils db_utils()
+				 * @method static \websharks_core_v000000_dev\db_utils db_util()
+				 *
+				 * @property \websharks_core_v000000_dev\diagnostics             $diagnostics
+				 * @property \websharks_core_v000000_dev\diagnostics             $diagnostic
+				 * @method static \websharks_core_v000000_dev\diagnostics diagnostics()
+				 * @method static \websharks_core_v000000_dev\diagnostics diagnostic()
+				 *
+				 * @property \websharks_core_v000000_dev\dirs                    $dirs
+				 * @property \websharks_core_v000000_dev\dirs                    $dir
+				 * @method static \websharks_core_v000000_dev\dirs dirs()
+				 * @method static \websharks_core_v000000_dev\dirs dir()
+				 *
+				 * @property \websharks_core_v000000_dev\encryption              $encryption
+				 * @method static \websharks_core_v000000_dev\encryption encryption()
+				 *
+				 * @property \websharks_core_v000000_dev\env                     $env
+				 * @method static \websharks_core_v000000_dev\env env()
+				 *
+				 * @property \websharks_core_v000000_dev\errors                  $errors
+				 * @property \websharks_core_v000000_dev\errors                  $error
+				 * @method static \websharks_core_v000000_dev\errors errors()
+				 * @method static \websharks_core_v000000_dev\errors error()
+				 *
+				 * @property \websharks_core_v000000_dev\exception               $exception
+				 * @method static \websharks_core_v000000_dev\exception exception()
+				 *
+				 * @property \websharks_core_v000000_dev\feeds                   $feeds
+				 * @property \websharks_core_v000000_dev\feeds                   $feed
+				 * @method static \websharks_core_v000000_dev\feeds feeds()
+				 * @method static \websharks_core_v000000_dev\feeds feed()
+				 *
+				 * @property \websharks_core_v000000_dev\files                   $files
+				 * @property \websharks_core_v000000_dev\files                   $file
+				 * @method static \websharks_core_v000000_dev\files files()
+				 * @method static \websharks_core_v000000_dev\files file()
+				 *
+				 * @property \websharks_core_v000000_dev\floats                  $floats
+				 * @property \websharks_core_v000000_dev\floats                  $float
+				 * @method static \websharks_core_v000000_dev\floats floats()
+				 * @method static \websharks_core_v000000_dev\floats float()
+				 *
+				 * @property \websharks_core_v000000_dev\forms                   $forms
+				 * @property \websharks_core_v000000_dev\forms                   $form
+				 * @method static \websharks_core_v000000_dev\forms forms()
+				 * @method static \websharks_core_v000000_dev\forms form()
+				 *
+				 * @property \websharks_core_v000000_dev\form_fields             $form_fields
+				 * @property \websharks_core_v000000_dev\form_fields             $form_field
+				 * @method static \websharks_core_v000000_dev\form_fields form_fields()
+				 * @method static \websharks_core_v000000_dev\form_fields form_field()
+				 *
+				 * @property \websharks_core_v000000_dev\functions               $functions
+				 * @property \websharks_core_v000000_dev\functions               $function
+				 * @method static \websharks_core_v000000_dev\functions functions()
+				 * @method static \websharks_core_v000000_dev\functions function()
+				 *
+				 * @property \websharks_core_v000000_dev\headers                 $headers
+				 * @property \websharks_core_v000000_dev\headers                 $header
+				 * @method static \websharks_core_v000000_dev\headers headers()
+				 * @method static \websharks_core_v000000_dev\headers header()
+				 *
+				 * @property \websharks_core_v000000_dev\html_minifier           $html_minifier
+				 * @method static \websharks_core_v000000_dev\html_minifier html_minifier()
+				 *
+				 * @property \websharks_core_v000000_dev\initializer             $initializer
+				 * @method static \websharks_core_v000000_dev\initializer initializer()
+				 *
+				 * @property \websharks_core_v000000_dev\installer               $installer
+				 * @method static \websharks_core_v000000_dev\installer installer()
+				 *
+				 * @property \websharks_core_v000000_dev\integers                $integers
+				 * @property \websharks_core_v000000_dev\integers                $integer
+				 * @method static \websharks_core_v000000_dev\integers integers()
+				 * @method static \websharks_core_v000000_dev\integers integer()
+				 *
+				 * @property \websharks_core_v000000_dev\ips                     $ips
+				 * @property \websharks_core_v000000_dev\ips                     $ip
+				 * @method static \websharks_core_v000000_dev\ips ips()
+				 * @method static \websharks_core_v000000_dev\ips ip()
+				 *
+				 * @property \websharks_core_v000000_dev\js_minifier             $js_minifier
+				 * @method static \websharks_core_v000000_dev\js_minifier js_minifier()
+				 *
+				 * @property \websharks_core_v000000_dev\mail                    $mail
+				 * @method static \websharks_core_v000000_dev\mail mail()
+				 *
+				 * @property \websharks_core_v000000_dev\markdown                $markdown
+				 * @method static \websharks_core_v000000_dev\markdown markdown()
+				 *
+				 * @property \websharks_core_v000000_dev\menu_pages              $menu_pages
+				 * @property \websharks_core_v000000_dev\menu_pages              $menu_page
+				 * @method static \websharks_core_v000000_dev\menu_pages menu_pages()
+				 * @method static \websharks_core_v000000_dev\menu_pages menu_page()
+				 *
+				 * @property \websharks_core_v000000_dev\menu_pages\menu_page    $menu_pages__menu_page
+				 * @method static \websharks_core_v000000_dev\menu_pages\menu_page menu_pages__menu_page()
+				 *
+				 * @property \websharks_core_v000000_dev\menu_pages\panels\panel $menu_pages__panels__panel
+				 * @method static \websharks_core_v000000_dev\menu_pages\panels\panel menu_pages__panels__panel()
+				 *
+				 * @property \websharks_core_v000000_dev\messages                $messages
+				 * @property \websharks_core_v000000_dev\messages                $message
+				 * @method static \websharks_core_v000000_dev\messages messages()
+				 * @method static \websharks_core_v000000_dev\messages message()
+				 *
+				 * @property \websharks_core_v000000_dev\functions               $methods
+				 * @property \websharks_core_v000000_dev\functions               $method
+				 * @method static \websharks_core_v000000_dev\functions methods()
+				 * @method static \websharks_core_v000000_dev\functions method()
+				 *
+				 * @property \websharks_core_v000000_dev\no_cache                $no_cache
+				 * @method static \websharks_core_v000000_dev\no_cache no_cache()
+				 *
+				 * @property \websharks_core_v000000_dev\notices                 $notices
+				 * @property \websharks_core_v000000_dev\notices                 $notice
+				 * @method static \websharks_core_v000000_dev\notices notices()
+				 * @method static \websharks_core_v000000_dev\notices notice()
+				 *
+				 * @property \websharks_core_v000000_dev\oauth                   $oauth
+				 * @method static \websharks_core_v000000_dev\oauth oauth()
+				 *
+				 * @property \websharks_core_v000000_dev\options                 $options
+				 * @property \websharks_core_v000000_dev\options                 $option
+				 * @method static \websharks_core_v000000_dev\options options()
+				 * @method static \websharks_core_v000000_dev\options option()
+				 *
+				 * @property \websharks_core_v000000_dev\objects_os              $objects_os
+				 * @property \websharks_core_v000000_dev\objects_os              $object_os
+				 * @method static \websharks_core_v000000_dev\objects_os objects_os()
+				 * @method static \websharks_core_v000000_dev\objects_os object_os()
+				 *
+				 * @property \websharks_core_v000000_dev\objects                 $objects
+				 * @property \websharks_core_v000000_dev\objects                 $object
+				 * @method static \websharks_core_v000000_dev\objects objects()
+				 * @method static \websharks_core_v000000_dev\objects object()
+				 *
+				 * @property \websharks_core_v000000_dev\php                     $php
+				 * @method static \websharks_core_v000000_dev\php php()
+				 *
+				 * @property \websharks_core_v000000_dev\plugins                 $plugins
+				 * @property \websharks_core_v000000_dev\plugins                 $plugin
+				 * @method static \websharks_core_v000000_dev\plugins plugins()
+				 * @method static \websharks_core_v000000_dev\plugins plugin()
+				 *
+				 * @property \websharks_core_v000000_dev\posts                   $posts
+				 * @property \websharks_core_v000000_dev\posts                   $post
+				 * @method static \websharks_core_v000000_dev\posts posts()
+				 * @method static \websharks_core_v000000_dev\posts post()
+				 *
+				 * @method static \websharks_core_v000000_dev\replicator replicator()
+				 * @method static \websharks_core_v000000_dev\replicator replicate()
+				 *
+				 * @property \websharks_core_v000000_dev\scripts                 $scripts
+				 * @property \websharks_core_v000000_dev\scripts                 $script
+				 * @method static \websharks_core_v000000_dev\scripts scripts()
+				 * @method static \websharks_core_v000000_dev\scripts script()
+				 *
+				 * @property \websharks_core_v000000_dev\strings                 $strings
+				 * @property \websharks_core_v000000_dev\strings                 $string
+				 * @method static \websharks_core_v000000_dev\strings strings()
+				 * @method static \websharks_core_v000000_dev\strings string()
+				 *
+				 * @property \websharks_core_v000000_dev\styles                  $styles
+				 * @property \websharks_core_v000000_dev\styles                  $style
+				 * @method static \websharks_core_v000000_dev\styles styles()
+				 * @method static \websharks_core_v000000_dev\styles style()
+				 *
+				 * @property \websharks_core_v000000_dev\successes               $successes
+				 * @property \websharks_core_v000000_dev\successes               $success
+				 * @method static \websharks_core_v000000_dev\successes successes()
+				 * @method static \websharks_core_v000000_dev\successes success()
+				 *
+				 * @property \websharks_core_v000000_dev\templates               $templates
+				 * @property \websharks_core_v000000_dev\templates               $template
+				 * @method static \websharks_core_v000000_dev\templates templates()
+				 * @method static \websharks_core_v000000_dev\templates template()
+				 *
+				 * @property \websharks_core_v000000_dev\urls                    $urls
+				 * @property \websharks_core_v000000_dev\urls                    $url
+				 * @method static \websharks_core_v000000_dev\urls urls()
+				 * @method static \websharks_core_v000000_dev\urls url()
+				 *
+				 * @property \websharks_core_v000000_dev\vars                    $vars
+				 * @property \websharks_core_v000000_dev\vars                    $var
+				 * @method static \websharks_core_v000000_dev\vars vars()
+				 * @method static \websharks_core_v000000_dev\vars var()
+				 *
+				 * @property \websharks_core_v000000_dev\videos                  $videos
+				 * @property \websharks_core_v000000_dev\videos                  $video
+				 * @method static \websharks_core_v000000_dev\videos videos()
+				 * @method static \websharks_core_v000000_dev\videos video()
+				 *
+				 * @property \websharks_core_v000000_dev\users                   $users
+				 * @property \websharks_core_v000000_dev\users                   $user
+				 * @method static \websharks_core_v000000_dev\users users()
+				 * @method static \websharks_core_v000000_dev\users user()
+				 *
+				 * @property \websharks_core_v000000_dev\user_utils              $user_utils
+				 * @method static \websharks_core_v000000_dev\user_utils user_utils()
+				 *
+				 * @property \websharks_core_v000000_dev\xml                     $xml
+				 * @method static \websharks_core_v000000_dev\xml xml()
+				 */
+				class websharks_core extends \websharks_core_v000000_dev\api
+				{
+					// Nothing more we need to do here.
+				}
+			}
 		if(!function_exists('websharks_core'))
 			{
 				/**
 				 * WebSharks™ Core instance.
-				 *
-				 * Easier access for those who don't care about the version.
 				 *
 				 * @return \websharks_core The latest version available
 				 *    at runtime (in the case of multiple instances).
