@@ -80,10 +80,10 @@ namespace websharks_core_v000000_dev
 						include_once $this->___instance_config->plugin_api_class_file;
 
 					if(!class_exists('\\'.$this->___instance_config->plugin_root_ns))
-						eval('class '.$this->___instance_config->plugin_root_ns.' extends \\'.__NAMESPACE__.'\\api');
+						eval('class '.$this->___instance_config->plugin_root_ns.' extends \\'.__NAMESPACE__.'\\api{}');
 
 					if(!class_exists('\\'.$this->___instance_config->plugin_api_var))
-						eval('class '.$this->___instance_config->plugin_api_var.' extends \\'.__NAMESPACE__.'\\api');
+						eval('class '.$this->___instance_config->plugin_api_var.' extends \\'.__NAMESPACE__.'\\api{}');
 				}
 
 			/**
