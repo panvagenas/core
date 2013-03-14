@@ -31,6 +31,10 @@ namespace websharks_core_v000000_dev
 				{
 					if(isset($this->cache['loaded']))
 						return; // Already loaded.
+					$this->cache['loaded'] = TRUE;
+
+					if($this->___instance_config->plugin_root_ns === __NAMESPACE__)
+						return; // Don't load the core itself; only plugins.
 
 					// Fires hook before loading.
 					$this->do_action('before_loaded');
@@ -43,7 +47,6 @@ namespace websharks_core_v000000_dev
 					$this->©initializer->prepare_hooks();
 
 					// Completes loading sequence.
-					$this->cache['loaded'] = TRUE;
 					$this->do_action('loaded'); // We're loaded now.
 					$this->do_action('after_loaded'); // Fully loaded now.
 				}

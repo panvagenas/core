@@ -863,7 +863,8 @@ namespace websharks_core_v000000_dev
 										}
 									if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns]))
 										{
-											$load_plugin                                        = TRUE;
+											if($this->___instance_config->plugin_root_ns !== __NAMESPACE__)
+												$load_plugin = TRUE; // Not the core (only plugins).
 											$GLOBALS[$this->___instance_config->plugin_root_ns] = $this;
 										}
 								}
