@@ -40,8 +40,9 @@ namespace websharks_core_v000000_dev
 					$this->do_action('before_loaded');
 
 					// Loads plugin.
-					$this->check_globals();
+					$this->check_global_var();
 					$this->load_api_classes();
+					$this->load_api_funcs();
 					$this->load_pro_class();
 					$this->check_force_activation();
 					$this->©initializer->prepare_hooks();
@@ -52,11 +53,11 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Checks the namespace globals for the current plugin.
+			 * Checks the namespace global var for the current plugin.
 			 *
 			 * @throws exception If missing ``$GLOBALS[__NAMESPACE__]`` for the plugin.
 			 */
-			public function check_globals()
+			public function check_global_var()
 				{
 					if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns])
 					   || !($GLOBALS[$this->___instance_config->plugin_root_ns] instanceof framework)
@@ -65,8 +66,6 @@ namespace websharks_core_v000000_dev
 						sprintf($this->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'),
 						        $this->___instance_config->plugin_root_ns)
 					);
-					if(!isset($GLOBALS[$this->___instance_config->plugin_api_var]))
-						$GLOBALS[$this->___instance_config->plugin_api_var] = $GLOBALS[$this->___instance_config->plugin_root_ns];
 				}
 
 			/**
@@ -82,11 +81,32 @@ namespace websharks_core_v000000_dev
 					if(is_file($this->___instance_config->plugin_api_class_file))
 						include_once $this->___instance_config->plugin_api_class_file;
 
+					// Define in an API class file if you wish to override these defaults.
+
 					if(!class_exists('\\'.$this->___instance_config->plugin_root_ns))
 						eval('class '.$this->___instance_config->plugin_root_ns.' extends \\'.__NAMESPACE__.'\\api{}');
 
 					if(!class_exists('\\'.$this->___instance_config->plugin_api_var))
-						eval('class '.$this->___instance_config->plugin_api_var.' extends \\'.__NAMESPACE__.'\\api{}');
+						eval('class_alias(\'\\'.$this->___instance_config->plugin_root_ns.'\', \''.$this->___instance_config->plugin_api_var.'\');');
+				}
+
+			/**
+			 * Loads plugin API functions.
+			 */
+			public function load_api_funcs()
+				{
+					if(isset($this->cache['load_api_funcs']))
+						return; // Already attempted this once.
+
+					$this->cache['load_api_funcs'] = TRUE;
+
+					// Define in an API class file if you wish to override these defaults.
+
+					if(!function_exists('\\'.$this->___instance_config->plugin_root_ns))
+						eval('function '.$this->___instance_config->plugin_root_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
+
+					if(!function_exists('\\'.$this->___instance_config->plugin_api_var))
+						eval('function '.$this->___instance_config->plugin_api_var.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
 				}
 
 			/**

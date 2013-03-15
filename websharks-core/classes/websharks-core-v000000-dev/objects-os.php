@@ -35,26 +35,24 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param object|array $___instance_config Required at all times.
 			 *    A parent object instance, which contains the parent's ``$___instance_config``,
-			 *    or a new ``$___instance_config`` array.
+			 *    or an explicit ``$___instance_config`` object/array will suffice also.
 			 *
 			 * @throws \exception If there is a missing and/or invalid ``$___instance_config``.
 			 */
 			public function __construct($___instance_config)
 				{
 					if($___instance_config instanceof framework)
-						$___instance_config = $___instance_config->___instance_config;
-					$___instance_config = (object)$___instance_config;
+						$plugin_root_ns = (string)strstr(get_class($___instance_config), '\\', TRUE);
+					else if(is_object($___instance_config) && !empty($___instance_config->plugin_root_ns))
+						$plugin_root_ns = (string)$___instance_config->plugin_root_ns;
+					else if(is_array($___instance_config) && !empty($___instance_config['plugin_root_ns']))
+						$plugin_root_ns = (string)$___instance_config['plugin_root_ns'];
 
-					if(!empty($___instance_config->plugin_root_ns)
-					   && is_string($___instance_config->plugin_root_ns)
-					   && isset($GLOBALS[$___instance_config->plugin_root_ns])
-					   && $GLOBALS[$___instance_config->plugin_root_ns] instanceof framework
-					) $this->plugin = $GLOBALS[$___instance_config->plugin_root_ns];
-
-					else throw new \exception(
-						sprintf(static::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
-						        print_r($___instance_config, TRUE))
-					);
+					if(empty($plugin_root_ns) || !isset($GLOBALS[$plugin_root_ns]) || !($GLOBALS[$plugin_root_ns] instanceof framework))
+						throw new \exception(sprintf(static::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
+						                             print_r($___instance_config, TRUE))
+						);
+					$this->plugin = $GLOBALS[$plugin_root_ns];
 				}
 
 			/**
@@ -86,11 +84,8 @@ namespace websharks_core_v000000_dev
 			 */
 			public function get_all_visible_default_properties($class_object)
 				{
-					if(!!is_string($class_object) && !is_object($class_object))
-						throw $this->plugin->©exception(
-							__METHOD__.'#invalid_args', array('args' => func_get_args()),
-							$this->plugin->i18n('Expecting argument with string or object instance.')
-						);
+					$this->plugin->check_arg_types(array('string:!empty', 'object'), func_get_args());
+
 					if(is_object($class_object))
 						$class_name = get_class($class_object);
 					else $class_name = $class_object;
@@ -121,11 +116,8 @@ namespace websharks_core_v000000_dev
 			 */
 			public function get_non_static_visible_properties($object)
 				{
-					if(!is_object($object))
-						throw $this->plugin->©exception(
-							__METHOD__.'#invalid_args', array('args' => func_get_args()),
-							$this->plugin->i18n('Expecting argument with object instance.')
-						);
+					$this->plugin->check_arg_types('object', func_get_args());
+
 					if(is_array($get_object_vars = get_object_vars($object)))
 						return $get_object_vars;
 
@@ -161,11 +153,8 @@ namespace websharks_core_v000000_dev
 			 */
 			public function get_all_visible_methods($class_object)
 				{
-					if(!is_string($class_object) && !is_object($class_object))
-						throw $this->plugin->©exception(
-							__METHOD__.'#invalid_args', array('args' => func_get_args()),
-							$this->plugin->i18n('Expecting argument with string or object instance.')
-						);
+					$this->plugin->check_arg_types(array('string:!empty', 'object'), func_get_args());
+
 					if(is_array($get_class_methods = get_class_methods($class_object)))
 						return $get_class_methods;
 

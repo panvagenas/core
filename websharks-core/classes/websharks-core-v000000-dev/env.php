@@ -27,23 +27,14 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Is the current User-Agent a browser?
 			 *
-			 * @return boolean TRUE if the current User-Agent is a browser, else FALSE.
+			 * @return boolean {@inheritdoc}
 			 *
-			 * @assert () === FALSE
+			 * @see \websharks_core_v000000_dev::is_browser()
+			 * @inheritdoc \websharks_core_v000000_dev::is_browser()
 			 */
-			public function is_browser()
+			public function is_browser() // Arguments are NOT listed here.
 				{
-					if(!isset($this->static['is_browser']))
-						{
-							$this->static['is_browser'] = FALSE;
-
-							$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/ ][0-9\.]+/i';
-
-							if(is_string($user_agent = $this->©vars->_SERVER('HTTP_USER_AGENT')))
-								if(preg_match($regex, $user_agent)) // A browser engine?
-									$this->static['is_browser'] = TRUE;
-						}
-					return $this->static['is_browser'];
+					return call_user_func_array('\\'.__NAMESPACE__.'::is_browser', func_get_args());
 				}
 
 			/**

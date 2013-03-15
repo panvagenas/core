@@ -93,9 +93,10 @@ namespace websharks_core_v000000_dev
 							else if(preg_match(static::$template_content_body_regex, $template->content, $_m))
 								exit(str_replace('<pre>', '<pre style="max-height:200px; overflow:auto;">', $_m['template_content_body']));
 						}
+					// Output exception message (command-line; and other non-browser devices).
+
 					echo sprintf(static::$plugin->translate('Exception Code: %1$s'), static::$exception->getCode())."\n";
 					echo sprintf(static::$plugin->translate('Exception Message: %1$s'), static::$exception->getMessage());
-
 					if(static::$plugin->©env->is_in_wp_debug_mode() || is_super_admin())
 						echo static::$exception->getTraceAsString();
 
@@ -119,7 +120,7 @@ namespace websharks_core_v000000_dev
 
 					// Output exception message.
 
-					if($template->content && static::is_browser())
+					if($template->content && \websharks_core_v000000_dev::is_browser())
 						{
 							if(!headers_sent()) // Can exception stand-alone?
 								{
@@ -130,9 +131,11 @@ namespace websharks_core_v000000_dev
 							else if(preg_match(static::$template_content_body_regex, $template->content, $_m))
 								exit(str_replace('<pre>', '<pre style="max-height:200px; overflow:auto;">', $_m['template_content_body']));
 						}
+
+					// Output exception message (command-line; and other non-browser devices).
+
 					echo sprintf(static::translate('Exception Code: %1$s'), static::$exception->getCode())."\n";
 					echo sprintf(static::translate('Exception Message: %1$s'), static::$exception->getMessage());
-
 					if((defined('WP_DEBUG') && WP_DEBUG) || is_super_admin())
 						echo static::$exception->getTraceAsString();
 
@@ -162,22 +165,6 @@ namespace websharks_core_v000000_dev
 					trigger_error(sprintf(static::i18n('Unable to locate template file: `%1$s`.'), $file), E_USER_ERROR);
 
 					exit(); // Exit script execution.
-				}
-
-			/**
-			 * Is the current User-Agent a browser?
-			 *
-			 * @return boolean TRUE if the current User-Agent is a browser, else FALSE.
-			 */
-			public static function is_browser()
-				{
-					$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/ ][0-9\.]+/i';
-
-					if(!empty($_SERVER['HTTP_USER_AGENT']) && is_string($_SERVER['HTTP_USER_AGENT']))
-						if(preg_match($regex, $_SERVER['HTTP_USER_AGENT']))
-							return TRUE;
-
-					return FALSE;
 				}
 
 			/**
@@ -211,7 +198,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @var string Regex pattern matching template content body.
 			 */
-			public static $template_content_body_regex = '/\<\!\-\-\s+BEGIN\:\s+Content\s+Body\s+\-\-\>\s*(?P<template_content_body>.+?)\s*\<\!\-\-\s+\/\s+END\:\s+Content Body\s+\-\-\>/is';
+			protected static $template_content_body_regex = '/\<\!\-\-\s+BEGIN\:\s+Content\s+Body\s+\-\-\>\s*(?P<template_content_body>.+?)\s*\<\!\-\-\s+\/\s+END\:\s+Content Body\s+\-\-\>/is';
 		}
 
 		/**

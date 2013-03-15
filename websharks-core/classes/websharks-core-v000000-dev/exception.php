@@ -55,7 +55,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param object|array    $___instance_config Required at all times.
 			 *    A parent object instance, which contains the parent's ``$___instance_config``,
-			 *    or a new ``$___instance_config`` array.
+			 *    or an explicit ``$___instance_config`` object/array will suffice also.
 			 *
 			 * @param string          $code Optional error code (string, NO integers please).
 			 *
@@ -66,6 +66,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param null|\exception $previous Optional previous exception (if re-thrown).
 			 *
+			 * @throws \exception If there is a missing and/or invalid ``$___instance_config``.
 			 * @throws \exception A standard exception class; if any additional issues occur during this type of exception.
 			 *    This prevents endless exceptions, which may occur when/if we make use of a plugin instance.
 			 */
@@ -74,31 +75,29 @@ namespace websharks_core_v000000_dev
 					try // We'll use standard exceptions for any issues here.
 						{
 							if($___instance_config instanceof framework)
-								$___instance_config = $___instance_config->___instance_config;
-							$___instance_config = (object)$___instance_config;
-							$code               = ((string)$code) ? (string)$code : 'exception';
+								$plugin_root_ns = (string)strstr(get_class($___instance_config), '\\', TRUE);
+							else if(is_object($___instance_config) && !empty($___instance_config->plugin_root_ns))
+								$plugin_root_ns = (string)$___instance_config->plugin_root_ns;
+							else if(is_array($___instance_config) && !empty($___instance_config['plugin_root_ns']))
+								$plugin_root_ns = (string)$___instance_config['plugin_root_ns'];
 
-							if(!empty($___instance_config->plugin_root_ns)
-							   && is_string($___instance_config->plugin_root_ns)
-							   && isset($GLOBALS[$___instance_config->plugin_root_ns])
-							   && $GLOBALS[$___instance_config->plugin_root_ns] instanceof framework
-							) $this->plugin = $GLOBALS[$___instance_config->plugin_root_ns];
+							if(empty($plugin_root_ns) || !isset($GLOBALS[$plugin_root_ns]) || !($GLOBALS[$plugin_root_ns] instanceof framework))
+								throw new \exception(sprintf(static::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
+								                             print_r($___instance_config, TRUE))
+								);
 
-							else throw new \exception(
-								sprintf(static::i18n('Could NOT instantiate exception w/ code: `%1$s`.'), $code), 10
-							);
+							$this->plugin = $GLOBALS[$plugin_root_ns];
+							$code         = ((string)$code) ? (string)$code : 'exception';
+							$message      = ((string)$message) ? (string)$message : sprintf($this->plugin->i18n('Exception code: `%1$s`.'), $code);
 
-							$message = ((string)$message) ? (string)$message : sprintf($this->plugin->i18n('Exception code: `%1$s`.'), $code);
-
-							parent::__construct((string)$message, 0, $previous); // Call parent constructor.
-
+							parent::__construct($message, 0, $previous); // Call parent constructor.
 							$this->code = $code; // Set code for this instance. We always use string exception codes (no exceptions :-).
 							$this->data = $data; // Optional diagnostic data associated with this exception (possibly a NULL value).
 
 							$this->wp_debug_log(); // Possible debug logging.
 							$this->db_log(); // Possible database logging routine.
 						}
-					catch(\exception $exception) // Rethrow.
+					catch(\exception $exception) // Rethrow a standard exception class.
 						{
 							throw new \exception(
 								sprintf(static::i18n('Could NOT instantiate exception w/ code: `%1$s`.'), $code), 20, $exception

@@ -655,11 +655,32 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			/**
+			 * Is the current User-Agent a browser?
+			 * This checks only for the most common browser engines.
+			 *
+			 * @return boolean TRUE if the current User-Agent is a browser, else FALSE.
+			 */
+			public static function is_browser()
+				{
+					if(!isset(self::$static['is_browser']))
+						{
+							self::$static['is_browser'] = FALSE;
+
+							$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/ ][0-9\.]+/i';
+
+							if(!empty($_SERVER['HTTP_USER_AGENT']) && is_string($_SERVER['HTTP_USER_AGENT']))
+								if(preg_match($regex, $_SERVER['HTTP_USER_AGENT']))
+									self::$static['is_browser'] = TRUE;
+						}
+					return self::$static['is_browser'];
+				}
+
+			/**
 			 * Handles core translations for this class (context: admin-side).
 			 *
-			 * @param string  $string String to translate.
+			 * @param string $string String to translate.
 			 *
-			 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
+			 * @param string $other_contextuals Optional. Other contextual slugs relevant to this translation.
 			 *    Contextual slugs normally follow the standard of being written with dashes.
 			 *
 			 * @return string Translated string.
@@ -677,9 +698,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 			/**
 			 * Handles core translations for this class (context: front-side).
 			 *
-			 * @param string  $string String to translate.
+			 * @param string $string String to translate.
 			 *
-			 * @param string  $other_contextuals Optional. Other contextual slugs relevant to this translation.
+			 * @param string $other_contextuals Optional. Other contextual slugs relevant to this translation.
 			 *    Contextual slugs normally follow the standard of being written with dashes.
 			 *
 			 * @return string Translated string.

@@ -18,11 +18,22 @@ Redistribute your plugin with this single file (`/websharks-core.phar.php`); whi
 include_once 'websharks-core.phar.php';
 
 // Example usage...
-$wsc = websharks_core();
-echo $wsc->©var->dump($wsc->©classes->get_details());
+echo websharks_core()->©var->dump(
+		websharks_core()->©classes->get_details()
+	);
 
-// Alternate syntax (if you like this better — no © symbol needed).
-echo websharks_core::var()->dump(websharks_core::classes()->get_details());
+// Or create a shorter reference variable if you like.
+// But, please do NOT override $GLOBALS['websharks_core'].
+
+// This is OK :-)
+$ws_core = websharks_core();
+echo $ws_core->©var->dump(
+		$ws_core->©classes->get_details()
+	);
+
+// This is BAD!
+$GLOBALS['websharks_core'] = websharks_core();
+// Please do NOT override the `$websharks_core` global reference.
 ```
 *It is important to note that while the `websharks-core.phar.php` file is rather large; including the file in a PHP script does NOT actually include the entire PHP Archive; because the `websharks-core.phar.php` file halts the PHP compiler after the initial PHP Archive stub is loaded into your scripts. In other words, it is perfectly safe (and efficient) to include `websharks-core.phar.php` in your plugin files.*
 
@@ -30,7 +41,7 @@ echo websharks_core::var()->dump(websharks_core::classes()->get_details());
 
 ---
 
-##### Option #2. Bundling the entire WebSharks™ Core (full directory structure — better performance).
+##### Option #2. Bundling the entire WebSharks™ Core (full directory — for better performance/compatibility).
 
 Download the full directory structure from the repo here at GitHub™ (use ZIP download option). You will need to bundle the entire `websharks-core/` directory into your plugin; including it right along with all of the other files that make up your plugin. To make use of the WebSharks™ Core, add these lines of PHP code to files that depend on the WebSharks™ Core.
 
@@ -40,11 +51,22 @@ Download the full directory structure from the repo here at GitHub™ (use ZIP d
 include_once 'websharks-core/stub.php';
 
 // Example usage...
-$wsc = websharks_core();
-echo $wsc->©var->dump($wsc->©classes->get_details());
+echo websharks_core()->©var->dump(
+		websharks_core()->©classes->get_details()
+	);
 
-// Alternate syntax (if you like this better — no © symbol needed).
-echo websharks_core::var()->dump(websharks_core::classes()->get_details());
+// Or create a shorter reference variable if you like.
+// But, please do NOT override $GLOBALS['websharks_core'].
+
+// This is OK :-)
+$ws_core = websharks_core();
+echo $ws_core->©var->dump(
+		$ws_core->©classes->get_details()
+	);
+
+// This is BAD!
+$GLOBALS['websharks_core'] = websharks_core();
+// Please do NOT override the `$websharks_core` global reference.
 ```
 *While the `websharks-core/` directory is rather large; including the `stub.php` in a PHP script does NOT actually include the entire class structure of the WebSharks™ Core. WebSharks™ Core class methods/properties that you access in your PHP scripts will be autoloaded by the WebSharks™ Core (only as needed; and this occurs automatically at runtime) — keeping your application highly effecient at all times. The WebSharks™ Core uses PHP's SPL Autoload functionality to accomplish this dynamically for you.*
 
@@ -56,7 +78,7 @@ Create this test plugin directory and file: `/wp-content/plugins/rocketship/plug
 
 ```php
 <?php
-namespace rocketship;
+namespace rocketship; // You MUST choose a unique PHP namespace.
 
 /*
 For WordPress®
@@ -65,10 +87,10 @@ See also: http://codex.wordpress.org/File_Header
 */
 
 // Include the plugin you're about to create.
-include_once dirname(__FILE__).'/classes/framework.php';
+include_once dirname(__FILE__).'/classes/rocketship/framework.php';
 ```
 
-Now create this directory and file: `/wp-content/plugins/rocketship/classes/framework.php`
+Now create this directory and file: `/wp-content/plugins/rocketship/classes/rocketship/framework.php`
 
 ```php
 <?php
@@ -76,31 +98,32 @@ namespace rocketship;
 
 // Include your bundled copy of the WebSharks™ Core.
 // Assuming: `/wp-content/plugins/rocketship/websharks-core.phar.php`.
-include_once dirname(dirname(__FILE__)).'/websharks-core.phar.php';
+#include_once dirname(dirname(dirname(__FILE__))).'/websharks-core.phar.php';
 
 // Tell the WebSharks™ Core Autoloader about your PHP classes.
-\websharks_core_autoloader::add_classes_dir(dirname(__FILE__));
+\websharks_core_autoloader::add_classes_dir(dirname(dirname(__FILE__)));
 \websharks_core_autoloader::add_root_ns(__NAMESPACE__);
 
 class framework extends \websharks_core_framework
 {
-  // This will serve as the base class for your plugin.
+	// This will serve as the base class for your plugin.
+	// If you wanted to use a specific version of the WebSharks™ Core, you would do this.
+	# class framework extends \websharks_core_v000000_dev\framework
 }
 
 $GLOBALS[__NAMESPACE__] = new framework(
-  array(
-         'plugin_root_ns'        => __NAMESPACE__, // The root namespace (e.g. rocketship).
-         'plugin_var_ns'         => 'rs', // A shorter/sweeter namespace alias (if you like).
-         'plugin_name'           => 'RocketShip™', // The name of your plugin (pretty print).
-         'plugin_version'        => '130310', // Version of your plugin (must be YYMMDD format).
-         'plugin_site'           => 'http://www.example.com/rocketship-plugin', // URL to plugin site.
-         'dynamic_class_aliases' => array(), // We'll get into this in a later tutorial; just use an empty array.
+	array(
+	     'plugin_root_ns' => __NAMESPACE__, // The root namespace (e.g. `rocketship`).
+	     'plugin_var_ns'  => 'rs', // A shorter namespace alias (or the same as `plugin_root_ns` if you like).
+	     'plugin_name'    => 'RocketShip™', // The name of your plugin (feel free to dress this up please).
+	     'plugin_version' => '130310', // The current version of your plugin (must be in `YYMMDD` format).
+	     'plugin_site'    => 'http://www.example.com/rocketship-plugin', // URL to site about your plugin.
 
-         'plugin_dir'            => dirname(dirname(__FILE__)) // Your plugin directory.
-         /* This directory MUST contain a WordPress® plugin file named: `plugin.php`.
-          * If you have this plugin directory: `/wp-content/plugins/rocketship/`
-          * This file MUST exist: `/wp-content/plugins/rocketship/plugin.php` */
-    )
+	     'plugin_dir'     => dirname(dirname(dirname(__FILE__))) // Your plugin directory.
+	     /* This directory MUST contain a WordPress® plugin file named: `plugin.php`.
+	      * If you have this plugin directory: `/wp-content/plugins/rocketship/`
+	      * This file MUST exist: `/wp-content/plugins/rocketship/plugin.php` */
+	)
 );
 ```
 
@@ -108,25 +131,42 @@ $GLOBALS[__NAMESPACE__] = new framework(
 
 ```php
 <?php
-echo $rocketship->©var->dump($rocketship);
+// Example usage...
+echo rocketship()->©var->dump(
+		rocketship()->©classes->get_details()
+	);
+
+// Or create a shorter reference variable if you like.
+// But, please do NOT override $GLOBALS['rocketship'].
+
+// This is OK :-)
+$rs = rocketship();
+echo $rs->©var->dump(
+		$rs->©classes->get_details()
+	);
+
+// This is BAD!
+$GLOBALS['rocketship'] = rocketship();
+// Please do NOT override the `$rocketship` global reference variable.
 ```
 
 #### Creating new class files that extend your framework (optional).
 
 Create this directory and file:
-`/wp-content/plugins/rocketship/classes/blaster.php`
+`/wp-content/plugins/rocketship/classes/rocketship/blaster.php`
 
 ```php
 <?php
 namespace rocketship;
-class blaster extends framework
+
+class blaster extends framework // You can choose to extend your framework; or not.
 {
-  public function says()
-        {
-            $output = 'Hello :-)'."\n";
-            $output .= $this->©var->dump($this);
-            return $output;
-        }
+	public function says()
+		{
+			$output = 'Hello :-)'."\n";
+			$output .= $this->©var->dump($this); // Only works if you extended your framework.
+			return $output;
+		}
 }
 ```
 
@@ -134,7 +174,7 @@ class blaster extends framework
 
 ```php
 <?php
-echo $rocketship->©blaster->says();
+echo rocketship()->©blaster->says();
 ```
 
 ---
@@ -150,7 +190,7 @@ Let's say you're navigating the WebSharks™ Core source code and you find it ha
 ##### Calling a method in the `strings` class.
 ```php
 <?php
-echo $rocketship->©strings->unique_id();
+echo rocketship()->©strings->unique_id();
 ```
 
 Almost all of the WebSharks™ Core classes are aliased too (with both singular and plural forms); so you can make your code a little easier to understand; depending on the way you're using a particular class; or on the way you're using a particular method in that class. I can use `©strings` by calling the class absolutely; or I can call it's alias `©string` to make things a little easier to read.
@@ -161,14 +201,14 @@ Almost all of the WebSharks™ Core classes are aliased too (with both singular 
 <?php
 $a = '0'; $b = array('hello'); $c = 'there';
 
-if($rocketship->©strings->are_not_empty($a, $b, $c)) // false
+if(rocketship()->©strings->are_not_empty($a, $b, $c)) // false
 	echo $a.' '.$b.' '.$c;
 
-else if($rocketship->©string->is_not_empty($a)) // false
+else if(rocketship()->©string->is_not_empty($a)) // false
 	echo $a; // This is empty.
 
 else // First `string` that is NOT empty.
-	echo $rocketship->©strings->not_empty_coalesce($a, $b, $c); # there
+	echo rocketship()->©strings->not_empty_coalesce($a, $b, $c); # there
 ```
 
 ----
@@ -177,7 +217,7 @@ else // First `string` that is NOT empty.
 
 The answer is both yes and no. It depends on how you plan to work with the WebSharks™ Core. If you want to work with things from an INSIDE-out approach, we recommend sticking to the default WebSharks™ Core syntax; because that is most efficient when working with class objects (i.e. from within class object members). The `©` symbol might seem odd at first, but it becomes second-nature in just a matter of minutes. Also, most editors will offer some form of auto-completion to make it easier for you to repeat when you're writing code. In addition, when you're working from the INSIDE (i.e. from class members), you really won't use the dynamic class `©` symbol that often.
 
-On the other hand, if you plan to use the WebSharks™ Core mostly from the OUTSIDE, as we're doing here (e.g. you're NOT planning to write and/or extend many classes of your own); you will probably be MUCH more comfortable working with the alternatives we make available. Maybe you would even prefer to use them both together in different ways; depending on the type of code you're writing.
+On the other hand, if you plan to use the WebSharks™ Core mostly from the OUTSIDE, as we're doing here (e.g. you're NOT planning to write and/or extend many classes of your own); you will probably be more comfortable working with some alternatives we make available. In some cases you might find it helpful to use one syntax variation over another; depending on the scenario.
 
 ### Other Ways to Access Dynamic Class Instances
 
@@ -197,15 +237,15 @@ else throw rocketship::exception('code', $a, '$a is empty!');
 
 ```php
 <?php
-$rocketship = new rocketship();
+$rs = new rocketship(); // A new instance of your auto-generated API class.
 
 $a = NULL;
-if($rocketship->string->is_not_empty($a))
+if($rs->string->is_not_empty($a))
 	echo $a;
-else throw $rocketship->exception('code', $a, '$a is empty!');
+else throw $rs->exception('code', $a, '$a is empty!');
 ```
 
-If you like this approach better, please feel free to use it. Even if you're not going to use it, you might find value in this approach (from a site owner's perspective); because it might be helpful if you need to offer code samples; offering ways for a site owner to interact with your plugin quite easily. This is PERFECT for that type of thing, because it's a simpler/cleaner syntax.
+If you like this approach better, please feel free to use it. Even if you're not going to use it, you might find value in this approach (from a site owner's perspective); because it might be helpful if you need to offer code samples; providing ways for a site owner to interact with your plugin quite easily. This is PERFECT for that kind of thing, because it's a simpler/cleaner syntax.
 
 ----
 
@@ -225,7 +265,7 @@ else throw rs::exception('code', $a, '$a is empty!');
 
 ```php
 <?php
-$rs = new rs();
+$rs = new rs(); // A new instance of your auto-generated API class.
 
 $a = NULL;
 if($rs->string->is_not_empty($a))
@@ -237,9 +277,9 @@ else throw $rs->exception('code', $a, '$a is empty!');
 
 ### What if I don't like the way a particular method works? What if I want to add a new method of my own? Does the WebSharks™ Core make it easy for me to get creative with things?
 
-Absolutely. You can either create an entirely new class (as shown in a previous example); or you can extend an existing WebSharks™ Core class. Here is how you would extend the `strings` class (one of MANY that come with the WebSharks™ Core).
+Absolutely. You can either create an entirely new class (as shown in the previous `blaster` example); or you can extend an existing WebSharks™ Core class. Here is how you would extend the `strings` class (one of MANY that come with the WebSharks™ Core).
 
-Create this file in your plugin directory: `/wp-content/plugins/rocketship/classes/strings.php`
+Create this file in your plugin directory: `/wp-content/plugins/rocketship/classes/rocketship/strings.php`
 
 ```php
 <?php
@@ -251,13 +291,15 @@ class strings extends \websharks_core_v000000_dev\strings
 // Please make sure you get the version right :-)
 
 {
-    public function write_line($line) // My new class member.
+    public function write_lines() // My new class member.
         {
-            echo $line.'<br />';
+            foreach(func_get_args() as $line)
+               echo $line.'<br />';
         }
-    public function write_p($paragraph) // Another new member.
+    public function write_ps() // Another new member.
         {
-            echo '<p>'.$paragraph.'</p>';
+            foreach(func_get_args() as $paragraph)
+               echo '<p>'.$paragraph.'</p>';
         }
     public function is_not_empty(&$var) // Overwrites existing class member.
         {
@@ -269,32 +311,96 @@ class strings extends \websharks_core_v000000_dev\strings
 
             $string = $this->trim($string);
 
-            echo $this->©markdown->parse($string);
+            return $this->©markdown->parse($string);
         }
 }
 ```
 
-##### Now you have some new class members to work with.
+##### Now you have some new class members.
 
 ```php
-$line = 'I love to write code at GitHub.';
-rocketship::string()->write_line($line);
+<?php
+$line1 = 'I love to write code.';
+$line2 = 'Call me an UBER nerd :-)';
+rocketship::strings()->write_lines($line1, $line2);
 ```
 
 ```php
-$line = 'I love to write code at GitHub.';
-rocketship::string()->write_p($line);
+<?php
+$line1 = 'I love to write code.';
+$line2 = 'Call me an UBER nerd :-)';
+rocketship::strings()->write_ps($line1, $line2);
 ```
 
 ```php
-$line = 'I love to write `code` @ [GitHub](http://github.com)';
-rocketship::string()->markdown($line);
+<?php
+echo rocketship::string()->markdown(
+	'I love to write `code` @ [GitHub](http://github.com)'
+);
 ```
 
 ----
 
 ### What If I Build MANY plugins — ALL powered by the WebSharks™ Core?
 
-How does that work exactly? It's pretty simple really. You bundle the WebSharks™ Core with each plugin that you want to distribute. At runtime, the first plugin to introduce an instance of the WebSharks™ Core — wins! All of the other plugins that depend on the WebSharks™ Core will share that single instance.
+How does that work exactly? It's pretty simple really. You bundle the WebSharks™ Core with each plugin that you want to distribute. At runtime, the first plugin to introduce an instance of the WebSharks™ Core — wins! All of the other plugins that depend on the WebSharks™ Core will share that single instance. This occurs transparently of course.
 
-This works out BEAUTIFULLY. It reduces the amount of code that is required to run each plugin. If all plugins were based on the WebSharks™ Core, you could potentially have hundreds of plugins running simultaneouly on a website; and most of these would include only small bits of code that add onto WordPress® (and the WebSharks™ Core) in different ways. All of them sharing a single instance of the WebSharks™ Core as their plugin framework of choice :-)
+And, it works out BEAUTIFULLY! It reduces the amount of code that is required to run each plugin. If all plugins were based on the WebSharks™ Core, you could potentially have hundreds of plugins running simultaneouly on a website; and most of these would include only small bits of code that add onto WordPress® (and the WebSharks™ Core) in different ways. All of them sharing a single instance of the WebSharks™ Core as their plugin framework of choice :-)
+
+### What If I Build MANY plugins — some powered by different versions of the WebSharks™ Core?
+
+If you want to be more specific about which version of the WebSharks™ Core that your plugin uses, you should extend a specific version and not just extend the `websharks_core_framework`; which is a more generalized reference.
+
+```php
+<?php
+\websharks_core_v000000_dev\autoloader::add_classes_dir(dirname(dirname(__FILE__))); // Specific version!
+\websharks_core_v000000_dev\autoloader::add_root_ns(__NAMESPACE__); // Specific version!
+
+class framework extends \websharks_core_v000000_dev\framework // Specific version!
+{
+}
+```
+
+Here is a full example to help provide some additional clarity on this.
+
+```php
+<?php
+namespace rocketship;
+
+// Include your bundled copy of the WebSharks™ Core.
+// Assuming: `/wp-content/plugins/rocketship/websharks-core.phar.php`.
+#include_once dirname(dirname(dirname(__FILE__))).'/websharks-core.phar.php';
+
+// Tell the WebSharks™ Core Autoloader about your PHP classes.
+\websharks_core_v000000_dev\autoloader::add_classes_dir(dirname(dirname(__FILE__))); // Specific version!
+\websharks_core_v000000_dev\autoloader::add_root_ns(__NAMESPACE__); // Specific version!
+
+class framework extends \websharks_core_v000000_dev\framework // Specific version!
+{
+	// This will serve as the base class for your plugin.
+}
+
+$GLOBALS[__NAMESPACE__] = new framework(
+	array(
+	     'plugin_root_ns' => __NAMESPACE__, // The root namespace (e.g. `rocketship`).
+	     'plugin_var_ns'  => 'rs', // A shorter namespace alias (or the same as `plugin_root_ns` if you like).
+	     'plugin_name'    => 'RocketShip™', // The name of your plugin (feel free to dress this up please).
+	     'plugin_version' => '130310', // The current version of your plugin (must be in `YYMMDD` format).
+	     'plugin_site'    => 'http://www.example.com/rocketship-plugin', // URL to site about your plugin.
+
+	     'plugin_dir'     => dirname(dirname(dirname(__FILE__))) // Your plugin directory.
+	     /* This directory MUST contain a WordPress® plugin file named: `plugin.php`.
+	      * If you have this plugin directory: `/wp-content/plugins/rocketship/`
+	      * This file MUST exist: `/wp-content/plugins/rocketship/plugin.php` */
+	)
+);
+```
+
+In this case, there could be multiple instances of the WebSharks™ Core running on a single site. Specifying a particular version will force that version to load up; if it has not already been loaded up by another plugin running on the same site. If there are other plugins running with a newer version of the WebSharks™ Core; those will run fine. Your plugin (because it references a specific version of the WebSharks™ Core); will force the older version to load up as well — specifically for your plugin to use.
+
+----
+
+### Where Is The Formal Documentation for the WebSharks™ Core? This All Sounds Amazing!
+
+We appreciate your interest in the WebSharks™ Core. However, it's STILL in development at this point. While the product HAS reached the beta phase and IS already being used to construct some amazing new plugins for WordPress; we do NOT have the final documentation ready just yet. Please stay tuned for further details. We will update this page and construct a Codex for the WebSharks™ Core very soon. Until then, you are free to browse the source code on your own. Most of the formal documentation that is forthcoming; will be taken directly from the extremely well-documented source code that already exists :-)
+

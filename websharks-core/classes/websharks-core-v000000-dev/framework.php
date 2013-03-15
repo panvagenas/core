@@ -319,69 +319,92 @@ namespace websharks_core_v000000_dev
 					/**
 					 * Current instance object.
 					 *
-					 * @final Should NOT be overridden by class extenders.
-					 *    Would be `final` if PHP allowed such a thing.
-					 *
 					 * @var object Current instance object for ``$this``.
 					 *    Defaults to NULL. Set by constructor.
 					 *
 					 * @by-constructor Set by class constructor.
-					 */
-					public $___instance_config;
-
-					/**
-					 * A global/static cache of all instance configurations.
 					 *
 					 * @final Should NOT be overridden by class extenders.
 					 *    Would be `final` if PHP allowed such a thing.
+					 *
+					 * @protected Accessible only to self & extenders.
+					 */
+					protected $___instance_config;
+
+					/**
+					 * A global/static cache of all instance configurations.
 					 *
 					 * @var array A global/static cache of all instance configurations.
 					 *    Defaults to an empty array. Set by constructor.
 					 *
 					 * @by-constructor Set by class constructor.
+					 *
+					 * @final Should NOT be overridden by class extenders.
+					 *    Would be `final` if PHP allowed such a thing.
+					 *
+					 * @protected Accessible only to self & extenders.
 					 */
-					public static $___instance_config_cache = array();
+					protected static $___instance_config_cache = array();
 
 					/**
 					 * A global/static cache for dynamic singleton object references.
 					 *
-					 * @final Should NOT be overridden by class extenders.
-					 *    Would be `final` if PHP allowed such a thing.
-					 *
 					 * @var array A global/static cache for dynamic singleton object references.
 					 *    Defaults to an empty array. Set by ``__get()`` method.
 					 *
-					 * @see The ``__get()`` method for further details on this.
+					 * @final Should NOT be overridden by class extenders.
+					 *    Would be `final` if PHP allowed such a thing.
+					 *
+					 * @protected Accessible only to self & extenders.
+					 *
+					 * @see \websharks_core_v000000_dev\framework::__get()
 					 */
-					public static $___dynamic_class_reference_cache = array();
+					protected static $___dynamic_class_reference_cache = array();
 
 					/**
 					 * A global/static cache for dynamic singleton object instances.
 					 *
-					 * @final Should NOT be overridden by class extenders.
-					 *    Would be `final` if PHP allowed such a thing.
-					 *
 					 * @var array A global/static cache for dynamic singleton object instances.
 					 *    Defaults to an empty array. Set by ``__get()`` method.
 					 *
-					 * @see The ``__get()`` method for further details on this.
+					 * @final Should NOT be overridden by class extenders.
+					 *    Would be `final` if PHP allowed such a thing.
+					 *
+					 * @protected Accessible only to self & extenders.
+					 *
+					 * @see \websharks_core_v000000_dev\framework::__get()
 					 */
-					public static $___dynamic_class_instance_cache = array();
+					protected static $___dynamic_class_instance_cache = array();
 
 					/**
 					 * Dynamic class aliases.
 					 *
+					 * @var array Associative array of dynamic class aliases.
+					 *
+					 * @extenders If extenders need to add additional class aliases.
+					 *
+					 * @protected Accessible only to self & extenders.
+					 *
+					 * @see \websharks_core_v000000_dev\framework::__get()
+					 * @see \websharks_core_v000000_dev\framework::__call()
+					 */
+					protected static $___dynamic_class_aliases = array();
+
+					/**
+					 * Dynamic class aliases.
+					 *
+					 * @var array Associative array of dynamic class aliases.
+					 *    These are "always on" in the WebSharks™ Core.
+					 *
 					 * @final Should NOT be overridden by class extenders.
 					 *    Would be `final` if PHP allowed such a thing.
 					 *
-					 * @extenders Class aliases should NOT be overridden. Use ``$___instance_config`` instead please.
-					 *    Class extenders can add their own dynamic class aliases into an ``$___instance_config``.
+					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see The ``__get()`` and ``__call()`` methods, for further details on this.
-					 *
-					 * @var array Associative array of dynamic class aliases.
+					 * @see \websharks_core_v000000_dev\framework::__get()
+					 * @see \websharks_core_v000000_dev\framework::__call()
 					 */
-					public static $___dynamic_class_aliases = array(
+					protected static $____dynamic_class_aliases = array(
 						'action'     => 'actions',
 						'array'      => 'arrays',
 						'boolean'    => 'booleans',
@@ -433,14 +456,16 @@ namespace websharks_core_v000000_dev
 					/**
 					 * PHP's ``is_...()`` type checks.
 					 *
-					 * @final Should NOT be overridden by class extenders.
-					 *    Would be `final` if PHP allowed such a thing.
-					 *
 					 * @var array PHP ``is_...()`` type checks.
 					 *    Keys correspond with type hints accepted by ``check_arg_types()``.
 					 *    Values are ``is_...()`` functions needed to test for each type.
+					 *
+					 * @final Should NOT be overridden by class extenders.
+					 *    Would be `final` if PHP allowed such a thing.
+					 *
+					 * @protected Accessible only to self & extenders.
 					 */
-					public static $___is_type_checks = array(
+					protected static $___is_type_checks = array(
 						'string'          => 'is_string',
 						'!string'         => 'is_string',
 						'string:!empty'   => 'is_string',
@@ -501,20 +526,20 @@ namespace websharks_core_v000000_dev
 					/**
 					 * A global/static cache for each class extender.
 					 *
-					 * @final Should NOT be overridden by class extenders.
-					 *    Would be `final` if PHP allowed such a thing.
-					 *
 					 * @var array A global/static cache for each class extender.
 					 *    Defaults to an empty array. Set by ``___static()`` method.
 					 *
+					 * @final Should NOT be overridden by class extenders.
+					 *    Would be `final` if PHP allowed such a thing.
+					 *
+					 * @protected Accessible only to self & extenders.
+					 *
 					 * @see The ``___static()`` method for further details on this.
 					 */
-					public static $___statics = array();
+					protected static $___statics = array();
 
 					/**
 					 * Gets/sets static cache values on a per-class basis.
-					 *
-					 * @final May NOT be overridden by extenders.
 					 *
 					 * @param string|integer $key Key to get/set.
 					 * @param mixed          $value If passed, we set (or update) the value for ``$key``.
@@ -523,8 +548,12 @@ namespace websharks_core_v000000_dev
 					 *    If no arguments are passed; a reference to the entire cache array.
 					 *
 					 * @throws \exception If ``$key`` is passed; and it's NOT a string|integer.
+					 *
+					 * @final May NOT be overridden by extenders.
+					 *
+					 * @protected Accessible only to self & extenders.
 					 */
-					final public static function &___static($key = NULL, $value = NULL)
+					final protected static function &___static($key = NULL, $value = NULL)
 						{
 							$func_num_args = func_num_args();
 							$class         = get_called_class();
@@ -552,26 +581,30 @@ namespace websharks_core_v000000_dev
 					/**
 					 * An instance-based reference to the global/static cache for each class.
 					 *
-					 * @final Should NOT be overridden by class extenders.
-					 *    Would be `final` if PHP allowed such a thing.
-					 *
 					 * @var array An instance-based reference to the global/static cache for each class.
 					 *    Defaults to an empty array.
 					 *
 					 * @by-constructor Set by class constructor.
-					 */
-					public $static = array();
-
-					/**
-					 * An instance-based cache for each class.
 					 *
 					 * @final Should NOT be overridden by class extenders.
 					 *    Would be `final` if PHP allowed such a thing.
 					 *
+					 * @protected Accessible only to self & extenders.
+					 */
+					protected $static = array();
+
+					/**
+					 * An instance-based cache for each class.
+					 *
 					 * @var array An instance-based cache for each class.
 					 *    Defaults to an empty array.
+					 *
+					 * @final Should NOT be overridden by class extenders.
+					 *    Would be `final` if PHP allowed such a thing.
+					 *
+					 * @protected Accessible only to self & extenders.
 					 */
-					public $cache = array();
+					protected $cache = array();
 
 					// WebSharks™ Core class constants.
 
@@ -766,10 +799,9 @@ namespace websharks_core_v000000_dev
 					 *       • ``(string)$___instance_config['plugin_version']`` — Version of current plugin.
 					 *       • ``(string)$___instance_config['plugin_dir']`` — Current plugin directory.
 					 *       • ``(string)$___instance_config['plugin_site']`` — Plugin site URL (http://).
-					 *       • ``(array)$___instance_config['dynamic_class_aliases']`` — Class aliases.
 					 *
 					 * @throws \exception If there is a missing and/or invalid ``$___instance_config``.
-					 * @throws \exception If more than 7 configuration elements exist in an ``$__instance_config`` array.
+					 * @throws \exception If more than 6 configuration elements exist in an ``$__instance_config`` array.
 					 *
 					 * @throws \exception If the plugin's root namespace does NOT match this regex pattern validation.
 					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_plugin_root_ns}
@@ -785,19 +817,17 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @throws \exception If the plugin's site URL, is NOT valid (MUST start with `http://.+`).
 					 *
-					 * @throws \exception If the array of dynamic class aliases is NOT an array (it can be empty though).
-					 *
 					 * @throws \exception If the namespace\class path does NOT match this regex pattern validation.
 					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_ns_class}
 					 *
 					 * @throws \exception If the core namespace does NOT match this regex pattern validation.
 					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_core_ns_version}
 					 *
-					 * @extenders CAN be overridden by class extenders.
+					 * @public A constructor (i.e. a magic method) MUST always be public.
 					 *
-					 *    • Regarding a standard in the WebSharks™ Core...
-					 *       If a class extender creates its own ``__construct()`` method it MUST collect an ``$___instance_config``,
-					 *       and it MUST call upon this core constructor using: ``parent::__construct($___instance_config)``.
+					 * @extenders If a class extender creates its own constructor,
+					 *    it MUST collect an ``$___instance_config``, and it MUST call upon this core constructor using:
+					 *    ``parent::__construct($___instance_config)``.
 					 *
 					 * @note This method should NOT rely directly or indirectly on any other core class objects.
 					 *    However, it is OK for this constructor to call upon static properties/methods (like regex patterns).
@@ -828,7 +858,7 @@ namespace websharks_core_v000000_dev
 								}
 
 							// Else, this MUST be a valid array (else throw exception).
-							else if(is_array($___instance_config) && count($___instance_config) === 7
+							else if(is_array($___instance_config) && count($___instance_config) === 6
 
 							        && !empty($___instance_config['plugin_name']) && is_string($___instance_config['plugin_name'])
 
@@ -847,8 +877,6 @@ namespace websharks_core_v000000_dev
 
 							        && !empty($___instance_config['plugin_site']) && is_string($___instance_config['plugin_site'])
 							        && preg_match('/^http\:\/\/.+/i', $___instance_config['plugin_site'])
-
-							        && isset($___instance_config['dynamic_class_aliases']) && is_array($___instance_config['dynamic_class_aliases'])
 
 							) // A fully validated ``$___instance_config`` array (we'll convert to an object now).
 								{
@@ -1007,6 +1035,12 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @return boolean TRUE if the overload property (or dynamic singleton class instance) is set.
 					 *    Otherwise, this will return FALSE by default (i.e. the property is NOT set).
+					 *
+					 * @public Magic methods must always remain public.
+					 *
+					 * @extenders If a class extender creates its own ``__isset()`` method, it MUST first make an attempt to resolve ``$property`` on its own.
+					 *    If it CANNOT resolve ``$property``, it MUST then return a call to this method, using: ``parent::__isset($property)``.
+					 *    This allows the core ``__isset()`` method to make a final attempt at resolving the value of ``$property``.
 					 */
 					public function __isset($property)
 						{
@@ -1057,7 +1091,7 @@ namespace websharks_core_v000000_dev
 					 *
 					 *    This method also takes dynamic class aliases into consideration.
 					 *       See: ``$___dynamic_class_aliases`` for further details.
-					 *       See: ``$___instance_config->dynamic_class_aliases`` for further details.
+					 *       See also: ``$____dynamic_class_aliases``.
 					 *
 					 * @return mixed Dynamic property values, or a dynamic object instance; else an exception is thrown.
 					 *    Dynamic class instances are defined explicitly in the docBlock above.
@@ -1069,9 +1103,9 @@ namespace websharks_core_v000000_dev
 					 *    Any class that needs to be constructed with more than an ``$___instance_config``, cannot be instantiated here.
 					 *    Instead see ``__call()`` to instantiate "new" dynamic object instances with `©`.
 					 *
-					 * @extenders CAN be overridden by class extenders.
-					 *    Note... regarding a standard in the WebSharks™ Core.
-					 *    If a class extender creates its own ``__get()`` method, it MUST first make an attempt to resolve ``$property`` on its own.
+					 * @public Magic methods must always remain public.
+					 *
+					 * @extenders If a class extender creates its own ``__get()`` method, it MUST first make an attempt to resolve ``$property`` on its own.
 					 *    If it CANNOT resolve ``$property``, it MUST then return a call to this method, using: ``parent::__get($property)``.
 					 *    This allows the core ``__get()`` method to make a final attempt at resolving the value of ``$property``.
 					 *
@@ -1109,8 +1143,8 @@ namespace websharks_core_v000000_dev
 									// Example: ``$this->©sub_namespace__class`` maps to the alias entry `sub_namespace\class`.
 									// Another example: ``$this->©class`` maps to the alias entry `class`.
 
-									if(!empty($this->___instance_config->dynamic_class_aliases[$dyn_class]))
-										$dyn_class = $this->___instance_config->dynamic_class_aliases[$dyn_class];
+									if(!empty(static::$____dynamic_class_aliases[$dyn_class]))
+										$dyn_class = static::$____dynamic_class_aliases[$dyn_class];
 
 									else if(!empty(static::$___dynamic_class_aliases[$dyn_class]))
 										$dyn_class = static::$___dynamic_class_aliases[$dyn_class];
@@ -1196,7 +1230,7 @@ namespace websharks_core_v000000_dev
 					 *
 					 *    This method also takes dynamic class aliases into consideration.
 					 *       See: ``$___dynamic_class_aliases`` for further details.
-					 *       See: ``$___instance_config->dynamic_class_aliases`` for further details.
+					 *       See also: ``$____dynamic_class_aliases``.
 					 *
 					 * @param array  $args An array of arguments to the overload method, or dynamic class object constructor.
 					 *    In the case of dynamic objects, it's fine to exclude the first argument, which is handled automatically by this routine.
@@ -1208,9 +1242,9 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @throws exception If ``$method`` CANNOT be defined in any way.
 					 *
-					 * @extenders CAN be overridden by class extenders.
-					 *    Note... regarding a standard in the WebSharks™ Core.
-					 *    If a class extender creates its own ``__call()`` method, it MUST first make an attempt to resolve ``$method`` on its own.
+					 * @public Magic methods must always remain public.
+					 *
+					 * @extenders If a class extender creates its own ``__call()`` method, it MUST first make an attempt to resolve ``$method`` on its own.
 					 *    If it CANNOT resolve ``$method``, it MUST then return a call to this method, using: ``parent::__call($method, $args)``.
 					 *    This allows the core ``__call()`` method to make a final attempt at resolving the value of ``$method``.
 					 *
@@ -1250,8 +1284,8 @@ namespace websharks_core_v000000_dev
 									// Example: ``$this->©sub_namespace__class()`` maps to the alias entry `sub_namespace\class`.
 									// Another example: ``$this->©class()`` maps to the alias entry `class`.
 
-									if(!empty($this->___instance_config->dynamic_class_aliases[$dyn_class]))
-										$dyn_class = $this->___instance_config->dynamic_class_aliases[$dyn_class];
+									if(!empty(static::$____dynamic_class_aliases[$dyn_class]))
+										$dyn_class = static::$____dynamic_class_aliases[$dyn_class];
 
 									else if(!empty(static::$___dynamic_class_aliases[$dyn_class]))
 										$dyn_class = static::$___dynamic_class_aliases[$dyn_class];
@@ -1325,20 +1359,18 @@ namespace websharks_core_v000000_dev
 					 * @note Very important for this method to remain HIGHLY optimized at all times.
 					 *    This method is called MANY times throughout the entire WebSharks™ Core framework.
 					 *
-					 * @FUTURE Further optimize this routine. It's about 6.5 times slower than ``is_...()`` checks alone (in PHP v5.3.13).
+					 * @todo Further optimize this routine. It's about 6.5 times slower than ``is_...()`` checks alone (in PHP v5.3.13).
 					 *    We've ALREADY put quite a bit of work into optimizing this as-is, so we might need an entirely new approach in the future.
 					 *    Benchmarking this against straight `is..()` checks alone, is not really fair; since this routine "enforces" type hints.
 					 *    In the mean time, the benefits of using this method, far outweigh the cost in performance — in most cases.
 					 *    ~ Hopefully we'll have better support for type hinting upon the release of PHP 6.0.
 					 *
-					 * @dev-note Try NOT to ``check_arg_types()`` recursively (i.e. in recursive functions). It's really a waste of resources.
+					 * @note Try NOT to ``check_arg_types()`` recursively (i.e. in recursive functions). It's really a waste of resources.
 					 *    If a function is going to be called recursively, please design your function (while in recursion), to bypass ``check_arg_types()``.
-					 *
-					 * @final May NOT be overridden by extenders.
 					 *
 					 * @params-variable-length This method accepts any number of parameters (i.e. type hints, as seen below).
 					 *
-					 * @note Arguments to this method should first include a variable-length list of type hints.
+					 *    Arguments to this method should first include a variable-length list of type hints.
 					 *
 					 *    Format as follows: ``check_arg_types('[type]', '[type]' ..., func_get_args())``.
 					 *    Where type hint arguments MUST be ordered exactly the same as each argument requested by the function/method we're checking.
@@ -1381,7 +1413,7 @@ namespace websharks_core_v000000_dev
 					 * @note Ordinarily, the last argument to this method is a numerically indexed array of all arguments that were passed into the function/method we're checking.
 					 *    Use ``func_get_args()`` as the last argument to this method. Example: ``check_arg_types('[type]', '[type]' ..., func_get_args())``.
 					 *
-					 * @warning For performance reasons, array keys in the last argument, MUST be indexed numerically.
+					 * @note For performance reasons, array keys in the last argument, MUST be indexed numerically.
 					 *    Please make sure that ``func_get_args()`` is used as the last argument. Or, any array that uses numeric indexes, is also fine.
 					 *    Associative arrays will cause PHP notices, due to undefined indexes. We're expecting a numerically indexed array of arguments here.
 					 *
@@ -1393,8 +1425,10 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @throws exception If the last parameter is an integer indicating a number of required arguments,
 					 *    and the number of arguments passed in, is less than this number.
-					 *
 					 * @throws exception If even ONE argument is passed incorrectly.
+					 *
+					 * @final May NOT be overridden by extenders.
+					 * @public Available for public usage.
 					 *
 					 * @assert ('string', 'array', 'object', array('', array(), 'string-not-object')) throws exception
 					 * @assert ('string', array('hello'), 1) === TRUE
@@ -1688,11 +1722,9 @@ namespace websharks_core_v000000_dev
 					 * @note Very important for this method to remain HIGHLY optimized at all times.
 					 *    This method is called MANY times throughout the entire WebSharks™ Core framework.
 					 *
-					 * @final May NOT be overridden by extenders.
-					 *
 					 * @params-variable-length This method accepts any number of parameters (i.e. type hints, as seen below).
 					 *
-					 * @note Arguments to this method should first include a variable-length list of type hints.
+					 *    Arguments to this method should first include a variable-length list of type hints.
 					 *
 					 *    Format as follows: ``check_extension_arg_types('[type]', '[type]' ..., $default_args, $args)``.
 					 *    Where type hint arguments MUST be ordered exactly the same as each argument in the array of ``$default_args``.
@@ -1711,8 +1743,10 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @throws exception If the last parameter is an integer indicating a number of required arguments,
 					 *    and the number of arguments passed in, is less than this number.
-					 *
 					 * @throws exception If even ONE argument is passed incorrectly.
+					 *
+					 * @final May NOT be overridden by extenders.
+					 * @public Available for public usage.
 					 *
 					 * @assert $default_args = array('hello' => 'hello', 'world' => 'world');
 					 *    $args = array('hello' => 'hi', 'hi' => 'there');
@@ -1799,8 +1833,6 @@ namespace websharks_core_v000000_dev
 					/**
 					 * Sets properties on ``$this`` object instance.
 					 *
-					 * @final May NOT be overridden by extenders.
-					 *
 					 * @param array $properties An associative array of object instance properties.
 					 *    Each property MUST already exist, and value types MUST match up.
 					 *
@@ -1809,6 +1841,9 @@ namespace websharks_core_v000000_dev
 					 * @throws exception If attempting to set a property value, which has a different value type.
 					 *    Properties with an existing NULL value, are an exception to this rule.
 					 *    If an existing property ``is_null()``, we allow ANY new value type.
+					 *
+					 * @final May NOT be overridden by extenders.
+					 * @public Available for public usage.
 					 *
 					 * @assert (array('___instance_config' => $this->object->___instance_config)) === TRUE
 					 */
@@ -1840,8 +1875,6 @@ namespace websharks_core_v000000_dev
 					/**
 					 * Fires WordPress® Action Hooks for ``$this`` class.
 					 *
-					 * Action Hooks can be fired using a simple call to ``$this->do_action()``.
-					 *
 					 * Automatically prefixes hook/filter names with the calling `namespace_stub__sub_namespace__class__`.
 					 * This allows for hooks/filters to be written with short names inside class methods, while still being
 					 * given a consistently unique `namespace_stub__sub_namespace__class__` prefix.
@@ -1860,13 +1893,14 @@ namespace websharks_core_v000000_dev
 					 * the hook/filter slug is prefixed again by: ``$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores``.
 					 * Which will result in this hook/filter name: `plugin_root_ns_stub__sub_namespace__class__hook_filter_name`.
 					 *
-					 * @final May NOT be overridden by extenders.
-					 *
 					 * @param string $action Action Hook name.
-					 * @params-variable-length
+					 * @params-variable-length Additional arguments pass data to an action handler.
 					 *
 					 * @return string Action Hook name, for ``$this`` class.
 					 *    Useful only in debugging.
+					 *
+					 * @final May NOT be overridden by extenders.
+					 * @public Available for public usage.
 					 *
 					 * @assert ('action') === 'websharks_core__framework__action'
 					 * @assert ('action', get_defined_vars()) === 'websharks_core__framework__action'
@@ -1890,8 +1924,6 @@ namespace websharks_core_v000000_dev
 					/**
 					 * Fires WordPress® Filters for ``$this`` class.
 					 *
-					 * Filters can be fired using a simple call to ``$this->apply_filters()``.
-					 *
 					 * Automatically prefixes hook/filter names with the calling `namespace_stub__sub_namespace__class__`.
 					 * This allows for hooks/filters to be written with short names inside class methods, while still being
 					 * given a consistently unique `namespace_stub__sub_namespace__class__` prefix.
@@ -1910,13 +1942,14 @@ namespace websharks_core_v000000_dev
 					 * the hook/filter slug is prefixed again by: ``$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores``.
 					 * Which will result in this hook/filter name: `plugin_root_ns_stub__sub_namespace__class__hook_filter_name`.
 					 *
-					 * @final May NOT be overridden by extenders.
-					 *
 					 * @param string $filter Filter name.
 					 * @param mixed  $value Value to Filter.
-					 * @params-variable-length
+					 * @params-variable-length Additional arguments pass data to a filter handler.
 					 *
 					 * @return mixed Performed Filter return value.
+					 *
+					 * @final May NOT be overridden by extenders.
+					 * @public Available for public usage.
 					 *
 					 * @assert ('filter', 'value') === 'value'
 					 * @assert ('filter', 'value', get_defined_vars()) === 'value'
@@ -1936,9 +1969,7 @@ namespace websharks_core_v000000_dev
 						}
 
 					/**
-					 * Contextual translation wrapper for ``$this`` class (context: admin-side).
-					 *
-					 * Translations can be performed with a simple call to ``$this->i18n()``.
+					 * Contextual translation wrapper (context: `admin-side`).
 					 *
 					 * Automatically prefixes contextual slugs with the calling `namespace-stub--sub-namespace--`.
 					 * This allows for translations to be performed with a simple call to ``$this->i18n()``, while still being
@@ -1964,14 +1995,19 @@ namespace websharks_core_v000000_dev
 					 * place any code for extra/optional features into its own sub-namespace. This way translators can optionally bypass
 					 * certain contextual slugs (perhaps saving them a tremendous amount of time).
 					 *
-					 * @final This method may NOT be overridden by extenders.
-					 *
 					 * @param string $string String to translate.
 					 *
 					 * @param string $other_contextuals Optional. Other contextual slugs relevant to this translation.
 					 *    Contextual slugs normally follow the standard of being written with dashes.
 					 *
 					 * @return string Translated string.
+					 *
+					 * @final This method may NOT be overridden by extenders.
+					 * @public Available for public usage.
+					 *
+					 * @see \websharks_core_v000000_dev\framework::i18n_p()
+					 * @see \websharks_core_v000000_dev\framework::translate()
+					 * @see \websharks_core_v000000_dev\framework::translate_p()
 					 *
 					 * @assert ('hello world') === 'hello world'
 					 * @assert ('hello world', 'foo') === 'hello world'
@@ -1991,13 +2027,7 @@ namespace websharks_core_v000000_dev
 						}
 
 					/**
-					 * Plural/contextual translation wrapper for ``$this`` class (context: admin-side).
-					 *
-					 * Plural translations can be performed with a simple call to ``$this->i18n_p()``.
-					 *
-					 * @methods-similar See ``$this->i18n()`` for further details on functionality.
-					 *
-					 * @final This method may NOT be overridden by extenders.
+					 * Plural/contextual translation wrapper (context: `admin-side`).
 					 *
 					 * @param string         $string_singular String to translate (in singular format).
 					 * @param string         $string_plural String to translate (in plural format).
@@ -2007,6 +2037,13 @@ namespace websharks_core_v000000_dev
 					 *    Contextual slugs normally follow the standard of being written with dashes.
 					 *
 					 * @return string Translated string.
+					 *
+					 * @final This method may NOT be overridden by extenders.
+					 * @public Available for public usage.
+					 *
+					 * @see \websharks_core_v000000_dev\framework::i18n()
+					 * @see \websharks_core_v000000_dev\framework::translate()
+					 * @see \websharks_core_v000000_dev\framework::translate_p()
 					 *
 					 * @assert ('hello world', 'hello worlds', 2) === 'hello worlds'
 					 * @assert ('hello world', 'hello worlds', 0) === 'hello worlds'
@@ -2028,13 +2065,7 @@ namespace websharks_core_v000000_dev
 						}
 
 					/**
-					 * Contextual translation wrapper for ``$this`` class (context: front-side).
-					 *
-					 * Translations can be performed with a simple call to ``$this->translate()``.
-					 *
-					 * @methods-similar See ``$this->i18n()`` for further details on functionality.
-					 *
-					 * @final This method may NOT be overridden by extenders.
+					 * Contextual translation wrapper (context: `front-side`).
 					 *
 					 * @param string $string String to translate.
 					 *
@@ -2042,6 +2073,13 @@ namespace websharks_core_v000000_dev
 					 *    Contextual slugs normally follow the standard of being written with dashes.
 					 *
 					 * @return string Translated string.
+					 *
+					 * @final This method may NOT be overridden by extenders.
+					 * @public Available for public usage.
+					 *
+					 * @see \websharks_core_v000000_dev\framework::i18n()
+					 * @see \websharks_core_v000000_dev\framework::i18n_p()
+					 * @see \websharks_core_v000000_dev\framework::translate_p()
 					 *
 					 * @assert ('hello world') === 'hello world'
 					 * @assert ('hello world', 'foo') === 'hello world'
@@ -2061,13 +2099,7 @@ namespace websharks_core_v000000_dev
 						}
 
 					/**
-					 * Plural/contextual translation wrapper for ``$this`` class (context: front-side).
-					 *
-					 * Plural translations can be performed with a simple call to ``$this->translate_p()``.
-					 *
-					 * @methods-similar See ``$this->i18n()`` for further details on functionality.
-					 *
-					 * @final This method may NOT be overridden by extenders.
+					 * Plural/contextual translation wrapper (context: `front-side`).
 					 *
 					 * @param string         $string_singular String to translate (in singular format).
 					 * @param string         $string_plural String to translate (in plural format).
@@ -2077,6 +2109,13 @@ namespace websharks_core_v000000_dev
 					 *    Contextual slugs normally follow the standard of being written with dashes.
 					 *
 					 * @return string Translated string.
+					 *
+					 * @final This method may NOT be overridden by extenders.
+					 * @public Available for public usage.
+					 *
+					 * @see \websharks_core_v000000_dev\framework::i18n()
+					 * @see \websharks_core_v000000_dev\framework::i18n_p()
+					 * @see \websharks_core_v000000_dev\framework::translate()
 					 *
 					 * @assert ('hello world', 'hello worlds', 2) === 'hello worlds'
 					 * @assert ('hello world', 'hello worlds', 0) === 'hello worlds'
@@ -2117,13 +2156,12 @@ namespace websharks_core_v000000_dev
 				 */
 				$GLOBALS[__NAMESPACE__] = new framework(
 					array(
-					     'plugin_var_ns'         => 'websharks_core',
-					     'plugin_root_ns'        => __NAMESPACE__,
-					     'plugin_name'           => 'WebSharks™ Core',
-					     'plugin_version'        => '000000-dev', #!version!#
-					     'plugin_dir'            => dirname(dirname(dirname(__FILE__))),
-					     'plugin_site'           => 'http://www.websharks-inc.com',
-					     'dynamic_class_aliases' => framework::$___dynamic_class_aliases
+					     'plugin_root_ns' => __NAMESPACE__,
+					     'plugin_var_ns'  => __NAMESPACE__,
+					     'plugin_name'    => 'WebSharks™ Core',
+					     'plugin_version' => '000000-dev', #!version!#
+					     'plugin_dir'     => dirname(dirname(dirname(__FILE__))),
+					     'plugin_site'    => 'http://www.websharks-inc.com'
 					));
 				if(!isset($GLOBALS['websharks_core']->___instance_config->core_version)
 				   || version_compare($GLOBALS['websharks_core']->___instance_config->core_version,
@@ -2142,292 +2180,13 @@ namespace // Global namespace.
 		if(!class_exists('websharks_core'))
 			{
 				/**
-				 * WebSharks™ Core API class. The latest version available
-				 *    at runtime (in the case of multiple instances).
+				 * WebSharks™ Core API class.
 				 *
-				 * @note Dynamic properties/methods are defined explicitly here.
-				 *    This way IDEs jive with ``__get()`` and ``__call()``.
+				 * This works w/ latest version available at runtime
+				 *    (in the case of multiple instances).
 				 *
-				 * @property \websharks_core_v000000_dev\actions                 $actions
-				 * @property \websharks_core_v000000_dev\actions                 $action
-				 * @method static \websharks_core_v000000_dev\actions actions()
-				 * @method static \websharks_core_v000000_dev\actions action()
-				 *
-				 * @property \websharks_core_v000000_dev\arrays                  $arrays
-				 * @property \websharks_core_v000000_dev\arrays                  $array
-				 * @method static \websharks_core_v000000_dev\arrays arrays()
-				 * @method static \websharks_core_v000000_dev\arrays array()
-				 *
-				 * @property \websharks_core_v000000_dev\booleans                $booleans
-				 * @property \websharks_core_v000000_dev\booleans                $boolean
-				 * @method static \websharks_core_v000000_dev\booleans booleans()
-				 * @method static \websharks_core_v000000_dev\booleans boolean()
-				 *
-				 * @method static \websharks_core_v000000_dev\builder builder()
-				 * @method static \websharks_core_v000000_dev\builder build()
-				 *
-				 * @property \websharks_core_v000000_dev\caps                    $caps
-				 * @property \websharks_core_v000000_dev\caps                    $cap
-				 * @method static \websharks_core_v000000_dev\caps caps()
-				 * @method static \websharks_core_v000000_dev\caps cap()
-				 *
-				 * @property \websharks_core_v000000_dev\captchas                $captchas
-				 * @property \websharks_core_v000000_dev\captchas                $captcha
-				 * @method static \websharks_core_v000000_dev\captchas captchas()
-				 * @method static \websharks_core_v000000_dev\captchas captcha()
-				 *
-				 * @property \websharks_core_v000000_dev\classes                 $classes
-				 * @property \websharks_core_v000000_dev\classes                 $class
-				 * @method static \websharks_core_v000000_dev\classes classes()
-				 * @method static \websharks_core_v000000_dev\classes class()
-				 *
-				 * @property \websharks_core_v000000_dev\commands                $commands
-				 * @property \websharks_core_v000000_dev\commands                $command
-				 * @method static \websharks_core_v000000_dev\commands commands()
-				 * @method static \websharks_core_v000000_dev\commands command()
-				 *
-				 * @property \websharks_core_v000000_dev\compressor              $compressor
-				 * @method static \websharks_core_v000000_dev\compressor compressor()
-				 *
-				 * @property \websharks_core_v000000_dev\cookies                 $cookies
-				 * @property \websharks_core_v000000_dev\cookies                 $cookie
-				 * @method static \websharks_core_v000000_dev\cookies cookies()
-				 * @method static \websharks_core_v000000_dev\cookies cookie()
-				 *
-				 * @property \websharks_core_v000000_dev\css_minifier            $css_minifier
-				 * @method static \websharks_core_v000000_dev\css_minifier css_minifier()
-				 *
-				 * @property \websharks_core_v000000_dev\crons                   $crons
-				 * @property \websharks_core_v000000_dev\crons                   $cron
-				 * @method static \websharks_core_v000000_dev\crons crons()
-				 * @method static \websharks_core_v000000_dev\crons cron()
-				 *
-				 * @property \websharks_core_v000000_dev\currencies              $currencies
-				 * @property \websharks_core_v000000_dev\currencies              $currency
-				 * @method static \websharks_core_v000000_dev\currencies currencies()
-				 * @method static \websharks_core_v000000_dev\currencies currency()
-				 *
-				 * @property \websharks_core_v000000_dev\dates                   $dates
-				 * @property \websharks_core_v000000_dev\dates                   $date
-				 * @method static \websharks_core_v000000_dev\dates dates()
-				 * @method static \websharks_core_v000000_dev\dates date()
-				 *
-				 * @property \wpdb|\websharks_core_v000000_dev\db                $db
-				 * @method static \wpdb|\websharks_core_v000000_dev\db db()
-				 *
-				 * @property \websharks_core_v000000_dev\db_cache                $db_cache
-				 * @method static \websharks_core_v000000_dev\db_cache db_cache()
-				 *
-				 * @property \websharks_core_v000000_dev\db_tables               $db_tables
-				 * @property \websharks_core_v000000_dev\db_tables               $db_table
-				 * @method static \websharks_core_v000000_dev\db_tables db_tables()
-				 * @method static \websharks_core_v000000_dev\db_tables db_table()
-				 *
-				 * @property \websharks_core_v000000_dev\db_utils                $db_utils
-				 * @property \websharks_core_v000000_dev\db_utils                $db_util
-				 * @method static \websharks_core_v000000_dev\db_utils db_utils()
-				 * @method static \websharks_core_v000000_dev\db_utils db_util()
-				 *
-				 * @property \websharks_core_v000000_dev\diagnostics             $diagnostics
-				 * @property \websharks_core_v000000_dev\diagnostics             $diagnostic
-				 * @method static \websharks_core_v000000_dev\diagnostics diagnostics()
-				 * @method static \websharks_core_v000000_dev\diagnostics diagnostic()
-				 *
-				 * @property \websharks_core_v000000_dev\dirs                    $dirs
-				 * @property \websharks_core_v000000_dev\dirs                    $dir
-				 * @method static \websharks_core_v000000_dev\dirs dirs()
-				 * @method static \websharks_core_v000000_dev\dirs dir()
-				 *
-				 * @property \websharks_core_v000000_dev\encryption              $encryption
-				 * @method static \websharks_core_v000000_dev\encryption encryption()
-				 *
-				 * @property \websharks_core_v000000_dev\env                     $env
-				 * @method static \websharks_core_v000000_dev\env env()
-				 *
-				 * @property \websharks_core_v000000_dev\errors                  $errors
-				 * @property \websharks_core_v000000_dev\errors                  $error
-				 * @method static \websharks_core_v000000_dev\errors errors()
-				 * @method static \websharks_core_v000000_dev\errors error()
-				 *
-				 * @property \websharks_core_v000000_dev\exception               $exception
-				 * @method static \websharks_core_v000000_dev\exception exception()
-				 *
-				 * @property \websharks_core_v000000_dev\feeds                   $feeds
-				 * @property \websharks_core_v000000_dev\feeds                   $feed
-				 * @method static \websharks_core_v000000_dev\feeds feeds()
-				 * @method static \websharks_core_v000000_dev\feeds feed()
-				 *
-				 * @property \websharks_core_v000000_dev\files                   $files
-				 * @property \websharks_core_v000000_dev\files                   $file
-				 * @method static \websharks_core_v000000_dev\files files()
-				 * @method static \websharks_core_v000000_dev\files file()
-				 *
-				 * @property \websharks_core_v000000_dev\floats                  $floats
-				 * @property \websharks_core_v000000_dev\floats                  $float
-				 * @method static \websharks_core_v000000_dev\floats floats()
-				 * @method static \websharks_core_v000000_dev\floats float()
-				 *
-				 * @property \websharks_core_v000000_dev\forms                   $forms
-				 * @property \websharks_core_v000000_dev\forms                   $form
-				 * @method static \websharks_core_v000000_dev\forms forms()
-				 * @method static \websharks_core_v000000_dev\forms form()
-				 *
-				 * @property \websharks_core_v000000_dev\form_fields             $form_fields
-				 * @property \websharks_core_v000000_dev\form_fields             $form_field
-				 * @method static \websharks_core_v000000_dev\form_fields form_fields()
-				 * @method static \websharks_core_v000000_dev\form_fields form_field()
-				 *
-				 * @property \websharks_core_v000000_dev\functions               $functions
-				 * @property \websharks_core_v000000_dev\functions               $function
-				 * @method static \websharks_core_v000000_dev\functions functions()
-				 * @method static \websharks_core_v000000_dev\functions function()
-				 *
-				 * @property \websharks_core_v000000_dev\headers                 $headers
-				 * @property \websharks_core_v000000_dev\headers                 $header
-				 * @method static \websharks_core_v000000_dev\headers headers()
-				 * @method static \websharks_core_v000000_dev\headers header()
-				 *
-				 * @property \websharks_core_v000000_dev\html_minifier           $html_minifier
-				 * @method static \websharks_core_v000000_dev\html_minifier html_minifier()
-				 *
-				 * @property \websharks_core_v000000_dev\initializer             $initializer
-				 * @method static \websharks_core_v000000_dev\initializer initializer()
-				 *
-				 * @property \websharks_core_v000000_dev\installer               $installer
-				 * @method static \websharks_core_v000000_dev\installer installer()
-				 *
-				 * @property \websharks_core_v000000_dev\integers                $integers
-				 * @property \websharks_core_v000000_dev\integers                $integer
-				 * @method static \websharks_core_v000000_dev\integers integers()
-				 * @method static \websharks_core_v000000_dev\integers integer()
-				 *
-				 * @property \websharks_core_v000000_dev\ips                     $ips
-				 * @property \websharks_core_v000000_dev\ips                     $ip
-				 * @method static \websharks_core_v000000_dev\ips ips()
-				 * @method static \websharks_core_v000000_dev\ips ip()
-				 *
-				 * @property \websharks_core_v000000_dev\js_minifier             $js_minifier
-				 * @method static \websharks_core_v000000_dev\js_minifier js_minifier()
-				 *
-				 * @property \websharks_core_v000000_dev\mail                    $mail
-				 * @method static \websharks_core_v000000_dev\mail mail()
-				 *
-				 * @property \websharks_core_v000000_dev\markdown                $markdown
-				 * @method static \websharks_core_v000000_dev\markdown markdown()
-				 *
-				 * @property \websharks_core_v000000_dev\menu_pages              $menu_pages
-				 * @property \websharks_core_v000000_dev\menu_pages              $menu_page
-				 * @method static \websharks_core_v000000_dev\menu_pages menu_pages()
-				 * @method static \websharks_core_v000000_dev\menu_pages menu_page()
-				 *
-				 * @property \websharks_core_v000000_dev\menu_pages\menu_page    $menu_pages__menu_page
-				 * @method static \websharks_core_v000000_dev\menu_pages\menu_page menu_pages__menu_page()
-				 *
-				 * @property \websharks_core_v000000_dev\menu_pages\panels\panel $menu_pages__panels__panel
-				 * @method static \websharks_core_v000000_dev\menu_pages\panels\panel menu_pages__panels__panel()
-				 *
-				 * @property \websharks_core_v000000_dev\messages                $messages
-				 * @property \websharks_core_v000000_dev\messages                $message
-				 * @method static \websharks_core_v000000_dev\messages messages()
-				 * @method static \websharks_core_v000000_dev\messages message()
-				 *
-				 * @property \websharks_core_v000000_dev\functions               $methods
-				 * @property \websharks_core_v000000_dev\functions               $method
-				 * @method static \websharks_core_v000000_dev\functions methods()
-				 * @method static \websharks_core_v000000_dev\functions method()
-				 *
-				 * @property \websharks_core_v000000_dev\no_cache                $no_cache
-				 * @method static \websharks_core_v000000_dev\no_cache no_cache()
-				 *
-				 * @property \websharks_core_v000000_dev\notices                 $notices
-				 * @property \websharks_core_v000000_dev\notices                 $notice
-				 * @method static \websharks_core_v000000_dev\notices notices()
-				 * @method static \websharks_core_v000000_dev\notices notice()
-				 *
-				 * @property \websharks_core_v000000_dev\oauth                   $oauth
-				 * @method static \websharks_core_v000000_dev\oauth oauth()
-				 *
-				 * @property \websharks_core_v000000_dev\options                 $options
-				 * @property \websharks_core_v000000_dev\options                 $option
-				 * @method static \websharks_core_v000000_dev\options options()
-				 * @method static \websharks_core_v000000_dev\options option()
-				 *
-				 * @property \websharks_core_v000000_dev\objects_os              $objects_os
-				 * @property \websharks_core_v000000_dev\objects_os              $object_os
-				 * @method static \websharks_core_v000000_dev\objects_os objects_os()
-				 * @method static \websharks_core_v000000_dev\objects_os object_os()
-				 *
-				 * @property \websharks_core_v000000_dev\objects                 $objects
-				 * @property \websharks_core_v000000_dev\objects                 $object
-				 * @method static \websharks_core_v000000_dev\objects objects()
-				 * @method static \websharks_core_v000000_dev\objects object()
-				 *
-				 * @property \websharks_core_v000000_dev\php                     $php
-				 * @method static \websharks_core_v000000_dev\php php()
-				 *
-				 * @property \websharks_core_v000000_dev\plugins                 $plugins
-				 * @property \websharks_core_v000000_dev\plugins                 $plugin
-				 * @method static \websharks_core_v000000_dev\plugins plugins()
-				 * @method static \websharks_core_v000000_dev\plugins plugin()
-				 *
-				 * @property \websharks_core_v000000_dev\posts                   $posts
-				 * @property \websharks_core_v000000_dev\posts                   $post
-				 * @method static \websharks_core_v000000_dev\posts posts()
-				 * @method static \websharks_core_v000000_dev\posts post()
-				 *
-				 * @method static \websharks_core_v000000_dev\replicator replicator()
-				 * @method static \websharks_core_v000000_dev\replicator replicate()
-				 *
-				 * @property \websharks_core_v000000_dev\scripts                 $scripts
-				 * @property \websharks_core_v000000_dev\scripts                 $script
-				 * @method static \websharks_core_v000000_dev\scripts scripts()
-				 * @method static \websharks_core_v000000_dev\scripts script()
-				 *
-				 * @property \websharks_core_v000000_dev\strings                 $strings
-				 * @property \websharks_core_v000000_dev\strings                 $string
-				 * @method static \websharks_core_v000000_dev\strings strings()
-				 * @method static \websharks_core_v000000_dev\strings string()
-				 *
-				 * @property \websharks_core_v000000_dev\styles                  $styles
-				 * @property \websharks_core_v000000_dev\styles                  $style
-				 * @method static \websharks_core_v000000_dev\styles styles()
-				 * @method static \websharks_core_v000000_dev\styles style()
-				 *
-				 * @property \websharks_core_v000000_dev\successes               $successes
-				 * @property \websharks_core_v000000_dev\successes               $success
-				 * @method static \websharks_core_v000000_dev\successes successes()
-				 * @method static \websharks_core_v000000_dev\successes success()
-				 *
-				 * @property \websharks_core_v000000_dev\templates               $templates
-				 * @property \websharks_core_v000000_dev\templates               $template
-				 * @method static \websharks_core_v000000_dev\templates templates()
-				 * @method static \websharks_core_v000000_dev\templates template()
-				 *
-				 * @property \websharks_core_v000000_dev\urls                    $urls
-				 * @property \websharks_core_v000000_dev\urls                    $url
-				 * @method static \websharks_core_v000000_dev\urls urls()
-				 * @method static \websharks_core_v000000_dev\urls url()
-				 *
-				 * @property \websharks_core_v000000_dev\vars                    $vars
-				 * @property \websharks_core_v000000_dev\vars                    $var
-				 * @method static \websharks_core_v000000_dev\vars vars()
-				 * @method static \websharks_core_v000000_dev\vars var()
-				 *
-				 * @property \websharks_core_v000000_dev\videos                  $videos
-				 * @property \websharks_core_v000000_dev\videos                  $video
-				 * @method static \websharks_core_v000000_dev\videos videos()
-				 * @method static \websharks_core_v000000_dev\videos video()
-				 *
-				 * @property \websharks_core_v000000_dev\users                   $users
-				 * @property \websharks_core_v000000_dev\users                   $user
-				 * @method static \websharks_core_v000000_dev\users users()
-				 * @method static \websharks_core_v000000_dev\users user()
-				 *
-				 * @property \websharks_core_v000000_dev\user_utils              $user_utils
-				 * @method static \websharks_core_v000000_dev\user_utils user_utils()
-				 *
-				 * @property \websharks_core_v000000_dev\xml                     $xml
-				 * @method static \websharks_core_v000000_dev\xml xml()
+				 * @see \websharks_core_v000000_dev\api
+				 * @see \websharks_core_v000000_dev\api::$framework
 				 */
 				class websharks_core extends \websharks_core_v000000_dev\api
 				{
@@ -2439,8 +2198,8 @@ namespace // Global namespace.
 				/**
 				 * WebSharks™ Core instance.
 				 *
-				 * @return \websharks_core The latest version available
-				 *    at runtime (in the case of multiple instances).
+				 * @return \websharks_core_v000000_dev\framework|websharks_core
+				 *    The latest version available at runtime (in the case of multiple instances).
 				 */
 				function websharks_core()
 					{
