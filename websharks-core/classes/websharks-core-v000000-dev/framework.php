@@ -2204,7 +2204,7 @@ namespace // Global namespace.
 				/**
 				 * WebSharks™ Core instance.
 				 *
-				 * @return \websharks_core_v000000_dev\framework|websharks_core
+				 * @return \websharks_core_v000000_dev\framework
 				 *    The latest version available at runtime (in the case of multiple instances).
 				 */
 				function websharks_core()

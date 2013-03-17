@@ -48,7 +48,7 @@ namespace websharks_core_v000000_dev
 			 * @var framework Plugin/framework instance.
 			 * @by-constructor Set dynamically by class constructor.
 			 */
-			public $plugin;
+			public $plugin; // Defaults to a NULL value.
 
 			/**
 			 * Constructor.
@@ -90,12 +90,12 @@ namespace websharks_core_v000000_dev
 							$code         = ((string)$code) ? (string)$code : 'exception';
 							$message      = ((string)$message) ? (string)$message : sprintf($this->plugin->i18n('Exception code: `%1$s`.'), $code);
 
-							if($this->plugin->©plugin->is_core()) // Always off in the WebSharks™ Core.
-								$this->wp_debug_log = $this->db_log = FALSE;
-
 							parent::__construct($message, 0, $previous); // Call parent constructor.
 							$this->code = $code; // Set code for this instance. We always use string exception codes (no exceptions :-).
 							$this->data = $data; // Optional diagnostic data associated with this exception (possibly a NULL value).
+
+							if($this->plugin->©plugin->is_core()) // Always off in the WebSharks™ Core.
+								$this->wp_debug_log = $this->db_log = FALSE;
 
 							$this->wp_debug_log(); // Possible debug logging.
 							$this->db_log(); // Possible database logging routine.

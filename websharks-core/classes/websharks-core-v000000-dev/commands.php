@@ -329,7 +329,8 @@ namespace websharks_core_v000000_dev
 			 * @return string The output from GIT; always a string.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status; or an error message.
+			 * @throws exception Only if GIT returns a non-zero status. We ignore GIT error messages;
+			 *    because GIT writes its progress to STDERR. Thus, it really should NOT be used to determine status.
 			 */
 			public function git($args, $cwd_repo_dir)
 				{
@@ -347,10 +348,10 @@ namespace websharks_core_v000000_dev
 					$git_errors = $git['errors'];
 					/** @var errors $git_errors */
 
-					if($git_status !== 0 || $git_errors->exist())
+					if($git_status !== 0)
 						throw $this->©exception(
 							__METHOD__.'#issue', get_defined_vars(),
-							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status (%2$s) or error. Git said: `%3$s`'),
+							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status: `%2$s`. Git said: `%3$s`'),
 							        $git_args, $git_status, $git_errors->get_message())
 						);
 					return $git['output'];
