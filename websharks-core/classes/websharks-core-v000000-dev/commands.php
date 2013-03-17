@@ -279,7 +279,7 @@ namespace websharks_core_v000000_dev
 									if($return_errors && $errors->exist())
 										return $errors;
 
-									else if($return_array)
+									if($return_array)
 										{
 											return array(
 												'output' => $output,
@@ -288,7 +288,7 @@ namespace websharks_core_v000000_dev
 												'status' => $status
 											);
 										}
-									return $output; // Default return value.
+									return $output;
 								}
 						}
 
@@ -304,7 +304,7 @@ namespace websharks_core_v000000_dev
 					if($return_errors)
 						return $errors;
 
-					else if($return_array)
+					if($return_array)
 						{
 							return array(
 								'output' => '',
@@ -313,17 +313,17 @@ namespace websharks_core_v000000_dev
 								'status' => -1
 							);
 						}
-					return ''; // Default return value.
+					return '';
 				}
 
 			/**
 			 * A utility method for easier GIT interaction.
 			 *
-			 * @param string  $args Command and arguments; or only the arguments.
+			 * @param string $args Command and arguments; or only the arguments.
 			 *    It is NOT necessary to prefix this with `git`; this routine will handle this automatically.
 			 *    If you do pass `git`; it will be removed automatically and replaced with ``$this->git``.
 			 *
-			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
 			 * @return string The output from GIT; always a string.
@@ -359,7 +359,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Gets current GIT branch for a given repo directory.
 			 *
-			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
 			 * @return string The current branch name; else an exception is thrown.
@@ -383,7 +383,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Gets current GIT branches for a given repo directory.
 			 *
-			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
 			 * @return array The current branches; else an exception is thrown.
@@ -415,7 +415,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Gets latest GIT branch for a given repo directory.
 			 *
-			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
 			 * @return string The latest branch; else the `master` branch.
@@ -440,7 +440,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Gets latest GIT dev branch for a given repo directory.
 			 *
-			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
 			 * @return string The latest dev branch; else the `master` branch.
@@ -470,7 +470,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Gets latest GIT stable branch for a given repo directory.
 			 *
-			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
 			 * @return string The latest stable branch; else the `master` branch.
