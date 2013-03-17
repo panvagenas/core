@@ -33,8 +33,9 @@ namespace websharks_core_v000000_dev
 						return; // Already loaded.
 					$this->cache['loaded'] = TRUE;
 
-					if($this->___instance_config->plugin_root_ns === __NAMESPACE__)
-						return; // Don't load the core itself; only plugins.
+					// Don't load the core.
+					if($this->is_core())
+						return;
 
 					// Fires hook before loading.
 					$this->do_action('before_loaded');
@@ -334,6 +335,16 @@ namespace websharks_core_v000000_dev
 								$this->set_site_credentials($credentials['username'], $credentials['password']);
 						}
 					return $credentials; // Two elements: `username`, `password`.
+				}
+
+			/**
+			 * The WebSharks™ Core itself?
+			 *
+			 * @return boolean TRUE if the current plugin is actually the WebSharks™ Core.
+			 */
+			public function is_core()
+				{
+					return ($this->___instance_config->plugin_root_ns === __NAMESPACE__);
 				}
 
 			/**

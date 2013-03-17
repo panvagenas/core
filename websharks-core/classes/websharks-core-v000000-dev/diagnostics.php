@@ -94,20 +94,22 @@ namespace websharks_core_v000000_dev
 
 					$this->check_arg_types('', 'string:!empty', '', 'string', 'string:!empty', func_get_args());
 
+					if($this->©plugin->is_core()) $this->wp_debug_log = $this->db_log = FALSE;
+
 					if(!empty($code)) $this->add($code, $data, $message, $log);
 				}
 
 			/**
 			 * Add new diagnostic.
 			 *
-			 * @param string       $code Required diagnostic code (must NOT be empty).
+			 * @param string $code Required diagnostic code (must NOT be empty).
 			 *
-			 * @param mixed        $data Optional diagnostic data (i.e. something to assist in reporting/logging).
+			 * @param mixed  $data Optional diagnostic data (i.e. something to assist in reporting/logging).
 			 *    This argument can be bypassed using a NULL value (that's fine).
 			 *
-			 * @param string       $message Optional diagnostic message. Defaults to `Diagnostic code: $code`.
+			 * @param string $message Optional diagnostic message. Defaults to `Diagnostic code: $code`.
 			 *
-			 * @param string       $log Optional. This defaults to the value of ``framework::log_enable``.
+			 * @param string $log Optional. This defaults to the value of ``framework::log_enable``.
 			 *    This simply provides some additional control over which specific diagnostics will be logged.
 			 *    By default, we enable logging on a per-diagnostic basis. However, even if this is ``framework::log_enable``,
 			 *    logging only occurs if enabled overall (based on diagnostic type). Can also be set to ``framework::log_disable``.
