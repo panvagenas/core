@@ -1409,7 +1409,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Escapes SQL strings.
 			 *
-			 * @param string  $string A string value.
+			 * @param string $string A string value.
 			 *
 			 * @return string Escaped string.
 			 *
@@ -1696,7 +1696,7 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed   $value Any value can be converted into a stripped string.
+			 * @param mixed $value Any value can be converted into a stripped string.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
 			 * @return string|array|object Stripped string, array, object.
@@ -1727,7 +1727,7 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed   $value Any value can be converted into a slashes string.
+			 * @param mixed $value Any value can be converted into a slashes string.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
 			 * @return string|array|object Slashed string, array, object.
@@ -1879,7 +1879,7 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed  $value Any value can be converted into a trimmed string.
+			 * @param mixed $value Any value can be converted into a trimmed string.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
 			 * @return string|array|object Trimmed string, array, object.
@@ -1901,7 +1901,7 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed  $value Any value can be converted into a trimmed string.
+			 * @param mixed $value Any value can be converted into a trimmed string.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
 			 * @return string|array|object Trimmed string, array, object.
@@ -1923,7 +1923,7 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed  $value Any value can be converted into a trimmed string.
+			 * @param mixed $value Any value can be converted into a trimmed string.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
 			 * @return string|array|object Trimmed string, array, object.
@@ -2336,7 +2336,7 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed  $value Any value can be converted into a decoded string.
+			 * @param mixed $value Any value can be converted into a decoded string.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
 			 * @return string|array|object Decoded string, array, object.
@@ -2534,6 +2534,51 @@ namespace websharks_core_v000000_dev
 							if($this->©function->is_possible('mb_convert_encoding'))
 								$value = mb_convert_encoding($value, 'UTF-8', $detection_order);
 						}
+					return $value;
+				}
+
+			/**
+			 * Converts a string into a hexadecimal notation.
+			 *
+			 * @param string $string String to convert into a hexadecimal notation.
+			 *
+			 * @return string Hexadecimal notation.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function to_hex($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return $this->to_hex_deep($string);
+				}
+
+			/**
+			 * Converts strings to a hexadecimal notation (deeply).
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @param mixed $value Any value can be converted into a UTF-8 string.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @return string|array|object Hexadecimal notation. Or an array/object containing strings in hexadecimal notation.
+			 */
+			public function to_hex_deep($value)
+				{
+					if(is_array($value) || is_object($value))
+						{
+							foreach($value as &$_value)
+								$_value = $this->to_hex_deep($_value);
+							unset($_value);
+
+							return $value;
+						}
+					if(strlen($value = (string)$value))
+						$value = '\\x'.substr(chunk_split(bin2hex($value), 2, '\\x'), 0, -2);
+
 					return $value;
 				}
 

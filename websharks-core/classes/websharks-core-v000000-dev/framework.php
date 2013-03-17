@@ -1185,6 +1185,12 @@ namespace websharks_core_v000000_dev
 										}
 									unset($_dyn_class, $_dyn_class_entry); // A little housekeeping.
 								}
+							if($©strpos === FALSE && strpos($property, "\xa9") !== FALSE)
+								throw new exception( // A single-byte version of the `©` symbol?
+									$this, __METHOD__.'#undefined_property', array('args' => func_get_args()),
+									sprintf($this->i18n('Undefined property: `%1$s`. Possible issue with encoding.'), $property).
+									$this->i18n(' Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
+								);
 							throw new exception(
 								$this, __METHOD__.'#undefined_property', array('args' => func_get_args()),
 								sprintf($this->i18n('Undefined property: `%1$s`.'), $property)
