@@ -303,7 +303,7 @@ namespace websharks_core_v000000_dev
 			public function version_details()
 				{
 					$details = 'PHP v'.PHP_VERSION.
-					           ' :: WordPress® v'.get_bloginfo('version').
+					           ' :: WordPress® v'.WP_VERSION.
 					           ' :: '.$this->___instance_config->plugin_name.' v'.$this->___instance_config->plugin_version;
 					$details .= ($this->©plugin->has_pro()) ? ' :: + Pro Add-On' : '';
 

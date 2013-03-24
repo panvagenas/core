@@ -48,9 +48,9 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Abbreviated byte notation for file sizes.
 			 *
-			 * @param float     $bytes File size in bytes. A (float) value.
+			 * @param float   $bytes File size in bytes. A (float) value.
 			 *    We need this converted to a (float), so it's possible to deal with numbers beyond that of an integer.
-			 * @param integer   $precision Number of decimals to use.
+			 * @param integer $precision Number of decimals to use.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
@@ -447,15 +447,15 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Search/replace data in a file.
 			 *
-			 * @param string  $pattern A regular expression to search for.
+			 * @param string $pattern A regular expression to search for.
 			 *    IMPORTANT: Search/replace is always performed ONE line at a time.
 			 *    This means a regex pattern which includes `^$` will match against a line;
 			 *    even without the `m` (multiline) modifier having been applied to the pattern.
 			 *
-			 * @param string  $replacement A regular expression replacement string.
+			 * @param string $replacement A regular expression replacement string.
 			 *    Remember to use {@link \websharks_core_v000000_dev\strings\esc_refs()}
 			 *
-			 * @param string  $file The file to search/replace in.
+			 * @param string $file The file to search/replace in.
 			 *
 			 * @return integer Total number of replacements performed. This may return `0` in some cases.
 			 *    An exception is thrown otherwise; e.g. we either succeed or fail with an exception.
@@ -599,16 +599,6 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * An array of known file extensions.
-			 *
-			 * @return array Extensions.
-			 */
-			public function extensions()
-				{
-					return array_keys($this->mime_types());
-				}
-
-			/**
 			 * Gets a file extension.
 			 *
 			 * @return string {@inheritdoc}
@@ -625,20 +615,56 @@ namespace websharks_core_v000000_dev
 			 * File has a common (known) extension?
 			 *
 			 * @param string $file A file path, or just a file name.
+			 * @param string $type Optional. Defaults to ``framework::any_type``.
 			 *
-			 * @return boolean TRUE if the ``$file`` has a common extension.
+			 * @return boolean TRUE if the ``$file`` has an extension of ``$type``.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$type`` is unknown (e.g. invalid).
 			 */
-			public function has_extension($file)
+			public function has_extension($file, $type = self::any_type)
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					return in_array($this->extension($file), $this->extensions(), TRUE);
+					return in_array($this->extension($file), $this->extensions($type), TRUE);
 				}
 
 			/**
-			 * A map of MIME types (for headers).
+			 * An array of known file extensions.
+			 *
+			 * @param string $type Optional. Defaults to ``framework::any_type``.
+			 *
+			 * @return array An array of file extensions; of a specific ``$type``.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$type`` is unknown (e.g. invalid).
+			 */
+			public function extensions($type = self::any_type)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					switch($type) // Let's figure out which type.
+					{
+						case $this::textual_type:
+								return array_keys($this->textual_mime_types());
+						case $this::compressable_type:
+								return array_keys($this->compressable_mime_types());
+						case $this::cacheable_type:
+								return array_keys($this->cacheable_mime_types());
+						case $this::binary_type:
+								return array_keys($this->binary_mime_types());
+						case $this::any_type:
+								return array_keys($this->mime_types());
+						default: // Ruh-roh!
+							throw $this->©exception(
+								__METHOD__.'#unknown_type', get_defined_vars(),
+								sprintf($this->i18n('Unknown extension type: `%1$s`.'), $type)
+							);
+					}
+				}
+
+			/**
+			 * A map of MIME types.
 			 *
 			 * @return array {@inheritdoc}
 			 *
@@ -648,6 +674,58 @@ namespace websharks_core_v000000_dev
 			public function mime_types() // Arguments are NOT listed here.
 				{
 					return call_user_func_array('\\'.__NAMESPACE__.'::mime_types', func_get_args());
+				}
+
+			/**
+			 * A map of textual MIME types.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::textual_mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::textual_mime_types()
+			 */
+			public function textual_mime_types() // Arguments are NOT listed here.
+				{
+					return call_user_func_array('\\'.__NAMESPACE__.'::textual_mime_types', func_get_args());
+				}
+
+			/**
+			 * A map of compressable MIME types.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::compressable_mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::compressable_mime_types()
+			 */
+			public function compressable_mime_types() // Arguments are NOT listed here.
+				{
+					return call_user_func_array('\\'.__NAMESPACE__.'::compressable_mime_types', func_get_args());
+				}
+
+			/**
+			 * A map of binary MIME types.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::binary_mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::binary_mime_types()
+			 */
+			public function binary_mime_types() // Arguments are NOT listed here.
+				{
+					return call_user_func_array('\\'.__NAMESPACE__.'::binary_mime_types', func_get_args());
+				}
+
+			/**
+			 * A map of cacheable MIME types.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::cacheable_mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::cacheable_mime_types()
+			 */
+			public function cacheable_mime_types() // Arguments are NOT listed here.
+				{
+					return call_user_func_array('\\'.__NAMESPACE__.'::cacheable_mime_types', func_get_args());
 				}
 		}
 	}

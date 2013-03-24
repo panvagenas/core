@@ -51,9 +51,9 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Is a particular function, static method, or PHP language construct possible?
 			 *
-			 * @param string  $function The name of a function, a static method, or a PHP language construct.
+			 * @param string $function The name of a function, a static method, or a PHP language construct.
 			 *
-			 * @param string  $reconsider Optional. Empty string default (e.g. do NOT reconsider).
+			 * @param string $reconsider Optional. Empty string default (e.g. do NOT reconsider).
 			 *    You MUST use class constant ``\websharks_core_v000000_dev\framework::reconsider`` for this argument value.
 			 *    If this is ``\websharks_core_v000000_dev\framework::reconsider``, we force a reconsideration.
 			 *
@@ -104,7 +104,7 @@ namespace websharks_core_v000000_dev
 
 					$this->static['disabled'] = array();
 
-					if(!function_exists('ini_get')) // Is this even possible?
+					if(!function_exists('ini_get'))
 						return $this->static['disabled'];
 
 					if(($_ini_val = trim(strtolower(ini_get('disable_functions')))))

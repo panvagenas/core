@@ -13,14 +13,34 @@ namespace websharks_core_v000000_dev
 	{
 		if(!defined('WPINC'))
 			exit('Do NOT access this file directly: '.basename(__FILE__));
-
+		/*
+		 * WebSharks™ Core framework class.
+		 */
 		if(!class_exists('\\'.__NAMESPACE__.'\\framework'))
 			{
+				/*
+		       * WebSharks™ Core stub class.
+		       */
 				if(!class_exists('\\'.__NAMESPACE__))
-					include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
-
+					{
+						$GLOBALS['autoload_'.__NAMESPACE__] = FALSE;
+						include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
+					}
+				/*
+				 * WebSharks™ Core dependency utilities.
+				 */
 				if(!class_exists('\\deps_'.__NAMESPACE__.''))
 					include_once dirname(__FILE__).'/deps.php';
+
+				/*
+				 * Global constant (WordPress® version).
+				 */
+				if(!defined('WP_VERSION'))
+					/**
+					 * @var string WordPress® version.
+					 */
+					define('WP_VERSION', $GLOBALS['wp_version']);
+
 				/**
 				 * WebSharks™ Core Framework.
 				 *
@@ -784,6 +804,41 @@ namespace websharks_core_v000000_dev
 					 * @var string Used by some class methods.
 					 */
 					const context_profile_views = '___context_profile_views';
+
+					/**
+					 * Represents `textual` type.
+					 *
+					 * @var string Used by some class methods.
+					 */
+					const textual_type = '___textual_type';
+
+					/**
+					 * Represents `compressable` type.
+					 *
+					 * @var string Used by some class methods.
+					 */
+					const compressable_type = '___compressable_type';
+
+					/**
+					 * Represents `cacheable` type.
+					 *
+					 * @var string Used by some class methods.
+					 */
+					const cacheable_type = '___cacheable_type';
+
+					/**
+					 * Represents `binary` type.
+					 *
+					 * @var string Used by some class methods.
+					 */
+					const binary_type = '___binary_type';
+
+					/**
+					 * Represents `any` type.
+					 *
+					 * @var string Used by some class methods.
+					 */
+					const any_type = '___any_type';
 
 					/**
 					 * Core class constructor.
@@ -2204,11 +2259,24 @@ namespace // Global namespace.
 				/**
 				 * WebSharks™ Core instance.
 				 *
-				 * @return \websharks_core_v000000_dev\framework
-				 *    The latest version available at runtime (in the case of multiple instances).
+				 * @param string $version A specific version of the WebSharks™ Core?
+				 *    This version MUST already be loaded before calling.
+				 *
+				 * @return \websharks_core_v000000_dev\framework The latest version available at runtime.
+				 *
+				 * @throws \exception If version is specified; but that version is NOT available.
 				 */
-				function websharks_core()
+				function websharks_core($version = '')
 					{
+						if($version && ($version = str_replace('-', '_', (string)$version)))
+							{
+								if(!isset($GLOBALS['websharks_core_v'.$version]))
+									throw new \exception(
+										sprintf(\websharks_core_v000000_dev::i18n
+											        ('WebSharks™ Core `v%1$s` is NOT loaded up.'), str_replace('_', '-', $version))
+									);
+								return $GLOBALS['websharks_core_v'.$version];
+							}
 						return $GLOBALS['websharks_core'];
 					}
 			}

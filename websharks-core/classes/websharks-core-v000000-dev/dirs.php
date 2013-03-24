@@ -442,7 +442,7 @@ namespace websharks_core_v000000_dev
 
 					throw $this->©exception(
 						__METHOD__.'#missing', get_defined_vars(),
-						$this->i18n('Unable to find a readable/writable temp directory (please check server configuration).')
+						$this->i18n('Unable to find a readable/writable temp directory.')
 					);
 				}
 
@@ -463,7 +463,7 @@ namespace websharks_core_v000000_dev
 
 					throw $this->©exception(
 						__METHOD__.'#missing', get_defined_vars(),
-						$this->i18n('Unable to find a readable/writable temp directory (please check server configuration).')
+						$this->i18n('Unable to find a readable/writable temp directory.')
 					);
 				}
 
@@ -538,9 +538,9 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Get cache directory (public or private).
 			 *
-			 * @param string  $type The type of cache directory (`public` or `private`).
+			 * @param string $type The type of cache directory (`public` or `private`).
 			 *
-			 * @param string  $sub_dir Optional cache sub-directory path.
+			 * @param string $sub_dir Optional cache sub-directory path.
 			 *
 			 * @return string Full path to a readable/writable cache directory, else an exception is thrown on failure.
 			 *    If the directory does NOT yet exist, it's created by this routine.
@@ -638,9 +638,9 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Empties and deletes a cache directory (public or private).
 			 *
-			 * @param string  $type The type of cache directory (`public` or `private`).
+			 * @param string $type The type of cache directory (`public` or `private`).
 			 *
-			 * @param string  $sub_dir Optional cache sub-directory path.
+			 * @param string $sub_dir Optional cache sub-directory path.
 			 *
 			 * @return boolean TRUE if the directory was successfully removed, else FALSE.
 			 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
@@ -666,9 +666,9 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Get log directory (public or private).
 			 *
-			 * @param string  $type The type of log directory (`public` or `private`).
+			 * @param string $type The type of log directory (`public` or `private`).
 			 *
-			 * @param string  $sub_dir Optional log sub-directory path.
+			 * @param string $sub_dir Optional log sub-directory path.
 			 *
 			 * @return string Full path to a readable/writable log directory, else an exception is thrown on failure.
 			 *    If the directory does NOT yet exist, it's created by this routine.
@@ -766,9 +766,9 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Empties and deletes a log directory (public or private).
 			 *
-			 * @param string  $type The type of log directory (`public` or `private`).
+			 * @param string $type The type of log directory (`public` or `private`).
 			 *
-			 * @param string  $sub_dir Optional log sub-directory path.
+			 * @param string $sub_dir Optional log sub-directory path.
 			 *
 			 * @return boolean TRUE if the directory was successfully removed, else FALSE.
 			 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
@@ -794,7 +794,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Gets a private media directory.
 			 *
-			 * @param string  $sub_dir Optional private media sub-directory path.
+			 * @param string $sub_dir Optional private media sub-directory path.
 			 *
 			 * @return string Full path to a private readable/writable media directory, else an exception is thrown on failure.
 			 *    If the directory does NOT yet exist, it's created by this routine.
@@ -877,7 +877,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Empties and deletes a private media directory.
 			 *
-			 * @param string  $sub_dir Optional media sub-directory path.
+			 * @param string $sub_dir Optional media sub-directory path.
 			 *
 			 * @return boolean TRUE if the directory was successfully removed, else FALSE.
 			 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
@@ -1165,93 +1165,49 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Creates a PHAR (PHP Archive) file from an entire directory.
 			 *
-			 * @param string              $dir The directory we want to create a PHAR file for.
+			 * @param string       $dir The directory we want to create a PHAR file for.
 			 *
-			 * @param string              $to The new PHAR file location; with a `.phar` extension.
-			 *    If ``$phpify`` is TRUE; you can also use a `.phar.php` extension here (that's fine).
+			 * @param string       $to The new PHAR file location; with a `.phar` extension.
 			 *
-			 * @param string              $stub Optional. This defaults to a value of ``framework::core``.
-			 *    By default, we use the WebSharks™ Core stub. However, this can be set to a specific stub file;
-			 *    for which the contents will be read; and set as the stub for the resulting PHAR file.
+			 * @param string       $stub_file Stub file path. The contents of this stub file will be used as
+			 *    the stub for the resulting PHAR file. Required for all PHARs created by this routine.
 			 *
-			 * @param boolean             $strip_ws Optional. Defaults to a TRUE value.
+			 * @param boolean      $strip_ws Optional. Defaults to a TRUE value (highly recommended).
 			 *    If this is TRUE; any PHP files in the archive will be further reduced in filesize by this routine.
 			 *    This is made possible by the ``php_strip_whitespace()`` function.
 			 *
-			 * @param boolean             $compress Optional. Defaults to a TRUE value.
-			 *    If this is TRUE; any textual files in the archive will be further reduced in filesize by this routine.
-			 *    GZIP compression will be applied intuitively (e.g. to textual/GZIP-compatible files only).
-			 *    This is made possible by the ZLIB extension (e.g. GZIP applied to each file inside the archive).
+			 * @param boolean      $compress Optional. Defaults to a TRUE value (highly recommended).
+			 *    If this is TRUE; any compressable files in the archive will be further reduced in filesize.
 			 *
-			 * @param null|boolean|string $phpify Optional. This defaults to a NULL value.
-			 *    If ``$to`` ends with a `.phar.php` extension; this is forced to a TRUE value.
+			 * @param string|array $compressable_extensions Optional. An array of GZIP-compressable extensions.
+			 *    This will default to only those which are 100% webPhar-compatible: ``array('php', 'phps')``.
+			 *    Or, you can provide your own array of compressable extensions.
 			 *
-			 *    • If TRUE, we will rename the PHAR file w/ a PHP extension;
-			 *       making it executable on all hosting platforms.
+			 * @param string       $is_phar_var_suffix Optional. Defaults to `stub`.
+			 *    A global variable at the top of your PHAR stub file will be declared as follows.
+			 *    ``$GLOBALS['is_phar_'.$is_phar_var_suffix] = 'phar://'.__FILE__;`` (just a helpful identifier).
 			 *
-			 *       It's important to NOTE that renaming a PHP Archive (which is always a binary file); with a PHP extension,
-			 *       can have negative repercussions. The file might be treated as purely textual; instead of as a binary.
-			 *       For instance, FTP uploads may result in corruption of a PHAR file with a `.php` extension.
-			 *
-			 *    • If FALSE|NULL, the PHAR file will NOT be renamed; it will remain in the ``$to`` location as-is.
-			 *
-			 *    • If a string is supplied; a TRUE value is implied by that string.
-			 *       The PHAR file will be renamed with the string extension provided by the value of ``$phpify``.
-			 *       Ex: ``$phpify = '.x-phar'`` (you can exclude the dot if you wish; it is optional).
-			 *
-			 * @return string The new PHAR file path (either a `.phar` file, or a `.phar.php` file; depending on ``$phpify`` value).
-			 *    See: ``$phpify`` parameter — which directly impacts the return value of this routine.
-			 *    Otherwise, an exception will be throw on any type of failure.
+			 * @return string The new PHAR file path; else an exception is thrown on any type of failure.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$dir`` does NOT exist; or is NOT readable for any reason.
-			 * @throws exception If ``$to`` is NOT specified (at least initially) with a `.phar` extension.
+			 * @throws exception If ``$dir`` is empty, does NOT exist; or is NOT readable for any reason.
+			 * @throws exception If ``$to`` is empty, or is NOT specified with a `.phar` extension.
 			 * @throws exception If ``$to`` parent directory does NOT exist; or is not writable.
+			 * @throws exception If ``$stub_file`` is empty, does NOT exist; or is NOT readable for any reason.
+			 * @throws exception If ``$compressable_extensions`` or ``$is_phar_var_suffix`` is empty.
 			 * @throws \exception If any Phar class failures occur. The Phar class may throw exceptions.
-			 * @throws exception If ``$phpify`` is TRUE; but a rename failure occurs.
 			 * @throws exception On any type of failure (e.g. NOT successful).
 			 *
 			 * @WARNING This routine can become resource intensive on large directories.
 			 *    Mostly because of the compression routines applied here intuitively. It takes some time.
 			 *    See: {@link \websharks_core_v000000_dev\env\maximize_time_memory_limits()}
-			 *
-			 * @WARNING The resulting PHAR file will be webPhar-enabled (this poses a possible security issue).
-			 *    We say, "a possible security issue" because a PHAR file is NOT web-server-aware (at least — not by default).
-			 *    To clarify, a PHAR file does NOT understand that certain files SHOULD be protected from public access.
-			 *
-			 *    WebSharks™ combats this problem with a custom webPhar stub file that will offer compatibility
-			 *    with two of the most popular web servers: Apache-compatible servers & Windows® IIS.
-			 *
-			 *       • If you want to protect a directory on Apache-compatible servers;
-			 *          place an `.htaccess` file inside the directory with the phrase `deny from all` anywhere in the file.
-			 *          The WebSharks™ webPhar stub will automatically protect files inside directories with this `.htaccess` file.
-			 *
-			 *       • If you want to protect a directory on IIS; place files inside an `/app_data/` directory.
-			 *          The WebSharks™ webPhar stub will automatically protect files inside directories with this name.
-			 *
-			 * @note This routine also handles a dynamic replacement code (using a WebSharks™ Standard comment-replace marker).
-			 *    If you have `static $is_phar; #!is-phar!#` in your stub file; that will be set to: `static $is_phar = TRUE; #!is-phar!#`.
-			 *    This allows a stub file to serve multiple purposes (perhaps); and yet still be clearly marked as a PHAR stub when used here.
-			 *    See the ``$stub`` parameter for further details about PHAR stub files.
 			 */
-			public function phar_to($dir, $to, $stub = self::core, $strip_ws = TRUE, $compress = TRUE, $phpify = NULL)
+			public function phar_to($dir, $to, $stub_file, $strip_ws = TRUE, $compress = TRUE, $compressable_extensions = array('php', 'phps'), $is_phar_var_suffix = 'stub')
 				{
-					$this->check_arg_types('string:!empty', 'string:!empty', 'string:!empty', 'boolean', 'boolean',
-					                       array('null', 'boolean', 'string:!empty'), func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty', 'string:!empty', 'boolean', 'boolean', 'array:!empty', 'string:!empty', func_get_args());
 
 					$dir = $this->n_seps($dir);
 					$to  = $this->n_seps($to);
-
-					// We MUST have a `.phar` extension to start with; because the Phar class requires this.
-					// However, if the intention is to end up with a `.phar.php` file, we will allow an input ``$to`` value
-					// with the commonly used `.phar.php` extension. We'll simply rename the starting ``$to`` value here.
-
-					if(substr($to, -9) === '.phar.php')
-						{
-							$phpify = TRUE; // Forces a TRUE value.
-							$to     = strstr($to, '.phar.php', TRUE).'.phar';
-						}
-					else if(is_string($phpify)) $phpify = trim($phpify, '.');
 
 					if(!is_dir($dir))
 						throw $this->©exception(
@@ -1276,19 +1232,7 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							__METHOD__.'#invalid_phar_file', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; invalid destination PHAR file.').
-							sprintf($this->i18n(' Please use a `.phar` or `.phar.php` extension instead of: `%1$s`.'), $to)
-						);
-					else if($phpify === TRUE && file_exists($to.'.php'))
-						throw $this->©exception(
-							__METHOD__.'#existing_phar_php', get_defined_vars(),
-							$this->i18n('Unable to PHAR a directory; destination PHAR `.php` file already exists.').
-							sprintf($this->i18n(' Please delete this file first: `%1$s`.'), $to.'.php')
-						);
-					else if(is_string($phpify) && file_exists($to.'.'.$phpify))
-						throw $this->©exception(
-							__METHOD__.'#existing_phar_phpify_str', get_defined_vars(),
-							sprintf($this->i18n('Unable to PHAR a directory; destination PHAR `.%1$s` file already exists.'), $phpify).
-							sprintf($this->i18n(' Please delete this file first: `%1$s`.'), $to.'.'.$phpify)
+							sprintf($this->i18n(' Please use a `.phar` extension instead of: `%1$s`.'), $to)
 						);
 					else if(!is_dir(dirname($to)))
 						throw $this->©exception(
@@ -1309,14 +1253,10 @@ namespace websharks_core_v000000_dev
 							$this->i18n(' Need this INI setting please: `phar.readonly = 0`.')
 						);
 
-					if($stub === $this::core)
-						$stub_file = dirname(dirname(dirname(__FILE__))).'/stub.php';
-					else $stub_file = $stub; // A specific file path.
-
 					if(!is_file($stub_file))
 						throw $this->©exception(
 							__METHOD__.'#missing_stub_file', get_defined_vars(),
-							$this->i18n('Unable to PHAR a directory; missing stub.').
+							$this->i18n('Unable to PHAR a directory; missing stub file.').
 							sprintf($this->i18n(' File does NOT exist: `%1$s`.'), $stub_file)
 						);
 					else if(!is_readable($stub_file))
@@ -1325,48 +1265,29 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to PHAR a directory; permission issues with stub file.').
 							sprintf($this->i18n(' Need this file to be writable please: `%1$s`.'), $stub_file)
 						);
-
 					// Phar classes throw exceptions on failure.
 
-					$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$this->___instance_config->core_ns.'\'] = __FILE__;';
-					$_stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
-					$_stub_file_contents    = $this->©string->ireplace_once('<?php', '<?php '.$_stub_file_is_phar_var.' ', $_stub_file_contents);
+					$stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$is_phar_var_suffix.'\'] = \'phar://\'.__FILE__;';
+					$stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
+					$stub_file_contents    = $this->©string->ireplace_once('<?php', '<?php '.$stub_file_is_phar_var.' ', $stub_file_contents);
 
-					$_phar = new \Phar($to, $this->iteration_flags());
-					$_phar->startBuffering(); // Buffer until we're done here.
-					$_phar->setStub($_stub_file_contents);
+					$phar = new \Phar($to, $this->iteration_flags());
+					$phar->startBuffering(); // Don't create file yet (wait until we're done here).
+					$phar->setStub($stub_file_contents); // Defines the stub for this PHAR file.
 
-					if($strip_ws || $compress) // Stripping whitespace or compressing?
+					if(!$strip_ws && !$compress) $phar->buildFromDirectory($dir); // Very simple.
+
+					else // Stripping or compressing; this takes more work, but definitely worthwhile.
 						{
-							$_strippable_extensions   = array('php');
-							$_compressable_extensions = array('php', 'phps'); // webPhar-compatible.
-							// Our own webPhar implementation makes some additional extensions possible.
-							$_compressable_extensions = \websharks_core_v000000_dev::web_phar_compressable_extensions();
-
-							$_temp_dir = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
+							$_strippable_extensions         = array('php');
+							$_regex_compressable_extensions = $this->©string->preg_quote_deep($compressable_extensions, '/');
+							$_regex_compressable_extensions = '/\.(?:'.implode('|', $_regex_compressable_extensions).')$/i';
+							$_temp_dir                      = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
 							$_temp_dir_iterator = $this->iterate($_temp_dir);
 
-							if($strip_ws) // Stripping whitespace?
-								foreach($_temp_dir_iterator as $_dir_file)
-									{
-										if(!$_dir_file->isFile()) continue;
-
-										$_path      = $_dir_file->getPathname();
-										$_phar_path = $_dir_file->getSubPathName();
-										$_extension = $this->©file->extension($_path);
-
-										if(in_array($_extension, $_strippable_extensions, TRUE))
-											file_put_contents($_path, php_strip_whitespace($_path));
-									}
-							unset($_dir_file, $_path, $_phar_path, $_extension);
-
-							$_phar->buildFromDirectory($_temp_dir, '/\.(?:'.implode('|', $_compressable_extensions).')$/i');
-							if($compress && $_phar->count()) // Compressing files?
-								$_phar->compressFiles(\Phar::GZ);
-
-							foreach($_temp_dir_iterator as $_dir_file)
+							if($strip_ws) foreach($_temp_dir_iterator as $_dir_file)
 								{
 									if(!$_dir_file->isFile()) continue;
 
@@ -1374,34 +1295,41 @@ namespace websharks_core_v000000_dev
 									$_phar_path = $_dir_file->getSubPathName();
 									$_extension = $this->©file->extension($_path);
 
-									if(!in_array($_extension, $_compressable_extensions, TRUE))
-										$_phar->addFile($_path, $_phar_path);
+									if(in_array($_extension, $_strippable_extensions, TRUE))
+										file_put_contents($_path, php_strip_whitespace($_path));
 								}
-							unset($_dir_file, $_path, $_phar_path, $_extension);
+							$phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
+							if($compress && $phar->count()) // Compressing files?
+								$phar->compressFiles(\Phar::GZ);
+
+							foreach($_temp_dir_iterator as $_dir_file) // Everything else.
+								{
+									if(!$_dir_file->isFile()) continue;
+
+									$_path      = $_dir_file->getPathname();
+									$_phar_path = $_dir_file->getSubPathName();
+									$_extension = $this->©file->extension($_path);
+
+									if(!in_array($_extension, $compressable_extensions, TRUE))
+										$phar->addFile($_path, $_phar_path);
+								}
 						}
-					else $_phar->buildFromDirectory($dir); // All files (simple).
+					$phar->stopBuffering(); // Write to disk now.
+					unset($phar); // Unlocks archive & temp directory.
 
-					$_phar->stopBuffering(); // Write PHAR file contents to disk now.
-					if(!empty($_temp_dir)) $this->empty_and_remove($_temp_dir); // Delete temp directory.
+					if(isset($_temp_dir)) $this->empty_and_remove($_temp_dir);
+					unset($_strippable_extensions, $_regex_compressable_extensions);
+					unset($_temp_dir, $_temp_dir_iterator, $_dir_file, $_path, $_phar_path, $_extension);
 
-					unset($_phar, $_stub_regex_is_phar, $_stub_file_contents); // Unset ``$_phar`` (e.g. unlocking the archive).
-					unset($_strippable_extensions, $_compressable_extensions, $_temp_dir_iterator, $_temp_dir);
-
-					if(!$phpify) return $to; // We can stop.
-
-					if(is_string($phpify)) // A string extension?
-						$php = preg_replace('/\.phar$/i', '.'.$phpify, $to);
-					else $php = preg_replace('/\.phar$/i', '.phar.php', $to);
-
-					return $this->©file->rename_to($to, $php);
+					return $to; // It's a good day in Eureka!
 				}
 
 			/**
 			 * Recursively ZIPs a directory via PHP.
 			 *
-			 * @param string      $dir A full directory path to ZIP.
+			 * @param string $dir A full directory path to ZIP.
 			 *
-			 * @param string      $to A new ZIP file path — to ZIP ``$dir`` into.
+			 * @param string $to A new ZIP file path — to ZIP ``$dir`` into.
 			 *    The directory this lives in MUST already exist and be writable.
 			 *    If this file already exists, an exception will be thrown.
 			 *

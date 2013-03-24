@@ -40,13 +40,15 @@ Tags: websharks, websharks core, framework, plugin framework, development, devel
 if(!defined('WPINC'))
 	exit('Do NOT access this file directly: '.basename(__FILE__));
 
-/**
+/*
  * Load dependency utilities.
  */
-include_once dirname(__FILE__).'/deps.php';
+$GLOBALS['autoload_websharks_core_v000000_dev'] = FALSE;
+include_once dirname(__FILE__).'/stub.php';
+include_once websharks_core_v000000_dev::deps();
 
-/**
+/*
  * Check dependencies (and load framework; if possible).
  */
-if(deps_websharks_core_v000000_dev::check('WebSharks™ Core', 'websharks-core') === TRUE)
-	include_once dirname(__FILE__).'/framework.php';
+if(deps_websharks_core_v000000_dev::check('WebSharks™ Core', dirname(__FILE__)) === TRUE)
+	include_once websharks_core_v000000_dev::framework();

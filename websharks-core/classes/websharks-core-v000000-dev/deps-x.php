@@ -303,6 +303,23 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
+			else if(extension_loaded('suhosin') && stripos(ini_get('suhosin.executor.include.whitelist'), 'phar') === FALSE)
+				{ // We do NOT need to worry about the Suhosin PATCH; as it does nothing really (only the extension).
+					$errors[] = array(
+						'title'   => $this->i18n('Default Phar Extension (PHP Archives)'),
+						'message' => sprintf(
+							$this->i18n(
+								'Phar stream (<code>phar://</code>) disabled by Suhosin security extension. %1$s needs the <a href="http://php.net/manual/en/book.phar.php" target="_blank" rel="xlink">Phar</a> extension for PHP.'.
+								' The Phar extension provides a way for developers to put large portions (or even entire PHP applications) into a single file called a "phar" (PHP Archive) for easy distribution and installation.'.
+								' In addition to providing this service, the phar extension also provides a file-format abstraction method for creating and manipulating tar and zip files through the PharData class.'.
+								' Your server appears to support the Phar extension, but you are missing this line in your <code>php.ini</code> file: <code>suhosin.executor.include.whitelist = phar</code>.'.
+								' Please read <a href="http://stackoverflow.com/questions/15049572/i-downloaded-aws-phar-but-cant-require-it/15052394#15052394" target="_blank" rel="xlink">this article</a> for further details.'.
+								' See also: <a href="http://www.hardened-php.net/suhosin/configuration.html#suhosin.executor.include.whitelist" target="_blank" rel="xlink">this documentation</a>.'.
+								' Please consult with your web hosting company about this message.'
+							), htmlspecialchars($plugin_name)
+						)
+					);
+				}
 			else // Pass on this check.
 				{
 					$passes[] = array(
@@ -691,9 +708,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			/*********************************************************************************************/
 
-			$gd_info = ($this->is_function_possible('gd_info')) ? gd_info() : array();
-
-			if(!extension_loaded('gd'))
+			if(!extension_loaded('gd') || !is_array($_gd_info = gd_info()))
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('GD Image Extension'),
@@ -706,7 +721,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-			else if(empty($gd_info['FreeType Support']))
+			else if(empty($_gd_info['FreeType Support']))
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('GD Image Extension (FreeType Support)'),
@@ -719,7 +734,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-			else if(empty($gd_info['JPG Support']) && empty($gd_info['JPEG Support']))
+			else if(empty($_gd_info['JPG Support']) && empty($_gd_info['JPEG Support']))
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('GD Image Extension (JPEG Support)'),
@@ -732,7 +747,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-			else if(empty($gd_info['PNG Support']))
+			else if(empty($_gd_info['PNG Support']))
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('GD Image Extension (PNG Support)'),
@@ -757,6 +772,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
+			unset($_gd_info); // Housekeeping.
 
 			/*********************************************************************************************/
 
@@ -811,33 +827,6 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'message' => sprintf(
 							$this->i18n(
 								'The <a href="http://php.net/manual/en/function.eval.php" target="_blank" rel="xlink">eval()</a> function is available.'
-							), NULL
-						)
-					);
-				}
-
-			/*********************************************************************************************/
-
-			if(!($ini_get_possible = $this->is_function_possible('ini_get')))
-				{
-					$errors[] = array(
-						'title'   => $this->i18n('PHP <code>ini_get()</code> Function'),
-						'message' => sprintf(
-							$this->i18n(
-								'The PHP function <code>ini_get()</code> is NOT available. Perhaps disabled by your hosting company. You will need <code>ini_get()</code> to run %1$s.'.
-								' Please consult with your hosting company about this message. See also, <a href="http://php.net/manual/en/function.ini-get.php" target="_blank" rel="xlink">the PHP documentation for ini_get()</a>.'.
-								' <strong>Also, please NOTE...</strong> other spurious errors/warnings/notices may follow as a result of <code>ini_get()</code> being inaccessible. <strong>Please fix this problem first!</strong>'
-							), htmlspecialchars($plugin_name)
-						)
-					);
-				}
-			else // Pass on this check.
-				{
-					$passes[] = array(
-						'title'   => $this->i18n('PHP <code>ini_get()</code> Function'),
-						'message' => sprintf(
-							$this->i18n(
-								'The <a href="http://php.net/manual/en/function.ini-get.php" target="_blank" rel="xlink">ini_get()</a> function is available.'
 							), NULL
 						)
 					);
@@ -910,72 +899,83 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			/*********************************************************************************************/
 
-			$curl_possible               = (extension_loaded('curl') && $this->is_function_possible('curl_init') && $this->is_function_possible('curl_version')) ? TRUE : FALSE;
-			$curl_over_ssl_possible      = ($curl_possible && is_array($curl_version = curl_version()) && $curl_version['features'] & CURL_VERSION_SSL) ? TRUE : FALSE;
-			$fopen_url_possible          = ($ini_get_possible && filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOLEAN)) ? TRUE : FALSE;
-			$fopen_url_over_ssl_possible = ($fopen_url_possible && extension_loaded('openssl')) ? TRUE : FALSE;
+			$_curl_possible               = extension_loaded('curl');
+			$_curl_version                = ($_curl_possible) ? curl_version() : array();
+			$_curl_over_ssl_possible      = ($_curl_possible && $_curl_version['features'] & CURL_VERSION_SSL);
+			$_fopen_url_possible          = filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOLEAN);
+			$_fopen_url_over_ssl_possible = ($_fopen_url_possible && extension_loaded('openssl'));
 
-			$curl_over_ssl_test_success                 = $fopen_url_over_ssl_test_success = FALSE;
-			$curl_fopen_ssl_test_url                    = 'https://www.websharks-inc.com/robots.txt';
-			$curl_fopen_ssl_test_url_return_string_frag = 'user-agent';
+			$_curl_over_ssl_test_success                       = $_fopen_url_over_ssl_test_success = FALSE;
+			$_curl_fopen_ssl_test_url                          = 'https://www.websharks-inc.com/robots.txt';
+			$_curl_fopen_ssl_test_url_return_string_frag       = 'user-agent';
+			$_curl_localhost_test_success                      = $_fopen_url_localhost_test_success = FALSE;
+			$_curl_fopen_localhost_test_url                    = // A value of `http://localhost` has special meaning below.
+				'http://'.((!empty($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'localhost');
+			$_curl_fopen_localhost_test_url_return_string_frag = '<html';
 
-			$curl_localhost_test_success                      = $fopen_url_localhost_test_success = FALSE;
-			$curl_fopen_localhost_test_url                    = 'http://'.$_SERVER['HTTP_HOST'];
-			$curl_fopen_localhost_test_url_return_string_frag = 'html';
-
-			if($curl_possible && $curl_over_ssl_possible)
+			if($_curl_possible && $_curl_over_ssl_possible)
 				{
 					if(is_resource($_curl_test_resource = curl_init()))
 						{
 							curl_setopt_array(
 								$_curl_test_resource, array(
 								                           CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_TIMEOUT => 5,
-								                           CURLOPT_URL            => $curl_fopen_ssl_test_url, CURLOPT_RETURNTRANSFER => TRUE,
+								                           CURLOPT_URL            => $_curl_fopen_ssl_test_url, CURLOPT_RETURNTRANSFER => TRUE,
 								                           CURLOPT_FAILONERROR    => TRUE, CURLOPT_FORBID_REUSE => TRUE, CURLOPT_SSL_VERIFYPEER => FALSE
 								                      )
 							);
-							if(stripos((string)curl_exec($_curl_test_resource), $curl_fopen_ssl_test_url_return_string_frag) !== FALSE)
-								$curl_over_ssl_test_success = TRUE;
+							if(stripos((string)curl_exec($_curl_test_resource), $_curl_fopen_ssl_test_url_return_string_frag) !== FALSE)
+								$_curl_over_ssl_test_success = TRUE;
 
 							curl_close($_curl_test_resource);
 						}
 					unset($_curl_test_resource); // Housekeeping.
 
-					if(is_resource($_curl_test_resource = curl_init()))
+					if($this->is_cli() || $this->is_localhost())
+						$_curl_localhost_test_success = TRUE; // No need to run this here.
+
+					else if($_curl_fopen_localhost_test_url === 'http://localhost')
+						$_curl_localhost_test_success = TRUE; // Can't run this test here.
+
+					else if(is_resource($_curl_test_resource = curl_init()))
 						{
 							curl_setopt_array(
 								$_curl_test_resource, array(
 								                           CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_TIMEOUT => 5,
-								                           CURLOPT_URL            => $curl_fopen_localhost_test_url, CURLOPT_RETURNTRANSFER => TRUE,
+								                           CURLOPT_URL            => $_curl_fopen_localhost_test_url, CURLOPT_RETURNTRANSFER => TRUE,
 								                           CURLOPT_FAILONERROR    => TRUE, CURLOPT_FORBID_REUSE => TRUE, CURLOPT_SSL_VERIFYPEER => FALSE
 								                      )
 							);
-							if($this->is_cli() || $this->is_localhost() || stripos((string)curl_exec($_curl_test_resource), $curl_fopen_localhost_test_url_return_string_frag) !== FALSE)
-								$curl_localhost_test_success = TRUE;
+							if(stripos((string)curl_exec($_curl_test_resource), $_curl_fopen_localhost_test_url_return_string_frag) !== FALSE)
+								$_curl_localhost_test_success = TRUE;
 
 							curl_close($_curl_test_resource);
 						}
 					unset($_curl_test_resource); // Housekeeping.
 				}
-
-			if($fopen_url_possible && $fopen_url_over_ssl_possible)
+			if($_fopen_url_possible && $_fopen_url_over_ssl_possible)
 				{
 					if(is_resource($_fopen_test_resource = stream_context_create(array('http' => array('timeout' => 5.0, 'ignore_errors' => FALSE)))))
 						{
-							if(stripos((string)file_get_contents($curl_fopen_ssl_test_url, NULL, $_fopen_test_resource), $curl_fopen_ssl_test_url_return_string_frag) !== FALSE)
-								$fopen_url_over_ssl_test_success = TRUE;
+							if(stripos((string)file_get_contents($_curl_fopen_ssl_test_url, NULL, $_fopen_test_resource), $_curl_fopen_ssl_test_url_return_string_frag) !== FALSE)
+								$_fopen_url_over_ssl_test_success = TRUE;
 						}
 					unset($_fopen_test_resource); // Housekeeping.
 
-					if(is_resource($_fopen_test_resource = stream_context_create(array('http' => array('timeout' => 5.0, 'ignore_errors' => FALSE)))))
+					if($this->is_cli() || $this->is_localhost())
+						$_fopen_url_localhost_test_success = TRUE; // No need to run this here.
+
+					else if($_curl_fopen_localhost_test_url === 'http://localhost')
+						$_fopen_url_localhost_test_success = TRUE; // Can't run this test here.
+
+					else if(is_resource($_fopen_test_resource = stream_context_create(array('http' => array('timeout' => 5.0, 'ignore_errors' => FALSE)))))
 						{
-							if($this->is_cli() || $this->is_localhost() || stripos((string)file_get_contents($curl_fopen_localhost_test_url, NULL, $_fopen_test_resource), $curl_fopen_localhost_test_url_return_string_frag) !== FALSE)
-								$fopen_url_localhost_test_success = TRUE;
+							if(stripos((string)file_get_contents($_curl_fopen_localhost_test_url, NULL, $_fopen_test_resource), $_curl_fopen_localhost_test_url_return_string_frag) !== FALSE)
+								$_fopen_url_localhost_test_success = TRUE;
 						}
 					unset($_fopen_test_resource); // Housekeeping.
 				}
-
-			if(!$curl_possible && !$fopen_url_possible)
+			if(!$_curl_possible && !$_fopen_url_possible)
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('cURL Extension / Or <code>fopen()</code> URL'),
@@ -989,7 +989,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-			else if(!$curl_over_ssl_possible && !$fopen_url_over_ssl_possible)
+			else if(!$_curl_over_ssl_possible && !$_fopen_url_over_ssl_possible)
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('cURL Extension / Or <code>fopen()</code> URL'),
@@ -1003,7 +1003,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-			else if(!$curl_over_ssl_test_success && !$fopen_url_over_ssl_test_success)
+			else if(!$_curl_over_ssl_test_success && !$_fopen_url_over_ssl_test_success)
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('cURL Extension / Or <code>fopen()</code> URL'),
@@ -1016,11 +1016,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
 								'&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
 								'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
-							), htmlspecialchars($curl_fopen_ssl_test_url), htmlspecialchars($plugin_name)
+							), htmlspecialchars($_curl_fopen_ssl_test_url), htmlspecialchars($plugin_name)
 						)
 					);
 				}
-			else if(!$curl_localhost_test_success && !$fopen_url_localhost_test_success)
+			else if(!$_curl_localhost_test_success && !$_fopen_url_localhost_test_success)
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('cURL Extension / Or <code>fopen()</code> URL'),
@@ -1034,13 +1034,13 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
 								'&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
 								'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
-							), htmlspecialchars($curl_fopen_localhost_test_url), htmlspecialchars($plugin_name)
+							), htmlspecialchars($_curl_fopen_localhost_test_url), htmlspecialchars($plugin_name)
 						)
 					);
 				}
 			else // Pass on this check.
 				{
-					if($curl_possible && $curl_over_ssl_possible)
+					if($_curl_possible && $_curl_over_ssl_possible)
 						{
 							$passes[] = array(
 								'title'   => $this->i18n('cURL Extension w/ SSL Support'),
@@ -1050,26 +1050,26 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									), NULL
 								)
 							);
-							if($curl_over_ssl_test_success)
+							if($_curl_over_ssl_test_success)
 								$passes[] = array(
 									'title'   => $this->i18n('cURL Extension w/ SSL Support (connection test)'),
 									'message' => sprintf(
 										$this->i18n(
 											'The <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP is available (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTPS connection to: <code>%1$s</code> succeeded.'
-										), htmlspecialchars($curl_fopen_ssl_test_url)
+										), htmlspecialchars($_curl_fopen_ssl_test_url)
 									)
 								);
-							if($curl_localhost_test_success)
+							if($_curl_localhost_test_success)
 								$passes[] = array(
 									'title'   => $this->i18n('cURL Extension (localhost connection test)'),
 									'message' => sprintf(
 										$this->i18n(
 											'The <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP is available (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTP connection to localhost: <code>%1$s</code> succeeded.'
-										), htmlspecialchars($curl_fopen_localhost_test_url)
+										), htmlspecialchars($_curl_fopen_localhost_test_url)
 									)
 								);
 						}
-					if($fopen_url_possible && $fopen_url_over_ssl_possible)
+					if($_fopen_url_possible && $_fopen_url_over_ssl_possible)
 						{
 							$passes[] = array(
 								'title'   => $this->i18n('INI <code>fopen()</code> URL w/ SSL Support'),
@@ -1079,30 +1079,34 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									), NULL
 								)
 							);
-							if($fopen_url_over_ssl_test_success)
+							if($_fopen_url_over_ssl_test_success)
 								$passes[] = array(
 									'title'   => $this->i18n('INI <code>fopen()</code> URL w/ SSL Support (connection test)'),
 									'message' => sprintf(
 										$this->i18n(
 											'The setting <code>allow_url_fopen</code> is <code>on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTPS connection to: <code>%1$s</code> succeeded.'
-										), htmlspecialchars($curl_fopen_ssl_test_url)
+										), htmlspecialchars($_curl_fopen_ssl_test_url)
 									)
 								);
-							if($fopen_url_localhost_test_success)
+							if($_fopen_url_localhost_test_success)
 								$passes[] = array(
 									'title'   => $this->i18n('INI <code>fopen()</code> URL (localhost connection test)'),
 									'message' => sprintf(
 										$this->i18n(
 											'The setting <code>allow_url_fopen</code> is <code>on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTP connection to localhost: <code>%1$s</code> succeeded.'
-										), htmlspecialchars($curl_fopen_localhost_test_url)
+										), htmlspecialchars($_curl_fopen_localhost_test_url)
 									)
 								);
 						}
 				}
+			unset($_curl_possible, $_curl_version, $_curl_over_ssl_possible);
+			unset($_fopen_url_possible, $_fopen_url_over_ssl_possible); // Housekeeping.
+			unset($_curl_over_ssl_test_success, $_curl_fopen_ssl_test_url, $_curl_fopen_ssl_test_url_return_string_frag);
+			unset($_curl_localhost_test_success, $_curl_fopen_localhost_test_url, $_curl_fopen_localhost_test_url_return_string_frag);
 
 			/*********************************************************************************************/
 
-			if(!($openssl_sign_possible = (extension_loaded('openssl') && $this->is_function_possible('openssl_sign')) ? TRUE : FALSE))
+			if(extension_loaded('openssl') && $this->is_function_possible('openssl_sign'))
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('OpenSSL Extension With <code>openssl_sign()</code>'),
@@ -1128,17 +1132,15 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			/*********************************************************************************************/
 
-			$temp_dir = ''; // Initialize; in case we're unable to locate.
+			$_temp_dir = ''; // Initialize; in case we're unable to locate.
 
-			if(($sys_temp_dir = sys_get_temp_dir()) && ($sys_temp_dir = realpath($sys_temp_dir))
-			   && is_readable($sys_temp_dir) && is_writable($sys_temp_dir)
-			) $temp_dir = $sys_temp_dir; // Ideal location.
+			if(($_sys_temp_dir = sys_get_temp_dir()) && ($_sys_temp_dir = realpath($_sys_temp_dir)) && is_readable($_sys_temp_dir) && is_writable($_sys_temp_dir))
+				$_temp_dir = $_sys_temp_dir; // Ideal location.
 
-			else if($this->is_function_possible('ini_get') && ($upload_temp_dir = ini_get('upload_tmp_dir'))
-			        && ($upload_temp_dir = realpath($upload_temp_dir)) && is_readable($upload_temp_dir) && is_writable($upload_temp_dir)
-			) $temp_dir = $upload_temp_dir; // Secondary (ok, but not as secure).
+			else if(($_upload_temp_dir = ini_get('upload_tmp_dir')) && ($_upload_temp_dir = realpath($_upload_temp_dir)) && is_readable($_upload_temp_dir) && is_writable($_upload_temp_dir))
+				$_temp_dir = $_upload_temp_dir; // Secondary (ok, but not as secure).
 
-			if(!$temp_dir) // Unable to find a readable/writable temp directory.
+			if(!$_temp_dir) // Unable to find a readable/writable temp directory.
 				{
 					$errors[] = array(
 						'title'   => $this->i18n('Temporary Files Directory'),
@@ -1158,10 +1160,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'message' => sprintf(
 							$this->i18n(
 								'A readable/writable temporary files directory was found here: <code>%1$s</code>'
-							), htmlspecialchars($temp_dir)
+							), htmlspecialchars($_temp_dir)
 						)
 					);
 				}
+			unset($_temp_dir, $_sys_temp_dir, $_upload_temp_dir); // Housekeeping.
 
 			/*********************************************************************************************/
 
@@ -1357,17 +1360,32 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 					/***************************************************************************************/
 
-					if($is_wp_loaded && $plugin_dir_names)
+					if($is_wp_loaded && $plugin_dir_names) // Have plugin dirs?
 						{
-							foreach(preg_split('/[,;\s]+/', $plugin_dir_names, -1, PREG_SPLIT_NO_EMPTY) as $_plugin_dir_name)
-								if(is_dir(WP_PLUGIN_DIR.'/'.$_plugin_dir_name) && is_file(WP_PLUGIN_DIR.'/'.$_plugin_dir_name.'/checksum.txt'))
-									if(is_readable(WP_PLUGIN_DIR.'/'.$_plugin_dir_name) && is_readable(WP_PLUGIN_DIR.'/'.$_plugin_dir_name.'/checksum.txt'))
-										$plugin_checksum_dirs[] = WP_PLUGIN_DIR.'/'.$_plugin_dir_name;
-							unset($_plugin_dir_name); // Housekeeping.
+							foreach(preg_split('/[,;]+/', $plugin_dir_names) as $_plugin_dir_name)
+								{ // Preserve possible spaces in paths when splitting here.
 
-							if(!empty($plugin_checksum_dirs) && is_array($plugin_checksum_dirs)) // Have plugin directories?
+									if(!($_plugin_dir_name = trim($_plugin_dir_name)))
+										continue; // It's empty (possible space).
+
+									$_plugin_dir_name = basename($_plugin_dir_name);
+									// Only if these DO exist as WordPress® plugins.
+									$_plugin_dir     = WP_PLUGIN_DIR.'/'.$_plugin_dir_name;
+									$_plugin_pro_dir = WP_PLUGIN_DIR.'/'.$_plugin_dir_name.'-pro';
+
+									if(is_dir($_plugin_dir) && is_file($_plugin_dir.'/checksum.txt'))
+										if(is_readable($_plugin_dir) && is_readable($_plugin_dir.'/checksum.txt'))
+											$plugin_checksum_dirs[] = $_plugin_dir;
+
+									if(is_dir($_plugin_pro_dir) && is_file($_plugin_pro_dir.'/checksum.txt'))
+										if(is_readable($_plugin_pro_dir) && is_readable($_plugin_pro_dir.'/checksum.txt'))
+											$plugin_checksum_dirs[] = $_plugin_pro_dir;
+								}
+							unset($_plugin_dir_name, $_plugin_dir, $_plugin_pro_dir); // Housekeeping.
+
+							if(!empty($plugin_checksum_dirs) && is_array($plugin_checksum_dirs))
 								{
-									foreach($plugin_checksum_dirs as $_plugin_checksum_dir) // Check each plugin directory.
+									foreach(array_unique($plugin_checksum_dirs) as $_plugin_checksum_dir)
 										{
 											$_checksum         = $this->dir_checksum($_plugin_checksum_dir);
 											$_release_checksum = file_get_contents($_plugin_checksum_dir.'/checksum.txt');
@@ -1442,17 +1460,16 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									);
 									$_mailer->Send();
 								}
-							catch(phpmailerException $mail_exception)
+							catch(phpmailerException $_mail_exception)
 								{
-									$mail_exception = $mail_exception->getMessage();
+									$_mail_exception = $_mail_exception->getMessage();
 								}
-							catch(exception $mail_exception)
+							catch(exception $_mail_exception)
 								{
-									$mail_exception = $mail_exception->getMessage();
+									$_mail_exception = $_mail_exception->getMessage();
 								}
 							unset($_mailer); // A little housekeeping here.
 						}
-
 					if($is_wp_loaded && $is_test_email && !get_bloginfo('admin_email'))
 						{
 							array_unshift( // Push this warning to the top of the stack.
@@ -1468,7 +1485,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								           )
 							);
 						}
-					else if($is_wp_loaded && $is_test_email && isset($mail_exception))
+					else if($is_wp_loaded && $is_test_email && isset($_mail_exception))
 						{
 							array_unshift( // Push this warning to the top of the stack.
 								$warnings, array( // Also applying `hilite` class.
@@ -1482,7 +1499,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 										                  ' On some servers (particularly Windows® servers), you might need to adjust your <a href="http://www.w3schools.com/php/php_ref_mail.asp" target="_blank" rel="xlink">php.ini file</a>, or configure an SMTP server.'.
 										                  '<p style="font-size:110%; margin-left:5px; margin-bottom:0;"><strong>Additional Details (Message From PHP Exception):</strong></p>'.
 										                  '<pre style="margin:0 0 0 15px; max-width:100%; max-height:300px; overflow:auto;">%2$s</pre>'
-									                  ), htmlspecialchars(get_bloginfo('admin_email')), htmlspecialchars($mail_exception)
+									                  ), htmlspecialchars(get_bloginfo('admin_email')), htmlspecialchars($_mail_exception)
 								                  )
 								           )
 							);
@@ -1501,6 +1518,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								         )
 							);
 						}
+					unset($_mail_exception); // Housekeeping.
 				}
 
 			/*********************************************************************************************/
@@ -1705,9 +1723,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 					/***************************************************************************************/
 
-					$blog_charset_encoding = ($is_wp_loaded) ? get_bloginfo('charset') : NULL;
+					$_blog_charset_encoding = ($is_wp_loaded) ? get_bloginfo('charset') : NULL;
 
-					if($is_wp_loaded && (!is_string($blog_charset_encoding) || !$blog_charset_encoding))
+					if($is_wp_loaded && (!is_string($_blog_charset_encoding) || !$_blog_charset_encoding))
 						{
 							$notices[] = array(
 								'auto_fix' => 'wp_charset_encoding',
@@ -1722,7 +1740,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								)
 							);
 						}
-					else if($is_wp_loaded && !in_array(strtoupper($blog_charset_encoding), array('UTF8', 'UTF-8'), TRUE))
+					else if($is_wp_loaded && !in_array(strtoupper($_blog_charset_encoding), array('UTF8', 'UTF-8'), TRUE))
 						{
 							$notices[] = array(
 								'auto_fix' => 'wp_charset_encoding',
@@ -1733,7 +1751,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 										' This can be changed in the Dashboard, under: <code>WordPress -› Settings -› Reading -› Encoding</code>.'.
 										' See also: <a href="http://codex.wordpress.org/Glossary#Unicode" target="_blank" rel="xlink">this article</a> about UTF-8.'.
 										' Your current encoding configuration is set to: <code>%2$s</code>'
-									), htmlspecialchars($plugin_name), htmlspecialchars($blog_charset_encoding)
+									), htmlspecialchars($plugin_name), htmlspecialchars($_blog_charset_encoding)
 								)
 							);
 						}
@@ -1744,10 +1762,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'message' => sprintf(
 									$this->i18n(
 										'Your WordPress® installation is operating with <code>%1$s</code> encoding, under: <code>WordPress -› Settings -› Reading -› Encoding</code>.'
-									), htmlspecialchars($blog_charset_encoding)
+									), htmlspecialchars($_blog_charset_encoding)
 								)
 							);
 						}
+					unset($_blog_charset_encoding); // Housekeeping.
 
 					/***************************************************************************************/
 
@@ -1755,11 +1774,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						{
 							// Bypass on Multisite Networks (w/ domain mapping; this could produce false positives).
 
-							$configured_home_host_name = preg_replace('/\:[0-9]+$/', '', strtolower((string)parse_url(home_url('/'), PHP_URL_HOST)));
-							$configured_site_host_name = preg_replace('/\:[0-9]+$/', '', strtolower((string)parse_url(site_url('/'), PHP_URL_HOST)));
-							$current_host_name         = preg_replace('/\:[0-9]+$/', '', strtolower($_SERVER['HTTP_HOST']));
+							$_configured_home_host_name = preg_replace('/\:[0-9]+$/', '', strtolower((string)parse_url(home_url('/'), PHP_URL_HOST)));
+							$_configured_site_host_name = preg_replace('/\:[0-9]+$/', '', strtolower((string)parse_url(site_url('/'), PHP_URL_HOST)));
+							$_current_host_name         = preg_replace('/\:[0-9]+$/', '', strtolower($_SERVER['HTTP_HOST']));
 
-							if($configured_home_host_name !== $current_host_name && $configured_site_host_name !== $current_host_name)
+							if($_configured_home_host_name !== $_current_host_name && $_configured_site_host_name !== $_current_host_name)
 								{
 									$notices[] = array(
 										'title'   => $this->i18n('WordPress® Home/Site URLs'),
@@ -1768,35 +1787,36 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 												'Although NOT required, %1$s recommends that your WordPress® installation be configured with a matching HOST name.'.
 												' This can be changed in the Dashboard, under: <code>WordPress -> Settings -> General -> WordPress/Site URLs</code>.'.
 												' Your current configuration does NOT match: <code>%2$s</code>'
-											), htmlspecialchars($plugin_name), htmlspecialchars($current_host_name)
+											), htmlspecialchars($plugin_name), htmlspecialchars($_current_host_name)
 										)
 									);
 								}
 							else // Pass on this check.
 								{
-									if($configured_home_host_name === $current_host_name)
+									if($_configured_home_host_name === $_current_host_name)
 										{
 											$passes[] = array(
 												'title'   => $this->i18n('WordPress® Home URL'),
 												'message' => sprintf(
 													$this->i18n(
 														'Your WordPress® home URL is configured to run on: <code>%1$s</code>, and that matches the current host name: <code>%2$s</code>'
-													), htmlspecialchars($configured_home_host_name), htmlspecialchars($current_host_name)
+													), htmlspecialchars($_configured_home_host_name), htmlspecialchars($_current_host_name)
 												)
 											);
 										}
-									if($configured_site_host_name === $current_host_name)
+									if($_configured_site_host_name === $_current_host_name)
 										{
 											$passes[] = array(
 												'title'   => $this->i18n('WordPress Site URL'),
 												'message' => sprintf(
 													$this->i18n(
 														'Your WordPress® site URL is configured to run on: <code>%1$s</code>, and that matches the current host name: <code>%2$s</code>'
-													), htmlspecialchars($configured_site_host_name), htmlspecialchars($current_host_name)
+													), htmlspecialchars($_configured_site_host_name), htmlspecialchars($_current_host_name)
 												)
 											);
 										}
 								}
+							unset($_configured_home_host_name, $_configured_site_host_name, $_current_host_name);
 						}
 
 					/***************************************************************************************/
@@ -1877,113 +1897,105 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			/*********************************************************************************************/
 
-			if($is_wp_loaded) // ONLY if WordPress® is loaded up.
+			if($is_wp_loaded && $issues) // If we have issues, let's take a look at them.
 				{
-					/***************************************************************************************/
+					if(!is_array($_dismissals = get_option('websharks_core__deps__notice__dismissals')))
+						add_option('websharks_core__deps__notice__dismissals', ($_dismissals = array()), '', 'no');
+					$_dismissals_require_update = FALSE; // Initialize a FALSE value here.
 
-					if($issues) // If we have issues, let's take a look at them.
+					foreach($issues as $_key => $_issue) // Loop over each issue.
 						{
-							if(!is_array($dismissals = get_option('websharks_core__deps__notice__dismissals')))
-								add_option('websharks_core__deps__notice__dismissals', ($dismissals = array()), '', 'no');
+							// Handle auto-fix requests by site owner.
 
-							$dismissals_require_update = FALSE; // Initialize a FALSE value here.
-
-							foreach($issues as $_key => $_issue) // Loop over each issue.
+							if($is_auto_fix && isset($_issue['data']['auto_fix'], $_g['auto_fix']) && $_issue['data']['auto_fix'] === $_g['auto_fix'])
 								{
-									// Handle auto-fix requests by site owner.
-
-									if($is_auto_fix && isset($_issue['data']['auto_fix'], $_g['auto_fix']) && $_issue['data']['auto_fix'] === $_g['auto_fix'])
+									if(($_auto_fix_response = $this->auto_fix($_issue['data']['auto_fix'])) === TRUE)
 										{
-											if(($_auto_fix_response = $this->auto_fix($_issue['data']['auto_fix'])) === TRUE)
-												{
-													$_retry = remove_query_arg('websharks_core__deps', (string)$_SERVER['REQUEST_URI']);
+											$_retry = remove_query_arg('websharks_core__deps', (string)$_SERVER['REQUEST_URI']);
 
-													$issues[$_key]['data']['message'] .= // Append a successful response.
-														sprintf(
-															$this->i18n(
-																'<p class="auto-fix-success">'.
-																'<strong>AUTO-FIX (success):</strong>'.
-																' This issue has been resolved automatically.'.
-																' <a href="%1$s">%2$s</a>.'.
-																'</p>'
-															),
-															esc_attr($_retry),
-															(($is_stand_alone)
-																? $this->i18n('Click here to re-scan')
-																: $this->i18n('Click here to retry activation'))
-														);
-												}
-
-											else $issues[$_key]['data']['message'] .= // Append error response.
-												sprintf($this->i18n(
-													        '<p class="auto-fix-error"><strong>AUTO-FIX (error):</strong> %1$s</p>'
-												        ), $_auto_fix_response
+											$issues[$_key]['data']['message'] .= // Append a successful response.
+												sprintf(
+													$this->i18n(
+														'<p class="auto-fix-success">'.
+														'<strong>AUTO-FIX (success):</strong>'.
+														' This issue has been resolved automatically.'.
+														' <a href="%1$s">%2$s</a>.'.
+														'</p>'
+													),
+													esc_attr($_retry),
+													(($is_stand_alone)
+														? $this->i18n('Click here to re-scan')
+														: $this->i18n('Click here to retry activation'))
 												);
 										}
-
-									// Handle warning/notice dismissals by site owner.
-
-									if(in_array($_issue['severity'], array('warning', 'notice'), TRUE))
-										{
-											if(in_array($_issue['checksum'], $dismissals, TRUE))
-												unset($issues[$_key]);
-
-											else if($is_dismissal && isset($_g['dismiss']) && $_issue['checksum'] === $_g['dismiss'])
-												{
-													unset($issues[$_key]);
-													$dismissals_require_update = TRUE;
-													$dismissals[]              = $_issue['checksum'];
-												}
-										}
-
-									// Make sure all conditionals in the return array are accurate.
-
-									if(!isset($issues[$_key])) // Unset by auto-fix or dismissal?
-										{
-											switch($_issue['severity']) // Unset warning/notice.
-											{
-												case 'warning':
-														unset($warnings[$_issue['severity_key']]);
-														break;
-												case 'notice':
-														unset($notices[$_issue['severity_key']]);
-														break;
-											}
-										}
+									else $issues[$_key]['data']['message'] .= // Append error response.
+										sprintf($this->i18n(
+											        '<p class="auto-fix-error"><strong>AUTO-FIX (error):</strong> %1$s</p>'
+										        ), $_auto_fix_response
+										);
 								}
-							unset($_key, $_issue, $_auto_fix_response, $_retry);
+							// Handle warning/notice dismissals by site owner.
 
-							if($dismissals_require_update) // Update now.
+							if(in_array($_issue['severity'], array('warning', 'notice'), TRUE))
 								{
-									$dismissals = array_unique(array_merge($dismissals));
-									update_option('websharks_core__deps__notice__dismissals', $dismissals);
+									if(in_array($_issue['checksum'], $_dismissals, TRUE))
+										unset($issues[$_key]);
+
+									else if($is_dismissal && isset($_g['dismiss']) && $_issue['checksum'] === $_g['dismiss'])
+										{
+											unset($issues[$_key]);
+											$_dismissals_require_update = TRUE;
+											$_dismissals[]              = $_issue['checksum'];
+										}
+								}
+							// Make sure all conditionals in the return array are accurate.
+
+							if(!isset($issues[$_key])) // Unset by auto-fix or dismissal?
+								{
+									switch($_issue['severity']) // Unset warning/notice.
+									{
+										case 'warning':
+												unset($warnings[$_issue['severity_key']]);
+												break;
+										case 'notice':
+												unset($notices[$_issue['severity_key']]);
+												break;
+									}
 								}
 						}
+					unset($_key, $_issue, $_auto_fix_response, $_retry);
 
-					/***************************************************************************************/
+					if($_dismissals_require_update) // Update now.
+						{
+							$_dismissals = array_unique(array_merge($_dismissals));
+							update_option('websharks_core__deps__notice__dismissals', $_dismissals);
+						}
+					unset($_dismissals, $_dismissals_require_update);
+				}
 
-					if(($report_warnings && $report_notices && !$issues) || ($this->is_cli() && !$errors))
-						{
-							update_option(
-								'websharks_core__deps__last_ok', array(
-								                                      'websharks_core_v000000_dev' => TRUE,
-								                                      'php_version'                => $php_version,
-								                                      'wp_version'                 => $wp_version,
-								                                      'time'                       => time()
-								                                 )
-							);
-						}
-					else if($issues || !get_option('websharks_core__deps__last_ok'))
-						{
-							update_option(
-								'websharks_core__deps__last_ok', array(
-								                                      'websharks_core_v000000_dev' => FALSE,
-								                                      'php_version'                => '',
-								                                      'wp_version'                 => '',
-								                                      'time'                       => 0
-								                                 )
-							);
-						}
+			/***************************************************************************************/
+
+			if($is_wp_loaded && (($report_warnings && $report_notices && !$issues) || ($this->is_cli() && !$errors)))
+				{
+					update_option(
+						'websharks_core__deps__last_ok', array(
+						                                      'websharks_core_v000000_dev' => TRUE,
+						                                      'php_version'                => $php_version,
+						                                      'wp_version'                 => $wp_version,
+						                                      'time'                       => time()
+						                                 )
+					);
+				}
+			else if($is_wp_loaded && ($issues || !get_option('websharks_core__deps__last_ok')))
+				{
+					update_option(
+						'websharks_core__deps__last_ok', array(
+						                                      'websharks_core_v000000_dev' => FALSE,
+						                                      'php_version'                => '',
+						                                      'wp_version'                 => '',
+						                                      'time'                       => 0
+						                                 )
+					);
 				}
 
 			/*********************************************************************************************/
@@ -1995,7 +2007,6 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			if($issues || $is_stand_alone)
 				{
 					$this->check = array(
-
 						// Primary concern.
 						'issues'       => $issues,
 						'passes'       => $passes,
@@ -2009,7 +2020,6 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 						// The plugin name.
 						'plugin_name'  => $plugin_name
-
 					);
 					if($is_stand_alone) // Running stand-alone?
 						{
@@ -2039,9 +2049,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	/**
 	 * Calculates the MD5 checksum for an entire directory recursively.
 	 *
-	 * @param string  $dir The directory we should begin with.
+	 * @param string $dir The directory we should begin with.
 	 *
-	 * @param string  $___root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
+	 * @param string $___root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
 	 *    Recursive calls to this method will automatically pass this value, indicating the main root directory value.
 	 *
 	 * @return string An MD5 checksum established collectively, based on all directories/files.
@@ -2306,20 +2316,18 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			echo '<div class="tools">';
 			if(defined('WPINC') && is_super_admin())
 				{
-					$_test_email = array(
+					$_test_email              = array(
 						'websharks_core__deps' => array(
 							'test_email' => 'test_email',
 							'checksum'   => $this->generate_checksum('test_email')
 						)
 					);
-
 					$_test_email_confirmation =
 						"onclick=\"return confirm('".$this->i18n("PLEASE CONFIRM\\nSend a test email message now?")."');\"";
 
 					echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_test_email), (string)$_SERVER['REQUEST_URI'])).'" '.$_test_email_confirmation.'>'.
 					     $this->i18n('Test Email Functionality?').
 					     '</a>';
-
 					unset($_test_email, $_test_email_confirmation);
 				}
 			echo '</div>';
@@ -2366,39 +2374,35 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 									if(!empty($_issue['data']['auto_fix']) && defined('WPINC') && is_super_admin())
 										{
-											$_auto_fix = array(
+											$_auto_fix              = array(
 												'websharks_core__deps' => array(
 													'auto_fix' => $_issue['data']['auto_fix'],
 													'checksum' => $this->generate_checksum($_issue['data']['auto_fix'])
 												)
 											);
-
 											$_auto_fix_confirmation =
 												"onclick=\"return confirm('".$this->i18n("ARE YOU SURE ABOUT THIS?\\nThis is a PHP routine, that will attempt to fix the issue automatically (e.g. to fix it programmatically).\\n\\t\\nBACKUP NOTICE: Please backup all of your files, and all of your database tables, before running this routine.\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company), before running this routine. It is always better to have a qualified web developer help you. If you run this routine, you do so at your own risk.")."');\"";
 
 											echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_auto_fix), (string)$_SERVER['REQUEST_URI'])).'" '.$_auto_fix_confirmation.'>'.
 											     $this->i18n('AUTO-FIX<em>!</em>').
 											     '</a>';
-
 											unset($_auto_fix, $_auto_fix_confirmation);
 										}
 
 									if(in_array($_issue['severity'], array('warning', 'notice'), TRUE) && defined('WPINC') && is_super_admin())
 										{
-											$_dismiss = array(
+											$_dismiss                = array(
 												'websharks_core__deps' => array(
 													'dismiss'  => $_issue['checksum'],
 													'checksum' => $this->generate_checksum($_issue['checksum'])
 												)
 											);
-
 											$_dismissal_confirmation =
 												"onclick=\"return confirm('".$this->i18n("ARE YOU SURE ABOUT THIS?\\nYou want to dismiss (i.e. ignore) this message?\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company), before ignoring this message. It is better to fix the underlying cause. If you ignore this message, you do so at your own risk.")."');\"";
 
 											echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_dismiss), (string)$_SERVER['REQUEST_URI'])).'" '.$_dismissal_confirmation.'>'.
 											     $this->i18n('dismiss?').
 											     '</a>';
-
 											unset($_dismiss, $_dismissal_confirmation);
 										}
 									echo '</div>';
@@ -2560,39 +2564,35 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 					if(!empty($_issue['data']['auto_fix']) && is_super_admin())
 						{
-							$_auto_fix = array(
+							$_auto_fix              = array(
 								'websharks_core__deps' => array(
 									'auto_fix' => $_issue['data']['auto_fix'],
 									'checksum' => $this->generate_checksum($_issue['data']['auto_fix'])
 								)
 							);
-
 							$_auto_fix_confirmation =
 								"onclick=\"return confirm('".$this->i18n("ARE YOU SURE ABOUT THIS?\\nThis is a PHP routine, that will attempt to fix the issue automatically (e.g. to fix it programmatically).\\n\\t\\nBACKUP NOTICE: Please backup all of your files, and all of your database tables, before running this routine.\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company), before running this routine. It is always better to have a qualified web developer help you. If you run this routine, you do so at your own risk.")."');\"";
 
 							echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_auto_fix), (string)$_SERVER['REQUEST_URI'])).'" '.$_auto_fix_confirmation.'>'.
 							     $this->i18n('AUTO-FIX<em>!</em>').
 							     '</a>';
-
 							unset($_auto_fix, $_auto_fix_confirmation);
 						}
 
 					if(in_array($_issue['severity'], array('warning', 'notice'), TRUE) && is_super_admin())
 						{
-							$_dismiss = array(
+							$_dismiss                = array(
 								'websharks_core__deps' => array(
 									'dismiss'  => $_issue['checksum'],
 									'checksum' => $this->generate_checksum($_issue['checksum'])
 								)
 							);
-
 							$_dismissal_confirmation =
 								"onclick=\"return confirm('".$this->i18n("ARE YOU SURE ABOUT THIS?\\nYou want to dismiss (i.e. ignore) this message?\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company), before ignoring this message. It is better to fix the underlying cause, and then re-activate the plugin. If you ignore this message, you do so at your own risk.")."');\"";
 
 							echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_dismiss), (string)$_SERVER['REQUEST_URI'])).'" '.$_dismissal_confirmation.'>'.
 							     $this->i18n('dismiss?').
 							     '</a>';
-
 							unset($_dismiss, $_dismissal_confirmation);
 						}
 					echo '</div>';
@@ -2633,7 +2633,6 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						}
 					unset($_key, $_pass);
 				}
-
 			// Closing tags.
 
 			echo '</div>';
@@ -2681,7 +2680,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			self::$static['disabled_functions'] = array();
 
-			if(!function_exists('ini_get')) // Is this even possible?
+			if(!function_exists('ini_get'))
 				return self::$static['disabled_functions'];
 
 			if(($_ini_val = trim(strtolower(ini_get('disable_functions')))))
@@ -2822,14 +2821,15 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					sprintf($this->i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			$dir_file     = ltrim($this->n_dir_seps($dir_file), '/');
-			$starting_dir = ($starting_dir === 'getcwd()') ? getcwd() : $starting_dir;
 			$starting_dir = ($starting_dir === '__DIR__') ? dirname(__FILE__) : $starting_dir;
+			$starting_dir = ($starting_dir === 'phar://') ? 'phar://'.dirname(__FILE__) : $starting_dir;
 			$starting_dir = $this->n_dir_seps($starting_dir);
 
 			for($_i = 0, $_dir = $starting_dir; $_i <= 100; $_i++)
 				{
-					if($_i > 0) $_dir = dirname($_dir); // Up a directory.
-					if(!$_dir || $_dir === '.') break; // Search complete?
+					if($_i > 0) $_dir = dirname($_dir);
+					if(!$_dir || $_dir === '.' || strcasecmp($_dir, 'phar:') === 0)
+						break; // Search complete now.
 
 					if(is_file($_dir.'/'.$dir_file))
 						return $_dir.'/'.$dir_file;

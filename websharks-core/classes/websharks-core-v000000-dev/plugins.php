@@ -85,10 +85,10 @@ namespace websharks_core_v000000_dev
 					// Define in an API class file if you wish to override these defaults.
 
 					if(!class_exists('\\'.$this->___instance_config->plugin_root_ns))
-						eval('class '.$this->___instance_config->plugin_root_ns.' extends \\'.__NAMESPACE__.'\\api{}');
+						$this->©php->evaluate('class '.$this->___instance_config->plugin_root_ns.' extends \\'.__NAMESPACE__.'\\api{}');
 
 					if(!class_exists('\\'.$this->___instance_config->plugin_api_var))
-						eval('class_alias(\'\\'.$this->___instance_config->plugin_root_ns.'\', \''.$this->___instance_config->plugin_api_var.'\');');
+						$this->©php->evaluate('class_alias(\'\\'.$this->___instance_config->plugin_root_ns.'\', \''.$this->___instance_config->plugin_api_var.'\');');
 				}
 
 			/**
@@ -104,10 +104,10 @@ namespace websharks_core_v000000_dev
 					// Define in an API class file if you wish to override these defaults.
 
 					if(!function_exists('\\'.$this->___instance_config->plugin_root_ns))
-						eval('function '.$this->___instance_config->plugin_root_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
+						$this->©php->evaluate('function '.$this->___instance_config->plugin_root_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
 
 					if(!function_exists('\\'.$this->___instance_config->plugin_api_var))
-						eval('function '.$this->___instance_config->plugin_api_var.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
+						$this->©php->evaluate('function '.$this->___instance_config->plugin_api_var.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
 				}
 
 			/**

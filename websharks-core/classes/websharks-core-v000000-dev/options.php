@@ -88,8 +88,8 @@ namespace websharks_core_v000000_dev
 						'captchas.google.public_key'                         => '6LeCANsSAAAAAIIrlB3FrXe42mr0OSSZpT0pkpFK',
 						'captchas.google.private_key'                        => '6LeCANsSAAAAAGBXMIKAirv6G4PmaGa-ORxdD-oZ',
 
-						'url_shortener.default_api'                          => 'goo_gl',
-						'url_shortener.default_url_api'                      => '',
+						'url_shortener.default_built_in_api'                 => 'goo_gl',
+						'url_shortener.custom_url_api'                       => '',
 						'url_shortener.api_keys.goo_gl'                      => '',
 
 						'php.evaluate'                                       => '0',
@@ -179,8 +179,8 @@ namespace websharks_core_v000000_dev
 						'captchas.google.public_key'                         => array('string:!empty'),
 						'captchas.google.private_key'                        => array('string:!empty'),
 
-						'url_shortener.default_api'                          => array('string:in_array' => array('tiny_url', 'goo_gl')),
-						'url_shortener.default_url_api'                      => array('string:preg_match' => '/^https?\:/i'),
+						'url_shortener.default_built_in_api'                 => array('string:in_array' => array('tiny_url', 'goo_gl')),
+						'url_shortener.custom_url_api'                       => array('string:preg_match' => '/^https?\:/i'),
 						'url_shortener.api_keys.goo_gl'                      => array('string:!empty'),
 
 						'php.evaluate'                                       => array('string:numeric >=' => 0),
@@ -328,7 +328,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note It's fine to force an update by calling this method without any arguments.
 			 *
-			 * @param array   $new_options Optional. An associative array of option values to update, with each of their new values.
+			 * @param array $new_options Optional. An associative array of option values to update, with each of their new values.
 			 *    This array does NOT need to contain all of the current options. Only those which should be updated.
 			 *
 			 * @return array The current array of options.

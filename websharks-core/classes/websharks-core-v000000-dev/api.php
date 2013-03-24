@@ -403,10 +403,10 @@ namespace websharks_core_v000000_dev
 			 */
 			final public static function framework()
 				{
-					static $framework; // A static cache for this class.
-					// Static for each class that extends this class abstraction.
+					static $framework; // A static cache.
+					// For each class that extends this abstraction.
 
-					if(isset($framework)) return $framework; // In the cache?
+					if(isset($framework)) return $framework; // Cached already?
 
 					$class = get_called_class();
 

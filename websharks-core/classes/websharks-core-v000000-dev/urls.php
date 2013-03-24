@@ -8,8 +8,6 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120329
- *
- * @TODO Unit test all of these against PHAR files.
  */
 namespace websharks_core_v000000_dev
 	{
@@ -147,11 +145,11 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return array|string|integer|null If a component is requested, returns a string component (or an integer in the case of ``PHP_URL_PORT``).
 			 *    If a specific component is NOT requested, this returns a full array, of all component values.
-			 *    Else, this returns NULL on any type of failure.
+			 *    Else, this returns NULL on any type of failure (even if a component was requested).
 			 *
 			 * @note Arrays returned by this method, will include a value for each component (a bit different from PHP's ``parse_url()`` function).
 			 *    We start with an array of defaults (i.e. all empty strings, and `0` for the port number).
-			 *    Components found in the URL, are then merged into these default values.
+			 *    Components found in the URL are then merged into these default values.
 			 *    The array is also sorted by key (e.g. alphabetized).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
@@ -191,7 +189,6 @@ namespace websharks_core_v000000_dev
 							$url_uri             = $this->current_scheme().':'.$url_uri; // So URL is parsed properly.
 							$x_compatible_scheme = TRUE; // Flag this, so we can remove scheme below.
 						}
-
 					// Use PHP's ``parse_url()`` function.
 					$parsed = parse_url($url_uri, $component);
 
@@ -203,7 +200,6 @@ namespace websharks_core_v000000_dev
 							else if($component === PHP_URL_SCHEME)
 								$parsed = '';
 						}
-
 					if($n_scheme) // Normalize scheme?
 						{
 							if($component === -1 && is_array($parsed))
@@ -214,7 +210,6 @@ namespace websharks_core_v000000_dev
 							else if($component === PHP_URL_SCHEME && empty($parsed))
 								$parsed = $this->current_scheme();
 						}
-
 					if($n_path) // Normalize path?
 						{
 							if($component === -1 && is_array($parsed))
@@ -230,7 +225,6 @@ namespace websharks_core_v000000_dev
 									$parsed = $this->n_path($parsed);
 								}
 						}
-
 					if(in_array(gettype($parsed), array('array', 'string', 'integer'), TRUE))
 						{
 							if(is_array($parsed)) // An array?
@@ -288,7 +282,7 @@ namespace websharks_core_v000000_dev
 
 					$url = ''; // Initialize string value.
 
-					// We do lots of type checks here, because this function *could* be passed an array.
+					// We do lots of type checks here, because this function *could* be passed an array
 					// that did NOT actually originate from ``parse_url()``; making this more compatible with a wide variety of uses.
 
 					// Normalize scheme?
@@ -301,7 +295,7 @@ namespace websharks_core_v000000_dev
 					else if($this->©string->is_not_empty($parsed['host']))
 						$url .= '//'; // Cross-protocol compatible.
 
-					// Handle `user@`, or `user:password@`.
+					// Handle `user@` or `user:password@`.
 					if($this->©string->is_not_empty($parsed['user']))
 						{
 							$url .= $parsed['user'];
@@ -309,7 +303,6 @@ namespace websharks_core_v000000_dev
 								$url .= ':'.$parsed['pass'];
 							$url .= '@';
 						}
-
 					// Handle `host`.
 					if($this->©string->is_not_empty($parsed['host']))
 						$url .= $parsed['host'];
@@ -374,7 +367,7 @@ namespace websharks_core_v000000_dev
 						{
 							if($parsed['query'])
 								return $parsed['path'].'?'.$parsed['query'];
-							else return $parsed['path'];
+							return $parsed['path'];
 						}
 					return NULL; // Default return value.
 				}
@@ -408,6 +401,8 @@ namespace websharks_core_v000000_dev
 			 * @assert ('../../../../../././/./file.php', 'http://example.com/') === 'http://example.com/file.php'
 			 * @assert ('././././././././../../../file.php', 'http://example.com/a/') === 'http://example.com/file.php'
 			 * @assert ('file.php', 'https://example.com/') === 'https://example.com/file.php'
+			 *
+			 * @TODO Review this routine again; it works great; but it seems too confusing.
 			 */
 			public function resolve_relative($relative, $base = '', $n_scheme = FALSE, $n_path = TRUE)
 				{
@@ -421,11 +416,10 @@ namespace websharks_core_v000000_dev
 						{
 							throw $this->©exception(
 								__METHOD__.'#invalid_base', compact('base'),
-								$this->i18n('Argument $base is not a valid URL (unable to parse).').
+								$this->i18n('Argument `$base` is not a valid URL (unable to parse).').
 								sprintf($this->i18n(' Got: `%1$s`.'), $base)
 							);
 						}
-
 					// Has ``$relative`` already been resolved?
 					if(strpos($relative, '//') !== FALSE && is_array($_p_relative = $this->parse($relative)) && !empty($_p_relative['host']))
 						{
@@ -459,7 +453,6 @@ namespace websharks_core_v000000_dev
 							// Full URL return value.
 							return $this->un_parse($resolution, $n_scheme, $n_path).$relative;
 						}
-
 					// Reduce resolution path to a trailing `/` directory location.
 					$resolution['path'] = preg_replace('/\/[^\/]*$/', '', $resolution['path']).'/';
 
@@ -477,33 +470,14 @@ namespace websharks_core_v000000_dev
 
 					unset($_absolute); // Just a little housekeeping.
 
-					// Full URL return value.
-					return $this->un_parse($resolution, $n_scheme, $n_path);
-				}
-
-			/**
-			 * URL to WebSharks™ Core PHAR file stub.
-			 *
-			 * @return string URL to WebSharks™ Core stub file; else an empty string.
-			 *
-			 * @see \websharks_core_v000000_dev::is_phar()
-			 */
-			public function to_core_phar()
-				{
-					if(!isset($this->static['to_phar']))
-						{
-							if(($phar = \websharks_core_v000000_dev::is_phar()))
-								$this->static['to_phar'] = $this->to_wp_abs_dir_or_file($phar);
-							else $this->static['to_phar'] = '';
-						}
-					return $this->static['to_phar'];
+					return $this->un_parse($resolution, $n_scheme, $n_path); // Full URL return value.
 				}
 
 			/**
 			 * URL leading to a WordPress® `/directory-or-file`.
 			 *
-			 * @param string  $dir_or_file Absolute server path to a WordPress® `/directory-or-file`.
-			 *    Note that relative paths are NOT possible here (MUST be absolute).
+			 * @param string $dir_or_file Absolute server path to a WordPress® `/directory-or-file`.
+			 *    Note that relative paths are NOT possible here (this MUST be absolute).
 			 *
 			 * @return string URL leading to a WordPress® `/directory-or-file` (no trailing slash).
 			 *    Else an empty string on any type of failure.
@@ -546,7 +520,6 @@ namespace websharks_core_v000000_dev
 								$dir_realpath = $this->©dirs->n_seps($dir_realpath);
 							else $dir_realpath = '';
 						}
-
 					// Handle PHAR files here.
 
 					if($dir && stripos($dir, 'phar://') === 0)
@@ -600,14 +573,13 @@ namespace websharks_core_v000000_dev
 						return get_template_directory_uri().$this->©string->ireplace_once($wp_active_theme_dir, '', $dir_realpath).
 						       $possible_real_file; // But may default to ``$file``.
 
-					// Else we MUST fail here.
-					return ''; // Default return value.
+					return ''; // Default return value (failure).
 				}
 
 			/**
 			 * URL leading to a WebSharks™ Core `/directory-or-file`.
 			 *
-			 * @param string  $dir_or_file Absolute server path to a WebSharks™ Core `/directory-or-file`.
+			 * @param string $dir_or_file Absolute server path to a WebSharks™ Core `/directory-or-file`.
 			 *    Or, a relative path is also acceptable here, making this method very handy.
 			 *
 			 * @return string URL leading to a WebSharks™ Core `/directory-or-file` (no trailing slash).
@@ -640,7 +612,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * URL leading to a plugin `/directory-or-file`.
 			 *
-			 * @param string  $dir_or_file Absolute server path to a plugin `/directory-or-file`.
+			 * @param string $dir_or_file Absolute server path to a plugin `/directory-or-file`.
 			 *    Or, a relative path is also acceptable here, making this method very handy.
 			 *
 			 * @return string URL leading to a plugin `/directory-or-file` (no trailing slash).
@@ -673,7 +645,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * URL leading to a plugin data `/directory-or-file`.
 			 *
-			 * @param string  $dir_or_file Absolute server path to a plugin data `/directory-or-file`.
+			 * @param string $dir_or_file Absolute server path to a plugin data `/directory-or-file`.
 			 *    Or, a relative path is also acceptable here, making this method very handy.
 			 *
 			 * @return string URL leading to a plugin data `/directory-or-file` (no trailing slash).
@@ -704,7 +676,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * URL leading to a plugin pro `/directory-or-file`.
 			 *
-			 * @param string  $dir_or_file Absolute server path to a plugin pro `/directory-or-file`.
+			 * @param string $dir_or_file Absolute server path to a plugin pro `/directory-or-file`.
 			 *    Or, a relative path is also acceptable here, making this method very handy.
 			 *
 			 * @return string URL leading to a plugin pro `/directory-or-file` (no trailing slash).
@@ -767,8 +739,6 @@ namespace websharks_core_v000000_dev
 					if(!is_array($plugin_site_response = maybe_unserialize($plugin_site_response)))
 						$plugin_site_response = array();
 
-					// Did the plugin site return a ZIP file URL (i.e. a URL that allows access)?
-
 					if($this->©string->is_not_empty($plugin_site_response['zip']))
 						{
 							$update_args                                                         = array(
@@ -780,17 +750,11 @@ namespace websharks_core_v000000_dev
 
 							return add_query_arg(urlencode_deep($update_args), admin_url('/update.php'));
 						}
-
-					// Did the update server return an error message?
-
 					if($this->©string->is_not_empty($plugin_site_response['error']))
 						return $this->©error(
 							__METHOD__.'#plugin_site_error', get_defined_vars(), $plugin_site_response['error']
 						);
-
-					// Default return value (assume connectivity issue in this default case).
-
-					return $this->©error(
+					return $this->©error( // Assume connectivity issue.
 						__METHOD__.'#plugin_site_connectivity_issue', get_defined_vars(),
 						$this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
 						$this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
@@ -832,8 +796,6 @@ namespace websharks_core_v000000_dev
 					if(!is_array($plugin_site_response = maybe_unserialize($plugin_site_response)))
 						$plugin_site_response = array();
 
-					// Did the plugin site return a ZIP file URL (i.e. a URL that allows access)?
-
 					if($this->©string->is_not_empty($plugin_site_response['zip']))
 						{
 							$update_args                                                             = array(
@@ -845,17 +807,11 @@ namespace websharks_core_v000000_dev
 
 							return add_query_arg(urlencode_deep($update_args), admin_url('/update.php'));
 						}
-
-					// Did the update server return an error message?
-
 					if($this->©string->is_not_empty($plugin_site_response['error']))
 						return $this->©error(
 							__METHOD__.'#plugin_site_error', get_defined_vars(), $plugin_site_response['error']
 						);
-
-					// Default return value (assume connectivity issue in this default case).
-
-					return $this->©error(
+					return $this->©error( // Assume connectivity issue.
 						__METHOD__.'#plugin_site_connectivity_issue', get_defined_vars(),
 						$this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
 						$this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
@@ -924,7 +880,6 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', array('null', 'string', 'array'), 'array', 'integer:!empty', func_get_args());
 
-					// Force method to uppercase.
 					if(!empty($args['method']) && is_string($args['method']))
 						$args['method'] = strtoupper($args['method']);
 
@@ -945,9 +900,10 @@ namespace websharks_core_v000000_dev
 					$return_xml_object = $this->©boolean->isset_or($args['return_xml_object'], FALSE);
 
 					// Additional default option values.
-					$xml_object_flags  = LIBXML_NOCDATA | LIBXML_NOERROR | LIBXML_NOWARNING;
-					$xml_object_flags  = $this->©integer->isset_or($args['xml_object_flags'], $xml_object_flags);
-					$args['sslverify'] = $this->©boolean->isset_or($args['sslverify'], FALSE);
+					$xml_object_flags    = LIBXML_NOCDATA | LIBXML_NOERROR | LIBXML_NOWARNING;
+					$xml_object_flags    = $this->©integer->isset_or($args['xml_object_flags'], $xml_object_flags);
+					$args['sslverify']   = $this->©boolean->isset_or($args['sslverify'], FALSE);
+					$args['httpversion'] = $this->©string->is_not_empty_or($args['httpversion'], '1.1');
 
 					// Developers might like to fine tune things a bit further here.
 					$url  = $this->apply_filters('remote__url', $url, get_defined_vars());
@@ -989,7 +945,6 @@ namespace websharks_core_v000000_dev
 										'last_http_debug_log' => $this->last_http_debug_log()
 									);
 								}
-
 							// Returning XML object?
 							else if($return_xml_object)
 								return (object)$xml;
@@ -1177,14 +1132,14 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Adds a query string name/value pair onto a URL's hash/anchor.
 			 *
-			 * @param string             $name The name of the variable we're adding.
+			 * @param string $name The name of the variable we're adding.
 			 *    This CANNOT be empty.
 			 *
-			 * @param string             $value The value that we're setting the variable to.
+			 * @param string $value The value that we're setting the variable to.
 			 *    This can be any scalar value. Converts to a string.
 			 *    This can be empty, but always scalar.
 			 *
-			 * @param string             $url The URL that we're adding this onto.
+			 * @param string $url The URL that we're adding this onto.
 			 *    This can be empty, but always a string.
 			 *
 			 * @return string Full URL with appended hash/anchor query string.
@@ -1234,7 +1189,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $url A full/long URL to be shortened.
 			 *
-			 * @param string  $specific_api Optional. A specific URL shortening API to use.
+			 * @param string  $specific_built_in_api Optional. A specific URL shortening API to use.
 			 *    Defaults to that which is configured in the options.
 			 *
 			 * @param boolean $try_backups Defaults to TRUE. If a failure occurs with the first API,
@@ -1248,44 +1203,48 @@ namespace websharks_core_v000000_dev
 			 * @assert ('http://www.websharks-inc.com/', 'tiny_url') === 'http://tinyurl.com/29foqso'
 			 * @assert ('http://www.websharks-inc.com/') === 'http://goo.gl/wRAFl'
 			 */
-			public function shorten($url, $specific_api = '', $try_backups = TRUE)
+			public function shorten($url, $specific_built_in_api = '', $try_backups = TRUE)
 				{
 					$this->check_arg_types('string:!empty', 'string', 'boolean', func_get_args());
 
-					$apis = array('goo_gl', 'tiny_url'); // APIs built-in.
+					$built_in_apis        = array('goo_gl', 'tiny_url');
+					$custom_url_api       = $this->©options->get('url_shortener.custom_url_api');
+					$default_built_in_api = $this->©options->get('url_shortener.default_built_in_api');
+					$current_built_in_api = ($specific_built_in_api) ? $specific_built_in_api : $default_built_in_api;
 
-					$default_api     = $this->©options->get('url_shortener.default_api');
-					$default_url_api = $this->©options->get('url_shortener.default_url_api');
+					// First try custom APIs (if nothing specific was requested here).
 
-					if(!$specific_api && ($custom_url = trim($this->apply_filters('shorten', '')))
-					   && stripos($custom_url, 'http') === 0
-					) return ($shorter_url = $custom_url);
+					if(!$specific_built_in_api) // Expose this filter to plugins.
+						if(($custom_url = trim($this->apply_filters('shorten', '', get_defined_vars()))) && stripos($custom_url, 'http') === 0)
+							return ($shorter_url = $custom_url);
 
-					else if(!$specific_api && $default_url_api
-					        && ($default_url_api = str_ireplace(array('%%long_url%%', '%%long_url_md5%%'), array(rawurlencode($url), urlencode(md5($url))), $default_url_api))
-					        && ($custom_url = trim($this->remote($default_url_api)))
-					        && stripos($custom_url, 'http') === 0
-					) return ($shorter_url = $custom_url);
+					if(!$specific_built_in_api && $custom_url_api) // A custom default URL API?
+						if(($custom_url_api = str_ireplace(array('%%long_url%%', '%%long_url_md5%%'),
+						                                   array(rawurlencode($url), urlencode(md5($url))), $custom_url_api))
+						) if(($custom_url = trim($this->remote($custom_url_api))) && stripos($custom_url, 'http') === 0)
+							return ($shorter_url = $custom_url);
 
-					else if((($specific_api) ? strtolower($specific_api) : $default_api) === 'goo_gl'
-					        && is_string($goo_gl_key = ($goo_gl_key = $this->©options->get('url_shortener.api_keys.goo_gl')) ? '?key='.urlencode($goo_gl_key) : '')
-					        && is_array($goo_gl = json_decode(trim($this->remote('https://www.googleapis.com/urlshortener/v1/url'.$goo_gl_key, json_encode(array('longUrl' => $url)), array('headers' => array('Content-Type' => 'application/json')))), TRUE))
-					        && ($goo_gl_url = $this->©string->is_not_empty_or($goo_gl['id'], ''))
-					        && stripos($goo_gl_url, 'http') === 0
-					) return ($shorter_url = $goo_gl_url.'#'.$this->current_host());
+					// Nothing custom; so let's go with the current built-in API.
 
-					else if((($specific_api) ? strtolower($specific_api) : $default_api) === 'tiny_url'
-					        && ($tiny_url = trim($this->remote('http://tinyurl.com/api-create.php?url='.rawurlencode($url))))
-					        && stripos($tiny_url, 'http') === 0
-					) return ($shorter_url = $tiny_url.'#'.$this->current_host());
+					if($current_built_in_api === 'goo_gl') // Google® shortener (recommended).
+						if(is_string($goo_gl_key = ($goo_gl_key = $this->©options->get('url_shortener.api_keys.goo_gl')) ? '?key='.urlencode($goo_gl_key) : ''))
+							if(is_array($goo_gl = json_decode(trim($this->remote('https://www.googleapis.com/urlshortener/v1/url'.$goo_gl_key, json_encode(array('longUrl' => $url)), array('headers' => array('Content-Type' => 'application/json')))), TRUE)))
+								if(($goo_gl_url = $this->©string->is_not_empty_or($goo_gl['id'], '')) && stripos($goo_gl_url, 'http') === 0)
+									return ($shorter_url = $goo_gl_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
 
-					else if($try_backups && count($apis) > 1)
+					if($current_built_in_api === 'tiny_url') // TinyURL™ shortener.
+						if(($tiny_url = trim($this->remote('http://tinyurl.com/api-create.php?url='.rawurlencode($url)))) && stripos($tiny_url, 'http') === 0)
+							return ($shorter_url = $tiny_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
+
+					// Still nothing. Let's try some backups.
+
+					if($try_backups && count($built_in_apis) > 1) // If we have one.
 						{
-							foreach(array_diff($apis, array((($specific_api) ? strtolower($specific_api) : $default_api))) as $backup)
-								if(($backup = $this->shorten($url, $backup, FALSE)))
+							foreach(array_diff($built_in_apis, array($current_built_in_api)) as $backup)
+								if(($backup = $this->shorten($url, $backup, FALSE)) !== $url)
 									return ($shorter_url = $backup);
 						}
-					return $url; // Default return value (the full URL).
+					return $url; // Default return value (failure).
 				}
 
 			/**
@@ -1520,24 +1479,23 @@ namespace websharks_core_v000000_dev
 
 								(!$parsed['host'] // A URI? Assume same host here.
 								 && in_array($specifier, array('home', 'any'), TRUE)
-								 && $parsed['path'] === $parsed_home['path'])
+								 && $parsed['path'] === $parsed_home['path']) ||
 
-								|| (!$parsed['host'] // A URI? Assume same.
-								    && in_array($specifier, array('site', 'any'), TRUE)
-								    && $parsed['path'] === $parsed_site['path'])
+								(!$parsed['host'] // A URI? Assume same.
+								 && in_array($specifier, array('site', 'any'), TRUE)
+								 && $parsed['path'] === $parsed_site['path']) ||
 
-								|| ($parsed['host'] // Must match `host` in this case.
-								    && in_array($specifier, array('home', 'any'), TRUE)
-								    && strcasecmp($parsed['host'], $parsed_home['host']) === 0
-								    && $parsed['path'] === $parsed_home['path'])
+								($parsed['host'] // Must match `host` in this case.
+								 && in_array($specifier, array('home', 'any'), TRUE)
+								 && strcasecmp($parsed['host'], $parsed_home['host']) === 0
+								 && $parsed['path'] === $parsed_home['path']) ||
 
-								|| ($parsed['host'] // Must match `host` in this case.
-								    && in_array($specifier, array('site', 'any'), TRUE)
-								    && strcasecmp($parsed['host'], $parsed_site['host']) === 0
-								    && $parsed['path'] === $parsed_site['path'])
+								($parsed['host'] // Must match `host` in this case.
+								 && in_array($specifier, array('site', 'any'), TRUE)
+								 && strcasecmp($parsed['host'], $parsed_site['host']) === 0
+								 && $parsed['path'] === $parsed_site['path'])
 
-							) // This IS a WordPress® root URL (or URI).
-								return TRUE;
+							) return TRUE; // This IS a WordPress® root URL (or URI).
 						}
 					return FALSE; // Default return value.
 				}
@@ -1567,14 +1525,16 @@ namespace websharks_core_v000000_dev
 			 */
 			public function parse_home()
 				{
-					if(!isset($this->static['parsed_home']))
+					$blog_id = get_current_blog_id();
+
+					if(!isset($this->static['parsed_home_'.$blog_id]))
 						{
-							$this->static['parsed_home'] = array();
+							$this->static['parsed_home_'.$blog_id] = array();
 
 							if(is_array($parsed = $this->parse(home_url('/'))))
-								$this->static['parsed_home'] = $parsed;
+								$this->static['parsed_home_'.$blog_id] = $parsed;
 						}
-					return $this->static['parsed_home'];
+					return $this->static['parsed_home_'.$blog_id];
 				}
 
 			/**
@@ -1586,14 +1546,16 @@ namespace websharks_core_v000000_dev
 			 */
 			public function parse_site()
 				{
-					if(!isset($this->static['parsed_site']))
+					$blog_id = get_current_blog_id();
+
+					if(!isset($this->static['parsed_site_'.$blog_id]))
 						{
-							$this->static['parsed_site'] = array();
+							$this->static['parsed_site_'.$blog_id] = array();
 
 							if(is_array($parsed = $this->parse(site_url('/'))))
-								$this->static['parsed_site'] = $parsed;
+								$this->static['parsed_site_'.$blog_id] = $parsed;
 						}
-					return $this->static['parsed_site'];
+					return $this->static['parsed_site_'.$blog_id];
 				}
 		}
 	}

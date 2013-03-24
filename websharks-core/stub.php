@@ -31,47 +31,6 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static $static = array();
 
 			/**
-			 * This file is a PHP Archive?
-			 *
-			 * @return string A PHP Archive file?
-			 */
-			public static function is_phar()
-				{
-					$is_phar = self::is_phar_var();
-
-					if(!empty($GLOBALS[$is_phar]))
-						if($GLOBALS[$is_phar] === __FILE__)
-							return $GLOBALS[$is_phar];
-
-					return '';
-				}
-
-			/**
-			 * Stub file loaded by the PHAR stub?
-			 *
-			 * @param string $file An absolute file path.
-			 *
-			 * @return boolean Stub file loaded by the PHAR stub?
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 */
-			public static function is_phar_stub($file)
-				{
-					if(!is_string($file) || !$file)
-						throw new exception( // Fail here; detected invalid arguments.
-							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
-						);
-
-					if(!self::is_phar())
-						return FALSE;
-
-					$file = self::n_dir_seps((string)$file);
-					$phar = 'phar://'.self::n_dir_seps(__FILE__);
-
-					return ($file === $phar.'/stub.php');
-				}
-
-			/**
 			 * Global PHAR variable for the WebSharks™ Core.
 			 *
 			 * @return string The PHAR variable for the WebSharks™ Core.
@@ -82,17 +41,28 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			/**
-			 * A webPhar instance?
+			 * Global autoload var for the WebSharks™ Core.
 			 *
-			 * @return boolean A webPhar instance?
+			 * @return string Autoload var for the WebSharks™ Core.
 			 */
-			public static function is_webphar()
+			public static function autoload_var()
 				{
-					if(!defined('WPINC') && self::is_phar() && !empty($_SERVER['SCRIPT_FILENAME']))
-						if(realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__))
-							return TRUE;
+					return 'autoload_'.__CLASS__;
+				}
 
-					return FALSE;
+			/**
+			 * This file is a PHP Archive?
+			 *
+			 * @return string A PHP Archive file?
+			 */
+			public static function is_phar()
+				{
+					$is_phar_var = self::is_phar_var();
+
+					if(!empty($GLOBALS[$is_phar_var]) && $GLOBALS[$is_phar_var] === 'phar://'.__FILE__)
+						return $GLOBALS[$is_phar_var];
+
+					return '';
 				}
 
 			/**
@@ -106,10 +76,31 @@ if(!class_exists('websharks_core_v000000_dev'))
 						return self::$static['can_phar'];
 
 					self::$static['can_phar'] = extension_loaded('phar');
-					if(extension_loaded('suhosin') && stripos(ini_get('suhosin.executor.include.whitelist'), 'phar') === FALSE)
-						self::$static['can_phar'] = FALSE;
+
+					if(self::$static['can_phar'] && extension_loaded('suhosin'))
+						if(stripos(ini_get('suhosin.executor.include.whitelist'), 'phar') === FALSE)
+							self::$static['can_phar'] = FALSE;
 
 					return self::$static['can_phar'];
+				}
+
+			/**
+			 * A webPhar instance?
+			 *
+			 * @return boolean A webPhar instance?
+			 */
+			public static function is_webphar()
+				{
+					if(defined('WPINC'))
+						return FALSE;
+
+					$is_phar = $phar = self::is_phar();
+
+					if($is_phar && !empty($_SERVER['SCRIPT_FILENAME']))
+						if(realpath($_SERVER['SCRIPT_FILENAME']) === realpath(substr($phar, 7)))
+							return TRUE;
+
+					return FALSE;
 				}
 
 			/**
@@ -122,84 +113,120 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(self::is_webphar())
 						return FALSE;
 
-					$autoload = self::autoload_var();
+					$autoload_var = self::autoload_var();
 
-					if(!isset($GLOBALS[$autoload]) || $GLOBALS[$autoload])
+					if(!isset($GLOBALS[$autoload_var]) || $GLOBALS[$autoload_var])
 						return TRUE;
 
 					return FALSE;
 				}
 
 			/**
-			 * Global autoload var for WebSharks™ Core.
+			 * Gets WebSharks™ Core `deps.php` class file path.
 			 *
-			 * @return string Autoload var for WebSharks™ Core.
+			 * @param boolean $enable_display_errors This is TRUE by default.
+			 *    If TRUE, we will make sure any exceptions are displayed on-screen.
+			 *    We assume (by default); that if dependency utilities CANNOT be loaded up;
+			 *    we need to force a display that indicates the reason why.
+			 *
+			 * @note If we CANNOT load dependency utilities; something MUST be said to a site owner.
+			 *    If `error_reporting` hides or log exceptions, this important dependency may never be known.
+			 *    Dependency utilities are what we use to address common issues. If they CANNOT be loaded up;
+			 *    we have a BIG problem here; and the site owner MUST be made aware of that issue.
+			 *
+			 * @return string Absolute path to WebSharks™ Core `deps.php` class file.
+			 *
+			 * @throws exception If unable to locate the WebSharks™ Core `deps.php` class file.
 			 */
-			public static function autoload_var()
+			public static function deps($enable_display_errors = TRUE)
 				{
-					return 'autoload_'.__CLASS__;
-				}
-
-			/**
-			 * Gets WebSharks™ Core `deps.php` file.
-			 *
-			 * @return string Absolute path to `deps.php` file.
-			 *
-			 * @throws exception If unable to locate the WebSharks™ Core `deps.php` file.
-			 */
-			public static function deps()
-				{
-					if(self::is_phar() && self::can_phar())
+					if(!is_bool($enable_display_errors))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					try // Any exceptions will be re-thrown below.
 						{
-							$phar = 'phar://'.self::n_dir_seps(__FILE__);
-							if(is_file($_phar_deps = $phar.'/deps.php'))
-								return $_phar_deps;
+							return self::get_class_path('deps.php');
 						}
-					if(($_deps = self::locate('/websharks-core/deps.php')))
-						return $_deps; // Official location on live sites.
-
-					if(defined('___DEV_KEY_OK') && ($_deps = self::locate('/core/websharks-core/deps.php')))
-						return $_deps; // Development copy (for authenticated developers).
-
-					if(self::is_phar() && !self::can_phar() && defined('WPINC'))
-						if(($_temp_deps = self::cant_phar_msg_notice_in_ws_wp_temp_deps()))
-							return $_temp_deps;
-
-					unset($_phar_deps, $_deps, $_temp_deps); // A little housekeeping.
-
-					if(self::is_phar() && !self::can_phar()) // Be verbose.
-						throw new exception(self::cant_phar_msg());
-
-					throw new exception(self::i18n('Unable to locate WebSharks™ Core `deps.php` file.'));
+					catch(exception $exception) // Now re-throw.
+						{
+							if($enable_display_errors)
+								{
+									error_reporting(E_ALL);
+									ini_set('display_errors', TRUE);
+								}
+							throw $exception;
+						}
 				}
 
 			/**
-			 * Gets WebSharks™ Core `framework.php` file.
+			 * Gets WebSharks™ Core `framework.php` class file path.
 			 *
-			 * @return string Absolute path to `framework.php` file.
+			 * @return string Absolute path to WebSharks™ Core `framework.php` class file.
 			 *
-			 * @throws exception If unable to locate the WebSharks™ Core `framework.php` file.
+			 * @throws exception If unable to locate the WebSharks™ Core `framework.php` class file.
 			 */
 			public static function framework()
 				{
-					if(self::is_phar() && self::can_phar())
-						{
-							$phar = 'phar://'.self::n_dir_seps(__FILE__);
-							if(is_file($_phar_framework = $phar.'/framework.php'))
-								return $_phar_framework;
-						}
-					if(($_framework = self::locate('/websharks-core/framework.php')))
-						return $_framework; // Official location on live sites.
+					return self::get_class_path('framework.php');
+				}
 
-					if(defined('___DEV_KEY_OK') && ($_framework = self::locate('/core/websharks-core/framework.php')))
-						return $_framework; // Development copy (for authenticated developers).
+			/**
+			 * Gets a WebSharks™ Core class file path (absolute).
+			 *
+			 * @param string $basename Class file or path (basename only please).
+			 *    Ex: `class.php`. Ex: `sub-namespace/class.php` is OK too.
+			 *
+			 * @return string Absolute path to the requested ``$class`` file.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$class`` is empty; or it is NOT a string value.
+			 * @throws exception If unable to locate the WebSharks™ Core ``$class`` file.
+			 */
+			public static function get_class_path($basename)
+				{
+					if(!is_string($basename) || !($basename = trim(self::n_dir_seps($basename), '/')))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					$locate_core_dir      = '/websharks-core';
+					$locate_core_dev_dir  = '/core/websharks-core';
+					$locate_core_phar     = '/websharks-core.php.phar';
+					$locate_core_dev_phar = '/core/websharks-core.php.phar';
+					$this_dir             = self::n_dir_seps(dirname(__FILE__));
+					$is_phar              = $this_phar = self::n_dir_seps(self::is_phar());
+					$relative_class_path  = 'classes/websharks-core-v000000-dev/'.$basename;
 
-					unset($_phar_framework, $_framework); // A little housekeeping.
+					if(is_file($class_path = $this_dir.'/'.$relative_class_path))
+						return $class_path; // We first check this directory.
 
-					if(self::is_phar() && !self::can_phar()) // Be verbose.
+					if(($class_path = self::locate($locate_core_dir.'/'.$relative_class_path)))
+						return $class_path; // Sitewide (or nearest) WebSharks™ Core.
+
+					if($is_phar && self::can_phar() && is_file($class_path = $this_phar.'/'.$relative_class_path))
+						return $class_path; // If this is a PHAR (and PHAR is possible); we can use this archive.
+
+					if(self::can_phar() && ($class_path = self::locate($locate_core_phar.'/'.$relative_class_path, 'phar://')))
+						return $class_path; // Sitewide (or nearest) WebSharks™ Core archive (if PHAR is possible).
+
+					if(defined('___DEV_KEY_OK') && ($class_path = self::locate($locate_core_dev_dir.'/'.$relative_class_path)))
+						return $class_path; // Development copy (for authenticated developers).
+
+					if(defined('___DEV_KEY_OK') && ($class_path = self::locate($locate_core_dev_phar.'/'.$relative_class_path, 'phar://')))
+						return $class_path; // Development copy (for authenticated developers).
+
+					// Upon failure, we can make an attempt to notify site owners about PHAR compatibility.
+					$has_phar = ($is_phar || self::locate($locate_core_phar) || self::locate($locate_core_dev_phar));
+
+					// The error will actually be displayed in the Dashboard this way :-)
+					if($basename === 'deps.php' && $has_phar && !self::can_phar() && defined('WPINC'))
+						if(($class_path = self::cant_phar_msg_notice_in_ws_wp_temp_deps()))
+							return $class_path; // Temporary (for message to site owner).
+
+					if($has_phar && !self::can_phar()) // Throw verbose exception.
 						throw new exception(self::cant_phar_msg());
 
-					throw new exception(self::i18n('Unable to locate WebSharks™ Core `framework.php` file.'));
+					throw new exception(sprintf(self::i18n('Unable to locate: `%1$s`.'), $locate_core_dir.'/'.$relative_class_path));
 				}
 
 			/**
@@ -213,21 +240,22 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *    We determine this on our own; hopefully more effectively.
 			 *
 			 * @return string|boolean Boolean An internal URI; else FALSE if denying access.
+			 *    A FALSE return value causes webPhar to issue a 403 forbidden response.
 			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If this is somehow called upon w/o Phar being enabled or even possible.
+			 * @throws exception If this is NOT a PHAR file (which really should NOT happen).
+			 * @throws exception If the PHAR extension is not possible for any reason.
 			 */
 			public static function web_phar_rewriter($uri_or_path_info)
 				{
-					if(!is_string($uri_or_path_info) || !strlen($uri_or_path_info))
-						throw new exception( // Fail here; detected invalid arguments.
-							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
-						);
+					// Current PHAR file w/stream prefix.
 
-					if(!self::is_phar() || !self::can_phar() || !self::is_webphar())
-						if(self::is_phar() && !self::can_phar()) // Be verbose.
-							throw new exception(self::cant_phar_msg());
-						else throw new exception(self::i18n('NOT a webPhar instance.'));
+					$is_phar = $phar = self::n_dir_seps(self::is_phar());
+
+					if(!$is_phar) // A couple of quick sanity checks.
+						throw new exception(self::i18n('This is NOT a PHAR file.'));
+					if(!self::can_phar()) throw new exception(self::cant_phar_msg());
+
+					$phar_dir = dirname($phar); // Need this below.
 
 					// Determine path info.
 
@@ -240,128 +268,219 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 							if(!empty($_apache_lookup->path_info))
 								$path_info = (string)$_apache_lookup->path_info;
+
 							unset($_apache_lookup); // Housekeeping.
 						}
 					$path_info = (!empty($path_info)) ? $path_info : '/'.basename(__FILE__);
 
-					// Normalize directory separators; and force a leading slash on all URIs.
-					// Allow trailing slash; it's easier to parse directory indexes this way.
+					// Normalize directory separators; and force a leading slash on all internal URIs.
+					// We allow a trailing slash; so it's easier to parse directory indexes.
 
 					$internal_uri = self::n_dir_seps($path_info, TRUE);
 					$internal_uri = '/'.ltrim($internal_uri, '/');
 
-					// Do NOT allow double dots in a URI value.
+					if(substr($internal_uri, -1) === '/') // Directory.
+						$internal_uri = rtrim($internal_uri, '\\/').'/index.php';
+
+					$internal_uri_basename  = basename($internal_uri);
+					$internal_uri_extension = self::extension($internal_uri);
+
+					// Here we'll try to make webPhar a little more security-conscious.
 
 					if(strpos($internal_uri, '..') !== FALSE)
-						return FALSE; // 403 (forbidden).
+						return FALSE; // Do NOT allow relative dots; 403 (forbidden).
 
-					// Current `phar://` file w/stream prefix.
+					if(strpos($internal_uri_basename, '.') === 0)
+						return FALSE; // Do NOT serve DOT files; 403 (forbidden).
 
-					$phar = 'phar://'.self::n_dir_seps(__FILE__);
-
-					// Handle directory indexes gracefully.
-
-					if(substr($internal_uri, -1) === '/' // A directory explicitly.
-					   || !is_file($phar.$internal_uri) // It's NOT a file; assume directory.
-					) $internal_uri = rtrim($internal_uri, '\\/').'/index.php';
-
-					// Now, let's make webPhar a little more security-conscious here.
+					if(substr($internal_uri_basename, -1) === '~')
+						return FALSE; // Do NOT serve backups; 403 (forbidden).
 
 					for($_i = 0, $_dir = dirname($phar.$internal_uri); $_i <= 100; $_i++)
 						{
-							if($_i > 0) $_dir = dirname($_dir); // Up a directory.
-							if(!$_dir || $_dir === '.') break; // Search complete?
+							if($_i > 0 && $_dir === $phar_dir)
+								break; // Search complete now.
 
-							if(strcasecmp(basename($_dir), 'app_data') === 0)
-								return FALSE; // Windows®; 403 (forbidden).
+							if($_i > 0) $_dir = dirname($_dir);
+							if(!$_dir || $_dir === '.' || strcasecmp($_dir, 'phar:') === 0)
+								break; // Search complete now.
 
-							if(is_file($_dir.'/.htaccess')) // Apache™ compatible.
-								{
-									if(!is_readable($_dir.'/.htaccess'))
-										return FALSE; // 403 (forbidden).
+							// Base directory scans.
 
-									$_htaccess = file_get_contents($_dir.'/.htaccess');
-									if(stripos($_htaccess, 'deny from all') !== FALSE)
-										return FALSE; // 403 (forbidden).
-								}
+							$_dir_basename = basename($_dir);
+
+							if(strpos($_dir_basename, '.') === 0)
+								return FALSE; // Dotted; 403 (forbidden).
+
+							if(substr($_dir_basename, -1) === '~')
+								return FALSE; // Backup dir; 403 (forbidden).
+
+							// Windows® IIS compatibility.
+
+							if(strcasecmp($_dir_basename, 'app_data') === 0)
+								return FALSE; // Private; 403 (forbidden).
+
+							// Apache™ compatibility.
+
+							if(!is_file($_dir.'/.htaccess'))
+								continue; // Nothing more to do here.
+
+							if(!is_readable($_dir.'/.htaccess'))
+								return FALSE; // Unreadable; 403 (forbidden).
+
+							if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
+								return FALSE; // Private; 403 (forbidden).
 						}
-					unset($_i, $_dir, $_htaccess); // A little housekeeping.
+					unset($_i, $_dir, $_dir_basename);
 
-					// Process MIME type headers.
+					// Process MIME-type headers.
 
 					$mime_types           = self::mime_types();
 					$cacheable_mime_types = self::cacheable_mime_types();
-					$extension            = self::extension($internal_uri);
 
-					if($extension && !empty($mime_types[$extension]))
-						header('Content-Type: '.$mime_types[$extension]);
+					if($internal_uri_extension && !empty($mime_types[$internal_uri_extension]))
+						header('Content-Type: '.$mime_types[$internal_uri_extension]);
 
-					if(!empty($cacheable_mime_types[$extension]))
+					// Handle cacheable MIME-types.
+
+					if(!empty($cacheable_mime_types[$internal_uri_extension]))
 						{
 							header('Expires: '.gmdate('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
 							header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 							header('Cache-Control: max-age='.(86400 * 365));
 							header('Pragma: public');
 						}
-					return $internal_uri; // Final return value (internal URI).
+					return $internal_uri; // Final value (internal URI).
 				}
 
 			/**
 			 * A map of MIME types (for webPhar).
 			 *
 			 * @return array A map of MIME types (for webPhar).
+			 *    With flags for PHP execution & hiliting.
+			 *
+			 * @note Anything compressable needs to be parsed as PHP;
+			 *    so webPhar will decompress it when serving.
+			 *
+			 * @note Source file extensions (i.e. code sample extensions);
+			 *    are marked for automatic syntax hiliting by webPhar.
+			 *
+			 * @throws exception If PHAR extension not possible.
 			 */
 			public static function web_phar_mime_types()
 				{
+					if(isset(self::$static['web_phar_mime_types']))
+						return self::$static['web_phar_mime_types'];
+
+					if(!self::can_phar()) // Not possible.
+						throw new exception(self::cant_phar_msg());
+
 					$mime_types = self::mime_types();
 
-					foreach(self::web_phar_compressable_extensions() as $_extension)
+					foreach(self::compressable_mime_types() as $_extension => $_type)
 						$mime_types[$_extension] = Phar::PHP;
-					unset($_extension);
+					unset($_extension, $_type); // Housekeeping.
 
-					$mime_types['phps'] = $mime_types['htmls'] = Phar::PHPS;
+					$mime_types['phps'] = Phar::PHPS; // Source file.
 
-					return $mime_types;
+					return (self::$static['web_phar_mime_types'] = $mime_types);
 				}
 
 			/**
-			 * Compressable extensions.
+			 * Textual MIME types.
 			 *
-			 * @return array Those we make compatible.
+			 * @return array Textual MIME types.
+			 *    Those with a `text/` MIME type or `charset=UTF-8` specification.
 			 *
-			 * @see \websharks_core_v000000_dev\dirs\phar_to()
+			 * @note Some files do NOT have a `text/` MIME type or `charset=UTF-8` specification.
+			 *    However, they ARE still textual. Such as: `svg`, `bat`, `sh` files.
 			 */
-			public static function web_phar_compressable_extensions()
+			public static function textual_mime_types()
 				{
-					return array(
-						'txt', 'md',
-						'ini', 'csv',
-						'log', 'sql', 'pot',
-						'css', 'js', 'json',
-						'php', 'phps', 'inc',
-						'xml', 'html', 'htm', 'htmls',
-						'svg'
-					);
+					if(isset(self::$static['textual_mime_types']))
+						return self::$static['textual_mime_types'];
+
+					$other_textual_extensions = array('svg', 'bat', 'sh');
+
+					foreach(($mime_types = self::mime_types()) as $_extension => $_type)
+						if(stripos($_type, 'text/') === 0 ||
+						   stripos($_type, 'charset=UTF-8') !== FALSE ||
+						   in_array($_extension, $other_textual_extensions, TRUE)
+						) continue; // It's textual in this case.
+						else unset($mime_types[$_extension]);
+					unset($_extension, $_type);
+
+					return (self::$static['textual_mime_types'] = $mime_types);
+				}
+
+			/**
+			 * Compressable MIME types.
+			 *
+			 * @return array Compressable MIME types.
+			 *
+			 * @note Any textual MIME type is compressable.
+			 */
+			public static function compressable_mime_types()
+				{
+					if(isset(self::$static['compressable_mime_types']))
+						return self::$static['compressable_mime_types'];
+
+					$mime_types = self::textual_mime_types();
+
+					return (self::$static['compressable_mime_types'] = $mime_types);
+				}
+
+			/**
+			 * Binary MIME types.
+			 *
+			 * @return array Binary MIME types.
+			 *
+			 * @note Any MIME type which is NOT textual; is considered binary.
+			 */
+			public static function binary_mime_types()
+				{
+					if(isset(self::$static['binary_mime_types']))
+						return self::$static['binary_mime_types'];
+
+					$mime_types         = self::mime_types();
+					$textual_mime_types = self::textual_mime_types();
+					$mime_types         = array_diff_assoc($mime_types, $textual_mime_types);
+
+					return (self::$static['binary_mime_types'] = $mime_types);
 				}
 
 			/**
 			 * Cacheable extensions.
 			 *
 			 * @return array Those we make cacheable.
+			 *
+			 * @note Only dynamic files (like PHP scripts) are uncacheable.
 			 */
 			public static function cacheable_mime_types()
 				{
+					if(isset(self::$static['cacheable_mime_types']))
+						return self::$static['cacheable_mime_types'];
+
 					$mime_types = self::mime_types();
+					$m          =& $mime_types; // Shorter reference.
 
-					unset($mime_types['php']);
+					// Remove dynamic scripts (NOT cacheable).
+					unset($m['php'], $m['php4'], $m['php5'], $m['php6']);
+					unset($m['asp'], $m['aspx']);
+					unset($m['cgi'], $m['pl']);
 
-					return $mime_types;
+					return (self::$static['cacheable_mime_types'] = $mime_types);
 				}
 
 			/**
 			 * A map of MIME types (for headers).
 			 *
 			 * @return array A map of MIME types (for headers).
+			 *
+			 * @note This list is grouped logically according to the nature of certain files.
+			 *    It is then ordered alphabetically within each group of files.
+			 *
+			 * @note This should always be synchronized with our `.gitattributes` file.
 			 */
 			public static function mime_types()
 				{
@@ -371,39 +490,146 @@ if(!class_exists('websharks_core_v000000_dev'))
 						return self::$static['mime_types'];
 
 					return (self::$static['mime_types'] = array(
-						'txt'  => 'text/plain'.$utf8, 'md' => 'text/plain'.$utf8,
-						'ini'  => 'text/plain'.$utf8, 'csv' => 'text/csv'.$utf8,
-						'log'  => 'text/plain'.$utf8, 'sql' => 'text/plain'.$utf8, 'pot' => 'text/plain'.$utf8,
 
-						'css'  => 'text/css'.$utf8, 'js' => 'application/x-javascript'.$utf8, 'json' => 'application/json'.$utf8,
+						// Text files.
+						'md'              => 'text/plain'.$utf8,
+						'txt'             => 'text/plain'.$utf8,
 
-						'php'  => 'text/html'.$utf8, 'phps' => 'text/html'.$utf8, 'inc' => 'text/html'.$utf8,
-						'xml'  => 'text/xml'.$utf8, 'html' => 'text/html'.$utf8, 'htm' => 'text/html'.$utf8, 'htmls' => 'text/html'.$utf8,
+						// Log files.
+						'log'             => 'text/plain'.$utf8,
 
-						'pdf'  => 'application/pdf', 'odt' => 'application/vnd.oasis.opendocument.text', 'doc' => 'application/msword',
+						// Translation files.
+						'pot'             => 'text/plain'.$utf8,
 
-						'bmp'  => 'image/bmp',
-						'png'  => 'image/png', 'gif' => 'image/gif',
-						'jpg'  => 'image/jpeg', 'jpeg' => 'image/jpeg', 'jpe' => 'image/jpeg',
-						'tif'  => 'image/tiff', 'tiff' => 'image/tiff',
-						'ico'  => 'image/x-icon', 'svg' => 'image/svg+xml',
+						// SQL files.
+						'sql'             => 'text/plain'.$utf8,
+						'sqlite'          => 'text/plain'.$utf8,
 
-						'ttf'  => 'application/x-font-ttf', 'otf' => 'application/x-font-otf',
-						'woff' => 'application/x-font-woff', 'eot' => 'application/vnd.ms-fontobject',
+						// Template files.
+						'tmpl'            => 'text/plain'.$utf8,
+						'tpl'             => 'text/plain'.$utf8,
 
-						'tar'  => 'application/x-tar', 'tgz' => 'application/x-gtar', 'gz' => 'application/gzip',
-						'7z'   => 'application/x-7z-compressed', 'zip' => 'application/zip', 'phar' => 'application/php',
+						// Server config files.
+						'admins'          => 'text/plain'.$utf8,
+						'cfg'             => 'text/plain'.$utf8,
+						'conf'            => 'text/plain'.$utf8,
+						'htaccess'        => 'text/plain'.$utf8,
+						'htaccess-apache' => 'text/plain'.$utf8,
+						'htpasswd'        => 'text/plain'.$utf8,
+						'ini'             => 'text/plain'.$utf8,
 
-						'swf'  => 'application/x-shockwave-flash',
+						// CSS/JavaScript files.
+						'css'             => 'text/css'.$utf8,
+						'js'              => 'application/x-javascript'.$utf8,
+						'json'            => 'application/json'.$utf8,
 
-						'midi' => 'audio/midi', 'mid' => 'audio/midi',
-						'mp3'  => 'audio/mp3', 'wav' => 'audio/wav',
+						// PHP scripts/files.
+						'inc'             => 'text/html'.$utf8,
+						'php'             => 'text/html'.$utf8,
+						'php4'            => 'text/html'.$utf8,
+						'php5'            => 'text/html'.$utf8,
+						'php6'            => 'text/html'.$utf8,
+						'phps'            => 'text/html'.$utf8,
+						'x-php'           => 'text/plain'.$utf8,
+						'php~'            => 'text/plain'.$utf8,
 
-						'avi'  => 'video/avi',
-						'mov'  => 'movie/quicktime', 'qt' => 'video/quicktime',
-						'mpg'  => 'video/mpeg', 'mpeg' => 'video/mpeg', 'mp4' => 'video/mp4', 'webm' => 'video/webm',
-						'ogg'  => 'video/ogg', 'ogv' => 'video/ogg',
-						'flv'  => 'video/x-flv',
+						// ASP scripts/files.
+						'asp'             => 'text/html'.$utf8,
+						'aspx'            => 'text/html'.$utf8,
+
+						// Perl scripts/files.
+						'cgi'             => 'text/html'.$utf8,
+						'pl'              => 'text/html'.$utf8,
+
+						// HTML/XML files.
+						'dtd'             => 'application/xml-dtd'.$utf8,
+						'hta'             => 'application/hta'.$utf8,
+						'htc'             => 'text/x-component'.$utf8,
+						'htm'             => 'text/html'.$utf8,
+						'html'            => 'text/html'.$utf8,
+						'shtml'           => 'text/html'.$utf8,
+						'xhtml'           => 'application/xhtml+xml'.$utf8,
+						'xml'             => 'text/xml'.$utf8,
+						'xsl'             => 'application/xslt+xml'.$utf8,
+						'xslt'            => 'application/xslt+xml'.$utf8,
+						'xsd'             => 'application/xsd+xml'.$utf8,
+
+						// Document files.
+						'csv'             => 'text/csv'.$utf8,
+						'doc'             => 'application/msword',
+						'docx'            => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+						'odt'             => 'application/vnd.oasis.opendocument.text',
+						'pdf'             => 'application/pdf',
+						'rtf'             => 'application/rtf',
+						'xls'             => 'application/vnd.ms-excel',
+
+						// Image/animation files.
+						'ai'              => 'image/vnd.adobe.illustrator',
+						'blend'           => 'application/x-blender',
+						'bmp'             => 'image/bmp',
+						'eps'             => 'image/eps',
+						'fla'             => 'application/vnd.adobe.flash',
+						'gif'             => 'image/gif',
+						'ico'             => 'image/x-icon',
+						'jpe'             => 'image/jpeg',
+						'jpeg'            => 'image/jpeg',
+						'jpg'             => 'image/jpeg',
+						'png'             => 'image/png',
+						'psd'             => 'image/vnd.adobe.photoshop',
+						'pspimage'        => 'image/vnd.corel.psp',
+						'svg'             => 'image/svg+xml',
+						'swf'             => 'application/x-shockwave-flash',
+						'tif'             => 'image/tiff',
+						'tiff'            => 'image/tiff',
+
+						// Audio files.
+						'mid'             => 'audio/midi',
+						'midi'            => 'audio/midi',
+						'mp3'             => 'audio/mp3',
+						'wav'             => 'audio/wav',
+						'wma'             => 'audio/x-ms-wma',
+
+						// Video files.
+						'avi'             => 'video/avi',
+						'flv'             => 'video/x-flv',
+						'ogg'             => 'video/ogg',
+						'ogv'             => 'video/ogg',
+						'mp4'             => 'video/mp4',
+						'mov'             => 'movie/quicktime',
+						'mpg'             => 'video/mpeg',
+						'mpeg'            => 'video/mpeg',
+						'qt'              => 'video/quicktime',
+						'webm'            => 'video/webm',
+						'wmv'             => 'audio/x-ms-wmv',
+
+						// Font files.
+						'eot'             => 'application/vnd.ms-fontobject',
+						'otf'             => 'application/x-font-otf',
+						'ttf'             => 'application/x-font-ttf',
+						'woff'            => 'application/x-font-woff',
+
+						// Archive files.
+						'7z'              => 'application/x-7z-compressed',
+						'dmg'             => 'application/x-apple-diskimage',
+						'gtar'            => 'application/x-gtar',
+						'gz'              => 'application/gzip',
+						'iso'             => 'application/iso-image',
+						'jar'             => 'application/java-archive',
+						'phar'            => 'application/php-archive',
+						'rar'             => 'application/x-rar-compressed',
+						'tar'             => 'application/x-tar',
+						'tgz'             => 'application/x-gtar',
+						'zip'             => 'application/zip',
+
+						// Other misc files.
+						'bat'             => 'application/octet-stream',
+						'bin'             => 'application/octet-stream',
+						'class'           => 'application/octet-stream',
+						'com'             => 'application/octet-stream',
+						'dll'             => 'application/octet-stream',
+						'exe'             => 'application/octet-stream',
+						'sh'              => 'application/octet-stream',
+						'so'              => 'application/octet-stream'
 					));
 				}
 
@@ -556,14 +782,15 @@ if(!class_exists('websharks_core_v000000_dev'))
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
 					$dir_file     = ltrim(self::n_dir_seps($dir_file), '/');
-					$starting_dir = ($starting_dir === 'getcwd()') ? getcwd() : $starting_dir;
 					$starting_dir = ($starting_dir === '__DIR__') ? dirname(__FILE__) : $starting_dir;
+					$starting_dir = ($starting_dir === 'phar://') ? 'phar://'.dirname(__FILE__) : $starting_dir;
 					$starting_dir = self::n_dir_seps($starting_dir);
 
 					for($_i = 0, $_dir = $starting_dir; $_i <= 100; $_i++)
 						{
-							if($_i > 0) $_dir = dirname($_dir); // Up a directory.
-							if(!$_dir || $_dir === '.') break; // Search complete?
+							if($_i > 0) $_dir = dirname($_dir);
+							if(!$_dir || $_dir === '.' || strcasecmp($_dir, 'phar:') === 0)
+								break; // Search complete now.
 
 							if(is_file($_dir.'/'.$dir_file))
 								return $_dir.'/'.$dir_file;
@@ -576,12 +803,26 @@ if(!class_exists('websharks_core_v000000_dev'))
 			/**
 			 * Regarding an inability to locate `/wp-load.php`.
 			 *
+			 * @param boolean $markdown Defaults to a FALSE value.
+			 *    If this is TRUE; we'll parse some basic markdown syntax to
+			 *    produce HTML output that is easier to read in a browser.
+			 *
 			 * @return string Error message w/ details about the `/wp-load.php` file.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public static function no_wp_msg()
+			public static function no_wp_msg($markdown = FALSE)
 				{
-					return self::i18n('Unable to load the WebSharks™ Core. WordPress® (a core dependency) is NOT loaded up yet.'.
+					if(!is_bool($markdown))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					$msg = self::i18n('Unable to load the WebSharks™ Core. WordPress® (a core dependency) is NOT loaded up yet.'.
 					                  ' Please include WordPress® in your scripts using: `include_once \'wp-load.php\';`.');
+
+					if($markdown) $msg = nl2br(preg_replace('/`(.*?)`/', '<code>'.'${1}'.'</code>', $msg), TRUE);
+
+					return $msg; // Final message.
 				}
 
 			/**
@@ -597,12 +838,17 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *    This error message will also include details about Suhosin; when/if applicable.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If an inappropriate call is made (really should NOT happen).
 			 */
 			public static function cant_phar_msg($markdown = FALSE)
 				{
 					if(!is_bool($markdown))
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					if(self::can_phar())
+						throw new exception( // Fail here; we should NOT have called this.
+							sprintf(self::i18n('Inappropriate call to: `%1$s`'), __METHOD__)
 						);
 					$msg = self::i18n('Unable to load the WebSharks™ Core. This installation of PHP is missing the `Phar` extension.'.
 					                  ' The WebSharks™ Core (and WP plugins powered by it); requires PHP v5.3+ — which has `Phar` built-in.'.
@@ -634,18 +880,21 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @see \websharks_core_v000000_dev\$ws_wp_temp_deps
 			 *
 			 * @return string Absolute path to temporary deps; else an empty string if NOT possible.
+			 *
+			 * @throws exception If an inappropriate call is made (really should NOT happen).
 			 */
 			public static function cant_phar_msg_notice_in_ws_wp_temp_deps()
 				{
-					if(!defined('WPINC') || !self::is_phar() || self::can_phar())
-						return ''; // Not possible (or NOT applicable).
-
+					if(!defined('WPINC') || self::can_phar())
+						throw new exception( // Fail here; we should NOT have called this.
+							sprintf(self::i18n('Inappropriate call to: `%1$s`'), __METHOD__)
+						);
 					if(($temp_dir = self::get_wp_temp_dir()))
 						{
 							$temp_deps          = $temp_dir.'/ws-wp-temp-deps.tmp';
 							$temp_deps_contents = base64_decode(self::$ws_wp_temp_deps);
 							$temp_deps_contents = str_ireplace('websharks_core'.'_v000000_dev', __CLASS__, $temp_deps_contents);
-							$temp_deps_contents = str_ireplace('%%notice%%', str_replace("'", "\\'", self::cant_phar_msg()), $temp_deps_contents);
+							$temp_deps_contents = str_ireplace('%%notice%%', str_replace("'", "\\'", self::cant_phar_msg(TRUE)), $temp_deps_contents);
 
 							if(!is_file($temp_deps) || (is_writable($temp_deps) && unlink($temp_deps)))
 								if(file_put_contents($temp_deps, $temp_deps_contents))
@@ -666,7 +915,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						{
 							self::$static['is_browser'] = FALSE;
 
-							$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/ ][0-9\.]+/i';
+							$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/\s]+[0-9]/i';
 
 							if(!empty($_SERVER['HTTP_USER_AGENT']) && is_string($_SERVER['HTTP_USER_AGENT']))
 								if(preg_match($regex, $_SERVER['HTTP_USER_AGENT']))
@@ -733,14 +982,19 @@ if(!class_exists('websharks_core_v000000_dev'))
  */
 if(websharks_core_v000000_dev::is_webphar())
 	{
+		$GLOBALS[websharks_core_v000000_dev::autoload_var()] = FALSE;
+
 		if(!websharks_core_v000000_dev::can_phar())
-			throw new exception(websharks_core_v000000_dev::cant_phar_msg());
-
-		if(websharks_core_v000000_dev::is_phar_stub(__FILE__))
-			exit('Do NOT access this file directly: '.basename(__FILE__));
-
-		Phar::webPhar('', '', '', websharks_core_v000000_dev::web_phar_mime_types(),
+			{
+				error_reporting(E_ALL);
+				ini_set('display_errors', TRUE);
+				// We make sure this IMPORTANT message is visible.
+				throw new exception(websharks_core_v000000_dev::cant_phar_msg());
+			}
+		Phar::webPhar('websharks-core-v000000-dev', 'index.php', '', websharks_core_v000000_dev::web_phar_mime_types(),
 		              'websharks_core_v000000_dev::web_phar_rewriter');
+
+		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 
 		return; // We can stop here.
 	}
@@ -750,29 +1004,36 @@ if(websharks_core_v000000_dev::is_webphar())
  */
 if(websharks_core_v000000_dev::is_autoload())
 	{
+		$GLOBALS[websharks_core_v000000_dev::autoload_var()] = FALSE;
+
 		if(!defined('WPINC') && !websharks_core_v000000_dev::wp_load())
 			throw new exception(websharks_core_v000000_dev::no_wp_msg());
 
 		if(!defined('WPINC')) // Need to load WordPress?
 			include_once websharks_core_v000000_dev::wp_load(TRUE);
 
+		if(!class_exists('deps_websharks_core_v000000_dev'))
+			include_once websharks_core_v000000_dev::deps(FALSE);
+
 		if(!class_exists('\\websharks_core_v000000_dev\\framework'))
 			include_once websharks_core_v000000_dev::framework();
-	}
-unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 
+		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
+	}
+/*
+ * Always unset this WebSharks™ Core flag.
+ */
+unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 /*
  * The WebSharks™ Core is in WordPress?
  * If we're in WordPress®; it is NOT direct access.
  */
 if(defined('WPINC')) return; // We can stop here.
-
 /*
- * WordPress® did NOT load up in this scenario.
+ * WordPress® is NOT loaded up in this scenario.
  * By default, we disallow direct file access.
  */
 exit('Do NOT access this file directly: '.basename(__FILE__));
-
 /*
  * For a possible `phar://` stream wrapper (do NOT remove this).
  *    The PHAR class wants this w/ all UPPERCASE letters.

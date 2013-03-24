@@ -17,8 +17,10 @@ if(!defined('WPINC'))
 if(!class_exists('deps_websharks_core_v000000_dev'))
 	{
 		if(!class_exists('websharks_core_v000000_dev'))
-			include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
-
+			{
+				$GLOBALS['autoload_websharks_core_v000000_dev'] = FALSE;
+				include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
+			}
 		/**
 		 * Dependency Utilities.
 		 *

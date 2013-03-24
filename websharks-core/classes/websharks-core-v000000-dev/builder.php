@@ -43,10 +43,22 @@ namespace websharks_core_v000000_dev
 			public $core_dir = '';
 
 			/**
+			 * @var string Core repo dir.
+			 * @by-constructor Set dynamically by class constructor.
+			 */
+			public $core_repo_dir = '';
+
+			/**
 			 * @var string Plugin dir.
 			 * @by-constructor Set dynamically by class constructor.
 			 */
 			public $plugin_dir = '';
+
+			/**
+			 * @var string Plugin repo dir.
+			 * @by-constructor Set dynamically by class constructor.
+			 */
+			public $plugin_repo_dir = '';
 
 			/**
 			 * @var string Plugin name.
@@ -79,6 +91,12 @@ namespace websharks_core_v000000_dev
 			public $plugin_pro_dir = '';
 
 			/**
+			 * @var string Pro plugin repo dir.
+			 * @by-constructor Set dynamically by class constructor.
+			 */
+			public $plugin_pro_repo_dir = '';
+
+			/**
 			 * @var string Plugin extras dir.
 			 * @by-constructor Set dynamically by class constructor.
 			 */
@@ -102,7 +120,7 @@ namespace websharks_core_v000000_dev
 			 * @by-constructor Set dynamically by class constructor.
 			 * @note This default value is updated by JasWSInc when it needs to change.
 			 */
-			public $tested_up_to_php_v = '5.4.12';
+			public $tested_up_to_php_v = PHP_VERSION;
 
 			/**
 			 * @var string Requires at least WordPress® version.
@@ -116,13 +134,13 @@ namespace websharks_core_v000000_dev
 			 * @by-constructor Set dynamically by class constructor.
 			 * @note This default value is updated by JasWSInc when it needs to change.
 			 */
-			public $tested_up_to_wp_v = '3.6-alpha';
+			public $tested_up_to_wp_v = WP_VERSION;
 
 			/**
-			 * @var boolean Compile core into a PHAR file?
+			 * @var boolean Distribute core in which way?
 			 * @by-constructor Set dynamically by class constructor.
 			 */
-			public $use_core_phar = FALSE;
+			public $use_core_type = '';
 
 			/**
 			 * @var boolean Build from a specific core version?
@@ -139,42 +157,36 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructor (initiates build).
 			 *
-			 * @param object|array        $___instance_config Required at all times.
+			 * @param object|array $___instance_config Required at all times.
 			 *    A parent object instance, which contains the parent's ``$___instance_config``,
 			 *    or a new ``$___instance_config`` array.
 			 *
-			 * @param string              $plugin_dir Optional. Defaults to an empty string. If supplied, the core will be replicated into this directory.
-			 *    If this is NOT supplied (or it's empty); the core will be replicated into a sub-directory of it's current parent location.
-			 *    This also impacts checksums and other build routines. If there is no ``$plugin_dir``; some routines are skipped over;
-			 *    instead we focus on building the core itself. If there is no ``$plugin_dir``; we build the core and NOT a plugin.
+			 * @param string       $plugin_dir Optional. Defaults to an empty string.
+			 *    By default, we build the WebSharks™ Core. If supplied, we will build a specific plugin.
+			 * @param string       $plugin_name Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
+			 * @param string       $plugin_ns Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
+			 * @param string       $distros_dir Optional. Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
+			 * @param string       $downloads_dir Optional. Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
 			 *
-			 * @param string              $plugin_name Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
-			 * @param string              $plugin_ns Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
-			 * @param string              $distros_dir Optional. Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
-			 * @param string              $downloads_dir Optional. Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
+			 * @param string       $version Optional. Defaults to a value of ``$this->©date->i18n_utc('ymd')``.
+			 *    Must be valid. See: {@link \websharks_core_v000000_dev\strings::$regex_valid_ws_version}
 			 *
-			 * @param integer|string      $version Optional. Defaults to a value of ``$this->©date->i18n_utc('ymd')``.
-			 *    Must be valid. See: {@link \websharks_core_v000000_dev\strings\regex_valid_ws_version}
+			 * @param string       $requires_at_least_php_v Optional. Defaults to the oldest version tested by the WebSharks™ Core.
+			 *    All of these MUST be valid. See: {@link \websharks_core_v000000_dev\strings::$regex_valid_version}
+			 * @param string       $tested_up_to_php_v Optional. Defaults to the newest version tested by the WebSharks™ Core.
+			 * @param string       $requires_at_least_wp_v Optional. Defaults to the oldest version tested by the WebSharks™ Core.
+			 * @param string       $tested_up_to_wp_v Optional. Defaults to the newest version tested by the WebSharks™ Core.
 			 *
-			 * @param string              $requires_at_least_php_v Optional. Defaults to the oldest version tested by the WebSharks™ Core.
-			 *    All of these MUST be valid. See: {@link \websharks_core_v000000_dev\strings\regex_valid_version}
-			 * @param string              $tested_up_to_php_v Optional. Defaults to the newest version tested by the WebSharks™ Core.
-			 * @param string              $requires_at_least_wp_v Optional. Defaults to the oldest version tested by the WebSharks™ Core.
-			 * @param string              $tested_up_to_wp_v Optional. Defaults to the newest version tested by the WebSharks™ Core.
-			 *
-			 * @param null|string|boolean $use_core_phar Defaults to a value of NULL. If ``$plugin_dir`` is set; NULL defaults to TRUE (for plugins).
-			 *    If this is set to a string|boolean value; that value will be used explicitly (e.g. there will be no auto-detection whatsoever).
+			 * @param null|string  $use_core_type Defaults to `directory`. Can be: `directory`, `phar`, or `stub`.
 			 *    This is ONLY applicable to plugin builds. If building the core itself; this parameter is ignored completely.
-			 *    For compatibility with command-line operations; a string value that is considered TRUE or FALSE; is acceptable.
-			 *    For details on this behavior, please see: {@link \websharks_core_v000000_dev\strings\is_true()}.
 			 *
-			 * @param string              $build_from_core_v Optional. This is partially ignored here. It is handled mostly by `/._builder.php`.
+			 * @param string       $build_from_core_v Optional. This is partially ignored here. It is handled mostly by `/._dev-utilities/builder.php`.
 			 *    However, what DO still use it here (if it's passed in); to some extent. If this is passed in, we will verify the current core version.
 			 *    If ``$build_from_core_v`` is passed in, but it does NOT match this version of the core; an exception will be thrown.
 			 *
-			 * @note Instantiation of this class will initiate the build routine (so please be VERY careful).
+			 * @note Instantiation of this class will initiate the build routine (please be VERY careful).
 			 *    Property ``$successes`` will contain messages indicating the final result status of the build procedure.
-			 *    If there is a failure an exception is thrown by this class. We either succeed completely; or throw an exception.
+			 *    If there is a failure, an exception is thrown by this class. We either succeed completely; or throw an exception.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If unable to build according to ``$this->can_build`` property value.
@@ -183,296 +195,327 @@ namespace websharks_core_v000000_dev
 			 */
 			public function __construct($___instance_config, $plugin_dir = '', $plugin_name = '', $plugin_ns = '', $distros_dir = '', $downloads_dir = '',
 			                            $version = '', $requires_at_least_php_v = '', $tested_up_to_php_v = '', $requires_at_least_wp_v = '', $tested_up_to_wp_v = '',
-			                            $use_core_phar = NULL, $build_from_core_v = '')
+			                            $use_core_type = '', $build_from_core_v = '')
 				{
 					parent::__construct($___instance_config);
 
-					// Check arguments expected by this constructor.
-
 					$this->check_arg_types('', 'string', 'string', 'string', 'string', 'string',
-					                       array('integer', 'string'), 'string', 'string', 'string', 'string',
-					                       array('null', 'string', 'boolean'), 'string', func_get_args());
-
-					// Set property value ``$this->can_build``, upon class construction.
+					                       'string', 'string', 'string', 'string', 'string',
+					                       'string', 'string', func_get_args());
 
 					if(!$this->©env->is_cli())
-						$this->can_build = FALSE; // Not the command line.
+						$this->can_build = FALSE;
+
+					else if(!$this->©plugin->is_core())
+						$this->can_build = FALSE;
 
 					else if(!defined('___BUILDER') || !___BUILDER)
-						$this->can_build = FALSE; // Not a builder interface.
+						$this->can_build = FALSE;
 
-					else if(!defined('___REPLICATOR') || !___REPLICATOR)
-						$this->can_build = FALSE; // Not a replicator interface.
+					else $this->can_build = TRUE; // We CAN build here.
 
-					else if($this->___instance_config->plugin_root_ns !== $this->___instance_config->core_ns)
-						$this->can_build = FALSE; // Current instance is NOT the core itself.
+					if(!$this->can_build)
+						throw $this->©exception(
+							__METHOD__.'#cannot_build', get_defined_vars(),
+							$this->i18n('Security check. Unable to build (not allowed here).')
+						);
 
-					else // TRUE (we CAN build here).
-						$this->can_build = TRUE;
+					$this->core_dir      = $this->©dir->n_seps(dirname(dirname(dirname(__FILE__))));
+					$this->core_repo_dir = dirname($this->core_dir);
 
-					// Instantiation of this class will initiate the build routine here.
+					$this->plugin_dir      = ($plugin_dir) ? $this->©dir->n_seps($plugin_dir) : '';
+					$this->plugin_repo_dir = ($plugin_dir) ? dirname($plugin_dir) : '';
+					$this->plugin_name     = ($plugin_dir && $plugin_name) ? $plugin_name : '';
+					$this->plugin_ns       = ($plugin_dir && $plugin_ns) ? $plugin_ns : '';
+					$this->distros_dir     = ($plugin_dir && $distros_dir) ? $this->©dir->n_seps($distros_dir) : '';
+					$this->downloads_dir   = ($plugin_dir && $downloads_dir) ? $this->©dir->n_seps($downloads_dir) : '';
 
-					if($this->can_build) // Security check. We CAN build?
+					$this->version                 = ($version) ? (string)$version : $this->©date->i18n_utc('ymd');
+					$this->requires_at_least_php_v = ($requires_at_least_php_v) ? $requires_at_least_php_v : $this->requires_at_least_php_v;
+					$this->tested_up_to_php_v      = ($tested_up_to_php_v) ? $tested_up_to_php_v : $this->tested_up_to_php_v;
+					$this->requires_at_least_wp_v  = ($requires_at_least_wp_v) ? $requires_at_least_wp_v : $this->requires_at_least_wp_v;
+					$this->tested_up_to_wp_v       = ($tested_up_to_wp_v) ? $tested_up_to_wp_v : $this->tested_up_to_wp_v;
+
+					$this->use_core_type     = ($use_core_type) ? $use_core_type : 'directory'; // Default value.
+					$this->build_from_core_v = ($build_from_core_v) ? $build_from_core_v : $this->___instance_config->core_version;
+
+					if(!$this->core_dir || !is_dir($this->core_dir))
+						throw $this->©exception(
+							__METHOD__.'#nonexistent_core_dir', get_defined_vars(),
+							sprintf($this->i18n('Nonexistent core directory: `%1$s`.'), $this->core_dir)
+						);
+					else if(!is_readable($this->core_dir) || !is_writable($this->core_dir))
+						throw $this->©exception(
+							__METHOD__.'#core_dir_permissions', get_defined_vars(),
+							sprintf($this->i18n('Permission issues with core directory: `%1$s`.'), $this->core_dir)
+						);
+					else if(!$this->core_repo_dir || !is_dir($this->core_repo_dir))
+						throw $this->©exception(
+							__METHOD__.'#nonexistent_core_repo_dir', get_defined_vars(),
+							sprintf($this->i18n('Nonexistent core repo directory: `%1$s`.'), $this->core_repo_dir)
+						);
+					else if(!is_readable($this->core_repo_dir) || !is_writable($this->core_repo_dir))
+						throw $this->©exception(
+							__METHOD__.'#core_repo_dir_permissions', get_defined_vars(),
+							sprintf($this->i18n('Permission issues with core repo directory: `%1$s`.'), $this->core_dir)
+						);
+					else if(!is_file($this->core_repo_dir.'/.gitignore'))
+						throw $this->©exception(
+							__METHOD__.'#core_repo_dir_gitignore', get_defined_vars(),
+							sprintf($this->i18n('Core repo directory is missing this file: `%1$s`.'), $this->core_repo_dir.'/.gitignore')
+						);
+
+					if($this->plugin_dir) // Validation. Also look for possible `-pro` add-on (and/or `-extras`).
 						{
-							$this->core_dir      = $this->©dir->n_seps(dirname(dirname(dirname(__FILE__))));
-							$this->plugin_dir    = ($plugin_dir) ? $this->©dir->n_seps($plugin_dir) : '';
-							$this->plugin_name   = ($plugin_name) ? $plugin_name : '';
-							$this->plugin_ns     = ($plugin_ns) ? $plugin_ns : '';
-							$this->distros_dir   = ($distros_dir) ? $this->©dir->n_seps($distros_dir) : '';
-							$this->downloads_dir = ($downloads_dir) ? $this->©dir->n_seps($downloads_dir) : '';
-
-							$this->version                 = ($version) ? (string)$version : $this->©date->i18n_utc('ymd');
-							$this->requires_at_least_php_v = ($requires_at_least_php_v) ? $requires_at_least_php_v : $this->requires_at_least_php_v;
-							$this->tested_up_to_php_v      = ($tested_up_to_php_v) ? $tested_up_to_php_v : $this->tested_up_to_php_v;
-							$this->requires_at_least_wp_v  = ($requires_at_least_wp_v) ? $requires_at_least_wp_v : $this->requires_at_least_wp_v;
-							$this->tested_up_to_wp_v       = ($tested_up_to_wp_v) ? $tested_up_to_wp_v : $this->tested_up_to_wp_v;
-
-							$this->use_core_phar = ($this->plugin_dir) ? TRUE : FALSE;
-							if($this->plugin_dir && is_bool($use_core_phar))
-								$this->use_core_phar = $use_core_phar;
-							else if($this->plugin_dir && is_string($use_core_phar) && strlen($use_core_phar))
-								$this->use_core_phar = $this->©string->is_true($use_core_phar);
-
-							$this->build_from_core_v = ($build_from_core_v) ? $build_from_core_v : $this->___instance_config->core_version;
-
-							if(!is_dir($this->core_dir))
-								throw $this->©exception(
-									__METHOD__.'#nonexistent_core_dir', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent core directory: `%1$s`.'), $this->core_dir)
-								);
-							else if(!is_readable($this->core_dir) || !is_writable($this->core_dir))
-								throw $this->©exception(
-									__METHOD__.'#plugin_dir_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with core directory: `%1$s`.'), $this->core_dir)
-								);
-							else if(!is_file(dirname($this->core_dir).'/.gitignore'))
-								throw $this->©exception(
-									__METHOD__.'#core_dir_gitignore', get_defined_vars(),
-									sprintf($this->i18n('Core directory is missing this file: `%1$s`.'), dirname($this->core_dir).'/.gitignore')
-								);
-
-							if($this->plugin_dir && !is_dir($this->plugin_dir))
+							if(!is_dir($this->plugin_dir))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_plugin_dir', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent plugin directory: `%1$s`.'), $this->plugin_dir)
 								);
-							else if($this->plugin_dir && (!is_readable($this->plugin_dir) || !is_writable($this->plugin_dir)))
+							else if(!is_readable($this->plugin_dir) || !is_writable($this->plugin_dir))
 								throw $this->©exception(
 									__METHOD__.'#plugin_dir_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with plugin directory: `%1$s`.'), $this->plugin_dir)
 								);
-							else if($this->plugin_dir && !is_file(dirname($this->plugin_dir).'/.gitignore'))
+							else if(!$this->plugin_repo_dir || !is_dir($this->plugin_repo_dir))
 								throw $this->©exception(
-									__METHOD__.'#plugin_dir_gitignore', get_defined_vars(),
-									sprintf($this->i18n('Plugin directory is missing this file: `%1$s`.'), dirname($this->plugin_dir).'/.gitignore')
+									__METHOD__.'#nonexistent_plugin_repo_dir', get_defined_vars(),
+									sprintf($this->i18n('Nonexistent plugin repo directory: `%1$s`.'), $this->plugin_repo_dir)
 								);
-							else if($this->plugin_dir && !$this->plugin_name)
+							else if(!is_readable($this->plugin_repo_dir) || !is_writable($this->plugin_repo_dir))
+								throw $this->©exception(
+									__METHOD__.'#plugin_repo_dir_permissions', get_defined_vars(),
+									sprintf($this->i18n('Permission issues with plugin repo directory: `%1$s`.'), $this->plugin_repo_dir)
+								);
+							else if(!is_file($this->plugin_repo_dir.'/.gitignore'))
+								throw $this->©exception(
+									__METHOD__.'#plugin_repo_dir_gitignore', get_defined_vars(),
+									sprintf($this->i18n('Plugin repo directory is missing this file: `%1$s`.'), $this->plugin_repo_dir.'/.gitignore')
+								);
+							else if(!$this->plugin_name)
 								throw $this->©exception(
 									__METHOD__.'#missing_plugin_name', get_defined_vars(),
 									sprintf($this->i18n('Missing plugin name for: `%1$s`.'), $this->plugin_dir)
 								);
-							else if($this->plugin_dir && !$this->plugin_ns)
+							else if(!$this->plugin_ns)
 								throw $this->©exception(
 									__METHOD__.'#missing_plugin_ns', get_defined_vars(),
 									sprintf($this->i18n('Missing plugin namespace for: `%1$s`.'), $this->plugin_dir)
 								);
-							else if($this->plugin_dir && (!$this->distros_dir || !is_dir($this->distros_dir)))
+							else if(!$this->distros_dir || !is_dir($this->distros_dir))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_distros_dir', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent distros directory: `%1$s`.'), $this->distros_dir)
 								);
-							else if($this->plugin_dir && (!$this->downloads_dir || !is_dir($this->downloads_dir)))
-								throw $this->©exception(
-									__METHOD__.'#nonexistent_downloads_dir', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent downloads directory: `%1$s`.'), $this->downloads_dir)
-								);
-							else if($this->plugin_dir && (!is_readable($this->distros_dir) || !is_writable($this->distros_dir)))
+							else if(!is_readable($this->distros_dir) || !is_writable($this->distros_dir))
 								throw $this->©exception(
 									__METHOD__.'#distros_dir_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with distros directory: `%1$s`.'), $this->distros_dir)
 								);
-							else if($this->plugin_dir && (!is_readable($this->downloads_dir) || !is_writable($this->downloads_dir)))
+							else if(!$this->downloads_dir || !is_dir($this->downloads_dir))
+								throw $this->©exception(
+									__METHOD__.'#nonexistent_downloads_dir', get_defined_vars(),
+									sprintf($this->i18n('Nonexistent downloads directory: `%1$s`.'), $this->downloads_dir)
+								);
+							else if(!is_readable($this->downloads_dir) || !is_writable($this->downloads_dir))
 								throw $this->©exception(
 									__METHOD__.'#downloads_dir_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with downloads directory: `%1$s`.'), $this->downloads_dir)
 								);
 
-							if($this->plugin_dir) // Let's look for a possible `-pro` add-on project.
+							$_plugins_dir           = dirname(dirname($this->plugin_dir));
+							$_possible_pro_repo_dir = $_plugins_dir.'/'.basename($this->plugin_dir).'-pro';
+							$_possible_pro_dir      = $_possible_pro_repo_dir.'/'.basename($this->plugin_dir).'-pro';
+
+							if(basename($_plugins_dir) !== 'plugins')
+								throw $this->©exception(
+									__METHOD__.'#missing_plugins_dir', get_defined_vars(),
+									sprintf($this->i18n('Missing `plugins` directory here: `%1$s`.'), $_plugins_dir)
+								);
+							else if(is_dir($_possible_pro_repo_dir) && !is_dir($_possible_pro_dir))
+								throw $this->©exception( // Should exist in this case.
+									__METHOD__.'#missing_plugin_pro_dir', get_defined_vars(),
+									sprintf($this->i18n('Missing plugin pro directory here: `%1$s`.'), $_possible_pro_dir)
+								);
+							if(is_dir($_possible_pro_dir))
 								{
-									$_plugins_dir              = dirname(dirname($this->plugin_dir));
-									$_possible_pro_project_dir = $_plugins_dir.'/'.basename($this->plugin_dir).'-pro';
-									$_possible_pro_dir         = $_possible_pro_project_dir.'/'.basename($this->plugin_dir).'-pro';
-
-									// We back up two directories; and look for this to exist as a separate `plugins/` project dir.
-									// This is a VERY important step; in order to AVOID using a directory junction from the main plugin directory.
-									// Also because we need a `.gitignore` file for the `-pro` project dir so exclusions are handled correctly.
-
-									if(basename($_plugins_dir) === 'plugins' && is_dir($_possible_pro_dir))
-										$this->plugin_pro_dir = $_possible_pro_dir;
-
-									unset($_plugins_dir, $_possible_pro_project_dir, $_possible_pro_dir); // Housekeeping.
+									$this->plugin_pro_dir      = $_possible_pro_dir;
+									$this->plugin_pro_repo_dir = $_possible_pro_repo_dir;
 								}
-							if($this->plugin_dir && is_dir($this->plugin_dir.'-extras')) // Let's look for a possible `-extras` directory.
-								$this->plugin_extras_dir = $this->plugin_dir.'-extras'; // We expect this to live in the same project directory.
+							unset($_plugins_dir, $_possible_pro_repo_dir, $_possible_pro_dir);
 
-							if($this->plugin_dir && $this->plugin_pro_dir && (!is_readable($this->plugin_pro_dir) || !is_writable($this->plugin_pro_dir)))
-								throw $this->©exception(
-									__METHOD__.'#plugin_pro_dir_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with plugin pro directory: `%1$s`.'), $this->plugin_pro_dir)
-								);
-							else if($this->plugin_dir && $this->plugin_pro_dir && !is_file($this->plugin_pro_dir.'/.gitignore'))
-								throw $this->©exception(
-									__METHOD__.'#plugin_pro_dir_gitignore', get_defined_vars(),
-									sprintf($this->i18n('Plugin pro directory is missing this file: `%1$s`.'), $this->plugin_pro_dir.'/.gitignore')
-								);
+							if($this->plugin_pro_dir) // Validate pro plugin directory if it exists.
+								{
+									if(!is_readable($this->plugin_pro_dir) || !is_writable($this->plugin_pro_dir))
+										throw $this->©exception(
+											__METHOD__.'#plugin_pro_dir_permissions', get_defined_vars(),
+											sprintf($this->i18n('Permission issues with plugin pro directory: `%1$s`.'), $this->plugin_pro_dir)
+										);
+									else if(!is_readable($this->plugin_pro_repo_dir) || !is_writable($this->plugin_pro_repo_dir))
+										throw $this->©exception(
+											__METHOD__.'#plugin_pro_repo_dir_permissions', get_defined_vars(),
+											sprintf($this->i18n('Permission issues with plugin pro repo directory: `%1$s`.'), $this->plugin_pro_repo_dir)
+										);
+									else if(!is_file($this->plugin_pro_repo_dir.'/.gitignore'))
+										throw $this->©exception(
+											__METHOD__.'#plugin_pro_repo_dir_gitignore', get_defined_vars(),
+											sprintf($this->i18n('Plugin pro directory is missing this file: `%1$s`.'), $this->plugin_pro_repo_dir.'/.gitignore')
+										);
+								}
+							if(is_dir($this->plugin_dir.'-extras'))
+								$this->plugin_extras_dir = $this->plugin_dir.'-extras';
 
-							if($this->plugin_dir && $this->plugin_extras_dir && (!is_readable($this->plugin_extras_dir) || !is_writable($this->plugin_extras_dir)))
-								throw $this->©exception(
-									__METHOD__.'#plugin_extras_dir_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with plugin extras directory: `%1$s`.'), $this->plugin_extras_dir)
-								);
-
-							if(!preg_match($this->©string->regex_valid_ws_version, $this->version))
-								throw $this->©exception(
-									__METHOD__.'#invalid_version', get_defined_vars(),
-									sprintf($this->i18n('Invalid WebSharks™ version string: `%1$s`.'), $this->version)
-								);
-							else if(!preg_match($this->©string->regex_valid_version, $this->requires_at_least_php_v))
-								throw $this->©exception(
-									__METHOD__.'#invalid_requires_at_least_php_v', get_defined_vars(),
-									sprintf($this->i18n('Invalid `Requires at least` PHP version string: `%1$s`.'), $this->requires_at_least_php_v)
-								);
-							else if(!preg_match($this->©string->regex_valid_version, $this->tested_up_to_php_v))
-								throw $this->©exception(
-									__METHOD__.'#invalid_tested_up_to_php_v', get_defined_vars(),
-									sprintf($this->i18n('Invalid `Tested up to` PHP version string: `%1$s`.'), $this->tested_up_to_php_v)
-								);
-							else if(!preg_match($this->©string->regex_valid_version, $this->requires_at_least_wp_v))
-								throw $this->©exception(
-									__METHOD__.'#invalid_requires_at_least_wp_v', get_defined_vars(),
-									sprintf($this->i18n('Invalid `Requires at least` version string: `%1$s`.'), $this->requires_at_least_wp_v)
-								);
-							else if(!preg_match($this->©string->regex_valid_version, $this->tested_up_to_wp_v))
-								throw $this->©exception(
-									__METHOD__.'#invalid_tested_up_to_wp_v', get_defined_vars(),
-									sprintf($this->i18n('Invalid `Tested up to` version string: `%1$s`.'), $this->tested_up_to_wp_v)
-								);
-
-							if($this->build_from_core_v !== $this->___instance_config->core_version)
-								throw $this->©exception(
-									__METHOD__.'#invalid_build_from_core_v', get_defined_vars(),
-									sprintf($this->i18n('Building from incorrect core version: `%1$s`.'), $this->build_from_core_v).
-									sprintf($this->i18n(' This is version `%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version)
-								);
-
-							$this->starting_git_branches['core'] = // WebSharks™ Core.
-								$this->©command->git_current_branch(dirname($this->core_dir));
-
-							if($this->plugin_dir) // For plugin directory repo (if building a plugin).
-								$this->starting_git_branches['plugin'] = $this->©command->git_current_branch(dirname($this->plugin_dir));
-
-							if($this->plugin_dir && $this->plugin_pro_dir) // Pro plugin's pro add-on repo (if building a plugin).
-								$this->starting_git_branches['plugin_pro'] = $this->©command->git_current_branch(dirname($this->plugin_pro_dir));
-
-							if(($successes = $this->build())) $this->successes = $successes;
-
-							else throw $this->©exception(__METHOD__.'#build_failure', NULL, $this->i18n('Failure. Unable to build (unknown error).'));
+							if($this->plugin_extras_dir) // Validate plugin extras directory if it exists.
+								{
+									if(!is_readable($this->plugin_extras_dir) || !is_writable($this->plugin_extras_dir))
+										throw $this->©exception(
+											__METHOD__.'#plugin_extras_dir_permissions', get_defined_vars(),
+											sprintf($this->i18n('Permission issues with plugin extras directory: `%1$s`.'), $this->plugin_extras_dir)
+										);
+								}
 						}
-					else throw $this->©exception(__METHOD__.'#cannot_build', NULL, $this->i18n('Security check. Unable to build (not allowed here).'));
+					if(!preg_match($this->©string->regex_valid_ws_version, $this->version))
+						throw $this->©exception(
+							__METHOD__.'#invalid_version', get_defined_vars(),
+							sprintf($this->i18n('Not a WebSharks™ compatible version string: `%1$s`.'), $this->version)
+						);
+					else if(!preg_match($this->©string->regex_valid_version, $this->requires_at_least_php_v))
+						throw $this->©exception(
+							__METHOD__.'#invalid_requires_at_least_php_v', get_defined_vars(),
+							sprintf($this->i18n('Invalid `Requires at least` PHP version string: `%1$s`.'), $this->requires_at_least_php_v)
+						);
+					else if(!preg_match($this->©string->regex_valid_version, $this->tested_up_to_php_v))
+						throw $this->©exception(
+							__METHOD__.'#invalid_tested_up_to_php_v', get_defined_vars(),
+							sprintf($this->i18n('Invalid `Tested up to` PHP version string: `%1$s`.'), $this->tested_up_to_php_v)
+						);
+					else if(!preg_match($this->©string->regex_valid_version, $this->requires_at_least_wp_v))
+						throw $this->©exception(
+							__METHOD__.'#invalid_requires_at_least_wp_v', get_defined_vars(),
+							sprintf($this->i18n('Invalid `Requires at least` WP version string: `%1$s`.'), $this->requires_at_least_wp_v)
+						);
+					else if(!preg_match($this->©string->regex_valid_version, $this->tested_up_to_wp_v))
+						throw $this->©exception(
+							__METHOD__.'#invalid_tested_up_to_wp_v', get_defined_vars(),
+							sprintf($this->i18n('Invalid `Tested up to` WP version string: `%1$s`.'), $this->tested_up_to_wp_v)
+						);
+
+					if(!in_array($this->use_core_type, array('directory', 'phar', 'stub'), TRUE))
+						throw $this->©exception(
+							__METHOD__.'#invalid_core_type', get_defined_vars(),
+							sprintf($this->i18n('Invalid core type: `%1$s`.'), $this->use_core_type)
+						);
+
+					if($this->build_from_core_v !== $this->___instance_config->core_version)
+						throw $this->©exception(
+							__METHOD__.'#invalid_build_from_core_v', get_defined_vars(),
+							sprintf($this->i18n('Building from incorrect core version: `%1$s`.'), $this->build_from_core_v).
+							sprintf($this->i18n(' This is version `%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version)
+						);
+
+					$this->starting_git_branches['core'] = $this->©command->git_current_branch($this->core_repo_dir);
+
+					if($this->plugin_dir) // For plugin directory repo (if building a plugin).
+						$this->starting_git_branches['plugin'] = $this->©command->git_current_branch($this->plugin_repo_dir);
+
+					if($this->plugin_dir && $this->plugin_pro_dir) // Pro plugin's pro add-on repo (if building a plugin).
+						$this->starting_git_branches['plugin_pro'] = $this->©command->git_current_branch($this->plugin_pro_repo_dir);
+
+					$this->©env->prep_for_cli_dev_procedure();
+
+					$this->successes = $this->build();
 				}
 
 			/**
-			 * Handles plugin builds.
+			 * Handles WebSharks™ Core and plugin builds.
 			 *
 			 * @return successes Returns an instance of successes; else throws an exception on any type of failure.
 			 *
-			 * @throws exception If unable to update files in the plugin directory(s).
+			 * @throws exception On any kind of build failure (no matter what the issue is).
+			 *    We either succeed completely; or we throw an exception.
 			 */
-			protected function build() // Handles plugin builds.
+			protected function build()
 				{
-					$this->©env->prep_for_cli_dev_procedure();
-
 					$successes = $this->©successes(
 						__METHOD__.'#start_time', get_defined_vars(),
 						sprintf($this->i18n('Start time: %1$s.'), $this->©env->time_details())
 					);
-
 					$successes->add(__METHOD__.'#starting_branch_core', get_defined_vars(),
-					                sprintf($this->i18n('Building from WebSharks™ Core GIT branch: `%1$s`; version: `%2$s`.'),
+					                sprintf($this->i18n('Building from WebSharks™ Core GIT branch: `%1$s` (version: `%2$s`).'),
 					                        $this->starting_git_branches['core'], $this->___instance_config->core_version)
 					);
-
 					if($this->plugin_dir) // Building a plugin.
 						{
-							// Create a restore point by committing all new and/or changed files.
+							// Create a restore point by committing all files.
 
-							$this->©command->git('add --all', dirname($this->plugin_dir));
-							$this->©command->git('commit --all --allow-empty --message '.escapeshellarg($this->i18n('Auto-commit; before building.')), dirname($this->plugin_dir));
+							$this->©command->git('add --all', $this->plugin_repo_dir);
+							$this->©command->git('commit --all --allow-empty --message '. // Restore point (before building).
+							                     escapeshellarg($this->i18n('Auto-commit; before building plugin.')), $this->plugin_repo_dir);
 
 							$successes->add(__METHOD__.'#before_building_plugin', get_defined_vars(),
-							                sprintf($this->i18n('All existing files (new and/or changed) on the starting GIT branch: `%1$s`;'.
-							                                    ' have been added to the list of GIT-tracked files in this plugin repo.'), $this->starting_git_branches['plugin']).
-							                $this->i18n(' A commit has been processed for all changes to the existing file structure (before new branch creation).')
+							                sprintf($this->i18n('All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in this plugin repo: `%2$s`.'), $this->starting_git_branches['plugin'], $this->plugin_repo_dir).
+							                $this->i18n(' Restore point. A commit has been processed for all changes to the existing file structure (before new branch creation).')
 							);
-
 							// Create a new GIT branch for this version (and switch to this new branch).
 
-							$this->©command->git('checkout -b '.escapeshellarg($this->version), dirname($this->plugin_dir));
-							// An exception is thrown if the branch already exists. GIT returns a non-zero status.
+							$this->©command->git('checkout -b '.escapeshellarg($this->version), $this->plugin_repo_dir);
 
 							$successes->add(__METHOD__.'#new_branch_before_building_plugin', get_defined_vars(),
-							                sprintf($this->i18n(' A new GIT branch has been created for plugin version: `%1$s`.'), $this->version)
+							                sprintf($this->i18n('A new GIT branch has been created for plugin version: `%1$s`.'), $this->version).
+							                sprintf($this->i18n(' Now working from this new GIT branch: `%1$s`.'), $this->version)
 							);
-
 							// WebSharks™ Core replication.
 
 							$_new_core_dir = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes;
 
-							$this->©dir->empty_and_remove($_new_core_dir); // In case it already exists (we need to remove it first).
-							$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_core_dir.'/'), dirname($this->plugin_dir));
+							$this->©dir->empty_and_remove($_new_core_dir); // In case it already exists.
+							$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 
-							$_replication = $this->©replicate($this->plugin_dir, TRUE, 0, array('.gitignore' => dirname($this->core_dir).'/.gitignore'));
-							$this->©dir->rename_to($_replication->to_dir, $_new_core_dir);
-							unset($_replication); // Housekeeping.
+							$this->©dir->rename_to($this->©replicate($this->plugin_dir, $this->plugin_repo_dir, '', array('.gitignore' => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_core_dir);
+							$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 
-							$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_dir.'/'), dirname($this->plugin_dir));
-
-							$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_dir', get_defined_vars(),
-							                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this plugin directory: `%1$s`.'), $_new_core_dir).
-							                $this->i18n(' This directory has also been added to the list of GIT-tracked files in this plugin repo (but only temporarily).').
-							                sprintf($this->i18n(' Every file in the entire plugin directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version)
-							);
-
-							// Copy WebSharks™ Core stub into the main plugin directory?
-
-							if(!$this->use_core_phar) // Only if NOT using the core as a single PHAR file.
+							if($this->use_core_type !== 'directory') // Should we delete the directory immediately?
 								{
-									$_core_stub     = $this->core_dir.'/stub.php';
-									$_new_core_stub = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
-
-									$this->©file->unlink($_new_core_stub); // In case it already exists (we need to remove it first).
-									$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_stub), dirname($this->plugin_dir));
-
-									$this->©file->copy_to($_core_stub, $_new_core_stub);
-									$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_stub), dirname($this->plugin_dir));
-
-									$successes->add(__METHOD__.'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
-									                sprintf($this->i18n('The WebSharks™ Core stub has been added to the plugin directory: `%1$s`.'), $_new_core_stub).
-									                $this->i18n(' This file has also been added to the list of GIT-tracked files in this plugin repo.')
-									);
-									unset($_core_stub, $_new_core_stub);
+									$this->©dir->empty_and_remove($_new_core_dir); // Delete immediately.
+									$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 								}
+							$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_dir', get_defined_vars(),
+							                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this plugin directory location: `%1$s`.'), $_new_core_dir).
+							                sprintf($this->i18n(' Every file in the entire plugin repo directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version).
+							                (($this->use_core_type === 'directory') ? $this->i18n(' The temporary WebSharks™ Core directory has been added to the list of GIT-tracked files in this plugin repo (but only temporarily; for distro creation momentarily).')
+								                : $this->i18n(' The temporary WebSharks™ Core directory has been deleted; and also removed from the list of GIT-tracked files in this repo. It will be excluded from the final distro.'))
+							);
+							if($this->use_core_type !== 'directory') unset($_new_core_dir); // Housekeeping.
 
-							// Bundle the WebSharks™ Core PHP Archive stub; instead of the full directory?
+							// WebSharks™ Core stub file (always).
 
-							if($this->use_core_phar) // Optional (this is only applicable to plugins).
+							$_core_stub     = $this->core_dir.'/stub.php';
+							$_new_core_stub = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
+
+							$this->©file->unlink($_new_core_stub); // In case it already exists.
+							$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
+
+							$this->©file->copy_to($_core_stub, $_new_core_stub);
+							$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
+
+							$successes->add(__METHOD__.'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
+							                sprintf($this->i18n('The WebSharks™ Core stub has been added to the plugin directory here: `%1$s`.'), $_new_core_stub).
+							                sprintf($this->i18n(' The WebSharks™ Core stub has also been added to the list of GIT-tracked files in this plugin repo: `%1$s`.'), $this->plugin_repo_dir).
+							                $this->i18n(' The WebSharks™ Core stub will remain in the plugin repo. This unifies the way in which plugins include the WebSharks™ Core. Making it possible for a plugin to utilize different types of WebSharks™ Core distributions — without modification.').
+							                $this->i18n(' While a plugin\'s repo will NOT include the entire WebSharks™ Core (that\'s what the distro is for); leaving the stub behind (in the repo) allows a plugin to function, so long as the WebSharks™ Core is available somewhere on the site; in one form or another.')
+							);
+							unset($_core_stub, $_new_core_stub); // Housekeeping.
+
+							// Bundle WebSharks™ Core PHP archive (e.g. the PHAR file)?
+
+							if($this->use_core_type === 'phar') // Only if we ARE using a PHAR file.
 								{
-									$_core_phar_stub           = dirname($this->core_dir).'/'.$this->___instance_config->core_ns_stub_with_dashes.'.phar.php';
-									$_new_core_phar_stub       = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
+									$_core_phar                = $this->core_repo_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
+									$_new_core_phar            = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
 									$_plugin_dir_htaccess_file = $this->plugin_dir.'/.htaccess';
 
-									$this->©file->unlink($_new_core_phar_stub); // In case it already exists (we need to remove it first).
-									$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_phar_stub), dirname($this->plugin_dir));
+									$this->©file->unlink($_new_core_phar); // In case it already exists.
+									$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
 
 									if(!is_file($_plugin_dir_htaccess_file)
 									   || !is_readable($_plugin_dir_htaccess_file)
@@ -483,19 +526,15 @@ namespace websharks_core_v000000_dev
 										$this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 									);
 
-									$this->©file->copy_to($_core_phar_stub, $_new_core_phar_stub);
-									$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_phar_stub), dirname($this->plugin_dir));
-									$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), dirname($this->plugin_dir));
+									$this->©file->copy_to($_core_phar, $_new_core_phar);
+									$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
 
-									$successes->add(__METHOD__.'#new_core_phar_stub_added_to_plugin_dir', get_defined_vars(),
-									                sprintf($this->i18n('The WebSharks™ Core PHAR stub for `v%1$s`; has been copied to: `%2$s`.'), $this->___instance_config->core_version, $_new_core_phar_stub).
-									                $this->i18n(' This file (a compressed PHP Archive); has been added to the list of GIT-tracked files in this plugin repo.').
-									                sprintf($this->i18n(' The original full WebSharks™ Core directory has been removed from the list of GIT-tracked files'.
-									                                    ' in this repo: `%1$s`. It will be excluded from the final distro.'), $_new_core_dir)
+									$successes->add(__METHOD__.'#new_core_phar_added_to_plugin_dir', get_defined_vars(),
+									                sprintf($this->i18n('The WebSharks™ Core PHAR file for `v%1$s`; has been copied to: `%2$s`.'), $this->___instance_config->core_version, $_new_core_phar).
+									                sprintf($this->i18n(' This file (a compressed PHP Archive); has been added to the list of GIT-tracked files in this plugin repo: `%1$s` (but only temporarily; for distro creation momentarily).'), $this->plugin_repo_dir)
 									);
-									unset($_core_phar_stub, $_new_core_phar_stub, $_plugin_dir_htaccess_file);
+									unset($_core_phar, $_plugin_dir_htaccess_file); // Housekeeping.
 								}
-
 							// Update various plugin files w/ version numbers and other requirements.
 
 							$_plugin_file           = $this->plugin_dir.'/plugin.php';
@@ -588,12 +627,11 @@ namespace websharks_core_v000000_dev
 							$_plugin_distro_dir = $this->distros_dir.'/'.basename($this->plugin_dir);
 
 							$this->©dir->empty_and_remove($_plugin_distro_dir);
-							$this->©dir->copy_to($this->plugin_dir, $_plugin_distro_dir, array('.gitignore' => dirname($this->plugin_dir).'/.gitignore'), TRUE);
+							$this->©dir->copy_to($this->plugin_dir, $_plugin_distro_dir, array('.gitignore' => $this->plugin_repo_dir.'/.gitignore'), TRUE);
 
 							$successes->add(__METHOD__.'#plugin_distro_files', get_defined_vars(),
 							                sprintf($this->i18n('Plugin distro files copied to: `%1$s`.'), $_plugin_distro_dir)
 							);
-
 							// Generate plugin distro directory checksum.
 
 							$_plugin_distro_dir_checksum = $this->©dir->checksum($_plugin_distro_dir, TRUE);
@@ -618,47 +656,69 @@ namespace websharks_core_v000000_dev
 							);
 							unset($_plugin_distro_dir, $_plugin_download_zip, $_plugin_download_v_zip); // Housekeeping.
 
+							// Remove temporary WebSharks™ Core directory from the plugin directory.
+
+							if($this->use_core_type === 'directory' && isset($_new_core_dir))
+								{
+									$this->©dir->empty_and_remove($_new_core_dir); // Delete this directory now.
+									$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
+
+									$successes->add(__METHOD__.'#new_core_dir_deletion', get_defined_vars(),
+									                sprintf($this->i18n(' The temporary WebSharks™ Core directory: `%1$s`; has been deleted from the plugin directory.'), $_new_core_dir).
+									                sprintf($this->i18n(' The temporary WebSharks™ Core directory was also removed from the list of GIT-tracked files in this repo: `%1$s`.'), $this->plugin_repo_dir)
+									);
+									unset($_new_core_dir); // Housekeeping.
+								}
+							// Remove new temporary WebSharks™ Core PHAR file from the plugin directory.
+
+							if($this->use_core_type === 'phar' && isset($_new_core_phar))
+								{
+									$this->©file->unlink($_new_core_phar); // Delete this file from the plugin directory now.
+									$this->©command->git('rm --cached '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
+
+									$successes->add(__METHOD__.'#new_core_phar_deletion', get_defined_vars(),
+									                sprintf($this->i18n(' The temporary WebSharks™ Core PHAR file: `%1$s`; has been deleted from the plugin directory.'), $_new_core_phar).
+									                sprintf($this->i18n(' The temporary WebSharks™ Core PHAR file was also removed from the list of GIT-tracked files in this repo: `%1$s`.'), $this->plugin_repo_dir)
+									);
+									unset($_new_core_phar); // Housekeeping.
+								}
 							// Handle a possible pro add-on directory.
 
 							if($this->plugin_pro_dir) // Is there a pro directory also?
 								{
 									// Create a restore point by committing all new and/or changed files.
 
-									$this->©command->git('add --all', dirname($this->plugin_pro_dir));
-									$this->©command->git('commit --all --allow-empty --message '.escapeshellarg($this->i18n('Auto-commit; before building.')), dirname($this->plugin_pro_dir));
+									$this->©command->git('add --all', $this->plugin_pro_repo_dir);
+									$this->©command->git('commit --all --allow-empty --message '. // Restore point (before building).
+									                     escapeshellarg($this->i18n('Auto-commit; before building pro add-on.')), $this->plugin_pro_repo_dir);
 
 									$successes->add(__METHOD__.'#before_building_plugin_pro', get_defined_vars(),
-									                sprintf($this->i18n('All existing files (new and/or changed) on the starting GIT branch: `%1$s`;'.
-									                                    ' have been added to the list of GIT-tracked files in this plugin\'s pro repo.'), $this->starting_git_branches['plugin_pro']).
-									                $this->i18n(' A commit has been processed for all changes to the existing file structure (before new branch creation).')
+									                sprintf($this->i18n('All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in this plugin\'s pro repo directory: `%2$s`.'), $this->starting_git_branches['plugin_pro'], $this->plugin_pro_repo_dir).
+									                $this->i18n(' Restore point. A commit has been processed for all changes to the existing file structure (before new branch creation).')
 									);
-
 									// Create a new GIT branch for this version (and switch to this new branch).
 
-									$this->©command->git('checkout -b '.escapeshellarg($this->version), dirname($this->plugin_pro_dir));
-									// An exception is thrown if the branch already exists. GIT returns a non-zero status.
+									$this->©command->git('checkout -b '.escapeshellarg($this->version), $this->plugin_pro_repo_dir);
 
 									$successes->add(__METHOD__.'#new_branch_before_building_plugin_pro', get_defined_vars(),
-									                sprintf($this->i18n(' A new GIT branch has been created for plugin pro version: `%1$s`.'), $this->version)
+									                sprintf($this->i18n('A new GIT branch has been created for plugin pro version: `%1$s`.'), $this->version).
+									                sprintf($this->i18n(' Now working from this new GIT branch: `%1$s`.'), $this->version)
 									);
-
 									// WebSharks™ Core replication.
 
 									$_new_pro_core_dir = $this->plugin_pro_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes;
 
-									$this->©dir->empty_and_remove($_new_pro_core_dir); // In case it already exists (we need to remove it first).
-									$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_pro_core_dir.'/'), dirname($this->plugin_pro_dir));
+									$this->©dir->empty_and_remove($_new_pro_core_dir); // In case it already exists.
+									$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_pro_core_dir.'/'), $this->plugin_pro_repo_dir);
 
-									$_replication = $this->©replicate($this->plugin_pro_dir, TRUE, 0, array('.gitignore' => dirname($this->core_dir).'/.gitignore'));
-									$this->©dir->rename_to($_replication->to_dir, $_new_pro_core_dir);
-									unset($_replication); // Housekeeping.
-
-									$this->©dir->empty_and_remove($_new_pro_core_dir);
+									$this->©dir->rename_to($this->©replicate($this->plugin_pro_dir, $this->plugin_pro_repo_dir, '', array('.gitignore' => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_pro_core_dir);
+									$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_pro_core_dir.'/'), $this->plugin_pro_repo_dir);
+									$this->©dir->empty_and_remove($_new_pro_core_dir); // Remove it immediately.
 
 									$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_pro_dir', get_defined_vars(),
 									                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this plugin pro directory: `%1$s`.'), $_new_pro_core_dir).
-									                sprintf($this->i18n(' Every file in the entire plugin pro directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version).
-									                sprintf($this->i18n(' The temporary WebSharks™ Core has been deleted from the plugin pro directory: `%1$s`.'), $_new_pro_core_dir)
+									                sprintf($this->i18n(' Every file in the entire plugin pro repo directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version).
+									                sprintf($this->i18n(' The temporary WebSharks™ Core was deleted from the plugin pro directory immediately after processing: `%1$s`.'), $_new_pro_core_dir)
 									);
 									unset($_new_pro_core_dir); // Housekeeping.
 
@@ -754,12 +814,11 @@ namespace websharks_core_v000000_dev
 									$_plugin_pro_distro_dir = $this->distros_dir.'/'.basename($this->plugin_pro_dir);
 
 									$this->©dir->empty_and_remove($_plugin_pro_distro_dir);
-									$this->©dir->copy_to($this->plugin_pro_dir, $_plugin_pro_distro_dir, array('.gitignore' => dirname($this->plugin_pro_dir).'/.gitignore'), TRUE);
+									$this->©dir->copy_to($this->plugin_pro_dir, $_plugin_pro_distro_dir, array('.gitignore' => $this->plugin_pro_repo_dir.'/.gitignore'), TRUE);
 
 									$successes->add(__METHOD__.'#plugin_pro_distro_files', get_defined_vars(),
 									                sprintf($this->i18n('Plugin pro distro files copied to: `%1$s`.'), $_plugin_pro_distro_dir)
 									);
-
 									// Generate plugin distro directory checksum.
 
 									$_plugin_pro_distro_dir_checksum = $this->©dir->checksum($_plugin_pro_distro_dir, TRUE);
@@ -782,12 +841,20 @@ namespace websharks_core_v000000_dev
 									                sprintf($this->i18n('Plugin pro distro zipped into: `%1$s`.'), $_plugin_pro_download_zip).
 									                sprintf($this->i18n(' And copied into this version: `%1$s`.'), $_plugin_pro_download_v_zip)
 									);
-									unset($_plugin_pro_distro_dir, $_plugin_pro_download_zip, $_plugin_pro_download_v_zip); // Housekeeping.
-								}
+									unset($_plugin_pro_distro_dir, $_plugin_pro_download_zip, $_plugin_pro_download_v_zip);
 
+									// A final commit before we complete the pro add-on build procedure.
+
+									$this->©command->git('add --all', $this->plugin_pro_repo_dir);
+									$this->©command->git('commit --all --allow-empty --message '. // Final commit (after building).
+									                     escapeshellarg($this->i18n('Auto-commit; after building pro add-on.')), $this->plugin_pro_repo_dir);
+
+									$successes->add(__METHOD__.'#commit_after_building_plugin_pro', get_defined_vars(),
+									                sprintf($this->i18n('All files (new and/or changed) on GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the plugin pro repo.'), $this->version).
+									                $this->i18n(' Pro add-on finale. A commit has been processed for all changes to the new pro directory/file structure.')
+									);
+								}
 							// Handle a possible extras directory.
-							// The routines below assume that we are NOT GIT-tracking the extras directory.
-							// A plugin extras directory should NOT be GIT-tracked. These are EXTRAS.
 
 							if($this->plugin_extras_dir) // Is there an extras directory also?
 								{
@@ -795,50 +862,51 @@ namespace websharks_core_v000000_dev
 
 									$_new_extras_core_dir = $this->plugin_extras_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes;
 
-									$this->©dir->empty_and_remove($_new_extras_core_dir); // In case it already exists (we need to remove it first).
+									$this->©dir->empty_and_remove($_new_extras_core_dir); // In case it already exists.
+									$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_extras_core_dir.'/'), $this->plugin_repo_dir);
 
-									$_replication = $this->©replicate($this->plugin_extras_dir, TRUE, 0, array('.gitignore' => dirname($this->core_dir).'/.gitignore'));
-									$this->©dir->rename_to($_replication->to_dir, $_new_extras_core_dir);
-									unset($_replication); // Housekeeping.
-
-									$this->©dir->empty_and_remove($_new_extras_core_dir);
+									$this->©dir->rename_to($this->©replicate($this->plugin_extras_dir, $this->plugin_extras_dir, '', array('.gitignore' => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_extras_core_dir);
+									$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_extras_core_dir.'/'), $this->plugin_repo_dir);
+									$this->©dir->empty_and_remove($_new_extras_core_dir); // Remove it immediately.
 
 									$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_extras_dir', get_defined_vars(),
 									                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this plugin extras directory: `%1$s`.'), $_new_extras_core_dir).
 									                sprintf($this->i18n(' Every file in the entire plugin extras directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version).
-									                sprintf($this->i18n(' The temporary WebSharks™ Core has been deleted from the plugin extras directory: `%1$s`.'), $_new_extras_core_dir)
+									                sprintf($this->i18n(' The temporary WebSharks™ Core was deleted from the plugin extras directory immediately after processing: `%1$s`.'), $_new_extras_core_dir)
 									);
 									unset($_new_extras_core_dir); // Housekeeping.
 
 									// Update various extra files w/ version numbers and other requirements.
 
-									$_new_core_deps_x_file           = $_new_core_dir.'/classes/'.$this->___instance_config->core_ns_with_dashes.'/deps-x.php';
+									$_core_deps_x_file               = $this->core_dir.'/classes/'.$this->___instance_config->core_ns_with_dashes.'/deps-x.php';
 									$_new_server_scanner_file        = $this->plugin_extras_dir.'/'.basename($this->plugin_dir).'-server-scanner.php';
 									$_new_server_scanner_plugin_dirs = basename($this->plugin_dir).(($this->plugin_pro_dir) ? ','.basename($this->plugin_pro_dir) : '');
 
+									if(!is_file($_core_deps_x_file))
+										throw $this->©exception(
+											__METHOD__.'#nonexistent_core_deps_x_file', get_defined_vars(),
+											sprintf($this->i18n('Nonexistent core `deps-x.php` file: `%1$s`.'), $_core_deps_x_file)
+										);
+									else if(!is_readable($_core_deps_x_file))
+										throw $this->©exception(
+											__METHOD__.'#core_deps_x_file_permissions', get_defined_vars(),
+											sprintf($this->i18n('Permission issues with core `deps-x.php` file: `%1$s`.'), $_core_deps_x_file)
+										);
+
+									$_new_server_scanner_file_contents = file_get_contents($_core_deps_x_file);
+									$_new_server_scanner_file_contents = $this->regex_replace('php_code__deps_x__define_stand_alone_plugin_name', $this->plugin_name, $_new_server_scanner_file_contents);
+									$_new_server_scanner_file_contents = $this->regex_replace('php_code__deps_x__define_stand_alone_plugin_dir_names', $_new_server_scanner_plugin_dirs, $_new_server_scanner_file_contents);
+									$_new_server_scanner_file_contents = $this->regex_replace('php_code__deps_x__declare_stand_alone_class_name', '_stand_alone', $_new_server_scanner_file_contents);
+
 									$this->©file->unlink($_new_server_scanner_file); // In case it already exists.
+									$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_server_scanner_file.'/'), $this->plugin_repo_dir);
 
-									if(!is_file($_new_core_deps_x_file))
-										throw $this->©exception(
-											__METHOD__.'#nonexistent_new_core_deps_x_file', get_defined_vars(),
-											sprintf($this->i18n('Nonexistent new core `deps-x.php` file: `%1$s`.'), $_new_core_deps_x_file)
-										);
-									else if(!is_readable($_new_core_deps_x_file))
-										throw $this->©exception(
-											__METHOD__.'#new_core_deps_x_file_permissions', get_defined_vars(),
-											sprintf($this->i18n('Permission issues with new core `deps-x.php` file: `%1$s`.'), $_new_core_deps_x_file)
-										);
-
-									$_new_core_deps_x_file_contents = file_get_contents($_new_core_deps_x_file);
-									$_new_core_deps_x_file_contents = $this->regex_replace('php_code__deps_x__define_stand_alone_plugin_name', $this->plugin_name, $_new_core_deps_x_file_contents);
-									$_new_core_deps_x_file_contents = $this->regex_replace('php_code__deps_x__define_stand_alone_plugin_dir_names', $_new_server_scanner_plugin_dirs, $_new_core_deps_x_file_contents);
-									$_new_core_deps_x_file_contents = $this->regex_replace('php_code__deps_x__declare_stand_alone_class_name', '_stand_alone', $_new_core_deps_x_file_contents);
-
-									if(!file_put_contents($_new_server_scanner_file, $_new_core_deps_x_file_contents))
+									if(!file_put_contents($_new_server_scanner_file, $_new_server_scanner_file_contents))
 										throw $this->©exception(
 											__METHOD__.'#new_server_scanner_file_write_error', get_defined_vars(),
 											$this->i18n('Unable to write the new plugin server scanner file.')
 										);
+									$this->©command->git('add --intent-to-add '.escapeshellarg($_new_server_scanner_file.'/'), $this->plugin_repo_dir);
 
 									$successes->add(__METHOD__.'#plugin_extra_file_updates', get_defined_vars(),
 									                $this->i18n('Plugin extra files updated with versions/requirements/etc.').
@@ -848,10 +916,9 @@ namespace websharks_core_v000000_dev
 									                sprintf($this->i18n(' Extras using WebSharks™ Core: `v%1$s`.'), $this->___instance_config->core_version).
 									                sprintf($this->i18n(' Extras require at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
 									                sprintf($this->i18n(' Extras tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v).
-									                sprintf($this->i18n(' New server scanner file: `%1$s`.'), $_new_server_scanner_file)
+									                sprintf($this->i18n(' New server scanner file (GIT-tracked in the plugin repo): `%1$s`.'), $_new_server_scanner_file)
 									);
-									unset($_new_core_deps_x_file, $_new_server_scanner_file, $_new_server_scanner_plugin_dirs);
-									unset($_new_core_deps_x_file_contents); // Housekeeping.
+									unset($_core_deps_x_file, $_new_server_scanner_file, $_new_server_scanner_plugin_dirs, $_new_server_scanner_file_contents);
 
 									// Copy distribution files into the distros directory.
 
@@ -879,26 +946,18 @@ namespace websharks_core_v000000_dev
 									);
 									unset($_plugin_extras_distro_dir, $_plugin_extras_download_zip, $_plugin_extras_download_v_zip);
 								}
-							// Remove new temporary core directory from the plugin development directory now.
-							// This comes last because we MAY actually ship the full WebSharks™ Core with the main plugin.
-							// However, it will have already been copied into the distro directory now; so we can delete it from the repo.
-							$this->©dir->empty_and_remove($_new_core_dir);
+							// A final commit before we complete the build procedure.
 
-							if(!$this->use_core_phar) // If using a PHP Archive; the routines above will have already done this.
-								// Need to add this check because GIT reports back with a non-zero status; files no longer in cache.
-								$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), dirname($this->plugin_dir));
-							// And then we do this AGAIN; just for good measure. This time with the `--ignore-unmatch` flag to prevent exceptions.
-							$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_core_dir.'/'), dirname($this->plugin_dir));
+							$this->©command->git('add --all', $this->plugin_repo_dir);
+							$this->©command->git('commit --all --allow-empty --message '. // Final commit (after building).
+							                     escapeshellarg($this->i18n('Auto-commit; after building plugin.')), $this->plugin_repo_dir);
 
-							$successes->add(__METHOD__.'#new_core_dir_deletion', get_defined_vars(),
-							                sprintf($this->i18n(' The temporary WebSharks™ Core directory: `%1$s`; has been deleted from the plugin directory.'), $_new_core_dir).
-							                sprintf($this->i18n(' The temporary WebSharks™ Core directory was also removed from the list of GIT-tracked files in this repo: `%1$s`.'), $this->plugin_dir)
+							$successes->add(__METHOD__.'#commit_before_plugin_build_complete', get_defined_vars(),
+							                sprintf($this->i18n('All files (new and/or changed) on GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the plugin repo directory: `%2$s`.'), $this->version, $this->plugin_repo_dir).
+							                $this->i18n(' Plugin finale. A commit has been processed for all changes to the new file structure.')
 							);
-							unset($_new_core_dir); // Final housekeeping.
-
 							$successes->add(__METHOD__.'#plugin_build_complete', get_defined_vars(), $this->i18n('Plugin build complete!'));
 						}
-
 					// Building the WebSharks™ Core.
 
 					else // We will either build a new WebSharks™ Core (or rebuild this one).
@@ -912,47 +971,55 @@ namespace websharks_core_v000000_dev
 
 							// Create a restore point by committing all new and/or changed files.
 
-							$this->©command->git('add --all', dirname($this->core_dir));
-							$this->©command->git('commit --all --allow-empty --message '.escapeshellarg(sprintf($this->i18n('Auto-commit; before %1$s %2$score.'), $building, $new_space)), dirname($this->core_dir));
+							$this->©command->git('add --all', $this->core_repo_dir);
+							$this->©command->git('commit --all --allow-empty --message '. // Restore point (before building).
+							                     escapeshellarg(sprintf($this->i18n('Auto-commit; before %1$s %2$score.'), $building, $new_space)), $this->core_repo_dir);
 
 							$successes->add(__METHOD__.'#before_building_'.$new_slug.'core', get_defined_vars(),
-							                sprintf($this->i18n('All existing files (new and/or changed) on the starting GIT branch: `%1$s`;'.
-							                                    ' have been added to the list of GIT-tracked files in the WebSharks™ Core repo.'), $this->starting_git_branches['core']).
-							                sprintf($this->i18n(' A commit has been processed for all changes to the existing file structure%1$s.'),
-								                (($is_new) ? ' '.$this->i18n('(before new branch creation occurs)') : ''))
+							                sprintf($this->i18n('All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the WebSharks™ Core repo directory: `%2$s`.'), $this->starting_git_branches['core'], $this->core_repo_dir).
+							                sprintf($this->i18n(' Restore point. A commit has been processed for all changes to the existing file structure%1$s.'), (($is_new) ? ' '.$this->i18n('(before new branch creation occurs)') : ''))
 							);
-
-							// WebSharks™ Core replication.
 							// Create a new GIT branch for this version (and switch to this new branch).
-							// Only if we ARE building a new version of the core.
 
 							if($is_new) // Replicate WebSharks™ Core into a new directory.
 								{
-									$this->©command->git('checkout -b '.escapeshellarg($this->version), dirname($this->core_dir));
-									// An exception is thrown if the branch already exists. GIT returns a non-zero status.
+									$this->©command->git('checkout -b '.escapeshellarg($this->version), $this->core_repo_dir);
 
 									$successes->add(__METHOD__.'#branch_new_core_dir', get_defined_vars(),
-									                sprintf($this->i18n(' A new GIT branch has been created for core version: `%1$s`.'), $this->version)
+									                sprintf($this->i18n('A new GIT branch has been created for core version: `%1$s`.'), $this->version).
+									                sprintf($this->i18n(' Now working from this new GIT branch: `%1$s`.'), $this->version)
 									);
 
-									$_replication   = $this->©replicate('', FALSE, $this->version); // No exclusions.
-									$_this_core_dir = $_replication->to_dir; // Need this below.
+									$_this_core_dir = $this->©replicate($this->core_repo_dir, $this->core_repo_dir, $this->version)
+										->new_core_dir; // Replicate; and then grab the new core directory here.
 
-									$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_dir), dirname($this->core_dir));
+									$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_dir), $this->core_repo_dir);
 
 									$successes->add(__METHOD__.'#new_core_dir_replication', get_defined_vars(),
 									                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this directory: `%1$s`.'), $_this_core_dir).
-									                $this->i18n(' This directory has also been added to the list of GIT-tracked files in the WebSharks™ Core repo (but only temporarily).')
+									                $this->i18n(' This directory has also been added to the list of GIT-tracked files in the WebSharks™ Core repo (but only temporarily; for distro creation momentarily).').
+									                $this->i18n(' This directory will be renamed later in this routine. It will override the existing WebSharks™ Core on this new GIT branch once we\'re done here.')
 									);
-									unset($_replication); // Housekeeping.
 								}
 							else $_this_core_dir = $this->core_dir; // Use directory as-is.
 
 							// Update various core files w/ version numbers and other requirements.
 
+							$_this_core_plugin_file    = $_this_core_dir.'/plugin.php';
 							$_this_core_readme_file    = $_this_core_dir.'/readme.txt';
-							$_this_core_framework_file = $_this_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'/framework.php';
 							$_this_core_deps_x_file    = $_this_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'/deps-x.php';
+							$_this_core_framework_file = $_this_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'/framework.php';
+
+							if(!is_file($_this_core_plugin_file))
+								throw $this->©exception(
+									__METHOD__.'#nonexistent_'.$new_slug.'core_plugin_file', get_defined_vars(),
+									sprintf($this->i18n('Nonexistent %1$score `plugin.php` file: `%2$s`.'), $new_space, $_this_core_plugin_file)
+								);
+							else if(!is_readable($_this_core_plugin_file) || !is_writable($_this_core_plugin_file))
+								throw $this->©exception(
+									__METHOD__.'#'.$new_slug.'core_plugin_file_permissions', get_defined_vars(),
+									sprintf($this->i18n('Permission issues with %1$score `plugin.php` file: `%2$s`.'), $new_space, $_this_core_plugin_file)
+								);
 
 							if(!is_file($_this_core_readme_file))
 								throw $this->©exception(
@@ -963,17 +1030,6 @@ namespace websharks_core_v000000_dev
 								throw $this->©exception(
 									__METHOD__.'#'.$new_slug.'core_readme_file_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with %1$score `readme.txt` file: `%2$s`.'), $new_space, $_this_core_readme_file)
-								);
-
-							if(!is_file($_this_core_framework_file))
-								throw $this->©exception(
-									__METHOD__.'#nonexistent_'.$new_slug.'core_framework_file', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent %1$score `framework.php` file: `%2$s`.'), $new_space, $_this_core_framework_file)
-								);
-							else if(!is_readable($_this_core_framework_file) || !is_writable($_this_core_framework_file))
-								throw $this->©exception(
-									__METHOD__.'#'.$new_slug.'core_framework_file_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with %1$score `framework.php` file: `%2$s`.'), $new_space, $_this_core_framework_file)
 								);
 
 							if(!is_file($_this_core_deps_x_file))
@@ -987,36 +1043,60 @@ namespace websharks_core_v000000_dev
 									sprintf($this->i18n('Permission issues with %1$score `deps-x.php` file: `%2$s`.'), $new_space, $_this_core_deps_x_file)
 								);
 
-							$_this_core_readme_file_contents    = file_get_contents($_this_core_readme_file);
-							$_this_core_framework_file_contents = file_get_contents($_this_core_framework_file);
-							$_this_core_deps_x_file_contents    = file_get_contents($_this_core_deps_x_file);
+							if(!is_file($_this_core_framework_file))
+								throw $this->©exception(
+									__METHOD__.'#nonexistent_'.$new_slug.'core_framework_file', get_defined_vars(),
+									sprintf($this->i18n('Nonexistent %1$score `framework.php` file: `%2$s`.'), $new_space, $_this_core_framework_file)
+								);
+							else if(!is_readable($_this_core_framework_file) || !is_writable($_this_core_framework_file))
+								throw $this->©exception(
+									__METHOD__.'#'.$new_slug.'core_framework_file_permissions', get_defined_vars(),
+									sprintf($this->i18n('Permission issues with %1$score `framework.php` file: `%2$s`.'), $new_space, $_this_core_framework_file)
+								);
 
+							$_this_core_plugin_file_contents    = file_get_contents($_this_core_plugin_file);
+							$_this_core_readme_file_contents    = file_get_contents($_this_core_readme_file);
+							$_this_core_deps_x_file_contents    = file_get_contents($_this_core_deps_x_file);
+							$_this_core_framework_file_contents = file_get_contents($_this_core_framework_file);
+
+							$_this_core_plugin_file_contents    = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_this_core_plugin_file_contents);
 							$_this_core_readme_file_contents    = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_this_core_readme_file_contents);
 							$_this_core_framework_file_contents = $this->regex_replace('php_code__quoted_string_with_version_marker', $this->version, $_this_core_framework_file_contents);
 
+							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_this_core_plugin_file_contents);
 							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_this_core_readme_file_contents);
+
+							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_v, $_this_core_plugin_file_contents);
 							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_v, $_this_core_readme_file_contents);
 
+							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_v, $_this_core_plugin_file_contents);
 							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_v, $_this_core_readme_file_contents);
+
+							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_v, $_this_core_plugin_file_contents);
 							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_v, $_this_core_readme_file_contents);
 
 							$_this_core_deps_x_file_contents = $this->regex_replace('php_code__quoted_string_with_php_version_required_marker', $this->requires_at_least_php_v, $_this_core_deps_x_file_contents);
 							$_this_core_deps_x_file_contents = $this->regex_replace('php_code__quoted_string_with_wp_version_required_marker', $this->requires_at_least_wp_v, $_this_core_deps_x_file_contents);
 
-							if(!file_put_contents($_this_core_readme_file, $_this_core_readme_file_contents))
+							if(!file_put_contents($_this_core_plugin_file, $_this_core_plugin_file_contents))
+								throw $this->©exception(
+									__METHOD__.'#'.$new_slug.'core_plugin_file_write_error', get_defined_vars(),
+									sprintf($this->i18n('Unable to write (update) the %1$score `plugin.php` file.'), $new_space)
+								);
+							else if(!file_put_contents($_this_core_readme_file, $_this_core_readme_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#'.$new_slug.'core_readme_file_write_error', get_defined_vars(),
 									sprintf($this->i18n('Unable to write (update) the %1$score `readme.txt` file.'), $new_space)
-								);
-							else if(!file_put_contents($_this_core_framework_file, $_this_core_framework_file_contents))
-								throw $this->©exception(
-									__METHOD__.'#'.$new_slug.'core_framework_file_write_error', get_defined_vars(),
-									sprintf($this->i18n('Unable to write (update) the %1$score `framework.php` file.'), $new_space)
 								);
 							else if(!file_put_contents($_this_core_deps_x_file, $_this_core_deps_x_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#'.$new_slug.'core_deps_x_file_write_error', get_defined_vars(),
 									sprintf($this->i18n('Unable to write (update) the %1$score `deps-x.php` file.'), $new_space)
+								);
+							else if(!file_put_contents($_this_core_framework_file, $_this_core_framework_file_contents))
+								throw $this->©exception(
+									__METHOD__.'#'.$new_slug.'core_framework_file_write_error', get_defined_vars(),
+									sprintf($this->i18n('Unable to write (update) the %1$score `framework.php` file.'), $new_space)
 								);
 
 							$successes->add(__METHOD__.'#'.$new_slug.'core_file_updates', get_defined_vars(),
@@ -1028,20 +1108,21 @@ namespace websharks_core_v000000_dev
 							                sprintf($this->i18n(' %1$s requires at least WordPress® version: `%2$s`.'), $ucfirst_core, $this->requires_at_least_wp_v).
 							                sprintf($this->i18n(' %1$s tested up to WordPress® version: `%2$s`.'), $ucfirst_core, $this->tested_up_to_wp_v)
 							);
-							unset($_this_core_readme_file, $_this_core_framework_file, $_this_core_deps_x_file);
-							unset($_this_core_readme_file_contents, $_this_core_framework_file_contents, $_this_core_deps_x_file_contents);
+							unset($_this_core_plugin_file, $_this_core_readme_file, $_this_core_framework_file, $_this_core_deps_x_file);
+							unset($_this_core_plugin_file_contents, $_this_core_readme_file_contents, $_this_core_framework_file_contents, $_this_core_deps_x_file_contents);
 
 							// Compress this core directory into a single PHP Archive.
 
-							$_this_core_phar_stub                = dirname($this->core_dir).'/'.$this->___instance_config->core_ns_stub_with_dashes.'.phar.php';
+							$_this_core_phar                     = $this->core_repo_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
 							$_this_core_distro_temp_dir          = $this->©dir->get_sys_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes;
 							$_this_core_distro_temp_dir_stub     = $_this_core_distro_temp_dir.'/stub.php';
 							$_this_core_distro_temp_dir_htaccess = $_this_core_distro_temp_dir.'/.htaccess';
 
 							$this->©dir->empty_and_remove($_this_core_distro_temp_dir); // In case it already exists.
-							$this->©dir->copy_to($_this_core_dir, $_this_core_distro_temp_dir, array('.gitignore' => dirname($this->core_dir).'/.gitignore'), TRUE);
+							$this->©dir->copy_to($_this_core_dir, $_this_core_distro_temp_dir, array('.gitignore' => $this->core_repo_dir.'/.gitignore'), TRUE);
 
-							if(!is_file($_this_core_distro_temp_dir_htaccess) || !is_readable($_this_core_distro_temp_dir_htaccess)
+							if(!is_file($_this_core_distro_temp_dir_htaccess)
+							   || !is_readable($_this_core_distro_temp_dir_htaccess)
 							   || FALSE === strpos(file_get_contents($_this_core_distro_temp_dir_htaccess), 'AcceptPathInfo')
 							) throw $this->©exception(
 								__METHOD__.'#unable_to_find_valid_htaccess_file_in_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
@@ -1049,38 +1130,52 @@ namespace websharks_core_v000000_dev
 								$this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 							);
 
-							$this->©file->unlink($_this_core_phar_stub); // In case it already exists.
-							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar_stub, $_this_core_distro_temp_dir_stub);
-							$this->©dir->empty_and_remove($_this_core_distro_temp_dir);
+							$this->©file->unlink($_this_core_phar); // In case it already exists.
+							$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
-							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar_stub), dirname($this->core_dir));
+							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar,
+							                     $_this_core_distro_temp_dir_stub, TRUE, TRUE, array_keys($this->©files->compressable_mime_types()),
+							                     $this->___instance_config->core_ns_stub.'_v'.str_replace('-', '_', $this->version));
+							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
-							$successes->add(__METHOD__.'#'.$new_slug.'core_phar_stub_php_built_for_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
-							                sprintf($this->i18n('A temporary distro copy of the WebSharks™ Core has been compressed into a single PHP Archive file here: `%1$s`.'), $_this_core_phar_stub).
-							                $this->i18n(' This file has been added to the list of GIT-tracked files in the WebSharks™ Core repo.').
-							                $this->i18n(' The temporary distro copy of the WebSharks™ Core was deleted after processing.')
+							$this->©dir->empty_and_remove($_this_core_distro_temp_dir); // Remove temp directory now.
+
+							$successes->add(__METHOD__.'#'.$new_slug.'core_phar_built_for_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
+							                sprintf($this->i18n('A temporary distro copy of the WebSharks™ Core has been compressed into a single PHP Archive file here: `%1$s`.'), $_this_core_phar).
+							                $this->i18n(' This PHP Archive file has been added to the list of GIT-tracked files in the WebSharks™ Core repo.').
+							                $this->i18n(' The temporary distro copy of the WebSharks™ Core was successfully deleted after processing.')
 							);
-							unset($_this_core_phar_stub, $_this_core_distro_temp_dir, $_this_core_distro_temp_dir_stub, $_this_core_distro_temp_dir_htaccess);
+							unset($_this_core_phar, $_this_core_distro_temp_dir, $_this_core_distro_temp_dir_stub, $_this_core_distro_temp_dir_htaccess);
 
 							// Handle deletion and rename/replacement from existing core directory; to new core directory.
 
 							if($is_new) // We MUST do this last to avoid SPL autoload issues while we're working here.
 								{
 									$this->©dir->empty_and_remove($this->core_dir);
-									$this->©command->git('rm -r --cached '.escapeshellarg($this->core_dir.'/'), dirname($this->core_dir));
-									$this->©command->git('rm -r --cached '.escapeshellarg($_this_core_dir.'/'), dirname($this->core_dir));
+									$this->©command->git('rm -r --cached '.escapeshellarg($this->core_dir.'/'), $this->core_repo_dir);
 
-									$this->©dir->rename_to($_this_core_dir, ($_this_core_dir = $this->core_dir));
-									$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_dir.'/'), dirname($this->core_dir));
+									$this->©command->git('rm -r --cached '.escapeshellarg($_this_core_dir.'/'), $this->core_repo_dir);
+									$this->©dir->rename_to($_this_core_dir, ($_this_core_dir = $this->core_repo_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes));
+									$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_dir.'/'), $this->core_repo_dir);
 
 									$successes->add(__METHOD__.'#after_new_core_dir', get_defined_vars(),
-									                sprintf($this->i18n('The old core directory has been deleted from this GIT branch: `%1$s`.'), $this->version).
-									                sprintf($this->i18n(' The new temporary core directory takes its place. Now with the directory name: `%1$s`'), $_this_core_dir).
-									                $this->i18n(' The new core directory has been added to the list of GIT-tracked files in the WebSharks™ Core repo.')
+									                sprintf($this->i18n('The old core directory has been deleted from this new GIT branch: `%1$s`.'), $this->version).
+									                sprintf($this->i18n(' The new temporary core directory was renamed to take its place here: `%1$s`'), $_this_core_dir).
+									                $this->i18n(' This new core directory has been added to the list of GIT-tracked files in the WebSharks™ Core repo.')
 									);
 								}
 							unset($_this_core_dir); // Final housekeeping.
 
+							// A final commit before we complete the build procedure.
+
+							$this->©command->git('add --all', $this->core_repo_dir);
+							$this->©command->git('commit --all --allow-empty --message '. // Final commit (after building).
+							                     escapeshellarg(sprintf($this->i18n('Auto-commit; after %1$s %2$score.'), $building, $new_space)), $this->core_repo_dir);
+
+							$successes->add(__METHOD__.'#commit_before_'.$new_slug.'core_build_complete', get_defined_vars(),
+							                sprintf($this->i18n('All files (new and/or changed) on %1$sGIT branch: `%2$s`; have been added to the list of GIT-tracked files in the WebSharks™ Core repo directory: `%3$s`.'), $new_space, $this->version, $this->core_repo_dir).
+							                sprintf($this->i18n(' Finale. A commit has been processed for all changes to the %1$sfile structure.'), $new_space)
+							);
 							$successes->add(__METHOD__.'#'.$new_slug.'core_build_complete',
 							                get_defined_vars(), sprintf($this->i18n('%1$s %2$s complete!'), $ucfirst_core, $build));
 						}
