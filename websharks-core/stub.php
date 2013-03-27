@@ -11,6 +11,9 @@
  * @package WebSharks\Core
  * @since 130302
  */
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# Only if the WebSharks™ Core stub class does NOT exist yet.
+# -----------------------------------------------------------------------------------------------------------------------------------------
 if(!class_exists('websharks_core_v000000_dev'))
 	{
 		/**
@@ -21,14 +24,22 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 * @package WebSharks\Core
 		 * @since 130302
 		 */
-		final class websharks_core_v000000_dev
+		final class websharks_core_v000000_dev // Static properties/methods only.
 		{
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Properties (see also: bottom of this file).
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			/**
 			 * A static cache (for all instances).
 			 *
 			 * @var array A static cache (for all instances).
 			 */
 			public static $static = array();
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Routines related to PHAR/autoload conditionals.
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Global PHAR variable for the WebSharks™ Core.
@@ -121,6 +132,73 @@ if(!class_exists('websharks_core_v000000_dev'))
 					return FALSE;
 				}
 
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Routines that load WordPress®.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * Attempts to get `/wp-load.php`.
+			 *
+			 * @param boolean             $get_last_value Defaults to a FALSE value.
+			 *    This function stores it's last return value for quicker access on repeated calls.
+			 *    If this is TRUE; no search will take place. We simply return the last/previous value.
+			 *
+			 * @param boolean             $check_abspath Defaults to TRUE (recommended).
+			 *    If TRUE, we will first check the `ABSPATH` constant (if defined) for `/wp-load.php`.
+			 *
+			 * @param null|boolean|string $fallback Defaults to NULL (recommended).
+			 *
+			 *    • If NULL, and WordPress® cannot be located anywhere else;
+			 *       and `___DEV_KEY_OK` is TRUE; automatically fallback on a local development copy.
+			 *
+			 *    • If TRUE, and WordPress® cannot be located anywhere else;
+			 *       automatically fallback on a local development copy.
+			 *
+			 *    • If NULL|TRUE, we'll look inside: `E:/EasyPHP/wordpress` (a default WebSharks™ Core location).
+			 *       If STRING, we'll look inside the directory path defined by the string value.
+			 *
+			 *    • If FALSE — we will NOT fallback under any circumstance.
+			 *
+			 * @return string Full server path to `/wp-load.php` on success, else an empty string.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public static function wp_load($get_last_value = FALSE, $check_abspath = TRUE, $fallback = NULL)
+				{
+					if(!is_bool($get_last_value) || !is_bool($check_abspath) || !(is_null($fallback) || is_bool($fallback) || is_string($fallback)))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					if($get_last_value && isset(self::$static['wp_load']))
+						return self::$static['wp_load'];
+
+					if($check_abspath && defined('ABSPATH') && is_file($_wp_load = ABSPATH.'wp-load.php'))
+						return (self::$static['wp_load'] = self::n_dir_seps($_wp_load));
+
+					if(($_wp_load = self::locate('/wp-load.php')))
+						return (self::$static['wp_load'] = $_wp_load);
+
+					if(!isset($fallback)) // Auto-detection.
+						$fallback = defined('___DEV_KEY_OK');
+
+					if($fallback) // Fallback on dev copy?
+						{
+							if(is_string($fallback))
+								$dev_dir = self::n_dir_seps($fallback);
+							else $dev_dir = 'E:/EasyPHP/wordpress';
+
+							if(is_file($_wp_load = $dev_dir.'/wp-load.php'))
+								return (self::$static['wp_load'] = $_wp_load);
+						}
+					unset($_wp_load); // Housekeeping.
+
+					return (self::$static['wp_load'] = ''); // Failure.
+				}
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Routines that locate class files.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			/**
 			 * Gets WebSharks™ Core `deps.php` class file path.
 			 *
@@ -152,7 +230,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						{
 							if($enable_display_errors)
 								{
-									error_reporting(E_ALL);
+									error_reporting(-1);
 									ini_set('display_errors', TRUE);
 								}
 							throw $exception;
@@ -218,16 +296,20 @@ if(!class_exists('websharks_core_v000000_dev'))
 					// Upon failure, we can make an attempt to notify site owners about PHAR compatibility.
 					$has_phar = ($is_phar || self::locate($locate_core_phar) || self::locate($locate_core_dev_phar));
 
-					// The error will actually be displayed in the Dashboard this way :-)
+					// The error is actually displayed in the WordPress® Dashboard this way :-)
 					if($basename === 'deps.php' && $has_phar && !self::can_phar() && defined('WPINC'))
-						if(($class_path = self::cant_phar_msg_notice_in_ws_wp_temp_deps()))
-							return $class_path; // Temporary (for message to site owner).
+						if(($class_path = self::cant_phar_msg_notice_in_wp_temp_deps()))
+							return $class_path; // Temporary file.
 
-					if($has_phar && !self::can_phar()) // Throw verbose exception.
+					if($has_phar && !self::can_phar())
 						throw new exception(self::cant_phar_msg());
 
 					throw new exception(sprintf(self::i18n('Unable to locate: `%1$s`.'), $locate_core_dir.'/'.$relative_class_path));
 				}
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Routines that help handle webPhar instances.
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * WebSharks™ Core webPhar rewriter.
@@ -385,6 +467,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					return (self::$static['web_phar_mime_types'] = $mime_types);
 				}
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# MIME-type routines.
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Textual MIME types.
@@ -633,6 +719,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 					));
 				}
 
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Miscellaneous utility routines.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			/**
 			 * Gets a file extension (lowercase).
 			 *
@@ -701,65 +791,6 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			/**
-			 * Attempts to get `/wp-load.php`.
-			 *
-			 * @param boolean             $get_last_value Defaults to a FALSE value.
-			 *    This function stores it's last return value for quicker access on repeated calls.
-			 *    If this is TRUE; no search will take place. We simply return the last/previous value.
-			 *
-			 * @param boolean             $check_abspath Defaults to TRUE (recommended).
-			 *    If TRUE, we will first check the `ABSPATH` constant (if defined) for `/wp-load.php`.
-			 *
-			 * @param null|boolean|string $fallback Defaults to NULL (recommended).
-			 *
-			 *    • If NULL, and WordPress® cannot be located anywhere else;
-			 *       and `___DEV_KEY_OK` is TRUE; automatically fallback on a local development copy.
-			 *
-			 *    • If TRUE, and WordPress® cannot be located anywhere else;
-			 *       automatically fallback on a local development copy.
-			 *
-			 *    • If NULL|TRUE, we'll look inside: `E:/EasyPHP/wordpress` (a default WebSharks™ Core location).
-			 *       If STRING, we'll look inside the directory path defined by the string value.
-			 *
-			 *    • If FALSE — we will NOT fallback under any circumstance.
-			 *
-			 * @return string Full server path to `/wp-load.php` on success, else an empty string.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 */
-			public static function wp_load($get_last_value = FALSE, $check_abspath = TRUE, $fallback = NULL)
-				{
-					if(!is_bool($get_last_value) || !is_bool($check_abspath) || !(is_null($fallback) || is_bool($fallback) || is_string($fallback)))
-						throw new exception( // Fail here; detected invalid arguments.
-							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
-						);
-					if($get_last_value && isset(self::$static['wp_load']))
-						return self::$static['wp_load'];
-
-					if($check_abspath && defined('ABSPATH') && is_file($_wp_load = ABSPATH.'wp-load.php'))
-						return (self::$static['wp_load'] = self::n_dir_seps($_wp_load));
-
-					if(($_wp_load = self::locate('/wp-load.php')))
-						return (self::$static['wp_load'] = $_wp_load);
-
-					if(!isset($fallback)) // Auto-detection.
-						$fallback = defined('___DEV_KEY_OK');
-
-					if($fallback) // Fallback on dev copy?
-						{
-							if(is_string($fallback))
-								$dev_dir = self::n_dir_seps($fallback);
-							else $dev_dir = 'E:/EasyPHP/wordpress';
-
-							if(is_file($_wp_load = $dev_dir.'/wp-load.php'))
-								return (self::$static['wp_load'] = $_wp_load);
-						}
-					unset($_wp_load); // Housekeeping.
-
-					return (self::$static['wp_load'] = ''); // Failure.
-				}
-
-			/**
 			 * Locates a specific directory/file path.
 			 *
 			 * @param string $dir_file A specific directory/file path.
@@ -799,6 +830,31 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					return ''; // Failure.
 				}
+
+			/**
+			 * Is the current User-Agent a browser?
+			 * This checks only for the most common browser engines.
+			 *
+			 * @return boolean TRUE if the current User-Agent is a browser, else FALSE.
+			 */
+			public static function is_browser()
+				{
+					if(!isset(self::$static['is_browser']))
+						{
+							self::$static['is_browser'] = FALSE;
+
+							$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/\s]+[0-9]/i';
+
+							if(!empty($_SERVER['HTTP_USER_AGENT']) && is_string($_SERVER['HTTP_USER_AGENT']))
+								if(preg_match($regex, $_SERVER['HTTP_USER_AGENT']))
+									self::$static['is_browser'] = TRUE;
+						}
+					return self::$static['is_browser'];
+				}
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Dynamic error messages.
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Regarding an inability to locate `/wp-load.php`.
@@ -871,19 +927,19 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			/**
-			 * Regarding a lack of support for Php Archives.
+			 * Regarding a lack of support for PHP Archives.
 			 *
 			 * Creates a temporary deps class & returns absolute path to that class file.
 			 *    This can ONLY be used if we're within WordPress®; because it attaches
 			 *    itself to a WordPress® administrative notice.
 			 *
-			 * @see \websharks_core_v000000_dev\$ws_wp_temp_deps
+			 * @see \websharks_core_v000000_dev::$wp_temp_deps
 			 *
 			 * @return string Absolute path to temporary deps; else an empty string if NOT possible.
 			 *
 			 * @throws exception If an inappropriate call is made (really should NOT happen).
 			 */
-			public static function cant_phar_msg_notice_in_ws_wp_temp_deps()
+			public static function cant_phar_msg_notice_in_wp_temp_deps()
 				{
 					if(!defined('WPINC') || self::can_phar())
 						throw new exception( // Fail here; we should NOT have called this.
@@ -891,8 +947,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 						);
 					if(($temp_dir = self::get_wp_temp_dir()))
 						{
-							$temp_deps          = $temp_dir.'/ws-wp-temp-deps.tmp';
-							$temp_deps_contents = base64_decode(self::$ws_wp_temp_deps);
+							$temp_deps          = $temp_dir.'/wp-temp-deps.wsc';
+							$temp_deps_contents = base64_decode(self::$wp_temp_deps);
 							$temp_deps_contents = str_ireplace('websharks_core'.'_v000000_dev', __CLASS__, $temp_deps_contents);
 							$temp_deps_contents = str_ireplace('%%notice%%', str_replace("'", "\\'", self::cant_phar_msg(TRUE)), $temp_deps_contents);
 
@@ -903,26 +959,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 					return ''; // Failure.
 				}
 
-			/**
-			 * Is the current User-Agent a browser?
-			 * This checks only for the most common browser engines.
-			 *
-			 * @return boolean TRUE if the current User-Agent is a browser, else FALSE.
-			 */
-			public static function is_browser()
-				{
-					if(!isset(self::$static['is_browser']))
-						{
-							self::$static['is_browser'] = FALSE;
-
-							$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/\s]+[0-9]/i';
-
-							if(!empty($_SERVER['HTTP_USER_AGENT']) && is_string($_SERVER['HTTP_USER_AGENT']))
-								if(preg_match($regex, $_SERVER['HTTP_USER_AGENT']))
-									self::$static['is_browser'] = TRUE;
-						}
-					return self::$static['is_browser'];
-				}
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Translation routines.
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Handles core translations for this class (context: admin-side).
@@ -964,6 +1003,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 					return (defined('WPINC')) ? _x($string, $context, $core_ns_stub_with_dashes) : $string;
 				}
 
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Additional properties (see also: top of this file).
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			/**
 			 * Regarding a lack of support for Php Archives.
 			 *
@@ -971,14 +1014,115 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @see \websharks_core_v000000_dev\cant_phar_msg_notice_in_ws_wp_temp_deps()
 			 *
-			 * @var string Base64 encoded version of `/includes/ws-wp-temp-deps.php` in WebSharks™ Core.
+			 * @var string Base64 encoded version of `/includes/wp-temp-deps.txt` in WebSharks™ Core.
 			 */
-			public static $ws_wp_temp_deps = 'PD9waHAKaWYoIWRlZmluZWQoJ1dQSU5DJykpCglleGl0KCdEbyBOT1QgYWNjZXNzIHRoaXMgZmlsZSBkaXJlY3RseTogJy5iYXNlbmFtZShfX0ZJTEVfXykpOwoKaWYoIWNsYXNzX2V4aXN0cygnZGVwc193ZWJzaGFya3NfY29yZV92MDAwMDAwX2RldicpKQoJewoJCWNsYXNzIGRlcHNfd2Vic2hhcmtzX2NvcmVfdjAwMDAwMF9kZXYKCQl7CgkJCXB1YmxpYyBmdW5jdGlvbiBjaGVjaygkcGx1Z2luX25hbWUgPSAnJykKCQkJCXsKCQkJCQlpZighaXNfYWRtaW4oKSB8fCAhY3VycmVudF91c2VyX2NhbignaW5zdGFsbF9wbHVnaW5zJykpCgkJCQkJCXJldHVybiBGQUxTRTsgLy8gTm90aGluZyB0byBkbyBoZXJlLgoKCQkJCQkkbm90aWNlID0gJzxkaXYgY2xhc3M9ImVycm9yIGZhZGUiPic7CgkJCQkJJG5vdGljZSAuPSAnPHA+JzsKCgkJCQkJJG5vdGljZSAuPSAoJHBsdWdpbl9uYW1lKSA/CgkJCQkJCSdSZWdhcmRpbmcgPHN0cm9uZz4nLmVzY19odG1sKCRwbHVnaW5fbmFtZSkuJzo8L3N0cm9uZz4nLgoJCQkJCQknJm5ic3A7Jm5ic3A7Jm5ic3A7JyA6ICcnOwoKCQkJCQkkbm90aWNlIC49ICclJW5vdGljZSUlJzsKCgkJCQkJJG5vdGljZSAuPSAnPC9wPic7CgkJCQkJJG5vdGljZSAuPSAnPC9kaXY+JzsKCgkJCQkJYWRkX2FjdGlvbignYWxsX2FkbWluX25vdGljZXMnLCAvLyBOb3RpZnkgaW4gYWxsIGFkbWluIG5vdGljZXMuCgkJCQkJICAgICAgICAgICBjcmVhdGVfZnVuY3Rpb24oJycsICdlY2hvIFwnJy5zdHJfcmVwbGFjZSgiJyIsICJcXCciLCAkbm90aWNlKS4nXCc7JykpOwoKCQkJCQlyZXR1cm4gRkFMU0U7IC8vIEFsd2F5cyByZXR1cm4gYSBGQUxTRSB2YWx1ZSBpbiB0aGlzIHNjZW5hcmlvLgoJCQkJfQoJCX0KCX0=';
+			public static $wp_temp_deps = 'PD9waHANCmlmKCFkZWZpbmVkKCdXUElOQycpKQ0KCWV4aXQoJ0RvIE5PVCBhY2Nlc3MgdGhpcyBmaWxlIGRpcmVjdGx5OiAnLmJhc2VuYW1lKF9fRklMRV9fKSk7DQoNCmlmKCFjbGFzc19leGlzdHMoJ2RlcHNfd2Vic2hhcmtzX2NvcmVfdjAwMDAwMF9kZXYnKSkNCgl7DQoJCWZpbmFsIGNsYXNzIGRlcHNfd2Vic2hhcmtzX2NvcmVfdjAwMDAwMF9kZXYNCgkJew0KCQkJcHVibGljIGZ1bmN0aW9uIGNoZWNrKCRwbHVnaW5fbmFtZSA9ICcnKQ0KCQkJCXsNCgkJCQkJaWYoIWlzX2FkbWluKCkgfHwgIWN1cnJlbnRfdXNlcl9jYW4oJ2luc3RhbGxfcGx1Z2lucycpKQ0KCQkJCQkJcmV0dXJuIEZBTFNFOyAvLyBOb3RoaW5nIHRvIGRvIGhlcmUuDQoNCgkJCQkJJG5vdGljZSA9ICc8ZGl2IGNsYXNzPSJlcnJvciBmYWRlIj4nOw0KCQkJCQkkbm90aWNlIC49ICc8cD4nOw0KDQoJCQkJCSRub3RpY2UgLj0gKCRwbHVnaW5fbmFtZSkgPw0KCQkJCQkJJ1JlZ2FyZGluZyA8c3Ryb25nPicuZXNjX2h0bWwoJHBsdWdpbl9uYW1lKS4nOjwvc3Ryb25nPicuDQoJCQkJCQknJm5ic3A7Jm5ic3A7Jm5ic3A7JyA6ICcnOw0KDQoJCQkJCSRub3RpY2UgLj0gJyUlbm90aWNlJSUnOw0KDQoJCQkJCSRub3RpY2UgLj0gJzwvcD4nOw0KCQkJCQkkbm90aWNlIC49ICc8L2Rpdj4nOw0KDQoJCQkJCWFkZF9hY3Rpb24oJ2FsbF9hZG1pbl9ub3RpY2VzJywgLy8gTm90aWZ5IGluIGFsbCBhZG1pbiBub3RpY2VzLg0KCQkJCQkgICAgICAgICAgIGNyZWF0ZV9mdW5jdGlvbignJywgJ2VjaG8gXCcnLnN0cl9yZXBsYWNlKCInIiwgIlxcJyIsICRub3RpY2UpLidcJzsnKSk7DQoNCgkJCQkJcmV0dXJuIEZBTFNFOyAvLyBBbHdheXMgcmV0dXJuIGEgRkFMU0UgdmFsdWUgaW4gdGhpcyBzY2VuYXJpby4NCgkJCQl9DQoJCX0NCgl9';
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Regex pattern properties.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * PHP userland naming standards, via regex pattern.
+			 *
+			 * @var string PHP userland naming standards, via regex pattern.
+			 * @see http://php.net/manual/en/userlandnaming.php
+			 */
+			public static $regex_valid_userland_name = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
+
+			/**
+			 * @var string WebSharks™ plugin variable namespace validation pattern.
+			 *
+			 *       1. Lowercase alphanumerics and/or underscores only.
+			 *       2. CANNOT start or end with an underscore.
+			 *       3. MUST start with a letter.
+			 *       4. No double underscores.
+			 */
+			public static $regex_valid_ws_plugin_var_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
+
+			/**
+			 * @var string WebSharks™ plugin root namespace validation pattern.
+			 *
+			 *       1. Lowercase alphanumerics and/or underscores only.
+			 *       2. CANNOT start or end with an underscore.
+			 *       3. MUST start with a letter.
+			 *       4. No double underscores.
+			 */
+			public static $regex_valid_ws_plugin_root_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
+
+			/**
+			 * @var string WebSharks™ namespace\class path validation pattern.
+			 *
+			 *       1. Lowercase alphanumerics, underscores, and/or namespace `\` separators only.
+			 *       2. MUST contain at least one namespace path (i.e. it MUST be within a namespace).
+			 *       3. A path element CANNOT start or end with an underscore.
+			 *       4. Each path element MUST start with a letter.
+			 *       5. No double underscores in any path element.
+			 */
+			public static $regex_valid_ws_ns_class = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])(?:\\\\(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))+$/';
+
+			/**
+			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern).
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 *
+			 *       1. MUST start with the core namespace stub: `websharks_core`;
+			 *          (caSe is ONLY relevant here in the core namespace stub and `_v`).
+			 *       However, see: {@link \websharks_core_v000000_dev::$regex_valid_ws_ns_class}.
+			 *          All namespace\class paths MUST be lowercase at all times (so caSe is important here).
+			 *       2. MUST then include a `_v` (lowercase) followed by six digits.
+			 *       3. May optionally end with a PHP version-compatible suffix;
+			 *          (but NO dashes; only underscores).
+			 *       5. MUST always end with an alphanumeric value.
+			 *       4. May NOT contain double underscores.
+			 */
+			public static $regex_valid_ws_core_ns_version = '/^websharks_core_v[0-9]{6}(?:_(?:[a-zA-Z](?:[a-zA-Z0-9]|_(?!_))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
+
+			/**
+			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern with a dashed variation).
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 *
+			 *       1. MUST start with the core namespace stub: `websharks-core`;
+			 *          (caSe is ONLY relevant here in the core namespace stub and `-v`).
+			 *       2. MUST then include a `-v` (lowercase); followed by six digits.
+			 *       3. May optionally end with a PHP version-compatible suffix.
+			 *       5. MUST always end with an alphanumeric value.
+			 *       4. May NOT contain double underscores.
+			 */
+			public static $regex_valid_ws_core_ns_version_with_dashes = '/^websharks\-core\-v[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
+
+			/**
+			 * @var string Valid WebSharks™ flavored PHP version string (regex pattern).
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 *
+			 *       1. Alphanumerics and/or dashes only (caSe is NOT important here).
+			 *       2. CANNOT start or end with a dash.
+			 *       3. MUST start with 6 digits(i.e. `YYMMDD`).
+			 *       4. An optional development state is allowed;
+			 *          (MUST be prefixed by a dash).
+			 *       5. May NOT contain double dashes.
+			 */
+			public static $regex_valid_ws_version = '/^[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
+
+			/**
+			 * @var string Valid PHP version string (regex pattern).
+			 *    Standard PHP version strings which allow a dotted notation also.
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 */
+			public static $regex_valid_version = '/^(?:[0-9](?:[a-zA-Z0-9]|\.(?!\.))*[a-zA-Z0-9]|[0-9]+)(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?![\-\.])|\.(?![\.\-]))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
 		}
+
+		/*
+		 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
+		 */
+		if(!class_exists('websharks_core__stub') && function_exists('class_alias') /* PHP v5.3+ only. */)
+			class_alias('websharks_core_v000000_dev', 'websharks_core__stub');
 	}
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# Inline webPhar handler.
+# -----------------------------------------------------------------------------------------------------------------------------------------
 /*
  * A WebSharks™ Core webPhar instance?
- * This serves files straight from the PHP Archive.
+ * This serves files straight from a PHP Archive.
  */
 if(websharks_core_v000000_dev::is_webphar())
 	{
@@ -986,7 +1130,7 @@ if(websharks_core_v000000_dev::is_webphar())
 
 		if(!websharks_core_v000000_dev::can_phar())
 			{
-				error_reporting(E_ALL);
+				error_reporting(-1);
 				ini_set('display_errors', TRUE);
 				// We make sure this IMPORTANT message is visible.
 				throw new exception(websharks_core_v000000_dev::cant_phar_msg());
@@ -998,9 +1142,12 @@ if(websharks_core_v000000_dev::is_webphar())
 
 		return; // We can stop here.
 	}
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# Inline autoload handler.
+# -----------------------------------------------------------------------------------------------------------------------------------------
 /*
  * A WebSharks™ Core autoload instance?
- * This is enabled by default (disable w/ a global var).
+ * On by default (disable w/ global var as necessary).
  */
 if(websharks_core_v000000_dev::is_autoload())
 	{
@@ -1019,9 +1166,14 @@ if(websharks_core_v000000_dev::is_autoload())
 			include_once websharks_core_v000000_dev::framework();
 
 		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
+
+		return; // We can stop here.
 	}
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# Default inline handlers.
+# -----------------------------------------------------------------------------------------------------------------------------------------
 /*
- * Always unset this WebSharks™ Core flag.
+ * Always unset WebSharks™ Core autoload var.
  */
 unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 /*
@@ -1034,6 +1186,10 @@ if(defined('WPINC')) return; // We can stop here.
  * By default, we disallow direct file access.
  */
 exit('Do NOT access this file directly: '.basename(__FILE__));
+
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# WebSharks™ Core PHAR file contents.
+# -----------------------------------------------------------------------------------------------------------------------------------------
 /*
  * For a possible `phar://` stream wrapper (do NOT remove this).
  *    The PHAR class wants this w/ all UPPERCASE letters.

@@ -47,10 +47,10 @@ namespace websharks_core_v000000_dev
 							$this->static['replace'] = implode('|', $this->©strings->preg_quote_deep($this->static['replace'], '/'));
 
 							$this->static['replace'] = array('comments'        => '/\/\*.*?\*\//s',
-							                                       'line_breaks'     => "/[\r\n\t]+/",
-							                                       'extra_spaces'    => '/ +/',
-							                                       'de_spacifiables' => '/ *('.$this->static['replace'].') */',
-							                                       'unnecessary_;s'  => '/;\}/'
+							                                 'line_breaks'     => "/[\r\n\t]+/",
+							                                 'extra_spaces'    => '/ +/',
+							                                 'de_spacifiables' => '/ *('.$this->static['replace'].') */',
+							                                 'unnecessary_;s'  => '/;\}/'
 							);
 							$this->static['with']    = array('', '', ' ', '$1', '}');
 							$this->static['colors']  = '/(?P<context>\:#| #)(?P<hex>[a-z0-9]{6})/i';

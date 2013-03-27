@@ -13,31 +13,13 @@
  * @package WebSharks\Core
  * @since 120318
  */
-/**
- * Running in Stand-Alone mode?
- *
- * @note MUST remain PHP v5.2 compatible.
- * @note Replicates into `[...-]stand-alone.php`.
- * @note Class name MUST be modified before running stand-alone.
- */
-if(basename(__FILE__) !== 'deps-x.php' && class_exists('deps_x_stand_alone_websharks_core_v000000_dev'))
-	{
-		/** @var string Plugin name. Set by WebSharks™ Core build routines. */
-		define('___STAND_ALONE__PLUGIN_NAME', 'WebSharks™ Core'); #!stand-alone-plugin-name!#
+global ${__FILE__}; // Make sure this IS a global var.
 
-		/** @var string Plugin directory names (comma-delimited). */
-		define('___STAND_ALONE__PLUGIN_DIR_NAMES', 'websharks-core-v000000-dev'); #!stand-alone-plugin-dir-names!#
+${__FILE__}['is_in_stand_alone_mode'] = // Are we in stand-alone mode?
+	(class_exists('deps_x_stand_alone_websharks_core_v000000_dev') && basename(__FILE__) !== 'deps-x.php'
+	 && !empty($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__));
 
-		/** @noinspection PhpUndefinedClassInspection ~ Well aware of this.
-		 * @var deps_x_websharks_core_v000000_dev $deps_x_stand_alone_websharks_core_v000000_dev
-		 */
-		$deps_x_stand_alone_websharks_core_v000000_dev = new deps_x_stand_alone_websharks_core_v000000_dev();
-
-		if(!defined('WPINC') && $deps_x_stand_alone_websharks_core_v000000_dev->wp_load())
-			include_once $deps_x_stand_alone_websharks_core_v000000_dev->wp_load(TRUE);
-		$deps_x_stand_alone_websharks_core_v000000_dev->check();
-	}
-else if(!defined('WPINC')) // Require WordPress®.
+if(!defined('WPINC') && !${__FILE__}['is_in_stand_alone_mode']) // Disallow direct access?
 	exit('Do NOT access this file directly: '.basename(__FILE__));
 
 /**
@@ -142,8 +124,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	public function check($plugin_name = '', $plugin_dir_names = '', $report_notices = TRUE, $report_warnings = TRUE,
 	                      $check_last_ok = TRUE, $maybe_display_wp_admin_notices = TRUE)
 		{
-			$is_wp_loaded   = defined('WPINC'); // We be checking these flags in several places below.
-			$is_stand_alone = (basename(__FILE__) !== 'deps-x.php' && __CLASS__ === 'deps_x_stand_alone_websharks_core_v000000_dev') ? TRUE : FALSE;
+			$is_stand_alone = $GLOBALS[__FILE__]['is_in_stand_alone_mode'];
+			$is_wp_loaded   = defined('WPINC'); // We'll be checking these flags in several places below.
 			$_g             = ($is_wp_loaded && !empty($_GET['websharks_core__deps'])) ? stripslashes_deep($_GET['websharks_core__deps']) : array();
 			$is_auto_fix    = ($is_wp_loaded && !empty($_g['auto_fix']) && is_string($_g['auto_fix']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['auto_fix'], $_g['checksum']));
 			$is_dismissal   = ($is_wp_loaded && !empty($_g['dismiss']) && is_string($_g['dismiss']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['dismiss'], $_g['checksum']));
@@ -2238,7 +2220,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 */
 	public function display_stand_alone_report()
 		{
-			if(basename(__FILE__) === 'deps-x.php' || __CLASS__ !== 'deps_x_stand_alone_websharks_core_v000000_dev' || !is_array($this->check))
+			if(!$GLOBALS[__FILE__]['is_in_stand_alone_mode'] || !is_array($this->check))
 				throw new exception( // This should NEVER happen.
 					$this->i18n('Unknown error. Invalid/unexpected scenario.').
 					$this->i18n(' Cannot display stand-alone report data here. This method should NOT have been called upon.')
@@ -3049,3 +3031,34 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		'pass'    => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAF80lEQVR42o1Wa2wUVRT+7tyZnZntY7ctbS0QtFbBPhAjqAQsIFETUBMFGh5KeUQFC4pEMBD5gdEEohKE0LWIaEXQaismYiACUZSiUVRS26Jo06og0Adtd+2yO7szcz0z2wcNVr3Zmdmde+53zvnOd89dhn8ZfIVSbJnWPITsGYggF8N6Jzro0tGCVOkQl3mVVR4/PhQG+6eX8kqlyOyO1/myk6R7bh2NO/MLcEPGcPj1NHe+O9KFpkvnUfvTaRz54RcEW8O27FfGmTviDf/toMxTjsuxsjWP3IsHCicjQ8sCExymbcGGcE0kWiZLHIJZuBRtw4HGE3hl72HA6wkgEFsxtIPHUJ2d4Zvz6mOlKEorJFAGWwgozEOAMgFL6BExJDMFYXrCNsEZA5dsNHQ14ulde9B6KViDXSi5ygF7SinP9iWV7Vm5Ctd4RsGwKF5hIirOo9Po7jfsezq5pKl+6GwkGDlXJYYLsd9RumMbWoPhgNgeX9Fvr65Wi4ywUb9/w3rkpeQjavagNfozWq0maEgjI3Y1mcL5CMRYEKPUMcj0FEDhOs4E6zHrxU1Qk9SxxlajIbFsGax1D8+SSsfNxflIE36PnoICooWoEL28/9OQiB6fpmPm2xVYOCEPze0qKme8gN2n9mHzvv02dhKD2hq1WJfZl8fWvY7fwj+indKUJZ0Cltww5SEcONyrsoyH3tkN8SzZRBwqgLlHJ+K5O1Zg2ubHETHFFCatVsoXTZ9atmTSDPzacxIa94JZpgs7wPeVvxKRy1xCyd63XPBIOAKT6pWSnIKMCh0H57+Encc/xtuffRFgeBLNb65anSuUdpeWSCyEND0Fti1cYMMU4PCCy5F+iaZqKmbu3gmxjmpgxEgMNlSPhiMX9uP+mtnYNWchrOgwLN22tYVhOcS7G5cjGjFIxh54uYX3Gk5g4ogx0CXVlSl6M6DAoXkkLPqgyo3cjFOm9E4hqg6fqyHwElSWLIMRj0HTVSzYWAGmr+eictUTCF2OQOUcpdWv44/ZFzFq/zV4YEoGdFWhbOCCyx6B9w60Qqyl3CzhpEPvGQ6frcGDH5Vg6s0FKL1xOsKxCFK9OhZvew0sfZNX7FiyFEZUYNknARjzbYSMEFJ9qWCvMSy+fyQsUyKKbFQeOAexxgEnYClRlk8JfBaB31qQgWtzdOSow1CoTIaqMTxR8SaYtkESe55aixPtR7C3tg4d80z8EToLXdGQ6csEozIV3gQ0nkYvuADjiYIPgA9DXg5HnOZMEUemPBJTs2aidPvLYCnPa80LZ+fnthrn0dVp49jpdlhLBNoi7fBwBf5kf6IEHuoMxJUD7tAyCHw49SoCd8rFmIaeWBgjtFF458OfWlj2Zm/5mPFJZcMzVZfnM01/oe5cEObjAl2Xu4gaTpKUwXnvU+E4cvYj4nwWxhMt12V73chdhXHAIvokou/PNgNnvg8H2PAtKcVJ6dKXE27zIxazoSgMDQ1BNF4Mwl4pqPjUhwhckzUoVPAvLhzEzOr7MIHAfVnJBDiwEZ1vXkpD1ThOftuFcKc9xSUzZ0uSNW5SquTVFFf/XGZEVxSfn2qDvYq0HjPh0WR803YU06ruwe0F6fBnpfSDO3dV9GUhIRyJoe6rkH3hmXCiWrmBlCLGUX/zxHTKMcElp6n2tjBqGztgPy3wXccxFO+7C3ffUkhttCch0ysiV0RCyoyCq/u601Ha2Jayvxr69//1FcnlqelKWV6+jzaQ7TqRuQ2j24fa+ka3M00e64CHaDEbBO4Mxbk8HE2nuxHqjAeal/cMtOu+ceMbSdXJ6cqca/N8JBlaTHRJkoDFJXfeUZGwB4N7nMidebL7rSmIns54za+Phq8+cPrGmMrUcqpp2YjRPmgqHYtCuJfjcHCvTuxiRgdNNGrhz1+CjoICZxaH/uXI7B1j3/UVWXG7TvfLUlq6Ck+SSnQx9NbR5drRfSxskBgMRLpNmyvSuPoFwf9x6F/p6H1/sQQxj5BnUMPM5VrC3KK2Qq2ihTwdoq1XVT+3e8i/LX8DQ5KK+sB7z4wAAAAASUVORK5CYII='
 	);
 }
+
+/*
+ * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
+ */
+if(!${__FILE__}['is_in_stand_alone_mode'] && class_exists('deps_x_websharks_core_v000000_dev') && !class_exists('websharks_core__deps_x') && function_exists('class_alias'))
+	class_alias('deps_x_websharks_core_v000000_dev', 'websharks_core__deps_x');
+
+if(${__FILE__}['is_in_stand_alone_mode'] && class_exists('deps_x_stand_alone_websharks_core_v000000_dev') && !class_exists('websharks_core__deps_x_stand_alone') && function_exists('class_alias'))
+	class_alias('deps_x_stand_alone_websharks_core_v000000_dev', 'websharks_core__deps_x_stand_alone');
+
+/*
+ * Running in Stand-Alone mode?
+ *
+ * @note MUST remain PHP v5.2 compatible.
+ * @note Replicates into `[...-]stand-alone.php`.
+ * @note Class name MUST be modified before running stand-alone.
+ */
+if(${__FILE__}['is_in_stand_alone_mode']) // Running in Stand-Alone mode?
+	{
+		/** @var string Plugin name. */
+		define('___STAND_ALONE__PLUGIN_NAME', 'WebSharks™ Core'); #!stand-alone-plugin-name!#
+
+		/** @var string Plugin directory names (comma-delimited). */
+		define('___STAND_ALONE__PLUGIN_DIR_NAMES', 'websharks-core-v000000-dev'); #!stand-alone-plugin-dir-names!#
+
+		$deps_x_stand_alone_websharks_core_v000000_dev = new deps_x_stand_alone_websharks_core_v000000_dev();
+		if(!defined('WPINC') && $deps_x_stand_alone_websharks_core_v000000_dev->wp_load())
+			include_once $deps_x_stand_alone_websharks_core_v000000_dev->wp_load(TRUE);
+
+		$deps_x_stand_alone_websharks_core_v000000_dev->check();
+	}

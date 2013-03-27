@@ -147,7 +147,7 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n('Invalid directory: `%1$s`.'), $this->into_dir).
 							$this->i18n(' This is NOT an existing directory that we can update files in.')
 						);
-					else if(!preg_match($this->©string->regex_valid_ws_version, $this->version))
+					else if(!preg_match(stub::$regex_valid_ws_version, $this->version))
 						throw $this->©exception(
 							__METHOD__.'#invalid_version', get_defined_vars(),
 							sprintf($this->i18n('Invalid WebSharks™ Core version: `%1$s`.'), $this->version)
@@ -232,13 +232,13 @@ namespace websharks_core_v000000_dev
 						);
 
 					$regex_core_ns_stub_dir_with_dashes       = '/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//';
-					$regex_core_ns_v_dir_with_dashes          = '/\/'.ltrim(rtrim($this->©string->regex_valid_ws_core_ns_version_with_dashes, '$/'), '/^').'\//';
-					$regex_core_ns_stub_or_v_dir_with_dashes  = '/(?:'.substr($regex_core_ns_stub_dir_with_dashes, 1, -1).'|'.substr($regex_core_ns_v_dir_with_dashes, 1, -1).')/';
-					$regex_core_ns_v_dir_basename_with_dashes = $this->©string->regex_valid_ws_core_ns_version_with_dashes;
+					$regex_core_ns_v_dir_with_dashes          = '/\/'.ltrim(rtrim(stub::$regex_valid_ws_core_ns_version_with_dashes, '$/'), '/^').'\//';
+					$regex_core_ns_v_dir_or_stub_with_dashes  = '/(?:'.substr($regex_core_ns_v_dir_with_dashes, 1, -1).'|'.substr($regex_core_ns_stub_dir_with_dashes, 1, -1).')/';
+					$regex_core_ns_v_dir_basename_with_dashes = stub::$regex_valid_ws_core_ns_version_with_dashes;
 
 					// This routine will NOT search/replace inside any past or present WebSharks™ Core directory.
 					// With ONE exception, we DO allow search/replace inside the directory containing our newly replicated core.
-					if(preg_match($regex_core_ns_stub_or_v_dir_with_dashes, $dir.'/') && stripos($dir.'/', $this->new_core_dir.'/') !== 0)
+					if(preg_match($regex_core_ns_v_dir_or_stub_with_dashes, $dir.'/') && stripos($dir.'/', $this->new_core_dir.'/') !== 0)
 						return; // Skipping. It's a core directory that's NOT a part of our newly replicated copy.
 
 					// Handle core directories that need to be renamed before processing continues.
@@ -253,8 +253,8 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to search a directory; cannot open for some unknown reason.').
 							sprintf($this->i18n(' Make this directory readable please: `%1$s`.'), $dir)
 						);
-					$regex_core_ns_v             = '/'.ltrim(rtrim($this->©string->regex_valid_ws_core_ns_version, '$/'), '/^').'/';
-					$regex_core_ns_v_with_dashes = '/'.ltrim(rtrim($this->©string->regex_valid_ws_core_ns_version_with_dashes, '$/'), '/^').'/';
+					$regex_core_ns_v             = '/'.ltrim(rtrim(stub::$regex_valid_ws_core_ns_version, '$/'), '/^').'/';
+					$regex_core_ns_v_with_dashes = '/'.ltrim(rtrim(stub::$regex_valid_ws_core_ns_version_with_dashes, '$/'), '/^').'/';
 
 					$new_core_ns_v             = $this->___instance_config->core_ns_stub.'_v'.str_replace('-', '_', $this->version);
 					$new_core_ns_v_with_dashes = $this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version;

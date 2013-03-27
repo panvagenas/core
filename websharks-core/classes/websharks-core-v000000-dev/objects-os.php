@@ -35,21 +35,19 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param object|array $___instance_config Required at all times.
 			 *    A parent object instance, which contains the parent's ``$___instance_config``,
-			 *    or an explicit ``$___instance_config`` object/array will suffice also.
+			 *    or a new ``$___instance_config`` array.
 			 *
 			 * @throws \exception If there is a missing and/or invalid ``$___instance_config``.
 			 */
 			public function __construct($___instance_config)
 				{
 					if($___instance_config instanceof framework)
-						$plugin_root_ns = (string)strstr(get_class($___instance_config), '\\', TRUE);
-					else if(is_object($___instance_config) && !empty($___instance_config->plugin_root_ns))
-						$plugin_root_ns = (string)$___instance_config->plugin_root_ns;
+						$plugin_root_ns = $___instance_config->___instance_config->plugin_root_ns;
 					else if(is_array($___instance_config) && !empty($___instance_config['plugin_root_ns']))
 						$plugin_root_ns = (string)$___instance_config['plugin_root_ns'];
 
 					if(empty($plugin_root_ns) || !isset($GLOBALS[$plugin_root_ns]) || !($GLOBALS[$plugin_root_ns] instanceof framework))
-						throw new \exception(sprintf(static::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
+						throw new \exception(sprintf(stub::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
 						                             print_r($___instance_config, TRUE))
 						);
 					$this->plugin = $GLOBALS[$plugin_root_ns];
@@ -212,32 +210,6 @@ namespace websharks_core_v000000_dev
 							) return TRUE;
 						}
 					return FALSE;
-				}
-
-			/**
-			 * Handles core translations (context: admin-side).
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::i18n()
-			 * @inheritdoc \websharks_core_v000000_dev::i18n()
-			 */
-			public static function i18n() // Arguments are NOT listed here.
-				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::i18n', func_get_args());
-				}
-
-			/**
-			 * Handles core translations (context: front-side).
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::translate()
-			 * @inheritdoc \websharks_core_v000000_dev::translate()
-			 */
-			public static function translate() // Arguments are NOT listed here.
-				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::translate', func_get_args());
 				}
 		}
 	}

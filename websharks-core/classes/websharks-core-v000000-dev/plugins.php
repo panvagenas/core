@@ -111,7 +111,7 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Loads pro class.
+			 * Loads pro add-on class(es).
 			 */
 			public function load_pro_class()
 				{
@@ -128,11 +128,10 @@ namespace websharks_core_v000000_dev
 							include_once $this->___instance_config->plugin_pro_class_file;
 							$pro_class = $this->___instance_config->plugin_root_ns_prefix.'\\pro';
 
-							/** @var $for_plugin_version string Matching plugin version. */
-							if($this->___instance_config->plugin_version === $pro_class::$for_plugin_version)
+							if(!empty($pro_class::${'for_plugin_version'}) && $this->___instance_config->plugin_version === $pro_class::${'for_plugin_version'})
 								{
-									autoloader::add_classes_dir($this->___instance_config->plugin_pro_dir.'/classes');
 									$GLOBALS[$this->___instance_config->plugin_pro_var] = $GLOBALS[$this->___instance_config->plugin_root_ns];
+									autoloader::add_classes_dir($this->___instance_config->plugin_pro_dir.'/classes');
 								}
 							else $this->enqueue_pro_update_sync_notice(); // Pro add-on needs to be synchronized with current version.
 						}
@@ -174,8 +173,8 @@ namespace websharks_core_v000000_dev
 			 * Checks if the current plugin is active, at the currently installed version.
 			 *
 			 * @param string $reconsider Optional. Empty string default (e.g. do NOT reconsider).
-			 *    You MUST use class constant ``\websharks_core_v000000_dev\framework::reconsider`` for this argument value.
-			 *    If this is ``\websharks_core_v000000_dev\framework::reconsider``, we force a reconsideration.
+			 *    You MUST use class constant ``framework::reconsider`` for this argument value.
+			 *    If this is ``framework::reconsider``, we force a reconsideration.
 			 *
 			 * @return boolean TRUE if the current plugin is active, at the currently installed version, else FALSE.
 			 *

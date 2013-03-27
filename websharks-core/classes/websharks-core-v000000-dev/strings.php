@@ -821,10 +821,10 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if(preg_match($this->regex_valid_userland_name, $string))
+					if(preg_match(stub::$regex_valid_userland_name, $string))
 						return TRUE;
 
-					return FALSE; // Default return value.
+					return FALSE;
 				}
 
 			/**
@@ -2675,130 +2675,6 @@ namespace websharks_core_v000000_dev
 				'\<br\s*\/\>'             => '<br/>',
 				'\<p\>(?:&nbsp;)*\<\/p\>' => '<p></p>'
 			);
-
-			/**
-			 * PHP userland naming standards, via regex pattern.
-			 *
-			 * @var string PHP userland naming standards, via regex pattern.
-			 * @see http://php.net/manual/en/userlandnaming.php
-			 */
-			public $regex_valid_userland_name = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
-
-			/**
-			 * @var string WebSharks™ plugin variable namespace validation pattern.
-			 *
-			 *       1. Lowercase alphanumerics and/or underscores only.
-			 *       2. CANNOT start or end with an underscore.
-			 *       3. MUST start with a letter.
-			 *       4. No double underscores.
-			 */
-			public $regex_valid_ws_plugin_var_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
-
-			/**
-			 * @var string WebSharks™ plugin variable namespace validation pattern.
-			 * @note Same as above. This is a static version for the core framework constructor.
-			 */
-			public static $_4fwc_regex_valid_ws_plugin_var_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
-
-			/**
-			 * @var string WebSharks™ plugin root namespace validation pattern.
-			 *
-			 *       1. Lowercase alphanumerics and/or underscores only.
-			 *       2. CANNOT start or end with an underscore.
-			 *       3. MUST start with a letter.
-			 *       4. No double underscores.
-			 */
-			public $regex_valid_ws_plugin_root_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
-
-			/**
-			 * @var string WebSharks™ plugin root namespace validation pattern.
-			 * @note Same as above. This is a static version for the core framework constructor.
-			 */
-			public static $_4fwc_regex_valid_ws_plugin_root_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
-
-			/**
-			 * @var string WebSharks™ namespace\class path validation pattern.
-			 *
-			 *       1. Lowercase alphanumerics, underscores, and/or namespace `\` separators only.
-			 *       2. MUST contain at least one namespace path (i.e. it MUST be within a namespace).
-			 *       3. A path element CANNOT start or end with an underscore.
-			 *       4. Each path element MUST start with a letter.
-			 *       5. No double underscores in any path element.
-			 */
-			public $regex_valid_ws_ns_class = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])(?:\\\\(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))+$/';
-
-			/**
-			 * @var string WebSharks™ namespace\class path validation pattern.
-			 * @note Same as above. This is a static version for the core framework constructor.
-			 */
-			public static $_4fwc_regex_valid_ws_ns_class = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])(?:\\\\(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))+$/';
-
-			/**
-			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern).
-			 * @see http://php.net/manual/en/function.version-compare.php
-			 *
-			 *       1. MUST start with the core namespace stub: `websharks_core`;
-			 *          (caSe is ONLY relevant here in the core namespace stub and `_v`).
-			 *       However, see: {@link \websharks_core_v000000_dev\strings\regex_valid_ws_ns_class}.
-			 *          All namespace\class paths MUST be lowercase at all times (so caSe is important here).
-			 *       2. MUST then include a `_v` (lowercase) followed by six digits.
-			 *       3. May optionally end with a PHP version-compatible suffix;
-			 *          (but NO dashes; only underscores).
-			 *       5. MUST always end with an alphanumeric value.
-			 *       4. May NOT contain double underscores.
-			 */
-			public $regex_valid_ws_core_ns_version = '/^websharks_core_v[0-9]{6}(?:_(?:[a-zA-Z](?:[a-zA-Z0-9]|_(?!_))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
-
-			/**
-			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern).
-			 * @note Same as above. This is a static version for the core framework constructor.
-			 */
-			public static $_4fwc_regex_valid_ws_core_ns_version = '/^websharks_core_v[0-9]{6}(?:_(?:[a-zA-Z](?:[a-zA-Z0-9]|_(?!_))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
-
-			/**
-			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern with a dashed variation).
-			 * @see http://php.net/manual/en/function.version-compare.php
-			 *
-			 *       1. MUST start with the core namespace stub: `websharks-core`;
-			 *          (caSe is ONLY relevant here in the core namespace stub and `-v`).
-			 *       2. MUST then include a `-v` (lowercase); followed by six digits.
-			 *       3. May optionally end with a PHP version-compatible suffix.
-			 *       5. MUST always end with an alphanumeric value.
-			 *       4. May NOT contain double underscores.
-			 */
-			public $regex_valid_ws_core_ns_version_with_dashes = '/^websharks\-core\-v[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
-
-			/**
-			 * @var string Valid WebSharks™ flavored PHP namespace version (regex pattern with a dashed variation).
-			 * @note Same as above. This is a static version for the core framework constructor.
-			 */
-			public static $_4fwc_regex_valid_ws_core_ns_version_with_dashes = '/^websharks\-core\-v[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
-
-			/**
-			 * @var string Valid WebSharks™ flavored PHP version string (regex pattern).
-			 * @see http://php.net/manual/en/function.version-compare.php
-			 *
-			 *       1. Alphanumerics and/or dashes only (caSe is NOT important here).
-			 *       2. CANNOT start or end with a dash.
-			 *       3. MUST start with 6 digits(i.e. `YYMMDD`).
-			 *       4. An optional development state is allowed;
-			 *          (MUST be prefixed by a dash).
-			 *       5. May NOT contain double dashes.
-			 */
-			public $regex_valid_ws_version = '/^[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
-
-			/**
-			 * @var string Valid WebSharks™ flavored PHP version string (regex pattern).
-			 * @note Same as above. This is a static version for the core framework constructor.
-			 */
-			public static $_4fwc_regex_valid_ws_version = '/^[0-9]{6}(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?!\-))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
-
-			/**
-			 * @var string Valid PHP version string (regex pattern).
-			 *    Standard PHP version strings which allow a dotted notation also.
-			 * @see http://php.net/manual/en/function.version-compare.php
-			 */
-			public $regex_valid_version = '/^(?:[0-9](?:[a-zA-Z0-9]|\.(?!\.))*[a-zA-Z0-9]|[0-9]+)(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?![\-\.])|\.(?![\.\-]))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
 
 			/**
 			 * Quote entities. Keys are actually regex patterns here.

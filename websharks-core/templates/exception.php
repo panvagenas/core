@@ -63,7 +63,7 @@ $exception = $this->data->exception;
 					<code style="background:#FDFB76;"><?= esc_html($exception->getCode()); ?></code>
 				</p>
 
-				<? if($this->©env->is_in_wp_debug_mode() || is_super_admin()): ?>
+				<? if($this->©env->is_in_wp_debug_display_mode() || is_super_admin()): ?>
 					<p>
 						<?= sprintf($this->i18n('Exception occurred at line # <code>%1$s</code> in: <code>%2$s</code>.'), esc_html($exception->getLine()), esc_html($exception->getFile())); ?>
 					</p>
@@ -73,7 +73,7 @@ $exception = $this->data->exception;
 					<h3>
 						<?= $this->i18n('Exception Message (Please Read)'); ?>
 					</h3>
-					<small><?= $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG</a> mode; and for all super administrators of the site.'); ?></small>
+					<small><?= $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
 					<pre><?= esc_html($exception->getMessage()); ?></pre>
 
 					<hr class="marginize-x2" />
@@ -81,7 +81,7 @@ $exception = $this->data->exception;
 					<h3>
 						<?= $this->i18n('Stack Trace (For Debugging Purposes)'); ?>
 					</h3>
-					<small><?= $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG</a> mode; and for all super administrators of the site.'); ?></small>
+					<small><?= $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
 					<pre><?= esc_html($exception->getTraceAsString()); ?></pre>
 
 					<? if(isset($exception->data)): ?>
@@ -89,7 +89,7 @@ $exception = $this->data->exception;
 						<h3>
 							<?= $this->i18n('Additional Data (For Debugging Purposes)'); ?>
 						</h3>
-						<small><?= $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG</a> mode; and for all super administrators of the site.'); ?></small>
+						<small><?= $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
 						<pre><?= esc_html($this->©var->dump($exception->data)); ?></pre>
 					<? endif; ?>
 				<? endif; ?>

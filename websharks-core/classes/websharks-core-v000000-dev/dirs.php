@@ -550,8 +550,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 * @throws exception If the requested cache directory is NOT readable/writable, or CANNOT be created for any reason.
 			 *
-			 * @assert ('public') === $GLOBALS[__NAMESPACE__]->___instance_config->plugin_data_dir.'/cache/public'
-			 * @assert ('private') === $GLOBALS[__NAMESPACE__]->___instance_config->plugin_data_dir.'/cache/private'
 			 * @assert ('foo') throws exception
 			 *
 			 * @TODO Update this so it's using WebSharks™ Core constants for public/private types.
@@ -678,8 +676,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 * @throws exception If the requested log directory is NOT readable/writable, or CANNOT be created for any reason.
 			 *
-			 * @assert ('public') === $GLOBALS[__NAMESPACE__]->___instance_config->plugin_data_dir.'/logs/public'
-			 * @assert ('private') === $GLOBALS[__NAMESPACE__]->___instance_config->plugin_data_dir.'/logs/private'
 			 * @assert ('foo') throws exception
 			 *
 			 * @TODO Update this so it's using WebSharks™ Core constants for public/private types.

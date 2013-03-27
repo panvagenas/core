@@ -742,5 +742,12 @@ namespace websharks_core_v000000_dev
 
 					return $this->config; // Object with all configuration properties.
 				}
+
+			/**
+			 * Regex pattern matching template content body.
+			 *
+			 * @var string Regex pattern matching template content body.
+			 */
+			public $regex_template_content_body = '/\<\!\-\-\s+BEGIN\:\s+Content\s+Body\s+\-\-\>\s*(?P<template_content_body>.+?)\s*\<\!\-\-\s+\/\s+END\:\s+Content Body\s+\-\-\>/is';
 		}
 	}

@@ -101,10 +101,10 @@ namespace rocketship;
 #include_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
 
 // Tell the WebSharks™ Core Autoloader about your PHP classes.
-\websharks_core_autoloader::add_classes_dir(dirname(dirname(__FILE__)));
-\websharks_core_autoloader::add_root_ns(__NAMESPACE__);
+\websharks_core__autoloader::add_classes_dir(dirname(dirname(__FILE__)));
+\websharks_core__autoloader::add_root_ns(__NAMESPACE__);
 
-class framework extends \websharks_core_framework
+class framework extends \websharks_core__framework
 {
 	// This will serve as the base class for your plugin.
 	// If you wanted to use a specific version of the WebSharks™ Core, you would do this.
@@ -285,11 +285,7 @@ Create this file in your plugin directory: `/wp-content/plugins/rocketship/class
 <?php
 namespace rocketship;
 
-class strings extends \websharks_core_v000000_dev\strings
-
-// Change v000000_dev to the version you're using.
-// Please make sure you get the version right :-)
-
+class strings extends \websharks_core__strings
 {
     public function write_lines() // My new class member.
         {
@@ -349,7 +345,7 @@ And, it works out BEAUTIFULLY! It reduces the amount of code that is required to
 
 ### What If I Build MANY plugins — some powered by different versions of the WebSharks™ Core?
 
-If you want to be more specific about which version of the WebSharks™ Core that your plugin uses, you should extend a specific version and not just extend the `websharks_core_framework`; which is a more generalized reference.
+If you want to be more specific about which version of the WebSharks™ Core that your plugin uses, you should extend a specific version and not just extend the `websharks_core__framework`; which is a more generalized reference.
 
 ```php
 <?php

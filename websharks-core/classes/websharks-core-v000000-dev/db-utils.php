@@ -208,10 +208,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Inserts (or updates) meta value(s); in a specific meta table.
 			 *
-			 * @param string  $table Unprefixed table name.
-			 * @param string  $rel_id_column Column name for related ID.
-			 * @param string  $rel_id Value for the related ID column.
-			 * @param array   $values Associative array of meta values (e.g. key/value pairs).
+			 * @param string $table Unprefixed table name.
+			 * @param string $rel_id_column Column name for related ID.
+			 * @param string $rel_id Value for the related ID column.
+			 * @param array  $values Associative array of meta values (e.g. key/value pairs).
 			 *
 			 * @return integer Number of rows affected by this insertion/update.
 			 *
@@ -247,10 +247,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Inserts new meta value(s); into a specific meta table.
 			 *
-			 * @param string  $table Unprefixed table name.
-			 * @param string  $rel_id_column Column name for related ID.
-			 * @param string  $rel_id Value for the related ID column.
-			 * @param array   $values Associative array of meta values (e.g. key/value pairs).
+			 * @param string $table Unprefixed table name.
+			 * @param string $rel_id_column Column name for related ID.
+			 * @param string $rel_id Value for the related ID column.
+			 * @param array  $values Associative array of meta values (e.g. key/value pairs).
 			 *
 			 * @return integer Number of rows affected by this insertion.
 			 *
@@ -531,11 +531,11 @@ namespace websharks_core_v000000_dev
 			 *    The WordPress® transients API is subjected to object caching (which is NOT how we use transients).
 			 *    In the eyes of the WordPress® Core, transients should always be stored in the database.
 			 *
-			 * @param string       $key The key/name for this transient value.
+			 * @param string  $key The key/name for this transient value.
 			 *
-			 * @param mixed        $value Any value is fine (mixed data types are OK here).
+			 * @param mixed   $value Any value is fine (mixed data types are OK here).
 			 *
-			 * @param integer      $expires_after Optional. Time (in seconds) this transient should last for. Defaults to `-1` (no automatic expiration).
+			 * @param integer $expires_after Optional. Time (in seconds) this transient should last for. Defaults to `-1` (no automatic expiration).
 			 *    If this is set to anything <= `0`, the transient will NOT expire automatically (e.g. it remains until all transients are deleted from the DB).
 			 *
 			 * @return boolean TRUE if the transient value was set, else FALSE by default.

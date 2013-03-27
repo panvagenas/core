@@ -257,6 +257,36 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Determines whether or not we're in `WP_DEBUG_LOG` mode.
+			 *
+			 * @return boolean TRUE if we're in `WP_DEBUG_LOG` mode, else FALSE.
+			 *
+			 * @assert () === FALSE
+			 */
+			public function is_in_wp_debug_log_mode()
+				{
+					if(!isset($this->static['is_in_wp_debug_log_mode']))
+						$this->static['is_in_wp_debug_log_mode'] = (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG);
+
+					return $this->static['is_in_wp_debug_log_mode'];
+				}
+
+			/**
+			 * Determines whether or not we're in `WP_DEBUG_DISPLAY` mode.
+			 *
+			 * @return boolean TRUE if we're in `WP_DEBUG_DISPLAY` mode, else FALSE.
+			 *
+			 * @assert () === FALSE
+			 */
+			public function is_in_wp_debug_display_mode()
+				{
+					if(!isset($this->static['is_in_wp_debug_display_mode']))
+						$this->static['is_in_wp_debug_display_mode'] = (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY);
+
+					return $this->static['is_in_wp_debug_display_mode'];
+				}
+
+			/**
 			 * String with current time details.
 			 *
 			 * @return string String with time representation (in UTC time).

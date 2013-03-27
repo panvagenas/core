@@ -559,7 +559,7 @@ namespace websharks_core_v000000_dev
 			 * @note In the case of a multisite network installation of WordPress®,
 			 *    this will simply remove the user from the current blog (e.g. they're NOT actually deleted).
 			 *
-			 * @param null|integer       $reassign_posts_to_user_id Optional. A user ID to which any posts will be reassigned.
+			 * @param null|integer $reassign_posts_to_user_id Optional. A user ID to which any posts will be reassigned.
 			 *    If this is NULL (which it is by default), all posts will simply be deleted, along with the user.
 			 *
 			 * @return boolean|errors TRUE if the user is deleted, else an errors object on failure.
@@ -1091,7 +1091,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Updates a user's activation key.
 			 *
-			 * @param null|string  $activation_key A new activation key, or NULL to delete.
+			 * @param null|string $activation_key A new activation key, or NULL to delete.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If this user does NOT have an ID.
@@ -1130,7 +1130,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Updates a user's password.
 			 *
-			 * @param string  $password A new plain text password.
+			 * @param string $password A new plain text password.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If this user does NOT have an ID.

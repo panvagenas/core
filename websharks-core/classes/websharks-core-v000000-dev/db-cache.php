@@ -77,11 +77,11 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Sets and/or updates a cache entry.
 			 *
-			 * @param string  $entry Name of this cache entry.
+			 * @param string $entry Name of this cache entry.
 			 *
-			 * @param mixed   $value Value for this cache entry.
+			 * @param mixed  $value Value for this cache entry.
 			 *
-			 * @param string  $group Name of a cache group for this entry.
+			 * @param string $group Name of a cache group for this entry.
 			 *    This is optional. Defaults to `default` group.
 			 *
 			 * @return mixed Reverberates input ``$value`` back to the caller.

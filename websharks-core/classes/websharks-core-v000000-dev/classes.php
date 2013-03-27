@@ -27,25 +27,21 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Details about all WebSharks™ Core classes/properties/methods.
 			 *
-			 * @return array Details suitable for ``var_dump()``.
+			 * @return array Details about all WebSharks™ Core classes/properties/methods.
 			 */
 			public function get_details()
 				{
-					$core_stub_class  = '\\websharks_core_v000000_dev';
-					$ns_class         = array($core_stub_class);
 					$ns_class_details = array();
-
-					if(!class_exists($core_stub_class)) // Need this here.
-						include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
+					$ns_class         = array('\\'.__NAMESPACE__);
 
 					foreach($this->©dir->iterate(dirname(__FILE__)) as $_dir_file)
 						{
-							if($_dir_file->isFile())
+							if($_dir_file->isFile()) // We're dealing only with class files here.
 								{
-									$_sub_path      = $this->©dir->n_seps($_dir_file->getSubPathname());
-									$_ns_class_path = str_replace(array('/', '-'), array('\\', '_'), preg_replace('/\.[a-z0-9]+$/i', '', $_sub_path));
-									$_sub_namespace = (string)substr($_ns_class_path, 0, strrpos($_ns_class_path, '\\'));
-									$_ns_class_path = '\\'.__NAMESPACE__.'\\'.(($_sub_namespace) ? $_sub_namespace.'\\' : '').basename($_ns_class_path);
+									$_file_sub_path          = $this->©dir->n_seps($_dir_file->getSubPathname());
+									$_ns_class_file_sub_path = str_replace(array('/', '-'), array('\\', '_'), $_file_sub_path);
+									$_sub_path_namespaces    = (string)substr($_ns_class_file_sub_path, 0, strrpos($_ns_class_file_sub_path, '\\'));
+									$_ns_class_path          = '\\'.__NAMESPACE__.'\\'.(($_sub_path_namespaces) ? $_sub_path_namespaces.'\\' : '').basename($_ns_class_file_sub_path, '.php');
 
 									if(class_exists($_ns_class_path))
 										$ns_class[] = $_ns_class_path;
@@ -54,7 +50,7 @@ namespace websharks_core_v000000_dev
 										$ns_class[] = basename($_ns_class_path);
 								}
 						}
-					unset($_dir_file, $_sub_path, $_ns_class_path, $_sub_namespace);
+					unset($_dir_file, $_file_sub_path, $_ns_class_file_sub_path, $_sub_path_namespaces, $_ns_class_path);
 
 					foreach($ns_class as $_ns_class)
 						{
@@ -103,7 +99,7 @@ namespace websharks_core_v000000_dev
 						}
 					unset($_reflection, $_doc_block, $_properties, $_property, $_methods, $_method, $_name);
 
-					return $ns_class_details;
+					return $ns_class_details; // This is a HUGE array of all details.
 				}
 		}
 	}

@@ -10,73 +10,73 @@
  * @since 120318
  */
 namespace websharks_core_v000000_dev\shortcodes
-{
-	if(!defined('WPINC'))
-		exit('Do NOT access this file directly: '.basename(__FILE__));
-
-	/**
-	 * Shortcode.
-	 *
-	 * @package WebSharks\Core
-	 * @since 120318
-	 *
-	 * @assert ($GLOBALS[__NAMESPACE__])
-	 */
-	class shortcode extends \websharks_core_v000000_dev\framework
 	{
-		/**
-		 * Gets default shortcode attributes.
-		 *
-		 * @note This should be overwritten by class extenders.
-		 *
-		 * @return array Default shortcode attributes.
-		 */
-		public function attr_defaults()
-		{
-			return array();
-		}
+		if(!defined('WPINC'))
+			exit('Do NOT access this file directly: '.basename(__FILE__));
 
 		/**
-		 * Gets all shortcode attribute keys, interpreted as boolean values.
+		 * Shortcode.
 		 *
-		 * @note This should be overwritten by class extenders.
+		 * @package WebSharks\Core
+		 * @since 120318
 		 *
-		 * @return array Boolean attribute keys.
+		 * @assert ($GLOBALS[__NAMESPACE__])
 		 */
-		public function boolean_attr_keys()
+		class shortcode extends \websharks_core_v000000_dev\framework
 		{
-			return array();
-		}
+			/**
+			 * Gets default shortcode attributes.
+			 *
+			 * @note This should be overwritten by class extenders.
+			 *
+			 * @return array Default shortcode attributes.
+			 */
+			public function attr_defaults()
+				{
+					return array();
+				}
 
-		/**
-		 * Normalizes shortcode attributes.
-		 *
-		 * @param string|array       $attr An array of all shortcode attributes (if there were any).
-		 *    Or, a string w/ the entire attributes section (when WordPress® fails to parse attributes).
-		 *
-		 * @return array An array of all shortcode attributes. One dimension (all string values).
-		 */
-		public function normalize_attr_strings($attr)
-		{
-			$this->check_arg_types(array('string', 'array'), func_get_args());
+			/**
+			 * Gets all shortcode attribute keys, interpreted as boolean values.
+			 *
+			 * @note This should be overwritten by class extenders.
+			 *
+			 * @return array Boolean attribute keys.
+			 */
+			public function boolean_attr_keys()
+				{
+					return array();
+				}
 
-			$attr = (array)$attr;
-			$attr = $this->©array->to_one_dimension($attr);
-			$attr = $this->©strings->trim_deep($attr);
+			/**
+			 * Normalizes shortcode attributes.
+			 *
+			 * @param string|array $attr An array of all shortcode attributes (if there were any).
+			 *    Or, a string w/ the entire attributes section (when WordPress® fails to parse attributes).
+			 *
+			 * @return array An array of all shortcode attributes. One dimension (all string values).
+			 */
+			public function normalize_attr_strings($attr)
+				{
+					$this->check_arg_types(array('string', 'array'), func_get_args());
 
-			if(!empty($attr['theme'])) // Add `jquery-ui-theme-` prefix.
-				$attr['theme'] = 'jquery-ui-theme-'.str_replace('jquery-ui-theme-', '', $attr['theme']);
+					$attr = (array)$attr;
+					$attr = $this->©array->to_one_dimension($attr);
+					$attr = $this->©strings->trim_deep($attr);
 
-			foreach($this->boolean_attr_keys() as $_attr_key)
-			{
-				if(isset($attr[$_attr_key]) && is_string($attr[$_attr_key]))
-					if($this->©string->is_true($attr[$_attr_key]))
-						$attr[$_attr_key] = '1';
-					else $attr[$_attr_key] = '0';
-			}
-			unset($_attr_key); // Housekeeping.
+					if(!empty($attr['theme'])) // Add `jquery-ui-theme-` prefix.
+						$attr['theme'] = 'jquery-ui-theme-'.str_replace('jquery-ui-theme-', '', $attr['theme']);
 
-			return array_merge($this->attr_defaults(), $attr);
+					foreach($this->boolean_attr_keys() as $_attr_key)
+						{
+							if(isset($attr[$_attr_key]) && is_string($attr[$_attr_key]))
+								if($this->©string->is_true($attr[$_attr_key]))
+									$attr[$_attr_key] = '1';
+								else $attr[$_attr_key] = '0';
+						}
+					unset($_attr_key); // Housekeeping.
+
+					return array_merge($this->attr_defaults(), $attr);
+				}
 		}
 	}
-}

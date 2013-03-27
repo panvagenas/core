@@ -26,11 +26,12 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 		 *
 		 * @note MUST remain PHP v5.2 compatible.
 		 *
-		 * @see deps_x_websharks_core_v000000_dev
 		 * @package WebSharks\Core
 		 * @since 120318
+		 *
+		 * @see deps_x_websharks_core_v000000_dev
 		 */
-		final class deps_websharks_core_v000000_dev // Static methods only.
+		final class deps_websharks_core_v000000_dev // Static properties/methods only please.
 		{
 			/**
 			 * This is simply a front-runner for the extended dependency utilities provided by the WebSharks™ Core.
@@ -43,7 +44,7 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 				{
 					if(!is_string($plugin_name) || !is_string($plugin_dir_names) || !is_bool($report_notices)
 					   || !is_bool($report_warnings) || !is_bool($check_last_ok) || !is_bool($maybe_display_wp_admin_notices)
-					) throw new exception(sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE)));
+					) throw new exception(sprintf(websharks_core_v000000_dev::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE)));
 
 					if(apply_filters('websharks_core__deps__check_disable', FALSE))
 						return TRUE; // Return now (DISABLED by a filter).
@@ -81,7 +82,8 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 				{
 					if(!is_bool($confirmation))
 						throw new exception( // Fail here; detected invalid arguments.
-							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+							sprintf(websharks_core_v000000_dev::i18n('Invalid arguments: `%1$s`'),
+							        print_r(func_get_args(), TRUE))
 						);
 					if(!$confirmation)
 						return FALSE; // Added security.
@@ -96,31 +98,11 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 
 					return $x->deactivation_uninstall(TRUE);
 				}
-
-			/**
-			 * Handles core translations (context: admin-side).
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::i18n()
-			 * @inheritdoc \websharks_core_v000000_dev::i18n()
-			 */
-			public static function i18n() // Arguments are NOT listed here.
-				{
-					return call_user_func_array('websharks_core_v000000_dev::i18n', func_get_args());
-				}
-
-			/**
-			 * Handles core translations (context: front-side).
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::translate()
-			 * @inheritdoc \websharks_core_v000000_dev::translate()
-			 */
-			public static function translate() // Arguments are NOT listed here.
-				{
-					return call_user_func_array('websharks_core_v000000_dev::translate', func_get_args());
-				}
 		}
+
+		/*
+		 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
+		 */
+		if(!class_exists('websharks_core__deps') && function_exists('class_alias') /* PHP v5.3+ only. */)
+			class_alias('deps_websharks_core_v000000_dev', 'websharks_core__deps');
 	}

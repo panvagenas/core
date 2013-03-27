@@ -19,6 +19,13 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @package WebSharks\Core
 		 * @since 120318
+		 *
+		 * @note This should NOT rely directly or indirectly on any other core class objects.
+		 *    Any static properties/methods in the WebSharks™ Core stub will be fine to use though.
+		 *    ~ This class walks a FINE LINE on this point. It DOES use core classes (when/if possible).
+		 *
+		 * @note This WebSharks™ Core exception handler can be disabled with a WordPress® filter.
+		 *    ``add_filter('websharks_core__exception_handler__disable', '__return_true');``
 		 */
 		final class exception_handler // Static methods only.
 		{
@@ -33,55 +40,87 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Plugin/framework instance.
 			 *
-			 * @var framework Plugin/framework instance; else NULL if unavailable.
+			 * @var framework Plugin/framework instance.
 			 * @by-constructor Set dynamically by class constructor.
 			 */
 			public static $plugin;
 
 			/**
+			 * Previous exception handler.
+			 *
+			 * @var string|array|null Previous exception handler.
+			 */
+			public static $previous_handler;
+
+			/**
 			 * Handles all PHP exceptions.
 			 *
 			 * @param exception|\exception $exception An exception.
+			 *
+			 * @return null|mixed This does NOT return anything usable (nor should it).
+			 *
+			 * @note Exceptions handled successfully by this routine will NOT be logged by PHP as errors.
+			 *    As the exception handler, we will need to log and/or display anything that needs to be recorded here.
+			 *    The PHP interpreter simply terminates script execution whenever an exception occurs (nothing more).
+			 *
+			 * @note If an exception is thrown while handling an exception; PHP will revert to it's default exception handler.
+			 *    This will result in a fatal error that may get logged by PHP itself (depending on `error_reporting` and `error_log`).
+			 *
+			 * @throws exception|\exception If we are unable to handle the exception (i.e. the WebSharks™ Core is not even available yet),
+			 *    this handler will simply re-throw the exception (forcing a fatal error); as just described in the previous note.
+			 *
+			 * @note The display of exception messages is NOT dependent upon `display_errors`; nor do we consider that setting here.
+			 *    However, we do tighten security within the `exception.php` template file; hiding most details by default; and displaying all details
+			 *    only if the current user is a Super Administrator in WordPress; or if `WP_DEBUG_DISPLAY` mode has been enabled on this site.
+			 *
+			 * @note If there was another exception handler active on the site; and this exception is NOT for
+			 *    a plugin under this version of the WebSharks™ Core; we simply hand the exception back to the previous handler.
+			 *    In the case of multiple versions of the WebSharks™ Core across various plugins; this allows us to work up the chain
+			 *    of previous handlers until we find the right version of the WebSharks™ Core; assuming each version
+			 *    of the WebSharks™ Core handles things this way too (which is to be expected).
+			 *
+			 * @see http://php.net/manual/en/function.set-exception-handler.php
 			 */
 			public static function handle(\exception $exception)
 				{
-					// Define class properties.
-
-					static::$exception = $exception;
+					static::$exception = $exception; // Reference.
 
 					if(static::$exception instanceof exception)
-						static::$plugin = $exception->plugin;
-
-					// Handle this exception.
-
-					if(static::$plugin)
 						{
-							try // Try to handle w/ plugin.
-								{
-									static::handle_plugin_exception();
-								}
-							catch(\exception $handle_plugin_exception)
-								{
-									static::handle_other_exceptions();
-								}
+							static::$plugin = static::$exception->plugin;
+							return static::handle_plugin_exception();
 						}
-					else static::handle_other_exceptions();
+					// Else this is some other type of exception.
+
+					if(static::$previous_handler && is_callable(static::$previous_handler))
+						return call_user_func(static::$previous_handler, static::$exception);
+
+					// There is NO other handler available (handle it here; if possible).
+
+					if(is_callable('\\'.__NAMESPACE__.'\\websharks_core'))
+						{
+							static::$plugin = websharks_core();
+							return static::handle_plugin_exception();
+						}
+					throw static::$exception; // Re-throw (forcing a fatal error).
 				}
 
 			/**
 			 * Handles a plugin exception.
+			 *
+			 * @see \websharks_core_v000000_dev\exception_handler::handle()
+			 * @inheritdoc \websharks_core_v000000_dev\exception_handler::handle()
 			 */
 			protected static function handle_plugin_exception()
 				{
-					if(ob_get_level()) // Cleans output buffers.
-						while(ob_get_level()) ob_end_clean();
+					static::$plugin->©env->ob_end_clean();
 
 					// Construct template.
 
 					$exception = static::$exception; // For template data.
 					$template  = static::$plugin->©template('exception.php', get_defined_vars());
 
-					// Output exception message.
+					// Output exception message (for on-site display — in web browsers).
 
 					if($template->content && static::$plugin->©env->is_browser())
 						{
@@ -90,120 +129,28 @@ namespace websharks_core_v000000_dev
 									static::$plugin->©headers->clean_status_type(500, 'text/html', TRUE);
 									exit($template->content); // Display.
 								}
-							else if(preg_match(static::$template_content_body_regex, $template->content, $_m))
+							else if(preg_match(static::$plugin->©template->regex_template_content_body, $template->content, $_m))
 								exit(str_replace('<pre>', '<pre style="max-height:200px; overflow:auto;">', $_m['template_content_body']));
 						}
 					// Output exception message (command-line; and other non-browser devices).
+					// This MAY also get fired if headers have already been sent, and for some reason we were unable
+					// to parse a content body section from the template file; see the routine above to understand this.
 
-					echo sprintf(static::$plugin->translate('Exception Code: %1$s'), static::$exception->getCode())."\n";
-					echo sprintf(static::$plugin->translate('Exception Message: %1$s'), static::$exception->getMessage());
-					if(static::$plugin->©env->is_in_wp_debug_mode() || is_super_admin())
+					echo sprintf(static::$plugin->translate('Exception Code: %1$s'), static::$exception->getCode());
+
+					if(static::$plugin->©env->is_in_wp_debug_display_mode() || is_super_admin())
+						echo "\n".sprintf(static::$plugin->translate('Exception Message: %1$s'), static::$exception->getMessage());
+
+					if(static::$plugin->©env->is_in_wp_debug_display_mode() || is_super_admin())
 						echo "\n".static::$exception->getTraceAsString();
 
 					exit(); // Clean exit now.
 				}
-
-			/**
-			 * Handles other exceptions.
-			 */
-			protected static function handle_other_exceptions()
-				{
-					if(ob_get_level()) // Cleans output buffers.
-						while(ob_get_level()) ob_end_clean();
-
-					// Construct template.
-
-					ob_start();
-					include static::template('exceptions.php');
-					$template          = new \stdClass();
-					$template->content = ob_get_clean();
-
-					// Output exception message.
-
-					if($template->content && \websharks_core_v000000_dev::is_browser())
-						{
-							if(!headers_sent()) // Can exception stand-alone?
-								{
-									status_header(500);
-									header('Content-Type: text/html; charset=UTF-8');
-									exit($template->content);
-								}
-							else if(preg_match(static::$template_content_body_regex, $template->content, $_m))
-								exit(str_replace('<pre>', '<pre style="max-height:200px; overflow:auto;">', $_m['template_content_body']));
-						}
-
-					// Output exception message (command-line; and other non-browser devices).
-
-					echo sprintf(static::translate('Exception Code: %1$s'), static::$exception->getCode())."\n";
-					echo sprintf(static::translate('Exception Message: %1$s'), static::$exception->getMessage());
-					if((defined('WP_DEBUG') && WP_DEBUG) || is_super_admin())
-						echo "\n".static::$exception->getTraceAsString();
-
-					exit(); // Clean exit now.
-				}
-
-			/**
-			 * Locates a template file.
-			 *
-			 * @param string $file Template file name (relative path).
-			 *
-			 * @return string Absolute path to a template file (w/ the highest precedence).
-			 *
-			 * @triggers error If ``$file`` does NOT exist, or is NOT readable.
-			 */
-			public static function template($file)
-				{
-					$file = (string)$file;
-
-					if(is_file($path = get_stylesheet_directory().'/'.$file) && is_readable($path))
-						return $path;
-					else if(is_file($path = get_template_directory().'/'.$file) && is_readable($path))
-						return $path;
-					else if(is_file($path = dirname(dirname(dirname(__FILE__))).'/templates/'.$file) && is_readable($path))
-						return $path;
-
-					trigger_error(sprintf(static::i18n('Unable to locate template file: `%1$s`.'), $file), E_USER_ERROR);
-
-					exit(); // Exit script execution.
-				}
-
-			/**
-			 * Handles core translations (context: admin-side).
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::i18n()
-			 * @inheritdoc \websharks_core_v000000_dev::i18n()
-			 */
-			public static function i18n() // Arguments are NOT listed here.
-				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::i18n', func_get_args());
-				}
-
-			/**
-			 * Handles core translations (context: front-side).
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::translate()
-			 * @inheritdoc \websharks_core_v000000_dev::translate()
-			 */
-			public static function translate() // Arguments are NOT listed here.
-				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::translate', func_get_args());
-				}
-
-			/**
-			 * Regex pattern matching template content body.
-			 *
-			 * @var string Regex pattern matching template content body.
-			 */
-			protected static $template_content_body_regex = '/\<\!\-\-\s+BEGIN\:\s+Content\s+Body\s+\-\-\>\s*(?P<template_content_body>.+?)\s*\<\!\-\-\s+\/\s+END\:\s+Content Body\s+\-\-\>/is';
 		}
 
-		/**
+		/*
 		 * Register exception handler.
 		 */
-		if(set_exception_handler('\\'.__NAMESPACE__.'\\exception_handler::handle') !== NULL)
-			restore_exception_handler(); // Don't override an existing handler.
+		if(!apply_filters('websharks_core__exception_handler__disable', FALSE))
+			exception_handler::$previous_handler = set_exception_handler('\\'.__NAMESPACE__.'\\exception_handler::handle');
 	}

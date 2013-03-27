@@ -129,10 +129,7 @@ namespace websharks_core_v000000_dev
 					$this->©db_utils->deactivation_uninstall(TRUE);
 					$this->©options->deactivation_uninstall(TRUE);
 					$this->©dirs->deactivation_uninstall(TRUE);
-
-					if(!class_exists('\\deps_'.__NAMESPACE__))
-						include_once dirname(__FILE__).'/deps.php';
-					\deps_websharks_core_v000000_dev::deactivation_uninstall(TRUE);
+					deps::deactivation_uninstall(TRUE);
 
 					delete_option($this->___instance_config->plugin_root_ns_stub.'__version');
 

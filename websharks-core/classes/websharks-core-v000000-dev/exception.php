@@ -55,7 +55,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param object|array    $___instance_config Required at all times.
 			 *    A parent object instance, which contains the parent's ``$___instance_config``,
-			 *    or an explicit ``$___instance_config`` object/array will suffice also.
+			 *    or a new ``$___instance_config`` array.
 			 *
 			 * @param string          $code Optional error code (string, NO integers please).
 			 *
@@ -75,17 +75,14 @@ namespace websharks_core_v000000_dev
 					try // We'll use standard exceptions for any issues here.
 						{
 							if($___instance_config instanceof framework)
-								$plugin_root_ns = (string)strstr(get_class($___instance_config), '\\', TRUE);
-							else if(is_object($___instance_config) && !empty($___instance_config->plugin_root_ns))
-								$plugin_root_ns = (string)$___instance_config->plugin_root_ns;
+								$plugin_root_ns = $___instance_config->___instance_config->plugin_root_ns;
 							else if(is_array($___instance_config) && !empty($___instance_config['plugin_root_ns']))
 								$plugin_root_ns = (string)$___instance_config['plugin_root_ns'];
 
 							if(empty($plugin_root_ns) || !isset($GLOBALS[$plugin_root_ns]) || !($GLOBALS[$plugin_root_ns] instanceof framework))
-								throw new \exception(sprintf(static::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
+								throw new \exception(sprintf(stub::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
 								                             print_r($___instance_config, TRUE))
 								);
-
 							$this->plugin = $GLOBALS[$plugin_root_ns];
 							$code         = ((string)$code) ? (string)$code : 'exception';
 							$message      = ((string)$message) ? (string)$message : sprintf($this->plugin->i18n('Exception code: `%1$s`.'), $code);
@@ -95,6 +92,7 @@ namespace websharks_core_v000000_dev
 							$this->data = $data; // Optional diagnostic data associated with this exception (possibly a NULL value).
 
 							if($this->plugin->©plugin->is_core()) // Always off in the WebSharks™ Core.
+								// @TODO We need to figure out a way for us to leave this on for the WebSharks™ Core.
 								$this->wp_debug_log = $this->db_log = FALSE;
 
 							$this->wp_debug_log(); // Possible debug logging.
@@ -103,7 +101,8 @@ namespace websharks_core_v000000_dev
 					catch(\exception $exception) // Rethrow a standard exception class.
 						{
 							throw new \exception(
-								sprintf(static::i18n('Could NOT instantiate exception w/ code: `%1$s`.'), $code), 20, $exception
+								sprintf(stub::i18n('Could NOT instantiate exception code: `%1$s` with message: `%2$s`.'), $code, $message).
+								sprintf(stub::i18n(' Caused by exception code: `%1$s` with message: `%2$s`.'), $exception->getCode(), $exception->getMessage()), 20, $exception
 							);
 						}
 				}
@@ -112,11 +111,11 @@ namespace websharks_core_v000000_dev
 			 * Logs exceptions.
 			 *
 			 * @note We only log exceptions if the class instance enables this,
-			 *    and `WP_DEBUG` MUST be enabled also (for this to work).
+			 *    and `WP_DEBUG_LOG` MUST be enabled also (for this to work).
 			 */
 			public function wp_debug_log()
 				{
-					if($this->wp_debug_log && $this->plugin->©env->is_in_wp_debug_mode())
+					if($this->wp_debug_log && $this->plugin->©env->is_in_wp_debug_log_mode())
 						{
 							$log_dir  = $this->plugin->©dir->get_log_dir('private', 'debug');
 							$log_file = $this->plugin->©file->maybe_archive($log_dir.'/debug.log');
@@ -153,32 +152,6 @@ namespace websharks_core_v000000_dev
 					if($this->db_log)
 						{
 						}
-				}
-
-			/**
-			 * Handles core translations (context: admin-side).
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::i18n()
-			 * @inheritdoc \websharks_core_v000000_dev::i18n()
-			 */
-			public static function i18n() // Arguments are NOT listed here.
-				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::i18n', func_get_args());
-				}
-
-			/**
-			 * Handles core translations (context: front-side).
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::translate()
-			 * @inheritdoc \websharks_core_v000000_dev::translate()
-			 */
-			public static function translate() // Arguments are NOT listed here.
-				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::translate', func_get_args());
 				}
 		}
 	}

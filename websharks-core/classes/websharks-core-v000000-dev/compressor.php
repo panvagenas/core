@@ -693,7 +693,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Parses and return an array of JS tag fragments.
 			 *
-			 * @param array   $html_frag An HTML tag fragment array.
+			 * @param array $html_frag An HTML tag fragment array.
 			 *
 			 * @return array An array of JS tag fragments (ready to be converted into JS parts).
 			 *    Else an empty array (i.e. no JS tag fragments in the HTML fragment array).

@@ -10,40 +10,40 @@
  * @since 120318
  */
 namespace websharks_core_v000000_dev
-{
-	if(!defined('WPINC'))
-		exit('Do NOT access this file directly: '.basename(__FILE__));
-
-	/**
-	 * XML Utilities.
-	 *
-	 * @package WebSharks\Core
-	 * @since 120318
-	 *
-	 * @assert ($GLOBALS[__NAMESPACE__])
-	 */
-	class xml extends framework
 	{
+		if(!defined('WPINC'))
+			exit('Do NOT access this file directly: '.basename(__FILE__));
+
 		/**
-		 * Gets an XML attribute value.
+		 * XML Utilities.
 		 *
-		 * @param \SimpleXMLElement $xml A SimpleXMLElement object instance.
-		 * @param string            $attribute The name of the attribute we're looking for.
+		 * @package WebSharks\Core
+		 * @since 120318
 		 *
-		 * @return string The value of the attribute, else an empty string on failure.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
+		 * @assert ($GLOBALS[__NAMESPACE__])
 		 */
-		public function attribute($xml, $attribute)
+		class xml extends framework
 		{
-			$this->check_arg_types('\\SimpleXMLElement', 'string:!empty', func_get_args());
+			/**
+			 * Gets an XML attribute value.
+			 *
+			 * @param \SimpleXMLElement $xml A SimpleXMLElement object instance.
+			 * @param string            $attribute The name of the attribute we're looking for.
+			 *
+			 * @return string The value of the attribute, else an empty string on failure.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function attribute($xml, $attribute)
+				{
+					$this->check_arg_types('\\SimpleXMLElement', 'string:!empty', func_get_args());
 
-			foreach($xml->attributes() as $_attribute => $_value)
-				if(strcasecmp($_attribute, $attribute) === 0)
-					return (string)$_value;
-			unset($_attribute, $_value);
+					foreach($xml->attributes() as $_attribute => $_value)
+						if(strcasecmp($_attribute, $attribute) === 0)
+							return (string)$_value;
+					unset($_attribute, $_value);
 
-			return '';
+					return '';
+				}
 		}
 	}
-}

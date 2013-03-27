@@ -29,12 +29,12 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
 			 *
-			 * @param mixed    $var A variable by reference (no NOTICE).
+			 * @param mixed   $var A variable by reference (no NOTICE).
 			 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 			 *
-			 * @param mixed    $or Optional. Defaults to a NULL value. This is the return value if ``$var`` is NOT set yet.
+			 * @param mixed   $or Optional. Defaults to a NULL value. This is the return value if ``$var`` is NOT set yet.
 			 *
-			 * @param boolean  $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
+			 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
 			 *
 			 * @return mixed Value of ``$var``, if ``isset()``. Else returns ``$or`` (which defaults to NULL).
 			 *
@@ -99,12 +99,12 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
 			 *
-			 * @param mixed    $var A variable by reference (no NOTICE).
+			 * @param mixed   $var A variable by reference (no NOTICE).
 			 *    If ``$var`` was NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 			 *
-			 * @param mixed    $or Optional. Defaults to a NULL value. This is the return value if ``$var`` IS empty.
+			 * @param mixed   $or Optional. Defaults to a NULL value. This is the return value if ``$var`` IS empty.
 			 *
-			 * @param boolean  $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
+			 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
 			 *
 			 * @return mixed Value of ``$var``, if ``!empty()``. Else returns ``$or`` (which defaults to NULL).
 			 *
@@ -856,9 +856,9 @@ namespace websharks_core_v000000_dev
 			 * @note This method is an alias for ``parse_query()`` with ``$enc_type`` set to: ``\websharks\framework::RFC3986``.
 			 *    Please check the ``parse_query()`` method for further details.
 			 *
-			 * @param string      $string An input string of query vars.
+			 * @param string  $string An input string of query vars.
 			 *
-			 * @param boolean     $convert_dots_spaces Optional. This defaults to a TRUE value.
+			 * @param boolean $convert_dots_spaces Optional. This defaults to a TRUE value.
 			 *
 			 * @return array An array of data, based on the input ``$string`` value.
 			 *

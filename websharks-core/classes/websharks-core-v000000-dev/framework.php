@@ -9,38 +9,58 @@
  * @package WebSharks\Core
  * @since 120318
  */
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# WebSharks™ Core framework (only if it does NOT exist yet). This is the base class for the WebSharks™ Core.
+# -----------------------------------------------------------------------------------------------------------------------------------------
 namespace websharks_core_v000000_dev
 	{
 		if(!defined('WPINC'))
 			exit('Do NOT access this file directly: '.basename(__FILE__));
-		/*
-		 * WebSharks™ Core framework class.
-		 */
+
 		if(!class_exists('\\'.__NAMESPACE__.'\\framework'))
 			{
-				/*
-		       * WebSharks™ Core stub class.
-		       */
-				if(!class_exists('\\'.__NAMESPACE__))
-					{
-						$GLOBALS['autoload_'.__NAMESPACE__] = FALSE;
-						include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
-					}
-				/*
-				 * WebSharks™ Core dependency utilities.
-				 */
-				if(!class_exists('\\deps_'.__NAMESPACE__.''))
-					include_once dirname(__FILE__).'/deps.php';
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# WordPress® version (if not already defined by WordPress®).
+				# -----------------------------------------------------------------------------------------------------------------------------
 
-				/*
-				 * Global constant (WordPress® version).
-				 */
 				if(!defined('WP_VERSION'))
 					/**
 					 * @var string WordPress® version.
 					 */
 					define('WP_VERSION', $GLOBALS['wp_version']);
 
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# WebSharks™ Core version (dictated by namespace).
+				# -----------------------------------------------------------------------------------------------------------------------------
+
+				${__FILE__}['version'] = str_replace('websharks_core_v', '', __NAMESPACE__);
+				${__FILE__}['version'] = str_replace('_', '-', ${__FILE__}['version']);
+
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# WebSharks™ Core stub class (and alias).
+				# -----------------------------------------------------------------------------------------------------------------------------
+
+				if(!class_exists('\\'.__NAMESPACE__))
+					{
+						$GLOBALS['autoload_'.__NAMESPACE__] = FALSE;
+						include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
+					}
+				if(!class_exists('\\'.__NAMESPACE__.'\\stub'))
+					class_alias('\\'.__NAMESPACE__, __NAMESPACE__.'\\stub');
+
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# WebSharks™ Core dependency utilities.
+				# -----------------------------------------------------------------------------------------------------------------------------
+
+				if(!class_exists('\\deps_'.__NAMESPACE__.''))
+					include_once dirname(__FILE__).'/deps.php';
+
+				if(!class_exists('\\'.__NAMESPACE__.'\\deps'))
+					class_alias('\\'.__NAMESPACE__, __NAMESPACE__.'\\deps');
+
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# WebSharks™ Core framework class definition.
+				# -----------------------------------------------------------------------------------------------------------------------------
 				/**
 				 * WebSharks™ Core Framework.
 				 *
@@ -52,294 +72,300 @@ namespace websharks_core_v000000_dev
 				 * @note Dynamic properties/methods are defined explicitly here.
 				 *    This way IDEs jive with ``__get()`` and ``__call()``.
 				 *
-				 * @property \websharks_core_v000000_dev\actions                 $©actions
-				 * @property \websharks_core_v000000_dev\actions                 $©action
+				 * @property \websharks_core_v000000_dev\actions                        $©actions
+				 * @property \websharks_core_v000000_dev\actions                        $©action
 				 * @method \websharks_core_v000000_dev\actions ©actions()
 				 * @method \websharks_core_v000000_dev\actions ©action()
 				 *
-				 * @property \websharks_core_v000000_dev\arrays                  $©arrays
-				 * @property \websharks_core_v000000_dev\arrays                  $©array
+				 * @property \websharks_core_v000000_dev\arrays                         $©arrays
+				 * @property \websharks_core_v000000_dev\arrays                         $©array
 				 * @method \websharks_core_v000000_dev\arrays ©arrays()
 				 * @method \websharks_core_v000000_dev\arrays ©array()
 				 *
-				 * @property \websharks_core_v000000_dev\booleans                $©booleans
-				 * @property \websharks_core_v000000_dev\booleans                $©boolean
+				 * @property \websharks_core_v000000_dev\booleans                       $©booleans
+				 * @property \websharks_core_v000000_dev\booleans                       $©boolean
 				 * @method \websharks_core_v000000_dev\booleans ©booleans()
 				 * @method \websharks_core_v000000_dev\booleans ©boolean()
 				 *
 				 * @method \websharks_core_v000000_dev\builder ©builder()
 				 * @method \websharks_core_v000000_dev\builder ©build()
 				 *
-				 * @property \websharks_core_v000000_dev\caps                    $©caps
-				 * @property \websharks_core_v000000_dev\caps                    $©cap
+				 * @property \websharks_core_v000000_dev\caps                           $©caps
+				 * @property \websharks_core_v000000_dev\caps                           $©cap
 				 * @method \websharks_core_v000000_dev\caps ©caps()
 				 * @method \websharks_core_v000000_dev\caps ©cap()
 				 *
-				 * @property \websharks_core_v000000_dev\captchas                $©captchas
-				 * @property \websharks_core_v000000_dev\captchas                $©captcha
+				 * @property \websharks_core_v000000_dev\captchas                       $©captchas
+				 * @property \websharks_core_v000000_dev\captchas                       $©captcha
 				 * @method \websharks_core_v000000_dev\captchas ©captchas()
 				 * @method \websharks_core_v000000_dev\captchas ©captcha()
 				 *
-				 * @property \websharks_core_v000000_dev\classes                 $©classes
-				 * @property \websharks_core_v000000_dev\classes                 $©class
+				 * @property \websharks_core_v000000_dev\classes                        $©classes
+				 * @property \websharks_core_v000000_dev\classes                        $©class
 				 * @method \websharks_core_v000000_dev\classes ©classes()
 				 * @method \websharks_core_v000000_dev\classes ©class()
 				 *
-				 * @property \websharks_core_v000000_dev\commands                $©commands
-				 * @property \websharks_core_v000000_dev\commands                $©command
+				 * @property \websharks_core_v000000_dev\commands                       $©commands
+				 * @property \websharks_core_v000000_dev\commands                       $©command
 				 * @method \websharks_core_v000000_dev\commands ©commands()
 				 * @method \websharks_core_v000000_dev\commands ©command()
 				 *
-				 * @property \websharks_core_v000000_dev\compressor              $©compressor
+				 * @property \websharks_core_v000000_dev\compressor                     $©compressor
 				 * @method \websharks_core_v000000_dev\compressor ©compressor()
 				 *
-				 * @property \websharks_core_v000000_dev\cookies                 $©cookies
-				 * @property \websharks_core_v000000_dev\cookies                 $©cookie
+				 * @property \websharks_core_v000000_dev\cookies                        $©cookies
+				 * @property \websharks_core_v000000_dev\cookies                        $©cookie
 				 * @method \websharks_core_v000000_dev\cookies ©cookies()
 				 * @method \websharks_core_v000000_dev\cookies ©cookie()
 				 *
-				 * @property \websharks_core_v000000_dev\css_minifier            $©css_minifier
+				 * @property \websharks_core_v000000_dev\css_minifier                   $©css_minifier
 				 * @method \websharks_core_v000000_dev\css_minifier ©css_minifier()
 				 *
-				 * @property \websharks_core_v000000_dev\crons                   $©crons
-				 * @property \websharks_core_v000000_dev\crons                   $©cron
+				 * @property \websharks_core_v000000_dev\crons                          $©crons
+				 * @property \websharks_core_v000000_dev\crons                          $©cron
 				 * @method \websharks_core_v000000_dev\crons ©crons()
 				 * @method \websharks_core_v000000_dev\crons ©cron()
 				 *
-				 * @property \websharks_core_v000000_dev\currencies              $©currencies
-				 * @property \websharks_core_v000000_dev\currencies              $©currency
+				 * @property \websharks_core_v000000_dev\currencies                     $©currencies
+				 * @property \websharks_core_v000000_dev\currencies                     $©currency
 				 * @method \websharks_core_v000000_dev\currencies ©currencies()
 				 * @method \websharks_core_v000000_dev\currencies ©currency()
 				 *
-				 * @property \websharks_core_v000000_dev\dates                   $©dates
-				 * @property \websharks_core_v000000_dev\dates                   $©date
+				 * @property \websharks_core_v000000_dev\dates                          $©dates
+				 * @property \websharks_core_v000000_dev\dates                          $©date
 				 * @method \websharks_core_v000000_dev\dates ©dates()
 				 * @method \websharks_core_v000000_dev\dates ©date()
 				 *
-				 * @property \wpdb|\websharks_core_v000000_dev\db                $©db
+				 * @property \wpdb|\websharks_core_v000000_dev\db                       $©db
 				 * @method \wpdb|\websharks_core_v000000_dev\db ©db()
 				 *
-				 * @property \websharks_core_v000000_dev\db_cache                $©db_cache
+				 * @property \websharks_core_v000000_dev\db_cache                       $©db_cache
 				 * @method \websharks_core_v000000_dev\db_cache ©db_cache()
 				 *
-				 * @property \websharks_core_v000000_dev\db_tables               $©db_tables
-				 * @property \websharks_core_v000000_dev\db_tables               $©db_table
+				 * @property \websharks_core_v000000_dev\db_tables                      $©db_tables
+				 * @property \websharks_core_v000000_dev\db_tables                      $©db_table
 				 * @method \websharks_core_v000000_dev\db_tables ©db_tables()
 				 * @method \websharks_core_v000000_dev\db_tables ©db_table()
 				 *
-				 * @property \websharks_core_v000000_dev\db_utils                $©db_utils
-				 * @property \websharks_core_v000000_dev\db_utils                $©db_util
+				 * @property \websharks_core_v000000_dev\db_utils                       $©db_utils
+				 * @property \websharks_core_v000000_dev\db_utils                       $©db_util
 				 * @method \websharks_core_v000000_dev\db_utils ©db_utils()
 				 * @method \websharks_core_v000000_dev\db_utils ©db_util()
 				 *
-				 * @property \websharks_core_v000000_dev\diagnostics             $©diagnostics
-				 * @property \websharks_core_v000000_dev\diagnostics             $©diagnostic
+				 * @property \websharks_core_v000000_dev\diagnostics                    $©diagnostics
+				 * @property \websharks_core_v000000_dev\diagnostics                    $©diagnostic
 				 * @method \websharks_core_v000000_dev\diagnostics ©diagnostics()
 				 * @method \websharks_core_v000000_dev\diagnostics ©diagnostic()
 				 *
-				 * @property \websharks_core_v000000_dev\dirs                    $©dirs
-				 * @property \websharks_core_v000000_dev\dirs                    $©dir
+				 * @property \websharks_core_v000000_dev\dirs                           $©dirs
+				 * @property \websharks_core_v000000_dev\dirs                           $©dir
 				 * @method \websharks_core_v000000_dev\dirs ©dirs()
 				 * @method \websharks_core_v000000_dev\dirs ©dir()
 				 *
-				 * @property \websharks_core_v000000_dev\encryption              $©encryption
+				 * @property \websharks_core_v000000_dev\encryption                     $©encryption
 				 * @method \websharks_core_v000000_dev\encryption ©encryption()
 				 *
-				 * @property \websharks_core_v000000_dev\env                     $©env
+				 * @property \websharks_core_v000000_dev\env                            $©env
 				 * @method \websharks_core_v000000_dev\env ©env()
 				 *
-				 * @property \websharks_core_v000000_dev\errors                  $©errors
-				 * @property \websharks_core_v000000_dev\errors                  $©error
+				 * @property \websharks_core_v000000_dev\errors                         $©errors
+				 * @property \websharks_core_v000000_dev\errors                         $©error
 				 * @method \websharks_core_v000000_dev\errors ©errors()
 				 * @method \websharks_core_v000000_dev\errors ©error()
 				 *
-				 * @property \websharks_core_v000000_dev\exception               $©exception
+				 * @property \websharks_core_v000000_dev\exception                      $©exception
 				 * @method \websharks_core_v000000_dev\exception ©exception()
 				 *
-				 * @property \websharks_core_v000000_dev\feeds                   $©feeds
-				 * @property \websharks_core_v000000_dev\feeds                   $©feed
+				 * @property \websharks_core_v000000_dev\feeds                          $©feeds
+				 * @property \websharks_core_v000000_dev\feeds                          $©feed
 				 * @method \websharks_core_v000000_dev\feeds ©feeds()
 				 * @method \websharks_core_v000000_dev\feeds ©feed()
 				 *
-				 * @property \websharks_core_v000000_dev\files                   $©files
-				 * @property \websharks_core_v000000_dev\files                   $©file
+				 * @property \websharks_core_v000000_dev\files                          $©files
+				 * @property \websharks_core_v000000_dev\files                          $©file
 				 * @method \websharks_core_v000000_dev\files ©files()
 				 * @method \websharks_core_v000000_dev\files ©file()
 				 *
-				 * @property \websharks_core_v000000_dev\floats                  $©floats
-				 * @property \websharks_core_v000000_dev\floats                  $©float
+				 * @property \websharks_core_v000000_dev\floats                         $©floats
+				 * @property \websharks_core_v000000_dev\floats                         $©float
 				 * @method \websharks_core_v000000_dev\floats ©floats()
 				 * @method \websharks_core_v000000_dev\floats ©float()
 				 *
-				 * @property \websharks_core_v000000_dev\forms                   $©forms
-				 * @property \websharks_core_v000000_dev\forms                   $©form
+				 * @property \websharks_core_v000000_dev\forms                          $©forms
+				 * @property \websharks_core_v000000_dev\forms                          $©form
 				 * @method \websharks_core_v000000_dev\forms ©forms()
 				 * @method \websharks_core_v000000_dev\forms ©form()
 				 *
-				 * @property \websharks_core_v000000_dev\form_fields             $©form_fields
-				 * @property \websharks_core_v000000_dev\form_fields             $©form_field
+				 * @property \websharks_core_v000000_dev\form_fields                    $©form_fields
+				 * @property \websharks_core_v000000_dev\form_fields                    $©form_field
 				 * @method \websharks_core_v000000_dev\form_fields ©form_fields()
 				 * @method \websharks_core_v000000_dev\form_fields ©form_field()
 				 *
-				 * @property \websharks_core_v000000_dev\functions               $©functions
-				 * @property \websharks_core_v000000_dev\functions               $©function
+				 * @property \websharks_core_v000000_dev\functions                      $©functions
+				 * @property \websharks_core_v000000_dev\functions                      $©function
 				 * @method \websharks_core_v000000_dev\functions ©functions()
 				 * @method \websharks_core_v000000_dev\functions ©function()
 				 *
-				 * @property \websharks_core_v000000_dev\headers                 $©headers
-				 * @property \websharks_core_v000000_dev\headers                 $©header
+				 * @property \websharks_core_v000000_dev\headers                        $©headers
+				 * @property \websharks_core_v000000_dev\headers                        $©header
 				 * @method \websharks_core_v000000_dev\headers ©headers()
 				 * @method \websharks_core_v000000_dev\headers ©header()
 				 *
-				 * @property \websharks_core_v000000_dev\html_minifier           $©html_minifier
+				 * @property \websharks_core_v000000_dev\html_minifier                  $©html_minifier
 				 * @method \websharks_core_v000000_dev\html_minifier ©html_minifier()
 				 *
-				 * @property \websharks_core_v000000_dev\initializer             $©initializer
+				 * @property \websharks_core_v000000_dev\initializer                    $©initializer
 				 * @method \websharks_core_v000000_dev\initializer ©initializer()
 				 *
-				 * @property \websharks_core_v000000_dev\installer               $©installer
+				 * @property \websharks_core_v000000_dev\installer                      $©installer
 				 * @method \websharks_core_v000000_dev\installer ©installer()
 				 *
-				 * @property \websharks_core_v000000_dev\integers                $©integers
-				 * @property \websharks_core_v000000_dev\integers                $©integer
+				 * @property \websharks_core_v000000_dev\integers                       $©integers
+				 * @property \websharks_core_v000000_dev\integers                       $©integer
 				 * @method \websharks_core_v000000_dev\integers ©integers()
 				 * @method \websharks_core_v000000_dev\integers ©integer()
 				 *
-				 * @property \websharks_core_v000000_dev\ips                     $©ips
-				 * @property \websharks_core_v000000_dev\ips                     $©ip
+				 * @property \websharks_core_v000000_dev\ips                            $©ips
+				 * @property \websharks_core_v000000_dev\ips                            $©ip
 				 * @method \websharks_core_v000000_dev\ips ©ips()
 				 * @method \websharks_core_v000000_dev\ips ©ip()
 				 *
-				 * @property \websharks_core_v000000_dev\js_minifier             $©js_minifier
+				 * @property \websharks_core_v000000_dev\js_minifier                    $©js_minifier
 				 * @method \websharks_core_v000000_dev\js_minifier ©js_minifier()
 				 *
-				 * @property \websharks_core_v000000_dev\mail                    $©mail
+				 * @property \websharks_core_v000000_dev\mail                           $©mail
 				 * @method \websharks_core_v000000_dev\mail ©mail()
 				 *
-				 * @property \websharks_core_v000000_dev\markdown                $©markdown
+				 * @property \websharks_core_v000000_dev\markdown                       $©markdown
 				 * @method \websharks_core_v000000_dev\markdown ©markdown()
 				 *
-				 * @property \websharks_core_v000000_dev\menu_pages              $©menu_pages
-				 * @property \websharks_core_v000000_dev\menu_pages              $©menu_page
+				 * @property \websharks_core_v000000_dev\menu_pages                     $©menu_pages
+				 * @property \websharks_core_v000000_dev\menu_pages                     $©menu_page
 				 * @method \websharks_core_v000000_dev\menu_pages ©menu_pages()
 				 * @method \websharks_core_v000000_dev\menu_pages ©menu_page()
 				 *
-				 * @property \websharks_core_v000000_dev\menu_pages\menu_page    $©menu_pages__menu_page
+				 * @property \websharks_core_v000000_dev\menu_pages\menu_page           $©menu_pages__menu_page
 				 * @method \websharks_core_v000000_dev\menu_pages\menu_page ©menu_pages__menu_page()
 				 *
-				 * @property \websharks_core_v000000_dev\menu_pages\panels\panel $©menu_pages__panels__panel
+				 * @property \websharks_core_v000000_dev\menu_pages\panels\panel        $©menu_pages__panels__panel
 				 * @method \websharks_core_v000000_dev\menu_pages\panels\panel ©menu_pages__panels__panel()
 				 *
-				 * @property \websharks_core_v000000_dev\messages                $©messages
-				 * @property \websharks_core_v000000_dev\messages                $©message
+				 * @property \websharks_core_v000000_dev\messages                       $©messages
+				 * @property \websharks_core_v000000_dev\messages                       $©message
 				 * @method \websharks_core_v000000_dev\messages ©messages()
 				 * @method \websharks_core_v000000_dev\messages ©message()
 				 *
-				 * @property \websharks_core_v000000_dev\functions               $©methods
-				 * @property \websharks_core_v000000_dev\functions               $©method
+				 * @property \websharks_core_v000000_dev\functions                      $©methods
+				 * @property \websharks_core_v000000_dev\functions                      $©method
 				 * @method \websharks_core_v000000_dev\functions ©methods()
 				 * @method \websharks_core_v000000_dev\functions ©method()
 				 *
-				 * @property \websharks_core_v000000_dev\no_cache                $©no_cache
+				 * @property \websharks_core_v000000_dev\no_cache                       $©no_cache
 				 * @method \websharks_core_v000000_dev\no_cache ©no_cache()
 				 *
-				 * @property \websharks_core_v000000_dev\notices                 $©notices
-				 * @property \websharks_core_v000000_dev\notices                 $©notice
+				 * @property \websharks_core_v000000_dev\notices                        $©notices
+				 * @property \websharks_core_v000000_dev\notices                        $©notice
 				 * @method \websharks_core_v000000_dev\notices ©notices()
 				 * @method \websharks_core_v000000_dev\notices ©notice()
 				 *
-				 * @property \websharks_core_v000000_dev\oauth                   $©oauth
+				 * @property \websharks_core_v000000_dev\oauth                          $©oauth
 				 * @method \websharks_core_v000000_dev\oauth ©oauth()
 				 *
-				 * @property \websharks_core_v000000_dev\options                 $©options
-				 * @property \websharks_core_v000000_dev\options                 $©option
+				 * @property \websharks_core_v000000_dev\options                        $©options
+				 * @property \websharks_core_v000000_dev\options                        $©option
 				 * @method \websharks_core_v000000_dev\options ©options()
 				 * @method \websharks_core_v000000_dev\options ©option()
 				 *
-				 * @property \websharks_core_v000000_dev\objects_os              $©objects_os
-				 * @property \websharks_core_v000000_dev\objects_os              $©object_os
+				 * @property \websharks_core_v000000_dev\objects_os                     $©objects_os
+				 * @property \websharks_core_v000000_dev\objects_os                     $©object_os
 				 * @method \websharks_core_v000000_dev\objects_os ©objects_os()
 				 * @method \websharks_core_v000000_dev\objects_os ©object_os()
 				 *
-				 * @property \websharks_core_v000000_dev\objects                 $©objects
-				 * @property \websharks_core_v000000_dev\objects                 $©object
+				 * @property \websharks_core_v000000_dev\objects                        $©objects
+				 * @property \websharks_core_v000000_dev\objects                        $©object
 				 * @method \websharks_core_v000000_dev\objects ©objects()
 				 * @method \websharks_core_v000000_dev\objects ©object()
 				 *
-				 * @property \websharks_core_v000000_dev\php                     $©php
+				 * @property \websharks_core_v000000_dev\php                            $©php
 				 * @method \websharks_core_v000000_dev\php ©php()
 				 *
-				 * @property \websharks_core_v000000_dev\plugins                 $©plugins
-				 * @property \websharks_core_v000000_dev\plugins                 $©plugin
+				 * @property \websharks_core_v000000_dev\plugins                        $©plugins
+				 * @property \websharks_core_v000000_dev\plugins                        $©plugin
 				 * @method \websharks_core_v000000_dev\plugins ©plugins()
 				 * @method \websharks_core_v000000_dev\plugins ©plugin()
 				 *
-				 * @property \websharks_core_v000000_dev\posts                   $©posts
-				 * @property \websharks_core_v000000_dev\posts                   $©post
+				 * @property \websharks_core_v000000_dev\posts                          $©posts
+				 * @property \websharks_core_v000000_dev\posts                          $©post
 				 * @method \websharks_core_v000000_dev\posts ©posts()
 				 * @method \websharks_core_v000000_dev\posts ©post()
 				 *
 				 * @method \websharks_core_v000000_dev\replicator ©replicator()
 				 * @method \websharks_core_v000000_dev\replicator ©replicate()
 				 *
-				 * @property \websharks_core_v000000_dev\scripts                 $©scripts
-				 * @property \websharks_core_v000000_dev\scripts                 $©script
+				 * @property \websharks_core_v000000_dev\scripts                        $©scripts
+				 * @property \websharks_core_v000000_dev\scripts                        $©script
 				 * @method \websharks_core_v000000_dev\scripts ©scripts()
 				 * @method \websharks_core_v000000_dev\scripts ©script()
 				 *
-				 * @property \websharks_core_v000000_dev\strings                 $©strings
-				 * @property \websharks_core_v000000_dev\strings                 $©string
+				 * @property \websharks_core_v000000_dev\strings                        $©strings
+				 * @property \websharks_core_v000000_dev\strings                        $©string
 				 * @method \websharks_core_v000000_dev\strings ©strings()
 				 * @method \websharks_core_v000000_dev\strings ©string()
 				 * @method static \websharks_core_v000000_dev\strings string()
 				 *
-				 * @property \websharks_core_v000000_dev\styles                  $©styles
-				 * @property \websharks_core_v000000_dev\styles                  $©style
+				 * @property \websharks_core_v000000_dev\styles                         $©styles
+				 * @property \websharks_core_v000000_dev\styles                         $©style
 				 * @method \websharks_core_v000000_dev\styles ©styles()
 				 * @method \websharks_core_v000000_dev\styles ©style()
 				 *
-				 * @property \websharks_core_v000000_dev\successes               $©successes
-				 * @property \websharks_core_v000000_dev\successes               $©success
+				 * @property \websharks_core_v000000_dev\successes                      $©successes
+				 * @property \websharks_core_v000000_dev\successes                      $©success
 				 * @method \websharks_core_v000000_dev\successes ©successes()
 				 * @method \websharks_core_v000000_dev\successes ©success()
 				 *
-				 * @property \websharks_core_v000000_dev\templates               $©templates
-				 * @property \websharks_core_v000000_dev\templates               $©template
+				 * @property \websharks_core_v000000_dev\templates                      $©templates
+				 * @property \websharks_core_v000000_dev\templates                      $©template
 				 * @method \websharks_core_v000000_dev\templates ©templates()
 				 * @method \websharks_core_v000000_dev\templates ©template()
 				 *
-				 * @property \websharks_core_v000000_dev\urls                    $©urls
-				 * @property \websharks_core_v000000_dev\urls                    $©url
+				 * @property \websharks_core_v000000_dev\urls                           $©urls
+				 * @property \websharks_core_v000000_dev\urls                           $©url
 				 * @method \websharks_core_v000000_dev\urls ©urls()
 				 * @method \websharks_core_v000000_dev\urls ©url()
 				 *
-				 * @property \websharks_core_v000000_dev\vars                    $©vars
-				 * @property \websharks_core_v000000_dev\vars                    $©var
+				 * @property \websharks_core_v000000_dev\vars                           $©vars
+				 * @property \websharks_core_v000000_dev\vars                           $©var
 				 * @method \websharks_core_v000000_dev\vars ©vars()
 				 * @method \websharks_core_v000000_dev\vars ©var()
 				 *
-				 * @property \websharks_core_v000000_dev\videos                  $©videos
-				 * @property \websharks_core_v000000_dev\videos                  $©video
+				 * @property \websharks_core_v000000_dev\videos                         $©videos
+				 * @property \websharks_core_v000000_dev\videos                         $©video
 				 * @method \websharks_core_v000000_dev\videos ©videos()
 				 * @method \websharks_core_v000000_dev\videos ©video()
 				 *
-				 * @property \websharks_core_v000000_dev\users                   $©users
-				 * @property \websharks_core_v000000_dev\users                   $©user
+				 * @property \websharks_core_v000000_dev\users                          $©users
+				 * @property \websharks_core_v000000_dev\users                          $©user
 				 * @method \websharks_core_v000000_dev\users ©users()
 				 * @method \websharks_core_v000000_dev\users ©user()
 				 *
-				 * @property \websharks_core_v000000_dev\user_utils              $©user_utils
+				 * @property \websharks_core_v000000_dev\user_utils                     $©user_utils
 				 * @method \websharks_core_v000000_dev\user_utils ©user_utils()
 				 *
-				 * @property \websharks_core_v000000_dev\xml                     $©xml
+				 * @property \websharks_core_v000000_dev\xml                            $©xml
 				 * @method \websharks_core_v000000_dev\xml ©xml()
+				 *
+				 * @property object                                                     $___instance_config Public/magic read-only access.
 				 */
-				class framework // WebSharks™ Core Framework.
+				class framework // Base class for the WebSharks™ Core.
 				{
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Instance configuration properties.
+					# --------------------------------------------------------------------------------------------------------------------------
+
 					/**
-					 * Current instance object.
+					 * Current instance configuration.
 					 *
-					 * @var object Current instance object for ``$this``.
+					 * @var object Current instance config for ``$this``.
 					 *    Defaults to NULL. Set by constructor.
 					 *
 					 * @by-constructor Set by class constructor.
@@ -348,8 +374,9 @@ namespace websharks_core_v000000_dev
 					 *    Would be `final` if PHP allowed such a thing.
 					 *
 					 * @protected Accessible only to self & extenders.
+					 *    However, we DO allow public/magic read-only access.
 					 */
-					protected $___instance_config;
+					protected $___instance_config; // Defaults to a NULL value.
 
 					/**
 					 * A global/static cache of all instance configurations.
@@ -366,6 +393,10 @@ namespace websharks_core_v000000_dev
 					 */
 					protected static $___instance_config_cache = array();
 
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Dynamic class properties.
+					# --------------------------------------------------------------------------------------------------------------------------
+
 					/**
 					 * A global/static cache for dynamic singleton object references.
 					 *
@@ -377,7 +408,7 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see \websharks_core_v000000_dev\framework::__get()
+					 * @see framework::__get()
 					 */
 					protected static $___dynamic_class_reference_cache = array();
 
@@ -392,23 +423,9 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see \websharks_core_v000000_dev\framework::__get()
+					 * @see framework::__get()
 					 */
 					protected static $___dynamic_class_instance_cache = array();
-
-					/**
-					 * Dynamic class aliases.
-					 *
-					 * @var array Associative array of dynamic class aliases.
-					 *
-					 * @extenders If extenders need to add additional class aliases.
-					 *
-					 * @protected Accessible only to self & extenders.
-					 *
-					 * @see \websharks_core_v000000_dev\framework::__get()
-					 * @see \websharks_core_v000000_dev\framework::__call()
-					 */
-					protected static $___dynamic_class_aliases = array();
 
 					/**
 					 * Dynamic class aliases.
@@ -421,10 +438,11 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see \websharks_core_v000000_dev\framework::__get()
-					 * @see \websharks_core_v000000_dev\framework::__call()
+					 * @see framework::__get()
+					 * @see framework::__call()
+					 * @see framework::__isset()
 					 */
-					protected static $____dynamic_class_aliases = array(
+					protected static $___dynamic_class_aliases = array(
 						'action'     => 'actions',
 						'array'      => 'arrays',
 						'boolean'    => 'booleans',
@@ -472,6 +490,25 @@ namespace websharks_core_v000000_dev
 						'var'        => 'vars',
 						'video'      => 'videos'
 					);
+
+					/**
+					 * Dynamic class aliases.
+					 *
+					 * @var array Associative array of dynamic class aliases.
+					 *
+					 * @extenders If extenders need to add additional class aliases.
+					 *
+					 * @protected Accessible only to self & extenders.
+					 *
+					 * @see framework::__get()
+					 * @see framework::__call()
+					 * @see framework::__isset()
+					 */
+					protected static $____dynamic_class_aliases = array();
+
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Type check properties.
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					/**
 					 * PHP's ``is_...()`` type checks.
@@ -543,6 +580,10 @@ namespace websharks_core_v000000_dev
 						'null:!empty'     => 'is_null'
 					);
 
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Properties for static & instance-based caches.
+					# --------------------------------------------------------------------------------------------------------------------------
+
 					/**
 					 * A global/static cache for each class extender.
 					 *
@@ -559,43 +600,23 @@ namespace websharks_core_v000000_dev
 					protected static $___statics = array();
 
 					/**
-					 * Gets/sets static cache values on a per-class basis.
+					 * Gets static cache values on a per-class basis.
 					 *
-					 * @param string|integer $key Key to get/set.
-					 * @param mixed          $value If passed, we set (or update) the value for ``$key``.
-					 *
-					 * @return mixed A reference to the value for ``$key``.
-					 *    If no arguments are passed; a reference to the entire cache array.
-					 *
-					 * @throws \exception If ``$key`` is passed; and it's NOT a string|integer.
+					 * @return array A reference to the entire cache array;
+					 *    for the calling class (using a late static binding).
 					 *
 					 * @final May NOT be overridden by extenders.
 					 *
 					 * @protected Accessible only to self & extenders.
 					 */
-					final protected static function &___static($key = NULL, $value = NULL)
+					final protected static function &___static()
 						{
-							$func_num_args = func_num_args();
-							$class         = get_called_class();
+							$class = get_called_class();
 
 							if(!isset(static::$___statics[$class]))
 								static::$___statics[$class] = array();
 
-							if(!$func_num_args) // Entire array?
-								return static::$___statics[$class];
-
-							if((!is_string($key) && !is_integer($key)) || !strlen($key))
-								throw new \exception(
-									\websharks_core_v000000_dev::i18n
-										('Invalid `$key` to `static::cache()` method in core.')
-								);
-							if(!isset(static::$___statics[$class][$key]))
-								static::$___statics[$class][$key] = NULL;
-
-							if($func_num_args >= 2) // Setting this key?
-								static::$___statics[$class][$key] = $value;
-
-							return static::$___statics[$class][$key];
+							return static::$___statics[$class];
 						}
 
 					/**
@@ -626,219 +647,199 @@ namespace websharks_core_v000000_dev
 					 */
 					protected $cache = array();
 
-					// WebSharks™ Core class constants.
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Read-only property configurations.
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					/**
-					 * Represents the WebSharks™ Core.
+					 * Read-only properties.
 					 *
-					 * @var string Used by some class methods.
+					 * @var array An array of read-only properties.
+					 *    These are "always on" in the WebSharks™ Core.
+					 *
+					 * @final Should NOT be overridden by class extenders.
+					 *    Would be `final` if PHP allowed such a thing.
+					 *
+					 * @protected Accessible only to self & extenders.
+					 *
+					 * @see framework::__get()
+					 * @see framework::__call()
+					 * @see framework::__isset()
+					 */
+					protected static $___read_only_properties = array('___instance_config');
+
+					/**
+					 * Read-only properties.
+					 *
+					 * @var array An array of read-only properties.
+					 *
+					 * @extenders If extenders need to add additional read-only properties.
+					 *
+					 * @protected Accessible only to self & extenders.
+					 *
+					 * @see framework::__get()
+					 * @see framework::__call()
+					 * @see framework::__isset()
+					 */
+					protected static $____read_only_properties = array();
+
+					# --------------------------------------------------------------------------------------------------------------------------
+					# WebSharks™ Core class constants.
+					# --------------------------------------------------------------------------------------------------------------------------
+
+					/**
+					 * @var string Represents the `core`.
 					 */
 					const core = '___core';
 
 					/**
-					 * Represents `object` properties.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `object` properties.
 					 */
 					const object_p = '___object_p';
 
 					/**
-					 * Represents associative `array`.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents associative `array`.
 					 */
 					const array_a = '___array_a';
 
 					/**
-					 * Represents numeric `array`.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents numeric `array`.
 					 */
 					const array_n = '___array_n';
 
 					/**
-					 * Represents space-separated `string`.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents space-separated `string`.
 					 */
 					const space_sep_string = '___space_sep_string';
 
 					/**
-					 * Represents `all` logic.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `all` logic.
 					 */
 					const all_logic = '___all_logic';
 
 					/**
-					 * Represents `any` logic.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `any` logic.
 					 */
 					const any_logic = '___any_logic';
 
 					/**
-					 * Represents a reconsideration.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents a reconsideration.
 					 */
 					const reconsider = '___reconsider';
 
 					/**
-					 * Represents logging enabled.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents logging enabled.
 					 */
 					const log_enable = '___log_enable';
 
 					/**
-					 * Represents logging disabled.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents logging disabled.
 					 */
 					const log_disable = '___log_disable';
 
 					/**
-					 * Represents a `public` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents a `public` type.
 					 */
 					const public_type = '___public_type';
 
 					/**
-					 * Represents a `protected` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents a `protected` type.
 					 */
 					const protected_type = '___protected_type';
 
 					/**
-					 * Represents a `private` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents a `private` type.
 					 */
 					const private_type = '___private_type';
 
 					/**
-					 * Represents conformity with rfc1738.
-					 *
-					 * @var string Used by some class methods.
-					 * @see http://www.faqs.org/rfcs/rfc1738.html
+					 * @var string Represents conformity with rfc1738.
 					 */
 					const rfc1738 = '___rfc1738';
 
 					/**
-					 * Represents conformity with rfc3986.
-					 *
-					 * @var string Used by some class methods.
-					 * @see http://www.faqs.org/rfcs/rfc3986
+					 * @var string Represents conformity with rfc3986.
 					 */
 					const rfc3986 = '___rfc3986';
 
 					/**
-					 * Represents own components.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents own components.
 					 */
 					const own_components = '___own_components';
 
 					/**
-					 * Represents do `echo` command.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents do `echo` command.
 					 */
 					const do_echo = '___do_echo';
 
 					/**
-					 * Represents a direct call, as opposed to a hook/filter.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents a direct call, as opposed to a hook/filter.
 					 */
 					const direct_call = '___direct_call';
 
 					/**
-					 * Represents ``preg_replace()`` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents ``preg_replace()`` type.
 					 */
 					const preg_replace_type = '___preg_replace_type';
 
 					/**
-					 * Represents ``str_replace()`` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents ``str_replace()`` type.
 					 */
 					const str_replace_type = '___str_replace_type';
 
 					/**
-					 * Represents PHP regex flavor.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents PHP regex flavor.
 					 */
 					const regex_php = '___regex_php';
 
 					/**
-					 * Represents JavaScript regex flavor.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents JavaScript regex flavor.
 					 */
 					const regex_js = '___regex_js';
 
 					/**
-					 * Represents `profile_updates` context.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `profile_updates` context.
 					 */
 					const context_registration = '___context_registration';
 
 					/**
-					 * Represents `profile_updates` context.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `profile_updates` context.
 					 */
 					const context_profile_updates = '___context_profile_updates';
 
 					/**
-					 * Represents `profile_updates` context.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `profile_updates` context.
 					 */
 					const context_profile_views = '___context_profile_views';
 
 					/**
-					 * Represents `textual` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `textual` type.
 					 */
 					const textual_type = '___textual_type';
 
 					/**
-					 * Represents `compressable` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `compressable` type.
 					 */
 					const compressable_type = '___compressable_type';
 
 					/**
-					 * Represents `cacheable` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `cacheable` type.
 					 */
 					const cacheable_type = '___cacheable_type';
 
 					/**
-					 * Represents `binary` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `binary` type.
 					 */
 					const binary_type = '___binary_type';
 
 					/**
-					 * Represents `any` type.
-					 *
-					 * @var string Used by some class methods.
+					 * @var string Represents `any` type.
 					 */
 					const any_type = '___any_type';
+
+					# --------------------------------------------------------------------------------------------------------------------------
+					# WebSharks™ Core class constructor.
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					/**
 					 * Core class constructor.
@@ -859,13 +860,13 @@ namespace websharks_core_v000000_dev
 					 * @throws \exception If more than 6 configuration elements exist in an ``$__instance_config`` array.
 					 *
 					 * @throws \exception If the plugin's root namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_plugin_root_ns}
+					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_ws_plugin_root_ns}
 					 *
 					 * @throws \exception If the plugin's variable namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_plugin_var_ns}
+					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_ws_plugin_var_ns}
 					 *
 					 * @throws \exception If the plugin's version does NOT match this regex pattern validation.
-					 *    See: {@link websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_version}
+					 *    See: {@link websharks_core_v000000_dev::$regex_valid_ws_version}
 					 *
 					 * @throws \exception If the plugin's directory is missing (e.g. the plugin's directory MUST actually exist).
 					 *    In addition, the plugin's directory MUST contain a main plugin file with the name `plugin.php`.
@@ -873,33 +874,30 @@ namespace websharks_core_v000000_dev
 					 * @throws \exception If the plugin's site URL, is NOT valid (MUST start with `http://.+`).
 					 *
 					 * @throws \exception If the namespace\class path does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_ns_class}
+					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_ws_ns_class}
 					 *
 					 * @throws \exception If the core namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev\strings::$_4fwc_regex_valid_ws_core_ns_version}
+					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_ws_core_ns_version}
 					 *
-					 * @public A constructor (i.e. a magic method) MUST always be public.
+					 * @public A magic/overload constructor MUST always remain public.
 					 *
 					 * @extenders If a class extender creates its own constructor,
 					 *    it MUST collect an ``$___instance_config``, and it MUST call upon this core constructor using:
 					 *    ``parent::__construct($___instance_config)``.
 					 *
-					 * @note This method should NOT rely directly or indirectly on any other core class objects.
-					 *    However, it is OK for this constructor to call upon static properties/methods (like regex patterns).
-					 *    Or anything designed specifically for the framework constructor (i.e. it includes this prefix: `_4fwc`).
-					 *    Any static methods in the WebSharks™ Core stub file will be fine to call upon also.
+					 * @note This should NOT rely directly or indirectly on any other core class objects.
+					 *    Any static properties/methods in the WebSharks™ Core stub will be fine to use though.
+					 *    In addition — once the object if fully constructed; we can use anything :-)
 					 */
 					public function __construct($___instance_config)
 						{
 							$this->static =& static::___static();
 
-							// Have a parent object instance?
 							if($___instance_config instanceof framework)
 								$___parent_instance_config = $___instance_config->___instance_config;
 							else $___parent_instance_config = NULL;
 
-							// If we got a parent instance config, check the cache BEFORE we clone (saves processing).
-							if(isset($___parent_instance_config)) // In any case, we can bypass validation here.
+							if($___parent_instance_config) // We can bypass validation here.
 								{
 									$cache_entry = $___parent_instance_config->plugin_root_ns.($ns_class = get_class($this));
 
@@ -911,24 +909,22 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config           = clone $___parent_instance_config;
 									$this->___instance_config->ns_class = $ns_class; // `namespace\sub_namespace\class_name`.
 								}
-
-							// Else, this MUST be a valid array (else throw exception).
 							else if(is_array($___instance_config) && count($___instance_config) === 6
 
 							        && !empty($___instance_config['plugin_name']) && is_string($___instance_config['plugin_name'])
 
 							        && !empty($___instance_config['plugin_root_ns']) && is_string($___instance_config['plugin_root_ns'])
-							        && preg_match(strings::$_4fwc_regex_valid_ws_plugin_root_ns, $___instance_config['plugin_root_ns'])
+							        && preg_match(stub::$regex_valid_ws_plugin_root_ns, $___instance_config['plugin_root_ns'])
 
 							        && !empty($___instance_config['plugin_var_ns']) && is_string($___instance_config['plugin_var_ns'])
-							        && preg_match(strings::$_4fwc_regex_valid_ws_plugin_var_ns, $___instance_config['plugin_var_ns'])
+							        && preg_match(stub::$regex_valid_ws_plugin_var_ns, $___instance_config['plugin_var_ns'])
 
 							        && !empty($___instance_config['plugin_version']) && is_string($___instance_config['plugin_version'])
-							        && preg_match(strings::$_4fwc_regex_valid_ws_version, $___instance_config['plugin_version'])
+							        && preg_match(stub::$regex_valid_ws_version, $___instance_config['plugin_version'])
 
 							        && !empty($___instance_config['plugin_dir']) && is_string($___instance_config['plugin_dir'])
-							        && is_dir($___instance_config['plugin_dir'] = \websharks_core_v000000_dev::n_dir_seps($___instance_config['plugin_dir']))
-							        && is_file($___instance_config['plugin_dir'].'/plugin.php') // A file with this name MUST exist at all times.
+							        && is_dir($___instance_config['plugin_dir'] = stub::n_dir_seps($___instance_config['plugin_dir']))
+							        && is_file($___instance_config['plugin_dir'].'/plugin.php')
 
 							        && !empty($___instance_config['plugin_site']) && is_string($___instance_config['plugin_site'])
 							        && preg_match('/^http\:\/\/.+/i', $___instance_config['plugin_site'])
@@ -944,7 +940,7 @@ namespace websharks_core_v000000_dev
 											$this->___instance_config = static::$___instance_config_cache[$cache_entry];
 											return; // Using cache (nothing more to do here).
 										}
-									if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns]))
+									if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns]) || !($GLOBALS[$this->___instance_config->plugin_root_ns] instanceof framework))
 										{
 											if($this->___instance_config->plugin_root_ns !== __NAMESPACE__)
 												$load_plugin = TRUE; // Not the core (only plugins).
@@ -952,8 +948,7 @@ namespace websharks_core_v000000_dev
 										}
 								}
 							else throw new \exception(
-								sprintf(\websharks_core_v000000_dev::i18n
-									        ('Invalid `$___instance_config` to core constructor: `%1$s`'), print_r($___instance_config, TRUE))
+								sprintf(stub::i18n('Invalid `$___instance_config` to constructor: `%1$s`'), print_r($___instance_config, TRUE))
 							);
 
 							// Based on `namespace\sub_namespace\class_name` for ``$this`` class.
@@ -963,15 +958,16 @@ namespace websharks_core_v000000_dev
 							$this->___instance_config->ns_class_basename         = basename(str_replace('\\', '/', $this->___instance_config->ns_class));
 
 							// Check `namespace\sub_namespace\class_name` for validation issues.
-							if(!preg_match(strings::$_4fwc_regex_valid_ws_ns_class, $this->___instance_config->ns_class))
+							if(!preg_match(stub::$regex_valid_ws_ns_class, $this->___instance_config->ns_class))
 								throw new \exception(
-									sprintf(\websharks_core_v000000_dev::i18n
-										        ('Namespace\\class contains invalid chars: `%1$s`.'), $this->___instance_config->ns_class)
+									sprintf(stub::i18n('Namespace\\class contains invalid chars: `%1$s`.'), $this->___instance_config->ns_class)
 								);
 
 							// Based on this core ``__NAMESPACE__``. These properties will NOT change from one class instance to another.
 							if(!$___parent_instance_config) // Therefore, we ONLY need this routine if we did NOT get a ``$___parent_instance``.
 								{
+									$this->___instance_config->websharks_core = TRUE; // WebSharks™ Core flag.
+
 									// Based on this core ``__NAMESPACE__`` (as defined in this file).
 									$this->___instance_config->core_ns             = __NAMESPACE__;
 									$this->___instance_config->core_ns_prefix      = '\\'.$this->___instance_config->core_ns;
@@ -982,16 +978,14 @@ namespace websharks_core_v000000_dev
 
 									$this->___instance_config->core_ns_v             = substr($this->___instance_config->core_ns, strlen($this->___instance_config->core_ns_stub) + 2);
 									$this->___instance_config->core_ns_v_with_dashes = str_replace('_', '-', $this->___instance_config->core_ns_v);
-									$this->___instance_config->core_version          =& $this->___instance_config->core_ns_v_with_dashes;
+									$this->___instance_config->core_version          = $this->___instance_config->core_ns_v_with_dashes;
 
 									// Check core ``__NAMESPACE__`` for validation issues.
-									if(!preg_match(strings::$_4fwc_regex_valid_ws_core_ns_version, $this->___instance_config->core_ns))
+									if(!preg_match(stub::$regex_valid_ws_core_ns_version, $this->___instance_config->core_ns))
 										throw new \exception(
-											sprintf(\websharks_core_v000000_dev::i18n
-												        ('Core namespace contains invalid chars: `%1$s`.'), $this->___instance_config->core_ns)
+											sprintf(stub::i18n('Core namespace contains invalid chars: `%1$s`.'), $this->___instance_config->core_ns)
 										);
 								}
-
 							// The `namespace\sub_namespace` for ``$this`` class.
 							$this->___instance_config->ns = (string)substr($this->___instance_config->ns_class, 0, strrpos($this->___instance_config->ns_class, '\\'));
 
@@ -1008,7 +1002,6 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->root_ns_prefix      = '\\'.$this->___instance_config->root_ns;
 									$this->___instance_config->root_ns_with_dashes = str_replace('_', '-', $this->___instance_config->root_ns);
 								}
-
 							// Based on the current plugin. These properties will NOT change from one class instance to another.
 							if(!$___parent_instance_config) // ONLY need this routine if we did NOT get a ``$___parent_instance``.
 								{
@@ -1082,38 +1075,106 @@ namespace websharks_core_v000000_dev
 							if(!empty($load_plugin)) $this->©plugin->load(); // Load up the plugin in first instance.
 						}
 
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Magic methods in the WebSharks™ Core.
+					# --------------------------------------------------------------------------------------------------------------------------
+
 					/**
-					 * Checks overload properties (and dynamic singleton class instances).
+					 * Checks magic/overload properties (and dynamic singleton class instances).
 					 *
-					 * @param string $property Name of a valid overload property.
+					 * @param string $property Name of a valid magic/overload property.
 					 *    Or a dynamic class to check, using the special class `©` prefix.
 					 *
-					 * @return boolean TRUE if the overload property (or dynamic singleton class instance) is set.
+					 * @return boolean TRUE if the magic/overload property (or dynamic singleton class instance) is set.
 					 *    Otherwise, this will return FALSE by default (i.e. the property is NOT set).
 					 *
-					 * @public Magic methods must always remain public.
+					 * @public Magic/overload methods must always remain public.
 					 *
 					 * @extenders If a class extender creates its own ``__isset()`` method, it MUST first make an attempt to resolve ``$property`` on its own.
 					 *    If it CANNOT resolve ``$property``, it MUST then return a call to this method, using: ``parent::__isset($property)``.
 					 *    This allows the core ``__isset()`` method to make a final attempt at resolving the value of ``$property``.
+					 *
+					 * @note This method should NOT rely directly or indirectly on any other dynamic properties.
 					 */
 					public function __isset($property)
 						{
-							// Bypassing ``is_string()``, ``check_arg_types()`` and NON-empty check here, in favor of typecasting.
-							// Benchmark tests show a slight increase in performance this way, and since the PHP interpreter usually calls this, it's pretty safe.
-							// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-							$property    = (string)$property; // Typecasting this to a string value.
-							$blog_id     = (integer)$GLOBALS['blog_id']; // Typecasting as integer.
+							$property    = (string)$property;
+							$blog_id     = (integer)$GLOBALS['blog_id'];
 							$cache_entry = $this->___instance_config->plugin_root_ns.'#'.$property;
 
-							return isset(static::$___dynamic_class_reference_cache[$blog_id][$cache_entry]);
+							if(isset(static::$___dynamic_class_reference_cache[$blog_id][$cache_entry]))
+								return TRUE; // It's a dynamic class reference that's set already.
+
+							if(property_exists($this, $property) && (in_array($property, static::$___read_only_properties, TRUE) || in_array($property, static::$____read_only_properties, TRUE)))
+								return isset($this->$property); // Available via ``__get()`` magic (public read-only; it's protected or private).
+
+							return FALSE; // Default return value.
 						}
 
 					/**
-					 * Handles overload properties (and dynamic singleton class instances).
+					 * Sets magic/overload properties (and dynamic singleton class instances).
 					 *
-					 * @param string $property Name of a valid overload property.
+					 * @param string $property Name of a magic/overload property.
+					 *    Or a dynamic class, using the special class `©` prefix.
+					 *
+					 * @param mixed  $value The new value for this magic/overload property.
+					 *
+					 * @return mixed The ``$value`` assigned to the magic/overload ``$property``.
+					 *
+					 * @throws exception If attempting to set magic/overload properties (this is NOT allowed).
+					 *    This magic/overload method is currently here ONLY to protect magic/overload property values.
+					 *    All magic/overload properties in the WebSharks™ Core (and plugins that extend it); are read-only.
+					 *
+					 * @public Magic/overload methods must always remain public.
+					 *
+					 * @extenders If a class extender creates its own ``__set()`` method, it MUST first make an attempt to set ``$property`` on its own.
+					 *    If it CANNOT set ``$property``, it MUST then return a call to this method, using: ``parent::__set($property)``.
+					 *    This allows the core ``__set()`` method to make a final attempt at setting the value of ``$property``.
+					 *
+					 * @note This method should NOT rely directly or indirectly on any other magic/overload properties.
+					 */
+					public function __set($property, $value)
+						{
+							$property = (string)$property;
+
+							throw new exception($this, __METHOD__.'#read_only_magic_property_error_via____set()', get_defined_vars(),
+							                    sprintf($this->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
+							                    sprintf($this->i18n(' This magic/overload property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+							);
+						}
+
+					/**
+					 * Unsets magic/overload properties (and dynamic singleton class instances).
+					 *
+					 * @param string $property Name of a magic/overload property.
+					 *    Or a dynamic class, using the special class `©` prefix.
+					 *
+					 * @throws exception If attempting to unset magic/overload properties (this is NOT allowed).
+					 *    This magic/overload method is currently here ONLY to protect magic/overload property values.
+					 *    All magic/overload properties in the WebSharks™ Core (and plugins that extend it); are read-only.
+					 *
+					 * @public Magic/overload methods must always remain public.
+					 *
+					 * @extenders If a class extender creates its own ``__unset()`` method, it MUST first make an attempt to unset ``$property`` on its own.
+					 *    If it CANNOT unset ``$property``, it MUST then return a call to this method, using: ``parent::__unset($property)``.
+					 *    This allows the core ``__unset()`` method to make a final attempt at unsetting the ``$property``.
+					 *
+					 * @note This method should NOT rely directly or indirectly on any other magic/overload properties.
+					 */
+					public function __unset($property)
+						{
+							$property = (string)$property;
+
+							throw new exception($this, __METHOD__.'#read_only_magic_property_error_via____unset()', get_defined_vars(),
+							                    sprintf($this->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
+							                    sprintf($this->i18n(' This magic/overload property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+							);
+						}
+
+					/**
+					 * Handles magic/overload properties (and dynamic singleton class instances).
+					 *
+					 * @param string $property Name of a valid magic/overload property.
 					 *    Or a dynamic class to return an instance of, using the special class `©` prefix.
 					 *
 					 *    When a class `©` prefix is present, we look for the class to exist first in the current plugin's root namespace, else in the core namespace.
@@ -1148,7 +1209,7 @@ namespace websharks_core_v000000_dev
 					 *       See: ``$___dynamic_class_aliases`` for further details.
 					 *       See also: ``$____dynamic_class_aliases``.
 					 *
-					 * @return mixed Dynamic property values, or a dynamic object instance; else an exception is thrown.
+					 * @return mixed Magic/overload property values, or a dynamic object instance; else an exception is thrown.
 					 *    Dynamic class instances are defined explicitly in the docBlock above.
 					 *    This way IDEs will jive with this dynamic behavior.
 					 *
@@ -1158,14 +1219,13 @@ namespace websharks_core_v000000_dev
 					 *    Any class that needs to be constructed with more than an ``$___instance_config``, cannot be instantiated here.
 					 *    Instead see ``__call()`` to instantiate "new" dynamic object instances with `©`.
 					 *
-					 * @public Magic methods must always remain public.
+					 * @public Magic/overload methods must always remain public.
 					 *
 					 * @extenders If a class extender creates its own ``__get()`` method, it MUST first make an attempt to resolve ``$property`` on its own.
 					 *    If it CANNOT resolve ``$property``, it MUST then return a call to this method, using: ``parent::__get($property)``.
 					 *    This allows the core ``__get()`` method to make a final attempt at resolving the value of ``$property``.
 					 *
-					 * @note This method should NOT rely directly or indirectly on any other dynamic properties.
-					 *    That would create a case of endless recursion.
+					 * @note This method should NOT rely directly or indirectly on any other magic/overload properties.
 					 *
 					 * @assert ('©strings') instanceof '\\websharks_core_v000000_dev\\strings'
 					 * @assert ('©string') instanceof '\\websharks_core_v000000_dev\\strings'
@@ -1173,16 +1233,9 @@ namespace websharks_core_v000000_dev
 					 */
 					public function __get($property)
 						{
-							// Bypassing ``is_string()``, ``check_arg_types()`` and NON-empty check here, in favor of typecasting.
-							// Benchmark tests show a slight increase in performance this way, and since the PHP interpreter usually calls this, it's pretty safe.
-							// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-							$property    = (string)$property; // Typecasting this to a string value.
-							$blog_id     = (integer)$GLOBALS['blog_id']; // Typecasting as integer.
+							$property    = (string)$property;
+							$blog_id     = (integer)$GLOBALS['blog_id'];
 							$cache_entry = $this->___instance_config->plugin_root_ns.'#'.$property;
-
-							// Let's start by checking the cache (saves processing). NOTE: there's a separate cache for each blog ID.
-							// See also: <http://codex.wordpress.org/WPMU_Functions/switch_to_blog> — in the WordPress® core.
 
 							if(isset(static::$___dynamic_class_reference_cache[$blog_id][$cache_entry]) /* Cached already? */)
 								return static::$___dynamic_class_reference_cache[$blog_id][$cache_entry];
@@ -1198,11 +1251,11 @@ namespace websharks_core_v000000_dev
 									// Example: ``$this->©sub_namespace__class`` maps to the alias entry `sub_namespace\class`.
 									// Another example: ``$this->©class`` maps to the alias entry `class`.
 
-									if(!empty(static::$____dynamic_class_aliases[$dyn_class]))
-										$dyn_class = static::$____dynamic_class_aliases[$dyn_class];
-
-									else if(!empty(static::$___dynamic_class_aliases[$dyn_class]))
+									if(!empty(static::$___dynamic_class_aliases[$dyn_class]))
 										$dyn_class = static::$___dynamic_class_aliases[$dyn_class];
+
+									else if(!empty(static::$____dynamic_class_aliases[$dyn_class]))
+										$dyn_class = static::$____dynamic_class_aliases[$dyn_class];
 
 									// Now let's establish an array of lookups.
 									$dyn_class_lookups = array(); // Possible locations.
@@ -1215,7 +1268,6 @@ namespace websharks_core_v000000_dev
 											$dyn_class_lookups[] = $this->___instance_config->plugin_root_ns_prefix.'\\'.$dyn_class;
 											$dyn_class_lookups[] = $this->___instance_config->core_ns_prefix.'\\'.$dyn_class;
 										}
-
 									// Note... ``$cache`` entries are created for each ``$this->___instance_config->plugin_root_ns.$property`` combination.
 									// However, ``$dyn_class_instances`` may contain entries used under several different aliases (i.e. by more than one cache entry).
 									// Therefore, ALWAYS check for the existence of a class instance first, even if a cache entry for it is currently missing.
@@ -1226,36 +1278,34 @@ namespace websharks_core_v000000_dev
 											$_dyn_class_entry = $this->___instance_config->plugin_root_ns.'#'.$_dyn_class;
 
 											if(isset(static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]))
-												{
-													return (static::$___dynamic_class_reference_cache[$blog_id][$cache_entry]
-														= static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]);
-												}
-											else if(class_exists($_dyn_class)) // Triggers autoloader.
+												return (static::$___dynamic_class_reference_cache[$blog_id][$cache_entry] = static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]);
+
+											if(class_exists($_dyn_class)) // Triggers autoloader.
 												{
 													static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry] = new $_dyn_class($this);
-
-													return (static::$___dynamic_class_reference_cache[$blog_id][$cache_entry]
-														= static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]);
+													return (static::$___dynamic_class_reference_cache[$blog_id][$cache_entry] = static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]);
 												}
 										}
 									unset($_dyn_class, $_dyn_class_entry); // A little housekeeping.
 								}
-							if($©strpos === FALSE && strpos($property, "\xa9") !== FALSE)
-								throw new exception( // A single-byte version of the `©` symbol?
-									$this, __METHOD__.'#undefined_property', array('args' => func_get_args()),
+							if(property_exists($this, $property) && (in_array($property, static::$___read_only_properties, TRUE) || in_array($property, static::$____read_only_properties, TRUE)))
+								return (is_object($this->$property)) ? clone $this->$property : $this->$property; // Public read-only; it's protected or private.
+
+							if($©strpos === FALSE && strpos($property, "\xa9") !== FALSE) // 1-byte `©` symbol?
+								throw new exception( // Detailed error; this is HARD to figure out when it happens.
+									$this, __METHOD__.'#undefined_magic_property_error_via__get()', get_defined_vars(),
 									sprintf($this->i18n('Undefined property: `%1$s`. Possible issue with encoding.'), $property).
 									$this->i18n(' Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
 								);
-							throw new exception(
-								$this, __METHOD__.'#undefined_property', array('args' => func_get_args()),
-								sprintf($this->i18n('Undefined property: `%1$s`.'), $property)
+							throw new exception($this, __METHOD__.'#undefined_magic_property_error_via__get()', get_defined_vars(),
+							                    sprintf($this->i18n('Undefined property: `%1$s`.'), $property)
 							);
 						}
 
 					/**
-					 * Handles overload methods (and dynamic class instances).
+					 * Handles magic/overload methods (and dynamic class instances).
 					 *
-					 * @param string $method Name of a valid overload method to call upon.
+					 * @param string $method Name of a valid magic/overload method to call upon.
 					 *    Or a dynamic class to return an instance of, using the special class `©` prefix.
 					 *    Or a dynamic singleton class method to call upon; also using the `©` prefix, along with a `.method_name` suffix.
 					 *
@@ -1293,24 +1343,23 @@ namespace websharks_core_v000000_dev
 					 *       See: ``$___dynamic_class_aliases`` for further details.
 					 *       See also: ``$____dynamic_class_aliases``.
 					 *
-					 * @param array  $args An array of arguments to the overload method, or dynamic class object constructor.
+					 * @param array  $args An array of arguments to the magic/overload method, or dynamic class object constructor.
 					 *    In the case of dynamic objects, it's fine to exclude the first argument, which is handled automatically by this routine.
 					 *    That is, the first argument to any extender is always the parent instance (i.e. ``$this``).
 					 *
-					 * @return mixed Dynamic return values, or a dynamic object instance; else an exception is thrown.
+					 * @return mixed Magic/overload return values, or a dynamic object instance; else an exception is thrown.
 					 *    Dynamic class instances are defined explicitly in the docBlock above.
 					 *    This way IDEs will jive with this dynamic behavior.
 					 *
 					 * @throws exception If ``$method`` CANNOT be defined in any way.
 					 *
-					 * @public Magic methods must always remain public.
+					 * @public Magic/overload methods must always remain public.
 					 *
 					 * @extenders If a class extender creates its own ``__call()`` method, it MUST first make an attempt to resolve ``$method`` on its own.
 					 *    If it CANNOT resolve ``$method``, it MUST then return a call to this method, using: ``parent::__call($method, $args)``.
 					 *    This allows the core ``__call()`` method to make a final attempt at resolving the value of ``$method``.
 					 *
-					 * @note This method should NOT rely directly or indirectly on any other dynamic methods.
-					 *    That would create a case of endless recursion.
+					 * @note This method should NOT rely directly or indirectly on any other magic/overload methods.
 					 *
 					 * @assert ('©strings', array()) instanceof ('\\websharks_core_v000000_dev\\strings')
 					 * @assert ('©string', array()) instanceof ('\\websharks_core_v000000_dev\\strings')
@@ -1318,14 +1367,8 @@ namespace websharks_core_v000000_dev
 					 */
 					public function __call($method, $args)
 						{
-							// Bypassing ``is_string()``, ``check_arg_types()`` and NON-empty check here, in favor of typecasting.
-							// Benchmark tests show a slight increase in performance this way, and since the PHP interpreter usually calls this, it's pretty safe.
-							// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-							$method = (string)$method; // Typecasting this to a string value.
-							$args   = (array)$args; // Typecast these arguments to an array value.
-
-							// Handles dynamic/overload methods, using the special class `©` character.
+							$method = (string)$method; // Force string.
+							$args   = (array)$args; // Must have an array.
 
 							if(($©strpos = strpos($method, '©')) !== FALSE) // Looking for a dynamic class?
 								{
@@ -1335,7 +1378,6 @@ namespace websharks_core_v000000_dev
 											list($dyn_class, $dyn_method) = explode('.', $method, 2);
 											return call_user_func_array(array($this->__get($dyn_class), $dyn_method), $args);
 										}
-
 									// Note... this ``$dyn_class`` may or may not contain a fully qualified namespace. In some cases it will (if `©` is a suffix).
 									// However, in most cases ``$dyn_class`` will contain only a class name itself, or perhaps a sub_namespace\class.
 									$dyn_class = str_replace('__', '\\', trim($method, '©')); // Converts to a ``$dyn_class`` path.
@@ -1345,11 +1387,11 @@ namespace websharks_core_v000000_dev
 									// Example: ``$this->©sub_namespace__class()`` maps to the alias entry `sub_namespace\class`.
 									// Another example: ``$this->©class()`` maps to the alias entry `class`.
 
-									if(!empty(static::$____dynamic_class_aliases[$dyn_class]))
-										$dyn_class = static::$____dynamic_class_aliases[$dyn_class];
-
-									else if(!empty(static::$___dynamic_class_aliases[$dyn_class]))
+									if(!empty(static::$___dynamic_class_aliases[$dyn_class]))
 										$dyn_class = static::$___dynamic_class_aliases[$dyn_class];
+
+									else if(!empty(static::$____dynamic_class_aliases[$dyn_class]))
+										$dyn_class = static::$____dynamic_class_aliases[$dyn_class];
 
 									// Now let's establish an array of lookups.
 									$dyn_class_lookups = array(); // Possible locations.
@@ -1362,57 +1404,64 @@ namespace websharks_core_v000000_dev
 											$dyn_class_lookups[] = $this->___instance_config->plugin_root_ns_prefix.'\\'.$dyn_class;
 											$dyn_class_lookups[] = $this->___instance_config->core_ns_prefix.'\\'.$dyn_class;
 										}
-
 									// Regarding a standard in the WebSharks™ Core.
 									// When/if a class extender creates its own ``__construct()`` method,
 									// it MUST collect an ``$___instance_config``, and it MUST call: ``parent::__construct($___instance_config)``.
 
-									// Now let's try to find the class.
-									foreach($dyn_class_lookups as $_dyn_class)
+									foreach($dyn_class_lookups as $_dyn_class) // Now let's try to find the class.
 										{
-											if(class_exists($_dyn_class)) // Triggers autoloader.
-												{
-													switch(count($args)) // Handles up to 10 hard coded ``$args``.
-													{
-														// This tries to avoid the ReflectionClass, because it's MUCH slower.
-														// If there's more than 10 arguments to a constructor, we'll have to use it though, unfortunately.
-														// However, it's NOT likely. More than 10 arguments to a constructor is NOT a common practice.
-														case 0:
-																return new $_dyn_class($this);
-														case 1:
-																return new $_dyn_class($this, $args[0]);
-														case 2:
-																return new $_dyn_class($this, $args[0], $args[1]);
-														case 3:
-																return new $_dyn_class($this, $args[0], $args[1], $args[2]);
-														case 4:
-																return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3]);
-														case 5:
-																return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4]);
-														case 6:
-																return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
-														case 7:
-																return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6]);
-														case 8:
-																return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7]);
-														case 9:
-																return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7], $args[8]);
-														case 10:
-																return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7], $args[8], $args[9]);
-														default:
-															$args                 = array_merge(array($this), $args);
-															$_dyn_class_reflector = new \ReflectionClass($_dyn_class);
-															return $_dyn_class_reflector->newInstanceArgs($args);
-													}
-												}
+											if(!class_exists($_dyn_class)) // Triggers autoloader.
+												continue; // Keep searching.
+
+											switch(count($args)) // Handles up to 10 hard coded ``$args``.
+											{
+												// This tries to avoid the ReflectionClass, because it's MUCH slower.
+												// If there's more than 10 arguments to a constructor, we'll have to use it though, unfortunately.
+												// However, it's NOT likely. More than 10 arguments to a constructor is NOT a common practice.
+												case 0:
+														return new $_dyn_class($this);
+												case 1:
+														return new $_dyn_class($this, $args[0]);
+												case 2:
+														return new $_dyn_class($this, $args[0], $args[1]);
+												case 3:
+														return new $_dyn_class($this, $args[0], $args[1], $args[2]);
+												case 4:
+														return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3]);
+												case 5:
+														return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4]);
+												case 6:
+														return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
+												case 7:
+														return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6]);
+												case 8:
+														return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7]);
+												case 9:
+														return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7], $args[8]);
+												case 10:
+														return new $_dyn_class($this, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7], $args[8], $args[9]);
+												default:
+													$args                 = array_merge(array($this), $args);
+													$_dyn_class_reflector = new \ReflectionClass($_dyn_class);
+													return $_dyn_class_reflector->newInstanceArgs($args);
+											}
 										}
 									unset($_dyn_class, $_dyn_class_reflector);
 								}
-							throw new exception(
-								$this, __METHOD__.'#undefined_method', array('args' => func_get_args()),
-								sprintf($this->i18n('Undefined method: `%1$s`.'), $method)
+							if($©strpos === FALSE && strpos($method, "\xa9") !== FALSE) // 1 byte `©` symbol?
+								throw new exception( // Detailed error; this is HARD to figure out when it happens.
+									$this, __METHOD__.'#undefined_magic_method_error_via__call()', get_defined_vars(),
+									sprintf($this->i18n('Undefined method: `%1$s`. Possible issue with encoding.'), $method).
+									$this->i18n(' Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
+								);
+							throw new exception($this, __METHOD__.'#undefined_magic_method_error_via__call()', get_defined_vars(),
+							                    sprintf($this->i18n('Undefined method: `%1$s`.'), $method)
 							);
 						}
+
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Methods related to type checks in the WebSharks™ Core.
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					/**
 					 * Checks function/method arguments against a list of type hints.
@@ -1548,7 +1597,7 @@ namespace websharks_core_v000000_dev
 							$total_args          = count($args); // Total arguments passed into the function/method we're checking.
 							$total_arg_positions = $total_args - 1; // Based on total number of arguments.
 
-							# Commenting this out for performance. It's not absolutely necessary.
+							// Commenting this out for performance. It's not absolutely necessary.
 							# unset($_arg_type_hints__args__required_args, $_last_arg_value);
 
 							if($total_args < $required_args) // Forcing a minimum number of arguments?
@@ -1757,7 +1806,7 @@ namespace websharks_core_v000000_dev
 											}
 										}
 								}
-							# Commenting this out for performance. It's not absolutely necessary.
+							// Commenting this out for performance. It's not absolutely necessary.
 							# unset($_arg_position, $_arg_type_hints, $_arg_types, $_arg_type_key, $_last_arg_type_key, $_arg_type, $is_, $_negating, $_checking_if_empty);
 
 							if(!empty($problem)) // We have a problem!
@@ -1835,7 +1884,7 @@ namespace websharks_core_v000000_dev
 							$default_args   = (array)array_pop($_arg_type_hints__default_args__args__required_args);
 							$arg_type_hints = $_arg_type_hints__default_args__args__required_args; // Remaining arguments (type hints).
 
-							# Commenting this out for performance. It's not absolutely necessary.
+							// Commenting this out for performance. It's not absolutely necessary.
 							# unset($_arg_type_hints__default_args__args__required_args, $_last_arg_value);
 
 							// Initializes several important arrays that we're building below.
@@ -1851,18 +1900,17 @@ namespace websharks_core_v000000_dev
 
 									if( // Checks required argument keys.
 										$_default_arg_key_position < $required_args && !array_key_exists($_default_arg_key, $args)
-									)
-										// Missing a required argument (e.g. key is missing completely).
+									) // Missing a required argument (e.g. key is missing completely).
 										{
 											throw $this->©exception(
-												__METHOD__.'#args_missing', compact('arg_type_hints', 'default_args', 'args', 'required_args'),
+												__METHOD__.'#args_missing', get_defined_vars(),
 												sprintf($this->i18n('`%1$s` requires missing argument `%2$s`.'),
 												        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $_default_arg_key).
 												sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args))
 											);
 										}
 								}
-							# Commenting this out for performance. It's not absolutely necessary.
+							// Commenting this out for performance. It's not absolutely necessary.
 							# unset($_default_arg_key_position, $_default_arg_key); // Just a little housekeeping.
 
 							// Constructs ``$extension_args``, ``$intersecting_args``, and ``$intersecting_arg_type_hints``.
@@ -1875,8 +1923,7 @@ namespace websharks_core_v000000_dev
 									if(isset($arg_type_hints[$default_arg_key_positions[$_default_arg_key]]))
 										$intersecting_arg_type_hints[] = & $arg_type_hints[$default_arg_key_positions[$_default_arg_key]];
 								}
-
-							# Commenting this out for performance. It's not absolutely necessary here.
+							// Commenting this out for performance. It's not absolutely necessary here.
 							# unset($_default_arg_key, $_default_arg); // Unset temporary vars. Just a little housekeeping.
 
 							// Now we put everything together (into a single array); and ``check_arg_types()``.
@@ -1888,8 +1935,13 @@ namespace websharks_core_v000000_dev
 								array($this, 'check_arg_types'), $arg_type_hints__args);
 
 							// Return extended arguments now.
+
 							return array_merge($default_args, $extension_args);
 						}
+
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Methods related to property values.
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					/**
 					 * Sets properties on ``$this`` object instance.
@@ -1919,19 +1971,23 @@ namespace websharks_core_v000000_dev
 											if(is_null($this->$_property) || gettype($_value) === gettype($this->$_property))
 												$this->$_property = $_value; // Sets/updates existing property value.
 
-											else throw $this->©exception( // Invalid property type (MUST throw exception).
-												__METHOD__.'#invalid_property_type', compact('_property', '_value', 'properties'),
+											else throw $this->©exception( // Invalid property type.
+												__METHOD__.'#invalid_property_type', get_defined_vars(),
 												sprintf($this->i18n('Property type mismatch for property name: `%1$s`.'), $_property).
 												sprintf($this->i18n(' Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
 											);
 										}
-									else throw $this->©exception( // Property is NOT already defined (MUST throw exception).
-										__METHOD__.'#undefined_property', compact('_property', '_value', 'properties'),
+									else throw $this->©exception( // NOT already defined.
+										__METHOD__.'#undefined_property', get_defined_vars(),
 										sprintf($this->i18n('Attempting to set undefined property: `%1$s`.'), $_property)
 									);
 								}
 							unset($_property, $_value); // A little housekeeping.
 						}
+
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Methods related to hooks/filters.
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					/**
 					 * Fires WordPress® Action Hooks for ``$this`` class.
@@ -1968,12 +2024,8 @@ namespace websharks_core_v000000_dev
 					 */
 					final public function do_action($action)
 						{
-							// Bypassing ``is_string()``, ``check_arg_types()`` and NON-empty check here, in favor of typecasting.
-							// Benchmark tests show a slight increase in performance this way, and since Action Hooks already slow things down, we bypass all we can for speed here.
-							// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-							$args    = func_get_args(); // Get all of the arguments (we'll need these below).
-							$args[0] = (string)$args[0]; // Typecasting this to a string value.
+							$args    = func_get_args();
+							$args[0] = (string)$args[0];
 
 							$args[0] = $this->___instance_config->plugin_stub_as_root_ns_class_with_underscores.'__'.$args[0];
 
@@ -2017,17 +2069,17 @@ namespace websharks_core_v000000_dev
 					 */
 					final public function apply_filters($filter, $value)
 						{
-							// Bypassing ``is_string()``, ``check_arg_types()`` and NON-empty check here, in favor of typecasting.
-							// Benchmark tests show a slight increase in performance this way, and since Filters already slow things down, we bypass all we can for speed here.
-							// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-							$args    = func_get_args(); // Get all of the arguments (we'll need these below).
-							$args[0] = (string)$args[0]; // Typecasting this to a string value.
+							$args    = func_get_args();
+							$args[0] = (string)$args[0];
 
 							$args[0] = $this->___instance_config->plugin_stub_as_root_ns_class_with_underscores.'__'.$args[0];
 
 							return call_user_func_array('apply_filters', $args);
 						}
+
+					# --------------------------------------------------------------------------------------------------------------------------
+					# Methods related to translations.
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					/**
 					 * Contextual translation wrapper (context: `admin-side`).
@@ -2076,12 +2128,8 @@ namespace websharks_core_v000000_dev
 					 */
 					final public function i18n($string, $other_contextuals = '')
 						{
-							// Bypassing ``is_...()`` and ``check_arg_types()`` here, in favor of typecasting.
-							// Benchmark tests show a slight increase in performance this way, and since translation already slows things down, we bypass all we can for speed here.
-							// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-							$string            = (string)$string; // Typecasting this to a string value.
-							$other_contextuals = (string)$other_contextuals; // Typecasting this to a string value.
+							$string            = (string)$string;
+							$other_contextuals = (string)$other_contextuals;
 							$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
 
 							return _x($string, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
@@ -2112,14 +2160,10 @@ namespace websharks_core_v000000_dev
 					 */
 					final public function i18n_p($string_singular, $string_plural, $numeric_value, $other_contextuals = '')
 						{
-							// Bypassing ``is_...()`` and ``check_arg_types()`` here, in favor of typecasting.
-							// Benchmark tests show a slight increase in performance this way, and since translation already slows things down, we bypass all we can for speed here.
-							// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-							$string_singular   = (string)$string_singular; // Typecasting this to a string value.
-							$string_plural     = (string)$string_plural; // Typecasting this to a string value.
-							$numeric_value     = (string)$numeric_value; // Typecasting this to a string value (numeric string).
-							$other_contextuals = (string)$other_contextuals; // Typecasting this to a string value.
+							$string_singular   = (string)$string_singular;
+							$string_plural     = (string)$string_plural;
+							$numeric_value     = (string)$numeric_value;
+							$other_contextuals = (string)$other_contextuals;
 							$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
 
 							return _nx($string_singular, $string_plural, $numeric_value, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
@@ -2148,12 +2192,8 @@ namespace websharks_core_v000000_dev
 					 */
 					final public function translate($string, $other_contextuals = '')
 						{
-							// Bypassing ``is_...()`` and ``check_arg_types()`` checks here, in favor of typecasting.
-							// Benchmark tests show a slight increase in performance this way, and since translation already slows things down, we bypass all we can for speed here.
-							// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-							$string            = (string)$string; // Typecasting this to a string value.
-							$other_contextuals = (string)$other_contextuals; // Typecasting this to a string value.
+							$string            = (string)$string;
+							$other_contextuals = (string)$other_contextuals;
 							$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--front-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
 
 							return _x($string, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
@@ -2184,58 +2224,83 @@ namespace websharks_core_v000000_dev
 					 */
 					final public function translate_p($string_singular, $string_plural, $numeric_value, $other_contextuals = '')
 						{
-							// Bypassing ``is_...()`` and ``check_arg_types()`` here, in favor of typecasting.
-							// Benchmark tests show a slight increase in performance this way, and since translation already slows things down, we bypass all we can for speed here.
-							// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-							$string_singular   = (string)$string_singular; // Typecasting this to a string value.
-							$string_plural     = (string)$string_plural; // Typecasting this to a string value.
-							$numeric_value     = (string)$numeric_value; // Typecasting this to a string value (numeric string).
-							$other_contextuals = (string)$other_contextuals; // Typecasting this to a string value.
+							$string_singular   = (string)$string_singular;
+							$string_plural     = (string)$string_plural;
+							$numeric_value     = (string)$numeric_value;
+							$other_contextuals = (string)$other_contextuals;
 							$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--front-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
 
 							return _nx($string_singular, $string_plural, $numeric_value, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
 						}
 				}
 
-				/*
-				 * Centralized autoload handler.
-				 *
-				 * @note Calls ``spl_autoload_register()``.
-				 */
-				include_once dirname(__FILE__).'/autoloader.php';
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# Now include the WebSharks™ Core autoload/exception handlers.
+				# -----------------------------------------------------------------------------------------------------------------------------
 
-				/*
-				 * Centralized exception handler.
-				 *
-				 * @note Calls ``set_exception_handler()``.
-				 */
+				include_once dirname(__FILE__).'/autoloader.php';
 				include_once dirname(__FILE__).'/exception-handler.php';
 
-				/*
-				 * Creates global framework instance.
-				 */
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# Creates an instance of the WebSharks™ Core framework.
+				# -----------------------------------------------------------------------------------------------------------------------------
+
 				$GLOBALS[__NAMESPACE__] = new framework(
 					array(
 					     'plugin_root_ns' => __NAMESPACE__,
 					     'plugin_var_ns'  => __NAMESPACE__,
 					     'plugin_name'    => 'WebSharks™ Core',
-					     'plugin_version' => '000000-dev', #!version!#
+					     'plugin_version' => ${__FILE__}['version'],
 					     'plugin_dir'     => dirname(dirname(dirname(__FILE__))),
 					     'plugin_site'    => 'http://www.websharks-inc.com'
 					));
-				if(!isset($GLOBALS['websharks_core']->___instance_config->core_version)
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# Update the WebSharks™ Core global w/ a reference to the latest available version at runtime.
+				# -----------------------------------------------------------------------------------------------------------------------------
+
+				if(!isset($GLOBALS['websharks_core']->___instance_config->websharks_core)
 				   || version_compare($GLOBALS['websharks_core']->___instance_config->core_version,
 				                      $GLOBALS[__NAMESPACE__]->___instance_config->core_version, '<')
 				) $GLOBALS['websharks_core'] = $GLOBALS[__NAMESPACE__];
 
-				/*
-				 * Easier access for those who don't care about the version.
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# WebSharks™ Core API (for internal use only).
+				# -----------------------------------------------------------------------------------------------------------------------------
+
+				/**
+				 * WebSharks™ Core framework instance (this version).
+				 *
+				 * @param string $version A specific version of the WebSharks™ Core?
+				 *    WARNING: This function will NOT automatically load a specific version for you.
+				 *       The version that you specify MUST already be loaded up.
+				 *
+				 * @return framework The global WebSharks™ Core framework instance (this version).
+				 *
+				 * @note If ``$version`` is passed in, this returns a specific version of the WebSharks™ Core.
+				 *
+				 * @note This compliments ``\websharks_core()`` in the global namespace.
+				 *    For calls within this namespace; we want to use this specific version.
+				 *
+				 * @see \websharks_core() In the global namespace.
 				 */
-				if(!class_exists('\\websharks_core_framework'))
-					class_alias('\\'.__NAMESPACE__.'\\framework', 'websharks_core_framework');
+				function websharks_core($version = '')
+					{
+						if(!$version) // Most common usage.
+							return $GLOBALS[__NAMESPACE__];
+
+						return call_user_func('\\'.str_replace(__NAMESPACE__.'\\', '', __FUNCTION__), (string)$version);
+					}
+
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# Housekeeping.
+				# -----------------------------------------------------------------------------------------------------------------------------
+
+				unset(${__FILE__});
 			}
 	}
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# WebSharks™ Core API class/function (only if they do NOT exist yet).
+# -----------------------------------------------------------------------------------------------------------------------------------------
 namespace // Global namespace.
 	{
 		if(!class_exists('websharks_core'))
@@ -2243,11 +2308,16 @@ namespace // Global namespace.
 				/**
 				 * WebSharks™ Core API class.
 				 *
-				 * This works w/ latest version available at runtime
-				 *    (in the case of multiple instances).
+				 * @note This provides easier access for those who DON'T CARE about the version.
+				 *
+				 * @note This works w/ the latest version available at runtime.
+				 *    While the class itself extends this version of the WebSharks™ Core;
+				 *    the API class abstraction will utilize the latest available version at runtime.
+				 *    Made possible by a global variable that references the WebSharks™ Core.
 				 *
 				 * @see \websharks_core_v000000_dev\api
 				 * @see \websharks_core_v000000_dev\api::$framework
+				 * @see \websharks_core_v000000_dev\api::framework()
 				 */
 				class websharks_core extends \websharks_core_v000000_dev\api
 				{
@@ -2257,27 +2327,28 @@ namespace // Global namespace.
 		if(!function_exists('websharks_core'))
 			{
 				/**
-				 * WebSharks™ Core instance.
+				 * WebSharks™ Core framework instance (latest version).
+				 *
+				 * @note This provides easier access for those who DON'T CARE about the version.
 				 *
 				 * @param string $version A specific version of the WebSharks™ Core?
-				 *    This version MUST already be loaded before calling.
+				 *    WARNING: This function will NOT automatically load a specific version for you.
+				 *       The version that you specify MUST already be loaded up.
 				 *
-				 * @return \websharks_core_v000000_dev\framework The latest version available at runtime.
+				 * @return \websharks_core_v000000_dev\framework The global WebSharks™ Core framework instance.
+				 *    Actually, this will return a reference to the latest version available at runtime.
+				 *    Made possible by a global variable that references the WebSharks™ Core.
 				 *
-				 * @throws \exception If version is specified; but that version is NOT available.
+				 * @note If ``$version`` is passed in, this returns a specific version of the WebSharks™ Core.
+				 *
+				 * @see \websharks_core_v000000_dev\websharks_core()
 				 */
 				function websharks_core($version = '')
 					{
-						if($version && ($version = str_replace('-', '_', (string)$version)))
-							{
-								if(!isset($GLOBALS['websharks_core_v'.$version]))
-									throw new \exception(
-										sprintf(\websharks_core_v000000_dev::i18n
-											        ('WebSharks™ Core `v%1$s` is NOT loaded up.'), str_replace('_', '-', $version))
-									);
-								return $GLOBALS['websharks_core_v'.$version];
-							}
-						return $GLOBALS['websharks_core'];
+						if(!$version) // Most common usage.
+							return $GLOBALS[__FUNCTION__];
+
+						return $GLOBALS[__FUNCTION__.'_v'.str_replace('-', '_', (string)$version)];
 					}
 			}
 	}

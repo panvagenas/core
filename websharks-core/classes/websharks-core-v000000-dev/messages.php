@@ -10,34 +10,34 @@
  * @since 120318
  */
 namespace websharks_core_v000000_dev
-{
-	if(!defined('WPINC'))
-		exit('Do NOT access this file directly: '.basename(__FILE__));
-
-	/**
-	 * Messages.
-	 *
-	 * @package WebSharks\Core
-	 * @since 120318
-	 *
-	 * @assert ($GLOBALS[__NAMESPACE__])
-	 */
-	class messages extends diagnostics
 	{
-		/**
-		 * @var string Specifies diagnostic type.
-		 */
-		public $type = 'message';
+		if(!defined('WPINC'))
+			exit('Do NOT access this file directly: '.basename(__FILE__));
 
 		/**
-		 * @var boolean Should this type of diagnostic be logged into a DEBUG file?
-		 *    Applies only when/if `WP_DEBUG` mode is enabled.
+		 * Messages.
+		 *
+		 * @package WebSharks\Core
+		 * @since 120318
+		 *
+		 * @assert ($GLOBALS[__NAMESPACE__])
 		 */
-		public $wp_debug_log = FALSE;
+		class messages extends diagnostics
+		{
+			/**
+			 * @var string Specifies diagnostic type.
+			 */
+			public $type = 'message';
 
-		/**
-		 * @var boolean Should this type of diagnostic be logged into a DB table?
-		 */
-		public $db_log = FALSE;
+			/**
+			 * @var boolean Should this type of diagnostic be logged into a DEBUG file?
+			 *    Applies only when/if `WP_DEBUG` mode is enabled.
+			 */
+			public $wp_debug_log = FALSE;
+
+			/**
+			 * @var boolean Should this type of diagnostic be logged into a DB table?
+			 */
+			public $db_log = FALSE;
+		}
 	}
-}

@@ -35,12 +35,12 @@ namespace websharks_core_v000000_dev
 
 			/**
 			 * Should this type of diagnostic be logged into a DEBUG file?
-			 *    Applies only when/if `WP_DEBUG` mode is enabled.
+			 *    Applies only when/if `WP_DEBUG_LOG` mode is enabled.
 			 *
 			 * @extenders Should be overridden by class extenders.
 			 *
 			 * @var boolean Should this type of diagnostic be logged into a DEBUG file?
-			 *    Applies only when/if `WP_DEBUG` mode is enabled.
+			 *    Applies only when/if `WP_DEBUG_LOG` mode is enabled.
 			 */
 			public $wp_debug_log = FALSE;
 
@@ -82,9 +82,9 @@ namespace websharks_core_v000000_dev
 			 * @param string       $message Optional diagnostic message (if constructing with a new diagnostic).
 			 *
 			 * @param string       $log Optional. This defaults to the value of ``framework::log_enable``.
-			 *    This simply provides some additional control over which specific diagnostics will be logged.
+			 *    This simply provides some additional control over which specific diagnostics will be logged (if any).
 			 *    By default, we enable logging on a per-diagnostic basis. However, even if this is ``framework::log_enable``,
-			 *    logging only occurs if enabled overall (based on diagnostic type). Can also be set to ``framework::log_disable``.
+			 *    logging ONLY occurs if enabled overall (based on diagnostic type). Can also be set to ``framework::log_disable``.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
@@ -94,7 +94,9 @@ namespace websharks_core_v000000_dev
 
 					$this->check_arg_types('', 'string:!empty', '', 'string', 'string:!empty', func_get_args());
 
-					if($this->©plugin->is_core()) $this->wp_debug_log = $this->db_log = FALSE;
+					if($this->©plugin->is_core()) // Always off in the WebSharks™ Core.
+						// @TODO We need to figure out a way for us to leave this on for the WebSharks™ Core.
+						$this->wp_debug_log = $this->db_log = FALSE;
 
 					if(!empty($code)) $this->add($code, $data, $message, $log);
 				}
@@ -160,7 +162,7 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Logs diagnostics (if `WP_DEBUG` is enabled).
+			 * Logs diagnostics (if `WP_DEBUG_LOG` is enabled).
 			 *
 			 * @param string $code Required diagnostic code (must NOT be empty).
 			 *
@@ -169,13 +171,13 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string $message Required diagnostic message (must NOT be empty).
 			 *
-			 * @return null Nothing. Simply logs diagnostics (if `WP_DEBUG` is enabled).
+			 * @return null Nothing. Simply logs diagnostics (if `WP_DEBUG_LOG` is enabled).
 			 */
 			public function wp_debug_log($code, $data, $message)
 				{
 					$this->check_arg_types('string:!empty', '', 'string:!empty', func_get_args());
 
-					if($this->wp_debug_log && $this->©env->is_in_wp_debug_mode())
+					if($this->wp_debug_log && $this->©env->is_in_wp_debug_log_mode())
 						{
 							$log_dir  = $this->©dir->get_log_dir('private', 'debug');
 							$log_file = $this->©file->maybe_archive($log_dir.'/debug.log');
