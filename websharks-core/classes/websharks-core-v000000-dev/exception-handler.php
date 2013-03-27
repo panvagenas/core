@@ -83,26 +83,36 @@ namespace websharks_core_v000000_dev
 			 */
 			public static function handle(\exception $exception)
 				{
-					static::$exception = $exception; // Reference.
-
-					if(static::$exception instanceof exception)
+					try // We'll use standard exceptions for any issues here.
 						{
-							static::$plugin = static::$exception->plugin;
-							return static::handle_plugin_exception();
+							static::$exception = $exception; // Reference.
+
+							if(static::$exception instanceof exception)
+								{
+									static::$plugin = static::$exception->plugin;
+									return static::handle_plugin_exception();
+								}
+							// Else this is some other type of exception.
+
+							if(static::$previous_handler && is_callable(static::$previous_handler))
+								return call_user_func(static::$previous_handler, static::$exception);
+
+							// There is NO other handler available (handle it here; if possible).
+
+							if(is_callable('\\'.__NAMESPACE__.'\\websharks_core'))
+								{
+									static::$plugin = websharks_core();
+									return static::handle_plugin_exception();
+								}
+							throw static::$exception; // Re-throw (forcing a fatal error).
 						}
-					// Else this is some other type of exception.
-
-					if(static::$previous_handler && is_callable(static::$previous_handler))
-						return call_user_func(static::$previous_handler, static::$exception);
-
-					// There is NO other handler available (handle it here; if possible).
-
-					if(is_callable('\\'.__NAMESPACE__.'\\websharks_core'))
+					catch(\exception $_exception) // Rethrow a standard exception class.
 						{
-							static::$plugin = websharks_core();
-							return static::handle_plugin_exception();
+							throw new \exception(
+								sprintf(stub::i18n('Could NOT handle exception code: `%1$s` with message: `%2$s`.'), $exception->getCode(), $exception->getMessage()).
+								sprintf(stub::i18n(' Caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
+							);
 						}
-					throw static::$exception; // Re-throw (forcing a fatal error).
 				}
 
 			/**

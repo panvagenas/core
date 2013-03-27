@@ -98,11 +98,11 @@ namespace websharks_core_v000000_dev
 							$this->wp_debug_log(); // Possible debug logging.
 							$this->db_log(); // Possible database logging routine.
 						}
-					catch(\exception $exception) // Rethrow a standard exception class.
+					catch(\exception $_exception) // Rethrow a standard exception class.
 						{
 							throw new \exception(
 								sprintf(stub::i18n('Could NOT instantiate exception code: `%1$s` with message: `%2$s`.'), $code, $message).
-								sprintf(stub::i18n(' Caused by exception code: `%1$s` with message: `%2$s`.'), $exception->getCode(), $exception->getMessage()), 20, $exception
+								sprintf(stub::i18n(' Caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
 							);
 						}
 				}
