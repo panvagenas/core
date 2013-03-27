@@ -308,7 +308,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws \exception If invalid types are passed through arguments list.
 			 */
-			public function root_ns($ns_or_ns_class)
+			public static function root_ns($ns_or_ns_class)
 				{
 					if(!is_string($ns_or_ns_class))
 						throw new \exception( // Fail here; detected invalid arguments.
