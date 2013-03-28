@@ -73,9 +73,28 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Result of PHP code evaluation.
+			 * Evaluates PHP code.
 			 *
-			 * @param string $string String (possibly containing PHP tags).
+			 * @return string {@inheritdoc}
+			 *
+			 * @see php::evaluate()
+			 * @inheritdoc php::evaluate()
+			 *
+			 * @note This variation defaults ``$pure_php`` to a TRUE value.
+			 */
+			public function ¤eval($string, $pure_php = TRUE)
+				{
+					return $this->evaluate($string, $pure_php);
+				}
+
+			/**
+			 * Evaluates PHP code.
+			 *
+			 * @param string  $string String (possibly containing PHP tags).
+			 *    If ``$pure_php`` is TRUE; this should NOT have PHP tags.
+			 *
+			 * @param boolean $pure_php Defaults to a FALSE value.
+			 *    If this is TRUE, the input ``$string`` should NOT include PHP tags.
 			 *
 			 * @return string Output string after having been evaluated by PHP.
 			 *
@@ -84,26 +103,28 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert ("<?php echo 'hello'; ?>") === 'hello'
 			 */
-			public function evaluate($string)
+			public function evaluate($string, $pure_php = FALSE)
 				{
-					$this->check_arg_types('string', func_get_args());
+					$this->check_arg_types('string', 'boolean', func_get_args());
 
 					if($this->©function->is_possible('eval'))
 						{
 							ob_start();
-							eval('?>'.$string.'<?php ');
+							if($pure_php) eval($string);
+							else // Mixed content in this case.
+								eval('?>'.$string.'<?php ');
 							return ob_get_clean();
 						}
 					// Otherwise, let's do a little explaining here.
 
 					throw $this->©exception(
-						__METHOD__.'#eval_missing', compact('string'),
-						$this->i18n( // Let's do a little explaining here. Why do we NEED ``eval()`` here?
+						__METHOD__.'#eval_missing', get_defined_vars(),
+						$this->i18n( // Let's do a little explaining here. Why do we NEED ``eval()``?
 							'The PHP `eval()` function is NOT available on this server (possible security precaution).'.
-							' Please check with your hosting provider to resolve this issue and have PHP ``eval()`` enabled.'.
-							' Note... the use of ``eval()`` in this plugin, is limited to areas where it is absolutely necessary to achieve a desired functionality.'.
+							' Please check with your hosting provider to resolve this issue and have PHP `eval()` enabled.'.
+							' Note... the use of `eval()` in this plugin, is limited to areas where it is absolutely necessary to achieve a desired functionality.'.
 							' For instance, where PHP code is supplied by a site owner (or by their developer) to achieve advanced customization through a UI panel. This can be evaluated at runtime to allow for the inclusion of PHP conditionals or dynamic values.'.
-							' In cases such as these, the PHP ``eval()`` function serves a valid purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (e.g. the code can be trusted in this case).'
+							' In cases such as these, the PHP `eval()` function serves a valid purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (e.g. PHP code can be trusted in this case).'
 						)
 					);
 				}

@@ -1126,7 +1126,7 @@ if(!class_exists('websharks_core_v000000_dev'))
  */
 if(websharks_core_v000000_dev::is_webphar())
 	{
-		$GLOBALS[websharks_core_v000000_dev::autoload_var()] = FALSE;
+		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 
 		if(!websharks_core_v000000_dev::can_phar())
 			{
@@ -1137,8 +1137,6 @@ if(websharks_core_v000000_dev::is_webphar())
 			}
 		Phar::webPhar('websharks-core-v000000-dev', 'index.php', '', websharks_core_v000000_dev::web_phar_mime_types(),
 		              'websharks_core_v000000_dev::web_phar_rewriter');
-
-		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 
 		return; // We can stop here.
 	}
@@ -1151,7 +1149,7 @@ if(websharks_core_v000000_dev::is_webphar())
  */
 if(websharks_core_v000000_dev::is_autoload())
 	{
-		$GLOBALS[websharks_core_v000000_dev::autoload_var()] = FALSE;
+		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 
 		if(!defined('WPINC') && !websharks_core_v000000_dev::wp_load())
 			throw new exception(websharks_core_v000000_dev::no_wp_msg());
@@ -1164,8 +1162,6 @@ if(websharks_core_v000000_dev::is_autoload())
 
 		if(!class_exists('\\websharks_core_v000000_dev\\framework'))
 			include_once websharks_core_v000000_dev::framework();
-
-		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 
 		return; // We can stop here.
 	}

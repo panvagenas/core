@@ -27,10 +27,17 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Details about all WebSharks™ Core classes/properties/methods.
 			 *
+			 * @param boolean $all_details Defaults to a FALSE value.
+			 *    If this is TRUE; the array will contain ALL details (a HUGE array).
+			 *
 			 * @return array Details about all WebSharks™ Core classes/properties/methods.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public function get_details()
+			public function get_details($all_details = FALSE)
 				{
+					$this->check_arg_types('boolean', func_get_args());
+
 					$ns_class_details = array();
 					$ns_class         = array('\\'.__NAMESPACE__);
 
@@ -62,7 +69,11 @@ namespace websharks_core_v000000_dev
 								{
 									$_name = '$'.$_property->getName();
 
-									$_properties[$_name]['name']            = $_name;
+									$_properties[$_name]['doc_block'] = "\n\t\t".$_property->getDocComment();
+									$_properties[$_name]['name']      = $_name;
+
+									if(!$all_details) continue; // Not including ALL details?
+
 									$_properties[$_name]['modifiers']       = implode(' ', \Reflection::getModifierNames($_property->getModifiers()));
 									$_properties[$_name]['declaring-class'] = $_property->getDeclaringClass()->getName();
 								}
@@ -70,7 +81,11 @@ namespace websharks_core_v000000_dev
 								{
 									$_name = $_method->getName().'()';
 
-									$_methods[$_name]['name']            = $_name;
+									$_methods[$_name]['doc_block'] = "\n\t\t".$_method->getDocComment();
+									$_methods[$_name]['name']      = $_name;
+
+									if(!$all_details) continue; // Not including ALL details?
+
 									$_methods[$_name]['modifiers']       = implode(' ', \Reflection::getModifierNames($_method->getModifiers()));
 									$_methods[$_name]['declaring-class'] = $_method->getDeclaringClass()->getName();
 
