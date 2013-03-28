@@ -1132,7 +1132,7 @@ if(websharks_core_v000000_dev::is_webphar())
 			{
 				error_reporting(-1);
 				ini_set('display_errors', TRUE);
-				// We make sure this IMPORTANT message is visible.
+				// We make sure this IMPORTANT message is always visible.
 				throw new exception(websharks_core_v000000_dev::cant_phar_msg());
 			}
 		Phar::webPhar('websharks-core-v000000-dev', 'index.php', '', websharks_core_v000000_dev::web_phar_mime_types(),
@@ -1156,6 +1156,8 @@ if(websharks_core_v000000_dev::is_autoload())
 
 		if(!defined('WPINC')) // Need to load WordPress?
 			include_once websharks_core_v000000_dev::wp_load(TRUE);
+		// WordPress® may load a plugin that loads this same version of the core.
+		//    Making ``class_exists()`` checks below even more important!
 
 		if(!class_exists('deps_websharks_core_v000000_dev'))
 			include_once websharks_core_v000000_dev::deps(FALSE);

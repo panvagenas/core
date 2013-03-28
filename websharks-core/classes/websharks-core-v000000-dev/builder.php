@@ -441,8 +441,8 @@ namespace websharks_core_v000000_dev
 						sprintf($this->i18n('Start time: %1$s.'), $this->©env->time_details())
 					);
 					$successes->add(__METHOD__.'#starting_branch_core', get_defined_vars(),
-					                sprintf($this->i18n('Building from WebSharks™ Core GIT branch: `%1$s` (version: `%2$s`).'),
-					                        $this->starting_git_branches['core'], $this->___instance_config->core_version)
+					                sprintf($this->i18n('Building from WebSharks™ Core GIT branch: `%1$s` (version: `%2$s`) w/ class file: `%3$s`.'),
+					                        $this->starting_git_branches['core'], $this->___instance_config->core_version, $this->©dir->n_seps(__FILE__))
 					);
 					if($this->plugin_dir) // Building a plugin.
 						{
