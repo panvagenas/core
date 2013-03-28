@@ -1312,9 +1312,8 @@ namespace websharks_core_v000000_dev
 						}
 					$phar->stopBuffering(); // Write to disk now.
 					unset($phar, $_temp_dir_iterator); // Unlocks archive & temp directory.
-
+					unset($_strippable_extensions, $_regex_compressable_extensions, $_dir_file, $_path, $_phar_path, $_extension);
 					if(isset($_temp_dir)) $this->empty_and_remove($_temp_dir); // A little more housekeeping now.
-					unset($_strippable_extensions, $_regex_compressable_extensions, $_temp_dir, $_dir_file, $_path, $_phar_path, $_extension);
 
 					return $to; // It's a good day in Eureka!
 				}
