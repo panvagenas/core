@@ -72,7 +72,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function __construct($___instance_config = NULL, $code = 'exception', $data = NULL, $message = '', \exception $previous = NULL)
 				{
-					try // We'll use standard exceptions for any issues here.
+					try // We'll re-throw as an \exception if there are any issues here.
 						{
 							if($___instance_config instanceof framework)
 								$plugin_root_ns = $___instance_config->___instance_config->plugin_root_ns;

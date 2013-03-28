@@ -57,8 +57,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param exception|\exception $exception An exception.
 			 *
-			 * @return null|mixed This does NOT return anything usable (nor should it).
-			 *
 			 * @note Exceptions handled successfully by this routine will NOT be logged by PHP as errors.
 			 *    As the exception handler, we will need to log and/or display anything that needs to be recorded here.
 			 *    The PHP interpreter simply terminates script execution whenever an exception occurs (nothing more).
@@ -83,33 +81,37 @@ namespace websharks_core_v000000_dev
 			 */
 			public static function handle(\exception $exception)
 				{
-					try // We'll use standard exceptions for any issues here.
+					try // We'll re-throw as an \exception if there are any issues here.
 						{
 							static::$exception = $exception; // Reference.
 
 							if(static::$exception instanceof exception)
 								{
 									static::$plugin = static::$exception->plugin;
-									return static::handle_plugin_exception();
+									static::handle_plugin_exception();
+									return; // We're done here.
 								}
 							// Else this is some other type of exception.
 
 							if(static::$previous_handler && is_callable(static::$previous_handler))
-								return call_user_func(static::$previous_handler, static::$exception);
-
+								{
+									call_user_func(static::$previous_handler, static::$exception);
+									return; // We're done here.
+								}
 							// There is NO other handler available (handle it here; if possible).
 
 							if(is_callable('\\'.__NAMESPACE__.'\\websharks_core'))
 								{
 									static::$plugin = websharks_core();
-									return static::handle_plugin_exception();
+									static::handle_plugin_exception();
+									return; // We're done here.
 								}
 							throw static::$exception; // Re-throw (forcing a fatal error).
 						}
 					catch(\exception $_exception) // Rethrow a standard exception class.
 						{
 							throw new \exception(
-								sprintf(stub::i18n('Could NOT handle exception code: `%1$s` with message: `%2$s`.'), $exception->getCode(), $exception->getMessage()).
+								sprintf(stub::i18n('Failed to handle exception code: `%1$s` with message: `%2$s`.'), $exception->getCode(), $exception->getMessage()).
 								sprintf(stub::i18n(' Caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
 							);
 						}
