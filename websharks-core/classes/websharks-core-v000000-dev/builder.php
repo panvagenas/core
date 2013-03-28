@@ -453,8 +453,8 @@ namespace websharks_core_v000000_dev
 							                     escapeshellarg($this->i18n('Auto-commit; before building plugin.')), $this->plugin_repo_dir);
 
 							$successes->add(__METHOD__.'#before_building_plugin', get_defined_vars(),
-							                sprintf($this->i18n('All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in this plugin repo: `%2$s`.'), $this->starting_git_branches['plugin'], $this->plugin_repo_dir).
-							                $this->i18n(' Restore point. A commit has been processed for all changes to the existing file structure (before new branch creation).')
+							                sprintf($this->i18n('Restore point. All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in this plugin repo: `%2$s`.'), $this->starting_git_branches['plugin'], $this->plugin_repo_dir).
+							                $this->i18n(' A commit has been processed for all changes to the existing file structure (before new branch creation).')
 							);
 							// Create a new GIT branch for this version (and switch to this new branch).
 
@@ -693,8 +693,8 @@ namespace websharks_core_v000000_dev
 									                     escapeshellarg($this->i18n('Auto-commit; before building pro add-on.')), $this->plugin_pro_repo_dir);
 
 									$successes->add(__METHOD__.'#before_building_plugin_pro', get_defined_vars(),
-									                sprintf($this->i18n('All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in this plugin\'s pro repo directory: `%2$s`.'), $this->starting_git_branches['plugin_pro'], $this->plugin_pro_repo_dir).
-									                $this->i18n(' Restore point. A commit has been processed for all changes to the existing file structure (before new branch creation).')
+									                sprintf($this->i18n('Restore point. All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in this plugin\'s pro repo directory: `%2$s`.'), $this->starting_git_branches['plugin_pro'], $this->plugin_pro_repo_dir).
+									                $this->i18n(' A commit has been processed for all changes to the existing file structure (before new branch creation).')
 									);
 									// Create a new GIT branch for this version (and switch to this new branch).
 
@@ -976,8 +976,8 @@ namespace websharks_core_v000000_dev
 							                     escapeshellarg(sprintf($this->i18n('Auto-commit; before %1$s %2$score.'), $building, $new_space)), $this->core_repo_dir);
 
 							$successes->add(__METHOD__.'#before_building_'.$new_slug.'core', get_defined_vars(),
-							                sprintf($this->i18n('All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the WebSharks™ Core repo directory: `%2$s`.'), $this->starting_git_branches['core'], $this->core_repo_dir).
-							                sprintf($this->i18n(' Restore point. A commit has been processed for all changes to the existing file structure%1$s.'), (($is_new) ? ' '.$this->i18n('(before new branch creation occurs)') : ''))
+							                sprintf($this->i18n('Restore point. All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the WebSharks™ Core repo directory: `%2$s`.'), $this->starting_git_branches['core'], $this->core_repo_dir).
+							                sprintf($this->i18n(' A commit has been processed for all changes to the existing file structure%1$s.'), (($is_new) ? ' '.$this->i18n('(before new branch creation occurs)') : ''))
 							);
 							// Create a new GIT branch for this version (and switch to this new branch).
 

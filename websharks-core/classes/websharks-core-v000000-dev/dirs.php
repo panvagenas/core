@@ -1263,15 +1263,15 @@ namespace websharks_core_v000000_dev
 						);
 					// Phar classes throw exceptions on failure.
 
-					$stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$is_phar_var_suffix.'\'] = \'phar://\'.__FILE__;';
-					$stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
-					$stub_file_contents    = $this->©string->ireplace_once('<?php', '<?php '.$stub_file_is_phar_var.' ', $stub_file_contents);
+					$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$is_phar_var_suffix.'\'] = \'phar://\'.__FILE__;';
+					$_stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
+					$_stub_file_contents    = $this->©string->ireplace_once('<?php', '<?php '.$_stub_file_is_phar_var.' ', $_stub_file_contents);
 
-					$phar = new \Phar($to, $this->iteration_flags());
-					$phar->startBuffering(); // Don't create file yet (wait until we're done here).
-					$phar->setStub($stub_file_contents); // Defines the stub for this PHAR file.
+					$_phar = new \Phar($to, $this->iteration_flags());
+					$_phar->startBuffering(); // Don't create file yet (wait until we're done here).
+					$_phar->setStub($_stub_file_contents); // Defines the stub for this PHAR file.
 
-					if(!$strip_ws && !$compress) $phar->buildFromDirectory($dir); // Simple.
+					if(!$strip_ws && !$compress) $_phar->buildFromDirectory($dir); // Simple.
 
 					else // Stripping or compressing takes more work, but worth the effort :-)
 						{
@@ -1294,9 +1294,9 @@ namespace websharks_core_v000000_dev
 									if(in_array($_extension, $_strippable_extensions, TRUE))
 										file_put_contents($_path, php_strip_whitespace($_path));
 								}
-							$phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
-							if($compress && $phar->count()) // Compressing files?
-								$phar->compressFiles(\Phar::GZ);
+							$_phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
+							if($compress && $_phar->count()) // Compressing files?
+								$_phar->compressFiles(\Phar::GZ);
 
 							foreach($_temp_dir_iterator as $_dir_file) // Everything else.
 								{
@@ -1307,13 +1307,16 @@ namespace websharks_core_v000000_dev
 									$_extension = $this->©file->extension($_path);
 
 									if(!in_array($_extension, $compressable_extensions, TRUE))
-										$phar->addFile($_path, $_phar_path);
+										$_phar->addFile($_path, $_phar_path);
 								}
 						}
-					$phar->stopBuffering(); // Write to disk now.
-					unset($phar, $_temp_dir_iterator); // Unlocks archive & temp directory.
-					unset($_strippable_extensions, $_regex_compressable_extensions, $_dir_file, $_path, $_phar_path, $_extension);
-					if(isset($_temp_dir)) $this->empty_and_remove($_temp_dir); // A little more housekeeping now.
+					$_phar->stopBuffering(); // Write to disk now.
+
+					unset($_phar, $_stub_file_is_phar_var, $_stub_file_contents, $_strippable_extensions, $_regex_compressable_extensions);
+					unset($_temp_dir_iterator, $_dir_file, $_path, $_phar_path, $_extension);
+					if(isset($_temp_dir)) // A little more housekeeping now.
+						$this->empty_and_remove($_temp_dir);
+					unset($_temp_dir);
 
 					return $to; // It's a good day in Eureka!
 				}
