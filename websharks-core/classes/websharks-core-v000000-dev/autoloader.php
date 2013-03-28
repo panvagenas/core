@@ -87,7 +87,7 @@ namespace websharks_core_v000000_dev
 					static::add_root_ns(__NAMESPACE__);
 					static::$core_classes_dir = $core_classes_dir;
 					static::add_classes_dir(static::$core_classes_dir);
-					static::add_core_ns_class_alias(__NAMESPACE__, __FILE__);
+					static::add_core_ns_class_alias(__CLASS__);
 
 					spl_autoload_register('\\'.__CLASS__.'::load_ns_class');
 
@@ -269,9 +269,7 @@ namespace websharks_core_v000000_dev
 						throw new \exception( // Fail here; detected invalid arguments.
 							sprintf(stub::i18n('Namespace\\class does NOT exist yet: `%1$s`.'), $ns_class)
 						);
-					$alias = str_replace(__NAMESPACE__.'\\', 'websharks_core\\', $ns_class);
-					$alias = str_replace('\\', '__', $alias); // Double underscores.
-
+					$alias = str_replace(array(__NAMESPACE__.'\\', '\\'), array('websharks_core\\', '__'), $ns_class);
 					if(!class_exists('\\'.$alias)) // Only if it does NOT exist already.
 						return class_alias('\\'.$ns_class, $alias);
 

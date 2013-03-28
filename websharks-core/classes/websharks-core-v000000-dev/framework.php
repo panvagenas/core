@@ -966,15 +966,14 @@ namespace websharks_core_v000000_dev
 							// Based on this core ``__NAMESPACE__``. These properties will NOT change from one class instance to another.
 							if(!$___parent_instance_config) // Therefore, we ONLY need this routine if we did NOT get a ``$___parent_instance``.
 								{
-									$this->___instance_config->websharks_core = TRUE; // WebSharks™ Core flag.
-
 									// Based on this core ``__NAMESPACE__`` (as defined in this file).
 									$this->___instance_config->core_ns             = __NAMESPACE__;
 									$this->___instance_config->core_ns_prefix      = '\\'.$this->___instance_config->core_ns;
 									$this->___instance_config->core_ns_with_dashes = str_replace('_', '-', $this->___instance_config->core_ns);
 
-									$this->___instance_config->core_ns_stub             = 'websharks_core';
-									$this->___instance_config->core_ns_stub_with_dashes = 'websharks-core';
+									$this->___instance_config->core_ns_stub                              = 'websharks_core';
+									$this->___instance_config->core_ns_stub_with_dashes                  = 'websharks-core';
+									$this->___instance_config->{$this->___instance_config->core_ns_stub} = TRUE; // WebSharks™ Core.
 
 									$this->___instance_config->core_ns_v             = substr($this->___instance_config->core_ns, strlen($this->___instance_config->core_ns_stub) + 2);
 									$this->___instance_config->core_ns_v_with_dashes = str_replace('_', '-', $this->___instance_config->core_ns_v);

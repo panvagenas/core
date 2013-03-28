@@ -98,7 +98,7 @@ namespace rocketship;
 
 // Include your bundled copy of the WebSharks™ Core.
 // Assuming: `/wp-content/plugins/rocketship/websharks-core.php.phar`.
-#include_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
+include_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
 
 // Tell the WebSharks™ Core Autoloader about your PHP classes.
 \websharks_core__autoloader::add_classes_dir(dirname(dirname(__FILE__)));
