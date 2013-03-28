@@ -1005,10 +1005,9 @@ namespace websharks_core_v000000_dev
 
 							// Update various core files w/ version numbers and other requirements.
 
-							$_this_core_plugin_file    = $_this_core_dir.'/plugin.php';
-							$_this_core_readme_file    = $_this_core_dir.'/readme.txt';
-							$_this_core_deps_x_file    = $_this_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'/deps-x.php';
-							$_this_core_framework_file = $_this_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'/framework.php';
+							$_this_core_plugin_file = $_this_core_dir.'/plugin.php';
+							$_this_core_readme_file = $_this_core_dir.'/readme.txt';
+							$_this_core_deps_x_file = $_this_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'/deps-x.php';
 
 							if(!is_file($_this_core_plugin_file))
 								throw $this->©exception(
@@ -1043,25 +1042,12 @@ namespace websharks_core_v000000_dev
 									sprintf($this->i18n('Permission issues with %1$score `deps-x.php` file: `%2$s`.'), $new_space, $_this_core_deps_x_file)
 								);
 
-							if(!is_file($_this_core_framework_file))
-								throw $this->©exception(
-									__METHOD__.'#nonexistent_'.$new_slug.'core_framework_file', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent %1$score `framework.php` file: `%2$s`.'), $new_space, $_this_core_framework_file)
-								);
-							else if(!is_readable($_this_core_framework_file) || !is_writable($_this_core_framework_file))
-								throw $this->©exception(
-									__METHOD__.'#'.$new_slug.'core_framework_file_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with %1$score `framework.php` file: `%2$s`.'), $new_space, $_this_core_framework_file)
-								);
+							$_this_core_plugin_file_contents = file_get_contents($_this_core_plugin_file);
+							$_this_core_readme_file_contents = file_get_contents($_this_core_readme_file);
+							$_this_core_deps_x_file_contents = file_get_contents($_this_core_deps_x_file);
 
-							$_this_core_plugin_file_contents    = file_get_contents($_this_core_plugin_file);
-							$_this_core_readme_file_contents    = file_get_contents($_this_core_readme_file);
-							$_this_core_deps_x_file_contents    = file_get_contents($_this_core_deps_x_file);
-							$_this_core_framework_file_contents = file_get_contents($_this_core_framework_file);
-
-							$_this_core_plugin_file_contents    = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_this_core_plugin_file_contents);
-							$_this_core_readme_file_contents    = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_this_core_readme_file_contents);
-							$_this_core_framework_file_contents = $this->regex_replace('php_code__quoted_string_with_version_marker', $this->version, $_this_core_framework_file_contents);
+							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_this_core_plugin_file_contents);
+							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_this_core_readme_file_contents);
 
 							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_this_core_plugin_file_contents);
 							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_this_core_readme_file_contents);
@@ -1093,11 +1079,6 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#'.$new_slug.'core_deps_x_file_write_error', get_defined_vars(),
 									sprintf($this->i18n('Unable to write (update) the %1$score `deps-x.php` file.'), $new_space)
 								);
-							else if(!file_put_contents($_this_core_framework_file, $_this_core_framework_file_contents))
-								throw $this->©exception(
-									__METHOD__.'#'.$new_slug.'core_framework_file_write_error', get_defined_vars(),
-									sprintf($this->i18n('Unable to write (update) the %1$score `framework.php` file.'), $new_space)
-								);
 
 							$successes->add(__METHOD__.'#'.$new_slug.'core_file_updates', get_defined_vars(),
 							                sprintf($this->i18n('%1$s files updated with versions/requirements.'), $ucfirst_core).
@@ -1108,8 +1089,8 @@ namespace websharks_core_v000000_dev
 							                sprintf($this->i18n(' %1$s requires at least WordPress® version: `%2$s`.'), $ucfirst_core, $this->requires_at_least_wp_v).
 							                sprintf($this->i18n(' %1$s tested up to WordPress® version: `%2$s`.'), $ucfirst_core, $this->tested_up_to_wp_v)
 							);
-							unset($_this_core_plugin_file, $_this_core_readme_file, $_this_core_framework_file, $_this_core_deps_x_file);
-							unset($_this_core_plugin_file_contents, $_this_core_readme_file_contents, $_this_core_framework_file_contents, $_this_core_deps_x_file_contents);
+							unset($_this_core_plugin_file, $_this_core_readme_file, $_this_core_deps_x_file);
+							unset($_this_core_plugin_file_contents, $_this_core_readme_file_contents, $_this_core_deps_x_file_contents);
 
 							// Compress this core directory into a single PHP Archive.
 
