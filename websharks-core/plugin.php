@@ -11,9 +11,9 @@
  */
 /* -- WordPress® ------------------------------------------------------------------------
 
-Version: 130310
-Stable tag: 130310
-Tested up to: 3.6-alpha
+Version: 000000-dev
+Stable tag: 000000-dev
+Tested up to: 3.5.1
 Requires at least: 3.5.1
 
 Requires at least PHP version: 5.3.1

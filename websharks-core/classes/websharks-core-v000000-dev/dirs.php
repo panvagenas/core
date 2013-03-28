@@ -1271,9 +1271,9 @@ namespace websharks_core_v000000_dev
 					$phar->startBuffering(); // Don't create file yet (wait until we're done here).
 					$phar->setStub($stub_file_contents); // Defines the stub for this PHAR file.
 
-					if(!$strip_ws && !$compress) $phar->buildFromDirectory($dir); // Very simple.
+					if(!$strip_ws && !$compress) $phar->buildFromDirectory($dir); // Simple.
 
-					else // Stripping or compressing; this takes more work, but definitely worthwhile.
+					else // Stripping or compressing takes more work, but worth the effort :-)
 						{
 							$_strippable_extensions         = array('php');
 							$_regex_compressable_extensions = $this->©string->preg_quote_deep($compressable_extensions, '/');
@@ -1311,11 +1311,10 @@ namespace websharks_core_v000000_dev
 								}
 						}
 					$phar->stopBuffering(); // Write to disk now.
-					unset($phar); // Unlocks archive & temp directory.
+					unset($phar, $_temp_dir_iterator); // Unlocks archive & temp directory.
 
-					if(isset($_temp_dir)) $this->empty_and_remove($_temp_dir);
-					unset($_strippable_extensions, $_regex_compressable_extensions);
-					unset($_temp_dir, $_temp_dir_iterator, $_dir_file, $_path, $_phar_path, $_extension);
+					if(isset($_temp_dir)) $this->empty_and_remove($_temp_dir); // A little more housekeeping now.
+					unset($_strippable_extensions, $_regex_compressable_extensions, $_temp_dir, $_dir_file, $_path, $_phar_path, $_extension);
 
 					return $to; // It's a good day in Eureka!
 				}
