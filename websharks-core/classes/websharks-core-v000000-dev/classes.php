@@ -27,16 +27,18 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Details about all WebSharks™ Core classes/properties/methods.
 			 *
-			 * @param boolean $all_details Defaults to a FALSE value.
-			 *    If this is TRUE; the array will contain ALL details (a HUGE array).
+			 * @param array $details Defaults to ``array('class_doc_blocks')``.
+			 *
+			 * @TODO Document/improve array keys. For now, please browse the source code.
+			 * @TODO We may also improve/update this routine for codex generation in the future.
 			 *
 			 * @return array Details about all WebSharks™ Core classes/properties/methods.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public function get_details($all_details = FALSE)
+			public function get_details($details = array('class_doc_blocks'))
 				{
-					$this->check_arg_types('boolean', func_get_args());
+					$this->check_arg_types('array', func_get_args());
 
 					$ns_class_details = array();
 					$ns_class         = array('\\'.__NAMESPACE__);
@@ -59,60 +61,63 @@ namespace websharks_core_v000000_dev
 						}
 					unset($_dir_file, $_file_sub_path, $_ns_class_file_sub_path, $_sub_path_namespaces, $_ns_class_path);
 
-					foreach($ns_class as $_ns_class)
+					foreach($ns_class as $_ns_class) // Iterate through all classes.
 						{
-							$_reflection = new \ReflectionClass($_ns_class);
-							$_doc_block  = "\n\t\t".$_reflection->getDocComment();
-							$_properties = $_methods = array();
+							$ns_class_details['class: '.$_ns_class]['name'] = $_ns_class;
+							$_properties                                    = $_methods = array();
+							$_reflection                                    = new \ReflectionClass($_ns_class);
 
-							foreach($_reflection->getProperties() as $_property)
+							if(in_array('class_doc_blocks', $details, TRUE))
+								$ns_class_details['class: '.$_ns_class]['doc_block'] = "\n\t\t".$_reflection->getDocComment();
+
+							if(in_array('properties', $details, TRUE))
 								{
-									$_name = '$'.$_property->getName();
-
-									$_properties[$_name]['doc_block'] = "\n\t\t".$_property->getDocComment();
-									$_properties[$_name]['name']      = $_name;
-
-									if(!$all_details) continue; // Not including ALL details?
-
-									$_properties[$_name]['modifiers']       = implode(' ', \Reflection::getModifierNames($_property->getModifiers()));
-									$_properties[$_name]['declaring-class'] = $_property->getDeclaringClass()->getName();
-								}
-							foreach($_reflection->getMethods() as $_method)
-								{
-									$_name = $_method->getName().'()';
-
-									$_methods[$_name]['doc_block'] = "\n\t\t".$_method->getDocComment();
-									$_methods[$_name]['name']      = $_name;
-
-									if(!$all_details) continue; // Not including ALL details?
-
-									$_methods[$_name]['modifiers']       = implode(' ', \Reflection::getModifierNames($_method->getModifiers()));
-									$_methods[$_name]['declaring-class'] = $_method->getDeclaringClass()->getName();
-
-									foreach($_method->getParameters() as $_parameter)
+									foreach($_reflection->getProperties() as $_property)
 										{
-											$_param_name = '$'.$_parameter->getName();
-
-											if($_parameter->isOptional())
-												{
-													$_methods[$_name]['accepts-parameters'][$_param_name]['optional'] = TRUE;
-													if($_parameter->isPassedByReference())
-														$_methods[$_name]['accepts-parameters'][$_param_name]['only-by-reference'] = TRUE;
-													$_methods[$_name]['accepts-parameters'][$_param_name]['name']          = $_param_name;
-													$_methods[$_name]['accepts-parameters'][$_param_name]['default-value'] = $_parameter->getDefaultValue();
-												}
-											else // It's a requirement argument (handle this a bit differently).
-												{
-													$_methods[$_name]['accepts-parameters'][$_param_name]['required'] = TRUE;
-													if($_parameter->isPassedByReference())
-														$_methods[$_name]['accepts-parameters'][$_param_name]['only-by-reference'] = TRUE;
-													$_methods[$_name]['accepts-parameters'][$_param_name]['name'] = $_param_name;
-												}
+											$_key                       = 'property: $'.$_property->getName();
+											$_properties[$_key]['name'] = '$'.$_property->getName();
+											if(in_array('property_doc_blocks', $details, TRUE))
+												$_properties[$_key]['doc_block'] = "\n\t\t\t\t\t".$_property->getDocComment();
+											$_properties[$_key]['modifiers']       = implode(' ', \Reflection::getModifierNames($_property->getModifiers()));
+											$_properties[$_key]['declaring-class'] = $_property->getDeclaringClass()->getName();
 										}
+									$ns_class_details['class: '.$_ns_class]['properties'] = $_properties;
 								}
-							$ns_class_details[$_ns_class] = array('doc_block' => $_doc_block, 'properties' => $_properties, 'methods' => $_methods);
+							if(in_array('methods', $details, TRUE))
+								{
+									foreach($_reflection->getMethods() as $_method)
+										{
+											$_key                    = 'method: '.$_method->getName().'()';
+											$_methods[$_key]['name'] = $_method->getName().'()';
+											if(in_array('method_doc_blocks', $details, TRUE))
+												$_methods[$_key]['doc_block'] = "\n\t\t\t\t\t".$_method->getDocComment();
+											$_methods[$_key]['modifiers']       = implode(' ', \Reflection::getModifierNames($_method->getModifiers()));
+											$_methods[$_key]['declaring-class'] = $_method->getDeclaringClass()->getName();
+
+											if(in_array('method_parameters', $details, TRUE))
+												foreach($_method->getParameters() as $_parameter)
+													if($_parameter->isOptional())
+														{
+															$__key                                                     = 'param: $'.$_parameter->getName();
+															$_methods[$_key]['accepts-parameters'][$__key]['optional'] = TRUE;
+															if($_parameter->isPassedByReference())
+																$_methods[$_key]['accepts-parameters'][$__key]['only-by-reference'] = TRUE;
+															$_methods[$_key]['accepts-parameters'][$__key]['name']          = '$'.$_parameter->getName();
+															$_methods[$_key]['accepts-parameters'][$__key]['default-value'] = $_parameter->getDefaultValue();
+														}
+													else // It's a requirement argument (handle this a bit differently).
+														{
+															$__key                                                     = 'param: $'.$_parameter->getName();
+															$_methods[$_key]['accepts-parameters'][$__key]['required'] = TRUE;
+															if($_parameter->isPassedByReference())
+																$_methods[$_key]['accepts-parameters'][$__key]['only-by-reference'] = TRUE;
+															$_methods[$_key]['accepts-parameters'][$__key]['name'] = '$'.$_parameter->getName();
+														}
+										}
+									$ns_class_details['class: '.$_ns_class]['methods'] = $_methods;
+								}
 						}
-					unset($_reflection, $_doc_block, $_properties, $_property, $_methods, $_method, $_name);
+					unset($_reflection, $_properties, $_methods, $_property, $_method, $_key, $__key);
 
 					return $ns_class_details; // This is a HUGE array of all details.
 				}

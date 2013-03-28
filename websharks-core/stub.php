@@ -1156,8 +1156,6 @@ if(websharks_core_v000000_dev::is_autoload())
 
 		if(!defined('WPINC')) // Need to load WordPress?
 			include_once websharks_core_v000000_dev::wp_load(TRUE);
-		// WordPress® may load a plugin that loads this same version of the core.
-		//    Making ``class_exists()`` checks below even more important!
 
 		if(!class_exists('deps_websharks_core_v000000_dev'))
 			include_once websharks_core_v000000_dev::deps(FALSE);
