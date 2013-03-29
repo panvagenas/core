@@ -169,7 +169,7 @@ namespace websharks_core_v000000_dev
 			 * @param string       $downloads_dir Optional. Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
 			 *
 			 * @param string       $version Optional. Defaults to a value of ``$this->©date->i18n_utc('ymd')``.
-			 *    Must be valid. See: {@link \websharks_core_v000000_dev::$regex_valid_ws_version}
+			 *    Must be valid. See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_version}
 			 *
 			 * @param string       $requires_at_least_php_v Optional. Defaults to the oldest version tested by the WebSharks™ Core.
 			 *    All of these MUST be valid. See: {@link \websharks_core_v000000_dev::$regex_valid_version}
@@ -374,7 +374,7 @@ namespace websharks_core_v000000_dev
 										);
 								}
 						}
-					if(!preg_match(stub::$regex_valid_ws_version, $this->version))
+					if(!preg_match(stub::$regex_valid_plugin_version, $this->version))
 						throw $this->©exception(
 							__METHOD__.'#invalid_version', get_defined_vars(),
 							sprintf($this->i18n('Not a WebSharks™ compatible version string: `%1$s`.'), $this->version)
@@ -1251,7 +1251,7 @@ namespace websharks_core_v000000_dev
 
 						'php_code__deps_x__define_stand_alone_plugin_name'         => '/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_NAME\'\s*,\s*\')(.*?)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-name\!#)/i',
 						'php_code__deps_x__define_stand_alone_plugin_dir_names'    => '/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_DIR_NAMES\'\s*,\s*\')([0-9a-z\-]*)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-dir\-names\!#)/i',
-						'php_code__deps_x__declare_stand_alone_class_name'         => '/(class\s+deps_x_'.ltrim(rtrim(stub::$regex_valid_ws_core_ns_version, '$/'), '/^').')(\s*#\!stand\-alone\!#)/i',
+						'php_code__deps_x__declare_stand_alone_class_name'         => '/(class\s+deps_x_'.ltrim(rtrim(stub::$regex_valid_core_ns_version, '$/'), '/^').')(\s*#\!stand\-alone\!#)/i',
 
 						'php_code__quoted_string_with_version_marker'              => '/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!version\!#)/i',
 						'php_code__quoted_string_with_php_version_required_marker' => '/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!php\-version\-required\!#)/i',

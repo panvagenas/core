@@ -33,8 +33,7 @@ namespace websharks_core_v000000_dev
 				# WebSharks™ Core version (dictated by namespace).
 				# -----------------------------------------------------------------------------------------------------------------------------
 
-				${__FILE__}['version'] = str_replace('websharks_core_v', '', __NAMESPACE__);
-				${__FILE__}['version'] = str_replace('_', '-', ${__FILE__}['version']);
+				${__FILE__}['version'] = str_replace(array('websharks_core_v', '_'), array('', '-'), __NAMESPACE__);
 
 				# -----------------------------------------------------------------------------------------------------------------------------
 				# WebSharks™ Core stub class (and alias).
@@ -356,7 +355,7 @@ namespace websharks_core_v000000_dev
 				 *
 				 * @property object                                                     $___instance_config Public/magic read-only access.
 				 */
-				class framework // Base class for the WebSharks™ Core.
+				class framework // Base class for the WebSharks™ Core (and for plugins powered by it).
 				{
 					# --------------------------------------------------------------------------------------------------------------------------
 					# Instance configuration properties.
@@ -860,13 +859,13 @@ namespace websharks_core_v000000_dev
 					 * @throws \exception If more than 6 configuration elements exist in an ``$__instance_config`` array.
 					 *
 					 * @throws \exception If the plugin's root namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_ws_plugin_root_ns}
+					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_root_ns}
 					 *
 					 * @throws \exception If the plugin's variable namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_ws_plugin_var_ns}
+					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_var_ns}
 					 *
 					 * @throws \exception If the plugin's version does NOT match this regex pattern validation.
-					 *    See: {@link websharks_core_v000000_dev::$regex_valid_ws_version}
+					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_version}
 					 *
 					 * @throws \exception If the plugin's directory is missing (e.g. the plugin's directory MUST actually exist).
 					 *    In addition, the plugin's directory MUST contain a main plugin file with the name `plugin.php`.
@@ -874,10 +873,10 @@ namespace websharks_core_v000000_dev
 					 * @throws \exception If the plugin's site URL, is NOT valid (MUST start with `http://.+`).
 					 *
 					 * @throws \exception If the namespace\class path does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_ws_ns_class}
+					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_ns_class}
 					 *
 					 * @throws \exception If the core namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_ws_core_ns_version}
+					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_core_ns_version}
 					 *
 					 * @public A magic/overload constructor MUST always remain public.
 					 *
@@ -914,13 +913,13 @@ namespace websharks_core_v000000_dev
 							        && !empty($___instance_config['plugin_name']) && is_string($___instance_config['plugin_name'])
 
 							        && !empty($___instance_config['plugin_root_ns']) && is_string($___instance_config['plugin_root_ns'])
-							        && preg_match(stub::$regex_valid_ws_plugin_root_ns, $___instance_config['plugin_root_ns'])
+							        && preg_match(stub::$regex_valid_plugin_root_ns, $___instance_config['plugin_root_ns'])
 
 							        && !empty($___instance_config['plugin_var_ns']) && is_string($___instance_config['plugin_var_ns'])
-							        && preg_match(stub::$regex_valid_ws_plugin_var_ns, $___instance_config['plugin_var_ns'])
+							        && preg_match(stub::$regex_valid_plugin_var_ns, $___instance_config['plugin_var_ns'])
 
 							        && !empty($___instance_config['plugin_version']) && is_string($___instance_config['plugin_version'])
-							        && preg_match(stub::$regex_valid_ws_version, $___instance_config['plugin_version'])
+							        && preg_match(stub::$regex_valid_plugin_version, $___instance_config['plugin_version'])
 
 							        && !empty($___instance_config['plugin_dir']) && is_string($___instance_config['plugin_dir'])
 							        && is_dir($___instance_config['plugin_dir'] = stub::n_dir_seps($___instance_config['plugin_dir']))
@@ -958,7 +957,7 @@ namespace websharks_core_v000000_dev
 							$this->___instance_config->ns_class_basename         = basename(str_replace('\\', '/', $this->___instance_config->ns_class));
 
 							// Check `namespace\sub_namespace\class_name` for validation issues.
-							if(!preg_match(stub::$regex_valid_ws_ns_class, $this->___instance_config->ns_class))
+							if(!preg_match(stub::$regex_valid_plugin_ns_class, $this->___instance_config->ns_class))
 								throw new \exception(
 									sprintf(stub::i18n('Namespace\\class contains invalid chars: `%1$s`.'), $this->___instance_config->ns_class)
 								);
@@ -966,21 +965,22 @@ namespace websharks_core_v000000_dev
 							// Based on this core ``__NAMESPACE__``. These properties will NOT change from one class instance to another.
 							if(!$___parent_instance_config) // Therefore, we ONLY need this routine if we did NOT get a ``$___parent_instance``.
 								{
+									// Based on the WebSharks™ Core stub.
+									$this->___instance_config->core_ns_stub                              = 'websharks_core';
+									$this->___instance_config->core_ns_stub_with_dashes                  = 'websharks-core';
+									$this->___instance_config->{$this->___instance_config->core_ns_stub} = TRUE;
+
 									// Based on this core ``__NAMESPACE__`` (as defined in this file).
 									$this->___instance_config->core_ns             = __NAMESPACE__;
 									$this->___instance_config->core_ns_prefix      = '\\'.$this->___instance_config->core_ns;
 									$this->___instance_config->core_ns_with_dashes = str_replace('_', '-', $this->___instance_config->core_ns);
-
-									$this->___instance_config->core_ns_stub                              = 'websharks_core';
-									$this->___instance_config->core_ns_stub_with_dashes                  = 'websharks-core';
-									$this->___instance_config->{$this->___instance_config->core_ns_stub} = TRUE; // WebSharks™ Core.
 
 									$this->___instance_config->core_ns_v             = substr($this->___instance_config->core_ns, strlen($this->___instance_config->core_ns_stub) + 2);
 									$this->___instance_config->core_ns_v_with_dashes = str_replace('_', '-', $this->___instance_config->core_ns_v);
 									$this->___instance_config->core_version          = $this->___instance_config->core_ns_v_with_dashes;
 
 									// Check core ``__NAMESPACE__`` for validation issues.
-									if(!preg_match(stub::$regex_valid_ws_core_ns_version, $this->___instance_config->core_ns))
+									if(!preg_match(stub::$regex_valid_core_ns_version, $this->___instance_config->core_ns))
 										throw new \exception(
 											sprintf(stub::i18n('Core namespace contains invalid chars: `%1$s`.'), $this->___instance_config->core_ns)
 										);

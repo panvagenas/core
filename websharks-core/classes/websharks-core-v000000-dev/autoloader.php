@@ -217,7 +217,7 @@ namespace websharks_core_v000000_dev
 						throw new \exception( // Fail here; detected invalid arguments.
 							sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
-					if(!preg_match(stub::$regex_valid_ws_plugin_root_ns, $root_ns))
+					if(!preg_match(stub::$regex_valid_plugin_root_ns, $root_ns))
 						throw new \exception( // Fail here; detected invalid arguments.
 							sprintf(stub::i18n('Root namespace contains invalid chars: `%1$s`.'), $root_ns)
 						);
@@ -253,7 +253,7 @@ namespace websharks_core_v000000_dev
 						$ns_class = $ns_or_ns_class.'\\'.str_replace('-', '_', basename($class_file, '.php'));
 					else $ns_class = $ns_or_ns_class; // Presume full class path.
 
-					if(!preg_match(stub::$regex_valid_ws_ns_class, $ns_class))
+					if(!preg_match(stub::$regex_valid_plugin_ns_class, $ns_class))
 						throw new \exception( // Fail here; detected invalid arguments.
 							sprintf(stub::i18n('Namespace\\class contains invalid chars: `%1$s`.'), $ns_class)
 						);
