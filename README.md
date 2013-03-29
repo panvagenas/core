@@ -4,9 +4,7 @@
 
 The WebSharks™ Core can be bundled into plugins created for WordPress®. It is most often distributed as a single GZIP compressed [PHP Archive](http://www.php.net/manual/en/intro.phar.php) file; found inside `/websharks-core.php.phar`. This file not only contains the entire WebSharks™ Core; but it is also a [webPhar-compatible archive](http://php.net/manual/en/phar.webphar.php) capable of serving both static and dynamic content through popular web servers like Apache®, Litespeed™, Windows® IIS; and other Apache-compatible web servers.
 
-### Incorporating the WebSharks™ Core into a plugin for WordPress®
-
-#### There are two options available...
+## Incorporating the WebSharks™ Core into a plugin for WordPress®
 
 ##### Option #1. Using a GZIP compressed PHP Archive (recommended for small plugins).
 
@@ -16,24 +14,6 @@ Redistribute your plugin with this single file (`/websharks-core.php.phar`); whi
 <?php
 // The WebSharks™ Core.
 include_once 'websharks-core.php.phar';
-
-// Example usage...
-echo websharks_core()->©var->dump(
-		websharks_core()->©classes->get_details()
-	);
-
-// Or create a shorter reference variable if you like.
-// But, please do NOT override $GLOBALS['websharks_core'].
-
-// This is OK :-)
-$ws_core = websharks_core();
-echo $ws_core->©var->dump(
-		$ws_core->©classes->get_details()
-	);
-
-// This is BAD!
-$GLOBALS['websharks_core'] = websharks_core();
-// Please do NOT override the `$websharks_core` global reference.
 ```
 *It is important to note that while the `websharks-core.php.phar` file is rather large; including the file in a PHP script does NOT actually include the entire PHP Archive; because the `websharks-core.php.phar` file halts the PHP compiler after the initial PHP Archive stub is loaded into your scripts. In other words, it is perfectly safe (and efficient) to include `websharks-core.php.phar` in your plugin files.*
 
@@ -44,6 +24,15 @@ $GLOBALS['websharks_core'] = websharks_core();
 ##### Option #2. Bundling the entire WebSharks™ Core (full directory — for better performance/compatibility).
 
 Download the full directory structure from the repo here at GitHub™ (use ZIP download option). You will need to bundle the entire `websharks-core/` directory into your plugin; including it right along with all of the other files that make up your plugin. To make use of the WebSharks™ Core, add these lines of PHP code to files that depend on the WebSharks™ Core.
+
+```php
+<?php
+// The WebSharks™ Core.
+include_once 'websharks-core/stub.php';
+```
+*While the `websharks-core/` directory is rather large; including the `stub.php` in a PHP script does NOT actually include the entire class structure of the WebSharks™ Core. WebSharks™ Core class methods/properties that you access in your PHP scripts will be autoloaded by the WebSharks™ Core (only as needed; and this occurs automatically at runtime) — keeping your application highly effecient at all times. The WebSharks™ Core uses PHP's SPL Autoload functionality to accomplish this dynamically for you.*
+
+## Calling WebSharks™ Core Class Methods Directly
 
 ```php
 <?php
@@ -68,11 +57,8 @@ echo $ws_core->©var->dump(
 $GLOBALS['websharks_core'] = websharks_core();
 // Please do NOT override the `$websharks_core` global reference.
 ```
-*While the `websharks-core/` directory is rather large; including the `stub.php` in a PHP script does NOT actually include the entire class structure of the WebSharks™ Core. WebSharks™ Core class methods/properties that you access in your PHP scripts will be autoloaded by the WebSharks™ Core (only as needed; and this occurs automatically at runtime) — keeping your application highly effecient at all times. The WebSharks™ Core uses PHP's SPL Autoload functionality to accomplish this dynamically for you.*
 
----
-
-### Creating a New WP Plugin Based on the WebSharks™ Core
+## Creating a New WP Plugin Based on the WebSharks™ Core
 
 Create this test plugin directory and file: `/wp-content/plugins/rocketship/plugin.php`
 
@@ -177,13 +163,11 @@ class blaster extends framework // You can choose to extend your framework; or n
 echo rocketship()->©blaster->says();
 ```
 
----
-
-### Why Base My Plugin on the WebSharks™ Core?
+## Why Base My Plugin on the WebSharks™ Core?
 
 The WebSharks™ Core makes plugin development SUPER easy. Everything from installation, options, menu pages, UI enhancements; to database interactity and exception handling; along with MANY utilities that can make development much easier for you. We'll get into additional examples soon :-) Once the Codex is ready-to-go, it will make things a little simpler for everyone. That being said, extending the WebSharks™ Core classes in creative ways, is what makes this powerful. The source code is already very well documented. If you're feeling adventurous you can start learning ahead of time if you like.
 
-### Digging Deeper into the WebSharks™ Core can be FUN :-)
+## Digging Deeper into the WebSharks™ Core can be FUN :-)
 
 Let's say you're navigating the WebSharks™ Core source code and you find it has a cool class file `/websharks-core/classes/strings.php`; with several methods you'd like to use. If you've built your plugin on the WebSharks™ Core; all of those methods are alreay available in your plugin. To call upon the `strings` class in your plugin, you simply use the `©` symbol (representing a dynamic class). It's a copyright symbol, but the WebSharks™ Core associates this symbol with dynamic class instances (singletons). It can also instantiate new class instances; but we'll get into that later.
 
@@ -394,9 +378,6 @@ $GLOBALS[__NAMESPACE__] = new framework(
 
 In this case, there could be multiple instances of the WebSharks™ Core running on a single site. Specifying a particular version will force that version to load up; if it has not already been loaded up by another plugin running on the same site. If there are other plugins running with a newer version of the WebSharks™ Core; those will run fine. Your plugin (because it references a specific version of the WebSharks™ Core); will force the older version to load up as well — specifically for your plugin to use.
 
-----
-
-### Where Is The Formal Documentation for the WebSharks™ Core? This All Sounds Amazing!
+## Where Is The Formal Documentation for the WebSharks™ Core?
 
 We appreciate your interest in the WebSharks™ Core. However, it's STILL in development at this point. While the product HAS reached the beta phase and IS already being used to construct some amazing new plugins for WordPress; we do NOT have the final documentation ready just yet. Please stay tuned for further details. We will update this page and construct a Codex for the WebSharks™ Core very soon. Until then, you are free to browse the source code on your own. Most of the formal documentation that is forthcoming; will be taken directly from the extremely well-documented source code that already exists :-)
-
