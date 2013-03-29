@@ -107,7 +107,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					$is_phar = $phar = self::is_phar();
 
-					if($is_phar && !empty($_SERVER['SCRIPT_FILENAME']))
+					if($is_phar && !empty($_SERVER['SCRIPT_FILENAME']) && is_string($_SERVER['SCRIPT_FILENAME']))
 						if(realpath($_SERVER['SCRIPT_FILENAME']) === realpath(substr($phar, 7)))
 							return TRUE;
 
