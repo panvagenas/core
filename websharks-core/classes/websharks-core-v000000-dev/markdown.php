@@ -48,10 +48,8 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', func_get_args());
 
 					if(!isset(static::$parser))
-						{
-							include_once dirname(__FILE__)."/externals/ws-markdown/ws-markdown.php";
-							static::$parser = new \ws_markdown();
-						}
+						static::$parser = new \ws_markdown();
+
 					return static::$parser->transform($string);
 				}
 		}

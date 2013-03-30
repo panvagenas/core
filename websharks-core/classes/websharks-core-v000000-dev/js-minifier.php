@@ -49,10 +49,8 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', func_get_args());
 
 					if(!isset(static::$minifier))
-						{
-							include_once dirname(__FILE__)."/externals/ws-js-minifier/ws-js-minifier.php";
-							static::$minifier = new \ws_js_minifier('');
-						}
+						static::$minifier = new \ws_js_minifier('');
+
 					return static::$minifier->compress($js);
 				}
 		}

@@ -89,7 +89,7 @@ namespace websharks_core_v000000_dev
 
 			/**
 			 * @var array Permissible errors codes (based on request type).
-			 * @note This enhances error handling, in a few predictable scenarios.
+			 * @note This enhances error handling in a few predictable scenarios.
 			 */
 			public $permissible_error_codes = array();
 
@@ -141,7 +141,7 @@ namespace websharks_core_v000000_dev
 			 *    or a new ``$___instance_config`` array.
 			 *
 			 * @param string       $access_token_url string URL, where we can request a new access token.
-			 *    An API that has implemented an OAuth client, should always provide this.
+			 *    An API that has implemented an OAuth client should always provide this.
 			 *
 			 * @var string         $authorization_code A string containing vital OAuth credentials.
 			 *    This is a pipe-delimited string, containing a total of five parts:
@@ -198,7 +198,7 @@ namespace websharks_core_v000000_dev
 							$this->token_secret    = $authorization_code_parts[3];
 							$this->verifier        = $authorization_code_parts[4];
 
-							// Check access code.   Do we NOT have one yet?   Or, do we need a NEW one?
+							// Check access code. Do we NOT have one yet? Or, do we need a NEW one?
 
 							if($this->access_code && count($access_code_parts) === 3 && $access_code_parts[2] === $this->authorization_code)
 								{
