@@ -217,7 +217,8 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					$dir = $this->©dir->n_seps($dir);
+					$dir          = $this->©dir->n_seps($dir);
+					$dir_basename = basename($dir);
 
 					if(!is_dir($dir))
 						throw $this->©exception(
@@ -231,6 +232,9 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 
+					if(in_array(strtolower($dir_basename), array('cvs', '.git', '.svn', '.hg', 'sccs', 'rcs'), TRUE))
+						return; // We do NOT search/replace VC system directories/files.
+
 					$regex_core_ns_stub_dir_with_dashes       = '/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//';
 					$regex_core_ns_v_dir_with_dashes          = '/\/'.ltrim(rtrim(stub::$regex_valid_core_ns_version_with_dashes, '$/'), '/^').'\//';
 					$regex_core_ns_v_dir_or_stub_with_dashes  = '/(?:'.substr($regex_core_ns_v_dir_with_dashes, 1, -1).'|'.substr($regex_core_ns_stub_dir_with_dashes, 1, -1).')/';
@@ -242,7 +246,7 @@ namespace websharks_core_v000000_dev
 						return; // Skipping. It's a core directory that's NOT a part of our newly replicated copy.
 
 					// Handle core directories that need to be renamed before processing continues.
-					if(preg_match($regex_core_ns_v_dir_basename_with_dashes, basename($dir)) && basename($dir) !== basename($this->new_core_dir))
+					if(preg_match($regex_core_ns_v_dir_basename_with_dashes, $dir_basename) && $dir_basename !== basename($this->new_core_dir))
 						$this->©dir->rename_to($dir, ($dir = dirname($dir).'/'.basename($this->new_core_dir)));
 
 					// Perform recursive search/replace routines.
