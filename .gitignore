@@ -45,3 +45,5 @@ Icon?
 
 # This list is for IntelliJ IDEA / PhpStorm `File Types` configuration. Some files we actually WANT to work with as part of a project.
 # .idea;*.iml;*.ipr;*.iws;.git;CVS;.cvsignore;.svn;_svn;.hg;.hgignore;SCCS;RCS;$RECYCLE.BIN;Desktop.ini;Thumbs.db;ehthumbs.db;.Spotlight-V100;.AppleDouble;.LSOverride;.DS_Store;.Trashes
+
+# We also need to update the WebSharks™ Core replicator if there are any changes here.

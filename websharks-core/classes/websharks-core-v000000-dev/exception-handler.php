@@ -127,23 +127,20 @@ namespace websharks_core_v000000_dev
 				{
 					static::$plugin->©env->ob_end_clean();
 
-					// Construct template.
-
+					// Construct template data.
 					$exception = static::$exception; // For template data.
-					$template  = static::$plugin->©template('exception.php', get_defined_vars());
 
-					// Output exception message (for on-site display — in web browsers).
-
-					if($template->content && static::$plugin->©env->is_browser())
-						{
-							if(!headers_sent()) // Can exception stand-alone?
-								{
-									static::$plugin->©headers->clean_status_type(500, 'text/html', TRUE);
-									exit($template->content); // Display.
-								}
-							else if(preg_match(static::$plugin->©template->regex_template_content_body, $template->content, $_m))
-								exit(str_replace('<pre>', '<pre style="max-height:200px; overflow:auto;">', $_m['template_content_body']));
-						}
+					if(static::$plugin->©env->is_browser()) // Exception message (for on-site display in browsers).
+						if(($template = static::$plugin->©template('exception.php', get_defined_vars())) && $template->content)
+							{
+								if(!headers_sent()) // Can exception stand-alone?
+									{
+										static::$plugin->©headers->clean_status_type(500, 'text/html', TRUE);
+										exit($template->content); // Display.
+									}
+								else if(preg_match(static::$plugin->©template->regex_template_content_body, $template->content, $_m))
+									exit(str_replace('<pre>', '<pre style="max-height:200px; overflow:auto;">', $_m['template_content_body']));
+							}
 					// Output exception message (command-line; and other non-browser devices).
 					// This MAY also get fired if headers have already been sent, and for some reason we were unable
 					// to parse a content body section from the template file; see the routine above to understand this.

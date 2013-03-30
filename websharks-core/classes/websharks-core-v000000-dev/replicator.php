@@ -232,13 +232,19 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 
-					if(in_array(strtolower($dir_basename), array('cvs', '.git', '.svn', '.hg', 'sccs', 'rcs'), TRUE))
-						return; // We do NOT search/replace VC system directories/files.
-
 					$regex_core_ns_stub_dir_with_dashes       = '/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//';
 					$regex_core_ns_v_dir_with_dashes          = '/\/'.ltrim(rtrim(stub::$regex_valid_core_ns_version_with_dashes, '$/'), '/^').'\//';
 					$regex_core_ns_v_dir_or_stub_with_dashes  = '/(?:'.substr($regex_core_ns_v_dir_with_dashes, 1, -1).'|'.substr($regex_core_ns_stub_dir_with_dashes, 1, -1).')/';
 					$regex_core_ns_v_dir_basename_with_dashes = stub::$regex_valid_core_ns_version_with_dashes;
+
+					if(in_array(strtolower($dir_basename), array('.idea'), TRUE))
+						return; // We do NOT search/replace a project workspace.
+
+					if(in_array(strtolower($dir_basename), array('$recycle.bin'), TRUE))
+						return; // We do NOT search/replace a recycle bin.
+
+					if(in_array(strtolower($dir_basename), array('cvs', '.git', '.svn', '.hg', 'sccs', 'rcs'), TRUE))
+						return; // We do NOT search/replace VC system directories/files (or in project files).
 
 					// This routine will NOT search/replace inside any past or present WebSharks™ Core directory.
 					// With ONE exception, we DO allow search/replace inside the directory containing our newly replicated core.
@@ -268,14 +274,15 @@ namespace websharks_core_v000000_dev
 
 					while(($_dir_file = readdir($_open_dir)) !== FALSE)
 						{
+							// Expand ``$_dir_file`` (and save basename).
+
+							$_dir_file_basename = $_dir_file;
+							$_dir_file          = $dir.'/'.$_dir_file;
+
 							// Bypass directory dots.
 
-							if($_dir_file === '.' || $_dir_file === '..')
+							if($_dir_file_basename === '.' || $_dir_file_basename === '..')
 								continue; // Ignore directory dots.
-
-							// Expand ``$_dir_file`` now.
-
-							$_dir_file = $dir.'/'.$_dir_file;
 
 							// Deal with directories.
 
@@ -284,12 +291,14 @@ namespace websharks_core_v000000_dev
 									$this->update_files_in_dir($_dir_file);
 									continue; // Done here.
 								}
-							// Bypass any of these files.
+							// Bypass all of these files.
 
+							if(in_array(strtolower($_dir_file_basename), array('desktop.ini', 'thumbs.db', 'ehthumbs.db'), TRUE))
+								continue; // Ignore all of these systematic PC files.
+							if(in_array($this->©file->extension($_dir_file), array('iml', 'ipr', 'iws'), TRUE))
+								continue; // Ignore project workspace files.
 							if($this->©file->has_extension($_dir_file, $this::binary_type))
 								continue; // Ignore all binary extensions.
-							else if(preg_match('/\.phar\.php$/i', $_dir_file))
-								continue; // Ignore PHAR.php files too.
 
 							// This is where the bulk of our search/replace routine takes place.
 
@@ -343,7 +352,7 @@ namespace websharks_core_v000000_dev
 								);
 						}
 					closedir($_open_dir); // Close directory.
-					unset($_dir_file, $_file); // A little housekeeping here.
+					unset($_dir_file_basename, $_dir_file, $_file); // Housekeeping.
 					unset($_file_contains_core_ns_v, $_file_contains_core_ns_v_with_dashes);
 				}
 		}
