@@ -125,7 +125,7 @@ namespace websharks_core_v000000_dev
 						{
 							$this->static['unix_possible'] = FALSE;
 
-							if($this->possible() && stripos(PHP_OS, 'win') !== 0)
+							if($this->possible() && $this->©env->is_unix())
 								$this->static['unix_possible'] = TRUE;
 						}
 					return $this->static['unix_possible'];
@@ -145,7 +145,7 @@ namespace websharks_core_v000000_dev
 						{
 							$this->static['windows_possible'] = FALSE;
 
-							if($this->possible() && stripos(PHP_OS, 'win') === 0)
+							if($this->possible() && $this->©env->is_windows())
 								$this->static['windows_possible'] = TRUE;
 						}
 					return $this->static['windows_possible'];
@@ -497,24 +497,6 @@ namespace websharks_core_v000000_dev
 						return $latest;
 
 					return 'master'; // Default value.
-				}
-
-			/**
-			 * Escapes shell arguments.
-			 *
-			 * @param string $string String to escape as a shell argument.
-			 *
-			 * @return string Escaped shell argument value.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('hello') === "'hello'"
-			 */
-			public function esa($string)
-				{
-					$this->check_arg_types('string', func_get_args());
-
-					return escapeshellarg($string);
 				}
 		}
 	}

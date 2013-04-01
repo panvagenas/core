@@ -94,10 +94,6 @@ namespace websharks_core_v000000_dev
 
 					$this->check_arg_types('', 'string:!empty', '', 'string', 'string:!empty', func_get_args());
 
-					if($this->©plugin->is_core()) // Always off in the WebSharks™ Core.
-						// @TODO We need to figure out a way for us to leave this on for the WebSharks™ Core.
-						$this->wp_debug_log = $this->db_log = FALSE;
-
 					if(!empty($code)) $this->add($code, $data, $message, $log);
 				}
 

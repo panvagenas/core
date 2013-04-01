@@ -937,7 +937,6 @@ namespace websharks_core_v000000_dev
 			 *    Integer keys are converted to string keys.
 			 *
 			 * @see http://www.php.net/manual/en/function.array-change-key-case.php
-			 * @TODO Possibly dump this routine, in favor of ``array_change_key_case()``.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *

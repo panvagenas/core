@@ -91,10 +91,6 @@ namespace websharks_core_v000000_dev
 							$this->code = $code; // Set code for this instance. We always use string exception codes (no exceptions :-).
 							$this->data = $data; // Optional diagnostic data associated with this exception (possibly a NULL value).
 
-							if($this->plugin->©plugin->is_core()) // Always off in the WebSharks™ Core.
-								// @TODO We need to figure out a way for us to leave this on for the WebSharks™ Core.
-								$this->wp_debug_log = $this->db_log = FALSE;
-
 							$this->wp_debug_log(); // Possible debug logging.
 							$this->db_log(); // Possible database logging routine.
 						}

@@ -116,11 +116,10 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $to The full directory or file path, which this routine will build a relative path ``$to``.
 			 *
-			 * @param boolean $try_realpaths Defaults to TRUE. When TRUE, try to acquire ``realpath()``,
-			 *    thereby resolving all relative paths and/or symlinks in ``$from`` and ``$to`` args.
+			 * @param boolean $try_realpaths Defaults to TRUE; try to acquire ``realpath()`` for both ``$from`` and ``$to``.
 			 *
 			 * @param boolean $use_win_diff_drive_jctn Defaults to TRUE. When TRUE, we'll try to work around issues with different drives on Windows®,
-			 *    by attempting to create a directory junction between the two different drives; so a relative path can be formulated properly.
+			 *    by attempting to create a Directory Junction between the two different drives; so a relative path can be formulated properly.
 			 *
 			 * @return string String with relative path to: ``$to`` (from: ``$from``), else an empty string on failure.
 			 *
@@ -151,7 +150,7 @@ namespace websharks_core_v000000_dev
 					$from = preg_split('/\//', $this->n_seps($from));
 					$to   = preg_split('/\//', $this->n_seps($to));
 
-					if(stripos(PHP_OS, 'win') === 0) // Handle Windows® drive issues here.
+					if($this->©env->is_windows()) // Handle Windows® drive issues here.
 						{
 							if(preg_match('/^(?P<drive_letter>[A-Z])\:$/i', $from[0], $_m))
 								$_from_drive = $_m['drive_letter'];
@@ -173,33 +172,48 @@ namespace websharks_core_v000000_dev
 										$from[0] = $_from_drive.':';
 									else array_unshift($from, $_from_drive.':');
 								}
-
-							if($use_win_diff_drive_jctn) // Is this feature enabled? Hopefully so.
+							if($use_win_diff_drive_jctn) // Attempt to create a Directory Junction (if needed)?
 								{
 									if(isset($_from_drive, $_to_drive) && strcasecmp($_from_drive, $_to_drive) !== 0)
 										{
-											$_from_drive_jctn = $_from_drive.':/websharks-'.$_to_drive.'-jctn';
-											if(($_sys_temp_dir = $this->get_sys_temp_dir()) && strcasecmp($_from_drive, $_sys_temp_dir[0]) === 0)
-												$_sys_temp_dir_jctn = $_sys_temp_dir.'/websharks-'.$_to_drive.'-jctn';
+											$_core_ns_stub_with_dashes = $this->___instance_config->core_ns_stub_with_dashes;
+											$_from_drive_jctn          = $_from_drive.':/'.$_core_ns_stub_with_dashes.'-'.$_to_drive.'-jctn';
 
-											$_jctn = (is_dir($_from_drive_jctn)) ? $_from_drive_jctn : NULL;
-											if(!$_jctn && !empty($_sys_temp_dir_jctn) && is_dir($_sys_temp_dir_jctn))
-												$_jctn = $_sys_temp_dir_jctn;
+											$_temp_dir = $this->get_temp_dir();
+											if(strcasecmp($_from_drive, $_temp_dir[0]) === 0)
+												$_temp_dir_jctn = $_temp_dir.'/'.$_core_ns_stub_with_dashes.'-'.$_to_drive.'-jctn';
 
-											if($_jctn // We already have a junction created?
-											   || ($_jctn = $this->create_win_jctn($_from_drive_jctn, $_to_drive.':/')) #
-											   || (!empty($_sys_temp_dir_jctn) && ($_jctn = $this->create_win_jctn($_sys_temp_dir_jctn, $_to_drive.':/')))
-											) // If any of these succeeded, we can use the Directory Junction now.
+											$_jctn = (is_dir($_from_drive_jctn)) ? $_from_drive_jctn : '';
+											if(!$_jctn && !empty($_temp_dir_jctn) && is_dir($_temp_dir_jctn))
+												$_jctn = $_temp_dir_jctn;
+
+											if(!$_jctn) // A Directory Junction does NOT exist yet?
 												{
-													array_shift($to); // Shift drive off and use junction now.
-													foreach(array_reverse(preg_split('/\//', $_jctn)) as $_jctn_dir)
-														array_unshift($to, $_jctn_dir);
+													try // Try creating a Directory Junction on the ``$_from_drive``.
+														{
+															$_jctn = $this->create_win_jctn($_from_drive_jctn, $_to_drive.':/');
+														}
+													catch(exception $_exception) // Try temp directory.
+														{
+															if(!empty($_temp_dir_jctn)) try
+																{
+																	$_jctn = $this->create_win_jctn($_temp_dir_jctn, $_to_drive.':/');
+																}
+															catch(exception $_exception)
+																{
+																	// We'll handle below.
+																}
+															unset($_exception); // Housekeeping.
+														}
+													if(!$_jctn) throw $this->©exception(
+														__METHOD__.'#windows_drive', get_defined_vars(),
+														$this->i18n('Unable to generate a relative path across different Windows® drives.').
+														sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $_from_drive_jctn, $_to_drive.':/')
+													);
 												}
-											else throw $this->©exception(
-												__METHOD__.'#windows_drive', get_defined_vars(),
-												$this->i18n('Unable to generate a relative path across different Windows® drives.').
-												sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $_from_drive_jctn, $_to_drive.':/')
-											);
+											array_shift($to); // Shift drive off and use junction now.
+											foreach(array_reverse(preg_split('/\//', $_jctn)) as $_jctn_dir)
+												array_unshift($to, $_jctn_dir);
 										}
 								}
 							else if(isset($_from_drive, $_to_drive) && strcasecmp($_from_drive, $_to_drive) !== 0)
@@ -210,9 +224,8 @@ namespace websharks_core_v000000_dev
 										sprintf($this->i18n(' Drive from: `%1$s`, drive to: `%2$s`.'), $_from_drive.':/', $_to_drive.':/')
 									);
 								}
-							unset($_m, $_from_drive, $_to_drive, $_from_drive_jctn, $_sys_temp_dir, $_sys_temp_dir_jctn, $_jctn, $_jctn_dir);
+							unset($_m, $_from_drive, $_to_drive, $_core_ns_stub_with_dashes, $_from_drive_jctn, $_temp_dir, $_temp_dir_jctn, $_jctn, $_jctn_dir);
 						}
-
 					foreach(array_keys($from) as $_depth) // Loop through each ``$from`` directory ``$_depth``.
 						if(isset($from[$_depth], $to[$_depth]) && $from[$_depth] === $to[$_depth])
 							unset($from[$_depth], $to[$_depth]);
@@ -238,7 +251,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if(!$dir_file) return FALSE; // Catch empty values here.
+					if(!$dir_file) return FALSE; // Catch empty values.
 
 					$dir_file = $this->n_seps($dir_file);
 					$realpath = (file_exists($dir_file)) ? $this->n_seps((string)realpath($dir_file)) : '';
@@ -264,8 +277,7 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If the Junction needs to be created; but Windows® commands are NOT possible.
 			 * @throws exception If creation of a Directory Junction fails for any reason.
 			 *
-			 * @windows-assert ('C:/websharks-jctn-tester', 'E:/') === 'C:/websharks-jctn-tester'
-			 * @assert ('C:/websharks-jctn-tester', 'E:/') === ''
+			 * @assert ('C:/websharks-core-jctn-tester', 'E:/') === 'C:/websharks-core-jctn-tester'
 			 */
 			public function create_win_jctn($jctn, $target)
 				{
@@ -312,7 +324,9 @@ namespace websharks_core_v000000_dev
 					if($mklink_status !== 0 || $mklink_errors->exist())
 						throw $this->©exception(
 							__METHOD__.'#issue', get_defined_vars(),
-							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status or error. Mklink said: `%2$s`'),
+							$this->i18n('Failed to create a Windows® Directory Junction.').
+							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target).
+							sprintf($this->i18n(' The command: `%1$s`, returned a non-zero status or error; `mklink` said: `%2$s`'),
 							        $mklink_args, $mklink_errors->get_message())
 						);
 					clearstatcache(); // Clear cache.
@@ -402,64 +416,19 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Get the system's temporary directory.
-			 *
-			 * @param boolean $fallback_on_wp_temp_dir This defaults to FALSE (for better security).
-			 *    If TRUE, we'll fall back on the WordPress® ``get_temp_dir()`` function. A fallback may occur when/if we're unable
-			 *    to find the system's temporary directory. Or, if the system's temporary directory is NOT readable/writable.
-			 *
-			 * @return string Full path to a readable/writable temp directory, else an exception is thrown.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If unable to find a readable/writable directory, for any reason.
-			 *
-			 * @assert () !== ''
-			 * @assert (TRUE) !== ''
-			 * @assert (FALSE) !== ''
-			 */
-			public function get_sys_temp_dir($fallback_on_wp_temp_dir = FALSE)
-				{
-					$this->check_arg_types('boolean', func_get_args());
-
-					if(($sys_temp_dir = sys_get_temp_dir())
-					   && ($sys_temp_dir = realpath($sys_temp_dir))
-					   && is_readable($sys_temp_dir) && is_writable($sys_temp_dir)
-					) // This is the ideal location for temporary files (best security here).
-						return $this->n_seps($sys_temp_dir);
-
-					else if(($upload_temp_dir = ini_get('upload_tmp_dir'))
-					        && ($upload_temp_dir = realpath($upload_temp_dir))
-					        && is_readable($upload_temp_dir) && is_writable($upload_temp_dir)
-					) // Secondary location for temporary files (marginal security here).
-						return $this->n_seps($upload_temp_dir);
-
-					else if($fallback_on_wp_temp_dir
-					        && ($wp_temp_dir = get_temp_dir())
-					        && ($wp_temp_dir = realpath($wp_temp_dir))
-					        && is_readable($wp_temp_dir) && is_writable($wp_temp_dir)
-					) // This may offer FAR less security.
-						return $this->n_seps($wp_temp_dir);
-
-					throw $this->©exception(
-						__METHOD__.'#missing', get_defined_vars(),
-						$this->i18n('Unable to find a readable/writable temp directory.')
-					);
-				}
-
-			/**
-			 * Get temporary directory for WordPress®.
+			 * Gets a readable/writable temporary directory.
 			 *
 			 * @return string {@inheritdoc}
 			 *
-			 * @see \websharks_core_v000000_dev::get_wp_temp_dir()
-			 * @inheritdoc \websharks_core_v000000_dev::get_wp_temp_dir()
+			 * @see \websharks_core_v000000_dev::get_temp_dir()
+			 * @inheritdoc \websharks_core_v000000_dev::get_temp_dir()
 			 *
-			 * @throws exception If unable to find a readable/writable directory, for any reason.
+			 * @throws exception If unable to find a readable/writable directory for any reason.
 			 */
-			public function get_wp_temp_dir()
+			public function get_temp_dir() // Arguments are NOT listed here.
 				{
-					if(($wp_temp_dir = call_user_func_array('\\'.__NAMESPACE__.'::get_wp_temp_dir', func_get_args())))
-						return $wp_temp_dir;
+					if(($temp_dir = call_user_func_array('\\'.__NAMESPACE__.'::get_temp_dir', func_get_args())))
+						return $temp_dir;
 
 					throw $this->©exception(
 						__METHOD__.'#missing', get_defined_vars(),
@@ -1278,7 +1247,7 @@ namespace websharks_core_v000000_dev
 							$_strippable_extensions         = array('php');
 							$_regex_compressable_extensions = $this->©string->preg_quote_deep($compressable_extensions, '/');
 							$_regex_compressable_extensions = '/\.(?:'.implode('|', $_regex_compressable_extensions).')$/i';
-							$_temp_dir                      = $this->get_sys_temp_dir(TRUE).'/'.$this->©string->unique_id().'-'.basename($dir);
+							$_temp_dir                      = $this->get_temp_dir().'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
 							$_temp_dir_iterator = $this->iterate($_temp_dir);

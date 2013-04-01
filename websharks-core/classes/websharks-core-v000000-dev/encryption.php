@@ -49,7 +49,8 @@ namespace websharks_core_v000000_dev
 
 					if(!strlen($key))
 						throw $this->©exception(
-							__METHOD__.'#key_missing', NULL, $this->i18n('No encryption key.')
+							__METHOD__.'#key_missing', get_defined_vars(),
+							$this->i18n('No encryption key.')
 						);
 					return $key; // It's a good day in Eureka!
 				}
@@ -72,9 +73,10 @@ namespace websharks_core_v000000_dev
 					$prefix = $this->©url->current_host();
 					$key    = $this->hmac_sha256_sign($this->©string->unique_id($prefix));
 
-					if($length === 64) return $key; // The default length (64 chars).
+					if($length === 64) return $key;
 
-					else if($length < 64) return (string)substr($key, 0, $length);
+					if($length < 64) // Need to shorten it?
+						return (string)substr($key, 0, $length);
 
 					return $key.$this->©string->random($length - 64, FALSE);
 				}
@@ -108,7 +110,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', 'string', 'boolean', func_get_args());
 
-					if($this->©function->is_possible('mcrypt_encrypt')
+					if(extension_loaded('mcrypt')
 					   && in_array('rijndael-256', mcrypt_list_algorithms(), TRUE)
 					   && in_array('cbc', mcrypt_list_modes(), TRUE)
 					) // RIJNDAEL 256 encryption is possible?
@@ -116,22 +118,20 @@ namespace websharks_core_v000000_dev
 							if(!strlen($string)) // Nothing to encrypt?
 								return ''; // Return now. Nothing more to do here.
 
-							$key = (string)substr($this->key($key), 0, mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC));
-							$iv  = $this->©string->random(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC), FALSE);
-
 							$string = '~r2|'.$string;
+							$key    = (string)substr($this->key($key), 0, mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC));
+							$iv     = $this->©string->random(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC), FALSE);
 
-							if(is_string($e = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $iv)) && strlen($e))
-								$e = '~r2:'.$iv.(($w_md5_cs) ? ':'.md5($e) : '').'|'.$e;
-
-							else throw $this->©exception(
-								__METHOD__.'#failure', compact('e'),
-								$this->i18n('String encryption failed (`e` NOT string).')
-							);
+							if(!is_string($e = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $iv)) || !strlen($e))
+								throw $this->©exception(
+									__METHOD__.'#failure', get_defined_vars(),
+									$this->i18n('String encryption failed (`$e` is NOT string; or it has no length).')
+								);
+							$e = '~r2:'.$iv.(($w_md5_cs) ? ':'.md5($e) : '').'|'.$e;
 
 							return ($base64 = $this->©string->base64_url_safe_encode($e));
 						}
-					else return $this->xencrypt($string, $key, $w_md5_cs);
+					return $this->xencrypt($string, $key, $w_md5_cs);
 				}
 
 			/**
@@ -179,7 +179,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', 'string', func_get_args());
 
-					if($this->©function->is_possible('mcrypt_decrypt')
+					if(extension_loaded('mcrypt')
 					   && in_array('rijndael-256', mcrypt_list_algorithms(), TRUE)
 					   && in_array('cbc', mcrypt_list_modes(), TRUE)
 					   && strlen($e = $this->©string->base64_url_safe_decode($base64))
@@ -192,17 +192,15 @@ namespace websharks_core_v000000_dev
 								{
 									if(!is_string($string = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $iv_md5_e['e'], MCRYPT_MODE_CBC, $iv_md5_e['iv'])) || !strlen($string))
 										throw $this->©exception(
-											__METHOD__.'#failure', compact('string'),
-											$this->i18n('String decryption failed (`string` NOT string).')
+											__METHOD__.'#failure', get_defined_vars(),
+											$this->i18n('String decryption failed (`$string` is NOT a string; or it has no length).')
 										);
+									if(strlen($string = preg_replace('/^~r2\|/', '', $string, 1, $r2)) && $r2)
+										return ($string = rtrim($string, "\0\4" /* Right-trim NULLS and EOTs. */));
 								}
-							else return ($string = ''); // Empty string if validation fails.
-
-							if(strlen($string = preg_replace('/^~r2\|/', '', $string, 1, $r2)) && $r2)
-								return ($string = rtrim($string, "\0\4" /* Right-trim NULLS and EOTs. */));
-							else return ($string = ''); // Empty string if decryption fails validation.
+							return ($string = ''); // Empty string if decryption fails validation.
 						}
-					else return $this->xdecrypt($base64, $key);
+					return $this->xdecrypt($base64, $key);
 				}
 
 			/**
@@ -245,10 +243,9 @@ namespace websharks_core_v000000_dev
 
 					if(!strlen($e))
 						throw $this->©exception(
-							__METHOD__.'#failure', compact('e'),
-							$this->i18n('String encryption failed (`e` is empty).')
+							__METHOD__.'#failure', get_defined_vars(),
+							$this->i18n('String encryption failed (`$e` has no length).')
 						);
-
 					$e = '~xe'.(($w_md5_cs) ? ':'.md5($e) : '').'|'.$e;
 
 					return ($base64 = $this->©string->base64_url_safe_encode($e));
@@ -314,21 +311,18 @@ namespace websharks_core_v000000_dev
 											$_key_char = (string)substr($key, ($_i % strlen($key)) - 1, 1);
 											$string .= chr(ord($_char) - ord($_key_char));
 										}
-									unset($_i, $_char, $_key_char);
+									unset($_i, $_char, $_key_char); // Housekeeping.
 
 									if(!strlen($string))
 										throw $this->©exception(
-											__METHOD__.'#failure', compact('string'),
-											$this->i18n('String decryption failed (`string` is empty).')
+											__METHOD__.'#failure', get_defined_vars(),
+											$this->i18n('String decryption failed (`$string` has no length).')
 										);
+									if(strlen($string = preg_replace('/^~xe\|/', '', $string, 1, $xe)) && $xe)
+										return $string; // We can return the decrypted string now.
 								}
-							else return ($string = ''); // Empty string if validation fails.
-
-							if(strlen($string = preg_replace('/^~xe\|/', '', $string, 1, $xe)) && $xe)
-								return $string; // Looks good, we can return the decrypted string now.
-							else return ($string = ''); // Empty string if decryption fails validation.
 						}
-					else return ''; // Empty string if decryption fails validation.
+					return ($string = ''); // Empty string if decryption fails validation.
 				}
 
 			/**
@@ -350,28 +344,25 @@ namespace websharks_core_v000000_dev
 
 					$key = $this->_rsa_sha1_key_fix_wrappers($this->key($key));
 
-					if(($signature = $this->_rsa_sha1_shell_sign($string, $key)))
-						return $signature; // Most reliable.
+					if(($signature = $this->_rsa_sha1_shell_sign($string, $key))) return $signature;
 
 					if($this->©commands->windows_possible() && is_file(($openssl = 'c:/openssl-win32/bin/openssl.exe')))
-						if(($signature = $this->_rsa_sha1_shell_sign($string, $key, $openssl)))
-							return $signature;
+						if(($signature = $this->_rsa_sha1_shell_sign($string, $key, $openssl))) return $signature;
 
 					if($this->©commands->windows_possible() && is_file(($openssl = 'c:/openssl-win64/bin/openssl.exe')))
-						if(($signature = $this->_rsa_sha1_shell_sign($string, $key, $openssl)))
-							return $signature;
+						if(($signature = $this->_rsa_sha1_shell_sign($string, $key, $openssl))) return $signature;
 
-					if($this->©function->is_possible('openssl_sign') && is_resource($private_key = openssl_pkey_get_private($key)))
+					if(extension_loaded('openssl') && is_resource($private_key = openssl_pkey_get_private($key)))
 						{
 							openssl_sign($string, $signature, $private_key, OPENSSL_ALGO_SHA1);
 							openssl_free_key($private_key);
 
-							if($signature)
+							if($signature) // It's a good day in Eureka!
 								return $signature;
 						}
 					if($this->©commands->windows_possible() && $this->©env->is_localhost())
 						$windows_msg = $this->i18n(
-							' Regarding Windows® `localhost` servers...'.
+							' NOTE: Regarding Windows® `localhost` servers.'.
 							' OpenSSL can be problematic on Windows® `localhost` servers, such as WAMP or EasyPHP.'.
 							' On Windows®, you might need to install this alternative. See: `http://slproweb.com/products/Win32OpenSSL.html`.'.
 							' Please make sure that you install it in this EXACT location: `c:/openssl-win32/bin/openssl.exe`.'.
@@ -380,8 +371,8 @@ namespace websharks_core_v000000_dev
 					else $windows_msg = ''; // No Windows® message otherwise.
 
 					throw $this->©exception(
-						__METHOD__.'#failure', NULL,
-						$this->i18n(
+						__METHOD__.'#failure', get_defined_vars(),
+						$this->i18n( // Provide some detail here.
 							'Unable to generate an RSA-SHA1 signature.'.
 							' Please make sure your installation of PHP is compiled with the OpenSSL extension.'.
 							' The PHP function `openssl_sign()` is required by this routine.'
@@ -411,33 +402,21 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', 'string', 'string:!empty', func_get_args());
 
-					if($this->©commands->possible())
+					if(!$this->©commands->possible()) return ''; // Not possible.
+
+					if(file_put_contents(($string_file = ($temp_dir = $this->©dirs->get_temp_dir()).'/'.md5($this->©string->unique_id().'rsa-sha1-string').'.tmp'), $string)
+					   && file_put_contents(($private_key_file = $temp_dir.'/'.md5($this->©string->unique_id().'rsa-sha1-private-key').'.tmp'), $this->key($key))
+					   && file_put_contents(($rsa_sha1_sig_file = $temp_dir.'/'.md5($this->©string->unique_id().'rsa-sha1-sig').'.tmp'), '') === 0
+					) // If we can write all of these files properly.
 						{
-							$sys_temp_dir = $this->©dirs->get_sys_temp_dir();
+							$this->©commands->exec(escapeshellarg($openssl).' sha1 -sign '.escapeshellarg($private_key_file).' -out '.escapeshellarg($rsa_sha1_sig_file).' '.escapeshellarg($string_file));
+							$signature = file_get_contents($rsa_sha1_sig_file); // Hopefully the signature is available now.
+							$this->©file->unlink($string_file, $private_key_file, $rsa_sha1_sig_file); // Cleanup.
 
-							if(file_put_contents(($string_file = $sys_temp_dir.'/'.md5($this->©string->unique_id().'rsa-sha1-string').'.tmp'), $string)
-							   && file_put_contents(($private_key_file = $sys_temp_dir.'/'.md5($this->©string->unique_id().'rsa-sha1-private-key').'.tmp'), $this->key($key))
-							   && file_put_contents(($rsa_sha1_sig_file = $sys_temp_dir.'/'.md5($this->©string->unique_id().'rsa-sha1-sig').'.tmp'), '') === 0
-							) // If we can write all of these files properly.
-								{
-									$this->©commands->exec(
-										$this->©commands->esa($openssl).
-										' sha1 -sign '.$this->©commands->esa($private_key_file).
-										' -out '.$this->©commands->esa($rsa_sha1_sig_file).
-										' '.$this->©commands->esa($string_file)
-									);
-
-									$signature = file_get_contents($rsa_sha1_sig_file);
-
-									unlink($string_file);
-									unlink($private_key_file);
-									unlink($rsa_sha1_sig_file);
-
-									if($signature)
-										return $signature;
-								}
+							if($signature) // It's a good day in Eureka!
+								return $signature;
 						}
-					return ''; // Default return value.
+					return ''; // Failure.
 				}
 
 			/**

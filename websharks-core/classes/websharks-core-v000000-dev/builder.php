@@ -1095,7 +1095,7 @@ namespace websharks_core_v000000_dev
 							// Compress this core directory into a single PHP Archive.
 
 							$_this_core_phar                     = $this->core_repo_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
-							$_this_core_distro_temp_dir          = $this->©dir->get_sys_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes;
+							$_this_core_distro_temp_dir          = $this->©dir->get_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes;
 							$_this_core_distro_temp_dir_stub     = $_this_core_distro_temp_dir.'/stub.php';
 							$_this_core_distro_temp_dir_htaccess = $_this_core_distro_temp_dir.'/.htaccess';
 

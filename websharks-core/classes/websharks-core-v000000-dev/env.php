@@ -81,11 +81,30 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Checks to see if we're in a Unix environment.
+			 *
+			 * @return boolean TRUE if we're in a Unix environment, else FALSE.
+			 *
+			 * @assert () === FALSE
+			 */
+			public function is_unix()
+				{
+					if(!isset($this->static['is_unix']))
+						{
+							$this->static['is_unix'] = FALSE;
+
+							if(stripos(PHP_OS, 'win') !== 0)
+								$this->static['is_unix'] = TRUE;
+						}
+					return $this->static['is_unix'];
+				}
+
+			/**
 			 * Checks to see if we're in a Windows® environment.
 			 *
 			 * @return boolean TRUE if we're in a Windows® environment, else FALSE.
 			 *
-			 * @assert () === FALSE
+			 * @assert () === TRUE
 			 */
 			public function is_windows()
 				{

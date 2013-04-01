@@ -469,8 +469,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string:!empty', 'string', 'string:!empty', func_get_args());
 
 					$file      = $this->©dir->n_seps($file);
-					$temp_file = $this->©dir->get_sys_temp_dir(TRUE).'/'.
-					             $this->©string->unique_id().'-'.basename($file);
+					$temp_file = $this->©dir->get_temp_dir().'/'.$this->©string->unique_id().'-'.basename($file);
 
 					if(!is_file($file))
 						throw $this->©exception(
@@ -519,11 +518,10 @@ namespace websharks_core_v000000_dev
 					fclose($_temp_file_resource); // Housekeeping.
 					unset($_file_resource, $_temp_file_resource, $_line, $_replacements);
 
-					$this->rename_to($temp_file, $file.'~temp'); // Let's make sure this works.
+					$this->rename_to($temp_file, $file.'~tmp'); // Let's make sure this works.
 					// If this throws an exception; the original file remains intact (e.g. no data loss).
-
 					$this->unlink($file); // Delete the original file now (we will replace it here).
-					$this->rename_to($file.'~temp', $file); // Temp file takes its place.
+					$this->rename_to($file.'~tmp', $file); // Temp file takes its place.
 
 					return $replacements; // Total replacements.
 				}

@@ -746,15 +746,32 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @return string Readable/writable temp directory; else an empty string.
 			 */
-			public static function get_wp_temp_dir()
+			public static function get_temp_dir()
 				{
-					if(!defined('WPINC'))
-						return ''; // Not possible.
-
-					if(($wp_temp_dir = get_temp_dir())
+					if(defined('WPINC') && ($wp_temp_dir = get_temp_dir())
 					   && ($wp_temp_dir = realpath($wp_temp_dir))
 					   && is_readable($wp_temp_dir) && is_writable($wp_temp_dir)
 					) return self::n_dir_seps($wp_temp_dir);
+
+					if(($sys_temp_dir = sys_get_temp_dir())
+					   && ($sys_temp_dir = realpath($sys_temp_dir))
+					   && is_readable($sys_temp_dir) && is_writable($sys_temp_dir)
+					) return self::n_dir_seps($sys_temp_dir);
+
+					if(($upload_temp_dir = ini_get('upload_tmp_dir'))
+					   && ($upload_temp_dir = realpath($upload_temp_dir))
+					   && is_readable($upload_temp_dir) && is_writable($upload_temp_dir)
+					) return self::n_dir_seps($upload_temp_dir);
+
+					$is_windows = (stripos(PHP_OS, 'win') === 0);
+
+					if($is_windows && (is_dir('C:/Temp') || @mkdir('C:/Temp', 0777))
+					   && is_readable('C:/Temp') && is_writable('C:/Temp')
+					) return self::n_dir_seps('C:/Temp');
+
+					if(!$is_windows && (is_dir('/tmp') || @mkdir('/tmp', 0777))
+					   && is_readable('/tmp') && is_writable('/tmp')
+					) return self::n_dir_seps('/tmp');
 
 					return ''; // Failure.
 				}
@@ -945,9 +962,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 						throw new exception( // Fail here; we should NOT have called this.
 							sprintf(self::i18n('Inappropriate call to: `%1$s`'), __METHOD__)
 						);
-					if(($temp_dir = self::get_wp_temp_dir()))
+					if(($temp_dir = self::get_temp_dir()))
 						{
-							$temp_deps          = $temp_dir.'/wp-temp-deps.wsc';
+							$temp_deps          = $temp_dir.'/wp-temp-deps.tmp';
 							$temp_deps_contents = base64_decode(self::$wp_temp_deps);
 							$temp_deps_contents = str_ireplace('websharks_core'.'_v000000_dev', __CLASS__, $temp_deps_contents);
 							$temp_deps_contents = str_ireplace('%%notice%%', str_replace("'", "\\'", self::cant_phar_msg(TRUE)), $temp_deps_contents);

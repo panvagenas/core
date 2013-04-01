@@ -1030,8 +1030,13 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/plugin.php';
 									$this->___instance_config->plugin_data_dir          = $this->___instance_config->plugin_dir.'-data';
 
+									if($this->___instance_config->plugin_root_ns === __NAMESPACE__)
+										$this->___instance_config->plugin_data_dir = // The WebSharks™ Core uses a temp dir.
+											stub::get_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes.'-data';
+
 									if(stripos($this->___instance_config->plugin_data_dir, 'phar://') === 0)
 										$this->___instance_config->plugin_data_dir = substr($this->___instance_config->plugin_data_dir, 7);
+
 									$this->___instance_config->plugin_data_dir = // Give filters a chance to modify this if they'd like to.
 										apply_filters($this->___instance_config->plugin_root_ns_stub.'__data_dir', $this->___instance_config->plugin_data_dir);
 
@@ -1468,9 +1473,9 @@ namespace websharks_core_v000000_dev
 					 * @note Very important for this method to remain HIGHLY optimized at all times.
 					 *    This method is called MANY times throughout the entire WebSharks™ Core framework.
 					 *
-					 * @todo Further optimize this routine. It's about 6.5 times slower than ``is_...()`` checks alone (in PHP v5.3.13).
+					 * @note This is about 6.5 times slower than ``is_...()`` checks alone (tested in PHP v5.3.13).
 					 *    We've ALREADY put quite a bit of work into optimizing this as-is, so we might need an entirely new approach in the future.
-					 *    Benchmarking this against straight `is..()` checks alone, is not really fair; since this routine "enforces" type hints.
+					 *    Benchmarking this against straight `is..()` checks alone, is not really fair either; since this routine "enforces" type hints.
 					 *    In the mean time, the benefits of using this method, far outweigh the cost in performance — in most cases.
 					 *    ~ Hopefully we'll have better support for type hinting upon the release of PHP 6.0.
 					 *
