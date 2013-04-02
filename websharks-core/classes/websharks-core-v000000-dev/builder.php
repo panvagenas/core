@@ -203,6 +203,8 @@ namespace websharks_core_v000000_dev
 					                       'string', 'string', 'string', 'string', 'string',
 					                       'string', 'string', func_get_args());
 
+					// Security check. Can we build here?
+
 					if(!$this->©env->is_cli())
 						$this->can_build = FALSE;
 
@@ -219,6 +221,7 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#cannot_build', get_defined_vars(),
 							$this->i18n('Security check. Unable to build (not allowed here).')
 						);
+					// Construct object properties.
 
 					$this->core_dir      = $this->©dir->n_seps(dirname(dirname(dirname(__FILE__))));
 					$this->core_repo_dir = dirname($this->core_dir);
@@ -238,6 +241,8 @@ namespace websharks_core_v000000_dev
 
 					$this->use_core_type     = ($use_core_type) ? $use_core_type : 'directory'; // Default value.
 					$this->build_from_core_v = ($build_from_core_v) ? $build_from_core_v : $this->___instance_config->core_version;
+
+					// Validate object properties (among several other things).
 
 					if(!$this->core_dir || !is_dir($this->core_dir))
 						throw $this->©exception(
@@ -265,7 +270,7 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n('Core repo directory is missing this file: `%1$s`.'), $this->core_repo_dir.'/.gitignore')
 						);
 
-					if($this->plugin_dir) // Validation. Also look for possible `-pro` add-on (and/or `-extras`).
+					if($this->plugin_dir) // Plugin validation. Also look for possible `-pro` add-on (and/or `-extras`).
 						{
 							if(!is_dir($this->plugin_dir))
 								throw $this->©exception(
@@ -374,6 +379,8 @@ namespace websharks_core_v000000_dev
 										);
 								}
 						}
+					// Validate all version strings now.
+
 					if(!preg_match(stub::$regex_valid_plugin_version, $this->version))
 						throw $this->©exception(
 							__METHOD__.'#invalid_version', get_defined_vars(),
@@ -399,12 +406,14 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#invalid_tested_up_to_wp_v', get_defined_vars(),
 							sprintf($this->i18n('Invalid `Tested up to` WP version string: `%1$s`.'), $this->tested_up_to_wp_v)
 						);
+					// Validate core type.
 
 					if(!in_array($this->use_core_type, array('directory', 'phar', 'stub'), TRUE))
 						throw $this->©exception(
 							__METHOD__.'#invalid_core_type', get_defined_vars(),
 							sprintf($this->i18n('Invalid core type: `%1$s`.'), $this->use_core_type)
 						);
+					// Validate core version that we're supposed to be building from.
 
 					if($this->build_from_core_v !== $this->___instance_config->core_version)
 						throw $this->©exception(
@@ -412,18 +421,41 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n('Building from incorrect core version: `%1$s`.'), $this->build_from_core_v).
 							sprintf($this->i18n(' This is version `%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version)
 						);
+					// Determine starting GIT branches; also check for uncommitted changes and/or untracked files.
 
 					$this->starting_git_branches['core'] = $this->©command->git_current_branch($this->core_repo_dir);
 
+					if($this->©command->git_changes_exist($this->core_repo_dir))
+						throw $this->©exception(
+							__METHOD__.'#git_changes_exist_in_core_repo_dir', get_defined_vars(),
+							sprintf($this->i18n('GIT changes exist on core branch/version: `%1$s`.'), $this->starting_git_branches['core']).
+							$this->i18n(' Please commit changes and/or resolve untracked files on the starting branch/version before building.')
+						);
 					if($this->plugin_dir) // For plugin directory repo (if building a plugin).
-						$this->starting_git_branches['plugin'] = $this->©command->git_current_branch($this->plugin_repo_dir);
+						{
+							$this->starting_git_branches['plugin'] = $this->©command->git_current_branch($this->plugin_repo_dir);
 
+							if($this->©command->git_changes_exist($this->plugin_repo_dir))
+								throw $this->©exception(
+									__METHOD__.'#git_changes_exist_in_plugin_repo_dir', get_defined_vars(),
+									sprintf($this->i18n('GIT changes exist on plugin branch/version: `%1$s`.'), $this->starting_git_branches['plugin']).
+									$this->i18n(' Please commit changes and/or resolve untracked files on the starting branch/version before building.')
+								);
+						}
 					if($this->plugin_dir && $this->plugin_pro_dir) // Pro plugin's pro add-on repo (if building a plugin).
-						$this->starting_git_branches['plugin_pro'] = $this->©command->git_current_branch($this->plugin_pro_repo_dir);
+						{
+							$this->starting_git_branches['plugin_pro'] = $this->©command->git_current_branch($this->plugin_pro_repo_dir);
 
-					$this->©env->prep_for_cli_dev_procedure();
+							if($this->©command->git_changes_exist($this->plugin_pro_repo_dir))
+								throw $this->©exception(
+									__METHOD__.'#git_changes_exist_in_plugin_repo_dir', get_defined_vars(),
+									sprintf($this->i18n('GIT changes exist on plugin pro branch/version: `%1$s`.'), $this->starting_git_branches['plugin_pro']).
+									$this->i18n(' Please commit changes and/or resolve untracked files on the starting branch/version before building.')
+								);
+						}
+					// Object construction & initial validation complete.
 
-					$this->successes = $this->build();
+					$this->successes = $this->build(); // Process build routines.
 				}
 
 			/**
@@ -1130,7 +1162,8 @@ namespace websharks_core_v000000_dev
 
 							// Handle deletion and rename/replacement from existing core directory; to new core directory.
 
-							if($is_new) // We MUST do this last to avoid SPL autoload issues while we're working here.
+							if($is_new) // We MUST do this last to avoid SPL autoload issues.
+								// Everything that occurs after this point; must use classes already loaded up.
 								{
 									$this->©dir->empty_and_remove($this->core_dir);
 									$this->©command->git('rm -r --cached '.escapeshellarg($this->core_dir.'/'), $this->core_repo_dir);

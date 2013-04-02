@@ -109,6 +109,8 @@ namespace websharks_core_v000000_dev
 
 					$this->check_arg_types('', 'string', 'string', 'string', 'array', func_get_args());
 
+					// Security check. Can we replicate here?
+
 					if(!$this->©env->is_cli())
 						$this->can_replicate = FALSE;
 
@@ -126,6 +128,7 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#cannot_replicate', get_defined_vars(),
 							$this->i18n('Security check. Unable to replicate (not allowed here).')
 						);
+					// Construct object properties.
 
 					$this->core_dir   = $this->©dir->n_seps(dirname(dirname(dirname(__FILE__))));
 					$this->into_dir   = ($into_dir) ? $this->©dir->n_seps($into_dir) : dirname($this->core_dir);
@@ -134,6 +137,8 @@ namespace websharks_core_v000000_dev
 
 					$this->new_core_dir = $this->into_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version;
 					$this->update_dir   = ($update_dir) ? $this->©dir->n_seps($update_dir) : $this->new_core_dir;
+
+					// Validate object properties (among several other things).
 
 					if(!is_dir($this->into_dir))
 						throw $this->©exception(
@@ -152,8 +157,9 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#invalid_version', get_defined_vars(),
 							sprintf($this->i18n('Invalid WebSharks™ Core version: `%1$s`.'), $this->version)
 						);
+					// Object construction & initial validation complete.
 
-					$this->success = $this->replicate();
+					$this->success = $this->replicate(); // Process replication routines.
 				}
 
 			/**

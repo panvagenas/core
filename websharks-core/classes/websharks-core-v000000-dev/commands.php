@@ -486,12 +486,12 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Checks to see if there are any uncommitted changes (or untracked/unignored) files.
+			 * Checks to see if there are any uncommitted changes (and/or untracked/unignored) files.
 			 *
 			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
-			 * @return boolean TRUE if there are any uncommitted changes (or untracked/unignored) files; else FALSE.
+			 * @return boolean TRUE if there are any uncommitted changes (and/or untracked/unignored) files; else FALSE.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If GIT returns a non-zero status.
