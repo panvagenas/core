@@ -2666,11 +2666,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				return self::$static['disabled_functions'];
 
 			if(($_ini_val = trim(strtolower(ini_get('disable_functions')))))
-				self::$static['disabled_functions'] = array_merge(self::$static['disabled_functions'], preg_split('/[\s;,]+/', $_ini_val, -1, PREG_SPLIT_NO_EMPTY));
+				self::$static['disabled_functions'] = array_merge(self::$static['disabled_functions'], preg_split('/[\s;,]+/', $_ini_val, NULL, PREG_SPLIT_NO_EMPTY));
 			unset($_ini_val); // Housekeeping.
 
 			if(($_ini_val = trim(strtolower(ini_get('suhosin.executor.func.blacklist')))))
-				self::$static['disabled_functions'] = array_merge(self::$static['disabled_functions'], preg_split('/[\s;,]+/', $_ini_val, -1, PREG_SPLIT_NO_EMPTY));
+				self::$static['disabled_functions'] = array_merge(self::$static['disabled_functions'], preg_split('/[\s;,]+/', $_ini_val, NULL, PREG_SPLIT_NO_EMPTY));
 			unset($_ini_val); // Housekeeping.
 
 			if(filter_var(ini_get('suhosin.executor.disable_eval'), FILTER_VALIDATE_BOOLEAN))

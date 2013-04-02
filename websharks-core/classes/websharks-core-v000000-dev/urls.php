@@ -401,8 +401,6 @@ namespace websharks_core_v000000_dev
 			 * @assert ('../../../../../././/./file.php', 'http://example.com/') === 'http://example.com/file.php'
 			 * @assert ('././././././././../../../file.php', 'http://example.com/a/') === 'http://example.com/file.php'
 			 * @assert ('file.php', 'https://example.com/') === 'https://example.com/file.php'
-			 *
-			 * @TODO Review this routine again; it works great; but it seems too confusing.
 			 */
 			public function resolve_relative($relative, $base = '', $n_scheme = FALSE, $n_path = TRUE)
 				{
@@ -415,7 +413,7 @@ namespace websharks_core_v000000_dev
 					if(!is_array($_p_base = $this->parse($base, -1, $n_scheme, $n_path)) || empty($_p_base['host']))
 						{
 							throw $this->©exception(
-								__METHOD__.'#invalid_base', compact('base'),
+								__METHOD__.'#invalid_base', get_defined_vars(),
 								$this->i18n('Argument `$base` is not a valid URL (unable to parse).').
 								sprintf($this->i18n(' Got: `%1$s`.'), $base)
 							);

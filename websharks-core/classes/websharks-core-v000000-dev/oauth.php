@@ -183,8 +183,8 @@ namespace websharks_core_v000000_dev
 
 					// Split authorization/access codes into parts. None of these can be empty.
 
-					$authorization_code_parts = preg_split('/\|/', $this->authorization_code, -1, PREG_SPLIT_NO_EMPTY);
-					$access_code_parts        = preg_split("/\n/", $this->access_code, -1, PREG_SPLIT_NO_EMPTY);
+					$authorization_code_parts = preg_split('/\|/', $this->authorization_code, NULL, PREG_SPLIT_NO_EMPTY);
+					$access_code_parts        = preg_split("/\n/", $this->access_code, NULL, PREG_SPLIT_NO_EMPTY);
 
 					// We MUST have a valid authorization code to fill remaining property values.
 

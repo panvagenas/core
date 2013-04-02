@@ -402,7 +402,7 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#issue', get_defined_vars(),
 							sprintf($this->i18n('Unable to acquire current GIT branches for repo directory: `%1$s`.'), $cwd_repo_dir)
 						);
-					$branches = preg_split('/[\*'."\r\n".']+/', $branches, -1, PREG_SPLIT_NO_EMPTY);
+					$branches = preg_split('/[\*'."\r\n".']+/', $branches, NULL, PREG_SPLIT_NO_EMPTY);
 					$branches = $this->©array->remove_empty_values_deep($this->©strings->trim_deep($branches));
 
 					foreach($branches as &$_branch) // Cleanup symbolic reference pointers.

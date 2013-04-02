@@ -507,7 +507,8 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Get cache directory (public or private).
 			 *
-			 * @param string $type The type of cache directory (`public` or `private`).
+			 * @param string $type The type of cache directory (public or private).
+			 *    This MUST be passed using class constants ``framework::public_type`` or ``framework::private_type``.
 			 *
 			 * @param string $sub_dir Optional cache sub-directory path.
 			 *
@@ -515,14 +516,11 @@ namespace websharks_core_v000000_dev
 			 *    If the directory does NOT yet exist, it's created by this routine.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If an invalid ``$type`` is passed in. Use: `public` or `private`.
+			 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 * @throws exception If the requested cache directory is NOT readable/writable, or CANNOT be created for any reason.
 			 *
 			 * @assert ('foo') throws exception
-			 *
-			 * @TODO Update this so it's using WebSharks™ Core constants for public/private types.
-			 * @TODO Optimize this function further. There are repeated ``is_()`` checks here.
 			 */
 			public function get_cache_dir($type, $sub_dir = '')
 				{
@@ -530,54 +528,36 @@ namespace websharks_core_v000000_dev
 
 					// Check cache directory type.
 
-					if(!in_array($type, array('public', 'private'), TRUE))
+					if(!in_array($type, array($this::public_type, $this::private_type), TRUE))
 						throw $this->©exception(
 							__METHOD__.'#invalid_type', get_defined_vars(),
-							$this->i18n('Invalid cache type sub-directory. Expecting `public` or `private`.').
+							$this->i18n('Invalid cache type sub-directory. Expecting class contant for public or private type.').
 							sprintf($this->i18n(' Instead got: `%1$s`.'), $type)
 						);
-
 					// Creates a possible ``$sub_dir`` appendage.
 
 					if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
 						{
-							if(strpos($sub_dir, '..') === FALSE) // No relative paths please.
-								$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
-
-							else throw $this->©exception(
-								__METHOD__.'#relative_paths', get_defined_vars(),
-								$this->i18n('Expecting a sub-directory with NO relative paths.').
-								sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
-							);
+							if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
+								throw $this->©exception(
+									__METHOD__.'#relative_paths', get_defined_vars(),
+									$this->i18n('Expecting a sub-directory with NO relative paths.').
+									sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
+								);
+							$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
 						}
-
 					// Clean these up and piece them together.
 
 					$cache_dir          = $this->n_seps($this->___instance_config->plugin_data_dir.'/cache');
-					$app_data_sub_dir   = ($type === 'private' && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
-					$cache_type_sub_dir = $this->n_seps($cache_dir.'/'.$type.$app_data_sub_dir.$sub_dir);
-
-					// Need to create the ``$cache_dir``?
-
-					if(!is_dir($cache_dir))
-						{
-							mkdir($cache_dir, 0775, TRUE);
-							clearstatcache();
-
-							if(!is_dir($cache_dir) || !is_readable($cache_dir) || !is_writable($cache_dir))
-								throw $this->©exception(
-									__METHOD__.'#read_write_issues', get_defined_vars(),
-									$this->i18n('Unable to create a readable/writable `cache` directory.').
-									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_dir)
-								);
-						}
+					$app_data_sub_dir   = ($type === $this::private_type && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
+					$cache_type_sub_dir = $this->n_seps($cache_dir.'/'.(($type === $this::private_type) ? 'private' : 'public').$app_data_sub_dir.$sub_dir);
 
 					// Need to create the ``$cache_type_sub_dir``?
 
 					if(!is_dir($cache_type_sub_dir))
 						{
 							mkdir($cache_type_sub_dir, 0775, TRUE);
-							clearstatcache();
+							clearstatcache(); // Clear cache before checking again.
 
 							if(!is_dir($cache_type_sub_dir) || !is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
 								throw $this->©exception(
@@ -585,27 +565,28 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Unable to create a readable/writable cache type sub-directory.').
 									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
 								);
-
-							if(is_dir($cache_dir.'/private') && !is_file($cache_dir.'/private/.htaccess'))
+							if($type === $this::private_type && !is_file($cache_dir.'/private/.htaccess'))
 								file_put_contents($cache_dir.'/private/.htaccess', 'deny from all');
+
+							return $cache_type_sub_dir; // Created successfully!
 						}
+					// Else it exists. Is ``$cache_type_sub_dir`` still readable/writable?
 
-					// Is ``$cache_type_sub_dir`` writable?
+					else if(!is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->i18n('Unable to find a readable/writable cache type sub-directory.').
+							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
+						);
+					return $cache_type_sub_dir; // Everything still OK. It's a good day in Eureka!
 
-					if(is_dir($cache_type_sub_dir) && is_readable($cache_type_sub_dir) && is_writable($cache_type_sub_dir))
-						return $cache_type_sub_dir; // It's a good day in Eureka!
-
-					throw $this->©exception(
-						__METHOD__.'#read_write_issues', get_defined_vars(),
-						$this->i18n('Unable to find a readable/writable cache type sub-directory.').
-						sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
-					);
 				}
 
 			/**
 			 * Empties and deletes a cache directory (public or private).
 			 *
-			 * @param string $type The type of cache directory (`public` or `private`).
+			 * @param string $type The type of cache directory (public or private).
+			 *    This MUST be passed using class constants ``framework::public_type`` or ``framework::private_type``.
 			 *
 			 * @param string $sub_dir Optional cache sub-directory path.
 			 *
@@ -613,7 +594,7 @@ namespace websharks_core_v000000_dev
 			 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If an invalid ``$type`` is passed in. Use: `public` or `private`.
+			 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 *
 			 * @throws exception See: ``get_cache_dir()`` for additional exceptions this may throw.
@@ -633,7 +614,8 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Get log directory (public or private).
 			 *
-			 * @param string $type The type of log directory (`public` or `private`).
+			 * @param string $type The type of log directory (public or private).
+			 *    This MUST be passed using class constants ``framework::public_type`` or ``framework::private_type``.
 			 *
 			 * @param string $sub_dir Optional log sub-directory path.
 			 *
@@ -641,14 +623,11 @@ namespace websharks_core_v000000_dev
 			 *    If the directory does NOT yet exist, it's created by this routine.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If an invalid ``$type`` is passed in. Use: `public` or `private`.
+			 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 * @throws exception If the requested log directory is NOT readable/writable, or CANNOT be created for any reason.
 			 *
 			 * @assert ('foo') throws exception
-			 *
-			 * @TODO Update this so it's using WebSharks™ Core constants for public/private types.
-			 * @TODO Optimize this function further. There are repeated ``is_()`` checks here.
 			 */
 			public function get_log_dir($type, $sub_dir = '')
 				{
@@ -656,54 +635,37 @@ namespace websharks_core_v000000_dev
 
 					// Check log directory type.
 
-					if(!in_array($type, array('public', 'private'), TRUE))
+					if(!in_array($type, array($this::public_type, $this::private_type), TRUE))
 						throw $this->©exception(
 							__METHOD__.'#invalid_type', get_defined_vars(),
-							$this->i18n('Invalid log type sub-directory. Expecting `public` or `private`.').
+							$this->i18n('Invalid log type sub-directory. Expecting class contant for public or private type.').
 							sprintf($this->i18n(' Instead got: `%1$s`.'), $type)
 						);
-
 					// Creates a possible ``$sub_dir`` appendage.
 
 					if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
 						{
-							if(strpos($sub_dir, '..') === FALSE) // No relative paths please.
-								$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
+							if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
+								throw $this->©exception(
+									__METHOD__.'#relative_paths', get_defined_vars(),
+									$this->i18n('Expecting a sub-directory with NO relative paths.').
+									sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
+								);
+							$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
 
-							else throw $this->©exception(
-								__METHOD__.'#relative_paths', get_defined_vars(),
-								$this->i18n('Expecting a sub-directory with NO relative paths.').
-								sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
-							);
 						}
-
 					// Clean these up and piece them together.
 
 					$logs_dir         = $this->n_seps($this->___instance_config->plugin_data_dir.'/logs');
-					$app_data_sub_dir = ($type === 'private' && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
-					$log_type_sub_dir = $this->n_seps($logs_dir.'/'.$type.$app_data_sub_dir.$sub_dir);
-
-					// Need to create the ``$logs_dir``?
-
-					if(!is_dir($logs_dir))
-						{
-							mkdir($logs_dir, 0775, TRUE);
-							clearstatcache();
-
-							if(!is_dir($logs_dir) || !is_readable($logs_dir) || !is_writable($logs_dir))
-								throw $this->©exception(
-									__METHOD__.'#read_write_issues', get_defined_vars(),
-									$this->i18n('Unable to create a readable/writable `logs` directory.').
-									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $logs_dir)
-								);
-						}
+					$app_data_sub_dir = ($type === $this::private_type && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
+					$log_type_sub_dir = $this->n_seps($logs_dir.'/'.(($type === $this::private_type) ? 'private' : 'public').$app_data_sub_dir.$sub_dir);
 
 					// Need to create the ``$log_type_sub_dir``?
 
 					if(!is_dir($log_type_sub_dir))
 						{
 							mkdir($log_type_sub_dir, 0775, TRUE);
-							clearstatcache();
+							clearstatcache(); // Clear cache before checking again.
 
 							if(!is_dir($log_type_sub_dir) || !is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
 								throw $this->©exception(
@@ -711,27 +673,28 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Unable to create a readable/writable log type sub-directory.').
 									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
 								);
-
-							if(is_dir($logs_dir.'/private') && !is_file($logs_dir.'/private/.htaccess'))
+							if($type === $this::private_type && !is_file($logs_dir.'/private/.htaccess'))
 								file_put_contents($logs_dir.'/private/.htaccess', 'deny from all');
+
+							return $log_type_sub_dir; // Created successfully!
 						}
+					// Else it exists. Is ``$log_type_sub_dir`` still readable/writable?
 
-					// Is ``$log_type_sub_dir`` readable/writable?
+					else if(!is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->i18n('Unable to find a readable/writable log type sub-directory.').
+							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
+						);
+					return $log_type_sub_dir; // Everything still OK. It's a good day in Eureka!
 
-					if(is_readable($log_type_sub_dir) && is_writable($log_type_sub_dir))
-						return $log_type_sub_dir; // It's a good day in Eureka!
-
-					throw $this->©exception(
-						__METHOD__.'#read_write_issues', get_defined_vars(),
-						$this->i18n('Unable to find a readable/writable log type sub-directory.').
-						sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
-					);
 				}
 
 			/**
 			 * Empties and deletes a log directory (public or private).
 			 *
-			 * @param string $type The type of log directory (`public` or `private`).
+			 * @param string $type The type of log directory (public or private).
+			 *    This MUST be passed using class constants ``framework::public_type`` or ``framework::private_type``.
 			 *
 			 * @param string $sub_dir Optional log sub-directory path.
 			 *
@@ -739,7 +702,7 @@ namespace websharks_core_v000000_dev
 			 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If an invalid ``$type`` is passed in. Use: `public` or `private`.
+			 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 *
 			 * @throws exception See: ``get_log_dir()`` for additional exceptions this may throw.
@@ -767,8 +730,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 * @throws exception If the requested private media directory is NOT readable/writable, or CANNOT be created for any reason.
-			 *
-			 * @TODO Optimize this function further. There are repeated ``is_()`` checks here.
 			 */
 			public function get_private_media_dir($sub_dir = '')
 				{
@@ -778,43 +739,27 @@ namespace websharks_core_v000000_dev
 
 					if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
 						{
-							if(strpos($sub_dir, '..') === FALSE) // No relative paths please.
-								$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
+							if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
+								throw $this->©exception(
+									__METHOD__.'#relative_paths', get_defined_vars(),
+									$this->i18n('Expecting a sub-directory with NO relative paths.').
+									sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
+								);
+							$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
 
-							else throw $this->©exception(
-								__METHOD__.'#relative_paths', get_defined_vars(),
-								$this->i18n('Expecting a sub-directory with NO relative paths.').
-								sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
-							);
 						}
-
 					// Clean these up and piece them together.
 
 					$media_dir        = $this->n_seps($this->___instance_config->plugin_data_dir.'/media');
 					$app_data_sub_dir = ($this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
 					$media_sub_dir    = $this->n_seps($media_dir.$app_data_sub_dir.$sub_dir);
 
-					// Need to create the ``$media_dir``?
-
-					if(!is_dir($media_dir))
-						{
-							mkdir($media_dir, 0775, TRUE);
-							clearstatcache();
-
-							if(!is_dir($media_dir) || !is_readable($media_dir) || !is_writable($media_dir))
-								throw $this->©exception(
-									__METHOD__.'#read_write_issues', get_defined_vars(),
-									$this->i18n('Unable to create a readable/writable `media` directory.').
-									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_dir)
-								);
-						}
-
 					// Need to create the ``$media_sub_dir``?
 
 					if(!is_dir($media_sub_dir))
 						{
 							mkdir($media_sub_dir, 0775, TRUE);
-							clearstatcache();
+							clearstatcache(); // Clear cache before checking again.
 
 							if(!is_dir($media_sub_dir) || !is_readable($media_sub_dir) || !is_writable($media_sub_dir))
 								throw $this->©exception(
@@ -822,21 +767,21 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Unable to create a private readable/writable `media` directory.').
 									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_sub_dir)
 								);
-
-							if(is_dir($media_dir) && !is_file($media_dir.'/.htaccess'))
+							if(!is_file($media_dir.'/.htaccess'))
 								file_put_contents($media_dir.'/.htaccess', 'deny from all');
+
+							return $media_sub_dir; // Created successfully!
 						}
+					// Else it exists. Is ``$media_sub_dir`` still readable/writable?
 
-					// Is ``$media_sub_dir`` readable/writable?
+					else if(!is_readable($media_sub_dir) || !is_writable($media_sub_dir))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->i18n('Unable to find a private readable/writable media directory.').
+							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_sub_dir)
+						);
+					return $media_sub_dir; // Everything still OK. It's a good day in Eureka!
 
-					if(is_readable($media_sub_dir) && is_writable($media_sub_dir))
-						return $media_sub_dir; // It's a good day in Eureka!
-
-					throw $this->©exception(
-						__METHOD__.'#read_write_issues', get_defined_vars(),
-						$this->i18n('Unable to find a private readable/writable media directory.').
-						sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_sub_dir)
-					);
 				}
 
 			/**
@@ -1093,7 +1038,7 @@ namespace websharks_core_v000000_dev
 
 							if($_gitignore_files) // Do we have output (e.g. a list of ignored files)?
 								{
-									foreach(preg_split('/['."\r\n".']+/', $_gitignore_files, -1, PREG_SPLIT_NO_EMPTY) as $_path)
+									foreach(preg_split('/['."\r\n".']+/', $_gitignore_files, NULL, PREG_SPLIT_NO_EMPTY) as $_path)
 										// No need to normalize directory separators here; GIT already does that for us.
 										// Directories returned by GIT always include a trailing slash (easy to identify).
 										// The list provided by GIT does NOT include leading slashes though (we add those).
@@ -1475,7 +1420,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * A recursive directory iterator.
 			 *
-			 * @param string       $dir A full directory path.
+			 * @param string       $dir An absolute directory path.
 			 *
 			 * @param null|integer $x_flags The defaults are recommended; but extra flags can be passed in.
 			 *
@@ -1498,7 +1443,6 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to iterate a directory (source `dir` missing).').
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);
-
 					$flags = $this->iteration_flags($x_flags, $flags);
 
 					return new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, $flags));

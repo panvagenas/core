@@ -885,7 +885,7 @@ namespace websharks_core_v000000_dev
 
 							return $value;
 						}
-					else return (string)$value;
+					return (string)$value;
 				}
 
 			/**
@@ -904,6 +904,8 @@ namespace websharks_core_v000000_dev
 			 * @param boolean $collect_key_props Collect array keys and/or object properties?
 			 *    This defaults to a FALSE value. If TRUE, this method returns an array with matching keys/properties.
 			 *    However, if the initial input ``$value`` is NOT an object/array, this flag is ignored completely.
+			 *
+			 * @param boolean $___recursion Internal use only.
 			 *
 			 * @return boolean|array TRUE if regular expression finds a match, else FALSE.
 			 *    If ``$collect_key_props`` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
@@ -928,9 +930,10 @@ namespace websharks_core_v000000_dev
 			 * @assert ('/^hello$/', array(TRUE, array(array(), 1, TRUE))) === FALSE
 			 * @assert ('/^hello$/', 'hello') === TRUE
 			 */
-			public function regex_pattern_in($regex, $value, $collect_key_props = FALSE)
+			public function regex_pattern_in($regex, $value, $collect_key_props = FALSE, $___recursion = FALSE)
 				{
-					$this->check_arg_types('string', '', 'boolean', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('string', '', 'boolean', 'boolean', func_get_args());
 
 					$matching_key_props = array(); // Initialize.
 
@@ -942,7 +945,7 @@ namespace websharks_core_v000000_dev
 										{
 											if(is_array($_value) || is_object($_value))
 												{
-													if(($_matching_key_props = $this->regex_pattern_in($regex, $_value, $collect_key_props)))
+													if(($_matching_key_props = $this->regex_pattern_in($regex, $_value, $collect_key_props, TRUE)))
 														if($collect_key_props) // Are we collecting keys, or can we just return now?
 															$matching_key_props[] = array($_key_prop => $_matching_key_props);
 														else // We can return now.
@@ -985,6 +988,8 @@ namespace websharks_core_v000000_dev
 			 *    This defaults to a FALSE value. If TRUE, this method returns an array with matching keys/properties.
 			 *    However, if the initial input ``$value`` is NOT an object/array, this flag is ignored completely.
 			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
 			 * @return boolean|array TRUE if any string as a regex pattern finds a match, else FALSE.
 			 *    If ``$collect_key_props`` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
 			 *       else an empty array if no matches are found in the search for keys/properties.
@@ -1010,9 +1015,10 @@ namespace websharks_core_v000000_dev
 			 * @assert ('hello', array(1, TRUE, array('/^hello$/', TRUE, array()))) === TRUE
 			 * @assert ('hello', '/^hello$/') === TRUE
 			 */
-			public function in_regex_patterns($string, $value, $collect_key_props = FALSE)
+			public function in_regex_patterns($string, $value, $collect_key_props = FALSE, $___recursion = FALSE)
 				{
-					$this->check_arg_types('string', '', 'boolean', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('string', '', 'boolean', 'boolean', func_get_args());
 
 					$matching_key_props = array(); // Initialize.
 
@@ -1022,7 +1028,7 @@ namespace websharks_core_v000000_dev
 								{
 									if(is_array($_value) || is_object($_value))
 										{
-											if(($_matching_key_props = $this->in_regex_patterns($string, $_value, $collect_key_props)))
+											if(($_matching_key_props = $this->in_regex_patterns($string, $_value, $collect_key_props, TRUE)))
 												if($collect_key_props) // Are we collecting keys, or can we just return now?
 													$matching_key_props[] = array($_key_prop => $_matching_key_props);
 												else // We can return now.
@@ -1031,7 +1037,6 @@ namespace websharks_core_v000000_dev
 										}
 									else if(is_string($_value) && strlen($_value))
 										{
-											/** @noinspection PhpUsageOfSilenceOperatorInspection */
 											if(@preg_match($_value, $string))
 												if($collect_key_props) $matching_key_props[] = $_key_prop;
 												else // We can return now.
@@ -1045,7 +1050,6 @@ namespace websharks_core_v000000_dev
 						}
 					else if(is_string($value) && strlen($value))
 						{
-							/** @noinspection PhpUsageOfSilenceOperatorInspection */
 							if(@preg_match($value, $string))
 								return TRUE; // Return now.
 						}
@@ -1114,7 +1118,8 @@ namespace websharks_core_v000000_dev
 			 */
 			public function wildcard_pattern_in($wildcard, $value, $case_insensitive = FALSE, $collect_key_props = FALSE, $x_flags = NULL, $___recursion = FALSE)
 				{
-					$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
 
 					$matching_key_props = array(); // Initialize.
 					$flags              = ($case_insensitive) ? FNM_CASEFOLD : 0;
@@ -1222,7 +1227,8 @@ namespace websharks_core_v000000_dev
 			 */
 			public function in_wildcard_patterns($string, $value, $case_insensitive = FALSE, $collect_key_props = FALSE, $x_flags = NULL, $___recursion = FALSE)
 				{
-					$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
 
 					$matching_key_props = array(); // Initialize.
 					$flags              = ($case_insensitive) ? FNM_CASEFOLD : 0;
@@ -1281,14 +1287,47 @@ namespace websharks_core_v000000_dev
 			 * @assert ('"quotes"') === '\\"quotes\\"'
 			 * @assert ('"quotes"', 0) === '"quotes"'
 			 * @assert ('"quotes"', 2) === '\\\\"quotes\\\\"'
-			 *
-			 * @TODO Create deep variation.
 			 */
 			public function esc_dq($string, $times = 1)
 				{
 					$this->check_arg_types('string', 'integer', func_get_args());
 
-					return str_replace('"', str_repeat('\\', abs($times)).'"', $string);
+					return $this->esc_dq_deep($string, $times);
+				}
+
+			/**
+			 * Escapes double quotes deeply.
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @param mixed   $value Any value can be converted into an escaped string.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param integer $times Number of escapes. Defaults to `1`.
+			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
+			 * @return string|array|object Escaped string, array, object.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function esc_dq_deep($value, $times = 1, $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
+
+					if(is_array($value) || is_object($value))
+						{
+							foreach($value as &$_value)
+								$_value = $this->esc_dq_deep($_value, $times, TRUE);
+							unset($_value);
+
+							return $value;
+						}
+					return str_replace('"', str_repeat('\\', abs($times)).'"', (string)$value);
 				}
 
 			/**
@@ -1304,14 +1343,47 @@ namespace websharks_core_v000000_dev
 			 * @assert ("'quotes'") === "\\'quotes\\'"
 			 * @assert ("'quotes'", 0) === "'quotes'"
 			 * @assert ("'quotes'", 2) === "\\\\'quotes\\\\'"
-			 *
-			 * @TODO Create deep variation.
 			 */
 			public function esc_sq($string, $times = 1)
 				{
 					$this->check_arg_types('string', 'integer', func_get_args());
 
-					return str_replace("'", str_repeat('\\', abs($times))."'", $string);
+					return $this->esc_sq_deep($string, $times);
+				}
+
+			/**
+			 * Escapes single quotes deeply.
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @param mixed   $value Any value can be converted into an escaped string.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param integer $times Number of escapes. Defaults to `1`.
+			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
+			 * @return string|array|object Escaped string, array, object.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function esc_sq_deep($value, $times = 1, $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
+
+					if(is_array($value) || is_object($value))
+						{
+							foreach($value as &$_value)
+								$_value = $this->esc_sq_deep($_value, $times, TRUE);
+							unset($_value);
+
+							return $value;
+						}
+					return str_replace("'", str_repeat('\\', abs($times))."'", (string)$value);
 				}
 
 			/**
@@ -1328,16 +1400,47 @@ namespace websharks_core_v000000_dev
 			 * @assert ("'quotes'", 0) === "'quotes'"
 			 * @assert ("'quotes'", 2) === "\\\\'quotes\\\\'"
 			 * @assert ("'quotes''\r\n\n", 2) === "\\\\'quotes\\\\'\\\\'".'\n\n'
-			 *
-			 * @TODO Create deep variation.
 			 */
 			public function esc_js_sq($string, $times = 1)
 				{
 					$this->check_arg_types('string', 'integer', func_get_args());
 
-					return str_replace("'", str_repeat('\\', abs($times))."'",
-					                   str_replace(array("\r", "\n"), array('', '\\n'), $string)
-					);
+					return $this->esc_js_sq_deep($string, $times);
+				}
+
+			/**
+			 * Escapes JS line breaks (removes "\r"); and escapes single quotes deeply.
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @param mixed   $value Any value can be converted into an escaped string.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param integer $times Number of escapes. Defaults to `1`.
+			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
+			 * @return string|array|object Escaped string, array, object (ready for JavaScript).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function esc_js_sq_deep($value, $times = 1, $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
+
+					if(is_array($value) || is_object($value))
+						{
+							foreach($value as &$_value)
+								$_value = $this->esc_js_sq_deep($_value, $times, TRUE);
+							unset($_value);
+
+							return $value;
+						}
+					return str_replace("'", str_repeat('\\', abs($times))."'", str_replace(array("\r", "\n"), array('', '\\n'), (string)$value));
 				}
 
 			/**
@@ -1375,6 +1478,8 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param integer $times Number of escapes. Defaults to `1`.
 			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
 			 * @return string|array|object Escaped string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
@@ -1387,31 +1492,33 @@ namespace websharks_core_v000000_dev
 			 * @assert (array('$hello')) === array('\\$hello')
 			 * @assert (array(array('$hello'), array('$hello'))) === array(array('\\$hello'), array('\\$hello'))
 			 */
-			public function esc_refs_deep($value, $times = 1)
+			public function esc_refs_deep($value, $times = 1, $___recursion = FALSE)
 				{
-					$this->check_arg_types('', 'integer', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->esc_refs_deep($_value, $times);
+								$_value = $this->esc_refs_deep($_value, $times, TRUE);
 							unset($_value);
 
 							return $value;
 						}
-					return str_replace(
-						array('\\', '$'),
-						array(str_repeat('\\', abs($times)).'\\', str_repeat('\\', abs($times)).'$'),
-						(string)$value
-					);
+					return str_replace(array('\\', '$'), array(str_repeat('\\', abs($times)).'\\', str_repeat('\\', abs($times)).'$'), (string)$value);
 				}
 
 			/**
 			 * Escapes SQL strings.
 			 *
-			 * @param string $string A string value.
+			 * @param string  $string A string value.
 			 *
 			 * @return string Escaped string.
+			 *
+			 * @param boolean $convert_nulls_no_esc Optional. Defaults to a FALSE value.
+			 *    By default, we convert all values into strings, and then we escape them via the DB class.
+			 *    However, if this is TRUE, NULL values are treated differently. We convert them to the string `NULL`,
+			 *    and they are NOT escaped here. This should be enabled when/if NULL values are being inserted into a DB table.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
@@ -1421,11 +1528,11 @@ namespace websharks_core_v000000_dev
 			 * @assert ('\\foo') === '\\\\foo'
 			 * @assert ("foo's") === "foo\'s"
 			 */
-			public function esc_sql($string)
+			public function esc_sql($string, $convert_nulls_no_esc = FALSE)
 				{
-					$this->check_arg_types('string', func_get_args());
+					$this->check_arg_types('string', 'boolean', func_get_args());
 
-					return $this->esc_sql_deep($string);
+					return $this->esc_sql_deep($string, $convert_nulls_no_esc);
 				}
 
 			/**
@@ -1444,6 +1551,8 @@ namespace websharks_core_v000000_dev
 			 *    However, if this is TRUE, NULL values are treated differently. We convert them to the string `NULL`,
 			 *    and they are NOT escaped here. This should be enabled when/if NULL values are being inserted into a DB table.
 			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
 			 * @return string|array|object Escaped string, array, object (possible `NULL` string if ``$convert_null_no_wrap`` is TRUE).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
@@ -1456,14 +1565,15 @@ namespace websharks_core_v000000_dev
 			 * @assert (array('\\foo')) === array('\\\\foo')
 			 * @assert (array(array('\\foo'), array("foo's"))) === array(array('\\\\foo'), array("foo\'s"))
 			 */
-			public function esc_sql_deep($value, $convert_nulls_no_esc = FALSE)
+			public function esc_sql_deep($value, $convert_nulls_no_esc = FALSE, $___recursion = FALSE)
 				{
-					$this->check_arg_types('', 'boolean', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->esc_sql_deep($_value);
+								$_value = $this->esc_sql_deep($_value, $convert_nulls_no_esc, TRUE);
 							unset($_value);
 
 							return $value;
@@ -1509,6 +1619,8 @@ namespace websharks_core_v000000_dev
 			 * @param integer $max_length Maximum string length before trailing `...` appears.
 			 *    If strings are within this length, the `...` does NOT appear at all.
 			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
 			 * @return string|array|object Plain text excerpt (i.e. all HTML tags stripped), array, or object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
@@ -1516,14 +1628,15 @@ namespace websharks_core_v000000_dev
 			 * @assert ('Hello world.', 5) === 'He...'
 			 * @assert (array(array('Hello world.'), array('Hello')), 5) === array(array('He...'), array('Hello'))
 			 */
-			public function excerpt_deep($value, $max_length = 45)
+			public function excerpt_deep($value, $max_length = 45, $___recursion = FALSE)
 				{
-					$this->check_arg_types('', 'integer', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->excerpt_deep($_value, $max_length);
+								$_value = $this->excerpt_deep($_value, $max_length, TRUE);
 							unset($_value);
 
 							return $value;
@@ -1545,17 +1658,48 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert ('[gallery]') === '[[gallery]]'
 			 * @assert ('[gallery][/gallery]') === '[[gallery][/gallery]]'
-			 *
-			 * @TODO Create deep variation.
 			 */
 			public function esc_shortcodes($string)
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if(empty($GLOBALS['shortcode_tags']) || !is_array($GLOBALS['shortcode_tags']))
-						return $string; // Nothing to do.
+					return $this->esc_shortcodes_deep($string);
+				}
 
-					return preg_replace_callback('/'.get_shortcode_regex().'/s', array($this, '_esc_shortcodes'), $string);
+			/**
+			 * Escapes registered WordPress® Shortcodes (i.e. ``[[shortcode]]``) deeply.
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @param mixed   $value Any value can be converted into an escaped string.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
+			 * @return string|array|object Escaped string, array, object.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function esc_shortcodes_deep($value, $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', func_get_args());
+
+					if(is_array($value) || is_object($value))
+						{
+							foreach($value as &$_value)
+								$_value = $this->esc_shortcodes_deep($_value, TRUE);
+							unset($_value);
+
+							return $value;
+						}
+					if(empty($GLOBALS['shortcode_tags']) || !is_array($GLOBALS['shortcode_tags']))
+						return (string)$value; // Nothing to do.
+
+					return preg_replace_callback('/'.get_shortcode_regex().'/s', array($this, '_esc_shortcodes'), (string)$value);
 				}
 
 			/**
@@ -1571,10 +1715,6 @@ namespace websharks_core_v000000_dev
 			 */
 			public function _esc_shortcodes($m)
 				{
-					// Commenting this out for performance.
-					// This is used as a callback for ``preg_replace()``, so it's NOT absolutely necessary.
-					// $this->check_arg_types('array', func_get_args());
-
 					if(isset($m[1], $m[6]) && $m[1] === '[' && $m[6] === ']')
 						return $m[0]; // Already escaped.
 
@@ -1590,10 +1730,12 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed  $value Any value can be converted into a quoted string.
+			 * @param mixed   $value Any value can be converted into a quoted string.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
-			 * @param string $delimiter Same as PHP's ``preg_quote()``.
+			 * @param string  $delimiter Same as PHP's ``preg_quote()``.
+			 *
+			 * @param boolean $___recursion Internal use only.
 			 *
 			 * @return string|array|object Escaped string, array, object.
 			 *
@@ -1603,14 +1745,15 @@ namespace websharks_core_v000000_dev
 			 * @assert (array(array('$hello:'), array('$hello:')), '/') === array(array('\\$hello\\:'), array('\\$hello\\:'))
 			 * @assert ('$hello', '/') === '\\$hello'
 			 */
-			public function preg_quote_deep($value, $delimiter = '')
+			public function preg_quote_deep($value, $delimiter = '', $___recursion = FALSE)
 				{
-					$this->check_arg_types('', 'string', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'string', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->preg_quote_deep($_value, $delimiter);
+								$_value = $this->preg_quote_deep($_value, $delimiter, TRUE);
 							unset($_value);
 
 							return $value;
@@ -1651,13 +1794,15 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed  $value Any value can be converted into a trimmed string.
+			 * @param mixed   $value Any value can be converted into a trimmed string.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
-			 * @param string $chars Specific chars to trim.
+			 * @param string  $chars Specific chars to trim.
 			 *    Defaults to PHP's trim: " \r\n\t\0\x0B". Use an empty string to bypass this argument and specify additional chars only.
 			 *
-			 * @param string $extra_chars Additional chars to trim.
+			 * @param string  $extra_chars Additional chars to trim.
+			 *
+			 * @param boolean $___recursion Internal use only.
 			 *
 			 * @return string|array|object Trimmed string, array, object.
 			 *
@@ -1670,14 +1815,15 @@ namespace websharks_core_v000000_dev
 			 * @assert (array(array('.. hello @.. '), array('.. hello @.. ')), '', '.@') === array(array('hello'), array('hello'))
 			 * @assert (array(array('.. hello @.. '), array('.. hello @.. ')), '.@') === array(array(' hello @.. '), array(' hello @.. '))
 			 */
-			public function trim_deep($value, $chars = '', $extra_chars = '')
+			public function trim_deep($value, $chars = '', $extra_chars = '', $___recursion = FALSE)
 				{
-					$this->check_arg_types('', 'string', 'string', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'string', 'string', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->trim_deep($_value, $chars, $extra_chars);
+								$_value = $this->trim_deep($_value, $chars, $extra_chars, TRUE);
 							unset($_value);
 
 							return $value;
@@ -1696,8 +1842,10 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed $value Any value can be converted into a stripped string.
+			 * @param mixed   $value Any value can be converted into a stripped string.
 			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param boolean $___recursion Internal use only.
 			 *
 			 * @return string|array|object Stripped string, array, object.
 			 *
@@ -1706,12 +1854,15 @@ namespace websharks_core_v000000_dev
 			 * @assert ('\\hello\\') === 'hello'
 			 * @assert (array('\\hello\\', array('\\hello\\'))) === array('hello', array('hello'))
 			 */
-			public function strip_deep($value)
+			public function strip_deep($value, $___recursion = FALSE)
 				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', func_get_args());
+
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->strip_deep($_value);
+								$_value = $this->strip_deep($_value, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value; // Array or object value.
@@ -1727,8 +1878,10 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed $value Any value can be converted into a slashes string.
+			 * @param mixed   $value Any value can be converted into a slashes string.
 			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param boolean $___recursion Internal use only.
 			 *
 			 * @return string|array|object Slashed string, array, object.
 			 *
@@ -1737,12 +1890,15 @@ namespace websharks_core_v000000_dev
 			 * @assert ("Jason's") === 'Jason\\'s'
 			 * @assert (array("Jason's", array("Jason's"))) === array('Jason\\'s', array('Jason\\'s'))
 			 */
-			public function slash_deep($value)
+			public function slash_deep($value, $___recursion = FALSE)
 				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', func_get_args());
+
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->slash_deep($_value);
+								$_value = $this->slash_deep($_value, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value; // Array or object value.
@@ -1841,26 +1997,29 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed  $value Any value can be converted into a trimmed string.
+			 * @param mixed   $value Any value can be converted into a trimmed string.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
-			 * @param string $chars Other specific chars to trim (HTML whitespace is always trimmed).
+			 * @param string  $chars Other specific chars to trim (HTML whitespace is always trimmed).
 			 *    Defaults to PHP's trim: " \r\n\t\0\x0B". Use an empty string to bypass this argument and specify additional chars only.
 			 *
-			 * @param string $extra_chars Additional specific chars to trim.
+			 * @param string  $extra_chars Additional specific chars to trim.
+			 *
+			 * @param boolean $___recursion Internal use only.
 			 *
 			 * @return string|array|object Trimmed string, array, object (HTML whitespace is always trimmed).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public function trim_content_deep($value, $chars = '', $extra_chars = '')
+			public function trim_content_deep($value, $chars = '', $extra_chars = '', $___recursion = FALSE)
 				{
-					$this->check_arg_types('', 'string', 'string', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'string', 'string', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->trim_content_deep($_value, $chars, $extra_chars);
+								$_value = $this->trim_content_deep($_value, $chars, $extra_chars, TRUE);
 							unset($_value);
 
 							return $this->trim_deep($value, $chars, $extra_chars);
@@ -1951,6 +2110,8 @@ namespace websharks_core_v000000_dev
 			 * @param boolean $trim_dsq Defaults to TRUE.
 			 *    If FALSE, normal double/single quotes will NOT be trimmed, only entities.
 			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
 			 * @return string|array|object Trimmed string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
@@ -1958,12 +2119,15 @@ namespace websharks_core_v000000_dev
 			 * @assert ('&quot;\'"hello"\'&quot;') === 'hello'
 			 * @assert ('&quot;\'"hello"\'&quot;', FALSE) === '\'"hello"\''
 			 */
-			public function trim_qts_deep($value, $trim_dsq = TRUE)
+			public function trim_qts_deep($value, $trim_dsq = TRUE, $___recursion = FALSE)
 				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', 'boolean', func_get_args());
+
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->trim_qts_deep($_value, $trim_dsq);
+								$_value = $this->trim_qts_deep($_value, $trim_dsq, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value; // Array or object value.
@@ -2088,6 +2252,8 @@ namespace websharks_core_v000000_dev
 			 * @param boolean      $case_insensitive Case insensitive? Defaults to FALSE.
 			 *    If TRUE, the search is NOT case sensitive.
 			 *
+			 * @param boolean      $___recursion Internal use only.
+			 *
 			 * @return mixed Values after ONE string replacement (deeply).
 			 *    Any values that were NOT strings|arrays|objects, will be converted to strings by this routine.
 			 *
@@ -2109,14 +2275,15 @@ namespace websharks_core_v000000_dev
 			 * @assert (array('heLlo-', '-theRe'), array('hi-', '-jason'), array('HELLO-hello-there', 'HELLO-hello-there'), TRUE) === array('hi-hello-jason', 'hi-hello-jason')
 			 * @assert (array('heLlo-', '-there'), array('hi-', '-jason'), array('HELLO-hello-there', 'HELLO-hello-there')) === array('HELLO-hello-jason', 'HELLO-hello-jason')
 			 */
-			public function replace_once_deep($needle, $replace, $value, $case_insensitive = FALSE)
+			public function replace_once_deep($needle, $replace, $value, $case_insensitive = FALSE, $___recursion = FALSE)
 				{
-					$this->check_arg_types(array('string', 'array'), array('string', 'array'), '', 'boolean', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types(array('string', 'array'), array('string', 'array'), '', 'boolean', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->replace_once($needle, $replace, $_value, $case_insensitive);
+								$_value = $this->replace_once_deep($needle, $replace, $_value, $case_insensitive, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value; // Array or object.
@@ -2179,27 +2346,84 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Strips leading space and/or tab indentations.
 			 *
-			 * @param string $string A string value.
+			 * @param string  $string A string value.
+			 *
+			 * @param integer $leading_at_line Optional. This defaults to a value of `1`.
+			 *    By default, we strip leading indentation that precedes line #1 (the expected behavior).
+			 *    However, if this is passed in, we strip leading indentation that may start at a different line number.
+			 *    This can be extremely useful in cases where a string is obtained (already trimmed); so it needs leading indents
+			 *    calculated from line #2 instead of line #1. Doc blocks obtained from the Reflection class are a good example of this.
+			 *
+			 * @param string  $add_leading_chars Optional. This simply defaults to an empty string.
+			 *    However, if this is passed in, we will add the leading chars given to each and every line.
+			 *    This can be useful if we need to strip leading indentation and then re-indent or prefix each line.
+			 *    NOTE: these chars are added even if we do NOT strip any leading indentation from one or more lines.
 			 *
 			 * @return string String minus leading indentation.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @assert ("  \t  hello\n  \t  there") === 'hello'."\n".'there'
-			 *
-			 * @TODO Create deep variation.
 			 */
-			public function strip_leading_indents($string)
+			public function strip_leading_indents($string, $leading_at_line = 1, $add_leading_chars = '')
 				{
-					$this->check_arg_types('string', func_get_args());
+					$this->check_arg_types('string', 'integer', 'string', func_get_args());
 
-					$string = trim($string, "\r\n");
+					return $this->strip_leading_indents_deep($string, $leading_at_line, $add_leading_chars);
+				}
 
-					if(preg_match("/^([ \t]+)/", $string, $_m))
-						$string = preg_replace("/^[ \t]{".strlen($_m[1])."}/m", '', $string);
+			/**
+			 * Strips leading space and/or tab indentations deeply.
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @param mixed   $value Any value can be converted into a stripped string.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param integer $leading_at_line Optional. This defaults to a value of `1`.
+			 *    By default, we strip leading indentation that precedes line #1 (the expected behavior).
+			 *    However, if this is passed in, we strip leading indentation that may start at a different line number.
+			 *    This can be extremely useful in cases where a string is obtained (already trimmed); so it needs leading indents
+			 *    calculated from line #2 instead of line #1. Doc blocks obtained from the Reflection class are a good example of this.
+			 *
+			 * @param string  $add_leading_chars Optional. This simply defaults to an empty string.
+			 *    However, if this is passed in, we will add the leading chars given to each and every line.
+			 *    This can be useful if we need to strip leading indentation and then re-indent or prefix each line.
+			 *    NOTE: these chars are added even if we do NOT strip any leading indentation from one or more lines.
+			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
+			 * @return string|array|object Stripped string, array, object.
+			 */
+			public function strip_leading_indents_deep($value, $leading_at_line = 1, $add_leading_chars = '', $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'integer', 'string', 'boolean', func_get_args());
+
+					if(is_array($value) || is_object($value))
+						{
+							foreach($value as &$_value) // Recursion.
+								$_value = $this->strip_leading_indents_deep($_value, $leading_at_line, $add_leading_chars, TRUE);
+							unset($_value); // Housekeeping.
+
+							return $value;
+						}
+					$string          = trim((string)$value, "\r\n");
+					$leading_at_line = max(1, abs($leading_at_line));
+					$string_lines    = preg_split('/'."\r\n".'|'."\r".'|'."\n".'/', $string);
+
+					if(!empty($string_lines[$leading_at_line]))
+						if(preg_match("/^([ \t]+)/", $string_lines[$leading_at_line], $_m))
+							$string = preg_replace("/^[ \t]{".strlen($_m[1])."}/m", '', $string);
 					unset($_m); // A little housekeeping.
 
-					return $string;
+					if(strlen($add_leading_chars)) // Add leading chars?
+						$string = preg_replace("/^/m", $add_leading_chars, $string);
+
+					return $string; // Stripped now.
 				}
 
 			/**
@@ -2212,14 +2436,43 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @assert ('hello® there') === 'hello there'
-			 *
-			 * @TODO Create deep variation.
 			 */
 			public function strip_2_kb_chars($string)
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					return preg_replace('/[^0-9A-Z'."\r\n\t".'\s`\=\[\]\\\\;,\.\/~\!@#\$%\^&\*\(\)_\+\|\}\{\:\?\>\<"\'\-]/i', '', remove_accents($string));
+					return $this->strip_2_kb_chars_deep($string);
+				}
+
+			/**
+			 * Sanitizes strings deeply; by stripping characters NOT on a standard U.S. keyboard.
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @param mixed   $value Any value can be converted into a stripped string.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
+			 * @return string|array|object Stripped string, array, object.
+			 */
+			public function strip_2_kb_chars_deep($value, $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', func_get_args());
+
+					if(is_array($value) || is_object($value))
+						{
+							foreach($value as &$_value) // Recursion.
+								$_value = $this->strip_2_kb_chars_deep($_value, TRUE);
+							unset($_value); // Housekeeping.
+
+							return $value;
+						}
+					return preg_replace('/[^0-9a-z\s\'"`\-\^\/[\]{}()\\\\.,;_~!@#$%&*+=|:?<>]/i', '', remove_accents((string)$value));
 				}
 
 			/**
@@ -2329,15 +2582,33 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Decodes unreserved chars encoded by PHP's ``urlencode()`` (deeply).
+			 * Decodes unreserved chars encoded by PHP's ``urlencode()``.
+			 *
+			 * @param string $string The input string to be decoded here.
+			 *
+			 * @return string Decoded string.
+			 *
+			 * @see http://www.faqs.org/rfcs/rfc3986.html
+			 */
+			public function urldecode_ur_chars($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return $this->urldecode_ur_chars_deep($string);
+				}
+
+			/**
+			 * Decodes unreserved chars deeply; encoded by PHP's ``urlencode()``.
 			 *
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 			 * @note This routine will usually NOT include private, protected or static properties of an object class.
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed $value Any value can be converted into a decoded string.
+			 * @param mixed   $value Any value can be converted into a decoded string.
 			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param boolean $___recursion Internal use only.
 			 *
 			 * @return string|array|object Decoded string, array, object.
 			 *
@@ -2346,21 +2617,20 @@ namespace websharks_core_v000000_dev
 			 * @assert $array = array(urlencode('hello-there now'));
 			 *    ($array) === array('hello-there+now')
 			 */
-			public function urldecode_ur_chars_deep($value)
+			public function urldecode_ur_chars_deep($value, $___recursion = FALSE)
 				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', func_get_args());
+
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->urldecode_ur_chars_deep($_value);
+								$_value = $this->urldecode_ur_chars_deep($_value, TRUE);
 							unset($_value);
 
 							return $value;
 						}
-					return str_replace(
-						array('%2D', '%2E', '%5F', '%7E'),
-						array('-', '.', '_', '~'),
-						(string)$value
-					);
+					return str_replace(array('%2D', '%2E', '%5F', '%7E'), array('-', '.', '_', '~'), (string)$value);
 				}
 
 			/**
@@ -2388,6 +2658,8 @@ namespace websharks_core_v000000_dev
 			 *    However, if this is TRUE, NULL values are treated differently. We convert them to the string `NULL`, and they are NOT wrapped up.
 			 *    This is useful when data is being prepared for database insertion and/or updates.
 			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
 			 * @return string|array|object Wrapped string, array, object (possible `NULL` string if ``$convert_null_no_wrap`` is TRUE).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
@@ -2398,14 +2670,15 @@ namespace websharks_core_v000000_dev
 			 * @assert $array = array('hello', 'there', '');
 			 *    ($array, 'begin:', ':end', FALSE) === array('begin:hello:end', 'begin:there:end', '')
 			 */
-			public function wrap_deep($value, $beginning = '', $end = '', $wrap_0b_strings = TRUE, $convert_nulls_no_wrap = FALSE)
+			public function wrap_deep($value, $beginning = '', $end = '', $wrap_0b_strings = TRUE, $convert_nulls_no_wrap = FALSE, $___recursion = FALSE)
 				{
-					$this->check_arg_types('', 'string', 'string', 'boolean', 'boolean', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'string', 'string', 'boolean', 'boolean', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->wrap_deep($_value, $beginning, $end, $wrap_0b_strings);
+								$_value = $this->wrap_deep($_value, $beginning, $end, $wrap_0b_strings, $convert_nulls_no_wrap, TRUE);
 							unset($_value);
 
 							return $value;
@@ -2440,8 +2713,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Word-wrapped string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @TODO Update several methods in this class with an internal ``$___recursion`` parameter.
 			 */
 			public function wordwrap_deep($value, $width = 75, $break = "\n", $cut = FALSE, $___recursion = FALSE)
 				{
@@ -2509,29 +2780,31 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $detection_order Optional. Defaults to ``$this->mb_detection_order``.
 			 *    If a NON-empty string/array is provided, it is used instead.
 			 *
+			 * @param boolean      $___recursion Internal use only.
+			 *
 			 * @return string|array|object UTF-8 string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public function to_utf8_deep($value, $detection_order = array())
+			public function to_utf8_deep($value, $detection_order = array(), $___recursion = FALSE)
 				{
-					$this->check_arg_types('', array('string', 'array'), func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', array('string', 'array'), 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->to_utf8_deep($_value, $detection_order);
+								$_value = $this->to_utf8_deep($_value, $detection_order, TRUE);
 							unset($_value);
 
 							return $value;
 						}
-
 					if(!$this->is_utf8($value = (string)$value))
 						{
 							if(empty($detection_order))
 								$detection_order = $this->mb_detection_order;
 
-							if($this->©function->is_possible('mb_convert_encoding'))
+							if(extension_loaded('mbstring'))
 								$value = mb_convert_encoding($value, 'UTF-8', $detection_order);
 						}
 					return $value;
@@ -2561,17 +2834,22 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed $value Any value can be converted into a UTF-8 string.
+			 * @param mixed   $value Any value can be converted into a UTF-8 string.
 			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param boolean $___recursion Internal use only.
 			 *
 			 * @return string|array|object Hexadecimal notation. Or an array/object containing strings in hexadecimal notation.
 			 */
-			public function to_hex_deep($value)
+			public function to_hex_deep($value, $___recursion = FALSE)
 				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', func_get_args());
+
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value)
-								$_value = $this->to_hex_deep($_value);
+								$_value = $this->to_hex_deep($_value, TRUE);
 							unset($_value);
 
 							return $value;
@@ -2632,7 +2910,7 @@ namespace websharks_core_v000000_dev
 					else if($preg_last_error == PREG_BAD_UTF8_OFFSET_ERROR)
 						return $this->i18n('Bad UTF8 offset: `PREG_BAD_UTF8_OFFSET_ERROR`.');
 
-					else return $this->i18n('No error.');
+					return $this->i18n('No PREG error.');
 				}
 
 			/**

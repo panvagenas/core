@@ -23,7 +23,7 @@ namespace websharks_core_v000000_dev
 		 * @package WebSharks\Core
 		 * @since 120329
 		 *
-		 * @TODO Remove from WebSharks™ Core. This needs to be developed as a separate plugin.
+		 * @TODO Rewrite the Quick Cache plugin and move this class to that plugin.
 		 *
 		 * @assert ($GLOBALS[__NAMESPACE__])
 		 */
@@ -203,7 +203,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function cleanup_cache()
 				{
-					if(is_dir($cache_dir = $this->©dirs->get_cache_dir('public', 'compressor')))
+					if(is_dir($cache_dir = $this->©dirs->get_cache_dir($this::public_type, 'compressor')))
 						{
 							$max_age = strtotime('-'.$this->©options->get('compressor.cache_expiration'));
 
@@ -247,7 +247,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function purge_cache()
 				{
-					return $this->©dirs->del_cache_dir('public', 'compressor');
+					return $this->©dirs->del_cache_dir($this::public_type, 'compressor');
 				}
 
 			/**
@@ -427,7 +427,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('array', func_get_args());
 
 					$cache_checksum = $this->get_tag_frags_checksum($css_tag_frags);
-					$cache_dir      = $this->©dirs->get_cache_dir('public', 'compressor');
+					$cache_dir      = $this->©dirs->get_cache_dir($this::public_type, 'compressor');
 
 					$cache_parts_file      = $cache_checksum.'-compressor-parts.css-cache';
 					$cache_parts_file_path = $cache_dir.'/'.$cache_parts_file;
@@ -534,7 +534,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('array', func_get_args());
 
 					$cache_checksum = $this->get_tag_frags_checksum($js_tag_frags);
-					$cache_dir      = $this->©dirs->get_cache_dir('public', 'compressor');
+					$cache_dir      = $this->©dirs->get_cache_dir($this::public_type, 'compressor');
 
 					$cache_parts_file      = $cache_checksum.'-compressor-parts.js-cache';
 					$cache_parts_file_path = $cache_dir.'/'.$cache_parts_file;

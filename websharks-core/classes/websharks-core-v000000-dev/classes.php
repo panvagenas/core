@@ -25,59 +25,139 @@ namespace websharks_core_v000000_dev
 		class classes extends framework
 		{
 			/**
-			 * Details about all WebSharks™ Core classes/properties/methods.
+			 * Details about all WebSharks™ Core (and plugin) classes/properties/methods.
 			 *
-			 * @param array $details Defaults to ``array('class_doc_blocks')``.
+			 * @param string|array $details Defaults to ``array('class_doc_blocks')``.
 			 *
-			 * @TODO Document/improve array keys. For now, please browse the source code.
-			 * @TODO We may also improve/update this routine for codex generation in the future.
+			 *    Possible inclusions/exclusions (e.g. values passed in the ``$details`` array).
 			 *
-			 * @return array Details about all WebSharks™ Core classes/properties/methods.
+			 *       • `all` Include everything possible? This will also make it possible for you to use exclusions.
+			 *             If (and only if) `all` is passed in, specific details can be excluded by `!`negating details.
+			 *             Example: ``array('all', '!properties')`` ~ indicating `all` details EXCEPT `properties`.
+			 *
+			 *       Or, if you want to be absolutely specific, you can pass these detail values individually.
+			 *          However, please NOTE that if new details are made possible (and you've requested only these specific details);
+			 *          you will NOT get any of the new details made possible as this method is improved over time.
+			 *
+			 *       • `class_doc_blocks` Includes all class doc blocks.
+			 *
+			 *       • `properties` Includes all class properties.
+			 *       • `property_doc_blocks` Includes all class property doc blocks.
+			 *             Only applicable if `properties` are requested.
+			 *
+			 *       • `methods` Includes all class methods.
+			 *       • `method_doc_blocks` Includes all class method doc blocks.
+			 *             Only applicable if `methods` are requested.
+			 *       • `method_parameters` Includes all class method parameters.
+			 *             Only applicable if `methods` are requested.
+			 *
+			 * @return array Details about all WebSharks™ Core (and plugin) classes/properties/methods.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
 			public function get_details($details = array('class_doc_blocks'))
 				{
-					$this->check_arg_types('array', func_get_args());
+					$this->check_arg_types(array('string', 'array'), func_get_args());
 
-					$ns_class_details = array();
-					$ns_class         = array('\\'.__NAMESPACE__);
+					$details          = (array)$details; // Force array value.
+					$ns_class_details = array(); // Initialize array of details.
 
-					foreach($this->©dir->iterate(dirname(__FILE__)) as $_dir_file)
+					# Handle ``$details`` array (w/ `all` inclusions/exclusions).
+
+					if(in_array('all', $details)) // Including all details?
+						{
+							$_details = array();
+
+							foreach(array('class_doc_blocks',
+							              'properties', 'property_doc_blocks',
+							              'methods', 'method_doc_blocks', 'method_parameters') as $_detail)
+								{
+									if(!in_array('!'.$_detail, $details, TRUE))
+										$_details[] = $_detail;
+								}
+							$details = $_details; // Use the new array.
+							unset($_details); // Just a little housekeeping.
+						}
+					if(empty($details)) return $ns_class_details; // No details?
+
+					# Include all plugin classes (if this is NOT the WebSharks™ Core itself).
+
+					if(!$this->©plugin->is_core()) // Should we include a plugin's classes here too?
+						{
+							$ns_class = array('\\'.$this->___instance_config->plugin_root_ns); // API class.
+
+							if(is_dir($_plugin_classes_dir = dirname($this->___instance_config->plugin_api_class_file)))
+								foreach($this->©dir->iterate($_plugin_classes_dir) as $_dir_file)
+									{
+										if($_dir_file->isFile()) // We're dealing only with class files here.
+											{
+												$_file_sub_path          = $this->©dir->n_seps($_dir_file->getSubPathname());
+												$_ns_class_file_sub_path = str_replace(array('/', '-'), array('\\', '_'), $_file_sub_path);
+												$_sub_path_namespaces    = (string)substr($_ns_class_file_sub_path, 0, strrpos($_ns_class_file_sub_path, '\\'));
+												$_ns_class_path          = '\\'.(($_sub_path_namespaces) ? $_sub_path_namespaces.'\\' : '').basename($_ns_class_file_sub_path, '.php');
+												$_plugin_ns_class_path   = '\\'.$this->___instance_config->plugin_root_ns.$_ns_class_path;
+
+												if(class_exists($_plugin_ns_class_path))
+													$ns_class[] = $_plugin_ns_class_path;
+
+												else if(class_exists($_ns_class_path))
+													$ns_class[] = $_ns_class_path; // Global classes.
+											}
+									}
+							unset($_plugin_classes_dir, $_dir_file, $_file_sub_path, $_ns_class_file_sub_path, $_sub_path_namespaces, $_ns_class_path, $_plugin_ns_class_path);
+						}
+
+					# WebSharks™ Core classes (we always include these; because all plugins inherit these core classes).
+
+					$ns_class = array('\\'.$this->___instance_config->core_ns_stub); // API class.
+
+					foreach($this->©dir->iterate(dirname(__FILE__) /* This classes directory. */) as $_dir_file)
 						{
 							if($_dir_file->isFile()) // We're dealing only with class files here.
 								{
 									$_file_sub_path          = $this->©dir->n_seps($_dir_file->getSubPathname());
 									$_ns_class_file_sub_path = str_replace(array('/', '-'), array('\\', '_'), $_file_sub_path);
 									$_sub_path_namespaces    = (string)substr($_ns_class_file_sub_path, 0, strrpos($_ns_class_file_sub_path, '\\'));
-									$_ns_class_path          = '\\'.__NAMESPACE__.'\\'.(($_sub_path_namespaces) ? $_sub_path_namespaces.'\\' : '').basename($_ns_class_file_sub_path, '.php');
+									$_ns_class_path          = '\\'.(($_sub_path_namespaces) ? $_sub_path_namespaces.'\\' : '').basename($_ns_class_file_sub_path, '.php');
+									$_core_ns_class_path     = '\\'.$this->___instance_config->core_ns.$_ns_class_path;
 
-									if(class_exists($_ns_class_path))
-										$ns_class[] = $_ns_class_path;
+									if(class_exists($_core_ns_class_path))
+										$ns_class[] = $_core_ns_class_path;
 
-									else if(class_exists(basename($_ns_class_path)))
-										$ns_class[] = basename($_ns_class_path);
+									else if(class_exists($_ns_class_path))
+										$ns_class[] = $_ns_class_path; // Global classes.
 								}
 						}
-					unset($_dir_file, $_file_sub_path, $_ns_class_file_sub_path, $_sub_path_namespaces, $_ns_class_path);
+					unset($_dir_file, $_file_sub_path, $_ns_class_file_sub_path, $_sub_path_namespaces, $_ns_class_path, $_core_ns_class_path);
 
-					foreach($ns_class as $_ns_class) // Iterate through all classes.
+					# Iterate through each `\namespace\class` and collect details to return in the final array.
+
+					foreach(array_unique($ns_class) as $_ns_class) // Iterate through all classes.
 						{
 							$ns_class_details['class: '.$_ns_class]['name'] = $_ns_class;
 							$_properties                                    = $_methods = array();
 							$_reflection                                    = new \ReflectionClass($_ns_class);
+							$_doc_block_tabs                                = str_repeat("\t", 4);
+							$_nested_doc_block_tabs                         = str_repeat("\t", 8);
 
 							if(in_array('class_doc_blocks', $details, TRUE))
-								$ns_class_details['class: '.$_ns_class]['doc_block'] = "\n\t\t".$_reflection->getDocComment();
+								$ns_class_details['class: '.$_ns_class]['doc_block'] = // Suitable for dumping.
+									"\n".$_doc_block_tabs. // We strip any leading indents established by line #2.
+									ltrim($this->©string->strip_leading_indents((string)$_reflection->getDocComment(), 2, $_doc_block_tabs.' '));
 
 							if(in_array('properties', $details, TRUE))
 								{
 									foreach($_reflection->getProperties() as $_property)
 										{
-											$_key                       = 'property: $'.$_property->getName();
+											$_key = 'property: $'.$_property->getName();
+
 											$_properties[$_key]['name'] = '$'.$_property->getName();
+
 											if(in_array('property_doc_blocks', $details, TRUE))
-												$_properties[$_key]['doc_block'] = "\n\t\t\t\t\t".$_property->getDocComment();
+												$_properties[$_key]['doc_block'] = // Suitable for dumping.
+													"\n".$_nested_doc_block_tabs. // We strip any leading indents established by line #2.
+													ltrim($this->©string->strip_leading_indents((string)$_property->getDocComment(), 2, $_nested_doc_block_tabs.' '));
+
 											$_properties[$_key]['modifiers']       = implode(' ', \Reflection::getModifierNames($_property->getModifiers()));
 											$_properties[$_key]['declaring-class'] = $_property->getDeclaringClass()->getName();
 										}
@@ -87,10 +167,15 @@ namespace websharks_core_v000000_dev
 								{
 									foreach($_reflection->getMethods() as $_method)
 										{
-											$_key                    = 'method: '.$_method->getName().'()';
+											$_key = 'method: '.$_method->getName().'()';
+
 											$_methods[$_key]['name'] = $_method->getName().'()';
+
 											if(in_array('method_doc_blocks', $details, TRUE))
-												$_methods[$_key]['doc_block'] = "\n\t\t\t\t\t".$_method->getDocComment();
+												$_methods[$_key]['doc_block'] = // Suitable for dumping.
+													"\n".$_nested_doc_block_tabs. // We strip any leading indents established by line #2.
+													ltrim($this->©string->strip_leading_indents((string)$_method->getDocComment(), 2, $_nested_doc_block_tabs.' '));
+
 											$_methods[$_key]['modifiers']       = implode(' ', \Reflection::getModifierNames($_method->getModifiers()));
 											$_methods[$_key]['declaring-class'] = $_method->getDeclaringClass()->getName();
 
@@ -98,28 +183,34 @@ namespace websharks_core_v000000_dev
 												foreach($_method->getParameters() as $_parameter)
 													if($_parameter->isOptional())
 														{
-															$__key                                                     = 'param: $'.$_parameter->getName();
+															$__key = 'param: $'.$_parameter->getName();
+
 															$_methods[$_key]['accepts-parameters'][$__key]['optional'] = TRUE;
+
 															if($_parameter->isPassedByReference())
 																$_methods[$_key]['accepts-parameters'][$__key]['only-by-reference'] = TRUE;
+
 															$_methods[$_key]['accepts-parameters'][$__key]['name']          = '$'.$_parameter->getName();
 															$_methods[$_key]['accepts-parameters'][$__key]['default-value'] = $_parameter->getDefaultValue();
 														}
 													else // It's a requirement argument (handle this a bit differently).
 														{
-															$__key                                                     = 'param: $'.$_parameter->getName();
+															$__key = 'param: $'.$_parameter->getName();
+
 															$_methods[$_key]['accepts-parameters'][$__key]['required'] = TRUE;
+
 															if($_parameter->isPassedByReference())
 																$_methods[$_key]['accepts-parameters'][$__key]['only-by-reference'] = TRUE;
+
 															$_methods[$_key]['accepts-parameters'][$__key]['name'] = '$'.$_parameter->getName();
 														}
 										}
 									$ns_class_details['class: '.$_ns_class]['methods'] = $_methods;
 								}
 						}
-					unset($_reflection, $_properties, $_methods, $_property, $_method, $_key, $__key);
+					unset($_reflection, $_doc_block_tabs, $_nested_doc_block_tabs, $_properties, $_methods, $_property, $_method, $_key, $__key);
 
-					return $ns_class_details; // This is a HUGE array of all details.
+					return $ns_class_details; // This is potentially a HUGE array of details. Be careful if dumping this on-screen.
 				}
 		}
 	}

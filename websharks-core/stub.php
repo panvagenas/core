@@ -765,11 +765,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					$is_windows = (stripos(PHP_OS, 'win') === 0);
 
-					if($is_windows && (is_dir('C:/Temp') || @mkdir('C:/Temp', 0777))
+					if($is_windows && (is_dir('C:/Temp') || @mkdir('C:/Temp', 0775))
 					   && is_readable('C:/Temp') && is_writable('C:/Temp')
 					) return self::n_dir_seps('C:/Temp');
 
-					if(!$is_windows && (is_dir('/tmp') || @mkdir('/tmp', 0777))
+					if(!$is_windows && (is_dir('/tmp') || @mkdir('/tmp', 0775))
 					   && is_readable('/tmp') && is_writable('/tmp')
 					) return self::n_dir_seps('/tmp');
 

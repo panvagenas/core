@@ -175,7 +175,7 @@ namespace websharks_core_v000000_dev
 
 					if($this->wp_debug_log && $this->©env->is_in_wp_debug_log_mode())
 						{
-							$log_dir  = $this->©dir->get_log_dir('private', 'debug');
+							$log_dir  = $this->©dir->get_log_dir($this::private_type, 'debug');
 							$log_file = $this->©file->maybe_archive($log_dir.'/debug.log');
 
 							file_put_contents(

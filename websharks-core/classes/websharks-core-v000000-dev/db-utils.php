@@ -431,7 +431,7 @@ namespace websharks_core_v000000_dev
 
 									if(is_string($query = preg_replace($replace, $with, $query)))
 										{
-											$queries = preg_split('/;$/m', $query, -1, PREG_SPLIT_NO_EMPTY);
+											$queries = preg_split('/;$/m', $query, NULL, PREG_SPLIT_NO_EMPTY);
 											$queries = $this->©strings->trim_deep($queries);
 											$queries = $this->©array->remove_0b_strings_deep($queries);
 

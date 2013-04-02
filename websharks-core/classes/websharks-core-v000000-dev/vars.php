@@ -1060,13 +1060,17 @@ namespace websharks_core_v000000_dev
 			 * @note This provides better output, better indentation, and it returns a string.
 			 *    While this routine is NOT faster than ``var_dump()``, it IS faster than ``print_r()``.
 			 *
-			 * @param mixed   $var Any input variable to dump (or an expression is fine also).
+			 * @param mixed          $var Any input variable to dump (or an expression is fine also).
 			 *
-			 * @param boolean $echo Optional. Defaults to a FALSE value.
-			 *    If this is TRUE, data will be output via ``echo()``, as well as returned.
+			 * @param string|boolean $echo Optional. Defaults to an empty string.
+			 *    If this is ``framework::do_echo`` or TRUE, data will be output via ``echo()`` as well as returned.
 			 *
-			 * @param integer $tab_size Optional. Defaults to a value of `1`, for tabbed indentation.
+			 * @param integer        $tab_size Optional. Defaults to a value of `1`, for tabbed indentation.
 			 *    This can be customized, to control the overall tab indentation size.
+			 *
+			 * @param boolean        $dump_circular_ids Optional. Defaults to a value of FALSE (cleaner output).
+			 *    If this is TRUE, all circular IDs for objects/arrays will be included in the dump.
+			 *    This can be helpful when trying to determine the origin of circular references.
 			 *
 			 * @return string A dump of the input ``$var``.
 			 *
@@ -1081,13 +1085,13 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @assert (PHP_VERSION) is-type 'string'
-			 * @assertion-via-debugging We test this in other areas.
 			 */
-			public function dump($var, $echo = FALSE, $tab_size = 1)
+			public function dump($var, $echo = '', $tab_size = 1, $dump_circular_ids = FALSE)
 				{
-					$this->check_arg_types('', 'boolean', 'integer', func_get_args());
+					$this->check_arg_types('', array('string', 'boolean'), 'integer', 'boolean', func_get_args());
+					$echo = ($echo === $this::do_echo || $echo === TRUE) ? $this::do_echo : '';
 
-					return $this->_dump($var, $echo, abs($tab_size));
+					return $this->_dump($var, $echo, abs($tab_size), $dump_circular_ids);
 				}
 
 			/**
@@ -1096,15 +1100,19 @@ namespace websharks_core_v000000_dev
 			 * @param mixed   $var Any input variable to dump.
 			 *    Passing this by reference conserves memory in extreme cases.
 			 *
-			 * @param boolean $echo Optional. Defaults to a FALSE value.
-			 *    If this is TRUE, data will be output via ``echo()``, as well as returned.
+			 * @param string  $echo Optional. Defaults to an empty string.
+			 *    If this is ``framework::do_echo``, data will be output via ``echo()``, as well as returned.
 			 *
 			 * @param integer $tab_size Optional. Defaults to a value of `1`, for tabbed indentation.
 			 *    This can be customized, to control the overall tab indentation size.
 			 *
-			 * @param integer $current_tab_size Used in recursion. This is for internal use only.
+			 * @param boolean $dump_circular_ids Optional. Defaults to a value of FALSE (cleaner output).
+			 *    If this is TRUE, all circular IDs for objects/arrays will be included in the dump.
+			 *    This can be helpful when trying to determine the origin of circular references.
 			 *
-			 * @param array   $nested_circular_ids Used in recursion. For internal use only.
+			 * @param integer $___current_tab_size Used in recursion. This is for internal use only.
+			 *
+			 * @param array   $___nested_circular_ids Used in recursion. For internal use only.
 			 *
 			 * @return string A dump of the input ``$var`` (always in string format).
 			 *
@@ -1117,9 +1125,8 @@ namespace websharks_core_v000000_dev
 			 *    Writing to a variable (or to a variable reference), could cause damage in other routines.
 			 *
 			 * @assert (PHP_VERSION) is-type 'string'
-			 * @assertion-via-debugging We test this in other areas.
 			 */
-			protected function _dump(&$var, $echo = FALSE, $tab_size = 1, $current_tab_size = 0, $nested_circular_ids = array())
+			protected function _dump(&$var, $echo = '', $tab_size = 1, $dump_circular_ids = FALSE, $___current_tab_size = 0, $___nested_circular_ids = array())
 				{
 					$var_dump = ''; // Initialize string return value for this dump.
 
@@ -1131,10 +1138,10 @@ namespace websharks_core_v000000_dev
 								$longest_nested_key_prop_length = 0;
 								$nested_dumps                   = array();
 
-								$dump_tab_size        = $current_tab_size + ($tab_size * 1);
-								$nested_dump_tab_size = $current_tab_size + ($tab_size * 2);
+								$dump_tab_size        = $___current_tab_size + ($tab_size * 1);
+								$nested_dump_tab_size = $___current_tab_size + ($tab_size * 2);
 
-								$current_tabs     = str_repeat("\t", $current_tab_size);
+								$current_tabs     = str_repeat("\t", $___current_tab_size);
 								$dump_tabs        = $current_tabs.str_repeat("\t", $dump_tab_size);
 								$nested_dump_tabs = $current_tabs.str_repeat("\t", $nested_dump_tab_size);
 
@@ -1145,11 +1152,11 @@ namespace websharks_core_v000000_dev
 								$key_prop_value_sep     = ' => '; // Same for object/array.
 
 								if($type === 'object') // Object instance type with hash/ID.
-									$real_type = 'object::'.spl_object_hash($var).'::'.get_class($var);
+									$real_type = 'object'.(($dump_circular_ids) ? '::'.spl_object_hash($var) : '').'::'.get_class($var);
 								else if($type === 'array') // Calculate an ID for arrays.
-									$real_type = 'array::'.md5(serialize($var));
+									$real_type = 'array'.(($dump_circular_ids) ? '::'.md5(serialize($var)) : '');
 
-								$var_dump = $real_type."\n".$dump_tabs.$opening_encap."\n";
+								$var_dump .= $real_type."\n".$dump_tabs.$opening_encap."\n";
 
 								foreach($var as $_nested_key_prop => &$_nested_value)
 									{
@@ -1190,13 +1197,13 @@ namespace websharks_core_v000000_dev
 											case 'object': // Recurses into object values.
 
 													$_nested_circular_id_key = spl_object_hash($_nested_value);
-													$_nested_real_type       = 'object::'.$_nested_circular_id_key.'::'.get_class($_nested_value);
+													$_nested_real_type       = 'object'.(($dump_circular_ids) ? '::'.$_nested_circular_id_key : '').'::'.get_class($_nested_value);
 
-													if(isset($nested_circular_ids[$_nested_circular_id_key]))
+													if(isset($___nested_circular_ids[$_nested_circular_id_key]))
 														$nested_dumps[$_nested_key_prop] = $_nested_real_type.'{} *circular*';
 
-													else if(($nested_circular_ids[$_nested_circular_id_key] = -1) // To catch circular references.
-													        && ($_nested_dump = $this->_dump($_nested_value, FALSE, $tab_size, $dump_tab_size, $nested_circular_ids))
+													else if(($___nested_circular_ids[$_nested_circular_id_key] = -1) // To catch circular references.
+													        && ($_nested_dump = $this->_dump($_nested_value, '', $tab_size, $dump_circular_ids, $dump_tab_size, $___nested_circular_ids))
 													) $nested_dumps[$_nested_key_prop] = $_nested_dump;
 
 													else // Else, this object has no properties.
@@ -1209,13 +1216,13 @@ namespace websharks_core_v000000_dev
 											case 'array': // Recurses into array values.
 
 													$_nested_circular_id_key = md5(serialize($_nested_value));
-													$_nested_real_type       = 'array::'.$_nested_circular_id_key;
+													$_nested_real_type       = 'array'.(($dump_circular_ids) ? '::'.$_nested_circular_id_key : '');
 
-													if(isset($nested_circular_ids[$_nested_circular_id_key]))
+													if(isset($___nested_circular_ids[$_nested_circular_id_key]))
 														$nested_dumps[$_nested_key_prop] = $_nested_real_type.'{} *circular*';
 
-													else if(($nested_circular_ids[$_nested_circular_id_key] = -1) // To catch circular references.
-													        && ($_nested_dump = $this->_dump($_nested_value, FALSE, $tab_size, $dump_tab_size, $nested_circular_ids))
+													else if(($___nested_circular_ids[$_nested_circular_id_key] = -1) // To catch circular references.
+													        && ($_nested_dump = $this->_dump($_nested_value, '', $tab_size, $dump_circular_ids, $dump_tab_size, $___nested_circular_ids))
 													) $nested_dumps[$_nested_key_prop] = $_nested_dump;
 
 													else // Else, this is an empty array.
@@ -1284,9 +1291,10 @@ namespace websharks_core_v000000_dev
 							$var_dump = (string)$var;
 							break; // Break switch.
 					}
-					if($echo) echo $var_dump."\n"; // With a trailing line break.
+					if($echo === $this::do_echo)
+						echo $var_dump."\n"; // With a trailing line break.
 
-					return $var_dump; // And we ALWAYS return the value of ``$var_dump``.
+					return $var_dump; // We ALWAYS return the value of ``$var_dump``.
 				}
 		}
 	}

@@ -108,11 +108,11 @@ namespace websharks_core_v000000_dev
 						return $this->static['disabled'];
 
 					if(($_ini_val = trim(strtolower(ini_get('disable_functions')))))
-						$this->static['disabled'] = array_merge($this->static['disabled'], preg_split('/[\s;,]+/', $_ini_val, -1, PREG_SPLIT_NO_EMPTY));
+						$this->static['disabled'] = array_merge($this->static['disabled'], preg_split('/[\s;,]+/', $_ini_val, NULL, PREG_SPLIT_NO_EMPTY));
 					unset($_ini_val); // Housekeeping.
 
 					if(($_ini_val = trim(strtolower(ini_get('suhosin.executor.func.blacklist')))))
-						$this->static['disabled'] = array_merge($this->static['disabled'], preg_split('/[\s;,]+/', $_ini_val, -1, PREG_SPLIT_NO_EMPTY));
+						$this->static['disabled'] = array_merge($this->static['disabled'], preg_split('/[\s;,]+/', $_ini_val, NULL, PREG_SPLIT_NO_EMPTY));
 					unset($_ini_val); // Housekeeping.
 
 					if($this->©string->is_true(ini_get('suhosin.executor.disable_eval')))

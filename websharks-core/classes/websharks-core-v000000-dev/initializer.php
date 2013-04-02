@@ -57,7 +57,7 @@ namespace websharks_core_v000000_dev
 
 					// For plugins that enable this option (only ONE plugin may add this hook).
 					if($this->©options->get('compressor.enable') && !isset($this->static['hooks']['compressor']))
-						{ // @TODO Move this out of the WebSharks™ Core and into it's own plugin.
+						{
 							add_action('wp_loaded', array($this, '©compressor.wp_loaded'), 10000);
 							$this->static['hooks']['compressor'] = TRUE;
 						}
