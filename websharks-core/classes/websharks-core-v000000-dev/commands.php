@@ -233,116 +233,103 @@ namespace websharks_core_v000000_dev
 			 */
 			public function exec($cmd_args, $stdin = '', $return_array = FALSE, $return_errors = FALSE, $cwd = '', $env = array(), $other = array())
 				{
-					$this->check_arg_types('string', 'string', 'boolean', 'boolean',
+					$this->check_arg_types('string:!empty', 'string', 'boolean', 'boolean',
 					                       array('string', 'null'), array('array', 'null'), array('array', 'null'), func_get_args());
 
-					$specs = array(
+					// Bypass each of these in the ``proc_open()`` call with NULL values (if they are empty).
+
+					$cwd   = $this->©var->is_not_empty_or($cwd, NULL);
+					$env   = $this->©var->is_not_empty_or($env, NULL);
+					$other = $this->©var->is_not_empty_or($other, NULL);
+
+					$specs  = array( // Configure file descriptor specifications.
 						0 => array('pipe', 'r'), // Input pipe for command to read input from (for us to write to).
 						1 => array('pipe', 'w'), // Output pipe for command to write its output to (for us to read from).
 						2 => array('pipe', 'w') // Error output pipe for command to write its errors to (for us to read from).
 					);
+					$errors = $this->©errors(); // Initialize an errors object instance.
 
-					if($cmd_args && $this->possible()) // Have something, and commands are possible?
+					if(!$this->possible() || !is_resource($_process = proc_open($cmd_args, $specs, $_pipes, $cwd, $env, $other)))
 						{
-							// Bypass each of these with NULL values, when/if they are empty.
+							$error = (!$this->possible()) ? $this->i18n('Commands are NOT possible on this server.')
+								: $this->i18n('Unable to acquire a `proc_open()` resource.');
 
-							$this->©var->is_not_empty_or($cwd, NULL, TRUE);
-							$this->©var->is_not_empty_or($env, NULL, TRUE);
-							$this->©var->is_not_empty_or($other, NULL, TRUE);
+							$errors->add(__METHOD__, get_defined_vars(), $error);
 
-							if(is_resource($_process = proc_open($cmd_args, $specs, $_pipes, $cwd, $env, $other)))
-								{
-									// Execute.
+							if($return_errors)
+								return $errors;
 
-									if(strlen($stdin))
-										fwrite($_pipes[0], $stdin);
-									fclose($_pipes[0]); // Close pipe.
-
-									$output = trim((string)stream_get_contents($_pipes[1]));
-									fclose($_pipes[1]); // Close pipe.
-
-									$error = trim((string)stream_get_contents($_pipes[2]));
-									fclose($_pipes[2]); // Close pipe.
-
-									$status = (integer)proc_close($_process);
-									unset($_process, $_pipes);
-
-									// Handle errors.
-
-									$errors = $this->©errors();
-
-									if($error) // Did we get an error?
-										$errors->add(__METHOD__, get_defined_vars(), $error);
-
-									// Handle return values.
-
-									if($return_errors && $errors->exist())
-										return $errors;
-
-									if($return_array)
-										{
-											return array(
-												'output' => $output,
-												'error'  => $error,
-												'errors' => $errors,
-												'status' => $status
-											);
-										}
-									return $output;
-								}
+							if($return_array)
+								return array(
+									'output' => '',
+									'error'  => $error,
+									'errors' => $errors,
+									'status' => -1
+								);
+							return ''; // Default return value (failure).
 						}
+					if(strlen($stdin))
+						fwrite($_pipes[0], $stdin);
+					fclose($_pipes[0]); // Close pipe.
 
-					// Handle errors.
+					$output = trim((string)stream_get_contents($_pipes[1]));
+					fclose($_pipes[1]); // Close pipe.
 
-					$errors = $this->©error(
-						__METHOD__, array('args' => func_get_args()),
-						($error = $this->i18n('Command not possible.'))
-					);
+					$error = trim((string)stream_get_contents($_pipes[2]));
+					fclose($_pipes[2]); // Close pipe.
 
-					// Handle return values.
+					$status = (integer)proc_close($_process);
+					unset($_process, $_pipes);
 
-					if($return_errors)
+					if($error) // Did we get an error?
+						$errors->add(__METHOD__, get_defined_vars(), $error);
+
+					if($return_errors && $errors->exist())
 						return $errors;
 
 					if($return_array)
-						{
-							return array(
-								'output' => '',
-								'error'  => $error,
-								'errors' => $errors,
-								'status' => -1
-							);
-						}
-					return '';
+						return array(
+							'output' => $output,
+							'error'  => $error,
+							'errors' => $errors,
+							'status' => $status
+						);
+					return $output; // Default return value (string).
 				}
 
 			/**
 			 * A utility method for easier GIT interaction.
 			 *
-			 * @param string $args Command and arguments; or only the arguments.
+			 * @param string  $args Command and arguments; or only the arguments.
 			 *    It is NOT necessary to prefix this with `git`; this routine will handle this automatically.
 			 *    If you do pass `git`; it will be removed automatically and replaced with ``$this->git``.
 			 *
-			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
-			 * @return string The output from GIT; always a string.
+			 * @param boolean $return_array Return full array? Defaults to FALSE. If TRUE, this method will return an array with all connection details.
+			 *    The default behavior of this function is to simply return a string that contains any output received from the command line routine.
+			 *
+			 * @return string|array The output from GIT; always a string. However, this will thrown an exception if GIT returns a non-zero status.
+			 *    If ``$return_array`` is TRUE, we simply return the full array of connection details, regardless of what GIT returns.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception Only if GIT returns a non-zero status. We ignore GIT error messages;
-			 *    because GIT writes its progress to STDERR. Thus, it really should NOT be used to determine status.
+			 * @throws exception Only if ``$return_array`` is FALSE; and GIT returns a non-zero status.
+			 *    We ignore GIT error messages; because GIT writes its progress to STDERR.
+			 *    Thus, STDERR really should NOT be used to determine GIT status.
 			 */
-			public function git($args, $cwd_repo_dir)
+			public function git($args, $cwd_repo_dir, $return_array = FALSE)
 				{
-					$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty', 'boolean', func_get_args());
 
 					$cwd_repo_dir = $this->©dir->n_seps($cwd_repo_dir);
-					// Manipulate path arguments; we need all of them to be relative to the repo directory.
-					$args = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $args));
-					$args = str_ireplace($cwd_repo_dir.'/', '', $args);
+					$args         = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $args));
+					$args         = str_ireplace($cwd_repo_dir.'/', '', $args);
 
 					$git_args = $this->git.' '.preg_replace('/^'.preg_quote($this->git, '/').'\s+/', '', $args);
 					$git      = $this->exec($git_args, '', TRUE, FALSE, $cwd_repo_dir);
+
+					if($return_array) return $git; // Return array to caller?
 
 					$git_status = $git['status'];
 					$git_errors = $git['errors'];
@@ -497,6 +484,26 @@ namespace websharks_core_v000000_dev
 						return $latest;
 
 					return 'master'; // Default value.
+				}
+
+			public function git_changes_exist($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					if(!($branches = trim($this->git(($args = 'branch'), $cwd_repo_dir))))
+						throw $this->©exception(
+							__METHOD__.'#issue', get_defined_vars(),
+							sprintf($this->i18n('Unable to acquire current GIT branches for repo directory: `%1$s`.'), $cwd_repo_dir)
+						);
+					$branches = preg_split('/[\*'."\r\n".']+/', $branches, NULL, PREG_SPLIT_NO_EMPTY);
+					$branches = $this->©array->remove_empty_values_deep($this->©strings->trim_deep($branches));
+
+					foreach($branches as &$_branch) // Cleanup symbolic reference pointers.
+						if(strpos($_branch, '->') !== FALSE)
+							$_branch = trim(strstr($_branch, '->', TRUE));
+					unset($_branch); // Housekeeping.
+
+					return $branches;
 				}
 		}
 	}
