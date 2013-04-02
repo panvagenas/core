@@ -51,11 +51,11 @@ namespace websharks_core_v000000_dev
 				# WebSharks™ Core dependency utilities.
 				# -----------------------------------------------------------------------------------------------------------------------------
 
-				if(!class_exists('\\deps_'.__NAMESPACE__.''))
+				if(!class_exists('\\deps_'.__NAMESPACE__))
 					include_once dirname(__FILE__).'/deps.php';
 
 				if(!class_exists('\\'.__NAMESPACE__.'\\deps'))
-					class_alias('\\'.__NAMESPACE__, __NAMESPACE__.'\\deps');
+					class_alias('\\deps_'.__NAMESPACE__, __NAMESPACE__.'\\deps');
 
 				# -----------------------------------------------------------------------------------------------------------------------------
 				# WebSharks™ Core framework class definition.
@@ -1030,7 +1030,7 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/plugin.php';
 									$this->___instance_config->plugin_data_dir          = $this->___instance_config->plugin_dir.'-data';
 
-									if($this->___instance_config->plugin_root_ns === __NAMESPACE__)
+									if($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns)
 										$this->___instance_config->plugin_data_dir = // The WebSharks™ Core uses a temp dir.
 											stub::get_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes.'-data';
 
