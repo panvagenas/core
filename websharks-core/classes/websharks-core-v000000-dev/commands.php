@@ -353,14 +353,14 @@ namespace websharks_core_v000000_dev
 			 * @return string The current branch name; else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status; or an error message.
 			 * @throws exception If unable to acquire the current GIT branch name.
+			 * @throws exception If GIT returns a non-zero status.
 			 */
 			public function git_current_branch($cwd_repo_dir)
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(!($branch = trim($this->git(($args = 'rev-parse --abbrev-ref HEAD'), $cwd_repo_dir))))
+					if(!($branch = trim($this->git('rev-parse --abbrev-ref HEAD', $cwd_repo_dir))))
 						throw $this->©exception(
 							__METHOD__.'#issue', get_defined_vars(),
 							sprintf($this->i18n('Unable to acquire current GIT branch name for repo directory: `%1$s`.'), $cwd_repo_dir)
@@ -377,14 +377,14 @@ namespace websharks_core_v000000_dev
 			 * @return array The current branches; else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status; or an error message.
 			 * @throws exception If unable to acquire the current GIT branches.
+			 * @throws exception If GIT returns a non-zero status.
 			 */
 			public function git_current_branches($cwd_repo_dir)
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(!($branches = trim($this->git(($args = 'branch'), $cwd_repo_dir))))
+					if(!($branches = trim($this->git('branch', $cwd_repo_dir))))
 						throw $this->©exception(
 							__METHOD__.'#issue', get_defined_vars(),
 							sprintf($this->i18n('Unable to acquire current GIT branches for repo directory: `%1$s`.'), $cwd_repo_dir)
@@ -409,7 +409,7 @@ namespace websharks_core_v000000_dev
 			 * @return string The latest branch; else the `master` branch.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status; or an error message.
+			 * @throws exception If GIT returns a non-zero status.
 			 */
 			public function git_latest_branch($cwd_repo_dir)
 				{
@@ -434,7 +434,7 @@ namespace websharks_core_v000000_dev
 			 * @return string The latest dev branch; else the `master` branch.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status; or an error message.
+			 * @throws exception If GIT returns a non-zero status.
 			 */
 			public function git_latest_dev_branch($cwd_repo_dir)
 				{
@@ -464,7 +464,7 @@ namespace websharks_core_v000000_dev
 			 * @return string The latest stable branch; else the `master` branch.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status; or an error message.
+			 * @throws exception If GIT returns a non-zero status.
 			 */
 			public function git_latest_stable_branch($cwd_repo_dir)
 				{
@@ -473,9 +473,8 @@ namespace websharks_core_v000000_dev
 					$branches = $this->git_current_branches($cwd_repo_dir);
 
 					foreach($branches as $_key => $_branch)
-						if(FALSE !== strpos($_branch, '-'))
-							if(!preg_match('/\-stable$/i', $_branch))
-								unset($branches[$_key]);
+						if(FALSE !== strpos($_branch, '-') && !preg_match('/\-stable$/i', $_branch))
+							unset($branches[$_key]);
 					unset($_key, $_branch); // Housekeeping.
 
 					usort($branches, 'version_compare');
@@ -486,24 +485,24 @@ namespace websharks_core_v000000_dev
 					return 'master'; // Default value.
 				}
 
+			/**
+			 * Checks to see if there are any uncommitted changes (or untracked/unignored) files.
+			 *
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return boolean TRUE if there are any uncommitted changes (or untracked/unignored) files; else FALSE.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If GIT returns a non-zero status.
+			 */
 			public function git_changes_exist($cwd_repo_dir)
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(!($branches = trim($this->git(($args = 'branch'), $cwd_repo_dir))))
-						throw $this->©exception(
-							__METHOD__.'#issue', get_defined_vars(),
-							sprintf($this->i18n('Unable to acquire current GIT branches for repo directory: `%1$s`.'), $cwd_repo_dir)
-						);
-					$branches = preg_split('/[\*'."\r\n".']+/', $branches, NULL, PREG_SPLIT_NO_EMPTY);
-					$branches = $this->©array->remove_empty_values_deep($this->©strings->trim_deep($branches));
+					$porcelain = trim($this->git('status --porcelain', $cwd_repo_dir));
 
-					foreach($branches as &$_branch) // Cleanup symbolic reference pointers.
-						if(strpos($_branch, '->') !== FALSE)
-							$_branch = trim(strstr($_branch, '->', TRUE));
-					unset($_branch); // Housekeeping.
-
-					return $branches;
+					return (strlen($porcelain)) ? TRUE : FALSE;
 				}
 		}
 	}
