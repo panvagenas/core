@@ -313,7 +313,7 @@ namespace websharks_core_v000000_dev
 			public function time_details()
 				{
 					$date = $this->©date->i18n_utc('D M jS, Y');
-					$time = $this->©date->i18n_utc('g:i a e');
+					$time = $this->©date->i18n_utc('g:i:s a e');
 
 					$details = $date.' '.$this->translate('@ precisely').' '.$time;
 
