@@ -80,7 +80,7 @@ namespace websharks_core_v000000_dev
 					$this->cache['load_api_classes'] = TRUE;
 
 					if(is_file($this->___instance_config->plugin_api_class_file))
-						include_once $this->___instance_config->plugin_api_class_file;
+						require_once $this->___instance_config->plugin_api_class_file;
 
 					// Define in an API class file if you wish to override these defaults.
 
@@ -125,7 +125,7 @@ namespace websharks_core_v000000_dev
 					       || defined('___UNIT_TEST')) // Also load pro add-on for unit tests.
 					) // If pro add-on exists, it MUST be an active WordPress® plugin, like any other.
 						{
-							include_once $this->___instance_config->plugin_pro_class_file;
+							require_once $this->___instance_config->plugin_pro_class_file;
 							$pro_class = $this->___instance_config->plugin_root_ns_prefix.'\\pro';
 
 							if(!empty($pro_class::${'for_plugin_version'}) && $this->___instance_config->plugin_version === $pro_class::${'for_plugin_version'})

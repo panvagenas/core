@@ -13,7 +13,7 @@ Redistribute your plugin with this single file (`/websharks-core.php.phar`); whi
 ```php
 <?php
 // The WebSharks™ Core.
-include_once 'websharks-core.php.phar';
+require_once 'websharks-core.php.phar';
 ```
 *It is important to note that while the `websharks-core.php.phar` file is rather large; including the file in a PHP script does NOT actually include the entire PHP Archive; because the `websharks-core.php.phar` file halts the PHP compiler after the initial PHP Archive stub is loaded into your scripts. In other words, it is perfectly safe (and efficient) to include `websharks-core.php.phar` in your plugin files.*
 
@@ -28,7 +28,7 @@ Download the full directory structure from the repo here at GitHub™ (use ZIP d
 ```php
 <?php
 // The WebSharks™ Core.
-include_once 'websharks-core/stub.php';
+require_once 'websharks-core/stub.php';
 ```
 *While the `websharks-core/` directory is rather large; including the `stub.php` in a PHP script does NOT actually include the entire class structure of the WebSharks™ Core. WebSharks™ Core class methods/properties that you access in your PHP scripts will be autoloaded by the WebSharks™ Core (only as needed; and this occurs automatically at runtime) — keeping your application highly effecient at all times. The WebSharks™ Core uses PHP's SPL Autoload functionality to accomplish this dynamically for you.*
 
@@ -37,7 +37,7 @@ include_once 'websharks-core/stub.php';
 ```php
 <?php
 // The WebSharks™ Core.
-include_once 'websharks-core/stub.php';
+require_once 'websharks-core/stub.php';
 
 // Example usage...
 echo websharks_core()->©var->dump(
@@ -73,7 +73,7 @@ See also: http://codex.wordpress.org/File_Header
 */
 
 // Include the plugin you're about to create.
-include_once dirname(__FILE__).'/classes/rocketship/framework.php';
+require_once dirname(__FILE__).'/classes/rocketship/framework.php';
 ```
 
 Now create this directory and file: `/wp-content/plugins/rocketship/classes/rocketship/framework.php`
@@ -84,7 +84,7 @@ namespace rocketship;
 
 // Include your bundled copy of the WebSharks™ Core.
 // Assuming: `/wp-content/plugins/rocketship/websharks-core.php.phar`.
-include_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
+require_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
 
 // Tell the WebSharks™ Core Autoloader about your PHP classes.
 \websharks_core__autoloader::add_classes_dir(dirname(dirname(__FILE__)));
@@ -349,7 +349,7 @@ namespace rocketship;
 
 // Include your bundled copy of the WebSharks™ Core.
 // Assuming: `/wp-content/plugins/rocketship/websharks-core.php.phar`.
-include_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
+require_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
 
 // Tell the WebSharks™ Core Autoloader about your PHP classes.
 \websharks_core_v000000_dev\autoloader::add_classes_dir(dirname(dirname(__FILE__))); // Specific version!

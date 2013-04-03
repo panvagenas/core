@@ -68,10 +68,10 @@ namespace websharks_core_v000000_dev
 					// Load PHPMailer classes (if NOT already loaded).
 
 					if(!class_exists('PHPMailer'))
-						include_once ABSPATH.WPINC.'/class-phpmailer.php';
+						require_once ABSPATH.WPINC.'/class-phpmailer.php';
 
 					if(!class_exists('SMTP'))
-						include_once ABSPATH.WPINC.'/class-smtp.php';
+						require_once ABSPATH.WPINC.'/class-smtp.php';
 
 					$default_mail_args = array(
 						'subject'     => '', // Required.

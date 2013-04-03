@@ -19,7 +19,7 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 		if(!class_exists('websharks_core_v000000_dev'))
 			{
 				$GLOBALS['autoload_websharks_core_v000000_dev'] = FALSE;
-				include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
+				require_once dirname(dirname(dirname(__FILE__))).'/stub.php';
 			}
 		/**
 		 * Dependency Utilities.
@@ -59,7 +59,7 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 					) return TRUE; // Return TRUE. A re-scan is NOT necessary; everything is still OK.
 
 					if(!class_exists('deps_x_websharks_core_v000000_dev'))
-						include_once dirname(__FILE__).'/deps-x.php';
+						require_once dirname(__FILE__).'/deps-x.php';
 
 					$x             = new deps_x_websharks_core_v000000_dev();
 					$check_last_ok = FALSE; // We just checked this above. No reason to check again.
@@ -92,7 +92,7 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 					delete_option('websharks_core__deps__notice__dismissals');
 
 					if(!class_exists('deps_x_websharks_core_v000000_dev'))
-						include_once dirname(__FILE__).'/deps-x.php';
+						require_once dirname(__FILE__).'/deps-x.php';
 
 					$x = new deps_x_websharks_core_v000000_dev();
 

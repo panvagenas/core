@@ -891,7 +891,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
 					$msg = self::i18n('Unable to load the WebSharks™ Core. WordPress® (a core dependency) is NOT loaded up yet.'.
-					                  ' Please include WordPress® in your scripts using: `include_once \'wp-load.php\';`.');
+					                  ' Please include WordPress® in your scripts using: `require_once \'wp-load.php\';`.');
 
 					if($markdown) $msg = nl2br(preg_replace('/`(.*?)`/', '<code>'.'${1}'.'</code>', $msg), TRUE);
 
@@ -1169,13 +1169,13 @@ if(websharks_core_v000000_dev::is_autoload())
 			throw new exception(websharks_core_v000000_dev::no_wp_msg());
 
 		if(!defined('WPINC')) // Need to load WordPress?
-			include_once websharks_core_v000000_dev::wp_load(TRUE);
+			require_once websharks_core_v000000_dev::wp_load(TRUE);
 
 		if(!class_exists('deps_websharks_core_v000000_dev'))
-			include_once websharks_core_v000000_dev::deps(FALSE);
+			require_once websharks_core_v000000_dev::deps(FALSE);
 
 		if(!class_exists('\\websharks_core_v000000_dev\\framework'))
-			include_once websharks_core_v000000_dev::framework();
+			require_once websharks_core_v000000_dev::framework();
 
 		return; // We can stop here.
 	}
@@ -1196,12 +1196,3 @@ if(defined('WPINC')) return; // We can stop here.
  * By default, we disallow direct file access.
  */
 exit('Do NOT access this file directly: '.basename(__FILE__));
-
-# -----------------------------------------------------------------------------------------------------------------------------------------
-# WebSharks™ Core PHAR file contents.
-# -----------------------------------------------------------------------------------------------------------------------------------------
-/*
- * For a possible `phar://` stream wrapper (do NOT remove this).
- *    The PHAR class wants this w/ all UPPERCASE letters.
- */
-__HALT_COMPILER();

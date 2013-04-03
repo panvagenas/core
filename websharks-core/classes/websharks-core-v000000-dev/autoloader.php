@@ -116,7 +116,7 @@ namespace websharks_core_v000000_dev
 
 					if(!empty(static::$special_classes_map[$ns_class]))
 						{
-							include_once static::$special_classes_map[$ns_class];
+							require_once static::$special_classes_map[$ns_class];
 							return; // We're all done here.
 						}
 					# WebSharks™ Core class aliases (these are created dynamically).
@@ -144,7 +144,7 @@ namespace websharks_core_v000000_dev
 
 							foreach(static::$class_dirs as $_classes_dir) if(is_file($_classes_dir.'/'.$ns_class_file))
 								{
-									include_once $_classes_dir.'/'.$ns_class_file;
+									require_once $_classes_dir.'/'.$ns_class_file;
 
 									if(!empty($is_core_class_alias)) // A core class alias?
 										static::add_core_ns_class_alias($ns_class);

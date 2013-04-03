@@ -689,7 +689,7 @@ namespace websharks_core_v000000_dev
 			protected function parse_content()
 				{
 					ob_start();
-					include $this->©file->template($this->file);
+					require $this->©file->template($this->file);
 					return ($this->content = ob_get_clean());
 				}
 

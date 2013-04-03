@@ -1415,10 +1415,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					if($is_wp_loaded && $is_test_email && get_bloginfo('admin_email'))
 						{
 							if(!class_exists('PHPMailer'))
-								include_once ABSPATH.WPINC.'/class-phpmailer.php';
+								require_once ABSPATH.WPINC.'/class-phpmailer.php';
 
 							if(!class_exists('SMTP'))
-								include_once ABSPATH.WPINC.'/class-smtp.php';
+								require_once ABSPATH.WPINC.'/class-smtp.php';
 
 							try // PHPMailer (catch exceptions below).
 								{
@@ -3058,7 +3058,7 @@ if(${__FILE__}['is_in_stand_alone_mode']) // Running in Stand-Alone mode?
 
 		$deps_x_stand_alone_websharks_core_v000000_dev = new deps_x_stand_alone_websharks_core_v000000_dev();
 		if(!defined('WPINC') && $deps_x_stand_alone_websharks_core_v000000_dev->wp_load())
-			include_once $deps_x_stand_alone_websharks_core_v000000_dev->wp_load(TRUE);
+			require_once $deps_x_stand_alone_websharks_core_v000000_dev->wp_load(TRUE);
 
 		$deps_x_stand_alone_websharks_core_v000000_dev->check();
 	}

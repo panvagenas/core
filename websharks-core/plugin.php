@@ -44,11 +44,11 @@ if(!defined('WPINC'))
  * Load dependency utilities.
  */
 $GLOBALS['autoload_websharks_core_v000000_dev'] = FALSE;
-include_once dirname(__FILE__).'/stub.php';
-include_once websharks_core_v000000_dev::deps();
+require_once dirname(__FILE__).'/stub.php';
+require_once websharks_core_v000000_dev::deps();
 
 /*
  * Check dependencies (and load framework; if possible).
  */
 if(deps_websharks_core_v000000_dev::check('WebSharks™ Core', dirname(__FILE__)) === TRUE)
-	include_once websharks_core_v000000_dev::framework();
+	require_once websharks_core_v000000_dev::framework();

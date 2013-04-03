@@ -1081,6 +1081,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string       $stub_file Stub file path. The contents of this stub file will be used as
 			 *    the stub for the resulting PHAR file. Required for all PHARs created by this routine.
+			 *    A final call to ``__HALT_COMPILER();`` is automatically appended by this routine.
 			 *
 			 * @param boolean      $strip_ws Optional. Defaults to a TRUE value (highly recommended).
 			 *    If this is TRUE; any PHP files in the archive will be further reduced in filesize by this routine.
@@ -1179,7 +1180,9 @@ namespace websharks_core_v000000_dev
 
 					$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$is_phar_var_suffix.'\'] = \'phar://\'.__FILE__;';
 					$_stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
-					$_stub_file_contents    = $this->©string->ireplace_once('<?php', '<?php '.$_stub_file_is_phar_var.' ', $_stub_file_contents);
+					$_stub_file_contents    = trim(preg_replace('/\W\?\>\s*$/', '', $_stub_file_contents, 1)); // No close tag & trim.
+					$_stub_file_contents    = preg_replace('/\<\?php|\<\?/i', '<?php '.$_stub_file_is_phar_var, $_stub_file_contents, 1);
+					$_stub_file_contents    = preg_replace('/\W__HALT_COMPILER\s*\(\s*\)\s*;/i', '', $_stub_file_contents, 1).' __HALT_COMPILER();';
 
 					$_phar = new \Phar($to, $this->iteration_flags());
 					$_phar->startBuffering(); // Don't create file yet (wait until we're done here).
@@ -1261,7 +1264,7 @@ namespace websharks_core_v000000_dev
 					$to  = $this->n_seps($to);
 
 					if(!class_exists('\\PclZip'))
-						include_once ABSPATH.'wp-admin/includes/class-pclzip.php';
+						require_once ABSPATH.'wp-admin/includes/class-pclzip.php';
 
 					if(!is_dir($dir))
 						throw $this->©exception(

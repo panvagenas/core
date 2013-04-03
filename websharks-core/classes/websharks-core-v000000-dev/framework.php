@@ -42,7 +42,7 @@ namespace websharks_core_v000000_dev
 				if(!class_exists('\\'.__NAMESPACE__))
 					{
 						$GLOBALS['autoload_'.__NAMESPACE__] = FALSE;
-						include_once dirname(dirname(dirname(__FILE__))).'/stub.php';
+						require_once dirname(dirname(dirname(__FILE__))).'/stub.php';
 					}
 				if(!class_exists('\\'.__NAMESPACE__.'\\stub'))
 					class_alias('\\'.__NAMESPACE__, __NAMESPACE__.'\\stub');
@@ -52,7 +52,7 @@ namespace websharks_core_v000000_dev
 				# -----------------------------------------------------------------------------------------------------------------------------
 
 				if(!class_exists('\\deps_'.__NAMESPACE__))
-					include_once dirname(__FILE__).'/deps.php';
+					require_once dirname(__FILE__).'/deps.php';
 
 				if(!class_exists('\\'.__NAMESPACE__.'\\deps'))
 					class_alias('\\deps_'.__NAMESPACE__, __NAMESPACE__.'\\deps');
@@ -2242,8 +2242,8 @@ namespace websharks_core_v000000_dev
 				# Now include the WebSharks™ Core autoload/exception handlers.
 				# -----------------------------------------------------------------------------------------------------------------------------
 
-				include_once dirname(__FILE__).'/autoloader.php';
-				include_once dirname(__FILE__).'/exception-handler.php';
+				require_once dirname(__FILE__).'/autoloader.php';
+				require_once dirname(__FILE__).'/exception-handler.php';
 
 				# -----------------------------------------------------------------------------------------------------------------------------
 				# Creates an instance of the WebSharks™ Core framework.

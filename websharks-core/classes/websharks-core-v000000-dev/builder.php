@@ -1162,9 +1162,11 @@ namespace websharks_core_v000000_dev
 
 							// Handle deletion and rename/replacement from existing core directory; to new core directory.
 
-							if($is_new) // We MUST do this last to avoid SPL autoload issues.
-								// Everything that occurs after this point; must use classes already loaded up.
-								{
+							if($is_new) // We MUST do this last to avoid autoload issues.
+								// Everything that occurs after this point; MUST use classes already loaded up.
+								{ // Be sure all of these classes are loaded up into memory (to avoid autoload issues).
+									array($this->©dirs, $this->©commands, $this->©successes, $this->©exception);
+
 									$this->©dir->empty_and_remove($this->core_dir);
 									$this->©command->git('rm -r --cached '.escapeshellarg($this->core_dir.'/'), $this->core_repo_dir);
 
