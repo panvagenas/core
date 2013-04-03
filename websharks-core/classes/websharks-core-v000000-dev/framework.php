@@ -48,7 +48,7 @@ namespace websharks_core_v000000_dev
 					class_alias('\\'.__NAMESPACE__, __NAMESPACE__.'\\stub');
 
 				# -----------------------------------------------------------------------------------------------------------------------------
-				# WebSharks™ Core dependency utilities.
+				# WebSharks™ Core dependency utilities (and alias).
 				# -----------------------------------------------------------------------------------------------------------------------------
 
 				if(!class_exists('\\deps_'.__NAMESPACE__))
@@ -2294,12 +2294,6 @@ namespace websharks_core_v000000_dev
 
 						return call_user_func('\\'.str_replace(__NAMESPACE__.'\\', '', __FUNCTION__), (string)$version);
 					}
-
-				# -----------------------------------------------------------------------------------------------------------------------------
-				# Housekeeping.
-				# -----------------------------------------------------------------------------------------------------------------------------
-
-				unset(${__FILE__});
 			}
 	}
 # -----------------------------------------------------------------------------------------------------------------------------------------
@@ -2323,7 +2317,7 @@ namespace // Global namespace.
 				 * @see \websharks_core_v000000_dev\api::$framework
 				 * @see \websharks_core_v000000_dev\api::framework()
 				 */
-				class websharks_core extends \websharks_core_v000000_dev\api
+				final class websharks_core extends \websharks_core_v000000_dev\api
 				{
 					// Nothing more we need to do here.
 				}
@@ -2355,4 +2349,9 @@ namespace // Global namespace.
 						return $GLOBALS[__FUNCTION__.'_v'.str_replace('-', '_', (string)$version)];
 					}
 			}
+		# -----------------------------------------------------------------------------------------------------------------------------------
+		# Housekeeping.
+		# -----------------------------------------------------------------------------------------------------------------------------------
+
+		unset(${__FILE__});
 	}
