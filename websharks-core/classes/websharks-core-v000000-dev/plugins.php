@@ -341,9 +341,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return boolean TRUE if the current plugin is actually the WebSharks™ Core.
 			 */
-			public function is_core()
+			public function is_core() // The WebSharks™ Core itself?
 				{
-					return ($this->___instance_config->plugin_root_ns === __NAMESPACE__);
+					return ($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns);
 				}
 
 			/**
