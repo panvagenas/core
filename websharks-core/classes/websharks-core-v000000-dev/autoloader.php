@@ -125,8 +125,6 @@ namespace websharks_core_v000000_dev
 							static::add_root_ns(stub::$core_ns);
 							static::$core_classes_dir = $core_classes_dir;
 							static::add_classes_dir(static::$core_classes_dir);
-							static::add_core_ns_class_alias(__CLASS__);
-
 							spl_autoload_register('\\'.__CLASS__.'::load_ns_class');
 
 							return (static::$initialized = TRUE);
@@ -169,7 +167,7 @@ namespace websharks_core_v000000_dev
 									$ns_class                  = str_replace(array(stub::$core_ns_stub.'__', '__'), array(stub::$core_ns.'__', '\\'), $ns_class);
 									$is_handling_class_root_ns = $root_ns = static::is_handling_class_root_ns($ns_class);
 
-									if($is_handling_class_root_ns && class_exists('\\'.$ns_class))
+									if($is_handling_class_root_ns && class_exists('\\'.$ns_class, FALSE))
 										{ // ↑ The underlying class COULD be available already.
 
 											static::add_core_ns_class_alias($ns_class);

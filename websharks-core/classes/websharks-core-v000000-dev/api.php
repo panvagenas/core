@@ -8,6 +8,8 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
+ *
+ * @TODO Make it easy to access class constants too.
  */
 namespace websharks_core_v000000_dev
 	{
@@ -315,7 +317,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @property object                                              $___instance_config Public/magic read-only access.
 		 */
-		abstract class api // Stand-alone class.
+		abstract class api // Stand-alone class (runs statically and/or as an instance).
 		{
 			/**
 			 * Framework for current plugin instance.
