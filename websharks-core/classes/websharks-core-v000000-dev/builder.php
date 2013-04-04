@@ -419,7 +419,7 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							__METHOD__.'#invalid_build_from_core_v', get_defined_vars(),
 							sprintf($this->i18n('Building from incorrect core version: `%1$s`.'), $this->build_from_core_v).
-							sprintf($this->i18n(' This is version `%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version)
+							sprintf($this->i18n(' This is version `%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name)
 						);
 					// Determine starting GIT branches; also check for uncommitted changes and/or untracked files.
 
@@ -473,8 +473,8 @@ namespace websharks_core_v000000_dev
 						sprintf($this->i18n('Start time: %1$s.'), $this->©env->time_details())
 					);
 					$successes->add(__METHOD__.'#starting_branch_core', get_defined_vars(),
-					                sprintf($this->i18n('Building from WebSharks™ Core GIT branch: `%1$s` (version: `%2$s`) w/ class file: `%3$s`.'),
-					                        $this->starting_git_branches['core'], $this->___instance_config->core_version, $this->©dir->n_seps(__FILE__))
+					                sprintf($this->i18n('Building from %1$s GIT branch: `%2$s` (version: `%3$s`) w/ class file: `%4$s`.'),
+					                        $this->___instance_config->core_name, $this->starting_git_branches['core'], $this->___instance_config->core_version, $this->©dir->n_seps(__FILE__))
 					);
 					if($this->plugin_dir) // Building a plugin.
 						{
@@ -512,10 +512,10 @@ namespace websharks_core_v000000_dev
 									$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 								}
 							$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_dir', get_defined_vars(),
-							                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this plugin directory location: `%1$s`.'), $_new_core_dir).
-							                sprintf($this->i18n(' Every file in the entire plugin repo directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version).
-							                (($this->use_core_type === 'directory') ? $this->i18n(' The temporary WebSharks™ Core directory has been added to the list of GIT-tracked files in this plugin repo (but only temporarily; for distro creation momentarily).')
-								                : $this->i18n(' The temporary WebSharks™ Core directory has been deleted; and also removed from the list of GIT-tracked files in this repo. It will be excluded from the final distro.'))
+							                sprintf($this->i18n('The %1$s has been temporarily replicated into this plugin directory location: `%2$s`.'), $this->___instance_config->core_name, $_new_core_dir).
+							                sprintf($this->i18n(' Every file in the entire plugin repo directory has now been updated to use `v%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name).
+							                (($this->use_core_type === 'directory') ? sprintf($this->i18n(' The temporary %1$s directory has been added to the list of GIT-tracked files in this plugin repo (but only temporarily; for distro creation momentarily).'), $this->___instance_config->core_name)
+								                : sprintf($this->i18n(' The temporary %1$s directory has been deleted; and also removed from the list of GIT-tracked files in this repo. It will be excluded from the final distro.'), $this->___instance_config->core_name))
 							);
 							if($this->use_core_type !== 'directory') unset($_new_core_dir); // Housekeeping.
 
@@ -531,10 +531,10 @@ namespace websharks_core_v000000_dev
 							$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
 
 							$successes->add(__METHOD__.'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
-							                sprintf($this->i18n('The WebSharks™ Core stub has been added to the plugin directory here: `%1$s`.'), $_new_core_stub).
-							                sprintf($this->i18n(' The WebSharks™ Core stub has also been added to the list of GIT-tracked files in this plugin repo: `%1$s`.'), $this->plugin_repo_dir).
-							                $this->i18n(' The WebSharks™ Core stub will remain in the plugin repo. This unifies the way in which plugins include the WebSharks™ Core. Making it possible for a plugin to utilize different types of WebSharks™ Core distributions — without modification.').
-							                $this->i18n(' While a plugin\'s repo will NOT include the entire WebSharks™ Core (that\'s what the distro is for); leaving the stub behind (in the repo) allows a plugin to function, so long as the WebSharks™ Core is available somewhere on the site; in one form or another.')
+							                sprintf($this->i18n('The %1$s stub has been added to the plugin directory here: `%2$s`.'), $this->___instance_config->core_name, $_new_core_stub).
+							                sprintf($this->i18n(' The %1$s stub has also been added to the list of GIT-tracked files in this plugin repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir).
+							                sprintf($this->i18n(' The %1$s stub will remain in the plugin repo. This unifies the way in which plugins include the %1$s. Making it possible for a plugin to utilize different types of %1$s distributions — without modification.'), $this->___instance_config->core_name).
+							                sprintf($this->i18n(' While a plugin\'s repo will NOT include the entire %1$s (that\'s what the distro is for); leaving the stub behind (in the repo) allows a plugin to function, so long as the %1$s is available somewhere on the site; in one form or another.'), $this->___instance_config->core_name)
 							);
 							unset($_core_stub, $_new_core_stub); // Housekeeping.
 
@@ -562,7 +562,7 @@ namespace websharks_core_v000000_dev
 									$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
 
 									$successes->add(__METHOD__.'#new_core_phar_added_to_plugin_dir', get_defined_vars(),
-									                sprintf($this->i18n('The WebSharks™ Core PHAR file for `v%1$s`; has been copied to: `%2$s`.'), $this->___instance_config->core_version, $_new_core_phar).
+									                sprintf($this->i18n('The %1$s PHAR file for `v%2$s`; has been copied to: `%3$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version, $_new_core_phar).
 									                sprintf($this->i18n(' This file (a compressed PHP Archive); has been added to the list of GIT-tracked files in this plugin repo: `%1$s` (but only temporarily; for distro creation momentarily).'), $this->plugin_repo_dir)
 									);
 									unset($_core_phar, $_plugin_dir_htaccess_file); // Housekeeping.
@@ -647,7 +647,7 @@ namespace websharks_core_v000000_dev
 							                sprintf($this->i18n(' Plugin version: `%1$s`.'), $this->version).
 							                sprintf($this->i18n(' Plugin requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_v).
 							                sprintf($this->i18n(' Tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_v).
-							                sprintf($this->i18n(' Uses WebSharks™ Core: `v%1$s`.'), $this->___instance_config->core_version).
+							                sprintf($this->i18n(' Uses %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
 							                sprintf($this->i18n(' Plugin requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
 							                sprintf($this->i18n(' Plugin tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v)
 							);
@@ -696,8 +696,8 @@ namespace websharks_core_v000000_dev
 									$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 
 									$successes->add(__METHOD__.'#new_core_dir_deletion', get_defined_vars(),
-									                sprintf($this->i18n(' The temporary WebSharks™ Core directory: `%1$s`; has been deleted from the plugin directory.'), $_new_core_dir).
-									                sprintf($this->i18n(' The temporary WebSharks™ Core directory was also removed from the list of GIT-tracked files in this repo: `%1$s`.'), $this->plugin_repo_dir)
+									                sprintf($this->i18n(' The temporary %1$s directory: `%2$s`; has been deleted from the plugin directory.'), $this->___instance_config->core_name, $_new_core_dir).
+									                sprintf($this->i18n(' The temporary %1$s directory was also removed from the list of GIT-tracked files in this repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir)
 									);
 									unset($_new_core_dir); // Housekeeping.
 								}
@@ -709,8 +709,8 @@ namespace websharks_core_v000000_dev
 									$this->©command->git('rm --cached '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
 
 									$successes->add(__METHOD__.'#new_core_phar_deletion', get_defined_vars(),
-									                sprintf($this->i18n(' The temporary WebSharks™ Core PHAR file: `%1$s`; has been deleted from the plugin directory.'), $_new_core_phar).
-									                sprintf($this->i18n(' The temporary WebSharks™ Core PHAR file was also removed from the list of GIT-tracked files in this repo: `%1$s`.'), $this->plugin_repo_dir)
+									                sprintf($this->i18n(' The temporary %1$s PHAR file: `%2$s`; has been deleted from the plugin directory.'), $this->___instance_config->core_name, $_new_core_phar).
+									                sprintf($this->i18n(' The temporary %1$s PHAR file was also removed from the list of GIT-tracked files in this repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir)
 									);
 									unset($_new_core_phar); // Housekeeping.
 								}
@@ -748,9 +748,9 @@ namespace websharks_core_v000000_dev
 									$this->©dir->empty_and_remove($_new_pro_core_dir); // Remove it immediately.
 
 									$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_pro_dir', get_defined_vars(),
-									                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this plugin pro directory: `%1$s`.'), $_new_pro_core_dir).
-									                sprintf($this->i18n(' Every file in the entire plugin pro repo directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version).
-									                sprintf($this->i18n(' The temporary WebSharks™ Core was deleted from the plugin pro directory immediately after processing: `%1$s`.'), $_new_pro_core_dir)
+									                sprintf($this->i18n('The %1$s has been temporarily replicated into this plugin pro directory: `%2$s`.'), $this->___instance_config->core_name, $_new_pro_core_dir).
+									                sprintf($this->i18n(' Every file in the entire plugin pro repo directory has now been updated to use `v%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name).
+									                sprintf($this->i18n(' The temporary %1$s was deleted from the plugin pro directory immediately after processing: `%2$s`.'), $this->___instance_config->core_name, $_new_pro_core_dir)
 									);
 									unset($_new_pro_core_dir); // Housekeeping.
 
@@ -834,7 +834,7 @@ namespace websharks_core_v000000_dev
 									                sprintf($this->i18n(' Plugin pro version: `%1$s`.'), $this->version).
 									                sprintf($this->i18n(' Pro add-on requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_v).
 									                sprintf($this->i18n(' Pro add-on tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_v).
-									                sprintf($this->i18n(' Uses WebSharks™ Core: `v%1$s`.'), $this->___instance_config->core_version).
+									                sprintf($this->i18n(' Uses %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
 									                sprintf($this->i18n(' Pro add-on requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
 									                sprintf($this->i18n(' Pro add-on tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v)
 									);
@@ -902,9 +902,9 @@ namespace websharks_core_v000000_dev
 									$this->©dir->empty_and_remove($_new_extras_core_dir); // Remove it immediately.
 
 									$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_extras_dir', get_defined_vars(),
-									                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this plugin extras directory: `%1$s`.'), $_new_extras_core_dir).
-									                sprintf($this->i18n(' Every file in the entire plugin extras directory has now been updated to use `v%1$s` of the WebSharks™ Core.'), $this->___instance_config->core_version).
-									                sprintf($this->i18n(' The temporary WebSharks™ Core was deleted from the plugin extras directory immediately after processing: `%1$s`.'), $_new_extras_core_dir)
+									                sprintf($this->i18n('The %1$s has been temporarily replicated into this plugin extras directory: `%2$s`.'), $this->___instance_config->core_name, $_new_extras_core_dir).
+									                sprintf($this->i18n(' Every file in the entire plugin extras directory has now been updated to use `v%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name).
+									                sprintf($this->i18n(' The temporary %1$s was deleted from the plugin extras directory immediately after processing: `%2$s`.'), $this->___instance_config->core_name, $_new_extras_core_dir)
 									);
 									unset($_new_extras_core_dir); // Housekeeping.
 
@@ -945,7 +945,7 @@ namespace websharks_core_v000000_dev
 									                sprintf($this->i18n(' Extras version: `%1$s`.'), $this->version).
 									                sprintf($this->i18n(' Extras require at least PHP version: `%1$s`.'), $this->requires_at_least_php_v).
 									                sprintf($this->i18n(' Extras tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_v).
-									                sprintf($this->i18n(' Extras using WebSharks™ Core: `v%1$s`.'), $this->___instance_config->core_version).
+									                sprintf($this->i18n(' Extras using %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
 									                sprintf($this->i18n(' Extras require at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
 									                sprintf($this->i18n(' Extras tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v).
 									                sprintf($this->i18n(' New server scanner file (GIT-tracked in the plugin repo): `%1$s`.'), $_new_server_scanner_file)
@@ -1008,7 +1008,7 @@ namespace websharks_core_v000000_dev
 							                     escapeshellarg(sprintf($this->i18n('Auto-commit; before %1$s %2$score.'), $building, $new_space)), $this->core_repo_dir);
 
 							$successes->add(__METHOD__.'#before_building_'.$new_slug.'core', get_defined_vars(),
-							                sprintf($this->i18n('Restore point. All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the WebSharks™ Core repo directory: `%2$s`.'), $this->starting_git_branches['core'], $this->core_repo_dir).
+							                sprintf($this->i18n('Restore point. All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the %2$s repo directory: `%3$s`.'), $this->starting_git_branches['core'], $this->___instance_config->core_name, $this->core_repo_dir).
 							                sprintf($this->i18n(' A commit has been processed for all changes to the existing file structure%1$s.'), (($is_new) ? ' '.$this->i18n('(before new branch creation occurs)') : ''))
 							);
 							// Create a new GIT branch for this version (and switch to this new branch).
@@ -1028,9 +1028,9 @@ namespace websharks_core_v000000_dev
 									$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_dir), $this->core_repo_dir);
 
 									$successes->add(__METHOD__.'#new_core_dir_replication', get_defined_vars(),
-									                sprintf($this->i18n('The WebSharks™ Core has been temporarily replicated into this directory: `%1$s`.'), $_this_core_dir).
-									                $this->i18n(' This directory has also been added to the list of GIT-tracked files in the WebSharks™ Core repo (but only temporarily; for distro creation momentarily).').
-									                $this->i18n(' This directory will be renamed later in this routine. It will override the existing WebSharks™ Core on this new GIT branch once we\'re done here.')
+									                sprintf($this->i18n('The %1$s has been temporarily replicated into this directory: `%2$s`.'), $this->___instance_config->core_name, $_this_core_dir).
+									                sprintf($this->i18n(' This directory has also been added to the list of GIT-tracked files in the %1$s repo (but only temporarily; for distro creation momentarily).'), $this->___instance_config->core_name).
+									                sprintf($this->i18n(' This directory will be renamed later in this routine. It will override the existing %1$s on this new GIT branch once we\'re done here.'), $this->___instance_config->core_name)
 									);
 								}
 							else $_this_core_dir = $this->core_dir; // Use directory as-is.
@@ -1154,9 +1154,9 @@ namespace websharks_core_v000000_dev
 							$this->©dir->empty_and_remove($_this_core_distro_temp_dir); // Remove temp directory now.
 
 							$successes->add(__METHOD__.'#'.$new_slug.'core_phar_built_for_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
-							                sprintf($this->i18n('A temporary distro copy of the WebSharks™ Core has been compressed into a single PHP Archive file here: `%1$s`.'), $_this_core_phar).
-							                $this->i18n(' This PHP Archive file has been added to the list of GIT-tracked files in the WebSharks™ Core repo.').
-							                $this->i18n(' The temporary distro copy of the WebSharks™ Core was successfully deleted after processing.')
+							                sprintf($this->i18n('A temporary distro copy of the %1$s has been compressed into a single PHP Archive file here: `%2$s`.'), $this->___instance_config->core_name, $_this_core_phar).
+							                sprintf($this->i18n(' This PHP Archive file has been added to the list of GIT-tracked files in the %1$s repo.'), $this->___instance_config->core_name).
+							                sprintf($this->i18n(' The temporary distro copy of the %1$s was successfully deleted after processing.'), $this->___instance_config->core_name)
 							);
 							unset($_this_core_phar, $_this_core_distro_temp_dir, $_this_core_distro_temp_dir_stub, $_this_core_distro_temp_dir_htaccess);
 
@@ -1177,7 +1177,7 @@ namespace websharks_core_v000000_dev
 									$successes->add(__METHOD__.'#after_new_core_dir', get_defined_vars(),
 									                sprintf($this->i18n('The old core directory has been deleted from this new GIT branch: `%1$s`.'), $this->version).
 									                sprintf($this->i18n(' The new temporary core directory was renamed to take its place here: `%1$s`'), $_this_core_dir).
-									                $this->i18n(' This new core directory has been added to the list of GIT-tracked files in the WebSharks™ Core repo.')
+									                sprintf($this->i18n(' This new core directory has been added to the list of GIT-tracked files in the %1$s repo.'), $this->___instance_config->core_name)
 									);
 								}
 							unset($_this_core_dir); // Final housekeeping.
@@ -1189,7 +1189,7 @@ namespace websharks_core_v000000_dev
 							                     escapeshellarg(sprintf($this->i18n('Auto-commit; after %1$s %2$score.'), $building, $new_space)), $this->core_repo_dir);
 
 							$successes->add(__METHOD__.'#commit_before_'.$new_slug.'core_build_complete', get_defined_vars(),
-							                sprintf($this->i18n('All files (new and/or changed) on %1$sGIT branch: `%2$s`; have been added to the list of GIT-tracked files in the WebSharks™ Core repo directory: `%3$s`.'), $new_space, $this->version, $this->core_repo_dir).
+							                sprintf($this->i18n('All files (new and/or changed) on %1$sGIT branch: `%2$s`; have been added to the list of GIT-tracked files in the %3$s repo directory: `%4$s`.'), $new_space, $this->version, $this->___instance_config->core_name, $this->core_repo_dir).
 							                sprintf($this->i18n(' Finale. A commit has been processed for all changes to the %1$sfile structure.'), $new_space)
 							);
 							$successes->add(__METHOD__.'#'.$new_slug.'core_build_complete',

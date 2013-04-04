@@ -50,5 +50,5 @@ require_once websharks_core_v000000_dev::deps();
 /*
  * Check dependencies (and load framework; if possible).
  */
-if(deps_websharks_core_v000000_dev::check('WebSharks™ Core', dirname(__FILE__)) === TRUE)
+if(deps_websharks_core_v000000_dev::check(websharks_core_v000000_dev::$core_name, dirname(__FILE__)) === TRUE)
 	require_once websharks_core_v000000_dev::framework();

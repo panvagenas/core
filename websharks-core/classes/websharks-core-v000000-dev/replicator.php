@@ -155,7 +155,7 @@ namespace websharks_core_v000000_dev
 					else if(!preg_match(stub::$regex_valid_plugin_version, $this->version))
 						throw $this->©exception(
 							__METHOD__.'#invalid_version', get_defined_vars(),
-							sprintf($this->i18n('Invalid WebSharks™ Core version: `%1$s`.'), $this->version)
+							sprintf($this->i18n('Invalid %1$s version: `%2$s`.'), $this->___instance_config->core_name, $this->version)
 						);
 					// Object construction & initial validation complete.
 
