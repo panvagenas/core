@@ -20,23 +20,7 @@ namespace websharks_core_v000000_dev
 		if(!class_exists('\\'.__NAMESPACE__.'\\framework'))
 			{
 				# -----------------------------------------------------------------------------------------------------------------------------
-				# WordPress® version (if not already defined by WordPress®).
-				# -----------------------------------------------------------------------------------------------------------------------------
-
-				if(!defined('WP_VERSION'))
-					/**
-					 * @var string WordPress® version.
-					 */
-					define('WP_VERSION', $GLOBALS['wp_version']);
-
-				# -----------------------------------------------------------------------------------------------------------------------------
-				# WebSharks™ Core version (dictated by namespace).
-				# -----------------------------------------------------------------------------------------------------------------------------
-
-				${__FILE__}['version'] = str_replace(array('websharks_core_v', '_'), array('', '-'), __NAMESPACE__);
-
-				# -----------------------------------------------------------------------------------------------------------------------------
-				# WebSharks™ Core stub class (and alias).
+				# WebSharks™ Core stub class (and an internal/namespaced alias).
 				# -----------------------------------------------------------------------------------------------------------------------------
 
 				if(!class_exists('\\'.__NAMESPACE__))
@@ -48,7 +32,7 @@ namespace websharks_core_v000000_dev
 					class_alias('\\'.__NAMESPACE__, __NAMESPACE__.'\\stub');
 
 				# -----------------------------------------------------------------------------------------------------------------------------
-				# WebSharks™ Core dependency utilities (and alias).
+				# WebSharks™ Core deps class (and an internal/namespaced alias).
 				# -----------------------------------------------------------------------------------------------------------------------------
 
 				if(!class_exists('\\deps_'.__NAMESPACE__))
@@ -56,6 +40,16 @@ namespace websharks_core_v000000_dev
 
 				if(!class_exists('\\'.__NAMESPACE__.'\\deps'))
 					class_alias('\\deps_'.__NAMESPACE__, __NAMESPACE__.'\\deps');
+
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# WordPress® version (only if NOT already defined by WordPress®).
+				# -----------------------------------------------------------------------------------------------------------------------------
+
+				if(!defined('WP_VERSION'))
+					/**
+					 * @var string WordPress® version.
+					 */
+					define('WP_VERSION', $GLOBALS['wp_version']);
 
 				# -----------------------------------------------------------------------------------------------------------------------------
 				# WebSharks™ Core framework class definition.
@@ -844,8 +838,8 @@ namespace websharks_core_v000000_dev
 					 * Core class constructor.
 					 *
 					 * @param object|array $___instance_config Required at all times.
-					 *    A parent object instance, which contains the parent's ``$___instance_config``,
-					 *    or a new ``$___instance_config`` array.
+					 *    A parent object instance, which contains the parent's ``$___instance_config``.
+					 *    Or, a new ``$___instance_config`` array with the elements listed below.
 					 *
 					 *    An array MUST contain the following elements:
 					 *       • ``(string)$___instance_config['plugin_name']`` — Name of current plugin.
@@ -856,27 +850,28 @@ namespace websharks_core_v000000_dev
 					 *       • ``(string)$___instance_config['plugin_site']`` — Plugin site URL (http://).
 					 *
 					 * @throws \exception If there is a missing and/or invalid ``$___instance_config``.
-					 * @throws \exception If more than 6 configuration elements exist in an ``$__instance_config`` array.
+					 * @throws \exception If there are NOT 6 configuration elements in an ``$__instance_config`` array.
 					 *
 					 * @throws \exception If the plugin's root namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_root_ns}
+					 *    See: {@link stub::$regex_valid_plugin_root_ns}
 					 *
 					 * @throws \exception If the plugin's variable namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_var_ns}
+					 *    See: {@link stub::$regex_valid_plugin_var_ns}
 					 *
 					 * @throws \exception If the plugin's version does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_version}
+					 *    See: {@link stub::$regex_valid_plugin_version}
 					 *
 					 * @throws \exception If the plugin's directory is missing (e.g. the plugin's directory MUST actually exist).
+					 *    In addition, the plugin's directory MUST contain a main `classes` directory with the name `classes`.
 					 *    In addition, the plugin's directory MUST contain a main plugin file with the name `plugin.php`.
 					 *
-					 * @throws \exception If the plugin's site URL, is NOT valid (MUST start with `http://.+`).
+					 * @throws \exception If the plugin's site URL is NOT valid (MUST start with `http://.+`).
 					 *
 					 * @throws \exception If the namespace\class path does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_ns_class}
+					 *    See: {@link stub::$regex_valid_plugin_ns_class}
 					 *
 					 * @throws \exception If the core namespace does NOT match this regex pattern validation.
-					 *    See: {@link \websharks_core_v000000_dev::$regex_valid_core_ns_version}
+					 *    See: {@link stub::$regex_valid_core_ns_version}
 					 *
 					 * @public A magic/overload constructor MUST always remain public.
 					 *
@@ -923,7 +918,7 @@ namespace websharks_core_v000000_dev
 
 							        && !empty($___instance_config['plugin_dir']) && is_string($___instance_config['plugin_dir'])
 							        && is_dir($___instance_config['plugin_dir'] = stub::n_dir_seps($___instance_config['plugin_dir']))
-							        && is_file($___instance_config['plugin_dir'].'/plugin.php')
+							        && is_file($___instance_config['plugin_dir'].'/plugin.php') && is_dir($___instance_config['plugin_dir'].'/classes')
 
 							        && !empty($___instance_config['plugin_site']) && is_string($___instance_config['plugin_site'])
 							        && preg_match('/^http\:\/\/.+/i', $___instance_config['plugin_site'])
@@ -941,7 +936,7 @@ namespace websharks_core_v000000_dev
 										}
 									if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns]) || !($GLOBALS[$this->___instance_config->plugin_root_ns] instanceof framework))
 										{
-											if($this->___instance_config->plugin_root_ns !== __NAMESPACE__)
+											if($this->___instance_config->plugin_root_ns !== stub::$core_ns)
 												$load_plugin = TRUE; // Not the core (only plugins).
 											$GLOBALS[$this->___instance_config->plugin_root_ns] = $this;
 										}
@@ -962,24 +957,36 @@ namespace websharks_core_v000000_dev
 									sprintf(stub::i18n('Namespace\\class contains invalid chars: `%1$s`.'), $this->___instance_config->ns_class)
 								);
 
-							// Based on this core ``__NAMESPACE__``. These properties will NOT change from one class instance to another.
-							if(!$___parent_instance_config) // Therefore, we ONLY need this routine if we did NOT get a ``$___parent_instance``.
+							// Mostly from core stub. These properties will NOT change from one class instance to another.
+							if(!$___parent_instance_config) // ONLY if we did NOT get a ``$___parent_instance``.
 								{
-									// Based on the WebSharks™ Core stub.
-									$this->___instance_config->core_ns_stub                              = 'websharks_core';
-									$this->___instance_config->core_ns_stub_with_dashes                  = 'websharks-core';
-									$this->___instance_config->{$this->___instance_config->core_ns_stub} = TRUE;
+									// Miscellaneous core properties (mostly from the stub).
+									$this->___instance_config->core_name           = stub::$core_name;
+									$this->___instance_config->core_site           = stub::$core_site;
+									$this->___instance_config->local_wp_dev_dir    = stub::$local_wp_dev_dir;
+									$this->___instance_config->local_core_repo_dir = stub::$local_core_repo_dir;
+									$this->___instance_config->core_classes_dir    = dirname(dirname(__FILE__));
 
-									// Based on this core ``__NAMESPACE__`` (as defined in this file).
-									$this->___instance_config->core_ns             = __NAMESPACE__;
-									$this->___instance_config->core_ns_prefix      = '\\'.$this->___instance_config->core_ns;
-									$this->___instance_config->core_ns_with_dashes = str_replace('_', '-', $this->___instance_config->core_ns);
+									// Based on ``stub::$core_ns``.
+									$this->___instance_config->core_ns             = stub::$core_ns;
+									$this->___instance_config->core_ns_prefix      = stub::$core_ns_prefix;
+									$this->___instance_config->core_ns_with_dashes = stub::$core_ns_with_dashes;
 
-									$this->___instance_config->core_ns_v             = substr($this->___instance_config->core_ns, strlen($this->___instance_config->core_ns_stub) + 2);
-									$this->___instance_config->core_ns_v_with_dashes = str_replace('_', '-', $this->___instance_config->core_ns_v);
-									$this->___instance_config->core_version          = $this->___instance_config->core_ns_v_with_dashes;
+									// Based on ``stub::$core_ns_stub``.
+									$this->___instance_config->{stub::$core_ns_stub}    = TRUE;
+									$this->___instance_config->core_ns_stub             = stub::$core_ns_stub;
+									$this->___instance_config->core_ns_stub_with_dashes = stub::$core_ns_stub_with_dashes;
 
-									// Check core ``__NAMESPACE__`` for validation issues.
+									// Based on ``stub::$core_ns_stub_v``.
+									$this->___instance_config->core_ns_stub_v             = stub::$core_ns_stub_v;
+									$this->___instance_config->core_ns_stub_v_with_dashes = stub::$core_ns_stub_v_with_dashes;
+
+									// Based on ``stub::$core_ns_v``.
+									$this->___instance_config->core_ns_v             = stub::$core_ns_v;
+									$this->___instance_config->core_ns_v_with_dashes = stub::$core_ns_v_with_dashes;
+									$this->___instance_config->core_version          = stub::$core_version;
+
+									// Check core `namespace` for validation issues.
 									if(!preg_match(stub::$regex_valid_core_ns_version, $this->___instance_config->core_ns))
 										throw new \exception(
 											sprintf(stub::i18n('Core namespace contains invalid chars: `%1$s`.'), $this->___instance_config->core_ns)
@@ -1001,7 +1008,7 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->root_ns_prefix      = '\\'.$this->___instance_config->root_ns;
 									$this->___instance_config->root_ns_with_dashes = str_replace('_', '-', $this->___instance_config->root_ns);
 								}
-							// Based on the current plugin. These properties will NOT change from one class instance to another.
+							// Based entirely on the current plugin. These properties will NOT change from one class instance to another.
 							if(!$___parent_instance_config) // ONLY need this routine if we did NOT get a ``$___parent_instance``.
 								{
 									// Based on `plugin_var_ns` (which serves several purposes).
@@ -1028,7 +1035,9 @@ namespace websharks_core_v000000_dev
 									// Based on the plugin's directory (i.e. `plugin_dir`).
 									$this->___instance_config->plugin_dir_basename      = basename($this->___instance_config->plugin_dir);
 									$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/plugin.php';
-									$this->___instance_config->plugin_data_dir          = $this->___instance_config->plugin_dir.'-data';
+
+									// Based on the plugin's directory (i.e. `plugin_dir`).
+									$this->___instance_config->plugin_data_dir = $this->___instance_config->plugin_dir.'-data';
 
 									if($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns)
 										$this->___instance_config->plugin_data_dir = // The WebSharks™ Core uses a temp dir.
@@ -1040,10 +1049,12 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->plugin_data_dir = // Give filters a chance to modify this if they'd like to.
 										apply_filters($this->___instance_config->plugin_root_ns_stub.'__data_dir', $this->___instance_config->plugin_data_dir);
 
+									// Based on the plugin's directory (i.e. `plugin_dir`).
 									$this->___instance_config->plugin_file           = $this->___instance_config->plugin_dir.'/plugin.php';
-									$this->___instance_config->plugin_api_class_file = $this->___instance_config->plugin_dir.'/classes/api.php';
+									$this->___instance_config->plugin_classes_dir    = $this->___instance_config->plugin_dir.'/classes';
+									$this->___instance_config->plugin_api_class_file = $this->___instance_config->plugin_classes_dir.'/api.php';
 
-									// Based on the current plugin, establish properties for a pro add-on.
+									// Based on the current plugin; we establish properties for a pro add-on (optional).
 									$this->___instance_config->plugin_pro_var = $this->___instance_config->plugin_root_ns.'_pro';
 									$this->___instance_config->plugin_pro_dir = $this->___instance_config->plugin_dir.'-pro';
 
@@ -1052,8 +1063,10 @@ namespace websharks_core_v000000_dev
 
 									$this->___instance_config->plugin_pro_dir_basename      = basename($this->___instance_config->plugin_pro_dir);
 									$this->___instance_config->plugin_pro_dir_file_basename = $this->___instance_config->plugin_pro_dir_basename.'/plugin.php';
-									$this->___instance_config->plugin_pro_file              = $this->___instance_config->plugin_pro_dir.'/plugin.php';
-									$this->___instance_config->plugin_pro_class_file        = $this->___instance_config->plugin_pro_dir.'/pro.php';
+
+									$this->___instance_config->plugin_pro_file        = $this->___instance_config->plugin_pro_dir.'/plugin.php';
+									$this->___instance_config->plugin_pro_classes_dir = $this->___instance_config->plugin_pro_dir.'/classes';
+									$this->___instance_config->plugin_pro_class_file  = $this->___instance_config->plugin_pro_classes_dir.'/'.$this->___instance_config->plugin_root_ns_with_dashes.'/pro.php';
 								}
 							// Based on `plugin_root_ns_stub`.
 							// AND, also on `namespace\sub_namespace\class_name` for ``$this`` class.
@@ -1143,7 +1156,7 @@ namespace websharks_core_v000000_dev
 
 							throw new exception($this, __METHOD__.'#read_only_magic_property_error_via____set()', get_defined_vars(),
 							                    sprintf($this->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-							                    sprintf($this->i18n(' This magic/overload property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+							                    sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 							);
 						}
 
@@ -1171,7 +1184,7 @@ namespace websharks_core_v000000_dev
 
 							throw new exception($this, __METHOD__.'#read_only_magic_property_error_via____unset()', get_defined_vars(),
 							                    sprintf($this->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-							                    sprintf($this->i18n(' This magic/overload property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+							                    sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 							);
 						}
 
@@ -1970,21 +1983,18 @@ namespace websharks_core_v000000_dev
 
 							foreach($properties as $_property => $_value)
 								{
-									if(property_exists($this, $_property))
-										{
-											if(is_null($this->$_property) || gettype($_value) === gettype($this->$_property))
-												$this->$_property = $_value; // Sets/updates existing property value.
-
-											else throw $this->©exception( // Invalid property type.
-												__METHOD__.'#invalid_property_type', get_defined_vars(),
-												sprintf($this->i18n('Property type mismatch for property name: `%1$s`.'), $_property).
-												sprintf($this->i18n(' Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
-											);
-										}
-									else throw $this->©exception( // NOT already defined.
-										__METHOD__.'#undefined_property', get_defined_vars(),
-										sprintf($this->i18n('Attempting to set undefined property: `%1$s`.'), $_property)
-									);
+									if(!property_exists($this, $_property))
+										throw $this->©exception( // NOT already defined.
+											__METHOD__.'#nonexistent_property', get_defined_vars(),
+											sprintf($this->i18n('Attempting to set nonexistent property: `%1$s`.'), $_property)
+										);
+									if(!is_null($this->$_property) && gettype($_value) !== gettype($this->$_property))
+										throw $this->©exception( // Invalid property type.
+											__METHOD__.'#invalid_property_type', get_defined_vars(),
+											sprintf($this->i18n('Property type mismatch for property name: `%1$s`.'), $_property).
+											sprintf($this->i18n(' Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
+										);
+									$this->$_property = $_value; // Sets/updates existing property value.
 								}
 							unset($_property, $_value); // A little housekeeping.
 						}
@@ -2017,25 +2027,18 @@ namespace websharks_core_v000000_dev
 					 * @param string $action Action Hook name.
 					 * @params-variable-length Additional arguments pass data to an action handler.
 					 *
-					 * @return string Action Hook name, for ``$this`` class.
-					 *    Useful only in debugging.
+					 * @return null|mixed Result from call to ``do_action()`` (should be NULL).
 					 *
 					 * @final May NOT be overridden by extenders.
 					 * @public Available for public usage.
-					 *
-					 * @assert ('action') === 'websharks_core__framework__action'
-					 * @assert ('action', get_defined_vars()) === 'websharks_core__framework__action'
 					 */
 					final public function do_action($action)
 						{
 							$args    = func_get_args();
-							$args[0] = (string)$args[0];
-
+							$args[0] = (string)$args[0]; // Force string.
 							$args[0] = $this->___instance_config->plugin_stub_as_root_ns_class_with_underscores.'__'.$args[0];
 
-							call_user_func_array('do_action', $args);
-
-							return $args[0];
+							return call_user_func_array('do_action', $args);
 						}
 
 					/**
@@ -2063,7 +2066,7 @@ namespace websharks_core_v000000_dev
 					 * @param mixed  $value Value to Filter.
 					 * @params-variable-length Additional arguments pass data to a filter handler.
 					 *
-					 * @return mixed Performed Filter return value.
+					 * @return mixed Result from call to ``apply_filters()`` (e.g. filtered value).
 					 *
 					 * @final May NOT be overridden by extenders.
 					 * @public Available for public usage.
@@ -2074,8 +2077,7 @@ namespace websharks_core_v000000_dev
 					final public function apply_filters($filter, $value)
 						{
 							$args    = func_get_args();
-							$args[0] = (string)$args[0];
-
+							$args[0] = (string)$args[0]; // Force string.
 							$args[0] = $this->___instance_config->plugin_stub_as_root_ns_class_with_underscores.'__'.$args[0];
 
 							return call_user_func_array('apply_filters', $args);
@@ -2122,9 +2124,9 @@ namespace websharks_core_v000000_dev
 					 * @final This method may NOT be overridden by extenders.
 					 * @public Available for public usage.
 					 *
-					 * @see \websharks_core_v000000_dev\framework::i18n_p()
-					 * @see \websharks_core_v000000_dev\framework::translate()
-					 * @see \websharks_core_v000000_dev\framework::translate_p()
+					 * @see framework::i18n_p()
+					 * @see framework::translate()
+					 * @see framework::translate_p()
 					 *
 					 * @assert ('hello world') === 'hello world'
 					 * @assert ('hello world', 'foo') === 'hello world'
@@ -2154,9 +2156,9 @@ namespace websharks_core_v000000_dev
 					 * @final This method may NOT be overridden by extenders.
 					 * @public Available for public usage.
 					 *
-					 * @see \websharks_core_v000000_dev\framework::i18n()
-					 * @see \websharks_core_v000000_dev\framework::translate()
-					 * @see \websharks_core_v000000_dev\framework::translate_p()
+					 * @see framework::i18n()
+					 * @see framework::translate()
+					 * @see framework::translate_p()
 					 *
 					 * @assert ('hello world', 'hello worlds', 2) === 'hello worlds'
 					 * @assert ('hello world', 'hello worlds', 0) === 'hello worlds'
@@ -2186,9 +2188,9 @@ namespace websharks_core_v000000_dev
 					 * @final This method may NOT be overridden by extenders.
 					 * @public Available for public usage.
 					 *
-					 * @see \websharks_core_v000000_dev\framework::i18n()
-					 * @see \websharks_core_v000000_dev\framework::i18n_p()
-					 * @see \websharks_core_v000000_dev\framework::translate_p()
+					 * @see framework::i18n()
+					 * @see framework::i18n_p()
+					 * @see framework::translate_p()
 					 *
 					 * @assert ('hello world') === 'hello world'
 					 * @assert ('hello world', 'foo') === 'hello world'
@@ -2218,9 +2220,9 @@ namespace websharks_core_v000000_dev
 					 * @final This method may NOT be overridden by extenders.
 					 * @public Available for public usage.
 					 *
-					 * @see \websharks_core_v000000_dev\framework::i18n()
-					 * @see \websharks_core_v000000_dev\framework::i18n_p()
-					 * @see \websharks_core_v000000_dev\framework::translate()
+					 * @see framework::i18n()
+					 * @see framework::i18n_p()
+					 * @see framework::translate()
 					 *
 					 * @assert ('hello world', 'hello worlds', 2) === 'hello worlds'
 					 * @assert ('hello world', 'hello worlds', 0) === 'hello worlds'
@@ -2249,30 +2251,29 @@ namespace websharks_core_v000000_dev
 				# Creates an instance of the WebSharks™ Core framework.
 				# -----------------------------------------------------------------------------------------------------------------------------
 
-				$GLOBALS[__NAMESPACE__] = new framework(
-					array(
-					     'plugin_root_ns' => __NAMESPACE__,
-					     'plugin_var_ns'  => __NAMESPACE__,
-					     'plugin_name'    => 'WebSharks™ Core',
-					     'plugin_version' => ${__FILE__}['version'],
-					     'plugin_dir'     => dirname(dirname(dirname(__FILE__))),
-					     'plugin_site'    => 'http://www.websharks-inc.com'
-					));
-				# -----------------------------------------------------------------------------------------------------------------------------
-				# Update the WebSharks™ Core global w/ a reference to the latest available version at runtime.
-				# -----------------------------------------------------------------------------------------------------------------------------
-
-				if(!isset($GLOBALS['websharks_core']->___instance_config->websharks_core)
-				   || version_compare($GLOBALS['websharks_core']->___instance_config->core_version,
-				                      $GLOBALS[__NAMESPACE__]->___instance_config->core_version, '<')
-				) $GLOBALS['websharks_core'] = $GLOBALS[__NAMESPACE__];
+				$GLOBALS[stub::$core_ns] = new framework(
+					array('plugin_root_ns' => stub::$core_ns,
+					      'plugin_var_ns'  => stub::$core_ns,
+					      'plugin_name'    => stub::$core_name,
+					      'plugin_site'    => stub::$core_site,
+					      'plugin_version' => stub::$core_version,
+					      'plugin_dir'     => dirname(dirname(dirname(__FILE__)))));
 
 				# -----------------------------------------------------------------------------------------------------------------------------
-				# WebSharks™ Core API (for internal use only).
+				# Update WebSharks™ Core global stub w/ a reference to the latest available version at runtime.
+				# -----------------------------------------------------------------------------------------------------------------------------
+
+				if(!isset($GLOBALS[stub::$core_ns_stub]->___instance_config->{stub::$core_ns_stub})
+				   || version_compare($GLOBALS[stub::$core_ns_stub]->___instance_config->core_version,
+				                      $GLOBALS[stub::$core_ns]->___instance_config->core_version, '<')
+				) $GLOBALS[stub::$core_ns_stub] = $GLOBALS[stub::$core_ns];
+
+				# -----------------------------------------------------------------------------------------------------------------------------
+				# WebSharks™ Core API functions/classes (some for internal use only).
 				# -----------------------------------------------------------------------------------------------------------------------------
 
 				/**
-				 * WebSharks™ Core framework instance (this version).
+				 * WebSharks™ Core framework instance (this version; internal use only).
 				 *
 				 * @param string $version A specific version of the WebSharks™ Core?
 				 *    WARNING: This function will NOT automatically load a specific version for you.
@@ -2282,76 +2283,42 @@ namespace websharks_core_v000000_dev
 				 *
 				 * @note If ``$version`` is passed in, this returns a specific version of the WebSharks™ Core.
 				 *
-				 * @note This compliments ``\websharks_core()`` in the global namespace.
-				 *    For calls within this namespace; we want to use this specific version.
+				 * @note This compliments {@link \websharks_core()} in the global namespace.
+				 *    This is for calls within THIS namespace; where we want to use this specific version.
 				 *
-				 * @see \websharks_core() In the global namespace.
+				 * @see \websharks_core() The global version of this function.
 				 */
-				function websharks_core($version = '')
+				function core($version = '')
 					{
-						if(!$version) // Most common usage.
-							return $GLOBALS[__NAMESPACE__];
+						if(!$version) return $GLOBALS[stub::$core_ns];
 
-						return call_user_func('\\'.str_replace(__NAMESPACE__.'\\', '', __FUNCTION__), (string)$version);
+						return $GLOBALS[stub::$core_ns_stub_v.str_replace('-', '_', (string)$version)];
 					}
-			}
-	}
-# -----------------------------------------------------------------------------------------------------------------------------------------
-# WebSharks™ Core API class/function (only if they do NOT exist yet).
-# -----------------------------------------------------------------------------------------------------------------------------------------
-namespace // Global namespace.
-	{
-		if(!class_exists('websharks_core'))
-			{
-				/**
-				 * WebSharks™ Core API class.
-				 *
-				 * @note This provides easier access for those who DON'T CARE about the version.
-				 *
-				 * @note This works w/ the latest version available at runtime.
-				 *    While the class itself extends this version of the WebSharks™ Core;
-				 *    the API class abstraction will utilize the latest available version at runtime.
-				 *    Made possible by a global variable that references the WebSharks™ Core.
-				 *
-				 * @see \websharks_core_v000000_dev\api
-				 * @see \websharks_core_v000000_dev\api::$framework
-				 * @see \websharks_core_v000000_dev\api::framework()
+
+				/*
+				 * Easier global access for those who DON'T CARE about the version.
 				 */
-				final class websharks_core extends \websharks_core_v000000_dev\api
+				if(!function_exists('\\'.stub::$core_ns_stub)) // Only if it does NOT exist yet?
+					core()->©php->¤eval('function '.stub::$core_ns_stub.'($version = \'\'){if(!$version) return $GLOBALS[\''.stub::$core_ns_stub.'\']; return $GLOBALS[\''.stub::$core_ns_stub_v.'\'.str_replace(\'-\', \'_\', (string)$version)];}');
+
+				/**
+				 * WebSharks™ Core API class (this version; internal use only).
+				 *
+				 * @note This compliments {@link \websharks_core} in the global namespace.
+				 *    This is for calls within THIS namespace; where we want to use this specific version.
+				 *
+				 * @see api WebSharks™ Core API abstraction.
+				 * @see \websharks_core The global version of this class.
+				 */
+				final class core extends api // WebSharks™ Core API abstraction.
 				{
-					// Nothing more we need to do here.
+					// Version is worked out by the API class. Nothing more we need to do here.
 				}
-			}
-		if(!function_exists('websharks_core'))
-			{
-				/**
-				 * WebSharks™ Core framework instance (latest version).
-				 *
-				 * @note This provides easier access for those who DON'T CARE about the version.
-				 *
-				 * @param string $version A specific version of the WebSharks™ Core?
-				 *    WARNING: This function will NOT automatically load a specific version for you.
-				 *       The version that you specify MUST already be loaded up.
-				 *
-				 * @return \websharks_core_v000000_dev\framework The global WebSharks™ Core framework instance.
-				 *    Actually, this will return a reference to the latest version available at runtime.
-				 *    Made possible by a global variable that references the WebSharks™ Core.
-				 *
-				 * @note If ``$version`` is passed in, this returns a specific version of the WebSharks™ Core.
-				 *
-				 * @see \websharks_core_v000000_dev\websharks_core()
+
+				/*
+				 * Easier global access for those who DON'T CARE about the version.
 				 */
-				function websharks_core($version = '')
-					{
-						if(!$version) // Most common usage.
-							return $GLOBALS[__FUNCTION__];
-
-						return $GLOBALS[__FUNCTION__.'_v'.str_replace('-', '_', (string)$version)];
-					}
+				if(!class_exists('\\'.stub::$core_ns_stub)) // Only if it does NOT exist yet?
+					core()->©php->¤eval('final class '.stub::$core_ns_stub.' extends \\'.stub::$core_ns.'\\api{}');
 			}
-		# -----------------------------------------------------------------------------------------------------------------------------------
-		# Housekeeping.
-		# -----------------------------------------------------------------------------------------------------------------------------------
-
-		unset(${__FILE__});
 	}

@@ -10,17 +10,29 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
+ *
+ * @TODO Make this class more dynamic (if possible).
  */
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# Only if WordPress® is loaded; and the WebSharks™ Core deps class does NOT exist yet.
+# -----------------------------------------------------------------------------------------------------------------------------------------
 if(!defined('WPINC'))
 	exit('Do NOT access this file directly: '.basename(__FILE__));
 
 if(!class_exists('deps_websharks_core_v000000_dev'))
 	{
+		# -----------------------------------------------------------------------------------------------------------------------------------
+		# Load WebSharks™ Core stub class dependency (if NOT yet loaded).
+		# -----------------------------------------------------------------------------------------------------------------------------------
+
 		if(!class_exists('websharks_core_v000000_dev'))
 			{
 				$GLOBALS['autoload_websharks_core_v000000_dev'] = FALSE;
 				require_once dirname(dirname(dirname(__FILE__))).'/stub.php';
 			}
+		# -----------------------------------------------------------------------------------------------------------------------------------
+		# WebSharks™ Core deps class definition.
+		# -----------------------------------------------------------------------------------------------------------------------------------
 		/**
 		 * Dependency Utilities.
 		 *
@@ -33,11 +45,49 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 		 */
 		final class deps_websharks_core_v000000_dev // Static properties/methods only please.
 		{
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Protected properties.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * Initialized yet?
+			 *
+			 * @var boolean Initialized yet?
+			 */
+			protected static $initialized = FALSE;
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Initializer.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * Initializes WebSharks™ Core deps.
+			 *
+			 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
+			 */
+			public static function initialize()
+				{
+					if(self::$initialized)
+						return TRUE; // Initialized already.
+					/*
+					 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
+					 */
+					if(!class_exists('websharks_core__deps') && function_exists('class_alias') /* PHP v5.3+ only. */)
+						class_alias(__CLASS__, 'websharks_core__deps');
+
+					return (self::$initialized = TRUE);
+				}
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Front-runner for extended dependency utilities.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			/**
 			 * This is simply a front-runner for the extended dependency utilities provided by the WebSharks™ Core.
 			 *    There is NO need to load the entire dependency scanner unless we really need to.
 			 *
 			 * @inheritdoc deps_x_websharks_core_v000000_dev::check()
+			 * @see deps_x_websharks_core_v000000_dev::check()
 			 */
 			public static function check($plugin_name = '', $plugin_dir_names = '', $report_notices = TRUE, $report_warnings = TRUE,
 			                             $check_last_ok = TRUE, $maybe_display_wp_admin_notices = TRUE)
@@ -66,6 +116,10 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 					return $x->check($plugin_name, $plugin_dir_names, $report_notices, $report_warnings, $check_last_ok, $maybe_display_wp_admin_notices);
 				}
 
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Routines related to activation/deactivation.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			/**
 			 * Removes data/procedures associated with this class.
 			 *
@@ -74,7 +128,7 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 			 *
 			 * @return boolean TRUE if successfully uninstalled, else FALSE.
 			 *
-			 * @see \deps_x_websharks_core_v000000_dev::deactivation_uninstall()
+			 * @see deps_x_websharks_core_v000000_dev::deactivation_uninstall()
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
@@ -100,9 +154,9 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 				}
 		}
 
-		/*
-		 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
-		 */
-		if(!class_exists('websharks_core__deps') && function_exists('class_alias') /* PHP v5.3+ only. */)
-			class_alias('deps_websharks_core_v000000_dev', 'websharks_core__deps');
+		# -----------------------------------------------------------------------------------------------------------------------------------
+		# Initialize the WebSharks™ Core deps class.
+		# -----------------------------------------------------------------------------------------------------------------------------------
+
+		deps_websharks_core_v000000_dev::initialize(); // Also creates class alias.
 	}

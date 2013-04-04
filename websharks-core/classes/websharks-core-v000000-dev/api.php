@@ -322,37 +322,44 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @var framework Framework for current plugin instance.
 			 *
+			 * @by-constructor Set by class constructor (if API class is instantiated).
+			 *
 			 * @final Should NOT be overridden by class extenders.
 			 *    Would be `final` if PHP allowed such a thing.
 			 *
 			 * @protected Available only to self & extenders.
-			 *
-			 * @see \websharks_core_v000000_dev\api::framework()
-			 *    Which provides a static method for access.
 			 */
-			protected $framework;
+			protected $framework; // NULL value (by default).
 
 			/**
-			 * Sets up namespace and global framework reference.
+			 * Constructs global framework reference.
 			 *
-			 * @constructor Sets up namespace and global framework reference.
+			 * @constructor Sets up global framework reference.
 			 *
-			 * @throws \websharks_core_v000000_dev\exception If unable to locate current plugin framework instance.
-			 *    Actually, this throws an exception from the latest version available at runtime.
-			 *    Made possible by a global variable that references the WebSharks™ Core.
+			 * @throws exception If unable to locate current plugin framework instance.
 			 *
 			 * @final Cannot be overridden by class extenders.
 			 *
-			 * @public Magic methods are always public.
+			 * @public A magic/overload constructor MUST always remain public.
 			 */
 			final public function __construct()
 				{
 					$class = get_class($this); // Class name.
 
-					if(!isset($GLOBALS[$class]->___instance_config->websharks_core))
-						throw websharks_core()->©exception(
+					if($class === ($core_ns = core()->___instance_config->core_ns).'\\core')
+						{
+							if(!isset($GLOBALS[$core_ns]) || !($GLOBALS[$core_ns] instanceof framework))
+								throw core()->©exception(
+									__METHOD__.'#missing_framework_instance', get_defined_vars(),
+									sprintf(core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $core_ns)
+								);
+							$this->framework = $GLOBALS[$core_ns];
+							return; // Stop (special case; we're all done).
+						}
+					if(!isset($GLOBALS[$class]->___instance_config->{core()->___instance_config->core_ns_stub}))
+						throw core()->©exception(
 							__METHOD__.'#missing_framework_instance', get_defined_vars(),
-							sprintf(websharks_core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
+							sprintf(core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
 						);
 					$this->framework = $GLOBALS[$class];
 				}
@@ -367,7 +374,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @final Cannot be overridden by class extenders.
 			 *
-			 * @public Magic methods are always public.
+			 * @public Magic/overload methods are always public.
 			 */
 			final public function __get($dyn_class)
 				{
@@ -387,7 +394,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @final Cannot be overridden by class extenders.
 			 *
-			 * @public Magic methods are always public.
+			 * @public Magic/overload methods are always public.
 			 */
 			final public function __call($dyn_class, $args = array())
 				{
@@ -399,9 +406,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return framework Framework for current plugin instance.
 			 *
-			 * @throws \websharks_core_v000000_dev\exception If unable to locate current plugin framework instance.
-			 *    Actually, this throws an exception from the latest version available at runtime.
-			 *    Made possible by a global variable that references the WebSharks™ Core.
+			 * @throws exception If unable to locate current plugin framework instance.
 			 *
 			 * @final Cannot be overridden by class extenders.
 			 *
@@ -412,14 +417,23 @@ namespace websharks_core_v000000_dev
 					static $framework; // A static cache.
 					// For each class that extends this abstraction.
 
-					if(isset($framework)) return $framework; // Cached already?
+					if(isset($framework)) return $framework; // Cached?
 
-					$class = get_called_class(); // This uses late static binding.
+					$class = get_called_class(); // With late static binding.
 
-					if(!isset($GLOBALS[$class]->___instance_config->websharks_core))
-						throw websharks_core()->©exception(
+					if($class === ($core_ns = core()->___instance_config->core_ns).'\\core')
+						{
+							if(!isset($GLOBALS[$core_ns]) || !($GLOBALS[$core_ns] instanceof framework))
+								throw core()->©exception(
+									__METHOD__.'#missing_framework_instance', get_defined_vars(),
+									sprintf(core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $core_ns)
+								);
+							return ($framework = $GLOBALS[$core_ns]); // Stop (special case; we're all done).
+						}
+					if(!isset($GLOBALS[$class]->___instance_config->{core()->___instance_config->core_ns_stub}))
+						throw core()->©exception(
 							__METHOD__.'#missing_framework_instance', get_defined_vars(),
-							sprintf(websharks_core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
+							sprintf(core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
 						);
 					return ($framework = $GLOBALS[$class]);
 				}

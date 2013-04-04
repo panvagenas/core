@@ -1197,7 +1197,7 @@ namespace websharks_core_v000000_dev
 											case 'object': // Recurses into object values.
 
 													$_nested_circular_id_key = spl_object_hash($_nested_value);
-													$_nested_real_type       = 'object'.(($dump_circular_ids) ? '::'.$_nested_circular_id_key : '').'::'.get_class($_nested_value);
+													$_nested_real_type       = $_nested_type.(($dump_circular_ids) ? '::'.$_nested_circular_id_key : '').'::'.get_class($_nested_value);
 
 													if(isset($___nested_circular_ids[$_nested_circular_id_key]))
 														$nested_dumps[$_nested_key_prop] = $_nested_real_type.'{} *circular*';
@@ -1216,10 +1216,10 @@ namespace websharks_core_v000000_dev
 											case 'array': // Recurses into array values.
 
 													$_nested_circular_id_key = md5(serialize($_nested_value));
-													$_nested_real_type       = 'array'.(($dump_circular_ids) ? '::'.$_nested_circular_id_key : '');
+													$_nested_real_type       = $_nested_type.(($dump_circular_ids) ? '::'.$_nested_circular_id_key : '');
 
 													if(isset($___nested_circular_ids[$_nested_circular_id_key]))
-														$nested_dumps[$_nested_key_prop] = $_nested_real_type.'{} *circular*';
+														$nested_dumps[$_nested_key_prop] = $_nested_real_type.'() *circular*';
 
 													else if(($___nested_circular_ids[$_nested_circular_id_key] = -1) // To catch circular references.
 													        && ($_nested_dump = $this->_dump($_nested_value, '', $tab_size, $dump_circular_ids, $dump_tab_size, $___nested_circular_ids))

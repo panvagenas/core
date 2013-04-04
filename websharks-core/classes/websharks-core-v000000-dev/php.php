@@ -77,10 +77,11 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return string {@inheritdoc}
 			 *
-			 * @see php::evaluate()
-			 * @inheritdoc php::evaluate()
-			 *
 			 * @note This variation defaults ``$pure_php`` to a TRUE value.
+			 * @see evaluate() Defaults ``$pure_php`` to a FALSE value.
+			 * @inheritdoc evaluate()
+			 *
+			 * @assert ("echo 'hello';") === 'hello'
 			 */
 			public function ¤eval($string, $pure_php = TRUE)
 				{
@@ -100,6 +101,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If unable to evaluate, according to ``can_evaluate()``.
+			 *
+			 * @note This variation defaults ``$pure_php`` to a FALSE value.
+			 * @see ¤eval() Which defaults ``$pure_php`` to a TRUE value.
 			 *
 			 * @assert ("<?php echo 'hello'; ?>") === 'hello'
 			 */

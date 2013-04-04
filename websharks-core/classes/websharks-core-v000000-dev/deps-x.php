@@ -12,16 +12,26 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
+ *
+ * @TODO Make this class more dynamic (if possible).
  */
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# WordPress® MUST be loaded up (unless we're in stand-alone mode).
+# -----------------------------------------------------------------------------------------------------------------------------------------
+
 global ${__FILE__}; // Make sure this IS a global var.
 
 ${__FILE__}['is_in_stand_alone_mode'] = // Are we in stand-alone mode?
 	(class_exists('deps_x_stand_alone_websharks_core_v000000_dev') && basename(__FILE__) !== 'deps-x.php'
-	 && !empty($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__));
+	 && !empty($_SERVER['SCRIPT_FILENAME']) && is_string($_SERVER['SCRIPT_FILENAME'])
+	 && realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__));
 
 if(!defined('WPINC') && !${__FILE__}['is_in_stand_alone_mode']) // Disallow direct access?
 	exit('Do NOT access this file directly: '.basename(__FILE__));
 
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# Definitions for extended dependency utilities.
+# -----------------------------------------------------------------------------------------------------------------------------------------
 /**
  * Extended Dependency Utilities.
  *
@@ -34,12 +44,9 @@ if(!defined('WPINC') && !${__FILE__}['is_in_stand_alone_mode']) // Disallow dire
  */
 final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compatible.
 {
-	/**
-	 * A static cache (for all instances).
-	 *
-	 * @var array A static cache (for all instances).
-	 */
-	public static $static = array();
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Public properties.
+	# --------------------------------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Holds ``check()`` method return value.
@@ -70,6 +77,30 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 * @var array Original arguments to ``check()``.
 	 */
 	public $auto_fix_orig_check_args = array();
+
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Protected properties.
+	# --------------------------------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Local WordPress® development directory.
+	 *
+	 * @var string Local WordPress® development directory.
+	 *
+	 * @note For internal/development use only.
+	 */
+	protected static $local_wp_dev_dir = 'E:/EasyPHP/wordpress';
+
+	/**
+	 * A static cache (for all instances).
+	 *
+	 * @var array A static cache (for all instances).
+	 */
+	protected static $static = array();
+
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Main method (this is what we'll be calling upon — for the most part).
+	# --------------------------------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Checks if all WebSharks™ Core dependencies can be satisfied completely.
@@ -124,12 +155,16 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	public function check($plugin_name = '', $plugin_dir_names = '', $report_notices = TRUE, $report_warnings = TRUE,
 	                      $check_last_ok = TRUE, $maybe_display_wp_admin_notices = TRUE)
 		{
+			// Establish some important working variables.
+
 			$is_stand_alone = $GLOBALS[__FILE__]['is_in_stand_alone_mode'];
 			$is_wp_loaded   = defined('WPINC'); // We'll be checking these flags in several places below.
 			$_g             = ($is_wp_loaded && !empty($_GET['websharks_core__deps'])) ? stripslashes_deep($_GET['websharks_core__deps']) : array();
 			$is_auto_fix    = ($is_wp_loaded && !empty($_g['auto_fix']) && is_string($_g['auto_fix']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['auto_fix'], $_g['checksum']));
 			$is_dismissal   = ($is_wp_loaded && !empty($_g['dismiss']) && is_string($_g['dismiss']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['dismiss'], $_g['checksum']));
 			$is_test_email  = ($is_wp_loaded && !empty($_g['test_email']) && is_string($_g['test_email']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['test_email'], $_g['checksum']));
+
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			// If this IS an auto-fix request, should we compact (or extract) the originals?
 
@@ -150,6 +185,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				else if(!empty($this->auto_fix_orig_check_args) && (func_num_args() === 0 || func_get_args() === array('')))
 					extract($this->auto_fix_orig_check_args); // Overrides existing argument values.
 
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			// Now let's check all argument value types.
 
 			if(!is_string($plugin_name) || !is_string($plugin_dir_names)
@@ -158,6 +195,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			) throw new exception( // Fail here; detected invalid arguments.
 				sprintf($this->i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 			);
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			// Define some other important variables.
 
 			$php_version = PHP_VERSION; // Installed PHP version.
@@ -166,10 +206,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			$php_version_required = '5.3.1'; #!php-version-required!# Required PHP version.
 			$wp_version_required  = '3.5.1'; #!wp-version-required!# Required WordPress® version.
 
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			// Check if a filter has disabled this scanner.
 
 			if($is_wp_loaded && !$is_stand_alone && apply_filters('websharks_core__deps__check_disable', FALSE))
 				return ($this->check = TRUE); // Return now (DISABLED by a filter).
+
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			// Has a full scan succeeded in the past?
 
@@ -181,13 +225,13 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			   && $last_ok['time'] >= strtotime('-7 days') && $last_ok['php_version'] === $php_version && $last_ok['wp_version'] === $wp_version
 			) return ($this->check = TRUE); // Return TRUE. A re-scan is NOT necessary; everything is still OK.
 
-			// Else we need to run a full scan now.
+			# --------------------------------------------------------------------------------------------------------------------------------
 
-			/*********************************************************************************************/
+			// Else we need to run a full scan now.
 
 			$issues = $passes = $errors = $warnings = $notices = array();
 
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!is_string($plugin_name) || !$plugin_name)
 				{
@@ -213,8 +257,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 					unset($_file); // A little housekeeping.
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(version_compare($php_version, $php_version_required, '<'))
 				{
@@ -240,8 +283,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if($is_wp_loaded && version_compare($wp_version, $wp_version_required, '<'))
 				{
@@ -267,8 +309,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('phar'))
 				{
@@ -314,8 +355,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('zlib'))
 				{
@@ -342,8 +382,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('mbstring'))
 				{
@@ -370,8 +409,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('hash'))
 				{
@@ -399,8 +437,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('xml'))
 				{
@@ -428,8 +465,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('libxml'))
 				{
@@ -457,8 +493,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('simplexml'))
 				{
@@ -486,8 +521,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('xmlreader'))
 				{
@@ -515,8 +549,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('xmlwriter'))
 				{
@@ -544,8 +577,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('dom'))
 				{
@@ -573,8 +605,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('session'))
 				{
@@ -602,8 +633,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('mysql'))
 				{
@@ -630,8 +660,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('mcrypt'))
 				{
@@ -658,8 +687,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('json'))
 				{
@@ -687,8 +715,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('gd') || !is_array($_gd_info = gd_info()))
 				{
@@ -756,7 +783,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				}
 			unset($_gd_info); // Housekeeping.
 
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!extension_loaded('ctype'))
 				{
@@ -784,8 +811,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!$this->is_function_possible('eval'))
 				{
@@ -813,8 +839,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!filter_var(ini_get('short_open_tag'), FILTER_VALIDATE_BOOLEAN))
 				{
@@ -840,8 +865,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(version_compare($php_version, '5.4', '<') && !filter_var(ini_get('short_open_tag'), FILTER_VALIDATE_BOOLEAN))
 				{
@@ -878,8 +902,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			$_curl_possible               = extension_loaded('curl');
 			$_curl_version                = ($_curl_possible) ? curl_version() : array();
@@ -1086,7 +1109,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			unset($_curl_over_ssl_test_success, $_curl_fopen_ssl_test_url, $_curl_fopen_ssl_test_url_return_string_frag);
 			unset($_curl_localhost_test_success, $_curl_fopen_localhost_test_url, $_curl_fopen_localhost_test_url_return_string_frag);
 
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(extension_loaded('openssl') && $this->is_function_possible('openssl_sign'))
 				{
@@ -1111,8 +1134,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						)
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			$_temp_dir = ''; // Initialize; in case we're unable to locate.
 
@@ -1148,7 +1170,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				}
 			unset($_temp_dir, $_sys_temp_dir, $_upload_temp_dir); // Housekeeping.
 
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!$this->is_cli())
 				if(empty($_SERVER['DOCUMENT_ROOT']) || !is_string($_SERVER['DOCUMENT_ROOT']))
@@ -1175,8 +1197,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							)
 						);
 					}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!$this->is_cli())
 				if(empty($_SERVER['HTTP_HOST']) || !is_string($_SERVER['HTTP_HOST']))
@@ -1203,8 +1224,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							)
 						);
 					}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!$this->is_cli())
 				if(empty($_SERVER['REQUEST_URI']) || !is_string($_SERVER['REQUEST_URI']))
@@ -1231,8 +1251,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							)
 						);
 					}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!$this->is_cli())
 				if(empty($_SERVER['REMOTE_ADDR']) || !is_string($_SERVER['REMOTE_ADDR']))
@@ -1275,8 +1294,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							)
 						);
 					}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if(!$this->is_cli())
 				if(empty($_SERVER['HTTP_USER_AGENT']) || !is_string($_SERVER['HTTP_USER_AGENT']))
@@ -1303,12 +1321,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							)
 						);
 					}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if($report_warnings) // Only run these scans if we're reporting warnings.
 				{
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					if(!$this->is_cli())
 						if(empty($_SERVER['SERVER_ADDR']) || !is_string($_SERVER['SERVER_ADDR']))
@@ -1339,8 +1356,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									)
 								);
 							}
-
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					if($is_wp_loaded && $plugin_dir_names) // Have plugin dirs?
 						{
@@ -1407,8 +1423,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									unset($_plugin_checksum_dir, $_checksum, $_release_checksum);
 								}
 						}
-
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					// Handle email testing here. PHPMailer (catch exceptions below).
 
@@ -1502,12 +1517,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						}
 					unset($_mail_exception); // Housekeeping.
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if($report_notices) // Only run these scans if we're reporting notices.
 				{
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					if($is_wp_loaded && (!defined('WP_MEMORY_LIMIT') || !is_string(WP_MEMORY_LIMIT) || !WP_MEMORY_LIMIT))
 						{
@@ -1548,8 +1562,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								)
 							);
 						}
-
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					if($is_wp_loaded && (!defined('WP_MAX_MEMORY_LIMIT') || !is_string(WP_MAX_MEMORY_LIMIT) || !WP_MAX_MEMORY_LIMIT))
 						{
@@ -1590,8 +1603,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								)
 							);
 						}
-
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					if($is_wp_loaded && defined('WP_HTTP_BLOCK_EXTERNAL') && WP_HTTP_BLOCK_EXTERNAL)
 						{
@@ -1618,8 +1630,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								)
 							);
 						}
-
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					if($is_wp_loaded && (!defined('DB_CHARSET') || !is_string(DB_CHARSET) || !DB_CHARSET))
 						{
@@ -1660,8 +1671,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								)
 							);
 						}
-
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					if($is_wp_loaded && (!defined('DB_COLLATE') || !is_string(DB_COLLATE)))
 						{
@@ -1702,8 +1712,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								)
 							);
 						}
-
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					$_blog_charset_encoding = ($is_wp_loaded) ? get_bloginfo('charset') : NULL;
 
@@ -1750,7 +1759,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						}
 					unset($_blog_charset_encoding); // Housekeeping.
 
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					if(!$this->is_cli() && $is_wp_loaded && !is_multisite() && !empty($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST']))
 						{
@@ -1800,8 +1809,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								}
 							unset($_configured_home_host_name, $_configured_site_host_name, $_current_host_name);
 						}
-
-					/***************************************************************************************/
+					# --------------------------------------------------------------------------------------------------------------------------
 
 					if($is_wp_loaded && defined('WP_DEBUG') && WP_DEBUG && !defined('___UNIT_TEST'))
 						{
@@ -1832,8 +1840,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							);
 						}
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			// Now let's put everything together.
 
@@ -1877,7 +1884,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					);
 			unset($_key, $_pass);
 
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if($is_wp_loaded && $issues) // If we have issues, let's take a look at them.
 				{
@@ -1954,8 +1961,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						}
 					unset($_dismissals, $_dismissals_require_update);
 				}
-
-			/***************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			if($is_wp_loaded && (($report_warnings && $report_notices && !$issues) || ($this->is_cli() && !$errors)))
 				{
@@ -1979,12 +1985,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						                                 )
 					);
 				}
-
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			// Now let's create a final ``$this->check`` value.
-			// We also make use of some additional sub-routines here,
-			// which display reports and/or WordPress® notices.
+			// We also make use of some additional sub-routines here, which display reports and/or WordPress® notices.
 
 			if($issues || $is_stand_alone)
 				{
@@ -2023,10 +2027,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				}
 			else $this->check = TRUE; // TRUE indicates there is nothing to report.
 
-			/*********************************************************************************************/
+			# --------------------------------------------------------------------------------------------------------------------------------
 
 			return $this->check; // Array with report details, or TRUE (nothing to report).
 		}
+
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Methods related to directory checksums.
+	# --------------------------------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Calculates the MD5 checksum for an entire directory recursively.
@@ -2072,6 +2080,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			return md5(implode('', $checksums));
 		}
+
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Methods related to auto-fix routines.
+	# --------------------------------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Attempts to auto-fix one of several possible issues.
@@ -2209,6 +2221,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			return $this->i18n('Search/replace failed inside WordPress® config file (<code>/wp-config.php</code>).');
 		}
+
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Methods related to stand-alone report generation.
+	# --------------------------------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Displays a report for the stand-alone version running as class:
@@ -2444,6 +2460,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			exit('</html>');
 		}
 
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Methods related to report generation inside WordPress®.
+	# --------------------------------------------------------------------------------------------------------------------------------------
+
 	/**
 	 * Handles administrative notices within WordPress®.
 	 *
@@ -2621,6 +2641,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			echo '</div>';
 		}
 
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Miscellaneous utility methods (many taken from parts of the WebSharks™ Core).
+	# --------------------------------------------------------------------------------------------------------------------------------------
+
 	/**
 	 * Is a particular function, static method, or PHP language construct possible?
 	 *
@@ -2774,11 +2798,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			if(!isset($fallback)) // Auto-detection.
 				$fallback = defined('___DEV_KEY_OK');
 
-			if($fallback) // Fallback on dev copy?
+			if($fallback) // Fallback on local dev copy?
 				{
 					if(is_string($fallback))
 						$dev_dir = $this->n_dir_seps($fallback);
-					else $dev_dir = 'E:/EasyPHP/wordpress';
+					else $dev_dir = $this->n_dir_seps(self::$local_wp_dev_dir);
 
 					if(is_file($_wp_load = $dev_dir.'/wp-load.php'))
 						return (self::$static['wp_load'] = $_wp_load);
@@ -2927,6 +2951,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			return self::$static['is_cli'];
 		}
 
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Methods related to activation/deactivation of the WebSharks™ Core.
+	# --------------------------------------------------------------------------------------------------------------------------------------
+
 	/**
 	 * Removes data/procedures associated with this class.
 	 *
@@ -2956,6 +2984,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			return TRUE;
 		}
+
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Methods related to translations.
+	# --------------------------------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Handles core translations for this class (context: admin-side).
@@ -2992,6 +3024,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			return (defined('WPINC')) ? _x($string, $context, $core_ns_stub_with_dashes) : $string;
 		}
+
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Additional properties; (see also: top of this file).
+	# --------------------------------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * PHP's language constructs.
@@ -3032,14 +3068,19 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	);
 }
 
-/*
- * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
- */
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# Class aliases (if running in PHP v5.3+). Easier access for those who DON'T CARE about the version.
+# -----------------------------------------------------------------------------------------------------------------------------------------
+
 if(!${__FILE__}['is_in_stand_alone_mode'] && class_exists('deps_x_websharks_core_v000000_dev') && !class_exists('websharks_core__deps_x') && function_exists('class_alias'))
 	class_alias('deps_x_websharks_core_v000000_dev', 'websharks_core__deps_x');
 
 if(${__FILE__}['is_in_stand_alone_mode'] && class_exists('deps_x_stand_alone_websharks_core_v000000_dev') && !class_exists('websharks_core__deps_x_stand_alone') && function_exists('class_alias'))
 	class_alias('deps_x_stand_alone_websharks_core_v000000_dev', 'websharks_core__deps_x_stand_alone');
+
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# Inline/automatic stand-alone handlers (if applicable).
+# -----------------------------------------------------------------------------------------------------------------------------------------
 
 /*
  * Running in Stand-Alone mode?

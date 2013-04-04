@@ -34,8 +34,7 @@ namespace websharks_core_v000000_dev
 					$this->cache['loaded'] = TRUE;
 
 					// Don't load the core.
-					if($this->is_core())
-						return;
+					if($this->is_core()) return;
 
 					// Fires hook before loading.
 					$this->do_action('before_loaded');
@@ -85,7 +84,7 @@ namespace websharks_core_v000000_dev
 					// Define in an API class file if you wish to override these defaults.
 
 					if(!class_exists('\\'.$this->___instance_config->plugin_root_ns))
-						$this->©php->¤eval('final class '.$this->___instance_config->plugin_root_ns.' extends \\'.__NAMESPACE__.'\\api{}');
+						$this->©php->¤eval('final class '.$this->___instance_config->plugin_root_ns.' extends \\'.$this->___instance_config->core_ns.'\\api{}');
 
 					if(!class_exists('\\'.$this->___instance_config->plugin_api_var))
 						$this->©php->¤eval('class_alias(\'\\'.$this->___instance_config->plugin_root_ns.'\', \''.$this->___instance_config->plugin_api_var.'\');');

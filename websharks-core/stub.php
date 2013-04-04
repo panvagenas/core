@@ -12,10 +12,13 @@
  * @since 130302
  */
 # -----------------------------------------------------------------------------------------------------------------------------------------
-# Only if the WebSharks™ Core stub class does NOT exist yet.
+# Only if the WebSharks™ Core stub class does NOT exist yet; (we don't care about WordPress® here yet).
 # -----------------------------------------------------------------------------------------------------------------------------------------
 if(!class_exists('websharks_core_v000000_dev'))
 	{
+		# -----------------------------------------------------------------------------------------------------------------------------------
+		# WebSharks™ Core stub class definition.
+		# -----------------------------------------------------------------------------------------------------------------------------------
 		/**
 		 * Stub: WebSharks™ Core class.
 		 *
@@ -24,18 +27,165 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 * @package WebSharks\Core
 		 * @since 130302
 		 */
-		final class websharks_core_v000000_dev // Static properties/methods only.
+		final class websharks_core_v000000_dev // Static properties/methods only please.
 		{
 			# --------------------------------------------------------------------------------------------------------------------------------
-			# Properties (see also: bottom of this file).
+			# Public properties (see also: bottom of this file).
 			# --------------------------------------------------------------------------------------------------------------------------------
+			# @TODO Go back through the entire WebSharks™ Core and use properties instead of hard-coding these values.
+
+			/**
+			 * WebSharks™ Core name.
+			 *
+			 * @var string WebSharks™ Core name.
+			 */
+			public static $core_name = 'WebSharks™ Core';
+
+			/**
+			 * WebSharks™ Core site.
+			 *
+			 * @var string WebSharks™ Core site.
+			 */
+			public static $core_site = 'http://www.websharks-inc.com';
+
+			/**
+			 * Local WordPress® development directory.
+			 *
+			 * @var string Local WordPress® development directory.
+			 *
+			 * @note For internal/development use only.
+			 */
+			public static $local_wp_dev_dir = 'E:/EasyPHP/wordpress';
+
+			/**
+			 * Local WebSharks™ Core repo directory.
+			 *
+			 * @var string Local WebSharks™ Core repo directory.
+			 *
+			 * @note For internal/development use only.
+			 */
+			public static $local_core_repo_dir = 'E:/WebSharks/core';
+
+			/**
+			 * WebSharks™ Core stub.
+			 *
+			 * @var string WebSharks™ Core stub.
+			 */
+			public static $core_ns_stub = 'websharks_core';
+
+			/**
+			 * WebSharks™ Core stub w/ dashes.
+			 *
+			 * @var string WebSharks™ Core stub w/ dashes.
+			 */
+			public static $core_ns_stub_with_dashes = 'websharks-core';
+
+			/**
+			 * WebSharks™ Core stub_v.
+			 *
+			 * @var string WebSharks™ Core stub_v.
+			 */
+			public static $core_ns_stub_v = 'websharks_core_v';
+
+			/**
+			 * WebSharks™ Core stub-v w/ dashes.
+			 *
+			 * @var string WebSharks™ Core stub-v w/ dashes.
+			 */
+			public static $core_ns_stub_v_with_dashes = 'websharks-core-v';
+
+			/**
+			 * WebSharks™ Core namespace.
+			 *
+			 * @var string WebSharks™ Core namespace.
+			 */
+			public static $core_ns = 'websharks_core_v000000_dev';
+
+			/**
+			 * WebSharks™ Core namespace w/ prefix.
+			 *
+			 * @var string WebSharks™ Core namespace w/ prefix.
+			 */
+			public static $core_ns_prefix = '\\websharks_core_v000000_dev';
+
+			/**
+			 * WebSharks™ Core namespace w/ dashes.
+			 *
+			 * @var string WebSharks™ Core namespace w/ dashes.
+			 */
+			public static $core_ns_with_dashes = 'websharks-core-v000000-dev';
+
+			/**
+			 * WebSharks™ Core namespace version.
+			 *
+			 * @var string WebSharks™ Core namespace version.
+			 *
+			 * @by-initializer Set by initializer.
+			 */
+			public static $core_ns_v = '';
+
+			/**
+			 * WebSharks™ Core namespace version w/ dashes.
+			 *
+			 * @var string WebSharks™ Core namespace version w/ dashes.
+			 *
+			 * @by-initializer Set by initializer.
+			 */
+			public static $core_ns_v_with_dashes = '';
+
+			/**
+			 * WebSharks™ Core namespace version w/ dashes.
+			 *
+			 * @var string WebSharks™ Core namespace version w/ dashes.
+			 *
+			 * @by-initializer Set by initializer.
+			 */
+			public static $core_version = '';
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Protected properties (see also: bottom of this file).
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * Initialized yet?
+			 *
+			 * @var boolean Initialized yet?
+			 */
+			protected static $initialized = FALSE;
 
 			/**
 			 * A static cache (for all instances).
 			 *
 			 * @var array A static cache (for all instances).
 			 */
-			public static $static = array();
+			protected static $static = array();
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# Initializes WebSharks™ Core stub (see also: bottom of this file).
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * Initializes WebSharks™ Core stub.
+			 *
+			 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
+			 */
+			public static function initialize()
+				{
+					if(self::$initialized)
+						return TRUE; // Initialized already.
+
+					self::$core_ns_v                               = str_replace(self::$core_ns_stub_v, '', self::$core_ns);
+					self::$core_ns_v_with_dashes                   = self::$core_version = str_replace('_', '-', self::$core_ns_v);
+					self::$regex_valid_core_ns_version             = str_replace('%%self::$core_ns_stub_v%%', preg_quote(self::$core_ns_stub_v, '/'), self::$regex_valid_core_ns_version);
+					self::$regex_valid_core_ns_version_with_dashes = str_replace('%%self::$core_ns_stub_v_with_dashes%%', preg_quote(self::$core_ns_stub_v_with_dashes, '/'), self::$regex_valid_core_ns_version_with_dashes);
+					/*
+					 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
+					 */
+					if(!class_exists(self::$core_ns_stub.'__stub') && function_exists('class_alias') /* PHP v5.3+ only. */)
+						class_alias(__CLASS__, self::$core_ns_stub.'__stub');
+
+					return (self::$initialized = TRUE);
+				}
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Routines related to PHAR/autoload conditionals.
@@ -48,7 +198,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function is_phar_var()
 				{
-					return 'is_phar_'.__CLASS__;
+					return 'is_phar_'.self::$core_ns;
 				}
 
 			/**
@@ -58,7 +208,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function autoload_var()
 				{
-					return 'autoload_'.__CLASS__;
+					return 'autoload_'.self::$core_ns;
 				}
 
 			/**
@@ -154,7 +304,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *    • If TRUE, and WordPress® cannot be located anywhere else;
 			 *       automatically fallback on a local development copy.
 			 *
-			 *    • If NULL|TRUE, we'll look inside: `E:/EasyPHP/wordpress` (a default WebSharks™ Core location).
+			 *    • If NULL|TRUE, we'll look inside: ``self::$local_wp_dev_dir`` (a default WebSharks™ Core location).
 			 *       If STRING, we'll look inside the directory path defined by the string value.
 			 *
 			 *    • If FALSE — we will NOT fallback under any circumstance.
@@ -181,11 +331,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(!isset($fallback)) // Auto-detection.
 						$fallback = defined('___DEV_KEY_OK');
 
-					if($fallback) // Fallback on dev copy?
+					if($fallback) // Fallback on local dev copy?
 						{
 							if(is_string($fallback))
 								$dev_dir = self::n_dir_seps($fallback);
-							else $dev_dir = 'E:/EasyPHP/wordpress';
+							else $dev_dir = self::n_dir_seps(self::$local_wp_dev_dir);
 
 							if(is_file($_wp_load = $dev_dir.'/wp-load.php'))
 								return (self::$static['wp_load'] = $_wp_load);
@@ -267,13 +417,15 @@ if(!class_exists('websharks_core_v000000_dev'))
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
-					$locate_core_dir      = '/websharks-core';
-					$locate_core_dev_dir  = '/core/websharks-core';
-					$locate_core_phar     = '/websharks-core.php.phar';
-					$locate_core_dev_phar = '/core/websharks-core.php.phar';
-					$this_dir             = self::n_dir_seps(dirname(__FILE__));
-					$is_phar              = $this_phar = self::n_dir_seps(self::is_phar());
-					$relative_class_path  = 'classes/websharks-core-v000000-dev/'.$basename;
+					$this_dir                     = self::n_dir_seps(dirname(__FILE__));
+					$local_core_repo_dir_basename = basename(self::$local_core_repo_dir);
+					$is_phar                      = $this_phar = self::n_dir_seps(self::is_phar());
+
+					$locate_core_dir      = '/'.self::$core_ns_stub_with_dashes;
+					$locate_core_phar     = '/'.self::$core_ns_stub_with_dashes.'.php.phar';
+					$locate_core_dev_dir  = '/'.$local_core_repo_dir_basename.'/'.self::$core_ns_stub_with_dashes;
+					$locate_core_dev_phar = '/'.$local_core_repo_dir_basename.'/'.self::$core_ns_stub_with_dashes.'.php.phar';
+					$relative_class_path  = 'classes/'.self::$core_ns_with_dashes.'/'.$basename;
 
 					if(is_file($class_path = $this_dir.'/'.$relative_class_path))
 						return $class_path; // We first check this directory.
@@ -890,8 +1042,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
-					$msg = self::i18n('Unable to load the WebSharks™ Core. WordPress® (a core dependency) is NOT loaded up yet.'.
-					                  ' Please include WordPress® in your scripts using: `require_once \'wp-load.php\';`.');
+					$msg = sprintf(self::i18n('Unable to load the %1$s. WordPress® (a core dependency) is NOT loaded up yet.'.
+					                          ' Please include WordPress® in your scripts using: `require_once \'wp-load.php\';`.'), self::$core_name);
 
 					if($markdown) $msg = nl2br(preg_replace('/`(.*?)`/', '<code>'.'${1}'.'</code>', $msg), TRUE);
 
@@ -923,9 +1075,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 						throw new exception( // Fail here; we should NOT have called this.
 							sprintf(self::i18n('Inappropriate call to: `%1$s`'), __METHOD__)
 						);
-					$msg = self::i18n('Unable to load the WebSharks™ Core. This installation of PHP is missing the `Phar` extension.'.
-					                  ' The WebSharks™ Core (and WP plugins powered by it); requires PHP v5.3+ — which has `Phar` built-in.'.
-					                  ' Please upgrade to PHP v5.3 (or higher) to get rid of this message.');
+					$msg = sprintf(self::i18n('Unable to load the %1$s. This installation of PHP is missing the `Phar` extension.'.
+					                          ' The %1$s (and WordPress® plugins powered by it); requires PHP v5.3+ — which has `Phar` built-in.'.
+					                          ' Please upgrade to PHP v5.3 (or higher) to get rid of this message.'), self::$core_name);
 
 					$can_phar              = extension_loaded('phar');
 					$suhosin_running       = extension_loaded('suhosin');
@@ -966,7 +1118,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						{
 							$temp_deps          = $temp_dir.'/wp-temp-deps.tmp';
 							$temp_deps_contents = base64_decode(self::$wp_temp_deps);
-							$temp_deps_contents = str_ireplace('websharks_core'.'_v000000_dev', __CLASS__, $temp_deps_contents);
+							$temp_deps_contents = str_ireplace(self::$core_ns_stub_v.'000000_dev', self::$core_ns, $temp_deps_contents);
 							$temp_deps_contents = str_ireplace('%%notice%%', str_replace("'", "\\'", self::cant_phar_msg(TRUE)), $temp_deps_contents);
 
 							if(!is_file($temp_deps) || (is_writable($temp_deps) && unlink($temp_deps)))
@@ -992,12 +1144,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function i18n($string, $other_contextuals = '')
 				{
-					$core_ns_stub_with_dashes = 'websharks-core'; // Core namespace stub w/ dashes.
-					$string                   = (string)$string; // Typecasting this to a string value.
-					$other_contextuals        = (string)$other_contextuals; // Typecasting this to a string value.
-					$context                  = $core_ns_stub_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
+					$string            = (string)$string; // Typecasting this to a string value.
+					$other_contextuals = (string)$other_contextuals; // Typecasting this to a string value.
+					$context           = self::$core_ns_stub_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
 
-					return (defined('WPINC')) ? _x($string, $context, $core_ns_stub_with_dashes) : $string;
+					return (defined('WPINC')) ? _x($string, $context, self::$core_ns_stub_with_dashes) : $string;
 				}
 
 			/**
@@ -1012,12 +1163,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function translate($string, $other_contextuals = '')
 				{
-					$core_ns_stub_with_dashes = 'websharks-core'; // Core namespace stub w/ dashes.
-					$string                   = (string)$string; // Typecasting this to a string value.
-					$other_contextuals        = (string)$other_contextuals; // Typecasting this to a string value.
-					$context                  = $core_ns_stub_with_dashes.'--front-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
+					$string            = (string)$string; // Typecasting this to a string value.
+					$other_contextuals = (string)$other_contextuals; // Typecasting this to a string value.
+					$context           = self::$core_ns_stub_with_dashes.'--front-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
 
-					return (defined('WPINC')) ? _x($string, $context, $core_ns_stub_with_dashes) : $string;
+					return (defined('WPINC')) ? _x($string, $context, self::$core_ns_stub_with_dashes) : $string;
 				}
 
 			# --------------------------------------------------------------------------------------------------------------------------------
@@ -1052,26 +1202,24 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @see http://php.net/manual/en/function.version-compare.php
 			 *
 			 *       1. Lowercase alphanumerics and/or underscores only.
-			 *       2. MUST start with the core namespace stub: `websharks_core`.
-			 *       3. MUST then include a `_v` (lowercase) followed by six digits.
-			 *       4. May optionally end with a WebSharks™ Core version suffix.
-			 *       5. MUST always end w/ an alphanumeric value.
-			 *       6. May NOT contain double underscores.
+			 *       2. MUST start with: ``self::$core_ns_stub_v``; followed by six digits.
+			 *       3. May optionally end with a WebSharks™ Core version suffix.
+			 *       4. MUST always end w/ an alphanumeric value.
+			 *       5. May NOT contain double underscores.
 			 */
-			public static $regex_valid_core_ns_version = '/^websharks_core_v[0-9]{6}(?:_(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))?$/';
+			public static $regex_valid_core_ns_version = '/^%%self::$core_ns_stub_v%%[0-9]{6}(?:_(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))?$/';
 
 			/**
 			 * @var string WebSharks™ Core namespace (w/ version) validation pattern (dashed variation).
 			 * @see http://php.net/manual/en/function.version-compare.php
 			 *
 			 *       1. Lowercase alphanumerics and/or dashes only.
-			 *       2. MUST start with the core namespace stub: `websharks-core`.
-			 *       3. MUST then include a `-v` (lowercase); followed by six digits.
-			 *       4. May optionally end with a WebSharks™ Core version suffix.
-			 *       5. MUST always end w/ an alphanumeric value.
-			 *       6. May NOT contain double dashes.
+			 *       2. MUST start with: ``self::$core_ns_stub_v_with_dashes``; followed by six digits.
+			 *       3. May optionally end with a WebSharks™ Core version suffix.
+			 *       4. MUST always end w/ an alphanumeric value.
+			 *       5. May NOT contain double dashes.
 			 */
-			public static $regex_valid_core_ns_version_with_dashes = '/^websharks\-core\-v[0-9]{6}(?:\-(?:[a-z](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[a-z]))?$/';
+			public static $regex_valid_core_ns_version_with_dashes = '/^%%self::$core_ns_stub_v_with_dashes%%[0-9]{6}(?:\-(?:[a-z](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[a-z]))?$/';
 
 			/**
 			 * @var string Plugin root namespace validation pattern.
@@ -1125,11 +1273,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static $regex_valid_version = '/^(?:[0-9](?:[a-zA-Z0-9]|\.(?!\.))*[a-zA-Z0-9]|[0-9]+)(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?![\-\.])|\.(?![\.\-]))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
 		}
 
-		/*
-		 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
-		 */
-		if(!class_exists('websharks_core__stub') && function_exists('class_alias') /* PHP v5.3+ only. */)
-			class_alias('websharks_core_v000000_dev', 'websharks_core__stub');
+		# -----------------------------------------------------------------------------------------------------------------------------------
+		# Initialize the WebSharks™ Core stub.
+		# -----------------------------------------------------------------------------------------------------------------------------------
+
+		websharks_core_v000000_dev::initialize(); // Also creates class alias.
 	}
 # -----------------------------------------------------------------------------------------------------------------------------------------
 # Inline webPhar handler.
@@ -1143,12 +1291,8 @@ if(websharks_core_v000000_dev::is_webphar())
 		unset($GLOBALS[websharks_core_v000000_dev::autoload_var()]);
 
 		if(!websharks_core_v000000_dev::can_phar())
-			{
-				error_reporting(-1);
-				ini_set('display_errors', TRUE);
-				// We make sure this IMPORTANT message is always visible.
-				throw new exception(websharks_core_v000000_dev::cant_phar_msg());
-			}
+			throw new exception(websharks_core_v000000_dev::cant_phar_msg());
+
 		Phar::webPhar('websharks-core-v000000-dev', 'index.php', '', websharks_core_v000000_dev::web_phar_mime_types(),
 		              'websharks_core_v000000_dev::web_phar_rewriter');
 

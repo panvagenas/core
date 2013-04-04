@@ -106,9 +106,14 @@ $GLOBALS[__NAMESPACE__] = new framework(
 	     'plugin_site'    => 'http://www.example.com/rocketship-plugin', // URL to site about your plugin.
 
 	     'plugin_dir'     => dirname(dirname(dirname(__FILE__))) // Your plugin directory.
-	     /* This directory MUST contain a WordPress® plugin file named: `plugin.php`.
+
+	     /* ↑ This directory MUST contain a WordPress® plugin file named: `plugin.php`.
 	      * If you have this plugin directory: `/wp-content/plugins/rocketship/`
 	      * This file MUST exist: `/wp-content/plugins/rocketship/plugin.php` */
+
+	     /* ↑ This directory MUST contain a classes directory named: `classes`.
+	      * If you have this plugin directory: `/wp-content/plugins/rocketship/`
+	      * This directory MUST exist: `/wp-content/plugins/rocketship/classes` */
 	)
 );
 ```
@@ -369,9 +374,14 @@ $GLOBALS[__NAMESPACE__] = new framework(
 	     'plugin_site'    => 'http://www.example.com/rocketship-plugin', // URL to site about your plugin.
 
 	     'plugin_dir'     => dirname(dirname(dirname(__FILE__))) // Your plugin directory.
-	     /* This directory MUST contain a WordPress® plugin file named: `plugin.php`.
+
+	     /* ↑ This directory MUST contain a WordPress® plugin file named: `plugin.php`.
 	      * If you have this plugin directory: `/wp-content/plugins/rocketship/`
 	      * This file MUST exist: `/wp-content/plugins/rocketship/plugin.php` */
+
+	     /* ↑ This directory MUST contain a classes directory named: `classes`.
+	      * If you have this plugin directory: `/wp-content/plugins/rocketship/`
+	      * This directory MUST exist: `/wp-content/plugins/rocketship/classes` */
 	)
 );
 ```
