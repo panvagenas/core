@@ -27,7 +27,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * JS Minifier object instance (a singleton).
 			 *
-			 * @var \ws_js_minifier|null Set automatically by ``compress()`` method.
+			 * @var externals\js_minifier
 			 */
 			public static $minifier;
 
@@ -49,7 +49,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', func_get_args());
 
 					if(!isset(static::$minifier))
-						static::$minifier = new \ws_js_minifier('');
+						static::$minifier = new externals\js_minifier('');
 
 					return static::$minifier->compress($js);
 				}

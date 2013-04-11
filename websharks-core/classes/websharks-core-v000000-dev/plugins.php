@@ -129,8 +129,8 @@ namespace websharks_core_v000000_dev
 
 							if(!empty($pro_class::${'for_plugin_version'}) && $this->___instance_config->plugin_version === $pro_class::${'for_plugin_version'})
 								{
+									autoloader::add_classes_dir($this->___instance_config->plugin_pro_classes_dir);
 									$GLOBALS[$this->___instance_config->plugin_pro_var] = $GLOBALS[$this->___instance_config->plugin_root_ns];
-									autoloader::add_classes_dir($this->___instance_config->plugin_pro_dir.'/classes');
 								}
 							else $this->enqueue_pro_update_sync_notice(); // Pro add-on needs to be synchronized with current version.
 						}

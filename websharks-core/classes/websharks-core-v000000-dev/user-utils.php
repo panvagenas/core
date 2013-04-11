@@ -62,7 +62,7 @@ namespace websharks_core_v000000_dev
 			 *    • NULL indicates the current user (i.e. ``$this->©user``).
 			 *    • A value of `-1`, indicates NO user explicitly (e.g. a public user w/o an account).
 			 *    • An integer indicates a specific user ID (which we'll obtain an object instance for).
-			 *    • An ``\WP_User`` object, indicates a specific user (which we'll obtain an object instance for).
+			 *    • A ``\WP_User`` object, indicates a specific user (which we'll obtain an object instance for).
 			 *    • A ``users`` object, indicates a specific user object instance.
 			 *
 			 * @return users|\s2member\users A user object instance.
@@ -88,16 +88,16 @@ namespace websharks_core_v000000_dev
 					else if(is_null($user))
 						return $this->©user;
 
-					else if(is_integer($user) && !empty($user))
+					else if($this->©integer->is_not_empty($user))
 						return $this->©user($user);
 
-					else if(is_integer($user) && empty($user))
+					else if(is_integer($user))
 						return $this->©user(-1);
 
-					else if($user instanceof \WP_User && !empty($user->ID))
+					else if($user instanceof \WP_User && $this->©integer->is_not_empty($user->ID))
 						return $this->©user($user->ID);
 
-					else if($user instanceof \WP_User && empty($user->ID))
+					else if($user instanceof \WP_User)
 						return $this->©user(-1);
 
 					throw $this->©exception(
@@ -272,7 +272,6 @@ namespace websharks_core_v000000_dev
 
 					// Otherwise, we'll need to determine the proper format now.
 					// Note, this only works if the proper ``$data`` is available.
-
 					switch($format = $this->©options->get('users.registration.display_name_format'))
 					{
 						case 'email':
@@ -302,7 +301,6 @@ namespace websharks_core_v000000_dev
 									return trim($this->©string->is_not_empty_or($data->first_name, '').' '.$this->©string->is_not_empty_or($data->last_name, ''));
 								break;
 					}
-
 					// Otherwise, use the first value available.
 					// Priorities based on the most logical value, for most sites.
 
@@ -322,7 +320,6 @@ namespace websharks_core_v000000_dev
 						return $data->email;
 
 					// Else, use a default generic value (giving filters a chance to modify this).
-
 					return $this->apply_filters('default_display_name', $this->translate('Anonymous', 'default-display-name'));
 				}
 
@@ -357,7 +354,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#missing_email', get_defined_vars(),
 							$this->translate('Missing email address (empty).')
 						);
-
 					else if(is_multisite()) // A multisite network?
 						{
 							if(!preg_match($this->regex_valid_email, $email)
@@ -409,7 +405,6 @@ namespace websharks_core_v000000_dev
 													__METHOD__.'#multisite_email_exists', get_defined_vars(),
 													sprintf($this->translate('Email address: `%1$s`, is already in use.'), $email)
 												);
-
 											else if(strtotime($signup->registered) < strtotime('-2 days'))
 												$this->©db->delete($this->©db_tables->get_wp('signups'), array('user_email' => $email));
 
@@ -473,7 +468,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#missing_email', get_defined_vars(),
 							$this->translate('Missing email address (empty).')
 						);
-
 					else if(is_multisite()) // A network?
 						{
 							if(!preg_match($this->regex_valid_email, $email)
@@ -525,7 +519,6 @@ namespace websharks_core_v000000_dev
 													__METHOD__.'#multisite_email_exists', get_defined_vars(),
 													sprintf($this->translate('Email address: `%1$s`, is already in use.'), $email)
 												);
-
 											else if(strtotime($signup->registered) < strtotime('-2 days'))
 												$this->©db->delete($this->©db_tables->get_wp('signups'), array('user_email' => $email));
 
@@ -586,7 +579,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#missing_username', get_defined_vars(),
 							$this->translate('Missing username (empty).')
 						);
-
 					else if(is_multisite()) // A multisite network?
 						{
 							if(!is_array($illegal_names = get_site_option('illegal_names')))
@@ -632,7 +624,6 @@ namespace websharks_core_v000000_dev
 													__METHOD__.'#multisite_username_exists', get_defined_vars(),
 													sprintf($this->translate('Username: `%1$s`, is already in use.'), $username)
 												);
-
 											else if(strtotime($signup->registered) < strtotime('-2 days'))
 												$this->©db->delete($this->©db_tables->get_wp('signups'), array('user_login' => $username));
 
@@ -822,7 +813,6 @@ namespace websharks_core_v000000_dev
 						'array', 'array', 'array', // `options`, `meta`, `data`.
 						$default_args, $args, ((is_multisite()) ? 3 : 2)
 					);
-
 					// Handle some default values (when/if possible) & minor adjustments.
 
 					if(!$args['username'] && !is_multisite()) // Username is optional (but NOT on multisite networks).
@@ -960,6 +950,10 @@ namespace websharks_core_v000000_dev
 					if(!is_wp_error($authentication) && get_user_option('must_activate', $authentication->ID))
 						return new \WP_Error(
 							'must_activate', $this->translate('This account has NOT been activated yet. Please check your email for the activation link.')
+						);
+					if(is_multisite() && !is_wp_error($authentication) && !is_super_admin($authentication->ID) && !in_array(get_current_blog_id(), array_keys(get_blogs_of_user($authentication->ID)), TRUE))
+						return new \WP_Error(
+							'invalid_username', $this->translate('Invalid username for this site.')
 						);
 					return $authentication; // Default return value.
 				}

@@ -88,7 +88,6 @@ require_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
 
 // Tell the WebSharks™ Core Autoloader about your PHP classes.
 \websharks_core__autoloader::add_classes_dir(dirname(dirname(__FILE__)));
-\websharks_core__autoloader::add_root_ns(__NAMESPACE__);
 
 class framework extends \websharks_core__framework
 {
@@ -339,7 +338,6 @@ If you want to be more specific about which version of the WebSharks™ Core tha
 ```php
 <?php
 \websharks_core_v000000_dev\autoloader::add_classes_dir(dirname(dirname(__FILE__))); // Specific version!
-\websharks_core_v000000_dev\autoloader::add_root_ns(__NAMESPACE__); // Specific version!
 
 class framework extends \websharks_core_v000000_dev\framework // Specific version!
 {
@@ -358,7 +356,6 @@ require_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
 
 // Tell the WebSharks™ Core Autoloader about your PHP classes.
 \websharks_core_v000000_dev\autoloader::add_classes_dir(dirname(dirname(__FILE__))); // Specific version!
-\websharks_core_v000000_dev\autoloader::add_root_ns(__NAMESPACE__); // Specific version!
 
 class framework extends \websharks_core_v000000_dev\framework // Specific version!
 {

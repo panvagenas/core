@@ -283,11 +283,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			# --------------------------------------------------------------------------------------------------------------------------------
-			# Routines that load WordPress®.
+			# Routines that locate WordPress®.
 			# --------------------------------------------------------------------------------------------------------------------------------
 
 			/**
-			 * Attempts to get `/wp-load.php`.
+			 * Attempts to locate `/wp-load.php`.
 			 *
 			 * @param boolean             $get_last_value Defaults to a FALSE value.
 			 *    This function stores it's last return value for quicker access on repeated calls.
@@ -374,7 +374,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						);
 					try // Any exceptions will be re-thrown below.
 						{
-							return self::get_class_path('deps.php');
+							return self::locate_core_ns_class_file('deps.php');
 						}
 					catch(exception $exception) // Now re-throw.
 						{
@@ -396,24 +396,27 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function framework()
 				{
-					return self::get_class_path('framework.php');
+					return self::locate_core_ns_class_file('framework.php');
 				}
 
 			/**
-			 * Gets a WebSharks™ Core class file path (absolute).
+			 * Gets a WebSharks™ Core class file (absolute path).
 			 *
-			 * @param string $basename Class file or path (basename only please).
-			 *    Ex: `class.php`. Ex: `sub-namespace/class.php` is OK too.
+			 * @param string $class_file_basename Class file (basename only please).
+			 *    Ex: `class.php`; or `sub-namespace/class.php` is OK too.
 			 *
-			 * @return string Absolute path to the requested ``$class`` file.
+			 * @return string Absolute path to the requested ``$class_file_basename``.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$class`` is empty; or it is NOT a string value.
-			 * @throws exception If unable to locate the WebSharks™ Core ``$class`` file.
+			 * @throws exception If ``$class_file_basename`` is empty; or it is NOT a string value.
+			 * @throws exception If unable to locate the WebSharks™ Core ``$class_file_basename``.
+			 *
+			 * @note It's VERY important that we obtain class file paths for THIS version of the WebSharks™ Core.
+			 *    This is accomplished by looking for classes along a path which includes this WebSharks™ Core namespace.
 			 */
-			public static function get_class_path($basename)
+			public static function locate_core_ns_class_file($class_file_basename)
 				{
-					if(!is_string($basename) || !($basename = trim(self::n_dir_seps($basename), '/')))
+					if(!is_string($class_file_basename) || !($class_file_basename = trim(self::n_dir_seps($class_file_basename), '/')))
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
@@ -425,7 +428,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 					$locate_core_phar     = '/'.self::$core_ns_stub_with_dashes.'.php.phar';
 					$locate_core_dev_dir  = '/'.$local_core_repo_dir_basename.'/'.self::$core_ns_stub_with_dashes;
 					$locate_core_dev_phar = '/'.$local_core_repo_dir_basename.'/'.self::$core_ns_stub_with_dashes.'.php.phar';
-					$relative_class_path  = 'classes/'.self::$core_ns_with_dashes.'/'.$basename;
+					$relative_class_path  = 'classes/'.self::$core_ns_with_dashes.'/'.$class_file_basename;
 
 					if(is_file($class_path = $this_dir.'/'.$relative_class_path))
 						return $class_path; // We first check this directory.
@@ -437,7 +440,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						return $class_path; // If this is a PHAR (and PHAR is possible); we can use this archive.
 
 					if(self::can_phar() && ($class_path = self::locate($locate_core_phar.'/'.$relative_class_path, 'phar://')))
-						return $class_path; // Sitewide (or nearest) WebSharks™ Core archive (if PHAR is possible).
+						return $class_path; // Sitewide (or nearest) WebSharks™ Core archive (if possible).
 
 					if(defined('___DEV_KEY_OK') && ($class_path = self::locate($locate_core_dev_dir.'/'.$relative_class_path)))
 						return $class_path; // Development copy (for authenticated developers).
@@ -449,7 +452,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 					$has_phar = ($is_phar || self::locate($locate_core_phar) || self::locate($locate_core_dev_phar));
 
 					// The error is actually displayed in the WordPress® Dashboard this way :-)
-					if($basename === 'deps.php' && $has_phar && !self::can_phar() && defined('WPINC'))
+					if($class_file_basename === 'deps.php' && $has_phar && !self::can_phar() && defined('WPINC'))
 						if(($class_path = self::cant_phar_msg_notice_in_wp_temp_deps()))
 							return $class_path; // Temporary file.
 

@@ -59,8 +59,8 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types(array('string', 'array'), func_get_args());
 
-					$details          = (array)$details; // Force array value.
-					$ns_class_details = array(); // Initialize array of details.
+					$details  = (array)$details; // Force array value.
+					$ns_class = $ns_class_details = array(); // Initialize arrays.
 
 					# Handle ``$details`` array (w/ `all` inclusions/exclusions).
 
@@ -84,51 +84,40 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->©plugin->is_core()) // Should we include a plugin's classes here too?
 						{
-							$ns_class = array('\\'.$this->___instance_config->plugin_root_ns); // API class.
+							$ns_class[] = '\\'.$this->___instance_config->plugin_root_ns; // API class.
 
-							if(is_dir($_plugin_classes_dir = dirname($this->___instance_config->plugin_api_class_file)))
-								foreach($this->©dir->iterate($_plugin_classes_dir) as $_dir_file)
+							foreach($this->©dir->iterate($this->___instance_config->plugin_classes_dir) as $_dir_file)
+								if($_dir_file->isFile()) // We're dealing only with class files here.
 									{
-										if($_dir_file->isFile()) // We're dealing only with class files here.
-											{
-												$_file_sub_path          = $this->©dir->n_seps($_dir_file->getSubPathname());
-												$_ns_class_file_sub_path = str_replace(array('/', '-'), array('\\', '_'), $_file_sub_path);
-												$_sub_path_namespaces    = (string)substr($_ns_class_file_sub_path, 0, strrpos($_ns_class_file_sub_path, '\\'));
-												$_ns_class_path          = '\\'.(($_sub_path_namespaces) ? $_sub_path_namespaces.'\\' : '').basename($_ns_class_file_sub_path, '.php');
-												$_plugin_ns_class_path   = '\\'.$this->___instance_config->plugin_root_ns.$_ns_class_path;
+										$_file_sub_path = $this->©dir->n_seps($_dir_file->getSubPathname());
+										$_ns_class_path = '\\'.str_replace(array('/', '-'), array('\\', '_'), preg_replace('/\.php$/i', '', $_file_sub_path));
 
-												if(class_exists($_plugin_ns_class_path))
-													$ns_class[] = $_plugin_ns_class_path;
-
-												else if(class_exists($_ns_class_path))
-													$ns_class[] = $_ns_class_path; // Global classes.
-											}
+										if(class_exists($_ns_class_path) || interface_exists($_ns_class_path) || (function_exists('trait_exists') && trait_exists($_ns_class_path)))
+											$ns_class[] = $_ns_class_path;
 									}
-							unset($_plugin_classes_dir, $_dir_file, $_file_sub_path, $_ns_class_file_sub_path, $_sub_path_namespaces, $_ns_class_path, $_plugin_ns_class_path);
+							unset($_dir_file, $_file_sub_path, $_ns_class_path); // Housekeeping.
 						}
 
-					# WebSharks™ Core classes (we always include these; because all plugins inherit these core classes).
+					# WebSharks™ Core classes (all plugins inherit these core classes).
 
-					$ns_class = array('\\'.$this->___instance_config->core_ns_stub); // API class.
+					$ns_class[] = '\\'.$this->___instance_config->core_ns_stub; // API class.
 
-					foreach($this->©dir->iterate(dirname(__FILE__) /* This classes directory. */) as $_dir_file)
-						{
-							if($_dir_file->isFile()) // We're dealing only with class files here.
-								{
-									$_file_sub_path          = $this->©dir->n_seps($_dir_file->getSubPathname());
-									$_ns_class_file_sub_path = str_replace(array('/', '-'), array('\\', '_'), $_file_sub_path);
-									$_sub_path_namespaces    = (string)substr($_ns_class_file_sub_path, 0, strrpos($_ns_class_file_sub_path, '\\'));
-									$_ns_class_path          = '\\'.(($_sub_path_namespaces) ? $_sub_path_namespaces.'\\' : '').basename($_ns_class_file_sub_path, '.php');
-									$_core_ns_class_path     = '\\'.$this->___instance_config->core_ns.$_ns_class_path;
+					foreach($this->©dir->iterate($this->___instance_config->core_classes_dir) as $_dir_file)
+						if($_dir_file->isFile()) // We're dealing only with class files here.
+							{
+								$_file_sub_path = $this->©dir->n_seps($_dir_file->getSubPathname());
+								$_ns_class_path = '\\'.str_replace(array('/', '-'), array('\\', '_'), preg_replace('/\.php$/i', '', $_file_sub_path));
 
-									if(class_exists($_core_ns_class_path))
-										$ns_class[] = $_core_ns_class_path;
+								if($_ns_class_path === '\\'.$this->___instance_config->core_ns.'\\deps')
+									$_ns_class_path = '\\deps_'.$this->___instance_config->core_ns; // Special class (no namespace).
 
-									else if(class_exists($_ns_class_path))
-										$ns_class[] = $_ns_class_path; // Global classes.
-								}
-						}
-					unset($_dir_file, $_file_sub_path, $_ns_class_file_sub_path, $_sub_path_namespaces, $_ns_class_path, $_core_ns_class_path);
+								else if($_ns_class_path === '\\'.$this->___instance_config->core_ns.'\\deps_x')
+									$_ns_class_path = '\\deps_x_'.$this->___instance_config->core_ns; // Special class.
+
+								if(class_exists($_ns_class_path) || interface_exists($_ns_class_path) || (function_exists('trait_exists') && trait_exists($_ns_class_path)))
+									$ns_class[] = $_ns_class_path;
+							}
+					unset($_dir_file, $_file_sub_path, $_ns_class_path); // Housekeeping.
 
 					# Iterate through each `\namespace\class` and collect details to return in the final array.
 

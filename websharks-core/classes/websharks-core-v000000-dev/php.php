@@ -83,9 +83,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert ("echo 'hello';") === 'hello'
 			 */
-			public function ¤eval($string, $pure_php = TRUE)
+			public function ¤eval($string, $vars = array(), $pure_php = TRUE)
 				{
-					return $this->evaluate($string, $pure_php);
+					return $this->evaluate($string, $vars, $pure_php);
 				}
 
 			/**
@@ -93,6 +93,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $string String (possibly containing PHP tags).
 			 *    If ``$pure_php`` is TRUE; this should NOT have PHP tags.
+			 *
+			 * @param array   $vars An array of variables to bring into the scope of evaluation.
+			 *    This is optional. It defaults to an empty array.
 			 *
 			 * @param boolean $pure_php Defaults to a FALSE value.
 			 *    If this is TRUE, the input ``$string`` should NOT include PHP tags.
@@ -107,9 +110,11 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert ("<?php echo 'hello'; ?>") === 'hello'
 			 */
-			public function evaluate($string, $pure_php = FALSE)
+			public function evaluate($string, $vars = array(), $pure_php = FALSE)
 				{
-					$this->check_arg_types('string', 'boolean', func_get_args());
+					$this->check_arg_types('string', 'array', 'boolean', func_get_args());
+
+					if($vars) extract($vars, EXTR_PREFIX_SAME, 'xps');
 
 					if($this->©function->is_possible('eval'))
 						{
@@ -120,6 +125,7 @@ namespace websharks_core_v000000_dev
 							return ob_get_clean();
 						}
 					// Otherwise, let's do a little explaining here.
+					// @TODO Update this explanation to cover other use cases.
 
 					throw $this->©exception(
 						__METHOD__.'#eval_missing', get_defined_vars(),

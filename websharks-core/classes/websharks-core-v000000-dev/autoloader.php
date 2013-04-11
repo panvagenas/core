@@ -68,15 +68,6 @@ namespace websharks_core_v000000_dev
 					protected static $special_classes_map = array();
 
 					/**
-					 * Root namespaces to autoload for.
-					 *
-					 * @var array Root namespaces to autoload for.
-					 *
-					 * @by-initializer Set by initializer.
-					 */
-					protected static $ns_roots = array();
-
-					/**
 					 * Core classes directory.
 					 *
 					 * @var string Core classes directory.
@@ -99,32 +90,37 @@ namespace websharks_core_v000000_dev
 					# --------------------------------------------------------------------------------------------------------------------------
 
 					/**
-					 * Initializes properties.
+					 * Initializes the WebSharks™ Core autoloader.
 					 *
 					 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
 					 *
-					 * @note Sets some class properties & registers autoload handler.
+					 * @note This also registers the WebSharks™ Core autoload handler.
 					 */
 					public static function initialize()
 						{
 							if(static::$initialized)
 								return TRUE; // Initialized already.
 
-							$this_dir           = $dirname_x1 = stub::n_dir_seps(dirname(__FILE__));
-							$core_classes_dir   = $dirname_x2 = dirname($dirname_x1);
-							$stub_dir           = $dirname_x3 = dirname($dirname_x2);
-							$this_externals_dir = $this_dir.'/externals';
+							$core_ns_classes_dir      = stub::n_dir_seps(dirname(__FILE__));
+							static::$core_classes_dir = dirname($core_ns_classes_dir); // Core classes.
+							$core_dir                 = dirname(static::$core_classes_dir);
 
-							static::$special_classes_map = array( // Special classes (and their aliases).
-								stub::$core_ns         => $stub_dir.'/stub.php', stub::$core_ns_stub.'__stub' => $stub_dir.'/stub.php', stub::$core_ns.'\\stub' => $this_dir.'/framework.php',
-								'deps_'.stub::$core_ns => $this_dir.'/deps.php', stub::$core_ns_stub.'__deps' => $this_dir.'/deps.php', stub::$core_ns.'\\deps' => $this_dir.'/framework.php', 'deps_x_'.stub::$core_ns => $this_dir.'/deps-x.php', stub::$core_ns_stub.'__deps_x' => $this_dir.'/deps-x.php',
-								stub::$core_ns_stub    => $this_dir.'/framework.php', stub::$core_ns.'\\'.stub::$core_ns_stub => $this_dir.'/framework.php',
-								'ws_js_minifier'       => $this_externals_dir.'/ws-js-minifier/ws-js-minifier.php',
-								'ws_markdown'          => $this_externals_dir.'/ws-markdown/ws-markdown.php'
-							);
-							static::add_root_ns(stub::$core_ns);
-							static::$core_classes_dir = $core_classes_dir;
+							static::add_special_class(stub::$core_ns, $core_dir.'/stub.php');
+							static::add_special_class(stub::$core_ns_stub.'__stub', $core_dir.'/stub.php');
+
+							static::add_special_class('deps_'.stub::$core_ns, $core_ns_classes_dir.'/deps.php');
+							static::add_special_class(stub::$core_ns_stub.'__deps', $core_ns_classes_dir.'/deps.php');
+
+							static::add_special_class('deps_x_'.stub::$core_ns, $core_ns_classes_dir.'/deps-x.php');
+							static::add_special_class(stub::$core_ns_stub.'__deps_x', $core_ns_classes_dir.'/deps-x.php');
+
+							static::add_special_class(stub::$core_ns.'\\stub', $core_ns_classes_dir.'/framework.php');
+							static::add_special_class(stub::$core_ns.'\\deps', $core_ns_classes_dir.'/framework.php');
+							static::add_special_class(stub::$core_ns.'\\core', $core_ns_classes_dir.'/framework.php');
+							static::add_special_class(stub::$core_ns_stub, $core_ns_classes_dir.'/framework.php');
+
 							static::add_classes_dir(static::$core_classes_dir);
+
 							spl_autoload_register('\\'.__CLASS__.'::load_ns_class');
 
 							return (static::$initialized = TRUE);
@@ -135,12 +131,12 @@ namespace websharks_core_v000000_dev
 					# --------------------------------------------------------------------------------------------------------------------------
 
 					/**
-					 * Handles class autoloading.
+					 * Autoloads classes for the WebSharks™ Core (and for plugins powered by it).
 					 *
 					 * @note Capable of loading classes for any portion of the WebSharks™ Core.
 					 *    Can also load classes for plugins built on the WebSharks™ Core.
 					 *
-					 * @note This autoloader also handles WebSharks™ Core class aliases gracefully.
+					 * @note This autoloader also handles WebSharks™ Core class aliases dynamically.
 					 *
 					 * @param string $ns_class A `namespace\class` to load (the PHP interpreter passes this in).
 					 *
@@ -152,52 +148,69 @@ namespace websharks_core_v000000_dev
 								throw new \exception( // Fail here; detected invalid arguments.
 									sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 								);
-							# Special classes (check this map first).
+							# Special classes (always check this map first).
 
 							if(!empty(static::$special_classes_map[$ns_class]))
 								{
 									require_once static::$special_classes_map[$ns_class];
 									return; // We're all done here.
 								}
-							# WebSharks™ Core class aliases (these are created dynamically).
+							# WebSharks™ Core class aliases (detected/created dynamically).
 
-							if(strpos($ns_class, stub::$core_ns_stub.'__') === 0)
+							if(($is_core_class_alias = (strpos($ns_class, stub::$core_ns_stub.'__') === 0)))
 								{
-									$is_core_class_alias       = TRUE; // We need to flag this here.
-									$ns_class                  = str_replace(array(stub::$core_ns_stub.'__', '__'), array(stub::$core_ns.'__', '\\'), $ns_class);
-									$is_handling_class_root_ns = $root_ns = static::is_handling_class_root_ns($ns_class);
+									$ns_class = str_replace(array(stub::$core_ns_stub.'__', '__'), array(stub::$core_ns.'__', '\\'), $ns_class);
 
-									if($is_handling_class_root_ns && class_exists('\\'.$ns_class, FALSE))
-										{ // ↑ The underlying class COULD be available already.
+									if(class_exists('\\'.$ns_class, FALSE) || interface_exists('\\'.$ns_class, FALSE) || (function_exists('trait_exists') && trait_exists('\\'.$ns_class, FALSE)))
+										{ // ↑ The underlying class COULD be available already. If so, we simply need the alias.
 
-											static::add_core_ns_class_alias($ns_class);
+											static::add_core_ns_class_alias($ns_class); // Add alias.
 											return; // We're all done here.
 										}
-								} # Else there are no transformations necessary.
-							else $is_handling_class_root_ns = $root_ns = static::is_handling_class_root_ns($ns_class);
-
-							# Only if it's in a namespace (and ONLY if we're handling it's root namespace).
-
-							if($is_handling_class_root_ns && $root_ns) // Search all class directories.
-								{
-									$ns_class_file = str_replace(array('\\', '_'), array('/', '-'), $ns_class).'.php';
-
-									foreach(static::$class_dirs as $_classes_dir) if(is_file($_classes_dir.'/'.$ns_class_file))
-										{
-											require_once $_classes_dir.'/'.$ns_class_file;
-
-											if(!empty($is_core_class_alias)) // A core class alias?
-												static::add_core_ns_class_alias($ns_class);
-
-											return; // We're all done here.
-										}
-									unset($_classes_dir); // Housekeeping.
 								}
+							# Look for this namespace/class in one of the class directories we're autoloading from.
+
+							$ns_class_file = str_replace(array('\\', '_'), array('/', '-'), $ns_class).'.php';
+
+							foreach(static::$class_dirs as $_classes_dir) if(is_file($_classes_dir.'/'.$ns_class_file))
+								{
+									require_once $_classes_dir.'/'.$ns_class_file;
+
+									if($is_core_class_alias) // A WebSharks™ Core alias?
+										static::add_core_ns_class_alias($ns_class);
+
+									return; // We're all done here.
+								}
+							unset($_classes_dir); // Housekeeping.
 						}
 
 					# --------------------------------------------------------------------------------------------------------------------------
 					# Utility methods.
 					# --------------------------------------------------------------------------------------------------------------------------
+
+					/**
+					 * Adds a new special class to the map.
+					 *
+					 * @param string $ns_class A namespace/class path (or a global class).
+					 *
+					 * @param string $ns_class_file Full absolute path to the file that loads ``$ns_class``.
+					 *
+					 * @throws \exception If invalid types are passed through arguments list.
+					 * @throws \exception If ``$ns_class`` is empty, or is already in the special classes map.
+					 * @throws \exception If ``$ns_class_file`` is empty.
+					 */
+					public static function add_special_class($ns_class, $ns_class_file)
+						{
+							if(!is_string($ns_class) || !($ns_class = trim($ns_class, '\\')) || !is_string($ns_class_file) || !$ns_class_file)
+								throw new \exception( // Fail here; detected invalid arguments.
+									sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+								);
+							if(isset(static::$special_classes_map[$ns_class]))
+								throw new \exception( // Fail here; detected existing special class.
+									sprintf(stub::i18n('Special namespace\\class already exists in map: `%1$s`'), $ns_class)
+								);
+							static::$special_classes_map[$ns_class] = stub::n_dir_seps($ns_class_file);
+						}
 
 					/**
 					 * Adds a new `classes` directory.
@@ -207,8 +220,6 @@ namespace websharks_core_v000000_dev
 					 * @note This directory MUST use sub-directories with a `namespace/class` hierarchy.
 					 *    Nested sub-namespaces are also supported in the same structure (i.e. `/namespace/sub_namespace/class`).
 					 *    Underscores in any namespace and/or class should be replaced with dashes in the file structure.
-					 *
-					 * @return string The ``$classes_dir`` on success, else an empty string.
 					 *
 					 * @throws \exception If invalid types are passed through arguments list.
 					 * @throws \exception If ``$classes_dir`` is empty, or is NOT an existing directory.
@@ -248,33 +259,6 @@ namespace websharks_core_v000000_dev
 									static::$class_dirs = array_diff(static::$class_dirs, array(static::$core_classes_dir));
 									array_unshift(static::$class_dirs, static::$core_classes_dir);
 								}
-							return $classes_dir; // Useful when debugging.
-						}
-
-					/**
-					 * Adds a new root namespace.
-					 *
-					 * @param string $root_ns A root namespace.
-					 *
-					 * @return string The ``$root_ns`` on success, else an empty string.
-					 *
-					 * @throws \exception If invalid types are passed through arguments list.
-					 * @throws \exception If ``$root_ns`` is empty, or is NOT a top-level namespace.
-					 */
-					public static function add_root_ns($root_ns)
-						{
-							if(!is_string($root_ns) || !($root_ns = trim($root_ns, '\\')))
-								throw new \exception( // Fail here; detected invalid arguments.
-									sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
-								);
-							if(!preg_match(stub::$regex_valid_plugin_root_ns, $root_ns))
-								throw new \exception( // Fail here; detected invalid arguments.
-									sprintf(stub::i18n('Root namespace contains invalid chars: `%1$s`.'), $root_ns)
-								);
-							if(!in_array($root_ns, static::$ns_roots, TRUE))
-								static::$ns_roots[] = $root_ns;
-
-							return $root_ns; // Useful when debugging.
 						}
 
 					/**
@@ -285,13 +269,10 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @param string $class_file Optional. If passed, ``$ns_or_ns_class`` is assumed to be the namespace only.
 					 *
-					 * @return boolean TRUE on success; else FALSE on failure (i.e. if alias already exists).
-					 *
 					 * @throws \exception If invalid types are passed through arguments list.
-					 * @throws \exception If ``$ns_class`` is empty, or is NOT a valid core class name.
-					 * @throws \exception If ``$ns_class`` is in a root namespace we are NOT handling.
-					 * @throws \exception If ``$ns_class`` is NOT from this version of the core.
-					 * @throws \exception If ``$ns_class`` is NOT already defined.
+					 * @throws \exception If the parsed ``$ns_class`` is empty, or is NOT a valid core class name.
+					 * @throws \exception If the parsed ``$ns_class`` is NOT from this version of the core.
+					 * @throws \exception If the parsed ``$ns_class`` is NOT already defined.
 					 */
 					public static function add_core_ns_class_alias($ns_or_ns_class, $class_file = '')
 						{
@@ -307,68 +288,18 @@ namespace websharks_core_v000000_dev
 								throw new \exception( // Fail here; detected invalid arguments.
 									sprintf(stub::i18n('Namespace\\class contains invalid chars: `%1$s`.'), $ns_class)
 								);
-							if(!static::is_handling_class_root_ns($ns_class))
-								throw new \exception( // Fail here; detected invalid arguments.
-									sprintf(stub::i18n('Namespace\\class NOT handled by autoloader: `%1$s`.'), $ns_class)
-								);
 							if(strpos($ns_class, stub::$core_ns.'\\') !== 0)
 								throw new \exception( // Fail here; detected invalid arguments.
 									sprintf(stub::i18n('Namespace\\class is NOT from this core: `%1$s`.'), $ns_class)
 								);
-							if(!class_exists('\\'.$ns_class))
+							if(!class_exists('\\'.$ns_class, FALSE) && !interface_exists('\\'.$ns_class, FALSE) && (!function_exists('trait_exists') || !trait_exists('\\'.$ns_class, FALSE)))
 								throw new \exception( // Fail here; detected invalid arguments.
 									sprintf(stub::i18n('Namespace\\class does NOT exist yet: `%1$s`.'), $ns_class)
 								);
 							$alias = str_replace(array(stub::$core_ns.'\\', '\\'), array(stub::$core_ns_stub.'\\', '__'), $ns_class);
-							if(!class_exists('\\'.$alias)) // Only if it does NOT exist already.
-								return class_alias('\\'.$ns_class, $alias);
 
-							return FALSE; // Class alias already exists.
-						}
-
-					/**
-					 * Handling autoloads for a given namespace?
-					 *
-					 * @param string $ns_or_ns_class Namespace or namespace\class.
-					 *
-					 * @return string The root namespace; else an empty string if NOT handling.
-					 *
-					 * @throws \exception If invalid types are passed through arguments list.
-					 */
-					public static function is_handling_class_root_ns($ns_or_ns_class)
-						{
-							if(!is_string($ns_or_ns_class))
-								throw new \exception( // Fail here; detected invalid arguments.
-									sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
-								);
-							if(!$ns_or_ns_class || !($root_ns = static::root_ns($ns_or_ns_class)))
-								return ''; // Empty; there is no root namespace.
-
-							return (in_array($root_ns, static::$ns_roots, TRUE)) ? $root_ns : '';
-						}
-
-					/**
-					 * Root namespace.
-					 *
-					 * @param string $ns_or_ns_class Namespace or namespace\class.
-					 *
-					 * @return string The root namespace; else an empty string on failure.
-					 *
-					 * @throws \exception If invalid types are passed through arguments list.
-					 */
-					public static function root_ns($ns_or_ns_class)
-						{
-							if(!is_string($ns_or_ns_class))
-								throw new \exception( // Fail here; detected invalid arguments.
-									sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
-								);
-							if(!($ns_or_ns_class = trim($ns_or_ns_class, '\\')))
-								return ''; // Catch empty values here.
-
-							if(strpos($ns_or_ns_class, '\\') === FALSE || !($root_ns = strstr($ns_or_ns_class, '\\', TRUE)))
-								$root_ns = $ns_or_ns_class;
-
-							return $root_ns;
+							if(!class_exists('\\'.$alias, FALSE) && !interface_exists('\\'.$alias, FALSE) && (!function_exists('trait_exists') || !trait_exists('\\'.$alias, FALSE)))
+								class_alias('\\'.$ns_class, $alias);
 						}
 				}
 
@@ -376,6 +307,6 @@ namespace websharks_core_v000000_dev
 				# Initialize the WebSharks™ Core autoloader.
 				# -----------------------------------------------------------------------------------------------------------------------------
 
-				autoloader::initialize(); // Also registers the autoloader.
+				autoloader::initialize(); // Also registers autoloader handler.
 			}
 	}

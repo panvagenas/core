@@ -317,7 +317,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @property object                                              $___instance_config Public/magic read-only access.
 		 */
-		abstract class api // Stand-alone class (runs statically and/or as an instance).
+		abstract class api implements fw_constants // Stand-alone class (runs statically and/or as an instance).
 		{
 			/**
 			 * Framework for current plugin instance.

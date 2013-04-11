@@ -27,14 +27,14 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Markdown parser object instance (a singleton).
 			 *
-			 * @var \ws_markdown|null Set automatically by ``parse()`` method.
+			 * @var externals\markdown_x
 			 */
 			public static $parser;
 
 			/**
 			 * Parses PHP Markdown syntax.
 			 *
-			 * @param string $string Markdown syntax string (no empty strings please).
+			 * @param string $string Markdown syntax string.
 			 *
 			 * @return string String after having been parsed as PHP Markdown.
 			 *
@@ -48,7 +48,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', func_get_args());
 
 					if(!isset(static::$parser))
-						static::$parser = new \ws_markdown();
+						static::$parser = new externals\markdown_x();
 
 					return static::$parser->transform($string);
 				}
