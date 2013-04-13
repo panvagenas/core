@@ -865,8 +865,12 @@ namespace websharks_core_v000000_dev
 							if(!$___parent_instance_config) // ONLY need this routine if we did NOT get a ``$___parent_instance``.
 								{
 									// Based on `plugin_var_ns` (which serves several purposes).
-									$this->___instance_config->plugin_prefix  = $this->___instance_config->plugin_var_ns.'_';
-									$this->___instance_config->plugin_api_var = $this->___instance_config->plugin_var_ns;
+									$this->___instance_config->plugin_prefix             = $this->___instance_config->plugin_var_ns.'_';
+									$this->___instance_config->plugin_var_ns_with_dashes = str_replace('_', '-', $this->___instance_config->plugin_var_ns);
+
+									// Based on `plugin_var_ns` (which serves several purposes).
+									$this->___instance_config->plugin_api_var             = $this->___instance_config->plugin_var_ns;
+									$this->___instance_config->plugin_api_var_with_dashes = $this->___instance_config->plugin_var_ns_with_dashes;
 
 									// Based on plugin's root `namespace` (via `plugin_root_ns`).
 									$this->___instance_config->plugin_root_ns_prefix      = '\\'.$this->___instance_config->plugin_root_ns;
@@ -905,7 +909,7 @@ namespace websharks_core_v000000_dev
 									// Based on the plugin's directory (i.e. `plugin_dir`).
 									$this->___instance_config->plugin_file           = $this->___instance_config->plugin_dir.'/plugin.php';
 									$this->___instance_config->plugin_classes_dir    = $this->___instance_config->plugin_dir.'/classes';
-									$this->___instance_config->plugin_api_class_file = $this->___instance_config->plugin_classes_dir.'/api.php';
+									$this->___instance_config->plugin_api_class_file = $this->___instance_config->plugin_classes_dir.'/'.$this->___instance_config->plugin_api_var_with_dashes.'.php';
 
 									// Based on the current plugin; we establish properties for a pro add-on (optional).
 									$this->___instance_config->plugin_pro_var = $this->___instance_config->plugin_root_ns.'_pro';

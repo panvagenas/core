@@ -1409,12 +1409,16 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Escapes JS line breaks (removes "\r"); and escapes single quotes deeply.
+			 * Escapes JS; and escapes single quotes deeply.
 			 *
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 			 * @note This routine will usually NOT include private, protected or static properties of an object class.
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @note This follows {@link http://www.json.org JSON} standards, with TWO exceptions.
+			 *    1. Special handling for line breaks: `\r\n` and `\r` are converted to `\n`.
+			 *    2. This does NOT escape double quotes; only single quotes.
 			 *
 			 * @param mixed   $value Any value can be converted into an escaped string.
 			 *    Actually, objects can't, but this recurses into objects.
@@ -1440,7 +1444,10 @@ namespace websharks_core_v000000_dev
 
 							return $value;
 						}
-					return str_replace("'", str_repeat('\\', abs($times))."'", str_replace(array("\r", "\n"), array('', '\\n'), (string)$value));
+					$value = str_replace(array("\r\n", "\r", '"'), array("\n", "\n", '%%!dq!%%'), (string)$value);
+					$value = str_replace(array('%%!dq!%%', "'"), array('"', "\\'"), trim(json_encode($value), '"'));
+
+					return str_replace('\\', str_repeat('\\', abs($times) - 1).'\\', $value);
 				}
 
 			/**

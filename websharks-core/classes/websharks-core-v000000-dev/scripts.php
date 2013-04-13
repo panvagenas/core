@@ -141,7 +141,6 @@ namespace websharks_core_v000000_dev
 									)
 								);
 						}
-
 					// Add jQuery™ (if loading via Google® instead of WordPress®).
 					if(!is_admin() && $this->©options->get('scripts.front_side.load_jquery_via_google'))
 						$scripts_to_register['jquery'] = array(
@@ -177,27 +176,18 @@ namespace websharks_core_v000000_dev
 
 					$data = 'var $'.$this->___instance_config->plugin_root_ns_stub.'___instance_config = {';
 
-					$data .= "core_ns:'".$this->©string->esc_js_sq($this->___instance_config->core_ns)."',";
-					$data .= "core_ns_with_dashes:'".$this->©string->esc_js_sq($this->___instance_config->core_ns_with_dashes)."',";
-					$data .= "core_ns_stub:'".$this->©string->esc_js_sq($this->___instance_config->core_ns_stub)."',";
-					$data .= "core_ns_stub_with_dashes:'".$this->©string->esc_js_sq($this->___instance_config->core_ns_stub_with_dashes)."',";
-					$data .= "core_dir_url:'".$this->©string->esc_js_sq($this->©url->to_core_dir_or_file())."',";
+					$data .= $this->©object->to_js($this->___instance_config, FALSE).','; // Include all properties.
 
-					$data .= "plugin_name:'".$this->©string->esc_js_sq($this->___instance_config->plugin_name)."',";
-					$data .= "plugin_version:'".$this->©string->esc_js_sq($this->___instance_config->plugin_version)."',";
-					$data .= "plugin_var_ns:'".$this->©string->esc_js_sq($this->___instance_config->plugin_var_ns)."',";
-					$data .= "plugin_prefix:'".$this->©string->esc_js_sq($this->___instance_config->plugin_prefix)."',";
-					$data .= "plugin_api_var:'".$this->©string->esc_js_sq($this->___instance_config->plugin_api_var)."',";
-					$data .= "plugin_root_ns:'".$this->©string->esc_js_sq($this->___instance_config->plugin_root_ns)."',";
-					$data .= "plugin_root_ns_with_dashes:'".$this->©string->esc_js_sq($this->___instance_config->plugin_root_ns_with_dashes)."',";
-					$data .= "plugin_root_ns_stub:'".$this->©string->esc_js_sq($this->___instance_config->plugin_root_ns_stub)."',";
-					$data .= "plugin_root_ns_stub_with_dashes:'".$this->©string->esc_js_sq($this->___instance_config->plugin_root_ns_stub_with_dashes)."',";
-					$data .= "plugin_dir_url:'".$this->©string->esc_js_sq($this->©url->to_plugin_dir_or_file())."',";
-					$data .= "plugin_data_dir_url:'".$this->©string->esc_js_sq($this->©url->to_plugin_data_dir_or_file())."',";
-					$data .= "plugin_pro_dir_url:'".$this->©string->esc_js_sq($this->©url->to_plugin_pro_dir_or_file())."',";
+					// Some additional JavaScript instance config properties. These require additional server-side processing.
 
-					$data .= "wp_load_url:'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_or_file($this->©files->wp_load()))."',";
-					$data .= "has_pro:".(($this->©plugin->has_pro()) ? 'true' : 'false').",";
+					$data .= "'wp_load_url':'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_or_file($this->©files->wp_load()))."',";
+					$data .= "'core_dir_url':'".$this->©string->esc_js_sq($this->©url->to_core_dir_or_file())."',";
+
+					$data .= "'plugin_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_dir_or_file())."',";
+					$data .= "'plugin_data_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_data_dir_or_file())."',";
+					$data .= "'plugin_pro_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_pro_dir_or_file())."',";
+
+					$data .= "'has_pro':".(($this->©plugin->has_pro()) ? 'true' : 'false').",";
 
 					$data = rtrim($data, ',').'};'; // Trim and close curly bracket.
 
@@ -221,7 +211,6 @@ namespace websharks_core_v000000_dev
 
 					if(is_admin() && ($current_menu_page_class = $current_menu_page_slug = $this->©menu_pages->is_plugin_page()))
 						{
-							$this->©no_cache->constants(); // Private callers are NOT cacheable.
 							$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages.®update_theme', $this::private_type).',';
 							$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_class.'.®update_content_panels_order', $this::private_type).',';
 							$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_class.'.®update_content_panels_state', $this::private_type).',';

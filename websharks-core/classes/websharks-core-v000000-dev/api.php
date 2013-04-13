@@ -8,8 +8,6 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
- *
- * @TODO Make it easy to access class constants too.
  */
 namespace websharks_core_v000000_dev
 	{

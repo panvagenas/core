@@ -853,9 +853,35 @@ namespace websharks_core_v000000_dev
 
 							return $value;
 						}
-					else if($include_scalars_resources)
+					if($include_scalars_resources)
 						return (object)$value;
-					else return $value;
+
+					return $value;
+				}
+
+			/**
+			 * Converts PHP objects into JS objects (or JS object properties).
+			 *
+			 * @note This follows JSON standards; except we use single quotes instead of double quotes.
+			 *    Also, see {@link strings::esc_js_sq_deep()} for subtle differences when it comes to line breaks.
+			 *    • Special handling for line breaks in strings: `\r\n` and `\r` are converted to `\n`.
+			 *
+			 * @param object  $object A PHP object to convert to a JS object (or JS object properties).
+			 *
+			 * @param boolean $encapsulate Optional. This defaults to a TRUE value (recommended).
+			 *    If set to FALSE, we return JS object properties only (i.e. without `{}` encapsulation).
+			 *
+			 * @return string A JS object (or JS object properties). See ``$encapsulate`` parameter.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function to_js($object, $encapsulate = TRUE)
+				{
+					$this->check_arg_types('object', 'boolean', func_get_args());
+
+					$js = $this->©var->to_js($object); // Produces a JavaScript object `{}`.
+
+					return (!$encapsulate) ? ltrim(rtrim($js, '}'), '{') : $js;
 				}
 		}
 	}

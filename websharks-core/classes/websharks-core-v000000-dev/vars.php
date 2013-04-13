@@ -1055,6 +1055,80 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Converts PHP variables into JavaScript.
+			 *
+			 * @note This follows JSON standards; except we use single quotes instead of double quotes.
+			 *    Also, see {@link strings::esc_js_sq_deep()} for subtle differences when it comes to line breaks.
+			 *    • Special handling for line breaks in strings: `\r\n` and `\r` are converted to `\n`.
+			 *
+			 * @param mixed   $var Any input variable (or an expression is fine also).
+			 * @param boolean $___recursion Internal use only.
+			 *
+			 * @return string JavaScript value (w/ string representation).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function to_js($var, $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', func_get_args());
+
+					switch(($type = gettype($var))) // Based on type.
+					{
+						case 'object': // Iterates each object property.
+						case 'array': // Or, each array key (if this is an array).
+
+								if($type === 'array' && (empty($var) || array_keys($var) === range(0, count($var) - 1)))
+									$js_value = '['.implode(',', array_map(array($this, __FUNCTION__), $var, array_fill(0, count($var), TRUE))).']';
+
+								else // It's an object; or an associative array (which is converted to an object).
+									{
+										$_nested_key_props = array(); // Initialize.
+
+										foreach($var as $_nested_key_prop => &$_nested_value)
+											$_nested_key_props[] = "'".$this->©string->esc_js_sq((string)$_nested_key_prop)."':".$this->to_js($_nested_value, TRUE);
+										$js_value = '{'.implode(',', $_nested_key_props).'}';
+
+										unset($_nested_key_prop, $_nested_value, $_nested_key_props); // Housekeeping.
+									}
+								break; // Break switch.
+
+						// Everything else is MUCH simpler to handle.
+
+						case 'integer':
+								$js_value = (string)$var;
+								break; // Break switch.
+
+						case 'real': // Alias for `float` type.
+						case 'double': // Alias for `float` type.
+						case 'float': // Standardized as `float` type.
+								$js_value = (string)$var;
+								break; // Break switch.
+
+						case 'string':
+								$js_value = "'".$this->©string->esc_js_sq($var)."'";
+								break; // Break switch.
+
+						case 'boolean':
+								$js_value = ($var) ? 'true' : 'false';
+								break; // Break switch.
+
+						case 'resource':
+								$js_value = "'".$this->©string->esc_js_sq((string)$var)."'";
+								break; // Break switch.
+
+						case 'NULL':
+								$js_value = 'null';
+								break; // Break switch.
+
+						default: // Default case handler.
+							$js_value = "'".$this->©string->esc_js_sq((string)$var)."'";
+							break; // Break switch.
+					}
+					return $js_value; // JavaScript value.
+				}
+
+			/**
 			 * A better ``var_dump()``.
 			 *
 			 * @note This provides better output, better indentation, and it returns a string.
@@ -1089,6 +1163,7 @@ namespace websharks_core_v000000_dev
 			public function dump($var, $echo = '', $tab_size = 1, $dump_circular_ids = FALSE)
 				{
 					$this->check_arg_types('', array('string', 'boolean'), 'integer', 'boolean', func_get_args());
+
 					$echo = ($echo === $this::do_echo || $echo === TRUE) ? $this::do_echo : '';
 
 					return $this->_dump($var, $echo, abs($tab_size), $dump_circular_ids);
@@ -1114,6 +1189,8 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param array   $___nested_circular_ids Used in recursion. For internal use only.
 			 *
+			 * @param boolean $___recursion Tracks recursion. For internal use only.
+			 *
 			 * @return string A dump of the input ``$var`` (always in string format).
 			 *
 			 * @note This method DOES have built-in protection against circular references.
@@ -1126,9 +1203,10 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert (PHP_VERSION) is-type 'string'
 			 */
-			protected function _dump(&$var, $echo = '', $tab_size = 1, $dump_circular_ids = FALSE, $___current_tab_size = 0, $___nested_circular_ids = array())
+			protected function _dump(&$var, $echo = '', $tab_size = 1, $dump_circular_ids = FALSE, $___current_tab_size = 0, $___nested_circular_ids = array(), $___recursion = FALSE)
 				{
-					$var_dump = ''; // Initialize string return value for this dump.
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'string', 'integer', 'boolean', 'integer', 'array', 'boolean', func_get_args());
 
 					switch(($type = $real_type = gettype($var))) // Formatting based on type.
 					{
@@ -1156,7 +1234,7 @@ namespace websharks_core_v000000_dev
 								else if($type === 'array') // Calculate an ID for arrays.
 									$real_type = 'array'.(($dump_circular_ids) ? '::'.md5(serialize($var)) : '');
 
-								$var_dump .= $real_type."\n".$dump_tabs.$opening_encap."\n";
+								$var_dump = $real_type."\n".$dump_tabs.$opening_encap."\n";
 
 								foreach($var as $_nested_key_prop => &$_nested_value)
 									{
@@ -1203,7 +1281,7 @@ namespace websharks_core_v000000_dev
 														$nested_dumps[$_nested_key_prop] = $_nested_real_type.'{} *circular*';
 
 													else if(($___nested_circular_ids[$_nested_circular_id_key] = -1) // To catch circular references.
-													        && ($_nested_dump = $this->_dump($_nested_value, '', $tab_size, $dump_circular_ids, $dump_tab_size, $___nested_circular_ids))
+													        && ($_nested_dump = $this->_dump($_nested_value, '', $tab_size, $dump_circular_ids, $dump_tab_size, $___nested_circular_ids, TRUE))
 													) $nested_dumps[$_nested_key_prop] = $_nested_dump;
 
 													else // Else, this object has no properties.
@@ -1222,7 +1300,7 @@ namespace websharks_core_v000000_dev
 														$nested_dumps[$_nested_key_prop] = $_nested_real_type.'() *circular*';
 
 													else if(($___nested_circular_ids[$_nested_circular_id_key] = -1) // To catch circular references.
-													        && ($_nested_dump = $this->_dump($_nested_value, '', $tab_size, $dump_circular_ids, $dump_tab_size, $___nested_circular_ids))
+													        && ($_nested_dump = $this->_dump($_nested_value, '', $tab_size, $dump_circular_ids, $dump_tab_size, $___nested_circular_ids, TRUE))
 													) $nested_dumps[$_nested_key_prop] = $_nested_dump;
 
 													else // Else, this is an empty array.

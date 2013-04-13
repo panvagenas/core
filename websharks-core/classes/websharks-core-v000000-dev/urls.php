@@ -901,7 +901,7 @@ namespace websharks_core_v000000_dev
 					$xml_object_flags    = LIBXML_NOCDATA | LIBXML_NOERROR | LIBXML_NOWARNING;
 					$xml_object_flags    = $this->©integer->isset_or($args['xml_object_flags'], $xml_object_flags);
 					$args['sslverify']   = $this->©boolean->isset_or($args['sslverify'], FALSE);
-					$args['httpversion'] = $this->©string->is_not_empty_or($args['httpversion'], '1.1');
+					$args['httpversion'] = $this->©string->isset_or($args['httpversion'], '1.1');
 
 					// Developers might like to fine tune things a bit further here.
 					$url  = $this->apply_filters('remote__url', $url, get_defined_vars());

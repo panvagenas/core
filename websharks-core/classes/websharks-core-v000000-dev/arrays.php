@@ -791,6 +791,7 @@ namespace websharks_core_v000000_dev
 					if(is_object($value))
 						{
 							$value = (array)$value;
+
 							foreach($value as $_key => $_value)
 								if(strpos($_key, "\0") === 0)
 									{
@@ -802,9 +803,10 @@ namespace websharks_core_v000000_dev
 											}
 									}
 							unset($_key, $_value);
+
 							return $value;
 						}
-					else return (array)$value;
+					return (array)$value;
 				}
 
 			/**
@@ -875,6 +877,7 @@ namespace websharks_core_v000000_dev
 							if(is_object($value))
 								{
 									$value = (array)$value;
+
 									foreach($value as $_key => $_value)
 										if(strpos($_key, "\0") === 0)
 											{
@@ -887,16 +890,43 @@ namespace websharks_core_v000000_dev
 											}
 									unset($_key, $_value);
 								}
-
 							foreach($value as &$_value)
 								$_value = $this->ify_deep($_value, $include_protected_private_properties, $include_scalars_resources);
 							unset($_value);
 
 							return $value;
 						}
-					else if($include_scalars_resources)
+					if($include_scalars_resources)
 						return (array)$value;
-					else return $value;
+
+					return $value;
+				}
+
+			/**
+			 * Converts PHP arrays into JS arrays/objects (or JS array values; or JS object properties).
+			 *
+			 * @note This follows JSON standards; except we use single quotes instead of double quotes.
+			 *    Also, see {@link strings::esc_js_sq_deep()} for subtle differences when it comes to line breaks.
+			 *    • Special handling for line breaks in strings: `\r\n` and `\r` are converted to `\n`.
+			 *
+			 * @param array   $array A PHP array to convert to a JS array/object (or JS array values; or JS object properties).
+			 *    IMPORTANT: A PHP array is ONLY converted to a true JavaScript array if it's indexed numerically with a `0` based index.
+			 *    In all other cases the array is treated as associative; and it's converted to a JavaScript object; following JSON standards.
+			 *
+			 * @param boolean $encapsulate Optional. This defaults to a TRUE value (recommended).
+			 *    If set to FALSE, we return JS array values or JS object properties only (i.e. w/o `[]` or `{}` encapsulations).
+			 *
+			 * @return string A JS array/object (or JS array values; or JS object properties). See ``$encapsulate`` parameter.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function to_js($array, $encapsulate = TRUE)
+				{
+					$this->check_arg_types('array', 'boolean', func_get_args());
+
+					$js = $this->©var->to_js($array); // Produces a JavaScript array `[]` or object `{}`.
+
+					return (!$encapsulate) ? ltrim(rtrim($js, '}]'), '{[') : $js;
 				}
 
 			/**

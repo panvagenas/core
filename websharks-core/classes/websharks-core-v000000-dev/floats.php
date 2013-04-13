@@ -818,7 +818,7 @@ namespace websharks_core_v000000_dev
 
 							return $value;
 						}
-					else return (float)$value;
+					return (float)$value;
 				}
 		}
 	}
