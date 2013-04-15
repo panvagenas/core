@@ -28,294 +28,294 @@ namespace websharks_core_v000000_dev
 		 *    Such as: `::array`, `::class`, `::function` and `::var`.
 		 *    For these static aliases one MUST use a `©` prefix.
 		 *
-		 * @property \websharks_core_v000000_dev\actions                 $actions
-		 * @property \websharks_core_v000000_dev\actions                 $action
-		 * @method static \websharks_core_v000000_dev\actions actions()
-		 * @method static \websharks_core_v000000_dev\actions action()
-		 *
-		 * @property \websharks_core_v000000_dev\arrays                  $arrays
-		 * @property \websharks_core_v000000_dev\arrays                  $array
-		 * @method static \websharks_core_v000000_dev\arrays arrays()
-		 * @method static \websharks_core_v000000_dev\arrays array()
-		 * @method static \websharks_core_v000000_dev\arrays ©array()
-		 *
-		 * @property \websharks_core_v000000_dev\booleans                $booleans
-		 * @property \websharks_core_v000000_dev\booleans                $boolean
-		 * @method static \websharks_core_v000000_dev\booleans booleans()
-		 * @method static \websharks_core_v000000_dev\booleans boolean()
-		 *
-		 * @method static \websharks_core_v000000_dev\builder builder()
-		 * @method static \websharks_core_v000000_dev\builder build()
-		 *
-		 * @property \websharks_core_v000000_dev\caps                    $caps
-		 * @property \websharks_core_v000000_dev\caps                    $cap
-		 * @method static \websharks_core_v000000_dev\caps caps()
-		 * @method static \websharks_core_v000000_dev\caps cap()
-		 *
-		 * @property \websharks_core_v000000_dev\captchas                $captchas
-		 * @property \websharks_core_v000000_dev\captchas                $captcha
-		 * @method static \websharks_core_v000000_dev\captchas captchas()
-		 * @method static \websharks_core_v000000_dev\captchas captcha()
-		 *
-		 * @property \websharks_core_v000000_dev\classes                 $classes
-		 * @property \websharks_core_v000000_dev\classes                 $class
-		 * @method static \websharks_core_v000000_dev\classes classes()
-		 * @method static \websharks_core_v000000_dev\classes class()
-		 * @method static \websharks_core_v000000_dev\classes ©class()
-		 *
-		 * @property \websharks_core_v000000_dev\commands                $commands
-		 * @property \websharks_core_v000000_dev\commands                $command
-		 * @method static \websharks_core_v000000_dev\commands commands()
-		 * @method static \websharks_core_v000000_dev\commands command()
-		 *
-		 * @property \websharks_core_v000000_dev\compressor              $compressor
-		 * @method static \websharks_core_v000000_dev\compressor compressor()
-		 *
-		 * @property \websharks_core_v000000_dev\cookies                 $cookies
-		 * @property \websharks_core_v000000_dev\cookies                 $cookie
-		 * @method static \websharks_core_v000000_dev\cookies cookies()
-		 * @method static \websharks_core_v000000_dev\cookies cookie()
-		 *
-		 * @property \websharks_core_v000000_dev\css_minifier            $css_minifier
-		 * @method static \websharks_core_v000000_dev\css_minifier css_minifier()
-		 *
-		 * @property \websharks_core_v000000_dev\crons                   $crons
-		 * @property \websharks_core_v000000_dev\crons                   $cron
-		 * @method static \websharks_core_v000000_dev\crons crons()
-		 * @method static \websharks_core_v000000_dev\crons cron()
-		 *
-		 * @property \websharks_core_v000000_dev\currencies              $currencies
-		 * @property \websharks_core_v000000_dev\currencies              $currency
-		 * @method static \websharks_core_v000000_dev\currencies currencies()
-		 * @method static \websharks_core_v000000_dev\currencies currency()
-		 *
-		 * @property \websharks_core_v000000_dev\dates                   $dates
-		 * @property \websharks_core_v000000_dev\dates                   $date
-		 * @method static \websharks_core_v000000_dev\dates dates()
-		 * @method static \websharks_core_v000000_dev\dates date()
-		 *
-		 * @property \wpdb|\websharks_core_v000000_dev\db                $db
-		 * @method static \wpdb|\websharks_core_v000000_dev\db db()
-		 *
-		 * @property \websharks_core_v000000_dev\db_cache                $db_cache
-		 * @method static \websharks_core_v000000_dev\db_cache db_cache()
-		 *
-		 * @property \websharks_core_v000000_dev\db_tables               $db_tables
-		 * @property \websharks_core_v000000_dev\db_tables               $db_table
-		 * @method static \websharks_core_v000000_dev\db_tables db_tables()
-		 * @method static \websharks_core_v000000_dev\db_tables db_table()
-		 *
-		 * @property \websharks_core_v000000_dev\db_utils                $db_utils
-		 * @property \websharks_core_v000000_dev\db_utils                $db_util
-		 * @method static \websharks_core_v000000_dev\db_utils db_utils()
-		 * @method static \websharks_core_v000000_dev\db_utils db_util()
-		 *
-		 * @property \websharks_core_v000000_dev\diagnostics             $diagnostics
-		 * @property \websharks_core_v000000_dev\diagnostics             $diagnostic
-		 * @method static \websharks_core_v000000_dev\diagnostics diagnostics()
-		 * @method static \websharks_core_v000000_dev\diagnostics diagnostic()
-		 *
-		 * @property \websharks_core_v000000_dev\dirs                    $dirs
-		 * @property \websharks_core_v000000_dev\dirs                    $dir
-		 * @method static \websharks_core_v000000_dev\dirs dirs()
-		 * @method static \websharks_core_v000000_dev\dirs dir()
-		 *
-		 * @property \websharks_core_v000000_dev\encryption              $encryption
-		 * @method static \websharks_core_v000000_dev\encryption encryption()
-		 *
-		 * @property \websharks_core_v000000_dev\env                     $env
-		 * @method static \websharks_core_v000000_dev\env env()
-		 *
-		 * @property \websharks_core_v000000_dev\errors                  $errors
-		 * @property \websharks_core_v000000_dev\errors                  $error
-		 * @method static \websharks_core_v000000_dev\errors errors()
-		 * @method static \websharks_core_v000000_dev\errors error()
-		 *
-		 * @property \websharks_core_v000000_dev\exception               $exception
-		 * @method static \websharks_core_v000000_dev\exception exception()
-		 *
-		 * @property \websharks_core_v000000_dev\feeds                   $feeds
-		 * @property \websharks_core_v000000_dev\feeds                   $feed
-		 * @method static \websharks_core_v000000_dev\feeds feeds()
-		 * @method static \websharks_core_v000000_dev\feeds feed()
-		 *
-		 * @property \websharks_core_v000000_dev\files                   $files
-		 * @property \websharks_core_v000000_dev\files                   $file
-		 * @method static \websharks_core_v000000_dev\files files()
-		 * @method static \websharks_core_v000000_dev\files file()
-		 *
-		 * @property \websharks_core_v000000_dev\floats                  $floats
-		 * @property \websharks_core_v000000_dev\floats                  $float
-		 * @method static \websharks_core_v000000_dev\floats floats()
-		 * @method static \websharks_core_v000000_dev\floats float()
-		 *
-		 * @property \websharks_core_v000000_dev\forms                   $forms
-		 * @property \websharks_core_v000000_dev\forms                   $form
-		 * @method static \websharks_core_v000000_dev\forms forms()
-		 * @method static \websharks_core_v000000_dev\forms form()
-		 *
-		 * @property \websharks_core_v000000_dev\form_fields             $form_fields
-		 * @property \websharks_core_v000000_dev\form_fields             $form_field
-		 * @method static \websharks_core_v000000_dev\form_fields form_fields()
-		 * @method static \websharks_core_v000000_dev\form_fields form_field()
-		 *
-		 * @property \websharks_core_v000000_dev\functions               $functions
-		 * @property \websharks_core_v000000_dev\functions               $function
-		 * @method static \websharks_core_v000000_dev\functions functions()
-		 * @method static \websharks_core_v000000_dev\functions function()
-		 * @method static \websharks_core_v000000_dev\functions ©function()
-		 *
-		 * @property \websharks_core_v000000_dev\headers                 $headers
-		 * @property \websharks_core_v000000_dev\headers                 $header
-		 * @method static \websharks_core_v000000_dev\headers headers()
-		 * @method static \websharks_core_v000000_dev\headers header()
-		 *
-		 * @property \websharks_core_v000000_dev\html_minifier           $html_minifier
-		 * @method static \websharks_core_v000000_dev\html_minifier html_minifier()
-		 *
-		 * @property \websharks_core_v000000_dev\initializer             $initializer
-		 * @method static \websharks_core_v000000_dev\initializer initializer()
-		 *
-		 * @property \websharks_core_v000000_dev\installer               $installer
-		 * @method static \websharks_core_v000000_dev\installer installer()
-		 *
-		 * @property \websharks_core_v000000_dev\integers                $integers
-		 * @property \websharks_core_v000000_dev\integers                $integer
-		 * @method static \websharks_core_v000000_dev\integers integers()
-		 * @method static \websharks_core_v000000_dev\integers integer()
-		 *
-		 * @property \websharks_core_v000000_dev\ips                     $ips
-		 * @property \websharks_core_v000000_dev\ips                     $ip
-		 * @method static \websharks_core_v000000_dev\ips ips()
-		 * @method static \websharks_core_v000000_dev\ips ip()
-		 *
-		 * @property \websharks_core_v000000_dev\js_minifier             $js_minifier
-		 * @method static \websharks_core_v000000_dev\js_minifier js_minifier()
-		 *
-		 * @property \websharks_core_v000000_dev\mail                    $mail
-		 * @method static \websharks_core_v000000_dev\mail mail()
-		 *
-		 * @property \websharks_core_v000000_dev\markdown                $markdown
-		 * @method static \websharks_core_v000000_dev\markdown markdown()
-		 *
-		 * @property \websharks_core_v000000_dev\menu_pages              $menu_pages
-		 * @property \websharks_core_v000000_dev\menu_pages              $menu_page
-		 * @method static \websharks_core_v000000_dev\menu_pages menu_pages()
-		 * @method static \websharks_core_v000000_dev\menu_pages menu_page()
-		 *
-		 * @property \websharks_core_v000000_dev\menu_pages\menu_page    $menu_pages__menu_page
-		 * @method static \websharks_core_v000000_dev\menu_pages\menu_page menu_pages__menu_page()
-		 *
-		 * @property \websharks_core_v000000_dev\menu_pages\panels\panel $menu_pages__panels__panel
-		 * @method static \websharks_core_v000000_dev\menu_pages\panels\panel menu_pages__panels__panel()
-		 *
-		 * @property \websharks_core_v000000_dev\messages                $messages
-		 * @property \websharks_core_v000000_dev\messages                $message
-		 * @method static \websharks_core_v000000_dev\messages messages()
-		 * @method static \websharks_core_v000000_dev\messages message()
-		 *
-		 * @property \websharks_core_v000000_dev\functions               $methods
-		 * @property \websharks_core_v000000_dev\functions               $method
-		 * @method static \websharks_core_v000000_dev\functions methods()
-		 * @method static \websharks_core_v000000_dev\functions method()
-		 *
-		 * @property \websharks_core_v000000_dev\no_cache                $no_cache
-		 * @method static \websharks_core_v000000_dev\no_cache no_cache()
-		 *
-		 * @property \websharks_core_v000000_dev\notices                 $notices
-		 * @property \websharks_core_v000000_dev\notices                 $notice
-		 * @method static \websharks_core_v000000_dev\notices notices()
-		 * @method static \websharks_core_v000000_dev\notices notice()
-		 *
-		 * @property \websharks_core_v000000_dev\oauth                   $oauth
-		 * @method static \websharks_core_v000000_dev\oauth oauth()
-		 *
-		 * @property \websharks_core_v000000_dev\options                 $options
-		 * @property \websharks_core_v000000_dev\options                 $option
-		 * @method static \websharks_core_v000000_dev\options options()
-		 * @method static \websharks_core_v000000_dev\options option()
-		 *
-		 * @property \websharks_core_v000000_dev\objects_os              $objects_os
-		 * @property \websharks_core_v000000_dev\objects_os              $object_os
-		 * @method static \websharks_core_v000000_dev\objects_os objects_os()
-		 * @method static \websharks_core_v000000_dev\objects_os object_os()
-		 *
-		 * @property \websharks_core_v000000_dev\objects                 $objects
-		 * @property \websharks_core_v000000_dev\objects                 $object
-		 * @method static \websharks_core_v000000_dev\objects objects()
-		 * @method static \websharks_core_v000000_dev\objects object()
-		 *
-		 * @property \websharks_core_v000000_dev\php                     $php
-		 * @method static \websharks_core_v000000_dev\php php()
-		 *
-		 * @property \websharks_core_v000000_dev\plugins                 $plugins
-		 * @property \websharks_core_v000000_dev\plugins                 $plugin
-		 * @method static \websharks_core_v000000_dev\plugins plugins()
-		 * @method static \websharks_core_v000000_dev\plugins plugin()
-		 *
-		 * @property \websharks_core_v000000_dev\posts                   $posts
-		 * @property \websharks_core_v000000_dev\posts                   $post
-		 * @method static \websharks_core_v000000_dev\posts posts()
-		 * @method static \websharks_core_v000000_dev\posts post()
-		 *
-		 * @method static \websharks_core_v000000_dev\replicator replicator()
-		 * @method static \websharks_core_v000000_dev\replicator replicate()
-		 *
-		 * @property \websharks_core_v000000_dev\scripts                 $scripts
-		 * @property \websharks_core_v000000_dev\scripts                 $script
-		 * @method static \websharks_core_v000000_dev\scripts scripts()
-		 * @method static \websharks_core_v000000_dev\scripts script()
-		 *
-		 * @property \websharks_core_v000000_dev\strings                 $strings
-		 * @property \websharks_core_v000000_dev\strings                 $string
-		 * @method static \websharks_core_v000000_dev\strings strings()
-		 * @method static \websharks_core_v000000_dev\strings string()
-		 *
-		 * @property \websharks_core_v000000_dev\styles                  $styles
-		 * @property \websharks_core_v000000_dev\styles                  $style
-		 * @method static \websharks_core_v000000_dev\styles styles()
-		 * @method static \websharks_core_v000000_dev\styles style()
-		 *
-		 * @property \websharks_core_v000000_dev\successes               $successes
-		 * @property \websharks_core_v000000_dev\successes               $success
-		 * @method static \websharks_core_v000000_dev\successes successes()
-		 * @method static \websharks_core_v000000_dev\successes success()
-		 *
-		 * @property \websharks_core_v000000_dev\templates               $templates
-		 * @property \websharks_core_v000000_dev\templates               $template
-		 * @method static \websharks_core_v000000_dev\templates templates()
-		 * @method static \websharks_core_v000000_dev\templates template()
-		 *
-		 * @property \websharks_core_v000000_dev\urls                    $urls
-		 * @property \websharks_core_v000000_dev\urls                    $url
-		 * @method static \websharks_core_v000000_dev\urls urls()
-		 * @method static \websharks_core_v000000_dev\urls url()
-		 *
-		 * @property \websharks_core_v000000_dev\vars                    $vars
-		 * @property \websharks_core_v000000_dev\vars                    $var
-		 * @method static \websharks_core_v000000_dev\vars vars()
-		 * @method static \websharks_core_v000000_dev\vars var()
-		 * @method static \websharks_core_v000000_dev\vars ©var()
-		 *
-		 * @property \websharks_core_v000000_dev\videos                  $videos
-		 * @property \websharks_core_v000000_dev\videos                  $video
-		 * @method static \websharks_core_v000000_dev\videos videos()
-		 * @method static \websharks_core_v000000_dev\videos video()
-		 *
-		 * @property \websharks_core_v000000_dev\users                   $users
-		 * @property \websharks_core_v000000_dev\users                   $user
-		 * @method static \websharks_core_v000000_dev\users users()
-		 * @method static \websharks_core_v000000_dev\users user()
-		 *
-		 * @property \websharks_core_v000000_dev\user_utils              $user_utils
-		 * @method static \websharks_core_v000000_dev\user_utils user_utils()
-		 *
-		 * @property \websharks_core_v000000_dev\xml                     $xml
-		 * @method static \websharks_core_v000000_dev\xml xml()
-		 *
-		 * @property object                                              $___instance_config Public/magic read-only access.
+		 * @property actions                 $actions
+		 * @property actions                 $action
+		 * @method static actions actions()
+		 * @method static actions action()
+		 *
+		 * @property arrays                  $arrays
+		 * @property arrays                  $array
+		 * @method static arrays arrays()
+		 * @method static arrays array()
+		 * @method static arrays ©array()
+		 *
+		 * @property booleans                $booleans
+		 * @property booleans                $boolean
+		 * @method static booleans booleans()
+		 * @method static booleans boolean()
+		 *
+		 * @method static builder builder()
+		 * @method static builder build()
+		 *
+		 * @property caps                    $caps
+		 * @property caps                    $cap
+		 * @method static caps caps()
+		 * @method static caps cap()
+		 *
+		 * @property captchas                $captchas
+		 * @property captchas                $captcha
+		 * @method static captchas captchas()
+		 * @method static captchas captcha()
+		 *
+		 * @property classes                 $classes
+		 * @property classes                 $class
+		 * @method static classes classes()
+		 * @method static classes class()
+		 * @method static classes ©class()
+		 *
+		 * @property commands                $commands
+		 * @property commands                $command
+		 * @method static commands commands()
+		 * @method static commands command()
+		 *
+		 * @property compressor              $compressor
+		 * @method static compressor compressor()
+		 *
+		 * @property cookies                 $cookies
+		 * @property cookies                 $cookie
+		 * @method static cookies cookies()
+		 * @method static cookies cookie()
+		 *
+		 * @property css_minifier            $css_minifier
+		 * @method static css_minifier css_minifier()
+		 *
+		 * @property crons                   $crons
+		 * @property crons                   $cron
+		 * @method static crons crons()
+		 * @method static crons cron()
+		 *
+		 * @property currencies              $currencies
+		 * @property currencies              $currency
+		 * @method static currencies currencies()
+		 * @method static currencies currency()
+		 *
+		 * @property dates                   $dates
+		 * @property dates                   $date
+		 * @method static dates dates()
+		 * @method static dates date()
+		 *
+		 * @property \wpdb|db                $db
+		 * @method static \wpdb|db db()
+		 *
+		 * @property db_cache                $db_cache
+		 * @method static db_cache db_cache()
+		 *
+		 * @property db_tables               $db_tables
+		 * @property db_tables               $db_table
+		 * @method static db_tables db_tables()
+		 * @method static db_tables db_table()
+		 *
+		 * @property db_utils                $db_utils
+		 * @property db_utils                $db_util
+		 * @method static db_utils db_utils()
+		 * @method static db_utils db_util()
+		 *
+		 * @property diagnostics             $diagnostics
+		 * @property diagnostics             $diagnostic
+		 * @method static diagnostics diagnostics()
+		 * @method static diagnostics diagnostic()
+		 *
+		 * @property dirs                    $dirs
+		 * @property dirs                    $dir
+		 * @method static dirs dirs()
+		 * @method static dirs dir()
+		 *
+		 * @property encryption              $encryption
+		 * @method static encryption encryption()
+		 *
+		 * @property env                     $env
+		 * @method static env env()
+		 *
+		 * @property errors                  $errors
+		 * @property errors                  $error
+		 * @method static errors errors()
+		 * @method static errors error()
+		 *
+		 * @property exception               $exception
+		 * @method static exception exception()
+		 *
+		 * @property feeds                   $feeds
+		 * @property feeds                   $feed
+		 * @method static feeds feeds()
+		 * @method static feeds feed()
+		 *
+		 * @property files                   $files
+		 * @property files                   $file
+		 * @method static files files()
+		 * @method static files file()
+		 *
+		 * @property floats                  $floats
+		 * @property floats                  $float
+		 * @method static floats floats()
+		 * @method static floats float()
+		 *
+		 * @property forms                   $forms
+		 * @property forms                   $form
+		 * @method static forms forms()
+		 * @method static forms form()
+		 *
+		 * @property form_fields             $form_fields
+		 * @property form_fields             $form_field
+		 * @method static form_fields form_fields()
+		 * @method static form_fields form_field()
+		 *
+		 * @property functions               $functions
+		 * @property functions               $function
+		 * @method static functions functions()
+		 * @method static functions function()
+		 * @method static functions ©function()
+		 *
+		 * @property headers                 $headers
+		 * @property headers                 $header
+		 * @method static headers headers()
+		 * @method static headers header()
+		 *
+		 * @property html_minifier           $html_minifier
+		 * @method static html_minifier html_minifier()
+		 *
+		 * @property initializer             $initializer
+		 * @method static initializer initializer()
+		 *
+		 * @property installer               $installer
+		 * @method static installer installer()
+		 *
+		 * @property integers                $integers
+		 * @property integers                $integer
+		 * @method static integers integers()
+		 * @method static integers integer()
+		 *
+		 * @property ips                     $ips
+		 * @property ips                     $ip
+		 * @method static ips ips()
+		 * @method static ips ip()
+		 *
+		 * @property js_minifier             $js_minifier
+		 * @method static js_minifier js_minifier()
+		 *
+		 * @property mail                    $mail
+		 * @method static mail mail()
+		 *
+		 * @property markdown                $markdown
+		 * @method static markdown markdown()
+		 *
+		 * @property menu_pages              $menu_pages
+		 * @property menu_pages              $menu_page
+		 * @method static menu_pages menu_pages()
+		 * @method static menu_pages menu_page()
+		 *
+		 * @property menu_pages\menu_page    $menu_pages__menu_page
+		 * @method static menu_pages\menu_page menu_pages__menu_page()
+		 *
+		 * @property menu_pages\panels\panel $menu_pages__panels__panel
+		 * @method static menu_pages\panels\panel menu_pages__panels__panel()
+		 *
+		 * @property messages                $messages
+		 * @property messages                $message
+		 * @method static messages messages()
+		 * @method static messages message()
+		 *
+		 * @property functions               $methods
+		 * @property functions               $method
+		 * @method static functions methods()
+		 * @method static functions method()
+		 *
+		 * @property no_cache                $no_cache
+		 * @method static no_cache no_cache()
+		 *
+		 * @property notices                 $notices
+		 * @property notices                 $notice
+		 * @method static notices notices()
+		 * @method static notices notice()
+		 *
+		 * @property oauth                   $oauth
+		 * @method static oauth oauth()
+		 *
+		 * @property options                 $options
+		 * @property options                 $option
+		 * @method static options options()
+		 * @method static options option()
+		 *
+		 * @property objects_os              $objects_os
+		 * @property objects_os              $object_os
+		 * @method static objects_os objects_os()
+		 * @method static objects_os object_os()
+		 *
+		 * @property objects                 $objects
+		 * @property objects                 $object
+		 * @method static objects objects()
+		 * @method static objects object()
+		 *
+		 * @property php                     $php
+		 * @method static php php()
+		 *
+		 * @property plugins                 $plugins
+		 * @property plugins                 $plugin
+		 * @method static plugins plugins()
+		 * @method static plugins plugin()
+		 *
+		 * @property posts                   $posts
+		 * @property posts                   $post
+		 * @method static posts posts()
+		 * @method static posts post()
+		 *
+		 * @method static replicator replicator()
+		 * @method static replicator replicate()
+		 *
+		 * @property scripts                 $scripts
+		 * @property scripts                 $script
+		 * @method static scripts scripts()
+		 * @method static scripts script()
+		 *
+		 * @property strings                 $strings
+		 * @property strings                 $string
+		 * @method static strings strings()
+		 * @method static strings string()
+		 *
+		 * @property styles                  $styles
+		 * @property styles                  $style
+		 * @method static styles styles()
+		 * @method static styles style()
+		 *
+		 * @property successes               $successes
+		 * @property successes               $success
+		 * @method static successes successes()
+		 * @method static successes success()
+		 *
+		 * @property templates               $templates
+		 * @property templates               $template
+		 * @method static templates templates()
+		 * @method static templates template()
+		 *
+		 * @property urls                    $urls
+		 * @property urls                    $url
+		 * @method static urls urls()
+		 * @method static urls url()
+		 *
+		 * @property vars                    $vars
+		 * @property vars                    $var
+		 * @method static vars vars()
+		 * @method static vars var()
+		 * @method static vars ©var()
+		 *
+		 * @property videos                  $videos
+		 * @property videos                  $video
+		 * @method static videos videos()
+		 * @method static videos video()
+		 *
+		 * @property users                   $users
+		 * @property users                   $user
+		 * @method static users users()
+		 * @method static users user()
+		 *
+		 * @property user_utils              $user_utils
+		 * @method static user_utils user_utils()
+		 *
+		 * @property xml                     $xml
+		 * @method static xml xml()
+		 *
+		 * @property object                  $___instance_config Public/magic read-only access.
 		 */
-		abstract class api implements fw_constants // Stand-alone class (runs statically and/or as an instance).
+		abstract class api implements fw_constants
 		{
 			/**
 			 * Framework for current plugin instance.

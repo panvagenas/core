@@ -25,18 +25,17 @@ namespace websharks_core_v000000_dev
 		class errors extends diagnostics
 		{
 			/**
-			 * @var string Specifies diagnostic type.
+			 * @var string Diagnostic type.
 			 */
 			public $type = 'error';
 
 			/**
-			 * @var boolean Should this type of diagnostic be logged into a DEBUG file?
-			 *    Applies only when/if `WP_DEBUG` mode is enabled.
+			 * @var boolean Log to a DEBUG file?
 			 */
 			public $wp_debug_log = TRUE;
 
 			/**
-			 * @var boolean Should this type of diagnostic be logged into a DB table?
+			 * @var boolean Log into a DB table?
 			 */
 			public $db_log = TRUE;
 		}

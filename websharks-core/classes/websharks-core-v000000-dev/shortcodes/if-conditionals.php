@@ -161,10 +161,7 @@ namespace websharks_core_v000000_dev\shortcodes
 							// Argument parsing (including support for arrays — and support for typecasting).
 
 							$_args = preg_replace('/^\{(?P<args>.*?)\}$/', '$1', $_args, 1, $_args_are_array);
-							$_args = preg_replace_callback('/\{.+?\}/', function ($m)
-								{
-									return str_replace(',', ';', $m[0]);
-								}, $_args);
+							$_args = preg_replace_callback('/\{.+?\}/', function($m){ return str_replace(',', ';', $m[0]); }, $_args);
 							$_args = (strlen($_args)) ? preg_split('/\s*,\s*/', $_args) : array();
 							$_args = $this->typecast_args($_args);
 

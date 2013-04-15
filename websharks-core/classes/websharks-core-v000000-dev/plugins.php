@@ -31,6 +31,7 @@ namespace websharks_core_v000000_dev
 				{
 					if(isset($this->cache['loaded']))
 						return; // Already loaded.
+
 					$this->cache['loaded'] = TRUE;
 
 					// Don't load the core.
@@ -41,6 +42,7 @@ namespace websharks_core_v000000_dev
 
 					// Loads plugin.
 					$this->check_global_var();
+					$this->load_classes_dir();
 					$this->load_api_classes();
 					$this->load_api_funcs();
 					$this->load_pro_class();
@@ -55,7 +57,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Checks the namespace global var for the current plugin.
 			 *
-			 * @throws exception If missing ``$GLOBALS[__NAMESPACE__]`` for the plugin.
+			 * @throws exception If missing namespace global var for the current plugin.
 			 */
 			public function check_global_var()
 				{
@@ -66,6 +68,19 @@ namespace websharks_core_v000000_dev
 						sprintf($this->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'),
 						        $this->___instance_config->plugin_root_ns)
 					);
+				}
+
+			/**
+			 * Loads plugin classes directory.
+			 */
+			public function load_classes_dir()
+				{
+					if(isset($this->cache['load_classes_dir']))
+						return; // Already attempted this once.
+
+					$this->cache['load_classes_dir'] = TRUE;
+
+					autoloader::add_classes_dir($this->___instance_config->plugin_classes_dir);
 				}
 
 			/**
@@ -81,13 +96,13 @@ namespace websharks_core_v000000_dev
 					if(is_file($this->___instance_config->plugin_api_class_file))
 						require_once $this->___instance_config->plugin_api_class_file;
 
-					// Define in an API class file if you wish to override these defaults.
+					// Define `plugin_root_ns{}` in an API class file if you wish to override these defaults.
 
 					if(!class_exists('\\'.$this->___instance_config->plugin_root_ns))
 						$this->©php->¤eval('final class '.$this->___instance_config->plugin_root_ns.' extends \\'.$this->___instance_config->core_ns.'\\api{}');
 
-					if(!class_exists('\\'.$this->___instance_config->plugin_api_var))
-						$this->©php->¤eval('class_alias(\'\\'.$this->___instance_config->plugin_root_ns.'\', \''.$this->___instance_config->plugin_api_var.'\');');
+					if(!class_exists('\\'.$this->___instance_config->plugin_var_ns))
+						$this->©php->¤eval('class_alias(\'\\'.$this->___instance_config->plugin_root_ns.'\', \''.$this->___instance_config->plugin_var_ns.'\');');
 				}
 
 			/**
@@ -100,13 +115,13 @@ namespace websharks_core_v000000_dev
 
 					$this->cache['load_api_funcs'] = TRUE;
 
-					// Define in an API class file if you wish to override these defaults.
+					// Define these in an API class file if you wish to override these defaults.
 
 					if(!function_exists('\\'.$this->___instance_config->plugin_root_ns))
 						$this->©php->¤eval('function '.$this->___instance_config->plugin_root_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
 
-					if(!function_exists('\\'.$this->___instance_config->plugin_api_var))
-						$this->©php->¤eval('function '.$this->___instance_config->plugin_api_var.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
+					if(!function_exists('\\'.$this->___instance_config->plugin_var_ns))
+						$this->©php->¤eval('function '.$this->___instance_config->plugin_var_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
 				}
 
 			/**
@@ -129,8 +144,8 @@ namespace websharks_core_v000000_dev
 
 							if(!empty($pro_class::${'for_plugin_version'}) && $this->___instance_config->plugin_version === $pro_class::${'for_plugin_version'})
 								{
-									autoloader::add_classes_dir($this->___instance_config->plugin_pro_classes_dir);
 									$GLOBALS[$this->___instance_config->plugin_pro_var] = $GLOBALS[$this->___instance_config->plugin_root_ns];
+									autoloader::add_classes_dir($this->___instance_config->plugin_pro_classes_dir);
 								}
 							else $this->enqueue_pro_update_sync_notice(); // Pro add-on needs to be synchronized with current version.
 						}

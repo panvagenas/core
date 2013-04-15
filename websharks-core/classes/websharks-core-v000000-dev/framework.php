@@ -868,10 +868,6 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->plugin_prefix             = $this->___instance_config->plugin_var_ns.'_';
 									$this->___instance_config->plugin_var_ns_with_dashes = str_replace('_', '-', $this->___instance_config->plugin_var_ns);
 
-									// Based on `plugin_var_ns` (which serves several purposes).
-									$this->___instance_config->plugin_api_var             = $this->___instance_config->plugin_var_ns;
-									$this->___instance_config->plugin_api_var_with_dashes = $this->___instance_config->plugin_var_ns_with_dashes;
-
 									// Based on plugin's root `namespace` (via `plugin_root_ns`).
 									$this->___instance_config->plugin_root_ns_prefix      = '\\'.$this->___instance_config->plugin_root_ns;
 									$this->___instance_config->plugin_root_ns_with_dashes = str_replace('_', '-', $this->___instance_config->plugin_root_ns);
@@ -909,7 +905,7 @@ namespace websharks_core_v000000_dev
 									// Based on the plugin's directory (i.e. `plugin_dir`).
 									$this->___instance_config->plugin_file           = $this->___instance_config->plugin_dir.'/plugin.php';
 									$this->___instance_config->plugin_classes_dir    = $this->___instance_config->plugin_dir.'/classes';
-									$this->___instance_config->plugin_api_class_file = $this->___instance_config->plugin_classes_dir.'/'.$this->___instance_config->plugin_api_var_with_dashes.'.php';
+									$this->___instance_config->plugin_api_class_file = $this->___instance_config->plugin_classes_dir.'/'.$this->___instance_config->plugin_root_ns_with_dashes.'.php';
 
 									// Based on the current plugin; we establish properties for a pro add-on (optional).
 									$this->___instance_config->plugin_pro_var = $this->___instance_config->plugin_root_ns.'_pro';
@@ -946,7 +942,7 @@ namespace websharks_core_v000000_dev
 							// Now let's cache ``$this->___instance_config`` for easy re-use.
 							static::$___instance_config_cache[$cache_entry] = $this->___instance_config;
 
-							if(!empty($load_plugin)) $this->©plugin->load(); // Load up the plugin in first instance.
+							if(!empty($load_plugin)) $this->©plugin->load(); // Load up plugin upon first instance.
 						}
 
 					# --------------------------------------------------------------------------------------------------------------------------
