@@ -1,9 +1,11 @@
 {
-	"name"    : "websharks/core",
-	"type"    : "websharks-wp-plugin",
-	"extra"   : {
+	"name": "websharks/core",
+	"type": "websharks-wp-plugin",
+
+	"extra": {
 		"installer-name": "websharks-core"
 	},
+
 	"autoload": {
 		"files": ["websharks-core/stub.php"]
 	},
@@ -22,6 +24,7 @@
 		"email" : "websharks@websharks-inc.com",
 		"source": "http://github.com/WebSharks/Core"
 	},
+
 	"authors": [
 		{
 			"role"    : "Company",
