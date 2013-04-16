@@ -1174,19 +1174,6 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			# --------------------------------------------------------------------------------------------------------------------------------
-			# Composer routines.
-			# --------------------------------------------------------------------------------------------------------------------------------
-
-			/**
-			 * Handles post-installation routines during composer package installs.
-			 */
-			public static function composer_post_package_install()
-				{
-					if(is_writable(dirname(dirname(__FILE__))) && !file_exists(dirname(dirname(__FILE__)).'/plugin.php'))
-						copy(dirname(__FILE__).'/plugin.php', dirname(dirname(__FILE__)).'/plugin.php');
-				}
-
-			# --------------------------------------------------------------------------------------------------------------------------------
 			# Additional properties (see also: top of this file).
 			# --------------------------------------------------------------------------------------------------------------------------------
 
