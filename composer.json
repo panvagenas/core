@@ -15,6 +15,8 @@
 		"websharks/composer": "dev-master"
 	},
 
+	"minimum-stability": "dev",
+
 	"homepage"   : "http://github.com/WebSharks/Core",
 	"description": "WebSharks™ Core framework for WordPress® plugin development.",
 	"keywords"   : ["websharks", "websharks core", "wordpress", "wordpress plugins"],
