@@ -12,10 +12,8 @@
 
 	"require": {
 		"php"               : ">=5.3.1",
-		"websharks/composer": "dev-master"
+		"websharks/composer": ">=130416"
 	},
-
-	"minimum-stability": "dev",
 
 	"homepage"   : "http://github.com/WebSharks/Core",
 	"description": "WebSharks™ Core framework for WordPress® plugin development.",
