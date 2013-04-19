@@ -549,7 +549,7 @@ namespace websharks_core_v000000_dev
 									if(is_array($_option) && $this->©strings->are_set($_option['label'], $_option['value']))
 										{
 											$html .= '<option'.
-											         ' id="'.esc_attr($field['id_prefix'].$field['id']).'-'.esc_attr($_key).'"'.
+											         ' id="'.esc_attr($field['id_prefix'].$field['id']).'---'.esc_attr($_key).'"'.
 											         ' class="'.esc_attr(trim($field['common_classes'])).'"'.
 											         ' value="'.esc_attr($_option['value']).'"'.
 

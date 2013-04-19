@@ -210,7 +210,7 @@ namespace websharks_core_v000000_dev\menu_pages
 						}
 
 					// Common classes/attributes.
-					$common_classes = array('panel', 'panel--'.esc_attr(str_replace('_', '-', $panel->slug)).esc_attr($active_by_default_class));
+					$common_classes = array('panel', 'panel--'.esc_attr($this->©string->with_dashes($panel->slug)).esc_attr($active_by_default_class));
 					$common_attrs   = 'data-panel-slug="'.esc_attr($panel->slug).'" data-panel-index="'.esc_attr($panel_index).'"';
 
 					// Wrapper and container divs.
@@ -329,8 +329,8 @@ namespace websharks_core_v000000_dev\menu_pages
 					$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page';
 					$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page';
 
-					$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page--'.str_replace('_', '-', $this->slug);
-					$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page--'.str_replace('_', '-', $this->slug);
+					$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page--'.$this->©string->with_dashes($this->slug);
+					$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page--'.$this->©string->with_dashes($this->slug);
 
 					echo '<div class="'.esc_attr(implode(' ', $classes)).'">';
 					echo '<div class="menu-page wrapper">';

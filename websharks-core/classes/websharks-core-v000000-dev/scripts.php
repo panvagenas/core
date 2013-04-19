@@ -347,7 +347,7 @@ namespace websharks_core_v000000_dev
 							wp_register_script($_handle, $_script['url'], $_script['deps'], $_script['ver'], $_script['in_footer']);
 
 							if($this->©array->is_not_empty($_script['localize'])) // Translation data?
-								wp_localize_script($_handle, '$'.str_replace('-', '_', $_handle).'___i18n', $_script['localize']);
+								wp_localize_script($_handle, '$'.$this->©string->with_underscores($_handle).'___i18n', $_script['localize']);
 
 							if($this->©string->is_not_empty($_script['data'])) // Additional inline data?
 								$this->add_data($_handle, $_script['data']); // WordPress® is currently lacking this feature.

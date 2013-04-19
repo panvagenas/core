@@ -281,7 +281,7 @@ namespace websharks_core_v000000_dev
 									sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 								);
 							if($class_file) // Interpret ``$ns_or_ns_class`` as a namespace only.
-								$ns_class = $ns_or_ns_class.'\\'.str_replace('-', '_', basename($class_file, '.php'));
+								$ns_class = $ns_or_ns_class.'\\'.stub::with_underscores(basename($class_file, '.php'));
 							else $ns_class = $ns_or_ns_class; // Presume full class path.
 
 							if(!preg_match(stub::$regex_valid_plugin_ns_class, $ns_class))
