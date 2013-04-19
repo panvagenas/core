@@ -150,7 +150,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function wp_load() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::wp_load', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'wp_load'), func_get_args());
 				}
 
 			/**
@@ -163,7 +163,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function locate() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::locate', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'locate'), func_get_args());
 				}
 
 			/**
@@ -399,6 +399,7 @@ namespace websharks_core_v000000_dev
 								);
 						}
 					unset($_file); // Housekeeping.
+
 					clearstatcache(); // Make other routines aware.
 
 					return TRUE; // Default return value.
@@ -597,6 +598,26 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Absolute basename (w/o its file extension).
+			 *
+			 * @param string $file A file path, or just a file name.
+			 *
+			 * @return string Absolute basename (w/o its file extension).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$file`` is empty.
+			 */
+			public function abs_basename($file)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					if(strlen($extension = $this->extension($file)))
+						return preg_replace('/\.'.preg_quote($extension, '/').'$/i', '', basename($file));
+
+					return basename($file);
+				}
+
+			/**
 			 * Gets a file extension.
 			 *
 			 * @return string {@inheritdoc}
@@ -606,25 +627,40 @@ namespace websharks_core_v000000_dev
 			 */
 			public function extension() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::extension', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'extension'), func_get_args());
 				}
 
 			/**
-			 * File has a common (known) extension?
+			 * File has a specific extension?
 			 *
 			 * @param string $file A file path, or just a file name.
-			 * @param string $type Optional. Defaults to ``framework::any_type``.
+			 *
+			 * @param string $type Optional. Defaults to ``framework::any_type`` (any KNOWN type).
+			 *    Bypass w/ an empty string; in case of specific ``$extensions`` only.
+			 *
+			 * @param array  $extensions Optional. An array of specific extensions.
+			 *    It's possible to test for files with NO extension, by including an empty string in this array.
 			 *
 			 * @return boolean TRUE if the ``$file`` has an extension of ``$type``.
+			 *    Also TRUE if it has a specific extension in the optional ``$extensions`` array.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$type`` is unknown (e.g. invalid).
+			 * @throws exception If ``$file`` is empty.
+			 * @throws exception If ``$type`` is NOT empty; and it's unknown (e.g. an invalid type).
 			 */
-			public function has_extension($file, $type = self::any_type)
+			public function has_extension($file, $type = self::any_type, $extensions = array())
 				{
-					$this->check_arg_types('string', func_get_args());
+					$this->check_arg_types('string:!empty', 'string', 'array', func_get_args());
 
-					return in_array($this->extension($file), $this->extensions($type), TRUE);
+					if($extensions) // An array of specific extensions?
+						{
+							$extensions = $this->©array->to_one_dimension($extensions);
+							$extensions = $this->©string->ify_deep($extensions);
+							$extensions = array_map('strtolower', $extensions);
+						}
+					$extensions = ($type) ? array_merge($extensions, $this->extensions($type)) : $extensions;
+
+					return in_array($this->extension($file), $extensions, TRUE);
 				}
 
 			/**
@@ -635,7 +671,7 @@ namespace websharks_core_v000000_dev
 			 * @return array An array of file extensions; of a specific ``$type``.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$type`` is unknown (e.g. invalid).
+			 * @throws exception If ``$type`` is empty or unknown (e.g. invalid).
 			 */
 			public function extensions($type = self::any_type)
 				{
@@ -645,15 +681,20 @@ namespace websharks_core_v000000_dev
 					{
 						case $this::textual_type:
 								return array_keys($this->textual_mime_types());
+
 						case $this::compressable_type:
 								return array_keys($this->compressable_mime_types());
+
 						case $this::cacheable_type:
 								return array_keys($this->cacheable_mime_types());
+
 						case $this::binary_type:
 								return array_keys($this->binary_mime_types());
+
 						case $this::any_type:
 								return array_keys($this->mime_types());
-						default: // Ruh-roh!
+
+						default: // Throw exception (invalid type).
 							throw $this->©exception(
 								__METHOD__.'#unknown_type', get_defined_vars(),
 								sprintf($this->i18n('Unknown extension type: `%1$s`.'), $type)
@@ -671,7 +712,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function mime_types() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::mime_types', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'mime_types'), func_get_args());
 				}
 
 			/**
@@ -684,7 +725,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function textual_mime_types() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::textual_mime_types', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'textual_mime_types'), func_get_args());
 				}
 
 			/**
@@ -697,7 +738,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function compressable_mime_types() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::compressable_mime_types', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'compressable_mime_types'), func_get_args());
 				}
 
 			/**
@@ -710,7 +751,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function binary_mime_types() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::binary_mime_types', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'binary_mime_types'), func_get_args());
 				}
 
 			/**
@@ -723,7 +764,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function cacheable_mime_types() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::cacheable_mime_types', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'cacheable_mime_types'), func_get_args());
 				}
 		}
 	}

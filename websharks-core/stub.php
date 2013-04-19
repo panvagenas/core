@@ -116,31 +116,25 @@ if(!class_exists('websharks_core_v000000_dev'))
 			public static $core_ns_with_dashes = 'websharks-core-v000000-dev';
 
 			/**
-			 * WebSharks™ Core namespace version.
+			 * WebSharks™ Core version string.
 			 *
-			 * @var string WebSharks™ Core namespace version.
-			 *
-			 * @by-initializer Set by initializer.
+			 * @var string WebSharks™ Core version string.
 			 */
-			public static $core_ns_v = '';
+			public static $core_version = '000000-dev'; #!version!#
 
 			/**
-			 * WebSharks™ Core namespace version w/ dashes.
+			 * WebSharks™ Core namespace version (with underscores).
 			 *
-			 * @var string WebSharks™ Core namespace version w/ dashes.
-			 *
-			 * @by-initializer Set by initializer.
+			 * @var string WebSharks™ Core namespace version (with underscores).
 			 */
-			public static $core_ns_v_with_dashes = '';
+			public static $core_version_with_underscores = '000000_dev'; #!version-with-underscores!#
 
 			/**
-			 * WebSharks™ Core namespace version w/ dashes.
+			 * WebSharks™ Core namespace version (with dashes).
 			 *
-			 * @var string WebSharks™ Core namespace version w/ dashes.
-			 *
-			 * @by-initializer Set by initializer.
+			 * @var string WebSharks™ Core namespace version (with dashes).
 			 */
-			public static $core_version = '';
+			public static $core_version_with_dashes = '000000-dev'; #!version-with-dashes!#
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Protected properties (see also: bottom of this file).
@@ -174,8 +168,6 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(self::$initialized)
 						return TRUE; // Initialized already.
 
-					self::$core_ns_v                               = str_replace(self::$core_ns_stub_v, '', self::$core_ns);
-					self::$core_ns_v_with_dashes                   = self::$core_version = str_replace('_', '-', self::$core_ns_v);
 					self::$regex_valid_core_ns_version             = str_replace('%%self::$core_ns_stub_v%%', preg_quote(self::$core_ns_stub_v, '/'), self::$regex_valid_core_ns_version);
 					self::$regex_valid_core_ns_version_with_dashes = str_replace('%%self::$core_ns_stub_v_with_dashes%%', preg_quote(self::$core_ns_stub_v_with_dashes, '/'), self::$regex_valid_core_ns_version_with_dashes);
 					/*
@@ -879,6 +871,46 @@ if(!class_exists('websharks_core_v000000_dev'))
 			# --------------------------------------------------------------------------------------------------------------------------------
 
 			/**
+			 * Dashes replace non-alphanumeric chars.
+			 *
+			 * @param string $string Any input string value.
+			 *
+			 * @return string Dashes replace non-alphanumeric chars.
+			 *    Escape characters `\` are converted into double dashes.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public static function with_dashes($string)
+				{
+					if(!is_string($string))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					$string = str_replace('\\', '--', $string);
+					return preg_replace('/[^a-z0-9]/i', '-', $string);
+				}
+
+			/**
+			 * Underscores replace non-alphanumeric chars.
+			 *
+			 * @param string $string Any input string value.
+			 *
+			 * @return string Underscores replace non-alphanumeric chars.
+			 *    Escape characters `\` are converted into double underscores.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public static function with_underscores($string)
+				{
+					if(!is_string($string))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					$string = str_replace('\\', '__', $string);
+					return preg_replace('/[^a-z0-9]/i', '_', $string);
+				}
+
+			/**
 			 * Gets a file extension (lowercase).
 			 *
 			 * @param string $file A file path, or just a file name.
@@ -1196,84 +1228,188 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * PHP userland validation pattern.
 			 *
 			 * @var string PHP userland validation pattern.
+			 *
+			 * @note Requirements are as follows:
+			 *
+			 *       1. MUST adhere to {@link http://php.net/manual/en/userlandnaming.php PHP Userland guidelines}.
+			 *
 			 * @see http://php.net/manual/en/userlandnaming.php
 			 */
 			public static $regex_valid_userland_name = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
 
 			/**
 			 * @var string WebSharks™ Core namespace (w/ version) validation pattern.
-			 * @see http://php.net/manual/en/function.version-compare.php
 			 *
-			 *       1. Lowercase alphanumerics and/or underscores only.
-			 *       2. MUST start with: ``self::$core_ns_stub_v``; followed by six digits.
-			 *       3. May optionally end with a WebSharks™ Core version suffix.
-			 *       4. MUST always end w/ an alphanumeric value.
-			 *       5. May NOT contain double underscores.
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Lowercase alphanumerics and/or underscores `_` only.
+			 *       2. MUST start with: {@link $core_ns_stub_v} (with underscores).
+			 *       3. MUST end with a plugin version string (with underscores).
+			 *          See: {@link $regex_valid_plugin_version}
+			 *
+			 * @see initialize()
+			 * @see $core_ns_stub_v
+			 * @see $regex_valid_plugin_version
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 * @see http://semver.org
 			 */
-			public static $regex_valid_core_ns_version = '/^%%self::$core_ns_stub_v%%[0-9]{6}(?:_(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))?$/';
+			public static $regex_valid_core_ns_version = '/^%%self::$core_ns_stub_v%%[0-9]{6}(?:_(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))?(?:_(?:[0-9](?:[a-z0-9]|_(?!_))*[a-z0-9]|[0-9]))?$/';
 
 			/**
 			 * @var string WebSharks™ Core namespace (w/ version) validation pattern (dashed variation).
-			 * @see http://php.net/manual/en/function.version-compare.php
 			 *
-			 *       1. Lowercase alphanumerics and/or dashes only.
-			 *       2. MUST start with: ``self::$core_ns_stub_v_with_dashes``; followed by six digits.
-			 *       3. May optionally end with a WebSharks™ Core version suffix.
-			 *       4. MUST always end w/ an alphanumeric value.
-			 *       5. May NOT contain double dashes.
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Lowercase alphanumerics and/or dashes `-` only.
+			 *       2. MUST start with {@link $core_ns_stub_v_with_dashes} (with dashes).
+			 *       3. MUST end with a plugin version string (with dashes).
+			 *          See: {@link $regex_valid_plugin_version}
+			 *
+			 * @see initialize()
+			 * @see $core_ns_stub_v_with_dashes
+			 * @see $regex_valid_plugin_version
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 * @see http://semver.org
 			 */
-			public static $regex_valid_core_ns_version_with_dashes = '/^%%self::$core_ns_stub_v_with_dashes%%[0-9]{6}(?:\-(?:[a-z](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[a-z]))?$/';
+			public static $regex_valid_core_ns_version_with_dashes = '/^%%self::$core_ns_stub_v_with_dashes%%[0-9]{6}(?:\-(?:[a-z](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[a-z]))?(?:\-(?:[0-9](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[0-9]))?$/';
 
 			/**
 			 * @var string Plugin root namespace validation pattern.
 			 *
-			 *       1. Lowercase alphanumerics and/or underscores only.
-			 *       2. CANNOT start or end with an underscore.
-			 *       3. MUST start with a letter.
-			 *       4. No double underscores.
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Lowercase alphanumerics and/or underscores `_` only.
+			 *       2. CANNOT start or end with an underscore `_`.
+			 *       3. MUST start with a letter `[a-z]`.
+			 *       4. No double underscores `__`.
 			 */
 			public static $regex_valid_plugin_root_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
 
 			/**
 			 * @var string Plugin variable namespace validation pattern.
 			 *
-			 *       1. Lowercase alphanumerics and/or underscores only.
-			 *       2. CANNOT start or end with an underscore.
-			 *       3. MUST start with a letter.
-			 *       4. No double underscores.
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Lowercase alphanumerics and/or underscores `_` only.
+			 *       2. CANNOT start or end with an underscore `_`.
+			 *       3. MUST start with a letter `[a-z]`.
+			 *       4. No double underscores `__`.
 			 */
 			public static $regex_valid_plugin_var_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
 
 			/**
 			 * @var string Plugin namespace\class path validation pattern.
 			 *
-			 *       1. Lowercase alphanumerics, underscores, and/or namespace `\` separators only.
-			 *       2. MUST contain at least one namespace path (i.e. it MUST be within a namespace).
-			 *       3. A path element CANNOT start or end with an underscore.
-			 *       4. Each path element MUST start with a letter.
-			 *       5. No double underscores in any path element.
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Lowercase alphanumerics, underscores `_`, and/or namespace `\` separators only.
+			 *       2. MUST contain at least one namespace separator `\` (i.e. it MUST be within a namespace).
+			 *       3. A path element CANNOT start or end with an underscore `_`.
+			 *       4. Each path element MUST start with a letter `[a-z]`.
+			 *       5. No double underscores `__` in any path element.
 			 */
 			public static $regex_valid_plugin_ns_class = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])(?:\\\\(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z]))+$/';
 
 			/**
 			 * @var string Plugin version string validation pattern.
 			 *    This has additional limitations (but still compatible w/ PHP version strings).
-			 * @see http://php.net/manual/en/function.version-compare.php
 			 *
-			 *       1. Lowercase alphanumerics and/or dashes only.
-			 *       2. MUST start with 6 digits (i.e. `YYMMDD` — normally a dated version).
-			 *       3. An optional development state is allowed (but it MUST be prefixed w/ a dash).
-			 *       4. MUST always end w/ an alphanumeric value.
-			 *       5. May NOT contain double dashes.
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Lowercase alphanumerics, dashes `-`, and/or pluses `+` only.
+			 *       2. MUST be compatible with file names on both Windows® and Unix operating systems.
+			 *       3. MUST start with 6 digits (i.e. `YYMMDD` — normally a dated version).
+			 *       4. An optional development state suffix is allowed (MUST start w/ a dash `-`; followed by a letter `[a-z]`).
+			 *       5. An optional build suffix is allowed (MUST start w/ a plus `+` sign; followed by a numeric value `[0-9]`).
+			 *       6. A plus `+` sign is allowed only ONE time (use this ONLY to specify a build suffix).
+			 *       7. MUST always end with an alphanumeric value `[a-z0-9]`.
+			 *       8. May NOT contain any double dashes `--`.
+			 *
+			 * @see $regex_valid_plugin_dev_version
+			 * @see $regex_valid_plugin_stable_version
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 * @see http://semver.org
 			 */
-			public static $regex_valid_plugin_version = '/^[0-9]{6}(?:\-(?:[a-z](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[a-z]))?$/';
+			public static $regex_valid_plugin_version = '/^[0-9]{6}(?:\-(?:[a-z](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[a-z]))?(?:\+(?:[0-9](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[0-9]))?$/';
+
+			/**
+			 * @var string Plugin dev version string validation pattern.
+			 *    This has additional limitations (but still compatible w/ PHP dev version strings).
+			 *
+			 * @note Requirements are as follows:
+			 *
+			 *       1. MUST adhere to {@link $regex_valid_plugin_version} guidelines.
+			 *       2. MUST end with a development state suffix; perhaps followed by an optional build suffix.
+			 *
+			 * @see $regex_valid_plugin_version
+			 * @see $regex_valid_plugin_stable_version
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 * @see http://semver.org
+			 */
+			public static $regex_valid_plugin_dev_version = '/^[0-9]{6}(?:\-(?:[a-z](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[a-z]))(?:\+(?:[0-9](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[0-9]))?$/';
+
+			/**
+			 * @var string Plugin stable version string validation pattern.
+			 *    This has additional limitations (but still compatible w/ PHP stable version strings).
+			 *
+			 * @note Requirements are as follows:
+			 *
+			 *       1. MUST adhere to {@link $regex_valid_plugin_version} guidelines.
+			 *       2. It may NOT contain a development state suffix (indicating it's a stable version).
+			 *             However, it MAY contain an optional build suffix; and still be stable.
+			 *
+			 * @see $regex_valid_plugin_version
+			 * @see $regex_valid_plugin_dev_version
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 * @see http://semver.org
+			 */
+			public static $regex_valid_plugin_stable_version = '/^[0-9]{6}(?:\+(?:[0-9](?:[a-z0-9]|\-(?!\-))*[a-z0-9]|[0-9]))?$/';
 
 			/**
 			 * @var string PHP version string validation pattern.
-			 *    PHP version strings allow a dotted notation also (and caSe is NOT important).
+			 *
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Must follow {@link http://semver.org semantic versioning guidelines}.
+			 *       2. MUST be compatible with file names on both Windows® and Unix operating systems.
+			 *
+			 * @see $regex_valid_dev_version
+			 * @see $regex_valid_stable_version
 			 * @see http://php.net/manual/en/function.version-compare.php
+			 * @see http://semver.org
 			 */
-			public static $regex_valid_version = '/^(?:[0-9](?:[a-zA-Z0-9]|\.(?!\.))*[a-zA-Z0-9]|[0-9]+)(?:\-(?:[a-zA-Z](?:[a-zA-Z0-9]|\-(?![\-\.])|\.(?![\.\-]))*[a-zA-Z0-9]|[a-zA-Z]))?$/';
+			public static $regex_valid_version = '/^(?:[0-9](?:[0-9]|\.(?!\.))*[0-9]|[0-9])(?:\-(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?(?:\+(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?$/';
+
+			/**
+			 * @var string PHP dev version string validation pattern.
+			 *
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Must follow {@link http://semver.org semantic versioning guidelines}.
+			 *       2. MUST end with a development state suffix; perhaps followed by an optional build suffix.
+			 *
+			 * @see $regex_valid_version
+			 * @see $regex_valid_stable_version
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 * @see http://semver.org
+			 */
+			public static $regex_valid_dev_version = '/^(?:[0-9](?:[0-9]|\.(?!\.))*[0-9]|[0-9])(?:\-(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))(?:\+(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?$/';
+
+			/**
+			 * @var string PHP stable version string validation pattern.
+			 *
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Must follow {@link http://semver.org semantic versioning guidelines}.
+			 *       2. May NOT contain a development state suffix (indicating it's a stable version).
+			 *             However, it MAY contain an optional build suffix; and still be stable.
+			 *
+			 * @see $regex_valid_version
+			 * @see $regex_valid_dev_version
+			 * @see http://php.net/manual/en/function.version-compare.php
+			 * @see http://semver.org
+			 */
+			public static $regex_valid_stable_version = '/^(?:[0-9](?:[0-9]|\.(?!\.))*[0-9]|[0-9])(?:\+(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?$/';
 		}
 
 		# -----------------------------------------------------------------------------------------------------------------------------------

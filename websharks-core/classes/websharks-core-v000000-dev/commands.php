@@ -337,8 +337,8 @@ namespace websharks_core_v000000_dev
 
 					if($git_status !== 0)
 						throw $this->©exception(
-							__METHOD__.'#issue', get_defined_vars(),
-							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status: `%2$s`. Git said: `%3$s`'),
+							__METHOD__.'#non_zero_status', get_defined_vars(),
+							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status: `%2$s`. GIT said: `%3$s`'),
 							        $git_args, $git_status, $git_errors->get_message())
 						);
 					return $git['output'];
@@ -350,151 +350,302 @@ namespace websharks_core_v000000_dev
 			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
-			 * @return string The current branch name; else an exception is thrown.
+			 * @return string The current GIT branch; else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If unable to acquire the current GIT branch name.
-			 * @throws exception If GIT returns a non-zero status.
+			 * @throws exception If unable to determine the current GIT branch.
 			 */
 			public function git_current_branch($cwd_repo_dir)
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(!($branch = trim($this->git('rev-parse --abbrev-ref HEAD', $cwd_repo_dir))))
+					if(!($current_branch = trim($this->git('rev-parse --abbrev-ref HEAD', $cwd_repo_dir))))
 						throw $this->©exception(
-							__METHOD__.'#issue', get_defined_vars(),
-							sprintf($this->i18n('Unable to acquire current GIT branch name for repo directory: `%1$s`.'), $cwd_repo_dir)
+							__METHOD__.'#unable_to_determine', get_defined_vars(),
+							sprintf($this->i18n('Unable to determine current GIT branch in: `%1$s`.'), $cwd_repo_dir)
 						);
-					return $branch;
+					return $current_branch;
 				}
 
 			/**
-			 * Gets current GIT branches for a given repo directory.
+			 * Gets an array of all GIT branches for a given repo directory.
 			 *
 			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
-			 * @return array The current branches; else an exception is thrown.
+			 * @return array An array of all GIT branches; else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If unable to acquire the current GIT branches.
-			 * @throws exception If GIT returns a non-zero status.
+			 * @throws exception If unable to acquire GIT branches.
 			 */
-			public function git_current_branches($cwd_repo_dir)
+			public function git_branches($cwd_repo_dir)
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(!($branches = trim($this->git('branch', $cwd_repo_dir))))
-						throw $this->©exception(
-							__METHOD__.'#issue', get_defined_vars(),
-							sprintf($this->i18n('Unable to acquire current GIT branches for repo directory: `%1$s`.'), $cwd_repo_dir)
-						);
-					$branches = preg_split('/[\*'."\r\n".']+/', $branches, NULL, PREG_SPLIT_NO_EMPTY);
-					$branches = $this->©array->remove_empty_values_deep($this->©strings->trim_deep($branches));
+					$branches = trim($this->git('branch', $cwd_repo_dir));
+					$branches = preg_split('/['."\r\n".']+/', $branches, NULL, PREG_SPLIT_NO_EMPTY);
+					$branches = $this->©strings->trim_deep($branches, '', '*');
 
 					foreach($branches as &$_branch) // Cleanup symbolic reference pointers.
-						if(strpos($_branch, '->') !== FALSE)
-							$_branch = trim(strstr($_branch, '->', TRUE));
+						if(strpos($_branch, '->') !== FALSE) $_branch = trim(strstr($_branch, '->', TRUE));
 					unset($_branch); // Housekeeping.
 
+					$branches = $this->©strings->trim_deep($branches);
+					$branches = $this->©array->remove_empty_values_deep($branches);
+
+					if(!$branches)
+						throw $this->©exception(
+							__METHOD__.'#no_branches', get_defined_vars(),
+							sprintf($this->i18n('No GIT branches in: `%1$s`.'), $cwd_repo_dir)
+						);
 					return $branches;
 				}
 
 			/**
-			 * Gets latest GIT branch for a given repo directory.
+			 * Gets an array of all GIT version branches for a given repo directory.
 			 *
 			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
-			 * @return string The latest branch; else the `master` branch.
+			 * @return array An array of all GIT version branches; else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status.
+			 * @throws exception If unable to acquire GIT version branches.
 			 */
-			public function git_latest_branch($cwd_repo_dir)
+			public function git_version_branches($cwd_repo_dir)
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					$branches = $this->git_current_branches($cwd_repo_dir);
+					$branches = $this->git_branches($cwd_repo_dir);
 
-					usort($branches, 'version_compare');
+					foreach($branches as $_branch) // Version branches.
+						if($this->©string->is_version($_branch))
+							$version_branches[] = $_branch;
+					unset($_branch); // Housekeeping.
 
-					if(($latest = array_pop($branches)))
-						return $latest;
-
-					return 'master'; // Default value.
+					if(empty($version_branches))
+						throw $this->©exception(
+							__METHOD__.'#no_version_branches', get_defined_vars(),
+							sprintf($this->i18n('No GIT version branches in: `%1$s`.'), $cwd_repo_dir)
+						);
+					return $version_branches;
 				}
 
 			/**
-			 * Gets latest GIT dev branch for a given repo directory.
+			 * Gets an array of all GIT plugin version branches for a given repo directory.
 			 *
 			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
-			 * @return string The latest dev branch; else the `master` branch.
+			 * @return array An array of all GIT plugin version branches; else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status.
+			 * @throws exception If unable to acquire GIT plugin version branches.
 			 */
-			public function git_latest_dev_branch($cwd_repo_dir)
+			public function git_plugin_version_branches($cwd_repo_dir)
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					$branches = $this->git_current_branches($cwd_repo_dir);
+					$branches = $this->git_branches($cwd_repo_dir);
 
-					foreach($branches as $_key => $_branch)
-						if(!preg_match('/\-dev$/i', $_branch))
-							unset($branches[$_key]);
-					unset($_key, $_branch); // Housekeeping.
+					foreach($branches as $_branch) // Plugin version branches.
+						if($this->©string->is_plugin_version($_branch))
+							$plugin_version_branches[] = $_branch;
+					unset($_branch); // Housekeeping.
 
-					usort($branches, 'version_compare');
-
-					if(($latest = array_pop($branches)))
-						return $latest;
-
-					return 'master'; // Default value.
+					if(empty($plugin_version_branches)) // No plugin version branches?
+						throw $this->©exception(
+							__METHOD__.'#no_plugin_version_branches', get_defined_vars(),
+							sprintf($this->i18n('No GIT plugin version branches in: `%1$s`.'), $cwd_repo_dir)
+						);
+					return $plugin_version_branches;
 				}
 
 			/**
-			 * Gets latest GIT stable branch for a given repo directory.
+			 * Gets latest GIT version branch for a given repo directory.
 			 *
 			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
-			 * @return string The latest stable branch; else the `master` branch.
+			 * @return string The latest GIT version branch; else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status.
+			 * @throws exception If unable to acquire GIT version branches.
 			 */
-			public function git_latest_stable_branch($cwd_repo_dir)
+			public function git_latest_version_branch($cwd_repo_dir)
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					$branches = $this->git_current_branches($cwd_repo_dir);
+					$version_branches = $this->git_version_branches($cwd_repo_dir);
 
-					foreach($branches as $_key => $_branch)
-						if(FALSE !== strpos($_branch, '-') && !preg_match('/\-stable$/i', $_branch))
-							unset($branches[$_key]);
-					unset($_key, $_branch); // Housekeeping.
+					usort($version_branches, 'version_compare');
 
-					usort($branches, 'version_compare');
-
-					if(($latest = array_pop($branches)))
-						return $latest;
-
-					return 'master'; // Default value.
+					return array_pop($version_branches);
 				}
 
 			/**
-			 * Checks to see if there are any uncommitted changes (and/or untracked/unignored) files.
+			 * Gets latest GIT plugin version branch for a given repo directory.
 			 *
 			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
 			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
 			 *
-			 * @return boolean TRUE if there are any uncommitted changes (and/or untracked/unignored) files; else FALSE.
+			 * @return string The latest GIT plugin version branch; else an exception is thrown.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If GIT returns a non-zero status.
+			 * @throws exception If unable to acquire GIT plugin version branches.
+			 */
+			public function git_latest_plugin_version_branch($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					$plugin_version_branches = $this->git_plugin_version_branches($cwd_repo_dir);
+
+					usort($plugin_version_branches, 'version_compare');
+
+					return array_pop($plugin_version_branches);
+				}
+
+			/**
+			 * Gets latest GIT dev version branch for a given repo directory.
+			 *
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return string The latest GIT dev version branch.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If unable to acquire GIT version branches.
+			 * @throws exception If there are no GIT dev version branches available.
+			 */
+			public function git_latest_dev_version_branch($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					$version_branches = $this->git_version_branches($cwd_repo_dir);
+
+					foreach($version_branches as $_version_branch)
+						if($this->©string->is_dev_version($_version_branch))
+							$dev_version_branches[] = $_version_branch;
+					unset($_version_branch); // Housekeeping.
+
+					if(empty($dev_version_branches))
+						throw $this->©exception(
+							__METHOD__.'#no_dev_version_branches', get_defined_vars(),
+							sprintf($this->i18n('No GIT dev version branches in: `%1$s`.'), $cwd_repo_dir)
+						);
+					usort($dev_version_branches, 'version_compare');
+
+					return array_pop($dev_version_branches);
+				}
+
+			/**
+			 * Gets latest GIT plugin dev version branch for a given repo directory.
+			 *
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return string The latest GIT plugin dev version branch.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If unable to acquire GIT plugin version branches.
+			 * @throws exception If there are no GIT plugin dev version branches available.
+			 */
+			public function git_latest_plugin_dev_version_branch($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					$plugin_version_branches = $this->git_plugin_version_branches($cwd_repo_dir);
+
+					foreach($plugin_version_branches as $_plugin_version_branch)
+						if($this->©string->is_plugin_dev_version($_plugin_version_branch))
+							$plugin_dev_version_branches[] = $_plugin_version_branch;
+					unset($_plugin_version_branch); // Housekeeping.
+
+					if(empty($plugin_dev_version_branches))
+						throw $this->©exception(
+							__METHOD__.'#no_plugin_dev_version_branches', get_defined_vars(),
+							sprintf($this->i18n('No GIT plugin dev version branches in: `%1$s`.'), $cwd_repo_dir)
+						);
+					usort($plugin_dev_version_branches, 'version_compare');
+
+					return array_pop($plugin_dev_version_branches);
+				}
+
+			/**
+			 * Gets latest GIT stable version branch for a given repo directory.
+			 *
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return string The latest GIT stable version branch.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If unable to acquire GIT version branches.
+			 * @throws exception If there are no GIT stable version branches available.
+			 */
+			public function git_latest_stable_version_branch($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					$version_branches = $this->git_version_branches($cwd_repo_dir);
+
+					foreach($version_branches as $_version_branch)
+						if($this->©string->is_stable_version($_version_branch))
+							$stable_version_branches[] = $_version_branch;
+					unset($_version_branch); // Housekeeping.
+
+					if(empty($stable_version_branches))
+						throw $this->©exception(
+							__METHOD__.'#no_stable_version_branches', get_defined_vars(),
+							sprintf($this->i18n('No GIT stable version branches in: `%1$s`.'), $cwd_repo_dir)
+						);
+					usort($stable_version_branches, 'version_compare');
+
+					return array_pop($stable_version_branches);
+				}
+
+			/**
+			 * Gets latest GIT plugin stable version branch for a given repo directory.
+			 *
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return string The latest GIT plugin stable version branch.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If unable to acquire GIT plugin version branches.
+			 * @throws exception If there are no GIT plugin stable version branches available.
+			 */
+			public function git_latest_plugin_stable_version_branch($cwd_repo_dir)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					$plugin_version_branches = $this->git_plugin_version_branches($cwd_repo_dir);
+
+					foreach($plugin_version_branches as $_plugin_version_branch)
+						if($this->©string->is_plugin_stable_version($_plugin_version_branch))
+							$plugin_stable_version_branches[] = $_plugin_version_branch;
+					unset($_plugin_version_branch); // Housekeeping.
+
+					if(empty($plugin_stable_version_branches))
+						throw $this->©exception(
+							__METHOD__.'#no_plugin_stable_version_branches', get_defined_vars(),
+							sprintf($this->i18n('No GIT plugin stable version branches in: `%1$s`.'), $cwd_repo_dir)
+						);
+					usort($plugin_stable_version_branches, 'version_compare');
+
+					return array_pop($plugin_stable_version_branches);
+				}
+
+			/**
+			 * Any uncommitted changes (and/or untracked & unignored) files?
+			 *
+			 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
+			 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+			 *
+			 * @return boolean TRUE if there are any uncommitted changes (and/or untracked & unignored) files.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
 			 */
 			public function git_changes_exist($cwd_repo_dir)
 				{

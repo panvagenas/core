@@ -488,8 +488,8 @@ namespace websharks_core_v000000_dev
 						{
 							list($class, $method) = explode('.', $call, 2);
 
-							if(substr_count($class, '©') === 1 && $this->©string->is_valid_userland_name(trim($class, '©'))
-							   && substr_count($method, '®') === 1 && $this->©string->is_valid_userland_name(trim($method, '®'))
+							if(substr_count($class, '©') === 1 && $this->©string->is_userland_name(trim($class, '©'))
+							   && substr_count($method, '®') === 1 && $this->©string->is_userland_name(trim($method, '®'))
 							) return TRUE; // It's fine.
 						}
 					return FALSE; // Default return value.

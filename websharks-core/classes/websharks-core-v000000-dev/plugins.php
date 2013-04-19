@@ -41,7 +41,6 @@ namespace websharks_core_v000000_dev
 					$this->do_action('before_loaded');
 
 					// Loads plugin.
-					$this->check_global_var();
 					$this->load_classes_dir();
 					$this->load_api_classes();
 					$this->load_api_funcs();
@@ -52,22 +51,6 @@ namespace websharks_core_v000000_dev
 					// Completes loading sequence.
 					$this->do_action('loaded'); // We're loaded now.
 					$this->do_action('after_loaded'); // Fully loaded now.
-				}
-
-			/**
-			 * Checks the namespace global var for the current plugin.
-			 *
-			 * @throws exception If missing namespace global var for the current plugin.
-			 */
-			public function check_global_var()
-				{
-					if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns])
-					   || !($GLOBALS[$this->___instance_config->plugin_root_ns] instanceof framework)
-					) throw $this->©exception(
-						__METHOD__.'#missing_plugin_root_ns_global_var', NULL,
-						sprintf($this->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'),
-						        $this->___instance_config->plugin_root_ns)
-					);
 				}
 
 			/**
@@ -265,7 +248,7 @@ namespace websharks_core_v000000_dev
 									if(!is_array($transient)) $transient = new \stdClass();
 
 									$transient->last_checked                                                  = time();
-									$transient->checked[$this->___instance_config->plugin_dir_file_basename]  = '000000';
+									$transient->checked[$this->___instance_config->plugin_dir_file_basename]  = '000000-dev';
 									$transient->response[$this->___instance_config->plugin_dir_file_basename] = (object)array(
 										'id'          => 0, # N/A
 										'slug'        => $this->___instance_config->plugin_dir_basename,
@@ -279,7 +262,7 @@ namespace websharks_core_v000000_dev
 									if(!is_array($transient)) $transient = new \stdClass();
 
 									$transient->last_checked                                                      = time();
-									$transient->checked[$this->___instance_config->plugin_pro_dir_file_basename]  = '000000';
+									$transient->checked[$this->___instance_config->plugin_pro_dir_file_basename]  = '000000-dev';
 									$transient->response[$this->___instance_config->plugin_pro_dir_file_basename] = (object)array(
 										'id'          => 0, # N/A
 										'slug'        => $this->___instance_config->plugin_pro_dir_basename,

@@ -34,7 +34,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function is_browser() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::is_browser', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'is_browser'), func_get_args());
 				}
 
 			/**

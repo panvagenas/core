@@ -34,7 +34,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function n_seps() // Arguments are NOT listed here.
 				{
-					return call_user_func_array('\\'.__NAMESPACE__.'::n_dir_seps', func_get_args());
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'n_dir_seps'), func_get_args());
 				}
 
 			/**
@@ -427,7 +427,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function get_temp_dir() // Arguments are NOT listed here.
 				{
-					if(($temp_dir = call_user_func_array('\\'.__NAMESPACE__.'::get_temp_dir', func_get_args())))
+					if(($temp_dir = call_user_func_array(array('\\websharks_core_v000000_dev', 'get_temp_dir'), func_get_args())))
 						return $temp_dir;
 
 					throw $this->©exception(

@@ -37,16 +37,16 @@ namespace websharks_core_v000000_dev
 			public $can_build = FALSE;
 
 			/**
-			 * @var string Core dir.
-			 * @by-constructor Set dynamically by class constructor.
-			 */
-			public $core_dir = '';
-
-			/**
 			 * @var string Core repo dir.
 			 * @by-constructor Set dynamically by class constructor.
 			 */
 			public $core_repo_dir = '';
+
+			/**
+			 * @var string Core dir.
+			 * @by-constructor Set dynamically by class constructor.
+			 */
+			public $core_dir = '';
 
 			/**
 			 * @var string Plugin dir.
@@ -67,10 +67,10 @@ namespace websharks_core_v000000_dev
 			public $plugin_name = '';
 
 			/**
-			 * @var string Plugin namespace.
+			 * @var string Plugin root namespace.
 			 * @by-constructor Set dynamically by class constructor.
 			 */
-			public $plugin_ns = '';
+			public $plugin_root_ns = '';
 
 			/**
 			 * @var string Distros directory.
@@ -113,40 +113,40 @@ namespace websharks_core_v000000_dev
 			 * @by-constructor Set dynamically by class constructor.
 			 * @note This default value is updated by JasWSInc when it needs to change.
 			 */
-			public $requires_at_least_php_v = '5.3.1';
+			public $requires_at_least_php_version = '5.3.1';
 
 			/**
 			 * @var string Tested up to PHP version.
 			 * @by-constructor Set dynamically by class constructor.
 			 * @note This default value is updated by JasWSInc when it needs to change.
 			 */
-			public $tested_up_to_php_v = PHP_VERSION;
+			public $tested_up_to_php_version = PHP_VERSION;
 
 			/**
 			 * @var string Requires at least WordPress® version.
 			 * @by-constructor Set dynamically by class constructor.
 			 * @note This default value is updated by JasWSInc when it needs to change.
 			 */
-			public $requires_at_least_wp_v = '3.5.1';
+			public $requires_at_least_wp_version = '3.5.1';
 
 			/**
 			 * @var string Tested up to WordPress® version.
 			 * @by-constructor Set dynamically by class constructor.
 			 * @note This default value is updated by JasWSInc when it needs to change.
 			 */
-			public $tested_up_to_wp_v = WP_VERSION;
+			public $tested_up_to_wp_version = WP_VERSION;
 
 			/**
 			 * @var boolean Distribute core in which way?
 			 * @by-constructor Set dynamically by class constructor.
 			 */
-			public $use_core_type = '';
+			public $use_core_type = 'directory';
 
 			/**
 			 * @var boolean Build from a specific core version?
 			 * @by-constructor Set dynamically by class constructor.
 			 */
-			public $build_from_core_v = '';
+			public $build_from_core_version = '';
 
 			/**
 			 * @var boolean Current GIT branches (when we start).
@@ -164,25 +164,25 @@ namespace websharks_core_v000000_dev
 			 * @param string       $plugin_dir Optional. Defaults to an empty string.
 			 *    By default, we build the WebSharks™ Core. If supplied, we will build a specific plugin.
 			 * @param string       $plugin_name Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
-			 * @param string       $plugin_ns Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
+			 * @param string       $plugin_root_ns Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
 			 * @param string       $distros_dir Optional. Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
 			 * @param string       $downloads_dir Optional. Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
 			 *
 			 * @param string       $version Optional. Defaults to a value of ``$this->©date->i18n_utc('ymd')``.
 			 *    Must be valid. See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_version}
 			 *
-			 * @param string       $requires_at_least_php_v Optional. Defaults to the oldest version tested by the WebSharks™ Core.
+			 * @param string       $requires_at_least_php_version Optional. Defaults to the oldest version tested by the WebSharks™ Core.
 			 *    All of these MUST be valid. See: {@link \websharks_core_v000000_dev::$regex_valid_version}
-			 * @param string       $tested_up_to_php_v Optional. Defaults to the newest version tested by the WebSharks™ Core.
-			 * @param string       $requires_at_least_wp_v Optional. Defaults to the oldest version tested by the WebSharks™ Core.
-			 * @param string       $tested_up_to_wp_v Optional. Defaults to the newest version tested by the WebSharks™ Core.
+			 * @param string       $tested_up_to_php_version Optional. Defaults to the newest version tested by the WebSharks™ Core.
+			 * @param string       $requires_at_least_wp_version Optional. Defaults to the oldest version tested by the WebSharks™ Core.
+			 * @param string       $tested_up_to_wp_version Optional. Defaults to the newest version tested by the WebSharks™ Core.
 			 *
 			 * @param null|string  $use_core_type Defaults to `directory`. Can be: `directory`, `phar`, or `stub`.
 			 *    This is ONLY applicable to plugin builds. If building the core itself; this parameter is ignored completely.
 			 *
-			 * @param string       $build_from_core_v Optional. This is partially ignored here. It is handled mostly by `/._dev-utilities/builder.php`.
+			 * @param string       $build_from_core_version Optional. This is partially ignored here. It is handled mostly by `/._dev-utilities/builder.php`.
 			 *    However, what DO still use it here (if it's passed in); to some extent. If this is passed in, we will verify the current core version.
-			 *    If ``$build_from_core_v`` is passed in, but it does NOT match this version of the core; an exception will be thrown.
+			 *    If ``$build_from_core_version`` is passed in, but it does NOT match this version of the core; an exception will be thrown.
 			 *
 			 * @note Instantiation of this class will initiate the build routine (please be VERY careful).
 			 *    Property ``$successes`` will contain messages indicating the final result status of the build procedure.
@@ -193,9 +193,9 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If any parameter values are invalid; based on extensive validation in this class.
 			 * @throws exception If a build fails for any reason. See: ``build()`` method for further details.
 			 */
-			public function __construct($___instance_config, $plugin_dir = '', $plugin_name = '', $plugin_ns = '', $distros_dir = '', $downloads_dir = '',
-			                            $version = '', $requires_at_least_php_v = '', $tested_up_to_php_v = '', $requires_at_least_wp_v = '', $tested_up_to_wp_v = '',
-			                            $use_core_type = '', $build_from_core_v = '')
+			public function __construct($___instance_config, $plugin_dir = '', $plugin_name = '', $plugin_root_ns = '', $distros_dir = '', $downloads_dir = '',
+			                            $version = '', $requires_at_least_php_version = '', $tested_up_to_php_version = '', $requires_at_least_wp_version = '', $tested_up_to_wp_version = '',
+			                            $use_core_type = '', $build_from_core_version = '')
 				{
 					parent::__construct($___instance_config);
 
@@ -205,16 +205,9 @@ namespace websharks_core_v000000_dev
 
 					// Security check. Can we build here?
 
-					if(!$this->©env->is_cli())
-						$this->can_build = FALSE;
-
-					else if(!$this->©plugin->is_core())
-						$this->can_build = FALSE;
-
-					else if(!defined('___BUILDER') || !___BUILDER)
-						$this->can_build = FALSE;
-
-					else $this->can_build = TRUE; // We CAN build here.
+					if($this->©env->is_cli() && $this->©plugin->is_core())
+						if(defined('___BUILDER') && ___BUILDER)
+							$this->can_build = TRUE;
 
 					if(!$this->can_build)
 						throw $this->©exception(
@@ -223,51 +216,52 @@ namespace websharks_core_v000000_dev
 						);
 					// Construct object properties.
 
-					$this->core_dir      = $this->©dir->n_seps(dirname(dirname(dirname(__FILE__))));
-					$this->core_repo_dir = dirname($this->core_dir);
+					$this->core_repo_dir = $this->___instance_config->local_core_repo_dir;
+					$this->core_dir      = $this->___instance_config->core_dir;
 
 					$this->plugin_dir      = ($plugin_dir) ? $this->©dir->n_seps($plugin_dir) : '';
 					$this->plugin_repo_dir = ($plugin_dir) ? dirname($plugin_dir) : '';
 					$this->plugin_name     = ($plugin_dir && $plugin_name) ? $plugin_name : '';
-					$this->plugin_ns       = ($plugin_dir && $plugin_ns) ? $plugin_ns : '';
+					$this->plugin_root_ns  = ($plugin_dir && $plugin_root_ns) ? $plugin_root_ns : '';
 					$this->distros_dir     = ($plugin_dir && $distros_dir) ? $this->©dir->n_seps($distros_dir) : '';
 					$this->downloads_dir   = ($plugin_dir && $downloads_dir) ? $this->©dir->n_seps($downloads_dir) : '';
 
-					$this->version                 = ($version) ? (string)$version : $this->©date->i18n_utc('ymd');
-					$this->requires_at_least_php_v = ($requires_at_least_php_v) ? $requires_at_least_php_v : $this->requires_at_least_php_v;
-					$this->tested_up_to_php_v      = ($tested_up_to_php_v) ? $tested_up_to_php_v : $this->tested_up_to_php_v;
-					$this->requires_at_least_wp_v  = ($requires_at_least_wp_v) ? $requires_at_least_wp_v : $this->requires_at_least_wp_v;
-					$this->tested_up_to_wp_v       = ($tested_up_to_wp_v) ? $tested_up_to_wp_v : $this->tested_up_to_wp_v;
+					$this->version                       = ($version) ? (string)$version : $this->©date->i18n_utc('ymd');
+					$this->requires_at_least_php_version = ($requires_at_least_php_version) ? $requires_at_least_php_version : $this->requires_at_least_php_version;
+					$this->tested_up_to_php_version      = ($tested_up_to_php_version) ? $tested_up_to_php_version : $this->tested_up_to_php_version;
+					$this->requires_at_least_wp_version  = ($requires_at_least_wp_version) ? $requires_at_least_wp_version : $this->requires_at_least_wp_version;
+					$this->tested_up_to_wp_version       = ($tested_up_to_wp_version) ? $tested_up_to_wp_version : $this->tested_up_to_wp_version;
 
-					$this->use_core_type     = ($use_core_type) ? $use_core_type : 'directory'; // Default value.
-					$this->build_from_core_v = ($build_from_core_v) ? $build_from_core_v : $this->___instance_config->core_version;
+					$this->use_core_type           = ($use_core_type) ? $use_core_type : $this->use_core_type;
+					$this->build_from_core_version = ($build_from_core_version) ? $build_from_core_version : $this->©command->git_latest_plugin_stable_version_branch($this->core_repo_dir);
 
 					// Validate object properties (among several other things).
+
+					if(!$this->core_repo_dir || !is_dir($this->core_repo_dir))
+						throw $this->©exception(
+							__METHOD__.'#nonexistent_core_repo_dir', get_defined_vars(),
+							sprintf($this->i18n('Nonexistent core repo directory: `%1$s`.'), $this->core_repo_dir)
+						);
+					if(!is_readable($this->core_repo_dir) || !is_writable($this->core_repo_dir))
+						throw $this->©exception(
+							__METHOD__.'#core_repo_dir_permissions', get_defined_vars(),
+							sprintf($this->i18n('Permission issues with core repo directory: `%1$s`.'), $this->core_dir)
+						);
+					if(!is_file($this->core_repo_dir.'/.gitignore'))
+						throw $this->©exception(
+							__METHOD__.'#core_repo_dir_gitignore', get_defined_vars(),
+							sprintf($this->i18n('Core repo directory is missing this file: `%1$s`.'), $this->core_repo_dir.'/.gitignore')
+						);
 
 					if(!$this->core_dir || !is_dir($this->core_dir))
 						throw $this->©exception(
 							__METHOD__.'#nonexistent_core_dir', get_defined_vars(),
 							sprintf($this->i18n('Nonexistent core directory: `%1$s`.'), $this->core_dir)
 						);
-					else if(!is_readable($this->core_dir) || !is_writable($this->core_dir))
+					if(!is_readable($this->core_dir) || !is_writable($this->core_dir))
 						throw $this->©exception(
 							__METHOD__.'#core_dir_permissions', get_defined_vars(),
 							sprintf($this->i18n('Permission issues with core directory: `%1$s`.'), $this->core_dir)
-						);
-					else if(!$this->core_repo_dir || !is_dir($this->core_repo_dir))
-						throw $this->©exception(
-							__METHOD__.'#nonexistent_core_repo_dir', get_defined_vars(),
-							sprintf($this->i18n('Nonexistent core repo directory: `%1$s`.'), $this->core_repo_dir)
-						);
-					else if(!is_readable($this->core_repo_dir) || !is_writable($this->core_repo_dir))
-						throw $this->©exception(
-							__METHOD__.'#core_repo_dir_permissions', get_defined_vars(),
-							sprintf($this->i18n('Permission issues with core repo directory: `%1$s`.'), $this->core_dir)
-						);
-					else if(!is_file($this->core_repo_dir.'/.gitignore'))
-						throw $this->©exception(
-							__METHOD__.'#core_repo_dir_gitignore', get_defined_vars(),
-							sprintf($this->i18n('Core repo directory is missing this file: `%1$s`.'), $this->core_repo_dir.'/.gitignore')
 						);
 
 					if($this->plugin_dir) // Plugin validation. Also look for possible `-pro` add-on (and/or `-extras`).
@@ -277,52 +271,52 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#nonexistent_plugin_dir', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent plugin directory: `%1$s`.'), $this->plugin_dir)
 								);
-							else if(!is_readable($this->plugin_dir) || !is_writable($this->plugin_dir))
+							if(!is_readable($this->plugin_dir) || !is_writable($this->plugin_dir))
 								throw $this->©exception(
 									__METHOD__.'#plugin_dir_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with plugin directory: `%1$s`.'), $this->plugin_dir)
 								);
-							else if(!$this->plugin_repo_dir || !is_dir($this->plugin_repo_dir))
+							if(!$this->plugin_repo_dir || !is_dir($this->plugin_repo_dir))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_plugin_repo_dir', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent plugin repo directory: `%1$s`.'), $this->plugin_repo_dir)
 								);
-							else if(!is_readable($this->plugin_repo_dir) || !is_writable($this->plugin_repo_dir))
+							if(!is_readable($this->plugin_repo_dir) || !is_writable($this->plugin_repo_dir))
 								throw $this->©exception(
 									__METHOD__.'#plugin_repo_dir_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with plugin repo directory: `%1$s`.'), $this->plugin_repo_dir)
 								);
-							else if(!is_file($this->plugin_repo_dir.'/.gitignore'))
+							if(!is_file($this->plugin_repo_dir.'/.gitignore'))
 								throw $this->©exception(
 									__METHOD__.'#plugin_repo_dir_gitignore', get_defined_vars(),
 									sprintf($this->i18n('Plugin repo directory is missing this file: `%1$s`.'), $this->plugin_repo_dir.'/.gitignore')
 								);
-							else if(!$this->plugin_name)
+							if(!$this->plugin_name)
 								throw $this->©exception(
 									__METHOD__.'#missing_plugin_name', get_defined_vars(),
 									sprintf($this->i18n('Missing plugin name for: `%1$s`.'), $this->plugin_dir)
 								);
-							else if(!$this->plugin_ns)
+							if(!$this->plugin_root_ns)
 								throw $this->©exception(
-									__METHOD__.'#missing_plugin_ns', get_defined_vars(),
-									sprintf($this->i18n('Missing plugin namespace for: `%1$s`.'), $this->plugin_dir)
+									__METHOD__.'#missing_plugin_root_ns', get_defined_vars(),
+									sprintf($this->i18n('Missing plugin root namespace for: `%1$s`.'), $this->plugin_dir)
 								);
-							else if(!$this->distros_dir || !is_dir($this->distros_dir))
+							if(!$this->distros_dir || !is_dir($this->distros_dir))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_distros_dir', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent distros directory: `%1$s`.'), $this->distros_dir)
 								);
-							else if(!is_readable($this->distros_dir) || !is_writable($this->distros_dir))
+							if(!is_readable($this->distros_dir) || !is_writable($this->distros_dir))
 								throw $this->©exception(
 									__METHOD__.'#distros_dir_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with distros directory: `%1$s`.'), $this->distros_dir)
 								);
-							else if(!$this->downloads_dir || !is_dir($this->downloads_dir))
+							if(!$this->downloads_dir || !is_dir($this->downloads_dir))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_downloads_dir', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent downloads directory: `%1$s`.'), $this->downloads_dir)
 								);
-							else if(!is_readable($this->downloads_dir) || !is_writable($this->downloads_dir))
+							if(!is_readable($this->downloads_dir) || !is_writable($this->downloads_dir))
 								throw $this->©exception(
 									__METHOD__.'#downloads_dir_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with downloads directory: `%1$s`.'), $this->downloads_dir)
@@ -337,7 +331,7 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#missing_plugins_dir', get_defined_vars(),
 									sprintf($this->i18n('Missing `plugins` directory here: `%1$s`.'), $_plugins_dir)
 								);
-							else if(is_dir($_possible_pro_repo_dir) && !is_dir($_possible_pro_dir))
+							if(is_dir($_possible_pro_repo_dir) && !is_dir($_possible_pro_dir))
 								throw $this->©exception( // Should exist in this case.
 									__METHOD__.'#missing_plugin_pro_dir', get_defined_vars(),
 									sprintf($this->i18n('Missing plugin pro directory here: `%1$s`.'), $_possible_pro_dir)
@@ -356,12 +350,12 @@ namespace websharks_core_v000000_dev
 											__METHOD__.'#plugin_pro_dir_permissions', get_defined_vars(),
 											sprintf($this->i18n('Permission issues with plugin pro directory: `%1$s`.'), $this->plugin_pro_dir)
 										);
-									else if(!is_readable($this->plugin_pro_repo_dir) || !is_writable($this->plugin_pro_repo_dir))
+									if(!is_readable($this->plugin_pro_repo_dir) || !is_writable($this->plugin_pro_repo_dir))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_repo_dir_permissions', get_defined_vars(),
 											sprintf($this->i18n('Permission issues with plugin pro repo directory: `%1$s`.'), $this->plugin_pro_repo_dir)
 										);
-									else if(!is_file($this->plugin_pro_repo_dir.'/.gitignore'))
+									if(!is_file($this->plugin_pro_repo_dir.'/.gitignore'))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_repo_dir_gitignore', get_defined_vars(),
 											sprintf($this->i18n('Plugin pro directory is missing this file: `%1$s`.'), $this->plugin_pro_repo_dir.'/.gitignore')
@@ -381,30 +375,30 @@ namespace websharks_core_v000000_dev
 						}
 					// Validate all version strings now.
 
-					if(!preg_match(stub::$regex_valid_plugin_version, $this->version))
+					if(!$this->©string->is_plugin_version($this->version))
 						throw $this->©exception(
 							__METHOD__.'#invalid_version', get_defined_vars(),
-							sprintf($this->i18n('Not a WebSharks™ compatible version string: `%1$s`.'), $this->version)
+							sprintf($this->i18n('Invalid version string: `%1$s`.'), $this->version)
 						);
-					else if(!preg_match(stub::$regex_valid_version, $this->requires_at_least_php_v))
+					if(!$this->©string->is_version($this->requires_at_least_php_version))
 						throw $this->©exception(
-							__METHOD__.'#invalid_requires_at_least_php_v', get_defined_vars(),
-							sprintf($this->i18n('Invalid `Requires at least` PHP version string: `%1$s`.'), $this->requires_at_least_php_v)
+							__METHOD__.'#invalid_requires_at_least_php_version', get_defined_vars(),
+							sprintf($this->i18n('Invalid `Requires at least` PHP version string: `%1$s`.'), $this->requires_at_least_php_version)
 						);
-					else if(!preg_match(stub::$regex_valid_version, $this->tested_up_to_php_v))
+					if(!$this->©string->is_version($this->tested_up_to_php_version))
 						throw $this->©exception(
-							__METHOD__.'#invalid_tested_up_to_php_v', get_defined_vars(),
-							sprintf($this->i18n('Invalid `Tested up to` PHP version string: `%1$s`.'), $this->tested_up_to_php_v)
+							__METHOD__.'#invalid_tested_up_to_php_version', get_defined_vars(),
+							sprintf($this->i18n('Invalid `Tested up to` PHP version string: `%1$s`.'), $this->tested_up_to_php_version)
 						);
-					else if(!preg_match(stub::$regex_valid_version, $this->requires_at_least_wp_v))
+					if(!$this->©string->is_version($this->requires_at_least_wp_version))
 						throw $this->©exception(
-							__METHOD__.'#invalid_requires_at_least_wp_v', get_defined_vars(),
-							sprintf($this->i18n('Invalid `Requires at least` WP version string: `%1$s`.'), $this->requires_at_least_wp_v)
+							__METHOD__.'#invalid_requires_at_least_wp_version', get_defined_vars(),
+							sprintf($this->i18n('Invalid `Requires at least` WP version string: `%1$s`.'), $this->requires_at_least_wp_version)
 						);
-					else if(!preg_match(stub::$regex_valid_version, $this->tested_up_to_wp_v))
+					if(!$this->©string->is_version($this->tested_up_to_wp_version))
 						throw $this->©exception(
-							__METHOD__.'#invalid_tested_up_to_wp_v', get_defined_vars(),
-							sprintf($this->i18n('Invalid `Tested up to` WP version string: `%1$s`.'), $this->tested_up_to_wp_v)
+							__METHOD__.'#invalid_tested_up_to_wp_version', get_defined_vars(),
+							sprintf($this->i18n('Invalid `Tested up to` WP version string: `%1$s`.'), $this->tested_up_to_wp_version)
 						);
 					// Validate core type.
 
@@ -415,10 +409,10 @@ namespace websharks_core_v000000_dev
 						);
 					// Validate core version that we're supposed to be building from.
 
-					if($this->build_from_core_v !== $this->___instance_config->core_version)
+					if($this->build_from_core_version !== $this->___instance_config->core_version)
 						throw $this->©exception(
-							__METHOD__.'#invalid_build_from_core_v', get_defined_vars(),
-							sprintf($this->i18n('Building from incorrect core version: `%1$s`.'), $this->build_from_core_v).
+							__METHOD__.'#invalid_build_from_core_version', get_defined_vars(),
+							sprintf($this->i18n('Building from incorrect core version: `%1$s`.'), $this->build_from_core_version).
 							sprintf($this->i18n(' This is version `%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name)
 						);
 					// Determine starting GIT branches; also check for uncommitted changes and/or untracked files.
@@ -571,14 +565,14 @@ namespace websharks_core_v000000_dev
 
 							$_plugin_file           = $this->plugin_dir.'/plugin.php';
 							$_plugin_readme_file    = $this->plugin_dir.'/readme.txt';
-							$_plugin_framework_file = $this->plugin_dir.'/classes/'.str_replace('_', '-', $this->plugin_ns).'/framework.php';
+							$_plugin_framework_file = $this->plugin_dir.'/classes/'.$this->©string->with_dashes($this->plugin_root_ns).'/framework.php';
 
 							if(!is_file($_plugin_file))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_plugin_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent plugin file: `%1$s`.'), $_plugin_file)
 								);
-							else if(!is_readable($_plugin_file) || !is_writable($_plugin_file))
+							if(!is_readable($_plugin_file) || !is_writable($_plugin_file))
 								throw $this->©exception(
 									__METHOD__.'#plugin_file_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with plugin file: `%1$s`.'), $_plugin_file)
@@ -589,7 +583,7 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#nonexistent_plugin_readme_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent plugin `readme.txt` file: `%1$s`.'), $_plugin_readme_file)
 								);
-							else if(!is_readable($_plugin_readme_file) || !is_writable($_plugin_readme_file))
+							if(!is_readable($_plugin_readme_file) || !is_writable($_plugin_readme_file))
 								throw $this->©exception(
 									__METHOD__.'#plugin_readme_file_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with plugin `readme.txt` file: `%1$s`.'), $_plugin_readme_file)
@@ -600,7 +594,7 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#nonexistent_plugin_framework_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent plugin `framework.php` file: `%1$s`.'), $_plugin_framework_file)
 								);
-							else if(!is_readable($_plugin_framework_file) || !is_writable($_plugin_framework_file))
+							if(!is_readable($_plugin_framework_file) || !is_writable($_plugin_framework_file))
 								throw $this->©exception(
 									__METHOD__.'#plugin_framework_file_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with plugin `framework.php` file: `%1$s`.'), $_plugin_framework_file)
@@ -614,29 +608,29 @@ namespace websharks_core_v000000_dev
 							$_plugin_readme_file_contents    = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_plugin_readme_file_contents);
 							$_plugin_framework_file_contents = $this->regex_replace('php_code__quoted_string_with_version_marker', $this->version, $_plugin_framework_file_contents);
 
-							$_plugin_file_contents        = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_plugin_file_contents);
-							$_plugin_readme_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_plugin_readme_file_contents);
+							$_plugin_file_contents        = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_version, $_plugin_file_contents);
+							$_plugin_readme_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_version, $_plugin_readme_file_contents);
 
-							$_plugin_file_contents        = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_v, $_plugin_file_contents);
-							$_plugin_readme_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_v, $_plugin_readme_file_contents);
+							$_plugin_file_contents        = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_version, $_plugin_file_contents);
+							$_plugin_readme_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_version, $_plugin_readme_file_contents);
 
-							$_plugin_file_contents        = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_v, $_plugin_file_contents);
-							$_plugin_readme_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_v, $_plugin_readme_file_contents);
+							$_plugin_file_contents        = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_version, $_plugin_file_contents);
+							$_plugin_readme_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_version, $_plugin_readme_file_contents);
 
-							$_plugin_file_contents        = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_v, $_plugin_file_contents);
-							$_plugin_readme_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_v, $_plugin_readme_file_contents);
+							$_plugin_file_contents        = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_version, $_plugin_file_contents);
+							$_plugin_readme_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_version, $_plugin_readme_file_contents);
 
 							if(!file_put_contents($_plugin_file, $_plugin_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#plugin_file_write_error', get_defined_vars(),
 									$this->i18n('Unable to write (update) the plugin file.')
 								);
-							else if(!file_put_contents($_plugin_readme_file, $_plugin_readme_file_contents))
+							if(!file_put_contents($_plugin_readme_file, $_plugin_readme_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#plugin_readme_file_write_error', get_defined_vars(),
 									$this->i18n('Unable to write (update) the plugin `readme.txt` file.')
 								);
-							else if(!file_put_contents($_plugin_framework_file, $_plugin_framework_file_contents))
+							if(!file_put_contents($_plugin_framework_file, $_plugin_framework_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#plugin_framework_file_write_error', get_defined_vars(),
 									$this->i18n('Unable to write (update) the plugin `framework.php` file.')
@@ -645,11 +639,11 @@ namespace websharks_core_v000000_dev
 							$successes->add(__METHOD__.'#plugin_file_updates', get_defined_vars(),
 							                $this->i18n('Plugin files updated with versions/requirements.').
 							                sprintf($this->i18n(' Plugin version: `%1$s`.'), $this->version).
-							                sprintf($this->i18n(' Plugin requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_v).
-							                sprintf($this->i18n(' Tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_v).
+							                sprintf($this->i18n(' Plugin requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_version).
+							                sprintf($this->i18n(' Tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_version).
 							                sprintf($this->i18n(' Uses %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
-							                sprintf($this->i18n(' Plugin requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
-							                sprintf($this->i18n(' Plugin tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v)
+							                sprintf($this->i18n(' Plugin requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_version).
+							                sprintf($this->i18n(' Plugin tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_version)
 							);
 							unset($_plugin_file, $_plugin_framework_file, $_plugin_readme_file);
 							unset($_plugin_file_contents, $_plugin_framework_file_contents, $_plugin_readme_file_contents);
@@ -758,14 +752,14 @@ namespace websharks_core_v000000_dev
 
 									$_plugin_pro_file        = $this->plugin_pro_dir.'/plugin.php';
 									$_plugin_pro_readme_file = $this->plugin_pro_dir.'/readme.txt';
-									$_plugin_pro_class_file  = $this->plugin_pro_dir.'/classes/'.str_replace('_', '-', $this->plugin_ns).'/pro.php';
+									$_plugin_pro_class_file  = $this->plugin_pro_dir.'/classes/'.$this->©string->with_dashes($this->plugin_root_ns).'/pro.php';
 
 									if(!is_file($_plugin_pro_file))
 										throw $this->©exception(
 											__METHOD__.'#nonexistent_plugin_pro_file', get_defined_vars(),
 											sprintf($this->i18n('Nonexistent plugin pro file: `%1$s`.'), $_plugin_pro_file)
 										);
-									else if(!is_readable($_plugin_pro_file) || !is_writable($_plugin_pro_file))
+									if(!is_readable($_plugin_pro_file) || !is_writable($_plugin_pro_file))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_file_permissions', get_defined_vars(),
 											sprintf($this->i18n('Permission issues with plugin pro file: `%1$s`.'), $_plugin_pro_file)
@@ -776,7 +770,7 @@ namespace websharks_core_v000000_dev
 											__METHOD__.'#nonexistent_plugin_pro_readme_file', get_defined_vars(),
 											sprintf($this->i18n('Nonexistent plugin pro `readme.txt` file: `%1$s`.'), $_plugin_pro_readme_file)
 										);
-									else if(!is_readable($_plugin_pro_readme_file) || !is_writable($_plugin_pro_readme_file))
+									if(!is_readable($_plugin_pro_readme_file) || !is_writable($_plugin_pro_readme_file))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_readme_file_permissions', get_defined_vars(),
 											sprintf($this->i18n('Permission issues with plugin pro `readme.txt` file: `%1$s`.'), $_plugin_pro_readme_file)
@@ -787,7 +781,7 @@ namespace websharks_core_v000000_dev
 											__METHOD__.'#nonexistent_plugin_pro_class_file', get_defined_vars(),
 											sprintf($this->i18n('Nonexistent plugin `pro.php` class file: `%1$s`.'), $_plugin_pro_class_file)
 										);
-									else if(!is_readable($_plugin_pro_class_file) || !is_writable($_plugin_pro_class_file))
+									if(!is_readable($_plugin_pro_class_file) || !is_writable($_plugin_pro_class_file))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_class_file_permissions', get_defined_vars(),
 											sprintf($this->i18n('Permission issues with plugin `pro.php` class file: `%1$s`.'), $_plugin_pro_class_file)
@@ -801,29 +795,29 @@ namespace websharks_core_v000000_dev
 									$_plugin_pro_readme_file_contents = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_plugin_pro_readme_file_contents);
 									$_plugin_pro_class_file_contents  = $this->regex_replace('php_code__quoted_string_with_version_marker', $this->version, $_plugin_pro_class_file_contents);
 
-									$_plugin_pro_file_contents        = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_plugin_pro_file_contents);
-									$_plugin_pro_readme_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_plugin_pro_readme_file_contents);
+									$_plugin_pro_file_contents        = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_version, $_plugin_pro_file_contents);
+									$_plugin_pro_readme_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_version, $_plugin_pro_readme_file_contents);
 
-									$_plugin_pro_file_contents        = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_v, $_plugin_pro_file_contents);
-									$_plugin_pro_readme_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_v, $_plugin_pro_readme_file_contents);
+									$_plugin_pro_file_contents        = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_version, $_plugin_pro_file_contents);
+									$_plugin_pro_readme_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_version, $_plugin_pro_readme_file_contents);
 
-									$_plugin_pro_file_contents        = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_v, $_plugin_pro_file_contents);
-									$_plugin_pro_readme_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_v, $_plugin_pro_readme_file_contents);
+									$_plugin_pro_file_contents        = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_version, $_plugin_pro_file_contents);
+									$_plugin_pro_readme_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_version, $_plugin_pro_readme_file_contents);
 
-									$_plugin_pro_file_contents        = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_v, $_plugin_pro_file_contents);
-									$_plugin_pro_readme_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_v, $_plugin_pro_readme_file_contents);
+									$_plugin_pro_file_contents        = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_version, $_plugin_pro_file_contents);
+									$_plugin_pro_readme_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_version, $_plugin_pro_readme_file_contents);
 
 									if(!file_put_contents($_plugin_pro_file, $_plugin_pro_file_contents))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_file_write_error', get_defined_vars(),
 											$this->i18n('Unable to write (update) the plugin pro file.')
 										);
-									else if(!file_put_contents($_plugin_pro_readme_file, $_plugin_pro_readme_file_contents))
+									if(!file_put_contents($_plugin_pro_readme_file, $_plugin_pro_readme_file_contents))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_readme_file_write_error', get_defined_vars(),
 											$this->i18n('Unable to write (update) the plugin pro `readme.txt` file.')
 										);
-									else if(!file_put_contents($_plugin_pro_class_file, $_plugin_pro_class_file_contents))
+									if(!file_put_contents($_plugin_pro_class_file, $_plugin_pro_class_file_contents))
 										throw $this->©exception(
 											__METHOD__.'#plugin_pro_class_file_write_error', get_defined_vars(),
 											$this->i18n('Unable to write (update) the plugin `pro.php` class file.')
@@ -832,11 +826,11 @@ namespace websharks_core_v000000_dev
 									$successes->add(__METHOD__.'#plugin_pro_file_updates', get_defined_vars(),
 									                $this->i18n('Plugin pro files updated with versions/requirements.').
 									                sprintf($this->i18n(' Plugin pro version: `%1$s`.'), $this->version).
-									                sprintf($this->i18n(' Pro add-on requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_v).
-									                sprintf($this->i18n(' Pro add-on tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_v).
+									                sprintf($this->i18n(' Pro add-on requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_version).
+									                sprintf($this->i18n(' Pro add-on tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_version).
 									                sprintf($this->i18n(' Uses %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
-									                sprintf($this->i18n(' Pro add-on requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
-									                sprintf($this->i18n(' Pro add-on tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v)
+									                sprintf($this->i18n(' Pro add-on requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_version).
+									                sprintf($this->i18n(' Pro add-on tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_version)
 									);
 									unset($_plugin_pro_file, $_plugin_pro_class_file, $_plugin_pro_readme_file);
 									unset($_plugin_pro_file_contents, $_plugin_pro_class_file_contents, $_plugin_pro_readme_file_contents);
@@ -919,7 +913,7 @@ namespace websharks_core_v000000_dev
 											__METHOD__.'#nonexistent_core_deps_x_file', get_defined_vars(),
 											sprintf($this->i18n('Nonexistent core `deps-x.php` file: `%1$s`.'), $_core_deps_x_file)
 										);
-									else if(!is_readable($_core_deps_x_file))
+									if(!is_readable($_core_deps_x_file))
 										throw $this->©exception(
 											__METHOD__.'#core_deps_x_file_permissions', get_defined_vars(),
 											sprintf($this->i18n('Permission issues with core `deps-x.php` file: `%1$s`.'), $_core_deps_x_file)
@@ -943,11 +937,11 @@ namespace websharks_core_v000000_dev
 									$successes->add(__METHOD__.'#plugin_extra_file_updates', get_defined_vars(),
 									                $this->i18n('Plugin extra files updated with versions/requirements/etc.').
 									                sprintf($this->i18n(' Extras version: `%1$s`.'), $this->version).
-									                sprintf($this->i18n(' Extras require at least PHP version: `%1$s`.'), $this->requires_at_least_php_v).
-									                sprintf($this->i18n(' Extras tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_v).
+									                sprintf($this->i18n(' Extras require at least PHP version: `%1$s`.'), $this->requires_at_least_php_version).
+									                sprintf($this->i18n(' Extras tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_version).
 									                sprintf($this->i18n(' Extras using %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
-									                sprintf($this->i18n(' Extras require at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_v).
-									                sprintf($this->i18n(' Extras tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_v).
+									                sprintf($this->i18n(' Extras require at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_version).
+									                sprintf($this->i18n(' Extras tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_version).
 									                sprintf($this->i18n(' New server scanner file (GIT-tracked in the plugin repo): `%1$s`.'), $_new_server_scanner_file)
 									);
 									unset($_core_deps_x_file, $_new_server_scanner_file, $_new_server_scanner_plugin_dirs, $_new_server_scanner_file_contents);
@@ -1037,16 +1031,28 @@ namespace websharks_core_v000000_dev
 
 							// Update various core files w/ version numbers and other requirements.
 
+							$_this_core_stub_file   = $_this_core_dir.'/stub.php';
 							$_this_core_plugin_file = $_this_core_dir.'/plugin.php';
 							$_this_core_readme_file = $_this_core_dir.'/readme.txt';
-							$_this_core_deps_x_file = $_this_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version.'/deps-x.php';
+							$_this_core_deps_x_file = $_this_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_v_with_dashes.$this->©string->with_dashes($this->version).'/deps-x.php';
+
+							if(!is_file($_this_core_stub_file))
+								throw $this->©exception(
+									__METHOD__.'#nonexistent_'.$new_slug.'core_stub_file', get_defined_vars(),
+									sprintf($this->i18n('Nonexistent %1$score `stub.php` file: `%2$s`.'), $new_space, $_this_core_stub_file)
+								);
+							if(!is_readable($_this_core_stub_file) || !is_writable($_this_core_stub_file))
+								throw $this->©exception(
+									__METHOD__.'#'.$new_slug.'core_stub_file_permissions', get_defined_vars(),
+									sprintf($this->i18n('Permission issues with %1$score `stub.php` file: `%2$s`.'), $new_space, $_this_core_stub_file)
+								);
 
 							if(!is_file($_this_core_plugin_file))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_'.$new_slug.'core_plugin_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent %1$score `plugin.php` file: `%2$s`.'), $new_space, $_this_core_plugin_file)
 								);
-							else if(!is_readable($_this_core_plugin_file) || !is_writable($_this_core_plugin_file))
+							if(!is_readable($_this_core_plugin_file) || !is_writable($_this_core_plugin_file))
 								throw $this->©exception(
 									__METHOD__.'#'.$new_slug.'core_plugin_file_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with %1$score `plugin.php` file: `%2$s`.'), $new_space, $_this_core_plugin_file)
@@ -1057,7 +1063,7 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#nonexistent_'.$new_slug.'core_readme_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent %1$score `readme.txt` file: `%2$s`.'), $new_space, $_this_core_readme_file)
 								);
-							else if(!is_readable($_this_core_readme_file) || !is_writable($_this_core_readme_file))
+							if(!is_readable($_this_core_readme_file) || !is_writable($_this_core_readme_file))
 								throw $this->©exception(
 									__METHOD__.'#'.$new_slug.'core_readme_file_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with %1$score `readme.txt` file: `%2$s`.'), $new_space, $_this_core_readme_file)
@@ -1068,45 +1074,55 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#nonexistent_'.$new_slug.'core_deps_x_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent %1$score `deps-x.php` file: `%2$s`.'), $new_space, $_this_core_deps_x_file)
 								);
-							else if(!is_readable($_this_core_deps_x_file) || !is_writable($_this_core_deps_x_file))
+							if(!is_readable($_this_core_deps_x_file) || !is_writable($_this_core_deps_x_file))
 								throw $this->©exception(
 									__METHOD__.'#'.$new_slug.'core_deps_x_file_permissions', get_defined_vars(),
 									sprintf($this->i18n('Permission issues with %1$score `deps-x.php` file: `%2$s`.'), $new_space, $_this_core_deps_x_file)
 								);
 
+							$_this_core_stub_file_contents   = file_get_contents($_this_core_stub_file);
 							$_this_core_plugin_file_contents = file_get_contents($_this_core_plugin_file);
 							$_this_core_readme_file_contents = file_get_contents($_this_core_readme_file);
 							$_this_core_deps_x_file_contents = file_get_contents($_this_core_deps_x_file);
 
+							$_this_core_stub_file_contents = $this->regex_replace('php_code__quoted_string_with_version_marker', $this->version, $_this_core_stub_file_contents);
+							$_this_core_stub_file_contents = $this->regex_replace('php_code__quoted_string_with_version_with_underscores_marker', $this->©string->with_underscores($this->version), $_this_core_stub_file_contents);
+							$_this_core_stub_file_contents = $this->regex_replace('php_code__quoted_string_with_version_with_dashes_marker', $this->©string->with_dashes($this->version), $_this_core_stub_file_contents);
+
 							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_this_core_plugin_file_contents);
 							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__wp_version_stable_tag', $this->version, $_this_core_readme_file_contents);
 
-							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_this_core_plugin_file_contents);
-							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_v, $_this_core_readme_file_contents);
+							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_version, $_this_core_plugin_file_contents);
+							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__php_requires_at_least_version', $this->requires_at_least_php_version, $_this_core_readme_file_contents);
 
-							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_v, $_this_core_plugin_file_contents);
-							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_v, $_this_core_readme_file_contents);
+							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_version, $_this_core_plugin_file_contents);
+							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__php_tested_up_to_version', $this->tested_up_to_php_version, $_this_core_readme_file_contents);
 
-							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_v, $_this_core_plugin_file_contents);
-							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_v, $_this_core_readme_file_contents);
+							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_version, $_this_core_plugin_file_contents);
+							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__wp_requires_at_least_version', $this->requires_at_least_wp_version, $_this_core_readme_file_contents);
 
-							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_v, $_this_core_plugin_file_contents);
-							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_v, $_this_core_readme_file_contents);
+							$_this_core_plugin_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_version, $_this_core_plugin_file_contents);
+							$_this_core_readme_file_contents = $this->regex_replace('plugin_readme__wp_tested_up_to_version', $this->tested_up_to_wp_version, $_this_core_readme_file_contents);
 
-							$_this_core_deps_x_file_contents = $this->regex_replace('php_code__quoted_string_with_php_version_required_marker', $this->requires_at_least_php_v, $_this_core_deps_x_file_contents);
-							$_this_core_deps_x_file_contents = $this->regex_replace('php_code__quoted_string_with_wp_version_required_marker', $this->requires_at_least_wp_v, $_this_core_deps_x_file_contents);
+							$_this_core_deps_x_file_contents = $this->regex_replace('php_code__quoted_string_with_php_version_required_marker', $this->requires_at_least_php_version, $_this_core_deps_x_file_contents);
+							$_this_core_deps_x_file_contents = $this->regex_replace('php_code__quoted_string_with_wp_version_required_marker', $this->requires_at_least_wp_version, $_this_core_deps_x_file_contents);
 
+							if(!file_put_contents($_this_core_stub_file, $_this_core_stub_file_contents))
+								throw $this->©exception(
+									__METHOD__.'#'.$new_slug.'core_stub_file_write_error', get_defined_vars(),
+									sprintf($this->i18n('Unable to write (update) the %1$score `stub.php` file.'), $new_space)
+								);
 							if(!file_put_contents($_this_core_plugin_file, $_this_core_plugin_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#'.$new_slug.'core_plugin_file_write_error', get_defined_vars(),
 									sprintf($this->i18n('Unable to write (update) the %1$score `plugin.php` file.'), $new_space)
 								);
-							else if(!file_put_contents($_this_core_readme_file, $_this_core_readme_file_contents))
+							if(!file_put_contents($_this_core_readme_file, $_this_core_readme_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#'.$new_slug.'core_readme_file_write_error', get_defined_vars(),
 									sprintf($this->i18n('Unable to write (update) the %1$score `readme.txt` file.'), $new_space)
 								);
-							else if(!file_put_contents($_this_core_deps_x_file, $_this_core_deps_x_file_contents))
+							if(!file_put_contents($_this_core_deps_x_file, $_this_core_deps_x_file_contents))
 								throw $this->©exception(
 									__METHOD__.'#'.$new_slug.'core_deps_x_file_write_error', get_defined_vars(),
 									sprintf($this->i18n('Unable to write (update) the %1$score `deps-x.php` file.'), $new_space)
@@ -1116,13 +1132,13 @@ namespace websharks_core_v000000_dev
 							                sprintf($this->i18n('%1$s files updated with versions/requirements.'), $ucfirst_core).
 							                sprintf($this->i18n(' %1$s version: `v%2$s`.'), $ucfirst_core, $this->version).
 							                sprintf($this->i18n(' %1$s directory: `%2$s`.'), $ucfirst_core, $_this_core_dir).
-							                sprintf($this->i18n(' %1$s requires at least PHP version: `%2$s`.'), $ucfirst_core, $this->requires_at_least_php_v).
-							                sprintf($this->i18n(' %1$s tested up to PHP version: `%2$s`.'), $ucfirst_core, $this->tested_up_to_php_v).
-							                sprintf($this->i18n(' %1$s requires at least WordPress® version: `%2$s`.'), $ucfirst_core, $this->requires_at_least_wp_v).
-							                sprintf($this->i18n(' %1$s tested up to WordPress® version: `%2$s`.'), $ucfirst_core, $this->tested_up_to_wp_v)
+							                sprintf($this->i18n(' %1$s requires at least PHP version: `%2$s`.'), $ucfirst_core, $this->requires_at_least_php_version).
+							                sprintf($this->i18n(' %1$s tested up to PHP version: `%2$s`.'), $ucfirst_core, $this->tested_up_to_php_version).
+							                sprintf($this->i18n(' %1$s requires at least WordPress® version: `%2$s`.'), $ucfirst_core, $this->requires_at_least_wp_version).
+							                sprintf($this->i18n(' %1$s tested up to WordPress® version: `%2$s`.'), $ucfirst_core, $this->tested_up_to_wp_version)
 							);
-							unset($_this_core_plugin_file, $_this_core_readme_file, $_this_core_deps_x_file);
-							unset($_this_core_plugin_file_contents, $_this_core_readme_file_contents, $_this_core_deps_x_file_contents);
+							unset($_this_core_stub_file, $_this_core_plugin_file, $_this_core_readme_file, $_this_core_deps_x_file);
+							unset($_this_core_stub_file_contents, $_this_core_plugin_file_contents, $_this_core_readme_file_contents, $_this_core_deps_x_file_contents);
 
 							// Compress this core directory into a single PHP Archive.
 
@@ -1148,7 +1164,7 @@ namespace websharks_core_v000000_dev
 
 							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar,
 							                     $_this_core_distro_temp_dir_stub, TRUE, TRUE, array_keys($this->©files->compressable_mime_types()),
-							                     $this->___instance_config->core_ns_stub.'_v'.str_replace('-', '_', $this->version));
+							                     $this->___instance_config->core_ns_stub_v.$this->©string->with_underscores($this->version));
 							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
 							$this->©dir->empty_and_remove($_this_core_distro_temp_dir); // Remove temp directory now.
@@ -1244,6 +1260,8 @@ namespace websharks_core_v000000_dev
 								break;
 
 						case 'php_code__quoted_string_with_version_marker':
+						case 'php_code__quoted_string_with_version_with_underscores_marker':
+						case 'php_code__quoted_string_with_version_with_dashes_marker':
 						case 'php_code__quoted_string_with_php_version_required_marker':
 						case 'php_code__quoted_string_with_wp_version_required_marker':
 								$string = preg_replace($pattern, '${1}'.$this->©string->esc_refs($this->©string->esc_sq($value)).'${3}', $string, -1, $replacements);
@@ -1251,13 +1269,13 @@ namespace websharks_core_v000000_dev
 
 						default: // What?
 							throw $this->©exception(
-								__METHOD__.'#regex_replacement_failure_unexpected_pattern_name', compact('pattern', 'pattern_name'),
+								__METHOD__.'#regex_replacement_failure_unexpected_pattern_name', get_defined_vars(),
 								sprintf($this->i18n('Unexpected regex pattern name: `%1$s`.'), $pattern_name)
 							);
 					}
 					if(!$string || empty($replacements))
 						throw $this->©exception(
-							__METHOD__.'#regex_replacement_failure', compact('pattern', 'pattern_name'),
+							__METHOD__.'#regex_replacement_failure', get_defined_vars(),
 							sprintf($this->i18n('Failure to match the following pattern name: `%1$s`.'), $pattern_name)
 						);
 					return $string; // With replacements.
@@ -1278,19 +1296,22 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string:!empty', func_get_args());
 
 					$patterns = array(
-						'plugin_readme__php_requires_at_least_version'             => '/^(Requires\s+at\s+least\s+PHP\s+version\:\s*)([0-9a-z\.\-]*)$/im',
-						'plugin_readme__php_tested_up_to_version'                  => '/^(Tested\s+up\s+to\s+PHP\s+version\:\s*)([0-9a-z\.\-]*)$/im',
-						'plugin_readme__wp_requires_at_least_version'              => '/^(Requires\s+at\s+least(?:\s+WordPress\s+version)?\:\s*)([0-9a-z\.\-]*)$/im',
-						'plugin_readme__wp_tested_up_to_version'                   => '/^(Tested\s+up\s+to(?:\s+WordPress\s+version)?\:\s*)([0-9a-z\.\-]*)$/im',
-						'plugin_readme__wp_version_stable_tag'                     => '/^((?:Version|Stable\s+tag)\:\s*)([0-9a-z\.\-]*)$/im',
+						'plugin_readme__php_requires_at_least_version'                 => '/^(Requires\s+at\s+least\s+PHP\s+version\:\s*)(.*)$/im',
+						'plugin_readme__php_tested_up_to_version'                      => '/^(Tested\s+up\s+to\s+PHP\s+version\:\s*)(.*)$/im',
+						'plugin_readme__wp_requires_at_least_version'                  => '/^(Requires\s+at\s+least(?:\s+(?:WP|WordPress)\s+version)?\:\s*)(.*)$/im',
+						'plugin_readme__wp_tested_up_to_version'                       => '/^(Tested\s+up\s+to(?:\s+(?:WP|WordPress)\s+version)?\:\s*)(.*)$/im',
+						'plugin_readme__wp_version_stable_tag'                         => '/^((?:Version|Stable\s+tag)\:\s*)(.*)$/im',
 
-						'php_code__deps_x__define_stand_alone_plugin_name'         => '/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_NAME\'\s*,\s*\')(.*?)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-name\!#)/i',
-						'php_code__deps_x__define_stand_alone_plugin_dir_names'    => '/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_DIR_NAMES\'\s*,\s*\')([0-9a-z\-]*)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-dir\-names\!#)/i',
-						'php_code__deps_x__declare_stand_alone_class_name'         => '/(class\s+deps_x_'.ltrim(rtrim(stub::$regex_valid_core_ns_version, '$/'), '/^').')(\s*#\!stand\-alone\!#)/i',
+						'php_code__deps_x__define_stand_alone_plugin_name'             => '/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_NAME\'\s*,\s*\')(.*)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-name\!#)/i',
+						'php_code__deps_x__define_stand_alone_plugin_dir_names'        => '/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_DIR_NAMES\'\s*,\s*\')(.*)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-dir\-names\!#)/i',
 
-						'php_code__quoted_string_with_version_marker'              => '/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!version\!#)/i',
-						'php_code__quoted_string_with_php_version_required_marker' => '/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!php\-version\-required\!#)/i',
-						'php_code__quoted_string_with_wp_version_required_marker'  => '/(\')([0-9a-z\.\-]*)(\'\s*[;,]?\s*#\!wp\-version\-required\!#)/i'
+						'php_code__deps_x__declare_stand_alone_class_name'             => '/(class\s+deps_x_'.ltrim(rtrim(stub::$regex_valid_core_ns_version, '$/'), '/^').')(\s*#\!stand\-alone\!#)/i',
+
+						'php_code__quoted_string_with_version_marker'                  => '/(\')(.*)(\'\s*[;,]?\s*#\!version\!#)/i',
+						'php_code__quoted_string_with_version_with_underscores_marker' => '/(\')(.*)(\'\s*[;,]?\s*#\!version-with-underscores\!#)/i',
+						'php_code__quoted_string_with_version_with_dashes_marker'      => '/(\')(.*)(\'\s*[;,]?\s*#\!version-with-dashes\!#)/i',
+						'php_code__quoted_string_with_php_version_required_marker'     => '/(\')(.*)(\'\s*[;,]?\s*#\!php\-version\-required\!#)/i',
+						'php_code__quoted_string_with_wp_version_required_marker'      => '/(\')(.*)(\'\s*[;,]?\s*#\!wp\-version\-required\!#)/i'
 					);
 					if(empty($patterns[$matching]))
 						throw $this->©exception(

@@ -20,7 +20,7 @@ namespace websharks_core_v000000_dev
 		 * @package WebSharks\Core
 		 * @since 120318
 		 *
-		 * @assert ($GLOBALS[__NAMESPACE__], 'unit_test')
+		 * @assert ($GLOBALS[__NAMESPACE__])
 		 */
 		final class replicator extends framework
 		{
@@ -67,6 +67,18 @@ namespace websharks_core_v000000_dev
 			public $exclusions = array();
 
 			/**
+			 * @var string New core namespace w/version.
+			 * @by-constructor Set dynamically by class constructor.
+			 */
+			public $new_core_ns_version = '';
+
+			/**
+			 * @var string New core namespace w/version (dashed variation).
+			 * @by-constructor Set dynamically by class constructor.
+			 */
+			public $new_core_ns_version_with_dashes = '';
+
+			/**
 			 * @var string Replicating into this new sub-directory of ``$into_dir``.
 			 * @by-constructor Set dynamically by class constructor.
 			 */
@@ -81,7 +93,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string       $into_dir Optional. Defaults to an empty string.
 			 *    If this is supplied, the core will be replicated into this specific directory.
-			 *    Else, the core will be replicated into a sub-directory of its current parent directory.
+			 *    Else, the core will be replicated into a sub-directory of the local core repo directory.
 			 *
 			 * @param string       $update_dir Optional. Defaults to an empty string.
 			 *    Please use with EXTREME caution; this performs a MASSIVE search/replace routine.
@@ -93,7 +105,7 @@ namespace websharks_core_v000000_dev
 			 *    If this is NOT empty, we will replicate the core as a specific version indicated by this value.
 			 *
 			 * @param array        $exclusions Optional. An array of copy-to exclusions. Defaults to an empty array.
-			 *    See: {@link \websharks_core_v000000_dev\dirs::copy_to()} for details about this parameter.
+			 *    See: {@link dirs::copy_to()} for details about this parameter.
 			 *
 			 * @note Instantiation of this class will initiate the replication routine (please be VERY careful).
 			 *    Property ``$success`` will contain a message indicating the final result status of the replication procedure.
@@ -111,17 +123,9 @@ namespace websharks_core_v000000_dev
 
 					// Security check. Can we replicate here?
 
-					if(!$this->©env->is_cli())
-						$this->can_replicate = FALSE;
-
-					else if(!$this->©plugin->is_core())
-						$this->can_replicate = FALSE;
-
-					else if((!defined('___BUILDER') || !___BUILDER) &&
-					        (!defined('___REPLICATOR') || !___REPLICATOR)
-					) $this->can_replicate = FALSE;
-
-					else $this->can_replicate = TRUE; // We CAN replicate.
+					if($this->©env->is_cli() && $this->©plugin->is_core())
+						if((defined('___REPLICATOR') && ___REPLICATOR) || (defined('___BUILDER') && ___BUILDER))
+							$this->can_replicate = TRUE; // We CAN replicate.
 
 					if(!$this->can_replicate)
 						throw $this->©exception(
@@ -130,13 +134,16 @@ namespace websharks_core_v000000_dev
 						);
 					// Construct object properties.
 
-					$this->core_dir   = $this->©dir->n_seps(dirname(dirname(dirname(__FILE__))));
-					$this->into_dir   = ($into_dir) ? $this->©dir->n_seps($into_dir) : dirname($this->core_dir);
+					$this->core_dir   = $this->___instance_config->core_dir;
+					$this->into_dir   = ($into_dir) ? $this->©dir->n_seps($into_dir) : $this->___instance_config->local_core_repo_dir;
 					$this->version    = ($version) ? $version : $this->___instance_config->core_version;
 					$this->exclusions = ($exclusions) ? $exclusions : array();
 
-					$this->new_core_dir = $this->into_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version;
-					$this->update_dir   = ($update_dir) ? $this->©dir->n_seps($update_dir) : $this->new_core_dir;
+					$this->new_core_ns_version             = $this->___instance_config->core_ns_stub_v.$this->©string->with_underscores($this->version);
+					$this->new_core_ns_version_with_dashes = $this->©string->with_dashes($this->new_core_ns_version);
+					$this->new_core_dir                    = $this->into_dir.'/'.$this->new_core_ns_version_with_dashes;
+
+					$this->update_dir = ($update_dir) ? $this->©dir->n_seps($update_dir) : $this->new_core_dir;
 
 					// Validate object properties (among several other things).
 
@@ -146,13 +153,13 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n('Invalid directory: `%1$s`.'), $this->into_dir).
 							$this->i18n(' This is NOT an existing directory that we can replicate into.')
 						);
-					else if($this->update_dir !== $this->new_core_dir && !is_dir($this->update_dir))
+					if($this->update_dir !== $this->new_core_dir && !is_dir($this->update_dir))
 						throw $this->©exception(
 							__METHOD__.'#invalid_update_dir', get_defined_vars(),
 							sprintf($this->i18n('Invalid directory: `%1$s`.'), $this->into_dir).
 							$this->i18n(' This is NOT an existing directory that we can update files in.')
 						);
-					else if(!preg_match(stub::$regex_valid_plugin_version, $this->version))
+					if(!$this->©string->is_plugin_version($this->version))
 						throw $this->©exception(
 							__METHOD__.'#invalid_version', get_defined_vars(),
 							sprintf($this->i18n('Invalid %1$s version: `%2$s`.'), $this->___instance_config->core_name, $this->version)
@@ -184,31 +191,35 @@ namespace websharks_core_v000000_dev
 								);
 							$this->©dir->empty_and_remove($this->new_core_dir);
 						}
-					$this->©dir->copy_to($this->core_dir, $this->new_core_dir, $this->exclusions, TRUE);
-					$this->update_files_in_dir($this->update_dir); // Now we update files.
+					// Perform replication routines now.
 
-					return $this->©success(
-						__METHOD__.'#complete', get_defined_vars(),
-						$this->i18n('Replication completed successfully.')
+					$this->©dir->copy_to($this->core_dir, $this->new_core_dir, $this->exclusions, TRUE);
+					$this->update_files_in_dir($this->update_dir);
+
+					// Return success; which becomes the value of ``$this->success``.
+
+					return $this->©success(__METHOD__.'#complete', get_defined_vars(),
+					                       $this->i18n('Replication completed successfully.').
+					                       sprintf($this->i18n(' Replicated into: `%1$s`.'), $this->new_core_dir)
 					);
 				}
 
 			/**
 			 * Updates namespace references in directories/files (e.g. a deep search/replace routine).
 			 *    This search/replace routine includes both underscored and dashed variations.
-			 *    This search/replace routine will ALSO rename directories (if needed).
+			 *    This search/replace routine will ALSO rename directories/files (as needed).
 			 *
 			 * @param string $dir Directory to begin our search in (search/replace is a deep recursive scan).
 			 *
 			 * @note This routine will NOT search/replace inside any past or present core directory.
 			 *    With ONE exception, we DO allow search/replace inside the directory containing our newly replicated core.
 			 *
-			 * @IMPORTANT It is VERY important that `websharks_core_v000000_dev` and/or `websharks-core-v000000-dev`;
-			 *    do NOT have any of these characters after them: `[a-z0-9_\-]`; UNLESS they are part the version string.
+			 * @important It is VERY important that `websharks_core_v000000_dev` and/or `websharks-core-v000000-dev`;
+			 *    do NOT have any of these characters after them: `[a-z0-9_+\-]`; UNLESS they are part the version string.
 			 *    Any of these characters appearing after the stub could be subjected to a search/replace routine.
-			 *    Including them in word fragments (when NOT part of the version string); causes corruption.
-			 *    See also: {@link \websharks_core_v000000_dev\strings::regex_valid_ws_core_version}
-			 *    Exception... the following is OK: `websharks_core_v000000_dev->`
+			 *
+			 *    However, this is OK because plugin versions CANNOT end with a dash. Ex: `websharks_core_v000000_dev->`.
+			 *       See also: {@link stub::$regex_valid_core_ns_version} for further validation details.
 			 *
 			 * @throws exception If invalid types are passed through arguments list (e.g. if ``$dir`` is NOT a string; or is empty).
 			 * @throws exception If ``$dir`` (or any sub-directory) is NOT readable, or CANNOT be opened for any reason.
@@ -216,6 +227,7 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If unable to write search/replace changes to a file.
 			 * @throws exception If any recursive failure occurs on a sub-directory.
 			 * @throws exception If unable to rename directories (when/if needed), for any reason.
+			 * @throws exception If unable to rename files (when/if needed), for any reason.
 			 * @throws exception If unable to properly search/replace any file, for any reason.
 			 * @throws exception If unable to complete the entire search/replace routine for any reason.
 			 */
@@ -223,90 +235,98 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
+					// Establish directory variables.
+
 					$dir          = $this->©dir->n_seps($dir);
 					$dir_basename = basename($dir);
 
-					if(!is_dir($dir))
+					if(!is_dir($dir)) // Validate (must be a directory).
 						throw $this->©exception(
 							__METHOD__.'#nonexistent_dir', get_defined_vars(),
 							sprintf($this->i18n('Non-existent directory: `%1$s`.'), $dir)
 						);
-					else if(!is_readable($dir))
+					// Handle automatic directory exclusions.
+
+					if(in_array(strtolower($dir_basename), array('.idea'), TRUE))
+						return; // Do NOT search/replace a project workspace.
+
+					if(in_array(strtolower($dir_basename), array('$recycle.bin'), TRUE))
+						return; // Do NOT search/replace a recycle bin.
+
+					if(in_array(strtolower($dir_basename), array('cvs', '.git', '.svn', '.hg', 'sccs', 'rcs'), TRUE))
+						return; // Do NOT search/replace VC system directories/files.
+
+					if(preg_match('/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//', $dir.'/'))
+						if(stripos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
+							return; // Past or present WebSharks™ Core directory.
+
+					if(preg_match('/\/'.substr(stub::$regex_valid_core_ns_version_with_dashes, 2, -2).'\//', $dir.'/'))
+						if(stripos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
+							return; // Past or present WebSharks™ Core directory.
+
+					// Handle core directories that need to be renamed before processing continues.
+
+					if(preg_match(stub::$regex_valid_core_ns_version_with_dashes, $dir_basename) && $dir_basename !== basename($this->new_core_dir))
+						$this->©dir->rename_to($dir, ($dir = dirname($dir).'/'.($dir_basename = basename($this->new_core_dir))));
+
+					if(!is_readable($dir))
 						throw $this->©exception(
 							__METHOD__.'#unreadable_dir', get_defined_vars(),
 							$this->i18n('Unable to search a directory; not readable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
-
-					$regex_core_ns_stub_dir_with_dashes       = '/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//';
-					$regex_core_ns_v_dir_with_dashes          = '/\/'.ltrim(rtrim(stub::$regex_valid_core_ns_version_with_dashes, '$/'), '/^').'\//';
-					$regex_core_ns_v_dir_or_stub_with_dashes  = '/(?:'.substr($regex_core_ns_v_dir_with_dashes, 1, -1).'|'.substr($regex_core_ns_stub_dir_with_dashes, 1, -1).')/';
-					$regex_core_ns_v_dir_basename_with_dashes = stub::$regex_valid_core_ns_version_with_dashes;
-
-					if(in_array(strtolower($dir_basename), array('.idea'), TRUE))
-						return; // We do NOT search/replace a project workspace.
-
-					if(in_array(strtolower($dir_basename), array('$recycle.bin'), TRUE))
-						return; // We do NOT search/replace a recycle bin.
-
-					if(in_array(strtolower($dir_basename), array('cvs', '.git', '.svn', '.hg', 'sccs', 'rcs'), TRUE))
-						return; // We do NOT search/replace VC system directories/files (or in project files).
-
-					// This routine will NOT search/replace inside any past or present WebSharks™ Core directory.
-					// With ONE exception, we DO allow search/replace inside the directory containing our newly replicated core.
-					if(preg_match($regex_core_ns_v_dir_or_stub_with_dashes, $dir.'/') && stripos($dir.'/', $this->new_core_dir.'/') !== 0)
-						return; // Skipping. It's a core directory that's NOT a part of our newly replicated copy.
-
-					// Handle core directories that need to be renamed before processing continues.
-					if(preg_match($regex_core_ns_v_dir_basename_with_dashes, $dir_basename) && $dir_basename !== basename($this->new_core_dir))
-						$this->©dir->rename_to($dir, ($dir = dirname($dir).'/'.basename($this->new_core_dir)));
-
-					// Perform recursive search/replace routines.
-
 					if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
-							__METHOD__.'#opendir_issue', get_defined_vars(),
+							__METHOD__.'#opendir_failure', get_defined_vars(),
 							$this->i18n('Unable to search a directory; cannot open for some unknown reason.').
 							sprintf($this->i18n(' Make this directory readable please: `%1$s`.'), $dir)
 						);
-					$regex_core_ns_v             = '/'.ltrim(rtrim(stub::$regex_valid_core_ns_version, '$/'), '/^').'/';
-					$regex_core_ns_v_with_dashes = '/'.ltrim(rtrim(stub::$regex_valid_core_ns_version_with_dashes, '$/'), '/^').'/';
-
-					$new_core_ns_v             = $this->___instance_config->core_ns_stub.'_v'.str_replace('-', '_', $this->version);
-					$new_core_ns_v_with_dashes = $this->___instance_config->core_ns_stub_with_dashes.'-v'.$this->version;
-
-					$esc_refs_new_core_ns_v             = $this->©string->esc_refs($new_core_ns_v);
-					$esc_refs_new_core_ns_v_with_dashes = $this->©string->esc_refs($new_core_ns_v_with_dashes);
-
-					while(($_dir_file = readdir($_open_dir)) !== FALSE)
+					while(($_dir_file = readdir($_open_dir)) !== FALSE) // Recursive search/replace.
 						{
-							// Expand ``$_dir_file`` (and save basename).
-
-							$_dir_file_basename = $_dir_file;
-							$_dir_file          = $dir.'/'.$_dir_file;
-
-							// Bypass directory dots.
-
-							if($_dir_file_basename === '.' || $_dir_file_basename === '..')
+							if($_dir_file === '.' || $_dir_file === '..')
 								continue; // Ignore directory dots.
 
-							// Deal with directories.
+							$_dir_file = $dir.'/'.$_dir_file; // Absolute.
 
-							if(is_dir($_dir_file))
+							if(is_dir($_dir_file)) // Sub-directory?
 								{
 									$this->update_files_in_dir($_dir_file);
 									continue; // Done here.
 								}
-							// Bypass all of these files.
+							// Establish file variables.
+
+							$_dir_file_basename     = basename($_dir_file);
+							$_dir_file_abs_basename = $this->©file->abs_basename($_dir_file);
+							$_dir_file_extension    = $this->©file->extension($_dir_file);
+
+							// Handle automatic file name & file extension exclusions.
 
 							if(in_array(strtolower($_dir_file_basename), array('desktop.ini', 'thumbs.db', 'ehthumbs.db'), TRUE))
 								continue; // Ignore all of these systematic PC files.
-							if(in_array($this->©file->extension($_dir_file), array('iml', 'ipr', 'iws'), TRUE))
-								continue; // Ignore project workspace files.
-							if($this->©file->has_extension($_dir_file, $this::binary_type))
-								continue; // Ignore all binary extensions.
 
-							// This is where the bulk of our search/replace routine takes place.
+							if($this->©file->has_extension($_dir_file, $this::binary_type, array('iml', 'ipr', 'iws')))
+								continue; // Ignore all binary extensions. Ignore project workspace files.
+
+							// Handle core files that need to be renamed before processing continues.
+
+							if(preg_match(stub::$regex_valid_core_ns_version_with_dashes, $_dir_file_abs_basename))
+								if($_dir_file_abs_basename !== basename($this->new_core_dir))
+									{
+										$_o_dir_file = $_dir_file; // Original file.
+
+										$_dir_file = dirname($_dir_file).'/'.basename($this->new_core_dir);
+										if(strlen($_dir_file_extension)) // Has an extension?
+											$_dir_file .= '.'.$_dir_file_extension;
+
+										$_dir_file_basename     = basename($_dir_file);
+										$_dir_file_abs_basename = $this->©file->abs_basename($_dir_file);
+										$_dir_file_extension    = $this->©file->extension($_dir_file);
+
+										$this->©file->rename_to($_o_dir_file, $_dir_file);
+
+										unset($_o_dir_file); // Ditch this now.
+									}
+							// Make sure this file is readable/writable.
 
 							if(!is_readable($_dir_file) || !is_writable($_dir_file))
 								throw $this->©exception(
@@ -314,36 +334,39 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Unable to search a file; cannot read/write due to permission issues.').
 									sprintf($this->i18n(' Make this file readable/writable please: `%1$s`.'), $_dir_file)
 								);
-							else if(!is_string($_file = file_get_contents($_dir_file)))
+							// Get the contents of this file (and check if empty).
+
+							if(!is_string($_file = file_get_contents($_dir_file)))
 								throw $this->©exception(
 									__METHOD__.'#read_file_contents_issue', get_defined_vars(),
 									$this->i18n('Unable to search a file; cannot read file contents for some unknown reason.').
 									sprintf($this->i18n(' Make this file readable/writable please: `%1$s`.'), $_dir_file)
 								);
-							else if(!$_file) continue; // If the file is empty; we can simply continue.
+							if(!$_file) continue; // The file is empty. We're done here.
 
-							$_file_contains_core_ns_v             = (preg_match($regex_core_ns_v, $_file)) ? TRUE : FALSE;
-							$_file_contains_core_ns_v_with_dashes = (preg_match($regex_core_ns_v_with_dashes, $_file)) ? TRUE : FALSE;
+							// Handle file search/replace routines (as quickly as possible).
 
-							if(!$_file_contains_core_ns_v && !$_file_contains_core_ns_v_with_dashes)
+							$_file_contains_core_ns_version             = (preg_match('/'.substr(stub::$regex_valid_core_ns_version, 2, -2).'/', $_file));
+							$_file_contains_core_ns_version_with_dashes = (preg_match('/'.substr(stub::$regex_valid_core_ns_version_with_dashes, 2, -2).'/', $_file));
+							if(!$_file_contains_core_ns_version && !$_file_contains_core_ns_version_with_dashes)
 								continue; // Does NOT contain anything we need to search/replace.
 
-							if($_file_contains_core_ns_v) // Contains normal underscore variation(s)?
+							if($_file_contains_core_ns_version) // Contains normal underscore variation(s)?
 								{
-									$_file = preg_replace($regex_core_ns_v, $esc_refs_new_core_ns_v, $_file);
+									$_file = preg_replace('/'.substr(stub::$regex_valid_core_ns_version, 2, -2).'/', $this->©string->esc_refs($this->new_core_ns_version), $_file);
 
-									if(!$_file || strpos($_file, $new_core_ns_v) === FALSE)
+									if(!$_file || strpos($_file, $this->new_core_ns_version) === FALSE)
 										throw $this->©exception(
 											__METHOD__.'#search_replace_failure', get_defined_vars(),
 											sprintf($this->i18n('Unable to properly search/replace file: `%1$s`.'), $_dir_file).
 											sprintf($this->i18n('Last PCRE regex error: `%1$s`.'), $this->©string->preg_last_error())
 										);
 								}
-							if($_file_contains_core_ns_v_with_dashes) // Contains dashed variation(s)?
+							if($_file_contains_core_ns_version_with_dashes) // Contains dashed variation(s)?
 								{
-									$_file = preg_replace($regex_core_ns_v_with_dashes, $esc_refs_new_core_ns_v_with_dashes, $_file);
+									$_file = preg_replace('/'.substr(stub::$regex_valid_core_ns_version_with_dashes, 2, -2).'/', $this->©string->esc_refs($this->new_core_ns_version_with_dashes), $_file);
 
-									if(!$_file || strpos($_file, $new_core_ns_v_with_dashes) === FALSE)
+									if(!$_file || strpos($_file, $this->new_core_ns_version_with_dashes) === FALSE)
 										throw $this->©exception(
 											__METHOD__.'#search_replace_failure', get_defined_vars(),
 											sprintf($this->i18n('Unable to properly search/replace file: `%1$s`.'), $_dir_file).
@@ -357,9 +380,9 @@ namespace websharks_core_v000000_dev
 									sprintf($this->i18n(' Make this file readable/writable please: `%1$s`.'), $_dir_file)
 								);
 						}
-					closedir($_open_dir); // Close directory.
-					unset($_dir_file_basename, $_dir_file, $_file); // Housekeeping.
-					unset($_file_contains_core_ns_v, $_file_contains_core_ns_v_with_dashes);
+					closedir($_open_dir); // Close directory; final housekeeping.
+					unset($_open_dir, $_dir_file, $_dir_file_basename, $_dir_file_abs_basename, $_dir_file_extension);
+					unset($_file, $_file_contains_core_ns_version, $_file_contains_core_ns_version_with_dashes);
 				}
 		}
 	}

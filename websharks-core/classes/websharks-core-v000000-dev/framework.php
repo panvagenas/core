@@ -800,8 +800,8 @@ namespace websharks_core_v000000_dev
 
 							// Based on `namespace\sub_namespace\class_name` for ``$this`` class.
 							$this->___instance_config->ns_class_prefix           = '\\'.$this->___instance_config->ns_class;
-							$this->___instance_config->ns_class_with_underscores = str_replace('\\', '__', $this->___instance_config->ns_class);
-							$this->___instance_config->ns_class_with_dashes      = str_replace('_', '-', $this->___instance_config->ns_class_with_underscores);
+							$this->___instance_config->ns_class_with_underscores = stub::with_underscores($this->___instance_config->ns_class);
+							$this->___instance_config->ns_class_with_dashes      = stub::with_dashes($this->___instance_config->ns_class);
 							$this->___instance_config->ns_class_basename         = basename(str_replace('\\', '/', $this->___instance_config->ns_class));
 
 							// Check `namespace\sub_namespace\class_name` for validation issues.
@@ -818,7 +818,8 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->core_site           = stub::$core_site;
 									$this->___instance_config->local_wp_dev_dir    = stub::$local_wp_dev_dir;
 									$this->___instance_config->local_core_repo_dir = stub::$local_core_repo_dir;
-									$this->___instance_config->core_classes_dir    = stub::n_dir_seps(dirname(dirname(dirname(__FILE__)))).'/classes';
+									$this->___instance_config->core_dir            = stub::n_dir_seps(dirname(dirname(dirname(__FILE__))));
+									$this->___instance_config->core_classes_dir    = $this->___instance_config->core_dir.'/classes';
 
 									// Based on ``stub::$core_ns``.
 									$this->___instance_config->core_ns             = stub::$core_ns;
@@ -826,7 +827,7 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->core_ns_with_dashes = stub::$core_ns_with_dashes;
 
 									// Based on ``stub::$core_ns_stub``.
-									$this->___instance_config->{stub::$core_ns_stub}    = TRUE;
+									$this->___instance_config->{stub::$core_ns_stub}    = stub::$core_ns_stub;
 									$this->___instance_config->core_ns_stub             = stub::$core_ns_stub;
 									$this->___instance_config->core_ns_stub_with_dashes = stub::$core_ns_stub_with_dashes;
 
@@ -834,15 +835,15 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->core_ns_stub_v             = stub::$core_ns_stub_v;
 									$this->___instance_config->core_ns_stub_v_with_dashes = stub::$core_ns_stub_v_with_dashes;
 
-									// Based on ``stub::$core_ns_v``.
-									$this->___instance_config->core_ns_v             = stub::$core_ns_v;
-									$this->___instance_config->core_ns_v_with_dashes = stub::$core_ns_v_with_dashes;
-									$this->___instance_config->core_version          = stub::$core_version;
+									// Based on ``stub::$core_version``.
+									$this->___instance_config->core_version                  = stub::$core_version;
+									$this->___instance_config->core_version_with_underscores = stub::$core_version_with_underscores;
+									$this->___instance_config->core_version_with_dashes      = stub::$core_version_with_dashes;
 
 									// Check core `namespace` for validation issues.
 									if(!preg_match(stub::$regex_valid_core_ns_version, $this->___instance_config->core_ns))
 										throw new \exception(
-											sprintf(stub::i18n('Core namespace contains invalid chars: `%1$s`.'), $this->___instance_config->core_ns)
+											sprintf(stub::i18n('Invalid core namespace: `%1$s`.'), $this->___instance_config->core_ns)
 										);
 								}
 							// The `namespace\sub_namespace` for ``$this`` class.
@@ -853,24 +854,28 @@ namespace websharks_core_v000000_dev
 								{
 									// Based on `namespace\sub_namespace` for ``$this`` class.
 									$this->___instance_config->ns_prefix           = '\\'.$this->___instance_config->ns;
-									$this->___instance_config->ns_with_underscores = str_replace('\\', '__', $this->___instance_config->ns);
-									$this->___instance_config->ns_with_dashes      = str_replace('_', '-', $this->___instance_config->ns_with_underscores);
+									$this->___instance_config->ns_with_underscores = stub::with_underscores($this->___instance_config->ns);
+									$this->___instance_config->ns_with_dashes      = stub::with_dashes($this->___instance_config->ns);
 
 									// Based on `namespace` for ``$this`` class.
 									$this->___instance_config->root_ns             = strstr($this->___instance_config->ns_class, '\\', TRUE);
 									$this->___instance_config->root_ns_prefix      = '\\'.$this->___instance_config->root_ns;
-									$this->___instance_config->root_ns_with_dashes = str_replace('_', '-', $this->___instance_config->root_ns);
+									$this->___instance_config->root_ns_with_dashes = stub::with_dashes($this->___instance_config->root_ns);
 								}
 							// Based entirely on the current plugin. These properties will NOT change from one class instance to another.
 							if(!$___parent_instance_config) // ONLY need this routine if we did NOT get a ``$___parent_instance``.
 								{
-									// Based on `plugin_var_ns` (which serves several purposes).
+									// Based on `plugin_version`.
+									$this->___instance_config->plugin_version_with_underscores = stub::with_underscores($this->___instance_config->plugin_version);
+									$this->___instance_config->plugin_version_with_dashes      = stub::with_dashes($this->___instance_config->plugin_version);
+
+									// Based on `plugin_var_ns` (which serves a few different purposes).
 									$this->___instance_config->plugin_prefix             = $this->___instance_config->plugin_var_ns.'_';
-									$this->___instance_config->plugin_var_ns_with_dashes = str_replace('_', '-', $this->___instance_config->plugin_var_ns);
+									$this->___instance_config->plugin_var_ns_with_dashes = stub::with_dashes($this->___instance_config->plugin_var_ns);
 
 									// Based on plugin's root `namespace` (via `plugin_root_ns`).
 									$this->___instance_config->plugin_root_ns_prefix      = '\\'.$this->___instance_config->plugin_root_ns;
-									$this->___instance_config->plugin_root_ns_with_dashes = str_replace('_', '-', $this->___instance_config->plugin_root_ns);
+									$this->___instance_config->plugin_root_ns_with_dashes = stub::with_dashes($this->___instance_config->plugin_root_ns);
 
 									// Based on plugin's root `namespace` (via `plugin_root_ns`).
 									// Here we check to see if this plugin is actually the WebSharks™ Core.
@@ -928,16 +933,16 @@ namespace websharks_core_v000000_dev
 							$root_ns_length                                                          = strlen($this->___instance_config->root_ns);
 							$ns_class_x_same_as_class                                                = preg_replace('/_x$/', '', $this->___instance_config->ns_class);
 							$this->___instance_config->plugin_stub_as_root_ns_class                  = $this->___instance_config->plugin_root_ns_stub.substr($ns_class_x_same_as_class, $root_ns_length);
-							$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores = str_replace('\\', '__', $this->___instance_config->plugin_stub_as_root_ns_class);
-							$this->___instance_config->plugin_stub_as_root_ns_class_with_dashes      = str_replace('_', '-', $this->___instance_config->plugin_stub_as_root_ns_class_with_underscores);
+							$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores = stub::with_underscores($this->___instance_config->plugin_stub_as_root_ns_class);
+							$this->___instance_config->plugin_stub_as_root_ns_class_with_dashes      = stub::with_dashes($this->___instance_config->plugin_stub_as_root_ns_class);
 
 							// Based on `plugin_root_ns_stub`.
 							// AND, also on `namespace\sub_namespace` for ``$this`` class.
 							// Here we swap out the real root namespace, in favor of the plugin's root namespace.
 							// This is helpful when we need to build strings for hooks, filters, contextual slugs, and the like.
 							$this->___instance_config->plugin_stub_as_root_ns                  = $this->___instance_config->plugin_root_ns_stub.substr($this->___instance_config->ns, $root_ns_length);
-							$this->___instance_config->plugin_stub_as_root_ns_with_underscores = str_replace('\\', '__', $this->___instance_config->plugin_stub_as_root_ns);
-							$this->___instance_config->plugin_stub_as_root_ns_with_dashes      = str_replace('_', '-', $this->___instance_config->plugin_stub_as_root_ns_with_underscores);
+							$this->___instance_config->plugin_stub_as_root_ns_with_underscores = stub::with_underscores($this->___instance_config->plugin_stub_as_root_ns);
+							$this->___instance_config->plugin_stub_as_root_ns_with_dashes      = stub::with_dashes($this->___instance_config->plugin_stub_as_root_ns);
 
 							// Now let's cache ``$this->___instance_config`` for easy re-use.
 							static::$___instance_config_cache[$cache_entry] = $this->___instance_config;
@@ -2145,14 +2150,14 @@ namespace websharks_core_v000000_dev
 					{
 						if(!$version) return $GLOBALS[stub::$core_ns];
 
-						return $GLOBALS[stub::$core_ns_stub_v.str_replace('-', '_', (string)$version)];
+						return $GLOBALS[stub::$core_ns_stub_v.stub::with_underscores((string)$version)];
 					}
 
 				/*
 				 * Easier global access for those who DON'T CARE about the version.
 				 */
 				if(!function_exists('\\'.stub::$core_ns_stub)) // Only if it does NOT exist yet?
-					core()->©php->¤eval('function '.stub::$core_ns_stub.'($version = \'\'){if(!$version) return $GLOBALS[\''.stub::$core_ns_stub.'\']; return $GLOBALS[\''.stub::$core_ns_stub_v.'\'.str_replace(\'-\', \'_\', (string)$version)];}');
+					core()->©php->¤eval('function '.stub::$core_ns_stub.'($version = \'\'){if(!$version) return $GLOBALS[\''.stub::$core_ns_stub.'\']; return $GLOBALS[\''.stub::$core_ns_stub_v.'\'.'.stub::$core_ns.'::with_underscores((string)$version)];}');
 
 				/**
 				 * WebSharks™ Core API class (this version; internal use only).

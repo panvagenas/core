@@ -811,20 +811,139 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Is the string a valid PHP userland name?
+			 * Is a PHP userland name?
 			 *
-			 * @param string $string Any input string to test against PHP userland naming guidelines.
+			 * @param string $string Any input string.
 			 *
 			 * @return boolean TRUE if the string IS a valid userland name; else FALSE.
 			 */
-			public function is_valid_userland_name($string)
+			public function is_userland_name($string)
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if(preg_match(stub::$regex_valid_userland_name, $string))
-						return TRUE;
+					return (preg_match(stub::$regex_valid_userland_name, $string)) ? TRUE : FALSE;
+				}
 
-					return FALSE;
+			/**
+			 * Is a version string?
+			 *
+			 * @param string $string Any input string.
+			 *
+			 * @return boolean TRUE if a version string; else FALSE.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function is_version($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return (preg_match(stub::$regex_valid_version, $string)) ? TRUE : FALSE;
+				}
+
+			/**
+			 * Is a plugin version string?
+			 *
+			 * @param string $string Any input string.
+			 *
+			 * @return boolean TRUE if a plugin version string; else FALSE.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function is_plugin_version($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return (preg_match(stub::$regex_valid_plugin_version, $string)) ? TRUE : FALSE;
+				}
+
+			/**
+			 * Is a dev version string?
+			 *
+			 * @param string $string Any input string.
+			 *
+			 * @return boolean TRUE if a dev version string; else FALSE.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function is_dev_version($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return (preg_match(stub::$regex_valid_dev_version, $string)) ? TRUE : FALSE;
+				}
+
+			/**
+			 * Is a plugin dev version string?
+			 *
+			 * @param string $string Any input string to test against version guidelines.
+			 *
+			 * @return boolean TRUE if a plugin dev version string; else FALSE.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function is_plugin_dev_version($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return (preg_match(stub::$regex_valid_plugin_dev_version, $string)) ? TRUE : FALSE;
+				}
+
+			/**
+			 * Is a stable version string?
+			 *
+			 * @param string $string Any input string to test against version guidelines.
+			 *
+			 * @return boolean TRUE if a stable version string; else FALSE.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function is_stable_version($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return (preg_match(stub::$regex_valid_stable_version, $string)) ? TRUE : FALSE;
+				}
+
+			/**
+			 * Is a plugin stable version string?
+			 *
+			 * @param string $string Any input string to test against version guidelines.
+			 *
+			 * @return boolean TRUE if a plugin stable version string; else FALSE.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function is_plugin_stable_version($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return (preg_match(stub::$regex_valid_plugin_stable_version, $string)) ? TRUE : FALSE;
+				}
+
+			/**
+			 * Dashes replace non-alphanumeric chars.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::with_dashes()
+			 * @inheritdoc \websharks_core_v000000_dev::with_dashes()
+			 */
+			public function with_dashes() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'with_dashes'), func_get_args());
+				}
+
+			/**
+			 * Underscores replace non-alphanumeric chars.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::with_underscores()
+			 * @inheritdoc \websharks_core_v000000_dev::with_underscores()
+			 */
+			public function with_underscores() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'with_underscores'), func_get_args());
 				}
 
 			/**
