@@ -8,6 +8,8 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120329
+ *
+ * @TODO Update methods in this class to support other schemes besides http/https.
  */
 namespace websharks_core_v000000_dev
 	{
@@ -495,11 +497,10 @@ namespace websharks_core_v000000_dev
 
 					// Standardize and get real ``$file``, ``$dir`` locations.
 
-					if(is_file($dir_or_file) || $this->©file->has_extension($dir_or_file))
+					if(is_file($dir_or_file) || $this->©file->has_extension($dir_or_file, $this::any_known_type))
 						{
-							$file         = '/'.basename($dir_or_file);
-							$dir          = $this->©dirs->n_seps(dirname($dir_or_file));
-							$dir_realpath = $possible_real_file = '';
+							$file = '/'.basename($dir_or_file);
+							$dir  = $this->©dirs->n_seps(dirname($dir_or_file));
 
 							if(($dir_realpath = realpath($dir)) && $dir_realpath !== $dir)
 								{
@@ -508,6 +509,7 @@ namespace websharks_core_v000000_dev
 										$possible_real_file = '/'.basename($possible_real_file);
 									else $possible_real_file = $file;
 								}
+							else $dir_realpath = $possible_real_file = ''; // Defaults to an empty string.
 						}
 					else // Else, there is NO file (e.g. it's a directory path).
 						{
@@ -516,62 +518,80 @@ namespace websharks_core_v000000_dev
 
 							if(($dir_realpath = realpath($dir)) && $dir_realpath !== $dir)
 								$dir_realpath = $this->©dirs->n_seps($dir_realpath);
-							else $dir_realpath = '';
+							else $dir_realpath = ''; // Defaults to an empty string.
 						}
-					// Handle PHAR files here.
+					// Remove stream wrappers before processing.
 
-					if($dir && stripos($dir, 'phar://') === 0)
-						$dir = substr($dir, 7);
+					if(strpos($dir, '://') !== FALSE)
+						$dir = preg_replace('/^[a-z0-9]+\:\/\//i', '', $dir);
 
-					if($dir_realpath && stripos($dir_realpath, 'phar://') === 0)
-						$dir_realpath = substr($dir_realpath, 7);
+					if($dir_realpath && strpos($dir_realpath, '://') !== FALSE)
+						$dir_realpath = preg_replace('/^[a-z0-9]+\:\/\//i', '', $dir_realpath);
 
 					// Check WordPress® absolute/root directory.
 
 					if(stripos($dir.'/', ($wp_dir = $this->©dirs->n_seps(ABSPATH)).'/') === 0)
 						return site_url($this->©string->ireplace_once($wp_dir, '', $dir)).$file;
 
-					else if($dir_realpath && stripos($dir_realpath.'/', $wp_dir.'/') === 0)
+					if($dir_realpath && stripos($dir_realpath.'/', $wp_dir.'/') === 0)
 						return site_url($this->©string->ireplace_once($wp_dir, '', $dir_realpath)).
 						       $possible_real_file; // But may default to ``$file``.
 
 					// Check WordPress® content directory.
 
-					else if(stripos($dir.'/', ($wp_content_dir = $this->©dirs->n_seps(WP_CONTENT_DIR)).'/') === 0)
+					if(stripos($dir.'/', ($wp_content_dir = $this->©dirs->n_seps(WP_CONTENT_DIR)).'/') === 0)
 						return content_url($this->©string->ireplace_once($wp_content_dir, '', $dir)).$file;
 
-					else if($dir_realpath && stripos($dir_realpath.'/', $wp_content_dir.'/') === 0)
+					if($dir_realpath && stripos($dir_realpath.'/', $wp_content_dir.'/') === 0)
 						return content_url($this->©string->ireplace_once($wp_content_dir, '', $dir_realpath)).
 						       $possible_real_file; // But may default to ``$file``.
 
 					// Check WordPress® plugins directory.
 
-					else if(stripos($dir.'/', ($wp_plugins_dir = $this->©dirs->n_seps(WP_PLUGIN_DIR)).'/') === 0)
+					if(stripos($dir.'/', ($wp_plugins_dir = $this->©dirs->n_seps(WP_PLUGIN_DIR)).'/') === 0)
 						return plugins_url($this->©string->ireplace_once($wp_plugins_dir, '', $dir)).$file;
 
-					else if($dir_realpath && stripos($dir_realpath.'/', $wp_plugins_dir.'/') === 0)
+					if($dir_realpath && stripos($dir_realpath.'/', $wp_plugins_dir.'/') === 0)
 						return plugins_url($this->©string->ireplace_once($wp_plugins_dir, '', $dir_realpath)).
 						       $possible_real_file; // But may default to ``$file``.
 
 					// Check WordPress® active style directory.
 
-					else if(stripos($dir.'/', ($wp_active_style_dir = $this->©dirs->n_seps(get_stylesheet_directory())).'/') === 0)
+					if(stripos($dir.'/', ($wp_active_style_dir = $this->©dirs->n_seps(get_stylesheet_directory())).'/') === 0)
 						return get_stylesheet_directory_uri().$this->©string->ireplace_once($wp_active_style_dir, '', $dir).$file;
 
-					else if($dir_realpath && stripos($dir_realpath.'/', $wp_active_style_dir.'/') === 0)
+					if($dir_realpath && stripos($dir_realpath.'/', $wp_active_style_dir.'/') === 0)
 						return get_stylesheet_directory_uri().$this->©string->ireplace_once($wp_active_style_dir, '', $dir_realpath).
 						       $possible_real_file; // But may default to ``$file``.
 
 					// Check WordPress® active theme directory.
 
-					else if(stripos($dir.'/', ($wp_active_theme_dir = $this->©dirs->n_seps(get_template_directory())).'/') === 0)
+					if(stripos($dir.'/', ($wp_active_theme_dir = $this->©dirs->n_seps(get_template_directory())).'/') === 0)
 						return get_template_directory_uri().$this->©string->ireplace_once($wp_active_theme_dir, '', $dir).$file;
 
-					else if($dir_realpath && stripos($dir_realpath.'/', $wp_active_theme_dir.'/') === 0)
+					if($dir_realpath && stripos($dir_realpath.'/', $wp_active_theme_dir.'/') === 0)
 						return get_template_directory_uri().$this->©string->ireplace_once($wp_active_theme_dir, '', $dir_realpath).
 						       $possible_real_file; // But may default to ``$file``.
 
 					return ''; // Default return value (failure).
+				}
+
+			/**
+			 * Locates a template directory/file (relative path).
+			 *
+			 * @param string $dir_or_file Template directory/file name (relative path).
+			 *
+			 * @return string URL to a template directory/file (w/ the highest precedence).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$dir_or_file`` is empty (it MUST be passed as a string, NOT empty).
+			 * @throws exception If ``$dir_or_file`` does NOT exist, or is NOT readable.
+			 */
+			public function to_template_dir_or_file($dir_or_file)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					return $this->to_wp_abs_dir_or_file($this->©file->template($dir_or_file));
 				}
 
 			/**
@@ -598,11 +618,11 @@ namespace websharks_core_v000000_dev
 
 					if($dir_or_file && ($realpath = realpath($dir_or_file)))
 						$realpath = $this->©dirs->n_seps($dir_or_file);
-					else $realpath = '';
+					else $realpath = ''; // Defaults to an empty string.
 
-					if(strpos($dir_or_file.'/', dirname(dirname(dirname(__FILE__))).'/') !== 0
-					   && (!$realpath || strpos($realpath.'/', dirname(dirname(dirname(__FILE__))).'/') !== 0)
-					) $dir_or_file = dirname(dirname(dirname(__FILE__))).'/'.ltrim($dir_or_file, '/');
+					if(strpos($dir_or_file.'/', $this->___instance_config->core_dir.'/') !== 0
+					   && (!$realpath || strpos($realpath.'/', $this->___instance_config->core_dir.'/') !== 0)
+					) $dir_or_file = $this->___instance_config->core_dir.'/'.ltrim($dir_or_file, '/');
 
 					return $this->to_wp_abs_dir_or_file($dir_or_file);
 				}
@@ -631,7 +651,7 @@ namespace websharks_core_v000000_dev
 
 					if($dir_or_file && ($realpath = realpath($dir_or_file)))
 						$realpath = $this->©dirs->n_seps($dir_or_file);
-					else $realpath = '';
+					else $realpath = ''; // Defaults to an empty string.
 
 					if(strpos($dir_or_file.'/', $this->___instance_config->plugin_dir.'/') !== 0
 					   && (!$realpath || strpos($realpath.'/', $this->___instance_config->plugin_dir.'/') !== 0)
@@ -662,7 +682,7 @@ namespace websharks_core_v000000_dev
 
 					if($dir_or_file && ($realpath = realpath($dir_or_file)))
 						$realpath = $this->©dirs->n_seps($dir_or_file);
-					else $realpath = '';
+					else $realpath = ''; // Defaults to an empty string.
 
 					if(strpos($dir_or_file.'/', $this->___instance_config->plugin_data_dir.'/') !== 0
 					   && (!$realpath || strpos($realpath.'/', $this->___instance_config->plugin_data_dir.'/') !== 0)
@@ -693,7 +713,7 @@ namespace websharks_core_v000000_dev
 
 					if($dir_or_file && ($realpath = realpath($dir_or_file)))
 						$realpath = $this->©dirs->n_seps($dir_or_file);
-					else $realpath = '';
+					else $realpath = ''; // Defaults to an empty string.
 
 					if(strpos($dir_or_file.'/', $this->___instance_config->plugin_pro_dir.'/') !== 0
 					   && (!$realpath || strpos($realpath.'/', $this->___instance_config->plugin_pro_dir.'/') !== 0)
@@ -1523,16 +1543,14 @@ namespace websharks_core_v000000_dev
 			 */
 			public function parse_home()
 				{
-					$blog_id = get_current_blog_id();
-
-					if(!isset($this->static['parsed_home_'.$blog_id]))
+					if(!isset($this->static['parsed_home']))
 						{
-							$this->static['parsed_home_'.$blog_id] = array();
+							$this->static['parsed_home'] = array();
 
 							if(is_array($parsed = $this->parse(home_url('/'))))
-								$this->static['parsed_home_'.$blog_id] = $parsed;
+								$this->static['parsed_home'] = $parsed;
 						}
-					return $this->static['parsed_home_'.$blog_id];
+					return $this->static['parsed_home'];
 				}
 
 			/**
@@ -1544,16 +1562,14 @@ namespace websharks_core_v000000_dev
 			 */
 			public function parse_site()
 				{
-					$blog_id = get_current_blog_id();
-
-					if(!isset($this->static['parsed_site_'.$blog_id]))
+					if(!isset($this->static['parsed_site']))
 						{
-							$this->static['parsed_site_'.$blog_id] = array();
+							$this->static['parsed_site'] = array();
 
 							if(is_array($parsed = $this->parse(site_url('/'))))
-								$this->static['parsed_site_'.$blog_id] = $parsed;
+								$this->static['parsed_site'] = $parsed;
 						}
-					return $this->static['parsed_site_'.$blog_id];
+					return $this->static['parsed_site'];
 				}
 		}
 	}

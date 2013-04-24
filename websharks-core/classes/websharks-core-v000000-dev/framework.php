@@ -162,6 +162,11 @@ namespace websharks_core_v000000_dev
 				 * @method \websharks_core_v000000_dev\dirs ©dirs()
 				 * @method \websharks_core_v000000_dev\dirs ©dir()
 				 *
+				 * @property \websharks_core_v000000_dev\dirs_files                     $©dirs_files
+				 * @property \websharks_core_v000000_dev\dirs_files                     $©dir_file
+				 * @method \websharks_core_v000000_dev\dirs_files ©dirs_files()
+				 * @method \websharks_core_v000000_dev\dirs_files ©dir_file()
+				 *
 				 * @property \websharks_core_v000000_dev\encryption                     $©encryption
 				 * @method \websharks_core_v000000_dev\encryption ©encryption()
 				 *
@@ -459,6 +464,7 @@ namespace websharks_core_v000000_dev
 						'db_util'    => 'db_utils',
 						'diagnostic' => 'diagnostics',
 						'dir'        => 'dirs',
+						'dir_file'   => 'dirs_files',
 						'error'      => 'errors',
 						'feed'       => 'feeds',
 						'file'       => 'files',
@@ -602,8 +608,9 @@ namespace websharks_core_v000000_dev
 					/**
 					 * Gets static cache values on a per-class basis.
 					 *
-					 * @return array A reference to the entire cache array;
-					 *    for the calling class (using a late static binding).
+					 * @return array A reference to the entire cache array; for the calling class.
+					 *    Each blog ID has its own static array of properties. This prevents issues in cache values
+					 *    across multiple child blogs (when running on a multisite network).
 					 *
 					 * @final May NOT be overridden by extenders.
 					 *
@@ -611,12 +618,13 @@ namespace websharks_core_v000000_dev
 					 */
 					final protected static function &___static()
 						{
-							$class = get_called_class();
+							$class   = get_called_class();
+							$blog_id = (integer)$GLOBALS['blog_id'];
 
-							if(!isset(static::$___statics[$class]))
-								static::$___statics[$class] = array();
+							if(!isset(static::$___statics[$blog_id][$class]))
+								static::$___statics[$blog_id][$class] = array();
 
-							return static::$___statics[$class];
+							return static::$___statics[$blog_id][$class];
 						}
 
 					/**

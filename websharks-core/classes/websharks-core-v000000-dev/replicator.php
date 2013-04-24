@@ -189,12 +189,12 @@ namespace websharks_core_v000000_dev
 									$this->i18n('The new core directory already exists; and removal is NOT possible.').
 									sprintf($this->i18n(' Cannot replicate into self: `%1$s`.'), $this->new_core_dir)
 								);
-							$this->©dir->empty_and_remove($this->new_core_dir);
+							$this->©dir->delete($this->new_core_dir);
 						}
 					// Perform replication routines now.
 
 					$this->©dir->copy_to($this->core_dir, $this->new_core_dir, $this->exclusions, TRUE);
-					$this->update_files_in_dir($this->update_dir);
+					$this->update_files_in_dir($this->update_dir); // A deep search/replace.
 
 					// Return success; which becomes the value of ``$this->success``.
 
@@ -206,19 +206,26 @@ namespace websharks_core_v000000_dev
 
 			/**
 			 * Updates namespace references in directories/files (e.g. a deep search/replace routine).
-			 *    This search/replace routine includes both underscored and dashed variations.
-			 *    This search/replace routine will ALSO rename directories/files (as needed).
 			 *
-			 * @param string $dir Directory to begin our search in (search/replace is a deep recursive scan).
+			 * @note Search/replace includes both underscored and dashed variations of the WebSharks™ Core namespace.
+			 *    This search/replace routine will ALSO rename any core namespace directories/files it encounters.
+			 *       However, we ONLY deal with the dashed variation of directories/files when renaming.
+			 *
+			 * @param string      $dir Directory to begin our search in (a deep recursive scan).
+			 *
+			 * @param null|string $___initial_dir This is for internal use only.
+			 *
+			 * @note This routine will NOT search/replaces directories/files which are ignored by the WebSharks™ Core.
+			 *    See {@link dirs_files::ignore()} for further details on this behavior.
 			 *
 			 * @note This routine will NOT search/replace inside any past or present core directory.
 			 *    With ONE exception, we DO allow search/replace inside the directory containing our newly replicated core.
 			 *
-			 * @important It is VERY important that `websharks_core_v000000_dev` and/or `websharks-core-v000000-dev`;
+			 * @note It is VERY important that `websharks_core_v000000_dev` and/or `websharks-core-v000000-dev`;
 			 *    do NOT have any of these characters after them: `[a-z0-9_+\-]`; UNLESS they are part the version string.
-			 *    Any of these characters appearing after the stub could be subjected to a search/replace routine.
+			 *    Any of these characters appearing after the stub will be subjected to a search/replace routine.
 			 *
-			 *    However, this is OK because plugin versions CANNOT end with a dash. Ex: `websharks_core_v000000_dev->`.
+			 *    However, THIS is OK because plugin versions CANNOT end with a dash. Ex: `websharks_core_v000000_dev->`.
 			 *       See also: {@link stub::$regex_valid_core_ns_version} for further validation details.
 			 *
 			 * @throws exception If invalid types are passed through arguments list (e.g. if ``$dir`` is NOT a string; or is empty).
@@ -231,14 +238,18 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If unable to properly search/replace any file, for any reason.
 			 * @throws exception If unable to complete the entire search/replace routine for any reason.
 			 */
-			protected function update_files_in_dir($dir)
+			protected function update_files_in_dir($dir, $___initial_dir = NULL)
 				{
-					$this->check_arg_types('string:!empty', func_get_args());
+					if(!isset($___initial_dir)) // Only for the initial caller.
+						$this->check_arg_types('string:!empty', array('null', 'string'), func_get_args());
 
 					// Establish directory variables.
 
 					$dir          = $this->©dir->n_seps($dir);
 					$dir_basename = basename($dir);
+
+					if(!isset($___initial_dir))
+						$___initial_dir = $dir;
 
 					if(!is_dir($dir)) // Validate (must be a directory).
 						throw $this->©exception(
@@ -247,14 +258,8 @@ namespace websharks_core_v000000_dev
 						);
 					// Handle automatic directory exclusions.
 
-					if(in_array(strtolower($dir_basename), array('.idea'), TRUE))
-						return; // Do NOT search/replace a project workspace.
-
-					if(in_array(strtolower($dir_basename), array('$recycle.bin'), TRUE))
-						return; // Do NOT search/replace a recycle bin.
-
-					if(in_array(strtolower($dir_basename), array('cvs', '.git', '.svn', '.hg', 'sccs', 'rcs'), TRUE))
-						return; // Do NOT search/replace VC system directories/files.
+					if($this->©dir->ignore($dir, dirname($___initial_dir)))
+						return; // Ignore this directory (it IS excluded).
 
 					if(preg_match('/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//', $dir.'/'))
 						if(stripos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
@@ -265,10 +270,18 @@ namespace websharks_core_v000000_dev
 							return; // Past or present WebSharks™ Core directory.
 
 					// Handle core directories that need to be renamed before processing continues.
-
 					if(preg_match(stub::$regex_valid_core_ns_version_with_dashes, $dir_basename) && $dir_basename !== basename($this->new_core_dir))
-						$this->©dir->rename_to($dir, ($dir = dirname($dir).'/'.($dir_basename = basename($this->new_core_dir))));
+						{
+							$_o_dir       = $dir; // Original directory.
+							$dir          = dirname($dir).'/'.basename($this->new_core_dir);
+							$dir_basename = basename($dir);
 
+							if($_o_dir === $___initial_dir)
+								$___initial_dir = $dir;
+
+							$this->©dir->rename_to($_o_dir, $dir);
+							unset($_o_dir); // Ditch this now.
+						}
 					if(!is_readable($dir))
 						throw $this->©exception(
 							__METHOD__.'#unreadable_dir', get_defined_vars(),
@@ -290,8 +303,8 @@ namespace websharks_core_v000000_dev
 
 							if(is_dir($_dir_file)) // Sub-directory?
 								{
-									$this->update_files_in_dir($_dir_file);
-									continue; // Done here.
+									$this->update_files_in_dir($_dir_file, $___initial_dir);
+									continue; // Recursion into sub-directory complete.
 								}
 							// Establish file variables.
 
@@ -301,20 +314,18 @@ namespace websharks_core_v000000_dev
 
 							// Handle automatic file name & file extension exclusions.
 
-							if(in_array(strtolower($_dir_file_basename), array('desktop.ini', 'thumbs.db', 'ehthumbs.db'), TRUE))
-								continue; // Ignore all of these systematic PC files.
+							if($this->©file->ignore($_dir_file, dirname($___initial_dir)))
+								continue; // Ignore this file (it IS excluded).
 
-							if($this->©file->has_extension($_dir_file, $this::binary_type, array('iml', 'ipr', 'iws')))
-								continue; // Ignore all binary extensions. Ignore project workspace files.
+							if($this->©file->has_extension($_dir_file, $this::binary_type))
+								continue; // Also ignore all binary extensions.
 
 							// Handle core files that need to be renamed before processing continues.
-
 							if(preg_match(stub::$regex_valid_core_ns_version_with_dashes, $_dir_file_abs_basename))
 								if($_dir_file_abs_basename !== basename($this->new_core_dir))
 									{
 										$_o_dir_file = $_dir_file; // Original file.
-
-										$_dir_file = dirname($_dir_file).'/'.basename($this->new_core_dir);
+										$_dir_file   = dirname($_dir_file).'/'.basename($this->new_core_dir);
 										if(strlen($_dir_file_extension)) // Has an extension?
 											$_dir_file .= '.'.$_dir_file_extension;
 
@@ -323,7 +334,6 @@ namespace websharks_core_v000000_dev
 										$_dir_file_extension    = $this->©file->extension($_dir_file);
 
 										$this->©file->rename_to($_o_dir_file, $_dir_file);
-
 										unset($_o_dir_file); // Ditch this now.
 									}
 							// Make sure this file is readable/writable.

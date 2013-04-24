@@ -2987,20 +2987,127 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Adds quotes to invalid JSON code.
+			 * Converts characters into `[aA][bB]`.
+			 *
+			 * @param string $string String to be converted into `[aA][bB]`.
+			 *
+			 * @return string String as `[aA][bB]`; suitable for ``fnmatch()`` or ``glob()``.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function fnm_case($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return $this->fnm_case_deep($string);
+				}
+
+			/**
+			 * Converts characters into `[aA][bB]`.
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @note This will NOT convert stream wrappers (i.e. `phar://`); or drive letters (i.e. `C:/` or `E:\`).
+			 *    This is because the PHP ``glob()`` function is NOT compatible with character classes in those locations.
+			 *
+			 * @note This will NOT convert characters ALREADY inside character class brackets `[]`.
+			 *    Also, this routine is smart enough to determine when square brackets have been escaped as literals.
+			 *    Thus, we do NOT ignore characters inside escaped brackets; because these are literals (e.g. not character classes).
+			 *
+			 * @param mixed   $value Any value can be converted into an `[aA][bB]` string.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param boolean $___recursion Internal use only.
+			 *
+			 * @return string|array|object String as `[aA][bB]`; suitable for ``fnmatch()`` or ``glob()``.
+			 *    Or an array/object containing strings converted into `[aA][bB]`.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function fnm_case_deep($value, $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', func_get_args());
+
+					if(is_array($value) || is_object($value))
+						{
+							foreach($value as &$_value)
+								$_value = $this->fnm_case_deep($_value, TRUE);
+							unset($_value); // Housekeeping.
+
+							return $value; // Array/object value.
+						}
+					if(strlen($value = (string)$value))
+						{
+							$_aA_value         = ''; // Initialize empty string.
+							$_sq_brackets_open = array(); // Initialize.
+
+							$regex_scheme = substr(stub::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
+							$regex_drive  = substr(stub::$regex_valid_win_drive_letter, 0, -2).'/';
+
+							if(preg_match($regex_scheme, $value, $_scheme)) // Windows® drive letter?
+								$value = preg_replace($regex_scheme, '', $value);
+
+							if(preg_match($regex_drive, $value, $_drive)) // PHP scheme wrapper?
+								$value = preg_replace($regex_drive, '', $value);
+
+							for($_i = 0; $_i < strlen($value); $_i++)
+								{
+									if($value[$_i] === '[')
+										if($_i === 0 || $value[$_i - 1] !== '\\')
+											{
+												$_aA_value .= $value[$_i];
+												$_sq_brackets_open[] = $value[$_i];
+												continue;
+											}
+									if($_sq_brackets_open && $value[$_i] === ']')
+										if($_i === 0 || $value[$_i - 1] !== '\\')
+											{
+												$_aA_value .= $value[$_i];
+												array_pop($_sq_brackets_open);
+												continue;
+											}
+									if($_sq_brackets_open) // Skip.
+										{
+											$_aA_value .= $value[$_i];
+											continue;
+										}
+									if(ctype_alpha($value[$_i]))
+										$_aA_value .= '['.strtolower($value[$_i]).strtoupper($value[$_i]).']';
+									else $_aA_value .= $value[$_i];
+								}
+							$value = $_aA_value; // Use newly formulated string value.
+
+							if(!empty($_drive[0])) // Restore a Windows® drive letter?
+								$value = $_drive[0].$value; // Use entire match `[0]`.
+
+							if(!empty($_scheme[0])) // Restore a PHP scheme wrapper?
+								$value = $_scheme[0].$value; // Entire match `[0]`.
+
+							unset($_scheme, $_drive, $_aA_value, $_sq_brackets_open, $_i); // Housekeeping.
+						}
+					return $value; // String as `[aA][bB]`.
+				}
+
+			/**
+			 * Adds double quotes to invalid JSON property names.
 			 *
 			 * @note This comes in handy when we're dealing with APIs that do things wrong.
+			 *    Or perhaps they just simply JavaScript objects w/o the double quotes.
 			 *
-			 * @param string $json JSON code to quotify.
+			 * @param string $json JSON (or JavaScript object as string).
 			 *
-			 * @return string Quotified JSON code.
+			 * @return string The original ``$json`` code w/ double-quoted property names.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @assert $invalid_json = '{a:1,b:2,c:3,d:4,"e":5}';
 			 *    ($invalid_json) === '{"a":1,"b":2,"c":3,"d":4,"e":5}'
 			 */
-			public function json_quotify($json)
+			public function json_dq_property_names($json)
 				{
 					$this->check_arg_types('string', func_get_args());
 

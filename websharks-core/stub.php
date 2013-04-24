@@ -167,7 +167,15 @@ if(!class_exists('websharks_core_v000000_dev'))
 				{
 					if(self::$initialized)
 						return TRUE; // Initialized already.
-
+					/*
+					 * Do NOT run this file from a root directory.
+					 */
+					if(substr(dirname(__FILE__), -1) === '/')
+						throw new exception( // Fail here; do NOT access this file from a root directory.
+							sprintf(self::i18n('This file should NOT be accessed from a root directory: `%1$s`'), __FILE__));
+					/*
+					 * Handle some dynamic regex replacement codes in class properties (as follows).
+					 */
 					self::$regex_valid_core_ns_version             = str_replace('%%self::$core_ns_stub_v%%', preg_quote(self::$core_ns_stub_v, '/'), self::$regex_valid_core_ns_version);
 					self::$regex_valid_core_ns_version_with_dashes = str_replace('%%self::$core_ns_stub_v_with_dashes%%', preg_quote(self::$core_ns_stub_v_with_dashes, '/'), self::$regex_valid_core_ns_version_with_dashes);
 					/*
@@ -506,10 +514,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 					// We allow a trailing slash; so it's easier to parse directory indexes.
 
 					$internal_uri = self::n_dir_seps($path_info, TRUE);
-					$internal_uri = '/'.ltrim($internal_uri, '/');
-
-					if(substr($internal_uri, -1) === '/') // Directory.
-						$internal_uri = rtrim($internal_uri, '\\/').'/index.php';
+					$internal_uri = '/'.ltrim($internal_uri, '/'); // Absolute (e.g. a URI).
+					if(substr($internal_uri, -1) === '/') // Handle directory indexes gracefully.
+						$internal_uri = $internal_uri.'/index.php';
 
 					$internal_uri_basename  = basename($internal_uri);
 					$internal_uri_extension = self::extension($internal_uri);
@@ -530,8 +537,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 							if($_i > 0 && $_dir === $phar_dir)
 								break; // Search complete now.
 
-							if($_i > 0) $_dir = dirname($_dir);
-							if(!$_dir || $_dir === '.' || strcasecmp($_dir, 'phar:') === 0)
+							if($_i > 0) // Up one directory now?
+								$_dir = self::n_dir_seps(dirname($_dir), TRUE);
+
+							if(!$_dir || $_dir === '.' || substr($_dir, -1) === ':')
 								break; // Search complete now.
 
 							// Base directory scans.
@@ -549,16 +558,16 @@ if(!class_exists('websharks_core_v000000_dev'))
 							if(strcasecmp($_dir_basename, 'app_data') === 0)
 								return FALSE; // Private; 403 (forbidden).
 
-							// Apache™ compatibility.
+							if(is_file($_dir.'/.htaccess')) // Apache™ compatibility.
+								{
+									if(!is_readable($_dir.'/.htaccess'))
+										return FALSE; // Unreadable; 403 (forbidden).
 
-							if(!is_file($_dir.'/.htaccess'))
-								continue; // Nothing more to do here.
-
-							if(!is_readable($_dir.'/.htaccess'))
-								return FALSE; // Unreadable; 403 (forbidden).
-
-							if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
-								return FALSE; // Private; 403 (forbidden).
+									if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
+										return FALSE; // Private; 403 (forbidden).
+								}
+							if(substr($_dir, -1) === '/') // Root directory or scheme?
+								break; // Search complete (there is nothing more to search after this).
 						}
 					unset($_i, $_dir, $_dir_basename);
 
@@ -911,27 +920,29 @@ if(!class_exists('websharks_core_v000000_dev'))
 				}
 
 			/**
-			 * Gets a file extension (lowercase).
+			 * Gets a directory/file extension (lowercase).
 			 *
-			 * @param string $file A file path, or just a file name.
+			 * @param string $dir_file A directory/file path.
 			 *
-			 * @return string File extension (lowercase).
+			 * @return string Directory/file extension (lowercase).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public static function extension($file)
+			public static function extension($dir_file)
 				{
-					if(!is_string($file) || !$file)
+					if(!is_string($dir_file) || !$dir_file)
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
-					return strtolower(ltrim((string)strrchr(basename($file), '.'), '.'));
+					return strtolower(ltrim((string)strrchr(basename($dir_file), '.'), '.'));
 				}
 
 			/**
 			 * Attempts to find a readable/writable temporary directory.
 			 *
 			 * @return string Readable/writable temp directory; else an empty string.
+			 *
+			 * @throws exception If unable to find a readable/writable directory.
 			 */
 			public static function get_temp_dir()
 				{
@@ -950,58 +961,67 @@ if(!class_exists('websharks_core_v000000_dev'))
 					   && is_readable($upload_temp_dir) && is_writable($upload_temp_dir)
 					) return self::n_dir_seps($upload_temp_dir);
 
-					$is_windows = (stripos(PHP_OS, 'win') === 0);
-
-					if($is_windows && (is_dir('C:/Temp') || @mkdir('C:/Temp', 0775))
+					if(stripos(PHP_OS, 'win') === 0 && (is_dir('C:/Temp') || @mkdir('C:/Temp', 0775))
 					   && is_readable('C:/Temp') && is_writable('C:/Temp')
 					) return self::n_dir_seps('C:/Temp');
 
-					if(!$is_windows && (is_dir('/tmp') || @mkdir('/tmp', 0775))
+					if(stripos(PHP_OS, 'win') !== 0 && (is_dir('/tmp') || @mkdir('/tmp', 0775))
 					   && is_readable('/tmp') && is_writable('/tmp')
 					) return self::n_dir_seps('/tmp');
 
-					return ''; // Failure.
+					throw new exception( // Fail in this scenario.
+						self::i18n('Unable to find a readable/writable temp directory.')
+					);
 				}
 
 			/**
-			 * Normalizes directory separators.
+			 * Normalizes directory/file separators.
 			 *
-			 * @param string  $path Directory or file path.
+			 * @param string  $dir_file Directory/file path.
 			 *
 			 * @param boolean $allow_trailing_slash Defaults to FALSE.
-			 *    If TRUE; and ``$path`` contains a trailing slash; we'll leave it there.
+			 *    If TRUE; and ``$dir_file`` contains a trailing slash; we'll leave it there.
 			 *
-			 * @return string Normalized directory or file path.
+			 * @return string Normalized directory/file path.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public static function n_dir_seps($path, $allow_trailing_slash = FALSE)
+			public static function n_dir_seps($dir_file, $allow_trailing_slash = FALSE)
 				{
-					if(!is_string($path) || !is_bool($allow_trailing_slash))
+					if(!is_string($dir_file) || !is_bool($allow_trailing_slash))
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
-					if(!strlen($path)) return ''; // Catch empty strings.
+					if(!strlen($dir_file)) return ''; // Catch empty string.
 
-					preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
-					$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
+					$regex_scheme = substr(self::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
+					if(preg_match($regex_scheme, $dir_file, $scheme)) // A PHP stream wrapper?
+						$dir_file = preg_replace($regex_scheme, '', $dir_file);
 
-					$path = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $path));
-					$path = ($allow_trailing_slash) ? $path : rtrim($path, '/');
+					$dir_file = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $dir_file));
+					$dir_file = ($allow_trailing_slash) ? $dir_file : rtrim($dir_file, '/'); // Strip trailing slashes.
 
-					$path = (!empty($_path['scheme'])) ? strtolower($_path['scheme']).$path : $path; // Lowercase.
+					if(!empty($scheme[0])) // Scheme (force lowercase).
+						$dir_file = strtolower($scheme[0]).$dir_file;
 
-					return $path; // Normalized now.
+					return $dir_file; // Normalized now.
 				}
 
 			/**
-			 * Locates a specific directory/file path.
+			 * Locates a specific directory/file (by relative path).
 			 *
-			 * @param string $dir_file A specific directory/file path.
+			 * @param string $dir_file A specific directory/file (w/ a relative path).
 			 *
 			 * @param string $starting_dir Optional. A specific directory to start searching from.
-			 *    `__DIR__` is NOT PHP v5.2 compatible; so we use a string value and convert it dynamically.
-			 *    Defaults to the directory of this file (e.g. `'__DIR__'`).
+			 *     Defaults to the string `'__DIR__'` for PHP v5.2 compatibility (explained in further detail below).
+			 *
+			 *    There are TWO special string values that are translated by this routine.
+			 *
+			 *    • The `__DIR__` constant is NOT PHP v5.2 compatible; so you can use a string value to achieve this.
+			 *       The string `'__DIR__'` translates to the directory of this file; e.g. ``dirname(__FILE__)``.
+			 *
+			 *    • Or, it is ALSO possible to specify `phar://` or `phar://__DIR__` in this parameter.
+			 *       The strings `phar://` and `phar://__DIR__` both translate to ``dirname(__FILE__)`` with a forced PHAR stream wrapper.
 			 *
 			 * @return string Directory/file path (if found); else an empty string.
 			 *    The search will continue until there are no more directories to search through.
@@ -1010,25 +1030,33 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$dir_file`` or ``$starting_dir`` are empty.
 			 */
-			public static function locate($dir_file, $starting_dir = '__DIR__')
+			public static function locate($dir_file, $starting_dir = '__DIR__' /* PHP v5.2 compatibility. */)
 				{
 					if(!is_string($dir_file) || !$dir_file || !is_string($starting_dir) || !$starting_dir)
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
-					$dir_file     = ltrim(self::n_dir_seps($dir_file), '/');
-					$starting_dir = ($starting_dir === '__DIR__') ? dirname(__FILE__) : $starting_dir;
-					$starting_dir = ($starting_dir === 'phar://') ? 'phar://'.dirname(__FILE__) : $starting_dir;
-					$starting_dir = self::n_dir_seps($starting_dir);
+					$dir_file = ltrim(self::n_dir_seps($dir_file), '/'); // Relative.
 
-					for($_i = 0, $_dir = $starting_dir; $_i <= 100; $_i++)
+					if($starting_dir === '__DIR__') // Using this for PHP v5.2 compatibility.
+						$starting_dir = dirname(__FILE__); // Current file directory.
+
+					else if(in_array($starting_dir, array('phar://', 'phar://__DIR__'), TRUE)) // With a PHAR stream wrapper?
+						$starting_dir = 'phar://'.preg_replace('/^[a-z0-9]+\:\/\//i', '', dirname(__FILE__)); // Strip any existing stream wrapper.
+
+					for($_i = 0, $_dir = self::n_dir_seps($starting_dir); $_i <= 100; $_i++)
 						{
-							if($_i > 0) $_dir = dirname($_dir);
-							if(!$_dir || $_dir === '.' || strcasecmp($_dir, 'phar:') === 0)
-								break; // Search complete now.
+							if($_i > 0) // Up one directory now?
+								$_dir = self::n_dir_seps(dirname($_dir), TRUE);
 
-							if(is_file($_dir.'/'.$dir_file))
-								return $_dir.'/'.$dir_file;
+							if(!$_dir || $_dir === '.' || substr($_dir, -1) === ':')
+								break; // Search complete (we're beyond even a root directory or scheme now).
+
+							if(file_exists($_dir.'/'.$dir_file))
+								return self::n_dir_seps($_dir.'/'.$dir_file);
+
+							if(substr($_dir, -1) === '/') // Root directory or scheme?
+								break; // Search complete (there is nothing more to search after this).
 						}
 					unset($_i, $_dir); // Housekeeping.
 
@@ -1137,11 +1165,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *    This can ONLY be used if we're within WordPress®; because it attaches
 			 *    itself to a WordPress® administrative notice.
 			 *
-			 * @see \websharks_core_v000000_dev::$wp_temp_deps
-			 *
 			 * @return string Absolute path to temporary deps; else an empty string if NOT possible.
 			 *
 			 * @throws exception If an inappropriate call is made (really should NOT happen).
+			 *
+			 * @see $wp_temp_deps
 			 */
 			public static function cant_phar_msg_notice_in_wp_temp_deps()
 				{
@@ -1149,17 +1177,15 @@ if(!class_exists('websharks_core_v000000_dev'))
 						throw new exception( // Fail here; we should NOT have called this.
 							sprintf(self::i18n('Inappropriate call to: `%1$s`'), __METHOD__)
 						);
-					if(($temp_dir = self::get_temp_dir()))
-						{
-							$temp_deps          = $temp_dir.'/wp-temp-deps.tmp';
-							$temp_deps_contents = base64_decode(self::$wp_temp_deps);
-							$temp_deps_contents = str_ireplace(self::$core_ns_stub_v.'000000_dev', self::$core_ns, $temp_deps_contents);
-							$temp_deps_contents = str_ireplace('%%notice%%', str_replace("'", "\\'", self::cant_phar_msg(TRUE)), $temp_deps_contents);
+					$temp_deps          = self::get_temp_dir().'/wp-temp-deps.tmp';
+					$temp_deps_contents = base64_decode(self::$wp_temp_deps); // This uses version `000000_dev`.
+					$temp_deps_contents = str_ireplace(self::$core_ns_stub_v.'000000_dev', self::$core_ns, $temp_deps_contents);
+					$temp_deps_contents = str_ireplace('%%notice%%', str_replace("'", "\\'", self::cant_phar_msg(TRUE)), $temp_deps_contents);
 
-							if(!is_file($temp_deps) || (is_writable($temp_deps) && unlink($temp_deps)))
-								if(file_put_contents($temp_deps, $temp_deps_contents))
-									return $temp_deps;
-						}
+					if(!is_file($temp_deps) || (is_writable($temp_deps) && unlink($temp_deps)))
+						if(file_put_contents($temp_deps, $temp_deps_contents))
+							return $temp_deps;
+
 					return ''; // Failure.
 				}
 
@@ -1214,9 +1240,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * WebSharks™ temporary WP deps class (base64 encoded).
 			 *
-			 * @see \websharks_core_v000000_dev\cant_phar_msg_notice_in_ws_wp_temp_deps()
-			 *
 			 * @var string Base64 encoded version of `/includes/deps.tmp` in WebSharks™ Core.
+			 *
+			 * @see cant_phar_msg_notice_in_wp_temp_deps()
 			 */
 			public static $wp_temp_deps = 'PD9waHANCmlmKCFkZWZpbmVkKCdXUElOQycpKQ0KCWV4aXQoJ0RvIE5PVCBhY2Nlc3MgdGhpcyBmaWxlIGRpcmVjdGx5OiAnLmJhc2VuYW1lKF9fRklMRV9fKSk7DQoNCmlmKCFjbGFzc19leGlzdHMoJ2RlcHNfd2Vic2hhcmtzX2NvcmVfdjAwMDAwMF9kZXYnKSkNCgl7DQoJCWZpbmFsIGNsYXNzIGRlcHNfd2Vic2hhcmtzX2NvcmVfdjAwMDAwMF9kZXYNCgkJew0KCQkJcHVibGljIGZ1bmN0aW9uIGNoZWNrKCRwbHVnaW5fbmFtZSA9ICcnKQ0KCQkJCXsNCgkJCQkJaWYoIWlzX2FkbWluKCkgfHwgIWN1cnJlbnRfdXNlcl9jYW4oJ2luc3RhbGxfcGx1Z2lucycpKQ0KCQkJCQkJcmV0dXJuIEZBTFNFOyAvLyBOb3RoaW5nIHRvIGRvIGhlcmUuDQoNCgkJCQkJJG5vdGljZSA9ICc8ZGl2IGNsYXNzPSJlcnJvciBmYWRlIj4nOw0KCQkJCQkkbm90aWNlIC49ICc8cD4nOw0KDQoJCQkJCSRub3RpY2UgLj0gKCRwbHVnaW5fbmFtZSkgPw0KCQkJCQkJJ1JlZ2FyZGluZyA8c3Ryb25nPicuZXNjX2h0bWwoJHBsdWdpbl9uYW1lKS4nOjwvc3Ryb25nPicuDQoJCQkJCQknJm5ic3A7Jm5ic3A7Jm5ic3A7JyA6ICcnOw0KDQoJCQkJCSRub3RpY2UgLj0gJyUlbm90aWNlJSUnOw0KDQoJCQkJCSRub3RpY2UgLj0gJzwvcD4nOw0KCQkJCQkkbm90aWNlIC49ICc8L2Rpdj4nOw0KDQoJCQkJCWFkZF9hY3Rpb24oJ2FsbF9hZG1pbl9ub3RpY2VzJywgLy8gTm90aWZ5IGluIGFsbCBhZG1pbiBub3RpY2VzLg0KCQkJCQkgICAgICAgICAgIGNyZWF0ZV9mdW5jdGlvbignJywgJ2VjaG8gXCcnLnN0cl9yZXBsYWNlKCInIiwgIlxcJyIsICRub3RpY2UpLidcJzsnKSk7DQoNCgkJCQkJcmV0dXJuIEZBTFNFOyAvLyBBbHdheXMgcmV0dXJuIGEgRkFMU0UgdmFsdWUgaW4gdGhpcyBzY2VuYXJpby4NCgkJCQl9DQoJCX0NCgl9';
 
@@ -1410,6 +1436,28 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @see http://semver.org
 			 */
 			public static $regex_valid_stable_version = '/^(?:[0-9](?:[0-9]|\.(?!\.))*[0-9]|[0-9])(?:\+(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?$/';
+
+			/**
+			 * @var string A directory/file stream wrapper validation pattern.
+			 *
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Must follow {@link http://php.net/manual/en/wrappers.php.php PHP guidelines}.
+			 *
+			 * @see http://php.net/manual/en/wrappers.php.php
+			 */
+			public static $regex_valid_dir_file_stream_wrapper = '/^[a-zA-Z0-9]+\:\/\/$/';
+
+			/**
+			 * @var string A directory/file drive letter validation pattern (for Windows®).
+			 *
+			 * @note Requirements are as follows:
+			 *
+			 *       1. Must follow {@link http://en.wikipedia.org/wiki/Drive_letter_assignment Windows® guidelines}.
+			 *
+			 * @see http://en.wikipedia.org/wiki/Drive_letter_assignment
+			 */
+			public static $regex_valid_win_drive_letter = '/^[a-zA-Z]\:(?:\/|\\\\)$/';
 		}
 
 		# -----------------------------------------------------------------------------------------------------------------------------------

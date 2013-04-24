@@ -22,45 +22,61 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @assert ($GLOBALS[__NAMESPACE__])
 		 */
-		class dirs extends framework
+		class dirs extends dirs_files
 		{
 			/**
-			 * Normalizes directory separators.
+			 * Gets a readable/writable temporary directory.
+			 *
+			 * @return string {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::get_temp_dir()
+			 * @inheritdoc \websharks_core_v000000_dev::get_temp_dir()
+			 */
+			public function temp() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'get_temp_dir'), func_get_args());
+				}
+
+			/**
+			 * Glob directories.
+			 *
+			 * @note This will NOT glob files; only directories.
+			 *    However, this MAY glob directories containing files of course.
 			 *
 			 * @return array {@inheritdoc}
 			 *
-			 * @see \websharks_core_v000000_dev::n_dir_seps()
-			 * @inheritdoc \websharks_core_v000000_dev::n_dir_seps()
+			 * @see dirs_files::glob()
+			 * @inheritdoc dirs_files::glob()
 			 */
-			public function n_seps() // Arguments are NOT listed here.
+			public function glob($dir, $pattern, $case_insensitive = FALSE, $x_flags = NULL, $flags = NULL)
 				{
-					return call_user_func_array(array('\\websharks_core_v000000_dev', 'n_dir_seps'), func_get_args());
+					return parent::glob($dir, $pattern, $case_insensitive, $x_flags, $flags, $this::dir_type);
 				}
 
 			/**
 			 * Strips a trailing `/app_data/` sub-directory.
 			 *
-			 * @param string $path Directory or file path.
+			 * @param string $dir Directory path.
 			 *
-			 * @return string Directory or file path without `/app_data/`.
+			 * @return string Directory path without `/app_data/`.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @assert ('/path/to/dir\\app_data/') === '/path/to/dir'
 			 */
-			public function rtrim_app_data($path)
+			public function rtrim_app_data($dir)
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					return preg_replace('/\/app_data$/', '', $this->n_seps($path));
+					return preg_replace('/\/app_data$/', '', $this->n_seps($dir));
 				}
 
 			/**
-			 * Basename from a full directory or file path.
+			 * Basename (including a possible `/app_data/` sub-directory).
 			 *
-			 * @param string $path Directory or file path.
+			 * @param string $dir Directory path.
 			 *
-			 * @return string Basename, including a possible `/app_data/` directory.
+			 * @return string Basename (including a possible `/app_data/` sub-directory).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
@@ -68,195 +84,13 @@ namespace websharks_core_v000000_dev
 			 * @assert ('/path/to/dir/app_data/') === 'dir/app_data'
 			 * @assert ('/path/to/dir/app_data/dir') === 'dir'
 			 */
-			public function get_base_app_data($path)
+			public function app_data_basename($dir)
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					$path = preg_replace('/\/app_data$/', '', $this->n_seps($path), 1, $app_data);
+					$dir = preg_replace('/\/app_data$/', '', $this->n_seps($dir), 1, $app_data);
 
-					return basename($path).(($app_data) ? '/app_data' : '');
-				}
-
-			/**
-			 * Shortens a directory or file path to its relative location from `DOCUMENT_ROOT`.
-			 *
-			 * @param string  $to The full directory or file path, which this routine will build a relative path ``$to``.
-			 *
-			 * @param boolean $try_realpaths Defaults to TRUE. When TRUE, try to acquire ``realpath()``,
-			 *    thereby resolving all relative paths and/or symlinks in `DOCUMENT_ROOT` and ``$to``.
-			 *
-			 * @param boolean $use_win_diff_drive_jctn Defaults to TRUE. When TRUE, we'll try to work around issues with different drives on Windows®,
-			 *    by attempting to create a directory junction between the two different drives; so a relative path can be formulated properly.
-			 *
-			 * @return string String with relative path to: ``$to`` (from: `DOCUMENT_ROOT`), else an empty string on failure.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If `DOCUMENT_ROOT` is empty, or is NOT a string.
-			 *
-			 * @assert ($_SERVER['DOCUMENT_ROOT'].'/path/to/a/dir/') === 'path/to/a/dir'
-			 * @assert ($_SERVER['DOCUMENT_ROOT'].'/path/to/a/file.php') === 'path/to/a/file.php'
-			 */
-			public function get_doc_root_path($to, $try_realpaths = TRUE, $use_win_diff_drive_jctn = TRUE)
-				{
-					$this->check_arg_types('string', 'boolean', 'boolean', func_get_args());
-
-					if($this->©string->¤is_not_empty($doc_root = $this->©vars->_SERVER('DOCUMENT_ROOT')))
-						return $this->get_rel_path($doc_root, $to, $try_realpaths, $use_win_diff_drive_jctn);
-
-					throw $this->©exception(
-						__METHOD__.'#doc_root_missing', get_defined_vars(),
-						$this->i18n('Invalid and/or empty `DOCUMENT_ROOT` (expecting string NOT empty).')
-					);
-				}
-
-			/**
-			 * Shortens a directory or file path to its relative location.
-			 *
-			 * @param string  $from The full directory or file path to calculate a relative path ``$from``.
-			 *
-			 * @param string  $to The full directory or file path, which this routine will build a relative path ``$to``.
-			 *
-			 * @param boolean $try_realpaths Defaults to TRUE; try to acquire ``realpath()`` for both ``$from`` and ``$to``.
-			 *
-			 * @param boolean $use_win_diff_drive_jctn Defaults to TRUE. When TRUE, we'll try to work around issues with different drives on Windows®,
-			 *    by attempting to create a Directory Junction between the two different drives; so a relative path can be formulated properly.
-			 *
-			 * @return string String with relative path to: ``$to`` (from: ``$from``), else an empty string on failure.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If Windows® drive issues cannot be resolved in any way.
-			 *
-			 * @assert ($_SERVER['DOCUMENT_ROOT'], $_SERVER['DOCUMENT_ROOT'].'/wp-content/') === 'wp-content'
-			 * @assert ($_SERVER['DOCUMENT_ROOT'].'/wp-content/plugins/', $_SERVER['DOCUMENT_ROOT'].'/wp-content/') === '../'
-			 * @assert ($_SERVER['DOCUMENT_ROOT'].'/wp-content/plugins/index.php', $_SERVER['DOCUMENT_ROOT'].'/wp-content/index.php') === '../index.php'
-			 * @assert ('/path/to/a/b/c/', '/path/to/a/b/c/d/e/file.php') === 'd/e/file.php'
-			 * @assert ('/path/to/a/b/c/', '/path/to/a/file.php') === '../../file.php'
-			 */
-			public function get_rel_path($from, $to, $try_realpaths = TRUE, $use_win_diff_drive_jctn = TRUE)
-				{
-					$this->check_arg_types('string', 'string', 'boolean', 'boolean', func_get_args());
-
-					if(!$from || !$to) // Nothing to do.
-						return ''; // Default return value.
-
-					if($try_realpaths && ($_real_from = realpath($from)) && ($_real_to = realpath($to)))
-						{
-							$from = $_real_from; // Real path on server.
-							$to   = $_real_to; // Use real path on server.
-						}
-					unset($_real_from, $_real_to); // Housekeeping.
-
-					$from = (is_file($from) || $this->©file->has_extension($from)) ? dirname($from) : $from;
-					$from = preg_split('/\//', $this->n_seps($from));
-					$to   = preg_split('/\//', $this->n_seps($to));
-
-					if($this->©env->is_windows()) // Handle Windows® drive issues here.
-						{
-							if(preg_match('/^(?P<drive_letter>[A-Z])\:$/i', $from[0], $_m))
-								$_from_drive = $_m['drive_letter'];
-
-							if(preg_match('/^(?P<drive_letter>[A-Z])\:$/i', $to[0], $_m))
-								$_to_drive = $_m['drive_letter'];
-
-							if(!empty($_from_drive) && empty($_to_drive))
-								{
-									$_to_drive = $_from_drive;
-									if(empty($to[0]))
-										$to[0] = $_to_drive.':';
-									else array_unshift($to, $_to_drive.':');
-								}
-							else if(!empty($_to_drive) && empty($_from_drive))
-								{
-									$_from_drive = $_to_drive;
-									if(empty($from[0]))
-										$from[0] = $_from_drive.':';
-									else array_unshift($from, $_from_drive.':');
-								}
-							if($use_win_diff_drive_jctn) // Attempt to create a Directory Junction (if needed)?
-								{
-									if(isset($_from_drive, $_to_drive) && strcasecmp($_from_drive, $_to_drive) !== 0)
-										{
-											$_core_ns_stub_with_dashes = $this->___instance_config->core_ns_stub_with_dashes;
-											$_from_drive_jctn          = $_from_drive.':/'.$_core_ns_stub_with_dashes.'-'.$_to_drive.'-jctn';
-
-											$_temp_dir = $this->get_temp_dir();
-											if(strcasecmp($_from_drive, $_temp_dir[0]) === 0)
-												$_temp_dir_jctn = $_temp_dir.'/'.$_core_ns_stub_with_dashes.'-'.$_to_drive.'-jctn';
-
-											$_jctn = (is_dir($_from_drive_jctn)) ? $_from_drive_jctn : '';
-											if(!$_jctn && !empty($_temp_dir_jctn) && is_dir($_temp_dir_jctn))
-												$_jctn = $_temp_dir_jctn;
-
-											if(!$_jctn) // A Directory Junction does NOT exist yet?
-												{
-													try // Try creating a Directory Junction on the ``$_from_drive``.
-														{
-															$_jctn = $this->create_win_jctn($_from_drive_jctn, $_to_drive.':/');
-														}
-													catch(exception $_exception) // Try temp directory.
-														{
-															if(!empty($_temp_dir_jctn)) try
-																{
-																	$_jctn = $this->create_win_jctn($_temp_dir_jctn, $_to_drive.':/');
-																}
-															catch(exception $_exception)
-																{
-																	// We'll handle below.
-																}
-															unset($_exception); // Housekeeping.
-														}
-													if(!$_jctn) throw $this->©exception(
-														__METHOD__.'#windows_drive', get_defined_vars(),
-														$this->i18n('Unable to generate a relative path across different Windows® drives.').
-														sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $_from_drive_jctn, $_to_drive.':/')
-													);
-												}
-											array_shift($to); // Shift drive off and use junction now.
-											foreach(array_reverse(preg_split('/\//', $_jctn)) as $_jctn_dir)
-												array_unshift($to, $_jctn_dir);
-										}
-								}
-							else if(isset($_from_drive, $_to_drive) && strcasecmp($_from_drive, $_to_drive) !== 0)
-								{
-									throw $this->©exception(
-										__METHOD__.'#windows_drive', get_defined_vars(),
-										$this->i18n('Unable to generate a relative path across different Windows® drives.').
-										sprintf($this->i18n(' Drive from: `%1$s`, drive to: `%2$s`.'), $_from_drive.':/', $_to_drive.':/')
-									);
-								}
-							unset($_m, $_from_drive, $_to_drive, $_core_ns_stub_with_dashes, $_from_drive_jctn, $_temp_dir, $_temp_dir_jctn, $_jctn, $_jctn_dir);
-						}
-					foreach(array_keys($from) as $_depth) // Loop through each ``$from`` directory ``$_depth``.
-						if(isset($from[$_depth], $to[$_depth]) && $from[$_depth] === $to[$_depth])
-							unset($from[$_depth], $to[$_depth]);
-						else break;
-
-					$to = implode('/', $to);
-					for($_depth = 0; $_depth < count($from); $_depth++)
-						$to = '../'.$to;
-
-					unset($_depth); // A little housekeeping.
-
-					return $to; // Relative path.
-				}
-
-			/**
-			 * Checks if a directory or file path is actually a link.
-			 *
-			 * @param string $dir_file Directory or file path (i.e. a possible symlink).
-			 *
-			 * @return boolean TRUE if ``$dir_file`` is a link; else FALSE.
-			 */
-			public function is_link($dir_file)
-				{
-					$this->check_arg_types('string', func_get_args());
-
-					if(!$dir_file) return FALSE; // Catch empty values.
-
-					$dir_file = $this->n_seps($dir_file);
-					$realpath = (file_exists($dir_file)) ? $this->n_seps((string)realpath($dir_file)) : '';
-
-					return ($dir_file && $realpath && $dir_file !== $realpath);
+					return basename($dir).(($app_data) ? '/app_data' : '');
 				}
 
 			/**
@@ -416,54 +250,33 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Gets a readable/writable temporary directory.
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::get_temp_dir()
-			 * @inheritdoc \websharks_core_v000000_dev::get_temp_dir()
-			 *
-			 * @throws exception If unable to find a readable/writable directory for any reason.
-			 */
-			public function get_temp_dir() // Arguments are NOT listed here.
-				{
-					if(($temp_dir = call_user_func_array(array('\\websharks_core_v000000_dev', 'get_temp_dir'), func_get_args())))
-						return $temp_dir;
-
-					throw $this->©exception(
-						__METHOD__.'#missing', get_defined_vars(),
-						$this->i18n('Unable to find a readable/writable temp directory.')
-					);
-				}
-
-			/**
 			 * Calculates the MD5 checksum for an entire directory recursively.
 			 *
-			 * @param string  $dir The directory we should begin with.
+			 * @param string       $dir The directory we should begin with.
 			 *
-			 * @param boolean $update_checksum_file Defaults to a FALSE value.
-			 *    If this is TRUE, the `checksum.txt` file in the root directory @ ``$depth`` zero, will be updated.
+			 * @param boolean      $update_checksum_file Defaults to a FALSE value.
+			 *    If this is TRUE, the `checksum.txt` file in the root directory will be updated accordingly.
 			 *    If the `checksum.txt` file does NOT exist yet, this routine will attempt to create it.
 			 *
-			 * @param string  $___root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
-			 *    Recursive calls to this method will automatically pass this value, indicating the main root directory value.
+			 * @param null|string  $___root_dir Do NOT pass this. For internal use only.
 			 *
 			 * @return string An MD5 checksum established collectively, based on all directories/files.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$dir`` is empty; is NOT a directory; or is not readable.
-			 * @throws exception If ``$update_checksum_file`` is TRUE, ``$depth`` is zero,
-			 *    and permission issues (of any kind) prevent the update or creation of the `checksum.txt` file.
+			 * @throws exception If ``$update_checksum_file`` is TRUE, and permission issues (of any kind)
+			 *    prevent the update and/or creation of the `checksum.txt` file.
 			 *
 			 * @see deps_x_websharks_core_v000000_dev::dir_checksum()
 			 */
-			public function checksum($dir, $update_checksum_file = FALSE, $___root_dir = '')
+			public function checksum($dir, $update_checksum_file = FALSE, $___root_dir = NULL)
 				{
-					$this->check_arg_types('string:!empty', 'boolean', 'string', func_get_args());
+					if(!isset($___root_dir)) // Only for the initial caller.
+						$this->check_arg_types('string:!empty', 'boolean', array('null', 'string'), func_get_args());
 
 					$checksums                = array(); // Initialize array.
 					$dir                      = $this->n_seps((string)realpath($dir));
-					$___root_dir              = (!$___root_dir) ? $dir : $___root_dir;
+					$___root_dir              = (!isset($___root_dir)) ? $dir : $___root_dir;
 					$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
 					$checksums[$relative_dir] = md5($relative_dir); // Relative directory checksum.
 
@@ -494,7 +307,7 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#permission_issue', get_defined_vars(),
 									sprintf($this->i18n('Need this directory to be writable: `%1$s`'), $dir)
 								);
-							else if(is_file($dir.'/checksum.txt') && !is_writable($dir.'/checksum.txt'))
+							if(is_file($dir.'/checksum.txt') && !is_writable($dir.'/checksum.txt'))
 								throw $this->©exception(
 									__METHOD__.'#permission_issue', get_defined_vars(),
 									sprintf($this->i18n('Need this file to be writable: `%1$s`'), $dir.'/checksum.txt')
@@ -522,7 +335,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert ('foo') throws exception
 			 */
-			public function get_cache_dir($type, $sub_dir = '')
+			public function cache($type, $sub_dir = '')
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
@@ -597,18 +410,18 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 *
-			 * @throws exception See: ``get_cache_dir()`` for additional exceptions this may throw.
-			 * @throws exception See: ``empty_and_remove()`` for additional exceptions this may throw.
+			 * @throws exception See: {@link cache()} for additional exceptions this may throw.
+			 * @throws exception See: {@link delete()} for additional exceptions this may throw.
 			 *
 			 * @assert ('public') === TRUE
 			 * @assert ('private') === TRUE
 			 * @assert ('foo') throws exception
 			 */
-			public function del_cache_dir($type, $sub_dir = '')
+			public function delete_cache($type, $sub_dir = '')
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					return $this->empty_and_remove($this->get_cache_dir($type, $sub_dir));
+					return $this->delete($this->cache($type, $sub_dir));
 				}
 
 			/**
@@ -629,7 +442,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert ('foo') throws exception
 			 */
-			public function get_log_dir($type, $sub_dir = '')
+			public function log($type, $sub_dir = '')
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
@@ -705,18 +518,18 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 *
-			 * @throws exception See: ``get_log_dir()`` for additional exceptions this may throw.
-			 * @throws exception See: ``empty_and_remove()`` for additional exceptions this may throw.
+			 * @throws exception See: {@link log()} for additional exceptions this may throw.
+			 * @throws exception See: {@link delete()} for additional exceptions this may throw.
 			 *
 			 * @assert ('public') === TRUE
 			 * @assert ('private') === TRUE
 			 * @assert ('foo') throws exception
 			 */
-			public function del_log_dir($type, $sub_dir = '')
+			public function delete_log($type, $sub_dir = '')
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					return $this->empty_and_remove($this->get_log_dir($type, $sub_dir));
+					return $this->delete($this->log($type, $sub_dir));
 				}
 
 			/**
@@ -731,7 +544,7 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 * @throws exception If the requested private media directory is NOT readable/writable, or CANNOT be created for any reason.
 			 */
-			public function get_private_media_dir($sub_dir = '')
+			public function private_media($sub_dir = '')
 				{
 					$this->check_arg_types('string', func_get_args());
 
@@ -795,23 +608,25 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
 			 *
-			 * @throws exception See: ``get_private_media_dir()`` for additional exceptions this may throw.
-			 * @throws exception See: ``empty_and_remove()`` for additional exceptions this may throw.
+			 * @throws exception See: {@link private_media()} for additional exceptions this may throw.
+			 * @throws exception See: {@link delete()} for additional exceptions this may throw.
 			 */
-			public function del_private_media_dir($sub_dir = '')
+			public function delete_private_media($sub_dir = '')
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					return $this->empty_and_remove($this->get_private_media_dir($sub_dir));
+					return $this->delete($this->private_media($sub_dir));
 				}
 
 			/**
-			 * Recursively empties a directory and removes it via PHP.
+			 * Recursively empties/deletes a directory.
 			 *
-			 * @param string $dir A full directory path to empty and remove.
+			 * @param string      $dir A full directory path to delete.
 			 *
-			 * @return boolean TRUE if the directory was successfully removed, else an exception is thrown.
-			 *    Also returns TRUE if ``$dir`` is already non-existent (i.e. nothing to remove).
+			 * @param null|string $___initial_dir Do NOT pass this. Internal use only.
+			 *
+			 * @return boolean TRUE if the directory was successfully deleted, else an exception is thrown.
+			 *    Also returns TRUE if ``$dir`` is already non-existent (i.e. nothing to delete).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$dir`` is NOT a string; or it's an empty string.
@@ -822,34 +637,36 @@ namespace websharks_core_v000000_dev
 			 * @assert ($this->object->___instance_config->plugin_data_dir) === TRUE
 			 * @assert ('foo') === TRUE
 			 */
-			public function empty_and_remove($dir)
+			public function delete($dir, $___initial_dir = NULL)
 				{
-					$this->check_arg_types('string:!empty', func_get_args());
+					if(!isset($___initial_dir)) // Only for the initial caller.
+						$this->check_arg_types('string:!empty', array('null', 'string'), func_get_args());
 
 					$dir = $this->n_seps($dir);
+					if(!isset($___initial_dir)) $___initial_dir = $dir;
 
 					if(!file_exists($dir))
 						return TRUE;
 
-					else if(!is_dir($dir))
+					if(!is_dir($dir))
 						throw $this->©exception(
 							__METHOD__.'#not_a_directory', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; argument value is NOT a directory path.').
 							sprintf($this->i18n(' The invalid directory path given: `%1$s`.'), $dir)
 						);
-					else if(!is_readable($dir))
+					if(!is_readable($dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; not readable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $dir)
 						);
-					else if(!is_writable($dir))
+					if(!is_writable($dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; not writable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $dir)
 						);
-					else if(!($_open_dir = opendir($dir)))
+					if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; cannot open, for some unknown reason.').
@@ -862,13 +679,14 @@ namespace websharks_core_v000000_dev
 								{
 									$_dir_file = $dir.'/'.$_dir_file; // We need the full path now.
 
-									if(is_dir($_dir_file)) // Recursion for sub-directories.
-										$this->empty_and_remove($_dir_file);
-									else $this->©file->unlink($_dir_file);
+									if(is_dir($_dir_file)) // Sub-directory.
+										$this->delete($_dir_file, $___initial_dir);
+
+									else $this->©file->delete($_dir_file);
 								}
 						}
 					closedir($_open_dir); // Close resource handle now.
-					unset($_open_dir, $_dir_file); // And also unset (e.g. unlocking this directory).
+					unset($_open_dir, $_dir_file); // Unset (unlocks directory).
 
 					$rmdir = rmdir($dir); // We should be able to delete the directory now.
 					clearstatcache(); // This makes other routines aware. Very important to clear the cache.
@@ -881,54 +699,107 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Empties/deletes directories deeply.
+			 *
+			 * @note This will NOT delete file entries found in the array; we only delete directories.
+			 *    However, this MAY delete directories containing files; depending on what the array contains.
+			 *
+			 * @return integer {@inheritdoc}
+			 *
+			 * @see dirs_files::delete_deep()
+			 * @inheritdoc dirs_files::delete_deep()
+			 */
+			public function delete_deep($value, $min_mtime = -1, $min_atime = -1, $type = self::dir_type, $___recursion = FALSE)
+				{
+					return parent::delete_deep($value, $min_mtime, $min_atime, $this::dir_type, $___recursion);
+				}
+
+			/**
 			 * Recursively copies a directory via PHP.
 			 *
-			 * @param string      $dir A full directory path to copy.
+			 * @param string            $dir A full directory path to copy.
 			 *
-			 * @param string      $to A new directory path, to copy ``$dir`` to.
+			 * @param string            $to A new directory path, to copy ``$dir`` to.
 			 *    This new directory must NOT already exist. If it does, an exception is thrown.
 			 *
-			 * @param array       $exclusions Optional. Defaults to an empty array.
+			 * @param array             $exclusions Optional. Defaults to an empty array.
 			 *
-			 *    • A list of files/directories to ignore (using FNMATCH wildcard patterns).
-			 *       The `FNM_PATHNAME` flag is NOT in use for any wildcard patterns you specify here.
-			 *       A wildcard `*` WILL match directory separators (by default). See: ``$exclusions_fnm_pathname``.
+			 *    • A list of files/directories to ignore (using `FNMATCH` wildcard patterns).
+			 *       The `FNM_PATHNAME` flag (by default) is NOT in use for any wildcard patterns you specify here.
+			 *       A wildcard `*` WILL match directory separators (by default). See: ``$exclusion_x_flags`` for further details.
+			 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ ``$exclusions_case_insensitive`` or ``$exclusion_x_flags``.
 			 *
-			 *    • Special case handler for `.gitignore` files (VERY useful).
-			 *       If ``$exclusions['.gitignore']`` === `/path/to/.gitignore`; we will attempt to process GIT via command line.
+			 *    • Special case handler ({@link fw_constants::ignore_globs}) for ignoring shell glob patterns (i.e. directory/file masks).
+			 *       If ``$exclusions[fw_constants::ignore_globs]`` is an array/string; we will ignore the given shell glob patterns.
+			 *       This triggers an underlying call to {@link dirs_files::ignore()} for each absolute directory/file path.
+			 *       Calls to {@link dirs_files::ignore()} start `from` the parent of your initial ``$dir``.
+			 *
+			 *       If you specify an empty array/string (or {@link fw_constants::defaults}),
+			 *          you are using the default WebSharks™ Core glob exclusion patterns.
+			 *
+			 *       The `FNM_PATHNAME` flag (by default) is NOT in use for any shell glob patterns you specify here.
+			 *       A wildcard `*` WILL match directory separators (by default). See: ``$exclusion_x_flags`` for further details.
+			 *       However, it's IMPORTANT to note that shell glob patterns are tested against each component of the absolute directory/file path.
+			 *       Therefore, while `FNM_PATHNAME` is off (by default); turning it on does NOT accomplish much for shell glob patterns.
+			 *
+			 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ ``$exclusions_case_insensitive`` or ``$exclusion_x_flags``.
+			 *
+			 *    • Special case handler ({@link fw_constants::ignore_extra_globs}) for ignoring extra shell glob patterns (i.e. directory/file masks).
+			 *       If ``$exclusions[fw_constants::ignore_extra_globs]`` is an array/string; we will attempt to ignore extra shell glob patterns.
+			 *       This triggers an underlying call to {@link dirs_files::ignore()} for each absolute directory/file path.
+			 *       Calls to {@link dirs_files::ignore()} start `from` the parent of your initial ``$dir``.
+			 *
+			 *       If you specify ONLY {@link fw_constants::ignore_extra_globs}; the default WebSharks™ Core glob exclusion patterns are in use.
+			 *       Extra glob patterns are handy in cases where you simply want to use the WebSharks™ Core default glob patterns; but
+			 *          you would like to add some additional glob patterns of your own (e.g. these are extra glob patterns).
+			 *
+			 *       The `FNM_PATHNAME` flag (by default) is NOT in use for any shell glob patterns you specify here.
+			 *       A wildcard `*` WILL match directory separators (by default). See: ``$exclusion_x_flags`` for further details.
+			 *       However, it's IMPORTANT to note that shell glob patterns are tested against each component of the absolute directory/file path.
+			 *       Therefore, while `FNM_PATHNAME` is off (by default); turning it on does NOT accomplish much for shell glob patterns.
+			 *
+			 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ ``$exclusions_case_insensitive`` or ``$exclusion_x_flags``.
+			 *
+			 *    • Special case handler ({@link fw_constants::gitignore}) for `.gitignore` functionality when copying directories/files in GIT repos.
+			 *       If ``basename($exclusions[fw_constants::gitignore])`` === `.gitignore`; we will attempt to process GIT via command line.
 			 *       We use: `git ls-files --others --directory` to compile a complete list of exclusions automatically.
 			 *       This way the copied directory will reflect only the files under GIT version control.
-			 *       A `.gitignore` file MUST exist in the parent of your initial ``$dir``.
+			 *       Your `.gitignore` file MUST exist in the parent of your initial ``$dir``.
 			 *
-			 *    Regarding wildcard pattern matching...
+			 *       The `FNM_CASEFOLD` flag is off (by default). Enable w/ ``$exclusions_case_insensitive`` or ``$exclusion_x_flags``.
+			 *       There is only ONE additional exclusion flag (`FNM_CASEFOLD`) that works together w/ {@link fw_constants::gitignore}.
+			 *       Attempting to use additional exclusions flags w/ {@link fw_constants::gitignore} will result in an exception.
+			 *
+			 *    • Regarding wildcard pattern matching (`FNMATCH` exclusions array and/or {@link fw_constants::gitignore} functionality).
+			 *       Note: these rules do NOT apply to shell glob exclusion patterns; which are handled by {@link dirs_files::ignore()}.
 			 *
 			 *       • Files/directories will always include a leading slash `/` when checking exclusions.
-			 *          We use an absolute relative path; starting with the initial ``$dir`` that you're copying from;
-			 *          (in other words, relative from the parent directory of your initial ``$dir``).
+			 *          We use an absolute relative path; starting with the initial ``$dir`` that you're copying from.
+			 *          In other words, relative from the parent directory of your initial ``$dir``.
 			 *
 			 *          Assuming your initial value for ``$dir`` is `/path/to/dir`.
-			 *          And; assuming this file exists that you want to exclude: `/path/to/dir/sub-dir/file.php`.
+			 *          And, assuming this file exists that you want to exclude: `/path/to/dir/sub-dir/file.php`.
 			 *          You will need a pattern that matches this path: `/dir/sub-dir/file.php`.
 			 *
 			 *       • Directories will include a trailing slash when checking exclusions.
 			 *
 			 *          Assuming your initial value for ``$dir`` is `/path/to/dir`.
-			 *          And; assuming this directory exists that you want to exclude: `/path/to/dir/sub-dir`.
+			 *          And, assuming this directory exists that you want to exclude: `/path/to/dir/sub-dir`.
 			 *          You will need a pattern that matches this path: `/dir/sub-dir/`.
 			 *
-			 *       • File/directory paths obtained through `git ls-files --others --directory`;
-			 *          are converted into wildcard patterns automatically by this routine.
-			 *          A `.gitignore` file MUST exist in the parent of your initial ``$dir``.
+			 *       • File/directory paths obtained through `git ls-files --others --directory` are converted into `FNMATCH` wildcard patterns
+			 *          automatically by this routine. A `.gitignore` file MUST exist in the parent of your initial ``$dir``.
 			 *
-			 * @param boolean     $exclusions_case_insensitive Defaults to a FALSE value.
+			 * @param boolean           $exclusions_case_insensitive Defaults to a FALSE value.
 			 *    If TRUE, wildcard pattern matching is NOT case sensitive.
 			 *    The `FNM_CASEFOLD` flag is enabled if this is TRUE.
 			 *
-			 * @param boolean     $exclusions_fnm_pathname Optional. Defaults to a FALSE value.
-			 *    If this is set to a value of TRUE; a wildcard `*` will NOT match a directory separator.
-			 *    Use with caution. This is NOT compatible with `.gitignore` exclusions.
+			 * @param null|integer      $exclusion_x_flags Optional. Defaults to a NULL value.
+			 *    Any additional flags supported by PHP's ``fnmatch()`` function are acceptable here.
 			 *
-			 * @param null|string $___initial_dir Internal use only. Please do NOT pass this in directly.
+			 * @param null|array        $___ignore Do NOT pass this. It's for internal use only.
+			 *
+			 * @param null|string       $___initial_dir This if for internal use only.
 			 *
 			 * @return boolean TRUE if the directory was successfully copied, else an exception is thrown.
 			 *
@@ -937,27 +808,30 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If any sub-directory or file within ``$dir`` is NOT readable, or CANNOT be opened for any reason.
 			 * @throws exception If the ``$to`` directory already exists, or CANNOT be created by this routine for any reason.
 			 *
-			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but the `.gitignore` file does not exist.
-			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but it's NOT in the initial ``$dir`` parent.
+			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but the `.gitignore` file does NOT exist.
+			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but it's NOT in the initial parent ``$dir``.
 			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but the `git` command is currently NOT possible.
-			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but `git` returns a non-zero status or error msg.
+			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but `git` returns a non-zero status.
+			 * @throws exception If a `.gitignore` file is used for ``$exclusions``; together w/ additional exclusion flags.
+			 *    The only additional exclusion flag supported together with `.gitignore` is the `FNM_CASEFOLD` flag.
+			 * @throws exception If a copy failure of any kind occurs (e.g. we are NOT successful for any reason).
 			 *
-			 * @throws exception If a copy failure (of any kind) occurs (e.g. we are NOT successful).
-			 *
-			 * @see \websharks_core_v000000_dev\strings\in_wildcard_patterns()
-			 * @see http://linux.die.net/man/3/fnmatch The underlying functionality applied to exclusions.
+			 * @see dirs_files::ignore()
+			 * @see strings::in_wildcard_patterns()
 			 *
 			 * @WARNING This routine can become resource intensive on large directories.
-			 *    See: {@link \websharks_core_v000000_dev\env\maximize_time_memory_limits()}
-			 *
-			 * @assert ($this->object->___instance_config->plugin_dir, $this->object->___instance_config->plugin_dir.'-copy') === TRUE
+			 *    See: {@link env::maximize_time_memory_limits()}
 			 */
-			public function copy_to($dir, $to, $exclusions = array(), $exclusions_case_insensitive = FALSE, $exclusions_fnm_pathname = FALSE, $___initial_dir = NULL)
+			public function copy_to($dir, $to, $exclusions = array(), $exclusions_case_insensitive = FALSE, $exclusion_x_flags = NULL, $___ignore = NULL, $___initial_dir = NULL)
 				{
-					$this->check_arg_types('string:!empty', 'string:!empty', 'array', 'boolean', 'boolean', array('null', 'string'), func_get_args());
+					if(!isset($___initial_dir)) // Only for the initial caller.
+						$this->check_arg_types('string:!empty', 'string:!empty', 'array', 'boolean', array('null', 'integer'), array('null', 'array'), array('null', 'string'), func_get_args());
 
 					$dir = $this->n_seps($dir);
 					$to  = $this->n_seps($to);
+
+					if(!isset($___initial_dir)) $___initial_dir = $dir;
+					if(!isset($___ignore)) $___ignore = array();
 
 					if(!is_dir($dir))
 						throw $this->©exception(
@@ -965,13 +839,13 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to copy a directory (source `dir` missing).').
 							sprintf($this->i18n('Non-existent source directory: `%1$s`.'), $dir)
 						);
-					else if(!is_readable($dir))
+					if(!is_readable($dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; not readable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
-					else if(!($_open_dir = opendir($dir)))
+					if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; cannot open for some unknown reason.').
@@ -984,7 +858,7 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to copy a directory; destination already exists.').
 							sprintf($this->i18n(' Please delete this file or directory: `%1$s`.'), $to)
 						);
-					else if(!is_writable(dirname($to)))
+					if(!is_writable(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; destination not writable due to permission issues.').
@@ -1000,39 +874,54 @@ namespace websharks_core_v000000_dev
 							sprintf($this->i18n(' Please create this directory: `%1$s`.'), $to)
 						);
 
-					if(!isset($___initial_dir)) $___initial_dir = $dir;
-
 					if($dir === $___initial_dir // Only do this ONE time.
-					   && isset($exclusions['.gitignore']) && $this->©string->is_not_empty($exclusions['.gitignore'])
-					   && basename($exclusions['.gitignore']) === '.gitignore' // It MUST actually be a `.gitignore` file.
-					) // This special array element is a `.gitignore` file; triggering this routine. Further validation below.
+					   && isset($exclusions[$this::ignore_globs]) // Ignoring glob patterns?
+					   && (is_array($exclusions[$this::ignore_globs]) || is_string($exclusions[$this::ignore_globs]))
+					) // This special array element triggers glob ignore/exclusion patterns.
 						{
-							$_gitignore_file = $exclusions['.gitignore'];
+							$___ignore['globs'] = $exclusions[$this::ignore_globs];
+							unset($exclusions[$this::ignore_globs]);
+						}
+					if($dir === $___initial_dir // Only do this ONE time.
+					   && isset($exclusions[$this::ignore_extra_globs]) // Ignoring extra glob patterns?
+					   && (is_array($exclusions[$this::ignore_extra_globs]) || is_string($exclusions[$this::ignore_extra_globs]))
+					) // This special array element triggers extra glob ignore/exclusion patterns.
+						{
+							$___ignore['extra_globs'] = $exclusions[$this::ignore_extra_globs];
+							unset($exclusions[$this::ignore_extra_globs]);
+						}
+					if($dir === $___initial_dir // Only do this ONE time.
+					   && isset($exclusions[$this::gitignore]) && $this->©string->is_not_empty($exclusions[$this::gitignore])
+					   && basename($exclusions[$this::gitignore]) === '.gitignore' // MUST have a `.gitignore` basename.
+					) // This special array element is a `.gitignore` file; triggering automatic `.gitignore` exclusions.
+						{
+							$_gitignore_file = $exclusions[$this::gitignore];
 							$_gitignore_dir  = $this->©dir->n_seps(dirname($_gitignore_file));
-							unset($exclusions['.gitignore']); // Remove this now.
+							unset($exclusions[$this::gitignore]);
 
 							if(!is_file($_gitignore_file))
 								throw $this->©exception(
 									__METHOD__.'#nonexistent_gitignore_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent `.gitignore` file: `%1$s`.'), $_gitignore_file)
 								);
-							else if($_gitignore_dir !== dirname($___initial_dir))
+							if($_gitignore_dir !== dirname($___initial_dir))
 								throw $this->©exception(
 									__METHOD__.'#invalid_gitignore_file', get_defined_vars(),
 									sprintf($this->i18n('Invalid `.gitignore` file: `%1$s`.'), $_gitignore_file).
 									sprintf($this->i18n('Your `.gitignore` file MUST exist here: `%1$s`.'), dirname($___initial_dir).'/.gitignore')
 								);
-							else if(!$this->©command->git_possible())
+							if(!$this->©command->git_possible())
 								throw $this->©exception(
 									__METHOD__.'#git_command_not_possible', get_defined_vars(),
 									sprintf($this->i18n('You specified the following `.gitignore` file: `%1$s`.'), $_gitignore_file).
 									$this->i18n(' However, the `git` command is NOT possible in the current environment.')
 								);
-							else if($exclusions_fnm_pathname)
+							if(isset($exclusion_x_flags) && $exclusion_x_flags !== FNM_CASEFOLD)
 								throw $this->©exception(
-									__METHOD__.'#gitignore_not_compatible_w/fnm_pathname', get_defined_vars(),
+									__METHOD__.'#gitignore_not_compatible_w/exclusion_x_flags', get_defined_vars(),
 									sprintf($this->i18n('You specified the following `.gitignore` file: `%1$s`.'), $_gitignore_file).
-									$this->i18n(' You\'re attempting to mix `.gitignore` functionality w/ `FNM_PATHNAME`; these are NOT compatible.')
+									$this->i18n(' You\'re attempting to mix `.gitignore` functionality w/ additional exclusion flags; which is NOT compatible.'),
+									$this->i18n(' The only additional exclusion flag supported together with `.gitignore` is the `FNM_CASEFOLD` flag.')
 								);
 							$_gitignore_files = $this->©command->git('ls-files --others --directory', $_gitignore_dir);
 
@@ -1040,8 +929,8 @@ namespace websharks_core_v000000_dev
 								{
 									foreach(preg_split('/['."\r\n".']+/', $_gitignore_files, NULL, PREG_SPLIT_NO_EMPTY) as $_path)
 										// No need to normalize directory separators here; GIT already does that for us.
-										// Directories returned by GIT always include a trailing slash (easy to identify).
-										// The list provided by GIT does NOT include leading slashes though (we add those).
+										// Directories returned by GIT always include a trailing slash (so they're easy to identify).
+										// GIT does NOT include leading slashes though (we add those to achieve absolute relative paths).
 										$exclusions[] = (substr($_path, -1) === '/') ? '/'.$_path.'*' : '/'.$_path;
 								}
 							unset($_gitignore_file, $_gitignore_dir, $_gitignore_files, $_path);
@@ -1052,21 +941,23 @@ namespace websharks_core_v000000_dev
 								{
 									$_dir_file                   = $dir.'/'.$_dir_file;
 									$_dir_file_is_dir            = is_dir($_dir_file);
-									$_dir_file_abs_relative_path = '/'.preg_replace('/^'.preg_quote(dirname($___initial_dir), '/').'\//', '', $_dir_file);
+									$_dir_file_abs_relative_path = '/'.preg_replace('/^'.preg_quote(dirname($___initial_dir), '/').'\//', '/', $_dir_file);
 									$_dir_file_abs_relative_path .= ($_dir_file_is_dir) ? '/' : ''; // Trailing dir separator on actual directories.
 									$_dir_file_to = $to.'/'.basename($_dir_file); // New copy location.
 
-									if(!$exclusions || !$this->©string->in_wildcard_patterns($_dir_file_abs_relative_path, $exclusions, $exclusions_case_insensitive, FALSE, (($exclusions_fnm_pathname) ? FNM_PATHNAME : NULL)))
-										{ // Only if this directory/file has NOT been excluded via the ``$exclusions`` array.
+									if((!isset($___ignore['globs']) && !isset($___ignore['extra_globs'])) || !$this->©dirs_files->ignore($_dir_file, dirname($___initial_dir), $this->©var->isset_or($___ignore['globs'], array()), $this->©var->isset_or($___ignore['extra_globs'], array()), $exclusions_case_insensitive, $exclusion_x_flags))
+										if(!$exclusions || !$this->©string->in_wildcard_patterns($_dir_file_abs_relative_path, $exclusions, $exclusions_case_insensitive, FALSE, $exclusion_x_flags))
+											{ // Only if this directory/file has NOT been excluded via the ``$exclusions`` array.
 
-											if($_dir_file_is_dir) // Recursive sub-directories.
-												$this->copy_to($_dir_file, $_dir_file_to, $exclusions, $exclusions_case_insensitive, $exclusions_fnm_pathname, $___initial_dir);
-											else $this->©file->copy_to($_dir_file, $_dir_file_to);
-										}
+												if($_dir_file_is_dir) // Recursive sub-directories.
+													$this->copy_to($_dir_file, $_dir_file_to, $exclusions, $exclusions_case_insensitive, $exclusion_x_flags, $___ignore, $___initial_dir);
+												else $this->©file->copy_to($_dir_file, $_dir_file_to);
+											}
 								}
 						}
-					closedir($_open_dir); // Close directory resource handle before we unset these.
+					closedir($_open_dir); // Close directory resource handle.
 					unset($_open_dir, $_dir_file, $_dir_file_is_dir, $_dir_file_abs_relative_path, $_dir_file_to);
+
 					clearstatcache(); // This makes other routines aware. Very important to clear the cache.
 
 					return TRUE; // It's a good day in Eureka!
@@ -1126,7 +1017,7 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to PHAR a directory (source `dir` missing).').
 							sprintf($this->i18n('Non-existent source directory: `%1$s`.'), $dir)
 						);
-					else if(!is_readable($dir))
+					if(!is_readable($dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; not readable, due to permission issues.').
@@ -1139,25 +1030,25 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to PHAR a directory; destination PHAR file already exists.').
 							sprintf($this->i18n(' Please delete this file first: `%1$s`.'), $to)
 						);
-					else if(!preg_match('/\.phar$/i', $to))
+					if($this->extension($to) !== 'phar')
 						throw $this->©exception(
 							__METHOD__.'#invalid_phar_file', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; invalid destination PHAR file.').
 							sprintf($this->i18n(' Please use a `.phar` extension instead of: `%1$s`.'), $to)
 						);
-					else if(!is_dir(dirname($to)))
+					if(!is_dir(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#phar_to_dir_missing', get_defined_vars(),
 							$this->i18n('Destination PHAR directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
 						);
-					else if(!is_writable(dirname($to)))
+					if(!is_writable(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; destination not writable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), dirname($to))
 						);
-					else if(!\Phar::canWrite())
+					if(!\Phar::canWrite())
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; PHP configuration does NOT allow write access.').
@@ -1170,7 +1061,7 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to PHAR a directory; missing stub file.').
 							sprintf($this->i18n(' File does NOT exist: `%1$s`.'), $stub_file)
 						);
-					else if(!is_readable($stub_file))
+					if(!is_readable($stub_file))
 						throw $this->©exception(
 							__METHOD__.'#stub_file_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; permission issues with stub file.').
@@ -1178,7 +1069,7 @@ namespace websharks_core_v000000_dev
 						);
 					// Phar classes throw exceptions on failure.
 
-					$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$is_phar_var_suffix.'\'] = \'phar://\'.__FILE__;';
+					$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$this->©string->esc_sq($is_phar_var_suffix).'\'] = \'phar://\'.__FILE__;';
 					$_stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
 					$_stub_file_contents    = trim(preg_replace('/\W\?\>\s*$/', '', $_stub_file_contents, 1)); // No close tag & trim.
 					$_stub_file_contents    = preg_replace('/\<\?php|\<\?/i', '<?php '.$_stub_file_is_phar_var, $_stub_file_contents, 1);
@@ -1190,12 +1081,12 @@ namespace websharks_core_v000000_dev
 
 					if(!$strip_ws && !$compress) $_phar->buildFromDirectory($dir); // Simple.
 
-					else // Stripping or compressing takes more work, but worth the effort :-)
+					else // Stripping/compressing takes work, but worth the effort :-)
 						{
 							$_strippable_extensions         = array('php');
 							$_regex_compressable_extensions = $this->©string->preg_quote_deep($compressable_extensions, '/');
 							$_regex_compressable_extensions = '/\.(?:'.implode('|', $_regex_compressable_extensions).')$/i';
-							$_temp_dir                      = $this->get_temp_dir().'/'.$this->©string->unique_id().'-'.basename($dir);
+							$_temp_dir                      = $this->temp().'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
 							$_temp_dir_iterator = $this->iterate($_temp_dir);
@@ -1232,7 +1123,7 @@ namespace websharks_core_v000000_dev
 					unset($_phar, $_stub_file_is_phar_var, $_stub_file_contents, $_strippable_extensions, $_regex_compressable_extensions);
 					unset($_temp_dir_iterator, $_dir_file, $_path, $_phar_path, $_extension);
 					if(isset($_temp_dir)) // A little more housekeeping now.
-						$this->empty_and_remove($_temp_dir);
+						$this->delete($_temp_dir);
 					unset($_temp_dir);
 
 					return $to; // It's a good day in Eureka!
@@ -1272,7 +1163,7 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to ZIP a directory (source `dir` missing).').
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);
-					else if(!is_readable($dir))
+					if(!is_readable($dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to ZIP a directory; not readable; due to permission issues.').
@@ -1285,19 +1176,19 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Destination ZIP exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this ZIP archive: `%1$s`.'), $to)
 						);
-					else if(substr($to, -4) !== '.zip')
+					if($this->extension($to) !== 'zip')
 						throw $this->©exception(
 							__METHOD__.'#invalid_zip', get_defined_vars(),
 							$this->i18n('Invalid ZIP extension. The destination must end with `.zip`.').
 							sprintf($this->i18n(' Instead got: `%1$s`.'), $to)
 						);
-					else if(!is_dir(dirname($to)))
+					if(!is_dir(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#zip_to_dir_missing', get_defined_vars(),
 							$this->i18n('Destination ZIP directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
 						);
-					else if(!is_writable(dirname($to)))
+					if(!is_writable(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#zip_to_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination ZIP directory is not writable.').
@@ -1340,13 +1231,13 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to rename a directory (source `dir` missing).').
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);
-					else if(!is_readable($dir))
+					if(!is_readable($dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to rename a directory; not readable; due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
-					else if(!is_writable($dir))
+					if(!is_writable($dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to rename a directory; not writable; due to permission issues.').
@@ -1359,13 +1250,13 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Destination exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
 						);
-					else if(!is_dir(dirname($to)))
+					if(!is_dir(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_missing', get_defined_vars(),
 							$this->i18n('Destination\'s parent directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
 						);
-					else if(!is_writable(dirname($to)))
+					if(!is_writable(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination\'s directory is not writable.').
@@ -1388,7 +1279,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert () === TRUE
 			 */
-			public function data_dir_readable_writable()
+			public function data_readable_writable()
 				{
 					$data_dir = $this->___instance_config->plugin_data_dir;
 
@@ -1411,13 +1302,13 @@ namespace websharks_core_v000000_dev
 			public function where_templates_may_reside()
 				{
 					$dirs = array(
-						get_stylesheet_directory().'/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
-						get_template_directory().'/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
+						$this->n_seps(get_stylesheet_directory()).'/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
+						$this->n_seps(get_template_directory()).'/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
 						$this->___instance_config->plugin_pro_dir.'/templates/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
 						$this->___instance_config->plugin_dir.'/templates/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
-						dirname(dirname(dirname(__FILE__))).'/templates/'
+						$this->___instance_config->core_dir.'/templates/'
 					);
-					return $this->apply_filters('where_templates_may_reside', $dirs);
+					return $this->apply_filters(__FUNCTION__, $dirs);
 				}
 
 			/**
@@ -1496,14 +1387,14 @@ namespace websharks_core_v000000_dev
 					if(!$confirmation)
 						return FALSE; // Added security.
 
-					if($this->data_dir_readable_writable())
+					if($this->data_readable_writable())
 						return TRUE; // That's it! We're good here.
 
 					$this->©notice->enqueue(
 						'<p>'.
 						sprintf(
 							$this->i18n('Please create this directory: <code>%1$s</code>.'),
-							$this->©dirs->get_doc_root_path($this->___instance_config->plugin_data_dir)
+							$this->©dirs->doc_root_path($this->___instance_config->plugin_data_dir)
 						).
 						$this->i18n(' You\'ll need to log in via FTP, and set directory permissions to <code>777</code>.').
 						$this->i18n(' Please use an application like <a href="http://filezilla-project.org/" target="_blank">FileZilla™</a>.').
@@ -1533,7 +1424,7 @@ namespace websharks_core_v000000_dev
 					if(!$confirmation)
 						return FALSE; // Added security.
 
-					$this->empty_and_remove($this->___instance_config->plugin_data_dir);
+					$this->delete($this->___instance_config->plugin_data_dir);
 
 					return TRUE;
 				}

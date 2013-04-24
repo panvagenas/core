@@ -120,6 +120,11 @@ namespace websharks_core_v000000_dev
 		 * @method static dirs dirs()
 		 * @method static dirs dir()
 		 *
+		 * @property dirs_files              $dirs_files
+		 * @property dirs_files              $dir_file
+		 * @method static dirs_files dirs_files()
+		 * @method static dirs_files dir_file()
+		 *
 		 * @property encryption              $encryption
 		 * @method static encryption encryption()
 		 *

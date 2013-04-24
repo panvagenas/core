@@ -494,15 +494,15 @@ namespace websharks_core_v000000_dev
 
 							$_new_core_dir = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes;
 
-							$this->©dir->empty_and_remove($_new_core_dir); // In case it already exists.
+							$this->©dir->delete($_new_core_dir); // In case it already exists.
 							$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 
-							$this->©dir->rename_to($this->©replicate($this->plugin_dir, $this->plugin_repo_dir, '', array('.gitignore' => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_core_dir);
+							$this->©dir->rename_to($this->©replicate($this->plugin_dir, $this->plugin_repo_dir, '', array($this::gitignore => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_core_dir);
 							$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 
 							if($this->use_core_type !== 'directory') // Should we delete the directory immediately?
 								{
-									$this->©dir->empty_and_remove($_new_core_dir); // Delete immediately.
+									$this->©dir->delete($_new_core_dir); // Delete immediately.
 									$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 								}
 							$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_dir', get_defined_vars(),
@@ -518,7 +518,7 @@ namespace websharks_core_v000000_dev
 							$_core_stub     = $this->core_dir.'/stub.php';
 							$_new_core_stub = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
 
-							$this->©file->unlink($_new_core_stub); // In case it already exists.
+							$this->©file->delete($_new_core_stub); // In case it already exists.
 							$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
 
 							$this->©file->copy_to($_core_stub, $_new_core_stub);
@@ -540,7 +540,7 @@ namespace websharks_core_v000000_dev
 									$_new_core_phar            = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
 									$_plugin_dir_htaccess_file = $this->plugin_dir.'/.htaccess';
 
-									$this->©file->unlink($_new_core_phar); // In case it already exists.
+									$this->©file->delete($_new_core_phar); // In case it already exists.
 									$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
 
 									if(!is_file($_plugin_dir_htaccess_file)
@@ -652,8 +652,8 @@ namespace websharks_core_v000000_dev
 
 							$_plugin_distro_dir = $this->distros_dir.'/'.basename($this->plugin_dir);
 
-							$this->©dir->empty_and_remove($_plugin_distro_dir);
-							$this->©dir->copy_to($this->plugin_dir, $_plugin_distro_dir, array('.gitignore' => $this->plugin_repo_dir.'/.gitignore'), TRUE);
+							$this->©dir->delete($_plugin_distro_dir);
+							$this->©dir->copy_to($this->plugin_dir, $_plugin_distro_dir, array($this::gitignore => $this->plugin_repo_dir.'/.gitignore'), TRUE);
 
 							$successes->add(__METHOD__.'#plugin_distro_files', get_defined_vars(),
 							                sprintf($this->i18n('Plugin distro files copied to: `%1$s`.'), $_plugin_distro_dir)
@@ -672,7 +672,7 @@ namespace websharks_core_v000000_dev
 							$_plugin_download_zip   = $this->downloads_dir.'/'.basename($this->plugin_dir).'.zip';
 							$_plugin_download_v_zip = $this->downloads_dir.'/'.basename($this->plugin_dir).'-v'.$this->version.'.zip';
 
-							$this->©file->unlink($_plugin_download_zip, $_plugin_download_v_zip);
+							$this->©file->delete($_plugin_download_zip, $_plugin_download_v_zip);
 							$this->©dir->zip_to($_plugin_distro_dir, $_plugin_download_zip);
 							$this->©file->copy_to($_plugin_download_zip, $_plugin_download_v_zip);
 
@@ -686,7 +686,7 @@ namespace websharks_core_v000000_dev
 
 							if($this->use_core_type === 'directory' && isset($_new_core_dir))
 								{
-									$this->©dir->empty_and_remove($_new_core_dir); // Delete this directory now.
+									$this->©dir->delete($_new_core_dir); // Delete this directory now.
 									$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 
 									$successes->add(__METHOD__.'#new_core_dir_deletion', get_defined_vars(),
@@ -699,7 +699,7 @@ namespace websharks_core_v000000_dev
 
 							if($this->use_core_type === 'phar' && isset($_new_core_phar))
 								{
-									$this->©file->unlink($_new_core_phar); // Delete this file from the plugin directory now.
+									$this->©file->delete($_new_core_phar); // Delete this file from the plugin directory now.
 									$this->©command->git('rm --cached '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
 
 									$successes->add(__METHOD__.'#new_core_phar_deletion', get_defined_vars(),
@@ -734,12 +734,12 @@ namespace websharks_core_v000000_dev
 
 									$_new_pro_core_dir = $this->plugin_pro_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes;
 
-									$this->©dir->empty_and_remove($_new_pro_core_dir); // In case it already exists.
+									$this->©dir->delete($_new_pro_core_dir); // In case it already exists.
 									$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_pro_core_dir.'/'), $this->plugin_pro_repo_dir);
 
-									$this->©dir->rename_to($this->©replicate($this->plugin_pro_dir, $this->plugin_pro_repo_dir, '', array('.gitignore' => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_pro_core_dir);
+									$this->©dir->rename_to($this->©replicate($this->plugin_pro_dir, $this->plugin_pro_repo_dir, '', array($this::gitignore => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_pro_core_dir);
 									$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_pro_core_dir.'/'), $this->plugin_pro_repo_dir);
-									$this->©dir->empty_and_remove($_new_pro_core_dir); // Remove it immediately.
+									$this->©dir->delete($_new_pro_core_dir); // Remove it immediately.
 
 									$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_pro_dir', get_defined_vars(),
 									                sprintf($this->i18n('The %1$s has been temporarily replicated into this plugin pro directory: `%2$s`.'), $this->___instance_config->core_name, $_new_pro_core_dir).
@@ -839,8 +839,8 @@ namespace websharks_core_v000000_dev
 
 									$_plugin_pro_distro_dir = $this->distros_dir.'/'.basename($this->plugin_pro_dir);
 
-									$this->©dir->empty_and_remove($_plugin_pro_distro_dir);
-									$this->©dir->copy_to($this->plugin_pro_dir, $_plugin_pro_distro_dir, array('.gitignore' => $this->plugin_pro_repo_dir.'/.gitignore'), TRUE);
+									$this->©dir->delete($_plugin_pro_distro_dir);
+									$this->©dir->copy_to($this->plugin_pro_dir, $_plugin_pro_distro_dir, array($this::gitignore => $this->plugin_pro_repo_dir.'/.gitignore'), TRUE);
 
 									$successes->add(__METHOD__.'#plugin_pro_distro_files', get_defined_vars(),
 									                sprintf($this->i18n('Plugin pro distro files copied to: `%1$s`.'), $_plugin_pro_distro_dir)
@@ -859,7 +859,7 @@ namespace websharks_core_v000000_dev
 									$_plugin_pro_download_zip   = $this->downloads_dir.'/'.basename($this->plugin_pro_dir).'.zip';
 									$_plugin_pro_download_v_zip = $this->downloads_dir.'/'.basename($this->plugin_pro_dir).'-v'.$this->version.'.zip';
 
-									$this->©file->unlink($_plugin_pro_download_zip, $_plugin_pro_download_zip);
+									$this->©file->delete($_plugin_pro_download_zip, $_plugin_pro_download_zip);
 									$this->©dir->zip_to($_plugin_pro_distro_dir, $_plugin_pro_download_zip);
 									$this->©file->copy_to($_plugin_pro_download_zip, $_plugin_pro_download_v_zip);
 
@@ -875,9 +875,14 @@ namespace websharks_core_v000000_dev
 									$this->©command->git('commit --all --allow-empty --message '. // Final commit (after building).
 									                     escapeshellarg($this->i18n('Auto-commit; after building pro add-on.')), $this->plugin_pro_repo_dir);
 
+									if($this->©string->is_plugin_stable_version($this->version))
+										$this->©command->git('tag --message '. // Tag this commit (after building).
+										                     escapeshellarg(sprintf($this->i18n('%1$s (Pro) v%2$s.'), $this->plugin_name, $this->version)), $this->plugin_pro_repo_dir);
+
 									$successes->add(__METHOD__.'#commit_after_building_plugin_pro', get_defined_vars(),
 									                sprintf($this->i18n('All files (new and/or changed) on GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the plugin pro repo.'), $this->version).
-									                $this->i18n(' Pro add-on finale. A commit has been processed for all changes to the new pro directory/file structure.')
+									                $this->i18n(' Pro add-on finale. A commit has been processed for all changes to the new pro directory/file structure.').
+									                sprintf($this->i18n(' Tagged stable release as: `$1%s`.'), $this->version)
 									);
 								}
 							// Handle a possible extras directory.
@@ -888,12 +893,12 @@ namespace websharks_core_v000000_dev
 
 									$_new_extras_core_dir = $this->plugin_extras_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes;
 
-									$this->©dir->empty_and_remove($_new_extras_core_dir); // In case it already exists.
+									$this->©dir->delete($_new_extras_core_dir); // In case it already exists.
 									$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_extras_core_dir.'/'), $this->plugin_repo_dir);
 
-									$this->©dir->rename_to($this->©replicate($this->plugin_extras_dir, $this->plugin_extras_dir, '', array('.gitignore' => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_extras_core_dir);
+									$this->©dir->rename_to($this->©replicate($this->plugin_extras_dir, $this->plugin_extras_dir, '', array($this::gitignore => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_extras_core_dir);
 									$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_extras_core_dir.'/'), $this->plugin_repo_dir);
-									$this->©dir->empty_and_remove($_new_extras_core_dir); // Remove it immediately.
+									$this->©dir->delete($_new_extras_core_dir); // Remove it immediately.
 
 									$successes->add(__METHOD__.'#new_core_dir_replication_into_plugin_extras_dir', get_defined_vars(),
 									                sprintf($this->i18n('The %1$s has been temporarily replicated into this plugin extras directory: `%2$s`.'), $this->___instance_config->core_name, $_new_extras_core_dir).
@@ -924,7 +929,7 @@ namespace websharks_core_v000000_dev
 									$_new_server_scanner_file_contents = $this->regex_replace('php_code__deps_x__define_stand_alone_plugin_dir_names', $_new_server_scanner_plugin_dirs, $_new_server_scanner_file_contents);
 									$_new_server_scanner_file_contents = $this->regex_replace('php_code__deps_x__declare_stand_alone_class_name', '_stand_alone', $_new_server_scanner_file_contents);
 
-									$this->©file->unlink($_new_server_scanner_file); // In case it already exists.
+									$this->©file->delete($_new_server_scanner_file); // In case it already exists.
 									$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_server_scanner_file.'/'), $this->plugin_repo_dir);
 
 									if(!file_put_contents($_new_server_scanner_file, $_new_server_scanner_file_contents))
@@ -950,7 +955,7 @@ namespace websharks_core_v000000_dev
 
 									$_plugin_extras_distro_dir = $this->distros_dir.'/'.basename($this->plugin_extras_dir);
 
-									$this->©dir->empty_and_remove($_plugin_extras_distro_dir);
+									$this->©dir->delete($_plugin_extras_distro_dir);
 									$this->©dir->copy_to($this->plugin_extras_dir, $_plugin_extras_distro_dir);
 
 									$successes->add(__METHOD__.'#plugin_extras_distro_files', get_defined_vars(),
@@ -962,7 +967,7 @@ namespace websharks_core_v000000_dev
 									$_plugin_extras_download_zip   = $this->downloads_dir.'/'.basename($this->plugin_extras_dir).'.zip';
 									$_plugin_extras_download_v_zip = $this->downloads_dir.'/'.basename($this->plugin_extras_dir).'-v'.$this->version.'.zip';
 
-									$this->©file->unlink($_plugin_extras_download_zip, $_plugin_extras_download_v_zip);
+									$this->©file->delete($_plugin_extras_download_zip, $_plugin_extras_download_v_zip);
 									$this->©dir->zip_to($_plugin_extras_distro_dir, $_plugin_extras_download_zip);
 									$this->©file->copy_to($_plugin_extras_download_zip, $_plugin_extras_download_v_zip);
 
@@ -978,9 +983,14 @@ namespace websharks_core_v000000_dev
 							$this->©command->git('commit --all --allow-empty --message '. // Final commit (after building).
 							                     escapeshellarg($this->i18n('Auto-commit; after building plugin.')), $this->plugin_repo_dir);
 
+							if($this->©string->is_plugin_stable_version($this->version))
+								$this->©command->git('tag --message '. // Tag this commit (after building).
+								                     escapeshellarg(sprintf($this->i18n('%1$s v%2$s.'), $this->plugin_name, $this->version)), $this->plugin_repo_dir);
+
 							$successes->add(__METHOD__.'#commit_before_plugin_build_complete', get_defined_vars(),
 							                sprintf($this->i18n('All files (new and/or changed) on GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the plugin repo directory: `%2$s`.'), $this->version, $this->plugin_repo_dir).
-							                $this->i18n(' Plugin finale. A commit has been processed for all changes to the new file structure.')
+							                $this->i18n(' Plugin finale. A commit has been processed for all changes to the new file structure.').
+							                sprintf($this->i18n(' Tagged stable release as: `$1%s`.'), $this->version)
 							);
 							$successes->add(__METHOD__.'#plugin_build_complete', get_defined_vars(), $this->i18n('Plugin build complete!'));
 						}
@@ -1143,12 +1153,12 @@ namespace websharks_core_v000000_dev
 							// Compress this core directory into a single PHP Archive.
 
 							$_this_core_phar                     = $this->core_repo_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
-							$_this_core_distro_temp_dir          = $this->©dir->get_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes;
+							$_this_core_distro_temp_dir          = $this->©dir->temp().'/'.$this->___instance_config->core_ns_stub_with_dashes;
 							$_this_core_distro_temp_dir_stub     = $_this_core_distro_temp_dir.'/stub.php';
 							$_this_core_distro_temp_dir_htaccess = $_this_core_distro_temp_dir.'/.htaccess';
 
-							$this->©dir->empty_and_remove($_this_core_distro_temp_dir); // In case it already exists.
-							$this->©dir->copy_to($_this_core_dir, $_this_core_distro_temp_dir, array('.gitignore' => $this->core_repo_dir.'/.gitignore'), TRUE);
+							$this->©dir->delete($_this_core_distro_temp_dir); // In case it already exists.
+							$this->©dir->copy_to($_this_core_dir, $_this_core_distro_temp_dir, array($this::gitignore => $this->core_repo_dir.'/.gitignore'), TRUE);
 
 							if(!is_file($_this_core_distro_temp_dir_htaccess)
 							   || !is_readable($_this_core_distro_temp_dir_htaccess)
@@ -1159,7 +1169,7 @@ namespace websharks_core_v000000_dev
 								$this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 							);
 
-							$this->©file->unlink($_this_core_phar); // In case it already exists.
+							$this->©file->delete($_this_core_phar); // In case it already exists.
 							$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
 							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar,
@@ -1167,7 +1177,7 @@ namespace websharks_core_v000000_dev
 							                     $this->___instance_config->core_ns_stub_v.$this->©string->with_underscores($this->version));
 							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
-							$this->©dir->empty_and_remove($_this_core_distro_temp_dir); // Remove temp directory now.
+							$this->©dir->delete($_this_core_distro_temp_dir); // Remove temp directory now.
 
 							$successes->add(__METHOD__.'#'.$new_slug.'core_phar_built_for_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
 							                sprintf($this->i18n('A temporary distro copy of the %1$s has been compressed into a single PHP Archive file here: `%2$s`.'), $this->___instance_config->core_name, $_this_core_phar).
@@ -1183,7 +1193,7 @@ namespace websharks_core_v000000_dev
 								{ // Be sure all of these classes are loaded up into memory (to avoid autoload issues).
 									array($this->©dirs, $this->©commands, $this->©successes, $this->©exception);
 
-									$this->©dir->empty_and_remove($this->core_dir);
+									$this->©dir->delete($this->core_dir);
 									$this->©command->git('rm -r --cached '.escapeshellarg($this->core_dir.'/'), $this->core_repo_dir);
 
 									$this->©command->git('rm -r --cached '.escapeshellarg($_this_core_dir.'/'), $this->core_repo_dir);
@@ -1204,9 +1214,15 @@ namespace websharks_core_v000000_dev
 							$this->©command->git('commit --all --allow-empty --message '. // Final commit (after building).
 							                     escapeshellarg(sprintf($this->i18n('Auto-commit; after %1$s %2$score.'), $building, $new_space)), $this->core_repo_dir);
 
+							if($is_new && $this->©string->is_plugin_stable_version($this->version))
+								$this->©command->git('tag --message '. // Tag this commit (after building).
+								                     escapeshellarg(sprintf($this->i18n('%1$s v%2$s.'), $this->___instance_config->core_name, $this->version)), $this->core_repo_dir);
+
 							$successes->add(__METHOD__.'#commit_before_'.$new_slug.'core_build_complete', get_defined_vars(),
 							                sprintf($this->i18n('All files (new and/or changed) on %1$sGIT branch: `%2$s`; have been added to the list of GIT-tracked files in the %3$s repo directory: `%4$s`.'), $new_space, $this->version, $this->___instance_config->core_name, $this->core_repo_dir).
-							                sprintf($this->i18n(' Finale. A commit has been processed for all changes to the %1$sfile structure.'), $new_space)
+							                sprintf($this->i18n(' Finale. A commit has been processed for all changes to the %1$sfile structure.'), $new_space).
+							                (($is_new && $this->©string->is_plugin_stable_version($this->version)) // A new stable release?
+								                ? sprintf($this->i18n(' Tagged stable release as: `$1%s`.'), $this->version) : '')
 							);
 							$successes->add(__METHOD__.'#'.$new_slug.'core_build_complete',
 							                get_defined_vars(), sprintf($this->i18n('%1$s %2$s complete!'), $ucfirst_core, $build));

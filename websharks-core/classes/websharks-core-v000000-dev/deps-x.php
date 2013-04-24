@@ -813,6 +813,31 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				}
 			# --------------------------------------------------------------------------------------------------------------------------------
 
+			if(!extension_loaded('openssl') || !$this->is_function_possible('openssl_sign'))
+				{
+					$errors[] = array(
+						'title'   => $this->i18n('OpenSSL Extension With <code>openssl_sign()</code>'),
+						'message' => sprintf(
+							$this->i18n(
+								'PHP not compiled with OpenSSL. Missing PHP function <a href="http://php.net/manual/en/function.openssl-sign.php" target="_blank" rel="xlink">openssl_sign()</a>. In order to run %1$s, your installation of PHP needs the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension</a>.'.
+								' Please consult with your web hosting company about this message.'
+							), htmlspecialchars($plugin_name)
+						)
+					);
+				}
+			else // Pass on this check.
+				{
+					$passes[] = array(
+						'title'   => $this->i18n('OpenSSL Extension With <code>openssl_sign()</code>'),
+						'message' => sprintf(
+							$this->i18n(
+								'The <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension</a> is installed, and PHP function <a href="http://php.net/manual/en/function.openssl-sign.php" target="_blank" rel="xlink">openssl_sign()</a> is available.'
+							), NULL
+						)
+					);
+				}
+			# --------------------------------------------------------------------------------------------------------------------------------
+
 			if(!$this->is_function_possible('eval'))
 				{
 					$errors[] = array(
@@ -836,6 +861,57 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							$this->i18n(
 								'The <a href="http://php.net/manual/en/function.eval.php" target="_blank" rel="xlink">eval()</a> function is available.'
 							), NULL
+						)
+					);
+				}
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			if(!$this->is_function_possible('glob'))
+				{
+					$errors[] = array(
+						'title'   => $this->i18n('PHP <code>glob()</code> Function'),
+						'message' => sprintf(
+							$this->i18n(
+								'Missing PHP function. %1$s needs the PHP <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">glob()</a> function.'.
+								' Please check with your hosting provider to resolve this issue and have PHP <code>glob()</code> enabled.'
+							), htmlspecialchars($plugin_name)
+						)
+					);
+				}
+			else // Pass on this check.
+				{
+					$passes[] = array(
+						'title'   => $this->i18n('PHP <code>glob()</code> Function'),
+						'message' => sprintf(
+							$this->i18n(
+								'The <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">glob()</a> function is available.'
+							), NULL
+						)
+					);
+				}
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			if(!defined('GLOB_AVAILABLE_FLAGS') || !defined('GLOB_BRACE') || !(GLOB_AVAILABLE_FLAGS & GLOB_BRACE))
+				{
+					$errors[] = array(
+						'title'   => $this->i18n('PHP <code>GLOB_BRACE</code> Flag'),
+						'message' => sprintf(
+							$this->i18n(
+								'This installation of PHP <code>v%1$s</code> does NOT support the <code>GLOB_BRACE</code> flag for the <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">glob()</a> function in PHP.'.
+								' Please check <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">this article</a> for further details.'.
+								' Or, consult with your web hosting company about this message. This is likely an underlying server compatibility issue.'
+							), htmlspecialchars($php_version)
+						)
+					);
+				}
+			else // Pass on this check.
+				{
+					$passes[] = array(
+						'title'   => $this->i18n('PHP <code>GLOB_BRACE</code> Flag'),
+						'message' => sprintf(
+							$this->i18n(
+								'You are currently running PHP <code>v%1$s</code> w/ support for the <code>GLOB_BRACE</code> flag.'
+							), htmlspecialchars($php_version)
 						)
 					);
 				}
@@ -1109,31 +1185,6 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			unset($_curl_over_ssl_test_success, $_curl_fopen_ssl_test_url, $_curl_fopen_ssl_test_url_return_string_frag);
 			unset($_curl_localhost_test_success, $_curl_fopen_localhost_test_url, $_curl_fopen_localhost_test_url_return_string_frag);
 
-			# --------------------------------------------------------------------------------------------------------------------------------
-
-			if(extension_loaded('openssl') && $this->is_function_possible('openssl_sign'))
-				{
-					$errors[] = array(
-						'title'   => $this->i18n('OpenSSL Extension With <code>openssl_sign()</code>'),
-						'message' => sprintf(
-							$this->i18n(
-								'PHP not compiled with OpenSSL. Missing PHP function <a href="http://php.net/manual/en/function.openssl-sign.php" target="_blank" rel="xlink">openssl_sign()</a>. In order to run %1$s, your installation of PHP needs the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension</a>.'.
-								' Please consult with your web hosting company about this message.'
-							), htmlspecialchars($plugin_name)
-						)
-					);
-				}
-			else // Pass on this check.
-				{
-					$passes[] = array(
-						'title'   => $this->i18n('OpenSSL Extension With <code>openssl_sign()</code>'),
-						'message' => sprintf(
-							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension</a> is installed, and PHP function <a href="http://php.net/manual/en/function.openssl-sign.php" target="_blank" rel="xlink">openssl_sign()</a> is available.'
-							), NULL
-						)
-					);
-				}
 			# --------------------------------------------------------------------------------------------------------------------------------
 
 			$_temp_dir = ''; // Initialize; in case we're unable to locate.
@@ -2746,30 +2797,32 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		}
 
 	/**
-	 * Normalizes directory separators.
+	 * Normalizes directory/file separators.
 	 *
 	 * @return string {@inheritdoc}
 	 *
 	 * @see websharks_core_v000000_dev::n_dir_deps()
 	 * @inheritdoc websharks_core_v000000_dev::n_dir_deps()
 	 */
-	public function n_dir_seps($path, $allow_trailing_slash = FALSE)
+	public function n_dir_seps($dir_file, $allow_trailing_slash = FALSE)
 		{
-			if(!is_string($path) || !is_bool($allow_trailing_slash))
+			if(!is_string($dir_file) || !is_bool($allow_trailing_slash))
 				throw new exception( // Fail here; detected invalid arguments.
 					sprintf($this->i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
-			if(!strlen($path)) return ''; // Catch empty strings.
+			if(!strlen($dir_file)) return ''; // Catch empty string.
 
-			preg_match('/^(?P<scheme>[a-z]+\:\/\/)/i', $path, $_path);
-			$path = (!empty($_path['scheme'])) ? str_ireplace($_path['scheme'], '', $path) : $path;
+			$regex_scheme = substr($this->regex_valid_dir_file_stream_wrapper, 0, -2).'/';
+			if(preg_match($regex_scheme, $dir_file, $scheme)) // A PHP stream wrapper?
+				$dir_file = preg_replace($regex_scheme, '', $dir_file);
 
-			$path = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $path));
-			$path = ($allow_trailing_slash) ? $path : rtrim($path, '/');
+			$dir_file = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $dir_file));
+			$dir_file = ($allow_trailing_slash) ? $dir_file : rtrim($dir_file, '/'); // Strip trailing slashes.
 
-			$path = (!empty($_path['scheme'])) ? strtolower($_path['scheme']).$path : $path; // Lowercase.
+			if(!empty($scheme[0])) // Scheme (force lowercase).
+				$dir_file = strtolower($scheme[0]).$dir_file;
 
-			return $path; // Normalized now.
+			return $dir_file; // Normalized now.
 		}
 
 	/**
@@ -2826,19 +2879,27 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				throw new exception( // Fail here; detected invalid arguments.
 					sprintf($this->i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
-			$dir_file     = ltrim($this->n_dir_seps($dir_file), '/');
-			$starting_dir = ($starting_dir === '__DIR__') ? dirname(__FILE__) : $starting_dir;
-			$starting_dir = ($starting_dir === 'phar://') ? 'phar://'.dirname(__FILE__) : $starting_dir;
-			$starting_dir = $this->n_dir_seps($starting_dir);
+			$dir_file = ltrim($this->n_dir_seps($dir_file), '/'); // Relative.
 
-			for($_i = 0, $_dir = $starting_dir; $_i <= 100; $_i++)
+			if($starting_dir === '__DIR__') // Using this for PHP v5.2 compatibility.
+				$starting_dir = dirname(__FILE__); // Current file directory.
+
+			else if(in_array($starting_dir, array('phar://', 'phar://__DIR__'), TRUE)) // With a PHAR stream wrapper?
+				$starting_dir = 'phar://'.preg_replace('/^[a-z0-9]+\:\/\//i', '', dirname(__FILE__)); // Strip any existing stream wrapper.
+
+			for($_i = 0, $_dir = $this->n_dir_seps($starting_dir); $_i <= 100; $_i++)
 				{
-					if($_i > 0) $_dir = dirname($_dir);
-					if(!$_dir || $_dir === '.' || strcasecmp($_dir, 'phar:') === 0)
-						break; // Search complete now.
+					if($_i > 0) // Up one directory now?
+						$_dir = $this->n_dir_seps(dirname($_dir), TRUE);
 
-					if(is_file($_dir.'/'.$dir_file))
-						return $_dir.'/'.$dir_file;
+					if(!$_dir || $_dir === '.' || substr($_dir, -1) === ':')
+						break; // Search complete (we're beyond even a root directory or scheme now).
+
+					if(file_exists($_dir.'/'.$dir_file))
+						return $this->n_dir_seps($_dir.'/'.$dir_file);
+
+					if(substr($_dir, -1) === '/') // Root directory or scheme?
+						break; // Search complete (there is nothing more to search after this).
 				}
 			unset($_i, $_dir); // Housekeeping.
 
@@ -3052,6 +3113,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		'unset'           => 'unset',
 		'__halt_compiler' => '__halt_compiler'
 	);
+
+	/**
+	 * @var string A directory/file stream wrapper validation pattern.
+	 *
+	 * @see websharks_core_v000000_dev::$regex_valid_dir_file_stream_wrapper
+	 * @inheritdoc websharks_core_v000000_dev::$regex_valid_dir_file_stream_wrapper
+	 */
+	public $regex_valid_dir_file_stream_wrapper = '/^[a-zA-Z0-9]+\:\/\/$/';
 
 	/**
 	 * Array of base 64 encoded PNG icons.

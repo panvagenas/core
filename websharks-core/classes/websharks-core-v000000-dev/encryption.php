@@ -404,14 +404,14 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->©commands->possible()) return ''; // Not possible.
 
-					if(file_put_contents(($string_file = ($temp_dir = $this->©dirs->get_temp_dir()).'/'.md5($this->©string->unique_id().'rsa-sha1-string').'.tmp'), $string)
+					if(file_put_contents(($string_file = ($temp_dir = $this->©dirs->temp()).'/'.md5($this->©string->unique_id().'rsa-sha1-string').'.tmp'), $string)
 					   && file_put_contents(($private_key_file = $temp_dir.'/'.md5($this->©string->unique_id().'rsa-sha1-private-key').'.tmp'), $this->key($key))
 					   && file_put_contents(($rsa_sha1_sig_file = $temp_dir.'/'.md5($this->©string->unique_id().'rsa-sha1-sig').'.tmp'), '') === 0
 					) // If we can write all of these files properly.
 						{
 							$this->©commands->exec(escapeshellarg($openssl).' sha1 -sign '.escapeshellarg($private_key_file).' -out '.escapeshellarg($rsa_sha1_sig_file).' '.escapeshellarg($string_file));
 							$signature = file_get_contents($rsa_sha1_sig_file); // Hopefully the signature is available now.
-							$this->©file->unlink($string_file, $private_key_file, $rsa_sha1_sig_file); // Cleanup.
+							$this->©file->delete($string_file, $private_key_file, $rsa_sha1_sig_file); // Cleanup.
 
 							if($signature) // It's a good day in Eureka!
 								return $signature;

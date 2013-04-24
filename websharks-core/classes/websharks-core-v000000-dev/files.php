@@ -22,27 +22,192 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @assert ($GLOBALS[__NAMESPACE__])
 		 */
-		class files extends framework
+		class files extends dirs_files
 		{
 			/**
-			 * Get abbreviated byte notation for a particular file.
+			 * Attempts to get `/wp-load.php`.
 			 *
-			 * @param string $file Location of a file.
+			 * @return string {@inheritdoc}
 			 *
-			 * @return string If file exists, an abbreviated byte notation — else an empty string.
+			 * @see \websharks_core_v000000_dev::wp_load()
+			 * @inheritdoc \websharks_core_v000000_dev::wp_load()
+			 */
+			public function wp_load() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'wp_load'), func_get_args());
+				}
+
+			/**
+			 * A map of MIME types.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::mime_types()
+			 */
+			public function mime_types() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'mime_types'), func_get_args());
+				}
+
+			/**
+			 * A map of textual MIME types.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::textual_mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::textual_mime_types()
+			 */
+			public function textual_mime_types() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'textual_mime_types'), func_get_args());
+				}
+
+			/**
+			 * A map of compressable MIME types.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::compressable_mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::compressable_mime_types()
+			 */
+			public function compressable_mime_types() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'compressable_mime_types'), func_get_args());
+				}
+
+			/**
+			 * A map of binary MIME types.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::binary_mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::binary_mime_types()
+			 */
+			public function binary_mime_types() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'binary_mime_types'), func_get_args());
+				}
+
+			/**
+			 * A map of cacheable MIME types.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::cacheable_mime_types()
+			 * @inheritdoc \websharks_core_v000000_dev::cacheable_mime_types()
+			 */
+			public function cacheable_mime_types() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'cacheable_mime_types'), func_get_args());
+				}
+
+			/**
+			 * Glob files.
+			 *
+			 * @note This will NOT glob directories; only files.
+			 *    However, this MAY glob files in directories, depending on the pattern of course.
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see dirs_files::glob()
+			 * @inheritdoc dirs_files::glob()
+			 */
+			public function glob($dir, $pattern, $case_insensitive = FALSE, $x_flags = NULL, $flags = NULL)
+				{
+					return parent::glob($dir, $pattern, $case_insensitive, $x_flags, $flags, $this::file_type);
+				}
+
+			/**
+			 * Gets a new writable temporary file path.
+			 *
+			 * @param string $prefix Optional. This defaults to an empty string.
+			 *    This is passed to the underlying call to PHP's ``uniqid()`` function.
+			 *
+			 * @param string $extension Optional. This defaults to `tmp`.
+			 *
+			 * @return string A new writable temporary file path.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$extension`` is empty.
+			 */
+			public function temp($prefix = '', $extension = 'tmp')
+				{
+					$this->check_arg_types('string', 'string:!empty', func_get_args());
+
+					return $this->©dir->temp().'/'.$this->©string->unique_id($prefix).'.'.$extension;
+				}
+
+			/**
+			 * An array of known file extensions.
+			 *
+			 * @param string $type Optional. Defaults to {@link fw_constants::any_type}.
+			 *
+			 * @return array An array of file extensions; of a specific ``$type``.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$type`` is empty or unknown (e.g. invalid).
+			 */
+			public function extensions($type = self::any_type)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					switch($type) // Let's figure out which type.
+					{
+						case $this::textual_type:
+								return array_keys($this->textual_mime_types());
+
+						case $this::compressable_type:
+								return array_keys($this->compressable_mime_types());
+
+						case $this::cacheable_type:
+								return array_keys($this->cacheable_mime_types());
+
+						case $this::binary_type:
+								return array_keys($this->binary_mime_types());
+
+						case $this::any_known_type:
+						case $this::any_type: // The same.
+								return array_keys($this->mime_types());
+
+						default: // Throw exception (invalid type).
+							throw $this->©exception(
+								__METHOD__.'#unknown_type', get_defined_vars(),
+								sprintf($this->i18n('Unknown extension type: `%1$s`.'), $type)
+							);
+					}
+				}
+
+			/**
+			 * Abbreviated byte notation for a particular file.
+			 *
+			 * @param string $file Absolute path to an existing file.
+			 *
+			 * @return string If file exists, an abbreviated byte notation; else an empty string.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$file`` is NOT a string; or is an empty string.
+			 * @throws exception If ``$file`` is NOT actually a file.
+			 * @throws exception If ``$file`` is NOT readable.
 			 *
 			 * @assert (dirname(__FILE__).'/files.php') === '5.51 kbs'
 			 */
 			public function size_abbr($file)
 				{
-					$this->check_arg_types('string', func_get_args());
+					$this->check_arg_types('string:!empty', func_get_args());
 
-					if($file && is_file($file))
-						return $this->bytes_abbr((float)filesize($file));
-
-					return '';
+					if(!is_file($file))
+						throw $this->©exception(
+							__METHOD__.'#nonexistent_file', get_defined_vars(),
+							sprintf($this->i18n('Nonexistent file: `%1$s`.'), $file)
+						);
+					if(!is_readable($file))
+						throw $this->©exception(
+							__METHOD__.'#read_issues', get_defined_vars(),
+							$this->i18n('Expecting a readable file (permission issues).').
+							sprintf($this->i18n(' Got: `%1$s`.'), $file)
+						);
+					return $this->bytes_abbr((float)filesize($file));
 				}
 
 			/**
@@ -141,71 +306,45 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Attempts to get `/wp-load.php`.
+			 * Archive/rename file; if existing size is too large.
 			 *
-			 * @return string {@inheritdoc}
+			 * @param string  $file An absolute file path (which may NOT exist yet).
+			 *    However, if the file DOES exist; it MUST be readable/writable.
 			 *
-			 * @see \websharks_core_v000000_dev::wp_load()
-			 * @inheritdoc \websharks_core_v000000_dev::wp_load()
-			 */
-			public function wp_load() // Arguments are NOT listed here.
-				{
-					return call_user_func_array(array('\\websharks_core_v000000_dev', 'wp_load'), func_get_args());
-				}
-
-			/**
-			 * Locates a specific directory/file path.
+			 * @param integer $max_size Optional. This defaults to a value of `2097152` (2MB).
+			 *    This is the size at which files will be archived; if they exceed this max size.
 			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::locate()
-			 * @inheritdoc \websharks_core_v000000_dev::locate()
-			 */
-			public function locate() // Arguments are NOT listed here.
-				{
-					return call_user_func_array(array('\\websharks_core_v000000_dev', 'locate'), func_get_args());
-				}
-
-			/**
-			 * Archive/rename, if file size is becoming too large.
-			 *
-			 * @param string $file An absolute file path.
-			 *    If file exists, the file MUST be readable/writable.
-			 *
-			 * @return string A reverberation of ``$file``.
-			 *    The ``$file`` string NEVER changes, only the source might be renamed.
-			 *    In which case, ``$file`` may no longer exist after this routine.
+			 * @return string A reverberation of ``$file`` (which may no longer exist after we're done here).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$file`` exists, but it's NOT readable/writable.
 			 * @throws exception If the containing dir is NOT readable/writable.
 			 * @throws exception If a PHP ``rename()`` fails.
 			 */
-			public function maybe_archive($file)
+			public function maybe_archive($file, $max_size = 2097152)
 				{
-					$this->check_arg_types('string:!empty', func_get_args());
+					$this->check_arg_types('string:!empty', 'integer:!empty', func_get_args());
 
-					if(!is_file($file))
-						return $file;
+					if(!is_file($file)) return $file;
 
-					else if(!is_readable($file) || !is_writable($file))
+					if(!is_readable($file) || !is_writable($file))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Expecting a readable/writable file (permission issues).').
 							sprintf($this->i18n(' Got: `%1$s`.'), $file)
 						);
-					else if(filesize($file) < 1048576 * 2) // Two megabytes.
-						return $file;
+					if(filesize($file) < $max_size) return $file;
 
-					$extension    = $this->extension($file);
-					$extension    = ($extension) ? '.'.$extension : '';
-					$archive_file = dirname($file).'/'.basename($file, $extension).'-archived-'.time().$extension;
+					$archived_file = dirname($file).'/'.$this->abs_basename($file).'-archived-'.time().
+					                 (($extension = $this->extension($file)) ? '.'.$extension : '');
 
-					return $this->rename_to($file, $archive_file);
+					$this->rename_to($file, $archived_file);
+
+					return $file; // Original ``$file``.
 				}
 
 			/**
-			 * Copy a file.
+			 * Copy a file to a new location.
 			 *
 			 * @param string $file Path to file.
 			 * @param string $to Path to new copy location.
@@ -235,9 +374,9 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#nonexistent_source', get_defined_vars(),
 							sprintf($this->i18n('Unable to copy. Nonexistent source: `%1$s`.'), $file)
 						);
-					else if(!is_readable($file))
+					if(!is_readable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							__METHOD__.'#read_issues', get_defined_vars(),
 							sprintf($this->i18n('Unable to copy this file: `%1$s`.'), $file).
 							$this->i18n(' Possible permission issues. This file is not readable.')
 						);
@@ -248,13 +387,13 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Destination exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this file: `%1$s`.'), $to)
 						);
-					else if(!is_dir(dirname($to)))
+					if(!is_dir(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_missing', get_defined_vars(),
 							$this->i18n('Destination\'s parent directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
 						);
-					else if(!is_writable(dirname($to)))
+					if(!is_writable(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination\'s directory is not writable.').
@@ -273,7 +412,7 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Rename a file.
+			 * Renames a file.
 			 *
 			 * @param string $file A full file path.
 			 * @param string $to A new full file path.
@@ -303,13 +442,13 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#nonexistent_source', get_defined_vars(),
 							sprintf($this->i18n('Unable to rename. Nonexistent source: `%1$s`.'), $file)
 						);
-					else if(!is_readable($file))
+					if(!is_readable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							__METHOD__.'#read_issues', get_defined_vars(),
 							sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
 							$this->i18n(' Possible permission issues. This file is not readable.')
 						);
-					else if(!is_writable($file))
+					if(!is_writable($file))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
@@ -322,13 +461,13 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Destination exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
 						);
-					else if(!is_dir(dirname($to)))
+					if(!is_dir(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_missing', get_defined_vars(),
 							$this->i18n('Destination\'s parent directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
 						);
-					else if(!is_writable(dirname($to)))
+					if(!is_writable(dirname($to)))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination\'s directory is not writable.').
@@ -346,10 +485,9 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * File deletion.
+			 * Deletes a file.
 			 *
 			 * @param string|array $file Path to file (or an array of file paths).
-			 *
 			 * @params-variable-length This function accepts a variable-length list of arguments.
 			 *    You can pass in any number of file paths for deletion (even string/array mixtures).
 			 *
@@ -362,21 +500,23 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If any ``$file`` is NOT a string|array; or is an empty string|array.
 			 * @throws exception If any ``$file`` exists; but it is NOT actually a file.
 			 * @throws exception If any ``$file`` is NOT writable.
-			 * @throws exception If the underlying call to PHP's ``unlink()`` function fails for any reason.
+			 * @throws exception If deletion fails.
 			 */
-			public function unlink($file)
+			public function delete($file)
 				{
 					$this->check_arg_types(array('string:!empty', 'array:!empty'), func_get_args());
 
-					$files = array();
-					foreach(func_get_args() as $_file)
-						if(is_array($_file)) $files = array_merge($files, $_file);
-						else $files[] = $_file;
+					$files = array(); // Initialize array of files to delete here.
 
-					$files = array_map(array($this, '©dir.n_seps'), $files);
-					$files = array_unique($files);
+					foreach(func_get_args() as $_file) // Collect all arguments.
+						{
+							if(is_array($_file))
+								$files = array_merge($files, $_file);
+							else $files[] = $_file;
+						}
+					unset($_file); // Housekeeping.
 
-					foreach($files as $_file)
+					foreach($files as $_file) // Iterate all files now.
 						{
 							if(!$this->©string->is_not_empty($_file))
 								throw $this->©exception(
@@ -384,14 +524,14 @@ namespace websharks_core_v000000_dev
 									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $this->©var->dump($_file)).
 									$this->i18n(' Each file MUST be represented by a (string) that is NOT empty.')
 								);
-							else if(!file_exists($_file)) continue; // Already gone.
+							if(!file_exists($_file)) continue; // It's already gone.
 
-							else if(!is_file($_file))
+							if(!is_file($_file))
 								throw $this->©exception(
 									__METHOD__.'#invalid_file', get_defined_vars(),
 									sprintf($this->i18n('Unable to delete this file path. NOT a file: `%1$s`.'), $_file)
 								);
-							else if(!is_writable($_file) || !unlink($_file))
+							if(!is_writable($_file) || !unlink($_file))
 								throw $this->©exception(
 									__METHOD__.'#read_write_issues', get_defined_vars(),
 									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $_file).
@@ -406,43 +546,19 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Deletes files from a shell glob pattern.
+			 * Deletes files deeply.
 			 *
-			 * @param string|array|boolean $glob A glob pattern; or an array of absolute file paths.
-			 *    If this is a string; it must NOT be empty. Arrays CAN be empty however.
-			 *    A boolean is also accepted; in case an input ``glob()`` fails.
+			 * @note This will NOT delete entire directories found in the array; we only delete files.
+			 *    However, this MAY delete files in directories; depending on what the array actually contains.
 			 *
-			 * @return integer Number of files deleted; else an exception is thrown.
-			 *    Files that do NOT even exist; do NOT get counted in this.
-			 *    This function may often return a `0` value.
+			 * @return integer {@inheritdoc}
 			 *
-			 * @note This will NOT delete directories; only files.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$glob`` is an empty string.
-			 * @throws exception If unable to delete a file for any reason.
+			 * @see dirs_files::delete_deep()
+			 * @inheritdoc dirs_files::delete_deep()
 			 */
-			public function unlink_glob($glob)
+			public function delete_deep($value, $min_mtime = -1, $min_atime = -1, $type = self::file_type, $___recursion = FALSE)
 				{
-					$this->check_arg_types(array('string:!empty', 'array', 'boolean'), func_get_args());
-
-					$deleted_files = 0; // Initialize.
-					if(is_bool($glob)) return $deleted_files; // Ignore.
-					$glob = (is_array($glob)) ? $glob : (array)glob($glob);
-
-					foreach($glob as $_dir_file) if($this->©string->is_not_empty($_dir_file) && is_file($_dir_file))
-						{
-							if(!is_writable($_dir_file) || !unlink($_dir_file))
-								throw $this->©exception(
-									__METHOD__.'#read_write_issues', get_defined_vars(),
-									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $_dir_file).
-									$this->i18n(' Possible permission issues. Please delete this file manually.')
-								);
-							$deleted_files++;
-						}
-					clearstatcache(); // Make other routines aware.
-
-					return $deleted_files; // Total deleted files.
+					return parent::delete_deep($value, $min_mtime, $min_atime, $this::file_type, $___recursion);
 				}
 
 			/**
@@ -470,23 +586,24 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string:!empty', 'string', 'string:!empty', func_get_args());
 
 					$file      = $this->©dir->n_seps($file);
-					$temp_file = $this->©dir->get_temp_dir().'/'.$this->©string->unique_id().'-'.basename($file);
+					$temp_file = $this->©dir->temp().'/'.$this->©string->unique_id().'-'.basename($file);
 
 					if(!is_file($file))
 						throw $this->©exception(
 							__METHOD__.'#nonexistent_source', get_defined_vars(),
-							sprintf($this->i18n('Unable to change EOLs. Nonexistent source: `%1$s`.'), $file)
+							sprintf($this->i18n('Unable to search/replace: `%1$s`.'), $file).
+							$this->i18n(' This is NOT an existing file.')
 						);
-					else if(!is_readable($file))
+					if(!is_readable($file))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
-							sprintf($this->i18n('Unable to change EOLs in this file: `%1$s`.'), $file).
+							sprintf($this->i18n('Unable to search/replace in this file: `%1$s`.'), $file).
 							$this->i18n(' Possible permission issues. This file is not readable.')
 						);
-					else if(!is_writable($file))
+					if(!is_writable($file))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
-							sprintf($this->i18n('Unable to change EOLs in this file: `%1$s`.'), $file).
+							sprintf($this->i18n('Unable to search/replace in this file: `%1$s`.'), $file).
 							$this->i18n(' Possible permission issues. This file is not writable.')
 						);
 
@@ -495,7 +612,7 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#file_resource', get_defined_vars(),
 							sprintf($this->i18n('Unable to open file resource: `%1$s`.'), $file)
 						);
-					else if(!is_resource($_temp_file_resource = fopen($temp_file, 'ab')))
+					if(!is_resource($_temp_file_resource = fopen($temp_file, 'ab')))
 						throw $this->©exception(
 							__METHOD__.'#temp_file_resource', get_defined_vars(),
 							sprintf($this->i18n('Unable to open temp file resource: `%1$s`.'), $temp_file)
@@ -519,252 +636,12 @@ namespace websharks_core_v000000_dev
 					fclose($_temp_file_resource); // Housekeeping.
 					unset($_file_resource, $_temp_file_resource, $_line, $_replacements);
 
-					$this->rename_to($temp_file, $file.'~tmp'); // Let's make sure this works.
+					$this->rename_to($temp_file, $file.'-tmp'); // Make sure this works.
 					// If this throws an exception; the original file remains intact (e.g. no data loss).
-					$this->unlink($file); // Delete the original file now (we will replace it here).
-					$this->rename_to($file.'~tmp', $file); // Temp file takes its place.
+					$this->delete($file); // Delete the original file now (we will replace it here).
+					$this->rename_to($file.'-tmp', $file); // Temp file takes its place.
 
 					return $replacements; // Total replacements.
-				}
-
-			/**
-			 * Locates a template file (in one of many possible locations).
-			 *
-			 * @param string $file Template file name (relative path).
-			 *
-			 * @return string Absolute path to a template file (w/ the highest precedence).
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$file`` is empty (it MUST be passed as a string, NOT empty).
-			 * @throws exception If ``$file`` does NOT exist, or is NOT readable.
-			 */
-			public function template($file)
-				{
-					$this->check_arg_types('string:!empty', func_get_args());
-
-					foreach(($dirs = $this->©dirs->where_templates_may_reside()) as $_dir)
-						if(is_file($path = $_dir.'/'.$file) && is_readable($path))
-							return $path;
-					unset($_dir); // Housekeeping.
-
-					throw $this->©exception(
-						__METHOD__.'#file_missing', get_defined_vars(),
-						sprintf($this->i18n('Unable to locate template file: `%1$s`.'), $file)
-					);
-				}
-
-			/**
-			 * Locates a template file (in one of many possible locations).
-			 *
-			 * @param string $file Template file name (relative path).
-			 *
-			 * @return string URL to a template file (w/ the highest precedence).
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$file`` is empty (it MUST be passed as a string, NOT empty).
-			 * @throws exception If ``$file`` does NOT exist, or is NOT readable.
-			 */
-			public function template_url($file)
-				{
-					$this->check_arg_types('string:!empty', func_get_args());
-
-					return $this->©url->to_wp_abs_dir_or_file($this->template($file));
-				}
-
-			/**
-			 * Converts a file path to a CSS class name.
-			 *
-			 * @param string $file Any file path (usually a relative path).
-			 *
-			 * @return string A CSS class name.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 */
-			public function to_css_class($file)
-				{
-					$this->check_arg_types('string', func_get_args());
-
-					$file = $this->©dir->n_seps($file);
-
-					if(($strrpos = strrpos($file, '.')) !== FALSE)
-						$class = (string)substr($file, 0, $strrpos);
-					else $class = $file;
-
-					$class = str_replace('/', '--', $class);
-					$class = preg_replace('/[^a-z0-9\-]/i', '-', $class);
-					$class = trim($class, '-');
-
-					return $class;
-				}
-
-			/**
-			 * Absolute basename (w/o its file extension).
-			 *
-			 * @param string $file A file path, or just a file name.
-			 *
-			 * @return string Absolute basename (w/o its file extension).
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$file`` is empty.
-			 */
-			public function abs_basename($file)
-				{
-					$this->check_arg_types('string:!empty', func_get_args());
-
-					if(strlen($extension = $this->extension($file)))
-						return preg_replace('/\.'.preg_quote($extension, '/').'$/i', '', basename($file));
-
-					return basename($file);
-				}
-
-			/**
-			 * Gets a file extension.
-			 *
-			 * @return string {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::extension()
-			 * @inheritdoc \websharks_core_v000000_dev::extension()
-			 */
-			public function extension() // Arguments are NOT listed here.
-				{
-					return call_user_func_array(array('\\websharks_core_v000000_dev', 'extension'), func_get_args());
-				}
-
-			/**
-			 * File has a specific extension?
-			 *
-			 * @param string $file A file path, or just a file name.
-			 *
-			 * @param string $type Optional. Defaults to ``framework::any_type`` (any KNOWN type).
-			 *    Bypass w/ an empty string; in case of specific ``$extensions`` only.
-			 *
-			 * @param array  $extensions Optional. An array of specific extensions.
-			 *    It's possible to test for files with NO extension, by including an empty string in this array.
-			 *
-			 * @return boolean TRUE if the ``$file`` has an extension of ``$type``.
-			 *    Also TRUE if it has a specific extension in the optional ``$extensions`` array.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$file`` is empty.
-			 * @throws exception If ``$type`` is NOT empty; and it's unknown (e.g. an invalid type).
-			 */
-			public function has_extension($file, $type = self::any_type, $extensions = array())
-				{
-					$this->check_arg_types('string:!empty', 'string', 'array', func_get_args());
-
-					if($extensions) // An array of specific extensions?
-						{
-							$extensions = $this->©array->to_one_dimension($extensions);
-							$extensions = $this->©string->ify_deep($extensions);
-							$extensions = array_map('strtolower', $extensions);
-						}
-					$extensions = ($type) ? array_merge($extensions, $this->extensions($type)) : $extensions;
-
-					return in_array($this->extension($file), $extensions, TRUE);
-				}
-
-			/**
-			 * An array of known file extensions.
-			 *
-			 * @param string $type Optional. Defaults to ``framework::any_type``.
-			 *
-			 * @return array An array of file extensions; of a specific ``$type``.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$type`` is empty or unknown (e.g. invalid).
-			 */
-			public function extensions($type = self::any_type)
-				{
-					$this->check_arg_types('string:!empty', func_get_args());
-
-					switch($type) // Let's figure out which type.
-					{
-						case $this::textual_type:
-								return array_keys($this->textual_mime_types());
-
-						case $this::compressable_type:
-								return array_keys($this->compressable_mime_types());
-
-						case $this::cacheable_type:
-								return array_keys($this->cacheable_mime_types());
-
-						case $this::binary_type:
-								return array_keys($this->binary_mime_types());
-
-						case $this::any_type:
-								return array_keys($this->mime_types());
-
-						default: // Throw exception (invalid type).
-							throw $this->©exception(
-								__METHOD__.'#unknown_type', get_defined_vars(),
-								sprintf($this->i18n('Unknown extension type: `%1$s`.'), $type)
-							);
-					}
-				}
-
-			/**
-			 * A map of MIME types.
-			 *
-			 * @return array {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::mime_types()
-			 * @inheritdoc \websharks_core_v000000_dev::mime_types()
-			 */
-			public function mime_types() // Arguments are NOT listed here.
-				{
-					return call_user_func_array(array('\\websharks_core_v000000_dev', 'mime_types'), func_get_args());
-				}
-
-			/**
-			 * A map of textual MIME types.
-			 *
-			 * @return array {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::textual_mime_types()
-			 * @inheritdoc \websharks_core_v000000_dev::textual_mime_types()
-			 */
-			public function textual_mime_types() // Arguments are NOT listed here.
-				{
-					return call_user_func_array(array('\\websharks_core_v000000_dev', 'textual_mime_types'), func_get_args());
-				}
-
-			/**
-			 * A map of compressable MIME types.
-			 *
-			 * @return array {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::compressable_mime_types()
-			 * @inheritdoc \websharks_core_v000000_dev::compressable_mime_types()
-			 */
-			public function compressable_mime_types() // Arguments are NOT listed here.
-				{
-					return call_user_func_array(array('\\websharks_core_v000000_dev', 'compressable_mime_types'), func_get_args());
-				}
-
-			/**
-			 * A map of binary MIME types.
-			 *
-			 * @return array {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::binary_mime_types()
-			 * @inheritdoc \websharks_core_v000000_dev::binary_mime_types()
-			 */
-			public function binary_mime_types() // Arguments are NOT listed here.
-				{
-					return call_user_func_array(array('\\websharks_core_v000000_dev', 'binary_mime_types'), func_get_args());
-				}
-
-			/**
-			 * A map of cacheable MIME types.
-			 *
-			 * @return array {@inheritdoc}
-			 *
-			 * @see \websharks_core_v000000_dev::cacheable_mime_types()
-			 * @inheritdoc \websharks_core_v000000_dev::cacheable_mime_types()
-			 */
-			public function cacheable_mime_types() // Arguments are NOT listed here.
-				{
-					return call_user_func_array(array('\\websharks_core_v000000_dev', 'cacheable_mime_types'), func_get_args());
 				}
 		}
 	}

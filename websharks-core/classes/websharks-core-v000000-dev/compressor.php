@@ -195,6 +195,19 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Cache purging routine.
+			 *
+			 * @return boolean TRUE if the cache directory is successfully deleted, else FALSE.
+			 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to purge).
+			 *
+			 * @assert () === TRUE
+			 */
+			public function purge_cache()
+				{
+					return $this->©dir->delete_cache($this::public_type, 'compressor');
+				}
+
+			/**
 			 * Cache cleanup routine (attaches to CRON job).
 			 *
 			 * @return null Nothing. Simply cleans up the cache.
@@ -203,51 +216,12 @@ namespace websharks_core_v000000_dev
 			 */
 			public function cleanup_cache()
 				{
-					if(is_dir($cache_dir = $this->©dirs->get_cache_dir($this::public_type, 'compressor')))
-						{
-							$max_age = strtotime('-'.$this->©options->get('compressor.cache_expiration'));
+					if(!is_dir($cache_dir = $this->©dirs->cache($this::public_type, 'compressor')))
+						return; // Nothing to cleanup in this case.
 
-							// Cleanup compressor parts.
-
-							if(is_array($_cache_files_glob = glob($cache_dir.'/*compressor-parts.*')))
-								{
-									foreach($_cache_files_glob as $_cache_file)
-										{
-											if(is_file($_cache_file) && filemtime($_cache_file) < $max_age)
-												if(is_writable($_cache_file) && unlink($_cache_file))
-													clearstatcache();
-										}
-								}
-							unset ($_cache_files_glob, $_cache_file);
-
-							// Cleanup compressor part files.
-
-							if(is_array($_cache_files_glob = glob($cache_dir.'/*compressor-part.*')))
-								{
-									foreach($_cache_files_glob as $_cache_file)
-										{
-											if(is_file($_cache_file) && filemtime($_cache_file) < $max_age - 3600)
-												if(is_writable($_cache_file) && unlink($_cache_file))
-													clearstatcache();
-										}
-								}
-							unset ($_cache_files_glob, $_cache_file);
-						}
-				}
-
-			/**
-			 * Cache purging routine.
-			 *
-			 * @return boolean TRUE if the cache directory is successfully deleted, else FALSE.
-			 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to purge).
-			 *
-			 * @see The ``del_cache_dir()`` method in the directories class.
-			 *
-			 * @assert () === TRUE
-			 */
-			public function purge_cache()
-				{
-					return $this->©dirs->del_cache_dir($this::public_type, 'compressor');
+					$min_mtime = strtotime('-'.$this->©options->get('compressor.cache_expiration'));
+					$this->©files->delete_deep($this->©files->glob($cache_dir, '*compressor-part.*'), $min_mtime - 3600);
+					$this->©files->delete_deep($this->©files->glob($cache_dir, '*compressor-parts.*'), $min_mtime);
 				}
 
 			/**
@@ -427,7 +401,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('array', func_get_args());
 
 					$cache_checksum = $this->get_tag_frags_checksum($css_tag_frags);
-					$cache_dir      = $this->©dirs->get_cache_dir($this::public_type, 'compressor');
+					$cache_dir      = $this->©dirs->cache($this::public_type, 'compressor');
 
 					$cache_parts_file      = $cache_checksum.'-compressor-parts.css-cache';
 					$cache_parts_file_path = $cache_dir.'/'.$cache_parts_file;
@@ -534,7 +508,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('array', func_get_args());
 
 					$cache_checksum = $this->get_tag_frags_checksum($js_tag_frags);
-					$cache_dir      = $this->©dirs->get_cache_dir($this::public_type, 'compressor');
+					$cache_dir      = $this->©dirs->cache($this::public_type, 'compressor');
 
 					$cache_parts_file      = $cache_checksum.'-compressor-parts.js-cache';
 					$cache_parts_file_path = $cache_dir.'/'.$cache_parts_file;

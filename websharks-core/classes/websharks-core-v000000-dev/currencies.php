@@ -73,7 +73,7 @@ namespace websharks_core_v000000_dev
 
 						($json = $this->©url->remote($url_api))
 
-						&& ($json = $this->©string->json_quotify($json))
+						&& ($json = $this->©string->json_dq_property_names($json))
 						&& is_array($json = json_decode($json, TRUE))
 						&& empty($json['error']) && !empty($json['icc'])
 

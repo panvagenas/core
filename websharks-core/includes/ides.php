@@ -71,6 +71,7 @@ namespace # Global namespace.
 		class websharks_core__db_utils extends \websharks_core_v000000_dev\db_utils{}
 		class websharks_core__diagnostics extends \websharks_core_v000000_dev\diagnostics{}
 		class websharks_core__dirs extends \websharks_core_v000000_dev\dirs{}
+		class websharks_core__dirs_files extends \websharks_core_v000000_dev\dirs_files{}
 		class websharks_core__encryption extends \websharks_core_v000000_dev\encryption{}
 		class websharks_core__env extends \websharks_core_v000000_dev\env{}
 		class websharks_core__errors extends \websharks_core_v000000_dev\errors{}

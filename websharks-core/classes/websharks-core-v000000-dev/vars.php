@@ -1236,7 +1236,8 @@ namespace websharks_core_v000000_dev
 
 								$var_dump = $real_type."\n".$dump_tabs.$opening_encap."\n";
 
-								foreach($var as $_nested_key_prop => &$_nested_value)
+								foreach($var as $_nested_key_prop => $_nested_value /* NOT by reference. */)
+									// Do NOT use ``&``. Some iterators CANNOT be iterated by reference.
 									{
 										$_nested_type = gettype($_nested_value);
 

@@ -101,9 +101,9 @@ namespace websharks_core_v000000_dev
 							if(static::$initialized)
 								return TRUE; // Initialized already.
 
-							$core_ns_classes_dir      = stub::n_dir_seps(dirname(__FILE__));
-							static::$core_classes_dir = dirname($core_ns_classes_dir); // Core classes.
-							$core_dir                 = dirname(static::$core_classes_dir);
+							$core_ns_classes_dir      = stub::n_dir_seps(dirname(__FILE__)); // This directory.
+							static::$core_classes_dir = dirname($core_ns_classes_dir); // Core `classes` directory.
+							$core_dir                 = dirname(static::$core_classes_dir); // Core directory.
 
 							static::add_special_class(stub::$core_ns, $core_dir.'/stub.php');
 							static::add_special_class(stub::$core_ns_stub.'__stub', $core_dir.'/stub.php');
