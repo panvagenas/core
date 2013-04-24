@@ -48,7 +48,7 @@ namespace websharks_core_v000000_dev
 			 * @see dirs_files::glob()
 			 * @inheritdoc dirs_files::glob()
 			 */
-			public function glob($dir, $pattern, $case_insensitive = FALSE, $x_flags = NULL, $flags = NULL)
+			public function glob($dir, $pattern, $case_insensitive = FALSE, $x_flags = NULL, $flags = NULL, $type = self::dir_type)
 				{
 					return parent::glob($dir, $pattern, $case_insensitive, $x_flags, $flags, $this::dir_type);
 				}
