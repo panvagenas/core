@@ -100,10 +100,10 @@ namespace websharks_core_v000000_dev
 
 					// Define these in an API class file if you wish to override these defaults.
 
-					if(!function_exists('\\'.$this->___instance_config->plugin_root_ns))
+					if(!$this->©function->is_possible('\\'.$this->___instance_config->plugin_root_ns))
 						$this->©php->¤eval('function '.$this->___instance_config->plugin_root_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
 
-					if(!function_exists('\\'.$this->___instance_config->plugin_var_ns))
+					if(!$this->©function->is_possible('\\'.$this->___instance_config->plugin_var_ns))
 						$this->©php->¤eval('function '.$this->___instance_config->plugin_var_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
 				}
 

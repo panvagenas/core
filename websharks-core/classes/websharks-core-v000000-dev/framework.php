@@ -2178,7 +2178,7 @@ namespace websharks_core_v000000_dev
 				/*
 				 * Easier global access for those who DON'T CARE about the version.
 				 */
-				if(!function_exists('\\'.stub::$core_ns_stub)) // Only if it does NOT exist yet?
+				if(!core()->©function->is_possible('\\'.stub::$core_ns_stub)) // Only if it does NOT exist yet?
 					core()->©php->¤eval('function '.stub::$core_ns_stub.'($version = \'\'){if(!$version) return $GLOBALS[\''.stub::$core_ns_stub.'\']; return $GLOBALS[\''.stub::$core_ns_stub_v.'\'.'.stub::$core_ns.'::with_underscores((string)$version)];}');
 
 				/**

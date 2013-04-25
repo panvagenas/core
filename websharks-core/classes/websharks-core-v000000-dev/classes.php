@@ -92,7 +92,7 @@ namespace websharks_core_v000000_dev
 										$_file_sub_path = $this->©dir->n_seps($_dir_file->getSubPathname());
 										$_ns_class_path = '\\'.str_replace(array('/', '-'), array('\\', '_'), preg_replace('/\.php$/i', '', $_file_sub_path));
 
-										if(class_exists($_ns_class_path) || interface_exists($_ns_class_path) || (function_exists('trait_exists') && trait_exists($_ns_class_path)))
+										if(class_exists($_ns_class_path) || interface_exists($_ns_class_path) || ($this->©function->is_possible('trait_exists') && trait_exists($_ns_class_path)))
 											$ns_class[] = $_ns_class_path;
 									}
 							unset($_dir_file, $_file_sub_path, $_ns_class_path); // Housekeeping.
@@ -114,7 +114,7 @@ namespace websharks_core_v000000_dev
 								else if($_ns_class_path === '\\'.$this->___instance_config->core_ns.'\\deps_x')
 									$_ns_class_path = '\\deps_x_'.$this->___instance_config->core_ns; // Special class.
 
-								if(class_exists($_ns_class_path) || interface_exists($_ns_class_path) || (function_exists('trait_exists') && trait_exists($_ns_class_path)))
+								if(class_exists($_ns_class_path) || interface_exists($_ns_class_path) || ($this->©function->is_possible('trait_exists') && trait_exists($_ns_class_path)))
 									$ns_class[] = $_ns_class_path;
 							}
 					unset($_dir_file, $_file_sub_path, $_ns_class_path); // Housekeeping.

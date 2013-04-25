@@ -2711,7 +2711,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			if(!isset(self::$static['is_function_possible'][$function]))
 				{
 					self::$static['is_function_possible'][$function] = FALSE;
-					$function                                        = strtolower($function);
+					$function                                        = ltrim(strtolower($function), '\\');
 
 					if((in_array($function, $this->constructs, TRUE) || is_callable($function) || function_exists($function))
 					   && !in_array($function, $this->disabled_functions(), TRUE) // And it is NOT disabled in some way.
