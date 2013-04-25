@@ -219,17 +219,17 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $type Call type. One of these class constants (e.g. types):
 			 *
-			 *    • Public — ``\websharks_core_v000000_dev\framework::public_type``
+			 *    • Public — {@link fw_constants::public_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Public `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Public `call` actions do NOT include a timestamp; and they do NOT expire.
 			 *
-			 *    • Protected — ``\websharks_core_v000000_dev\framework::protected_type``
+			 *    • Protected — {@link fw_constants::protected_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Protected `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Protected `call` actions can include a custom expiration time (expires after 7 days, by default).
 			 *
-			 *    • Private — ``\websharks_core_v000000_dev\framework::private_type``
+			 *    • Private — {@link fw_constants::private_type}
 			 *    This type always requires a logged-in user matching the ``$verifier``.
 			 *    Private `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Private `call` actions can include a custom expiration time (expires after 24 hours, by default).
@@ -240,14 +240,14 @@ namespace websharks_core_v000000_dev
 			 *
 			 *    Some additional notes regarding the ``$expires_after`` parameter:
 			 *
-			 *       • Public — ``\websharks_core_v000000_dev\framework::public_type``
+			 *       • Public — {@link fw_constants::public_type}
 			 *       Public `call` actions do NOT expire (ever). The string verifier will not even include an expiration time.
-			 *       Therefore, this argument is ignored when ``$type`` is ``\websharks_core_v000000_dev\framework::public_type``.
+			 *       Therefore, this argument is ignored when ``$type`` is {@link fw_constants::public_type}.
 			 *
-			 *       • Protected — ``\websharks_core_v000000_dev\framework::protected_type``
+			 *       • Protected — {@link fw_constants::protected_type}
 			 *       For protected `call` actions, this will default to `604800` (7 days).
 			 *
-			 *       • Private — ``\websharks_core_v000000_dev\framework::private_type``
+			 *       • Private — {@link fw_constants::private_type}
 			 *       For private `call` actions, this will default to `86400` (24 hours).
 			 *
 			 * @param string  $base Optional. A base URL to use instead of ``home_url('/')``, which is the default value.
@@ -327,17 +327,17 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $type Call type. One of these class constants (e.g. types):
 			 *
-			 *    • Public — ``\websharks_core_v000000_dev\framework::public_type``
+			 *    • Public — {@link fw_constants::public_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Public `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Public `call` actions do NOT include a timestamp; and they do NOT expire.
 			 *
-			 *    • Protected — ``\websharks_core_v000000_dev\framework::protected_type``
+			 *    • Protected — {@link fw_constants::protected_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Protected `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Protected `call` actions can include a custom expiration time (expires after 7 days, by default).
 			 *
-			 *    • Private — ``\websharks_core_v000000_dev\framework::private_type``
+			 *    • Private — {@link fw_constants::private_type}
 			 *    This type always requires a logged-in user matching the ``$verifier``.
 			 *    Private `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Private `call` actions can include a custom expiration time (expires after 24 hours, by default).
@@ -346,14 +346,14 @@ namespace websharks_core_v000000_dev
 			 *
 			 *    Some additional notes regarding the ``$expires_after`` parameter:
 			 *
-			 *       • Public — ``\websharks_core_v000000_dev\framework::public_type``
+			 *       • Public — {@link fw_constants::public_type}
 			 *       Public `call` actions do NOT expire (ever). The string verifier will not even include an expiration time.
-			 *       Therefore, this argument is ignored when ``$type`` is ``\websharks_core_v000000_dev\framework::public_type``.
+			 *       Therefore, this argument is ignored when ``$type`` is {@link fw_constants::public_type}.
 			 *
-			 *       • Protected — ``\websharks_core_v000000_dev\framework::protected_type``
+			 *       • Protected — {@link fw_constants::protected_type}
 			 *       For protected `call` actions, this will default to `604800` (7 days).
 			 *
-			 *       • Private — ``\websharks_core_v000000_dev\framework::private_type``
+			 *       • Private — {@link fw_constants::private_type}
 			 *       For private `call` actions, this will default to `86400` (24 hours).
 			 *
 			 * @return string Hidden input fields that verify a dynamic `©class.®method` action call.
@@ -409,17 +409,17 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string $type Call type. One of these class constants (e.g. types):
 			 *
-			 *    • Public — ``\websharks_core_v000000_dev\framework::public_type``
+			 *    • Public — {@link fw_constants::public_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Public `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Public `call` actions do NOT include a timestamp; and they do NOT expire.
 			 *
-			 *    • Protected — ``\websharks_core_v000000_dev\framework::protected_type``
+			 *    • Protected — {@link fw_constants::protected_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Protected `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Protected `call` actions can include a custom expiration time (expires after 7 days, by default).
 			 *
-			 *    • Private — ``\websharks_core_v000000_dev\framework::private_type``
+			 *    • Private — {@link fw_constants::private_type}
 			 *    This type always requires a logged-in user matching the ``$verifier``.
 			 *    Private `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Private `call` actions can include a custom expiration time (expires after 24 hours, by default).
@@ -502,17 +502,17 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $type Call type. One of these class constants (e.g. types):
 			 *
-			 *    • Public — ``\websharks_core_v000000_dev\framework::public_type``
+			 *    • Public — {@link fw_constants::public_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Public `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Public `call` actions do NOT include a timestamp; and they do NOT expire.
 			 *
-			 *    • Protected — ``\websharks_core_v000000_dev\framework::protected_type``
+			 *    • Protected — {@link fw_constants::protected_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Protected `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Protected `call` actions can include a custom expiration time (expires after 7 days, by default).
 			 *
-			 *    • Private — ``\websharks_core_v000000_dev\framework::private_type``
+			 *    • Private — {@link fw_constants::private_type}
 			 *    This type always requires a logged-in user matching the ``$verifier``.
 			 *    Private `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Private `call` actions can include a custom expiration time (expires after 24 hours, by default).
@@ -521,14 +521,14 @@ namespace websharks_core_v000000_dev
 			 *
 			 *    Some additional notes regarding the ``$expires_after`` parameter:
 			 *
-			 *       • Public — ``\websharks_core_v000000_dev\framework::public_type``
+			 *       • Public — {@link fw_constants::public_type}
 			 *       Public `call` actions do NOT expire (ever). The string verifier will not even include an expiration time.
-			 *       Therefore, this argument is ignored when ``$type`` is ``\websharks_core_v000000_dev\framework::public_type``.
+			 *       Therefore, this argument is ignored when ``$type`` is {@link fw_constants::public_type}.
 			 *
-			 *       • Protected — ``\websharks_core_v000000_dev\framework::protected_type``
+			 *       • Protected — {@link fw_constants::protected_type}
 			 *       For protected `call` actions, this will default to `604800` (7 days).
 			 *
-			 *       • Private — ``\websharks_core_v000000_dev\framework::private_type``
+			 *       • Private — {@link fw_constants::private_type}
 			 *       For private `call` actions, this will default to `86400` (24 hours).
 			 *
 			 * @param integer $expiration_time A UNIX timestamp, indicating the time at which this call verifier will automatically expire.
@@ -595,17 +595,17 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $type Call type. One of these class constants (e.g. types):
 			 *
-			 *    • Public — ``\websharks_core_v000000_dev\framework::public_type``
+			 *    • Public — {@link fw_constants::public_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Public `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Public `call` actions do NOT include a timestamp; and they do NOT expire.
 			 *
-			 *    • Protected — ``\websharks_core_v000000_dev\framework::protected_type``
+			 *    • Protected — {@link fw_constants::protected_type}
 			 *    This type of call is less secure. It does NOT require a logged-in user.
 			 *    Protected `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Protected `call` actions can include a custom expiration time (expires after 7 days, by default).
 			 *
-			 *    • Private — ``\websharks_core_v000000_dev\framework::private_type``
+			 *    • Private — {@link fw_constants::private_type}
 			 *    This type always requires a logged-in user matching the ``$verifier``.
 			 *    Private `call` actions MUST be registered by class methods containing a `®` in their name.
 			 *    Private `call` actions can include a custom expiration time (expires after 24 hours, by default).
@@ -614,14 +614,14 @@ namespace websharks_core_v000000_dev
 			 *
 			 *    Some additional notes regarding the ``$expires_after`` parameter:
 			 *
-			 *       • Public — ``\websharks_core_v000000_dev\framework::public_type``
+			 *       • Public — {@link fw_constants::public_type}
 			 *       Public `call` actions do NOT expire (ever). The string verifier will not even include an expiration time.
-			 *       Therefore, this argument is ignored when ``$type`` is ``\websharks_core_v000000_dev\framework::public_type``.
+			 *       Therefore, this argument is ignored when ``$type`` is {@link fw_constants::public_type}.
 			 *
-			 *       • Protected — ``\websharks_core_v000000_dev\framework::protected_type``
+			 *       • Protected — {@link fw_constants::protected_type}
 			 *       For protected `call` actions, this will default to `604800` (7 days).
 			 *
-			 *       • Private — ``\websharks_core_v000000_dev\framework::private_type``
+			 *       • Private — {@link fw_constants::private_type}
 			 *       For private `call` actions, this will default to `86400` (24 hours).
 			 *
 			 * @return string A caller object property for AJAX, which verifies a dynamic `©class.®method` action call, made via AJAX integration.

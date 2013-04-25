@@ -191,8 +191,8 @@ namespace websharks_core_v000000_dev
 					/**
 					 * Handles a plugin exception.
 					 *
-					 * @see \websharks_core_v000000_dev\exception_handler::handle()
-					 * @inheritdoc \websharks_core_v000000_dev\exception_handler::handle()
+					 * @see handle()
+					 * @inheritdoc handle()
 					 */
 					protected static function handle_plugin_exception()
 						{

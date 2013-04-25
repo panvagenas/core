@@ -81,10 +81,10 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string       $message Optional diagnostic message (if constructing with a new diagnostic).
 			 *
-			 * @param string       $log Optional. This defaults to the value of ``framework::log_enable``.
+			 * @param string       $log Optional. This defaults to the value of {@link fw_constants::log_enable}.
 			 *    This simply provides some additional control over which specific diagnostics will be logged (if any).
-			 *    By default, we enable logging on a per-diagnostic basis. However, even if this is ``framework::log_enable``,
-			 *    logging ONLY occurs if enabled overall (based on diagnostic type). Can also be set to ``framework::log_disable``.
+			 *    By default, we enable logging on a per-diagnostic basis. However, even if this is {@link fw_constants::log_enable},
+			 *    logging ONLY occurs if enabled overall (based on diagnostic type). Can also be set to {@link fw_constants::log_disable}.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
@@ -107,10 +107,10 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string $message Optional diagnostic message. Defaults to `Diagnostic code: $code`.
 			 *
-			 * @param string $log Optional. This defaults to the value of ``framework::log_enable``.
+			 * @param string $log Optional. This defaults to the value of {@link fw_constants::log_enable}.
 			 *    This simply provides some additional control over which specific diagnostics will be logged.
-			 *    By default, we enable logging on a per-diagnostic basis. However, even if this is ``framework::log_enable``,
-			 *    logging only occurs if enabled overall (based on diagnostic type). Can also be set to ``framework::log_disable``.
+			 *    By default, we enable logging on a per-diagnostic basis. However, even if this is {@link fw_constants::log_enable},
+			 *    logging only occurs if enabled overall (based on diagnostic type). Can also be set to {@link fw_constants::log_disable}.
 			 *
 			 * @return string The diagnostic ``$code``, else an empty string on failure.
 			 *

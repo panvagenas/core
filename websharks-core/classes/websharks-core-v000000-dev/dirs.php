@@ -321,7 +321,7 @@ namespace websharks_core_v000000_dev
 			 * Get cache directory (public or private).
 			 *
 			 * @param string $type The type of cache directory (public or private).
-			 *    This MUST be passed using class constants ``framework::public_type`` or ``framework::private_type``.
+			 *    This MUST be passed using class constants {@link fw_constants::public_type} or {@link fw_constants::private_type}.
 			 *
 			 * @param string $sub_dir Optional cache sub-directory path.
 			 *
@@ -399,7 +399,7 @@ namespace websharks_core_v000000_dev
 			 * Empties and deletes a cache directory (public or private).
 			 *
 			 * @param string $type The type of cache directory (public or private).
-			 *    This MUST be passed using class constants ``framework::public_type`` or ``framework::private_type``.
+			 *    This MUST be passed using class constants {@link fw_constants::public_type} or {@link fw_constants::private_type}.
 			 *
 			 * @param string $sub_dir Optional cache sub-directory path.
 			 *
@@ -428,7 +428,7 @@ namespace websharks_core_v000000_dev
 			 * Get log directory (public or private).
 			 *
 			 * @param string $type The type of log directory (public or private).
-			 *    This MUST be passed using class constants ``framework::public_type`` or ``framework::private_type``.
+			 *    This MUST be passed using class constants {@link fw_constants::public_type} or {@link fw_constants::private_type}.
 			 *
 			 * @param string $sub_dir Optional log sub-directory path.
 			 *
@@ -507,7 +507,7 @@ namespace websharks_core_v000000_dev
 			 * Empties and deletes a log directory (public or private).
 			 *
 			 * @param string $type The type of log directory (public or private).
-			 *    This MUST be passed using class constants ``framework::public_type`` or ``framework::private_type``.
+			 *    This MUST be passed using class constants {@link fw_constants::public_type} or {@link fw_constants::private_type}.
 			 *
 			 * @param string $sub_dir Optional log sub-directory path.
 			 *
@@ -1002,7 +1002,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @WARNING This routine can become resource intensive on large directories.
 			 *    Mostly because of the compression routines applied here intuitively. It takes some time.
-			 *    See: {@link \websharks_core_v000000_dev\env\maximize_time_memory_limits()}
+			 *    See: {@link env::maximize_time_memory_limits()}
 			 */
 			public function phar_to($dir, $to, $stub_file, $strip_ws = TRUE, $compress = TRUE, $compressable_extensions = array('php', 'phps'), $is_phar_var_suffix = 'stub')
 				{

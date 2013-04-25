@@ -255,9 +255,11 @@ namespace websharks_core_v000000_dev
 
 							if(!in_array($classes_dir, static::$class_dirs, TRUE))
 								{
-									array_unshift(static::$class_dirs, $classes_dir);
-									static::$class_dirs = array_diff(static::$class_dirs, array(static::$core_classes_dir));
-									array_unshift(static::$class_dirs, static::$core_classes_dir);
+									$class_dirs =& static::$class_dirs; // PhpStorm™ needs this.
+
+									array_unshift($class_dirs, $classes_dir);
+									$class_dirs = array_diff($class_dirs, array(static::$core_classes_dir));
+									array_unshift($class_dirs, static::$core_classes_dir);
 								}
 						}
 

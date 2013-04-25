@@ -178,8 +178,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS front-side wrapper classes.
 			 *
@@ -196,8 +196,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS front-side wrapper classes.
 			 *
@@ -214,8 +214,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS front-side container classes.
 			 *
@@ -232,8 +232,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS front-side container classes.
 			 *
@@ -250,8 +250,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS stand-alone wrapper classes.
 			 *
@@ -268,8 +268,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS stand-alone wrapper classes.
 			 *
@@ -286,8 +286,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS stand-alone container classes.
 			 *
@@ -304,8 +304,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS stand-alone container classes.
 			 *
@@ -322,8 +322,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS email wrapper classes.
 			 *
@@ -340,8 +340,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS email wrapper classes.
 			 *
@@ -358,8 +358,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS email container classes.
 			 *
@@ -376,8 +376,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS email container classes.
 			 *
@@ -396,8 +396,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS wrapper classes.
 			 *
@@ -436,8 +436,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array CSS container classes.
 			 *
@@ -466,8 +466,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array UI widget classes.
 			 */
@@ -488,8 +488,8 @@ namespace websharks_core_v000000_dev
 			 * @param string|array $others Optional. Defaults to an empty array.
 			 *    Any additional classes that should be included.
 			 *
-			 * @param string       $format Return value format. Defaults to ``framework::space_sep_string``.
-			 *    Can also be set to ``framework::array_n`` (for a numerically indexed array).
+			 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
+			 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 			 *
 			 * @return string|array UI widget classes.
 			 */

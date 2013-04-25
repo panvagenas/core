@@ -78,8 +78,7 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Date translations (in UTC time).
-			 *    See: {@link \websharks_core_v000000_dev\dates\i18n_()}.
+			 * Date translations (in UTC time). See: {@link i18n_()}.
 			 *
 			 * @param string  $format Date format. Same formats allowed by PHP's ``date()`` function.
 			 *    This is optional. Defaults to: ``get_option('date_format').' '.get_option('time_format')``.
@@ -91,7 +90,7 @@ namespace websharks_core_v000000_dev
 			 *    This defaults to the current time if NOT passed in explicitly.
 			 *    WARNING: Please make sure ``$time`` is based on UTC.
 			 *
-			 * @return string See: {@link \websharks_core_v000000_dev\dates\i18n_()}.
+			 * @return string See: {@link i18n_()}.
 			 */
 			public function i18n_utc($format = '', $time = 0)
 				{

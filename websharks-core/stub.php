@@ -1120,7 +1120,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *    If this is TRUE; we'll parse some basic markdown syntax to
 			 *    produce HTML output that is easier to read in a browser.
 			 *
-			 * @see \websharks_core_v000000_dev\cant_phar_msg_notice_in_ws_wp_temp_deps()
+			 * @see cant_phar_msg_notice_in_wp_temp_deps()
 			 *
 			 * @return string Error message w/ details about the `Phar` class and PHP v5.3+.
 			 *    This error message will also include details about Suhosin; when/if applicable.
@@ -1170,6 +1170,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @throws exception If an inappropriate call is made (really should NOT happen).
 			 *
 			 * @see $wp_temp_deps
+			 * @see cant_phar_msg()
 			 */
 			public static function cant_phar_msg_notice_in_wp_temp_deps()
 				{

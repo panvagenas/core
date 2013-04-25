@@ -653,12 +653,12 @@ namespace websharks_core_v000000_dev
 			 *    This default value is the one used most often by the WebSharks™ Core. If a different separator is needed, please pass it in.
 			 *    If this is set to a NULL value, the system's default value will be used (e.g. ``ini_get('arg_separator.output')``).
 			 *
-			 * @param null|string $enc_type Optional. Defaults to ``\websharks\framework::RFC1738``, indicating ``urlencode()``.
-			 *    Or, this can also be set to ``\websharks\framework::RFC3986``, indicating ``rawurlencode()``.
+			 * @param null|string $enc_type Optional. Defaults to {@link fw_constants::rfc1738}, indicating ``urlencode()``.
+			 *    Or, this can also be set to {@link fw_constants::rfc3986}, indicating ``rawurlencode()``.
 			 *    Or, if this is set to a NULL value, no URL-encoding will occur whatsoever.
 			 *    Should be specified with one of these constants:
-			 *       • ``\websharks\framework::RFC1738``
-			 *       • ``\websharks\framework::RFC3986``
+			 *       • {@link fw_constants::rfc1738}
+			 *       • {@link fw_constants::rfc3986}
 			 *
 			 * @param null        $nested_key Internal use only; for recursion.
 			 *
@@ -728,7 +728,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Generates a raw URL-encoded query string.
 			 *
-			 * @note This method is an alias for ``build_query()`` with ``$enc_type`` set to: ``\websharks\framework::RFC3986``.
+			 * @note This method is an alias for ``build_query()`` with ``$enc_type`` set to: {@link fw_constants::rfc3986}.
 			 *    Please check the ``build_query()`` method for further details.
 			 *
 			 * @param mixed       $value Usually an object/array.
@@ -754,12 +754,12 @@ namespace websharks_core_v000000_dev
 			 * @param boolean     $convert_dots_spaces Optional. This defaults to a TRUE value (just like PHP's ``parse_str()`` function).
 			 *    Setting this to a FALSE value, makes it possible to preserve variables that actually SHOULD contain dots and/or spaces.
 			 *
-			 * @param null|string $dec_type Optional. Defaults to ``\websharks\framework::RFC1738``, indicating ``urldecode()``.
-			 *    Or, this can also be set to ``\websharks\framework::RFC3986``, indicating ``rawurldecode()``.
+			 * @param null|string $dec_type Optional. Defaults to {@link fw_constants::rfc1738}, indicating ``urldecode()``.
+			 *    Or, this can also be set to {@link fw_constants::rfc3986}, indicating ``rawurldecode()``.
 			 *    Or, if this is set to a NULL value, no URL-decoding will occur whatsoever.
 			 *    Should be specified with one of these constants:
-			 *       • ``\websharks\framework::RFC1738``
-			 *       • ``\websharks\framework::RFC3986``
+			 *       • {@link fw_constants::rfc1738}
+			 *       • {@link fw_constants::rfc3986}
 			 *
 			 * @param null|array  $parent_array Internal use only; for recursion.
 			 *
@@ -853,7 +853,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Generates an array from a string of query vars.
 			 *
-			 * @note This method is an alias for ``parse_query()`` with ``$enc_type`` set to: ``\websharks\framework::RFC3986``.
+			 * @note This method is an alias for ``parse_query()`` with ``$enc_type`` set to: {@link fw_constants::rfc3986}.
 			 *    Please check the ``parse_query()`` method for further details.
 			 *
 			 * @param string  $string An input string of query vars.
@@ -1137,7 +1137,7 @@ namespace websharks_core_v000000_dev
 			 * @param mixed          $var Any input variable to dump (or an expression is fine also).
 			 *
 			 * @param string|boolean $echo Optional. Defaults to an empty string.
-			 *    If this is ``framework::do_echo`` or TRUE, data will be output via ``echo()`` as well as returned.
+			 *    If this is {@link fw_constants::do_echo} or TRUE, data will be output via ``echo()`` as well as returned.
 			 *
 			 * @param integer        $tab_size Optional. Defaults to a value of `1`, for tabbed indentation.
 			 *    This can be customized, to control the overall tab indentation size.
@@ -1176,7 +1176,7 @@ namespace websharks_core_v000000_dev
 			 *    Passing this by reference conserves memory in extreme cases.
 			 *
 			 * @param string  $echo Optional. Defaults to an empty string.
-			 *    If this is ``framework::do_echo``, data will be output via ``echo()``, as well as returned.
+			 *    If this is {@link fw_constants::do_echo}, data will be output via ``echo()``, as well as returned.
 			 *
 			 * @param integer $tab_size Optional. Defaults to a value of `1`, for tabbed indentation.
 			 *    This can be customized, to control the overall tab indentation size.

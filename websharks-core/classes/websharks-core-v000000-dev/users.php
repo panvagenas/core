@@ -654,8 +654,8 @@ namespace websharks_core_v000000_dev
 			 *  • (array)`profile_fields` Optional associative array w/ additional profile fields.
 			 *       See ``$this->update_profile_fields()`` for further details (implemented by class extenders).
 			 *
-			 * @param string  $context One of these values: ``framework::context_registration``, ``framework::context_profile_updates``.
-			 *    The context in which this user is being updated (defaults to ``framework::context_profile_updates``).
+			 * @param string  $context One of these values: {@link fw_constants::context_registration}, {@link fw_constants::context_profile_updates}.
+			 *    The context in which this user is being updated (defaults to {@link fw_constants::context_profile_updates}).
 			 *
 			 * @param array   $optional_requirements An array of optional fields, which we've decided to require in this scenario.
 			 *
@@ -851,8 +851,8 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param array  $profile_field_values An associative array of profile fields (by name).
 			 *
-			 * @param string $context One of these values: ``framework::context_registration``, ``framework::context_profile_updates``.
-			 *    The context in which profile fields are being updated (defaults to ``framework::context_profile_updates``).
+			 * @param string $context One of these values: {@link fw_constants::context_registration}, {@link fw_constants::context_profile_updates}.
+			 *    The context in which profile fields are being updated (defaults to {@link fw_constants::context_profile_updates}).
 			 *
 			 * @return boolean|errors TRUE on success; else an errors object on failure.
 			 *

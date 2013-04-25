@@ -1236,8 +1236,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Handles replacements in regex patterns.
 			 *
-			 * @param string $pattern_name A regex pattern name.
-			 *    See: {@link \websharks_core_v000000_dev\builder\regex()}
+			 * @param string $pattern_name A regex pattern name. See: {@link regex()}
 			 *
 			 * @param string $value The value to insert when handling replacements in the pattern.
 			 *

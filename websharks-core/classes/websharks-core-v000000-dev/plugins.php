@@ -170,13 +170,13 @@ namespace websharks_core_v000000_dev
 			 * Checks if the current plugin is active, at the currently installed version.
 			 *
 			 * @param string $reconsider Optional. Empty string default (e.g. do NOT reconsider).
-			 *    You MUST use class constant ``framework::reconsider`` for this argument value.
-			 *    If this is ``framework::reconsider``, we force a reconsideration.
+			 *    You MUST use class constant {@link fw_constants::reconsider} for this argument value.
+			 *    If this is {@link fw_constants::reconsider}, we force a reconsideration.
 			 *
 			 * @return boolean TRUE if the current plugin is active, at the currently installed version, else FALSE.
 			 *
 			 * @assert () === FALSE
-			 * @assert (\websharks_core_v000000_dev\framework::reconsider) === FALSE
+			 * @assert (\websharks_core_v000000_dev\fw_constants::reconsider) === FALSE
 			 * @assert () === FALSE
 			 */
 			public function is_active_at_current_version($reconsider = '')

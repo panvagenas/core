@@ -54,8 +54,8 @@ namespace websharks_core_v000000_dev
 			 * @param string $function The name of a function, a static method, or a PHP language construct.
 			 *
 			 * @param string $reconsider Optional. Empty string default (e.g. do NOT reconsider).
-			 *    You MUST use class constant ``\websharks_core_v000000_dev\framework::reconsider`` for this argument value.
-			 *    If this is ``\websharks_core_v000000_dev\framework::reconsider``, we force a reconsideration.
+			 *    You MUST use class constant {@link fw_constants::reconsider} for this argument value.
+			 *    If this is {@link fw_constants::reconsider}, we force a reconsideration.
 			 *
 			 * @return boolean TRUE if (in ``$this->constructs`` || ``is_callable()`` || ``function_exists()``),
 			 *    and it's NOT been disabled via ``ini_get('disable_functions')`` (or via Suhosin).

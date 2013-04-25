@@ -72,6 +72,9 @@ namespace websharks_core_v000000_dev
 				 * @note Dynamic properties/methods are defined explicitly here.
 				 *    This way IDEs jive with ``__get()`` and ``__call()``.
 				 *
+				 * @note Magic properties/methods should be declared with a FQN because PhpStorm™ seems to have trouble
+				 *    identifying them throughout the entire codebase w/o a FQN (for whatever reason — a possible bug).
+				 *
 				 * @property \websharks_core_v000000_dev\actions                        $©actions
 				 * @property \websharks_core_v000000_dev\actions                        $©action
 				 * @method \websharks_core_v000000_dev\actions ©actions()
@@ -206,6 +209,9 @@ namespace websharks_core_v000000_dev
 				 * @method \websharks_core_v000000_dev\form_fields ©form_fields()
 				 * @method \websharks_core_v000000_dev\form_fields ©form_field()
 				 *
+				 * @property \websharks_core_v000000_dev\framework                      $©framework
+				 * @method \websharks_core_v000000_dev\framework ©framework()
+				 *
 				 * @property \websharks_core_v000000_dev\functions                      $©functions
 				 * @property \websharks_core_v000000_dev\functions                      $©function
 				 * @method \websharks_core_v000000_dev\functions ©functions()
@@ -316,7 +322,6 @@ namespace websharks_core_v000000_dev
 				 * @property \websharks_core_v000000_dev\strings                        $©string
 				 * @method \websharks_core_v000000_dev\strings ©strings()
 				 * @method \websharks_core_v000000_dev\strings ©string()
-				 * @method static \websharks_core_v000000_dev\strings string()
 				 *
 				 * @property \websharks_core_v000000_dev\styles                         $©styles
 				 * @property \websharks_core_v000000_dev\styles                         $©style
@@ -413,7 +418,7 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see framework::__get()
+					 * @see __get()
 					 */
 					protected static $___dynamic_class_reference_cache = array();
 
@@ -428,7 +433,7 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see framework::__get()
+					 * @see __get()
 					 */
 					protected static $___dynamic_class_instance_cache = array();
 
@@ -443,9 +448,9 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see framework::__get()
-					 * @see framework::__call()
-					 * @see framework::__isset()
+					 * @see __get()
+					 * @see __call()
+					 * @see __isset()
 					 */
 					protected static $___dynamic_class_aliases = array(
 						'action'     => 'actions',
@@ -506,9 +511,9 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see framework::__get()
-					 * @see framework::__call()
-					 * @see framework::__isset()
+					 * @see __get()
+					 * @see __call()
+					 * @see __isset()
 					 */
 					protected static $____dynamic_class_aliases = array();
 
@@ -670,9 +675,9 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see framework::__get()
-					 * @see framework::__call()
-					 * @see framework::__isset()
+					 * @see __get()
+					 * @see __call()
+					 * @see __isset()
 					 */
 					protected static $___read_only_properties = array('___instance_config');
 
@@ -685,9 +690,9 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @protected Accessible only to self & extenders.
 					 *
-					 * @see framework::__get()
-					 * @see framework::__call()
-					 * @see framework::__isset()
+					 * @see __get()
+					 * @see __call()
+					 * @see __isset()
 					 */
 					protected static $____read_only_properties = array();
 
@@ -1020,9 +1025,10 @@ namespace websharks_core_v000000_dev
 						{
 							$property = (string)$property;
 
-							throw new exception($this, __METHOD__.'#read_only_magic_property_error_via____set()', get_defined_vars(),
-							                    sprintf($this->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-							                    sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+							throw new exception(
+								$this, __METHOD__.'#read_only_magic_property_error_via____set()', get_defined_vars(),
+								sprintf($this->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
+								sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 							);
 						}
 
@@ -1048,9 +1054,10 @@ namespace websharks_core_v000000_dev
 						{
 							$property = (string)$property;
 
-							throw new exception($this, __METHOD__.'#read_only_magic_property_error_via____unset()', get_defined_vars(),
-							                    sprintf($this->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-							                    sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+							throw new exception(
+								$this, __METHOD__.'#read_only_magic_property_error_via____unset()', get_defined_vars(),
+								sprintf($this->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
+								sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 							);
 						}
 
@@ -1156,14 +1163,21 @@ namespace websharks_core_v000000_dev
 									// Therefore, ALWAYS check for the existence of a class instance first, even if a cache entry for it is currently missing.
 									// In other words, the instance itself may already exist; and perhaps we just need a new cache entry to reference it.
 
-									foreach($dyn_class_lookups as $_dyn_class)
+									$this_class = '\\'.get_class($this); // So we can check references to self; in the routine below.
+
+									foreach($dyn_class_lookups as $_dyn_class) // Iterate lookups.
 										{
 											$_dyn_class_entry = $this->___instance_config->plugin_root_ns.'#'.$_dyn_class;
 
 											if(isset(static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]))
 												return (static::$___dynamic_class_reference_cache[$blog_id][$cache_entry] = static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]);
 
-											if(class_exists($_dyn_class)) // Triggers autoloader.
+											if($_dyn_class === $this_class) // A dynamic class object reference to this class?
+												{
+													static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry] = $this;
+													return (static::$___dynamic_class_reference_cache[$blog_id][$cache_entry] = static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]);
+												}
+											if(class_exists($_dyn_class)) // This triggers autoloading in the PHP interpreter.
 												{
 													static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry] = new $_dyn_class($this);
 													return (static::$___dynamic_class_reference_cache[$blog_id][$cache_entry] = static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]);
@@ -1294,7 +1308,7 @@ namespace websharks_core_v000000_dev
 									foreach($dyn_class_lookups as $_dyn_class) // Now let's try to find the class.
 										{
 											if(!class_exists($_dyn_class)) // Triggers autoloader.
-												continue; // Keep searching.
+												continue; // This class does NOT exist (we'll keep searching).
 
 											switch(count($args)) // Handles up to 10 hard coded ``$args``.
 											{
@@ -1990,9 +2004,9 @@ namespace websharks_core_v000000_dev
 					 * @final This method may NOT be overridden by extenders.
 					 * @public Available for public usage.
 					 *
-					 * @see framework::i18n_p()
-					 * @see framework::translate()
-					 * @see framework::translate_p()
+					 * @see i18n_p()
+					 * @see translate()
+					 * @see translate_p()
 					 *
 					 * @assert ('hello world') === 'hello world'
 					 * @assert ('hello world', 'foo') === 'hello world'
@@ -2022,9 +2036,9 @@ namespace websharks_core_v000000_dev
 					 * @final This method may NOT be overridden by extenders.
 					 * @public Available for public usage.
 					 *
-					 * @see framework::i18n()
-					 * @see framework::translate()
-					 * @see framework::translate_p()
+					 * @see i18n()
+					 * @see translate()
+					 * @see translate_p()
 					 *
 					 * @assert ('hello world', 'hello worlds', 2) === 'hello worlds'
 					 * @assert ('hello world', 'hello worlds', 0) === 'hello worlds'
@@ -2054,9 +2068,9 @@ namespace websharks_core_v000000_dev
 					 * @final This method may NOT be overridden by extenders.
 					 * @public Available for public usage.
 					 *
-					 * @see framework::i18n()
-					 * @see framework::i18n_p()
-					 * @see framework::translate_p()
+					 * @see i18n()
+					 * @see i18n_p()
+					 * @see translate_p()
 					 *
 					 * @assert ('hello world') === 'hello world'
 					 * @assert ('hello world', 'foo') === 'hello world'
@@ -2086,9 +2100,9 @@ namespace websharks_core_v000000_dev
 					 * @final This method may NOT be overridden by extenders.
 					 * @public Available for public usage.
 					 *
-					 * @see framework::i18n()
-					 * @see framework::i18n_p()
-					 * @see framework::translate()
+					 * @see i18n()
+					 * @see i18n_p()
+					 * @see translate()
 					 *
 					 * @assert ('hello world', 'hello worlds', 2) === 'hello worlds'
 					 * @assert ('hello world', 'hello worlds', 0) === 'hello worlds'
