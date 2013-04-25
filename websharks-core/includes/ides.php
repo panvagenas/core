@@ -11,9 +11,6 @@
  *
  * @note This file is simply to help IDEs understand what we're doing.
  *    This file should NEVER be included in any runtime environment (only for IDEs).
- *
- * @TODO Update the build routine; we need this file generated automatically.
- *    We should generate all other lists of classes dynamically also.
  */
 namespace # Global namespace.
 	{

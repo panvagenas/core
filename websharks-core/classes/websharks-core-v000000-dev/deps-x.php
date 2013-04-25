@@ -12,8 +12,6 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
- *
- * @TODO Make this class more dynamic (if possible).
  */
 # -----------------------------------------------------------------------------------------------------------------------------------------
 # WordPress® MUST be loaded up (unless we're in stand-alone mode).
@@ -2885,7 +2883,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				$starting_dir = dirname(__FILE__); // Current file directory.
 
 			else if(in_array($starting_dir, array('phar://', 'phar://__DIR__'), TRUE)) // With a PHAR stream wrapper?
-				$starting_dir = 'phar://'.preg_replace('/^[a-z0-9]+\:\/\//i', '', dirname(__FILE__)); // Strip any existing stream wrapper.
+				$starting_dir = 'phar://'.preg_replace(substr($this->regex_valid_dir_file_stream_wrapper, 0, -2).'/', '', dirname(__FILE__));
 
 			for($_i = 0, $_dir = $this->n_dir_seps($starting_dir); $_i <= 100; $_i++)
 				{
@@ -3167,6 +3165,7 @@ if(${__FILE__}['is_in_stand_alone_mode']) // Running in Stand-Alone mode?
 		define('___STAND_ALONE__PLUGIN_DIR_NAMES', 'websharks-core-v000000-dev'); #!stand-alone-plugin-dir-names!#
 
 		$deps_x_stand_alone_websharks_core_v000000_dev = new deps_x_stand_alone_websharks_core_v000000_dev();
+
 		if(!defined('WPINC') && $deps_x_stand_alone_websharks_core_v000000_dev->wp_load())
 			require_once $deps_x_stand_alone_websharks_core_v000000_dev->wp_load(TRUE);
 

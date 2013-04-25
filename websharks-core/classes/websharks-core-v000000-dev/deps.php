@@ -10,8 +10,6 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
- *
- * @TODO Make this class more dynamic (if possible).
  */
 # -----------------------------------------------------------------------------------------------------------------------------------------
 # Only if WordPress® is loaded; and the WebSharks™ Core deps class does NOT exist yet.

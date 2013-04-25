@@ -162,6 +162,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * Initializes WebSharks™ Core stub.
 			 *
 			 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
+			 *
+			 * @throws exception If attempt to run the WebSharks™ Core from a root directory.
 			 */
 			public static function initialize()
 				{
@@ -1042,7 +1044,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						$starting_dir = dirname(__FILE__); // Current file directory.
 
 					else if(in_array($starting_dir, array('phar://', 'phar://__DIR__'), TRUE)) // With a PHAR stream wrapper?
-						$starting_dir = 'phar://'.preg_replace('/^[a-z0-9]+\:\/\//i', '', dirname(__FILE__)); // Strip any existing stream wrapper.
+						$starting_dir = 'phar://'.preg_replace(substr(self::$regex_valid_dir_file_stream_wrapper, 0, -2).'/', '', dirname(__FILE__));
 
 					for($_i = 0, $_dir = self::n_dir_seps($starting_dir); $_i <= 100; $_i++)
 						{

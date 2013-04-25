@@ -310,7 +310,7 @@ namespace websharks_core_v000000_dev
 			const glob_casefold = 128;
 
 			/**
-			 * @var integer Find hidden dot `.` files using wildcards.
+			 * @var integer Finds hidden dot `.` files w/ wildcards.
 			 */
 			const glob_period = 256;
 		}
