@@ -64,6 +64,7 @@ $exception = $this->data->exception;
 				</p>
 
 				<? if($this->©env->is_in_wp_debug_display_mode() || is_super_admin()): ?>
+
 					<p>
 						<?= sprintf($this->i18n('Exception occurred at line # <code>%1$s</code> in: <code>%2$s</code>.'), esc_html($exception->getLine()), esc_html($exception->getFile())); ?>
 					</p>
@@ -92,6 +93,7 @@ $exception = $this->data->exception;
 						<small><?= $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
 						<pre><?= esc_html($this->©var->dump($exception->data)); ?></pre>
 					<? endif; ?>
+
 				<? endif; ?>
 
 				<hr class="marginize-x2" />

@@ -76,10 +76,11 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
+					$function = ltrim(strtolower($function), '\\'); // Clean this up before checking.
+
 					if(!isset($this->static['is_possible'][$function]) || $reconsider === $this::reconsider)
 						{
 							$this->static['is_possible'][$function] = FALSE;
-							$function                               = ltrim(strtolower($function), '\\');
 
 							if((in_array($function, $this->constructs, TRUE) || is_callable($function) || function_exists($function))
 							   && !in_array($function, $this->disabled(), TRUE) // And it is NOT disabled in some way.

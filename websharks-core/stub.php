@@ -32,7 +32,6 @@ if(!class_exists('websharks_core_v000000_dev'))
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Public properties (see also: bottom of this file).
 			# --------------------------------------------------------------------------------------------------------------------------------
-			# @TODO Go back through the entire WebSharks™ Core and use properties instead of hard-coding these values.
 
 			/**
 			 * WebSharks™ Core name.
@@ -948,32 +947,35 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function get_temp_dir()
 				{
-					if(defined('WPINC') && ($wp_temp_dir = get_temp_dir())
-					   && ($wp_temp_dir = realpath($wp_temp_dir))
-					   && is_readable($wp_temp_dir) && is_writable($wp_temp_dir)
-					) return self::n_dir_seps($wp_temp_dir);
+					if(defined('WPINC') && ($wp_temp_dir = get_temp_dir()) && is_string($wp_temp_dir))
+						if(($wp_temp_dir = realpath($wp_temp_dir)) && is_readable($wp_temp_dir) && is_writable($wp_temp_dir))
+							return self::n_dir_seps($wp_temp_dir);
 
-					if(($sys_temp_dir = sys_get_temp_dir())
-					   && ($sys_temp_dir = realpath($sys_temp_dir))
-					   && is_readable($sys_temp_dir) && is_writable($sys_temp_dir)
-					) return self::n_dir_seps($sys_temp_dir);
+					if(($sys_temp_dir = sys_get_temp_dir()) && is_string($sys_temp_dir))
+						if(($sys_temp_dir = realpath($sys_temp_dir)) && is_readable($sys_temp_dir) && is_writable($sys_temp_dir))
+							return self::n_dir_seps($sys_temp_dir);
 
-					if(($upload_temp_dir = ini_get('upload_tmp_dir'))
-					   && ($upload_temp_dir = realpath($upload_temp_dir))
-					   && is_readable($upload_temp_dir) && is_writable($upload_temp_dir)
-					) return self::n_dir_seps($upload_temp_dir);
+					if(($upload_tmp_dir = ini_get('upload_tmp_dir')) && is_string($upload_tmp_dir))
+						if(($upload_tmp_dir = realpath($upload_tmp_dir)) && is_readable($upload_tmp_dir) && is_writable($upload_tmp_dir))
+							return self::n_dir_seps($upload_tmp_dir);
 
-					if(stripos(PHP_OS, 'win') === 0 && (is_dir('C:/Temp') || @mkdir('C:/Temp', 0775))
-					   && is_readable('C:/Temp') && is_writable('C:/Temp')
-					) return self::n_dir_seps('C:/Temp');
+					if(!empty($_SERVER['TEMP']) && ($server_temp_dir = $_SERVER['TEMP']) && is_string($server_temp_dir))
+						if(($server_temp_dir = realpath($server_temp_dir)) && is_readable($server_temp_dir) && is_writable($server_temp_dir))
+							return self::n_dir_seps($server_temp_dir);
 
-					if(stripos(PHP_OS, 'win') !== 0 && (is_dir('/tmp') || @mkdir('/tmp', 0775))
-					   && is_readable('/tmp') && is_writable('/tmp')
-					) return self::n_dir_seps('/tmp');
+					if(!empty($_SERVER['TMP']) && ($server_tmp_dir = $_SERVER['TMP']) && is_string($server_tmp_dir))
+						if(($server_tmp_dir = realpath($server_tmp_dir)) && is_readable($server_tmp_dir) && is_writable($server_tmp_dir))
+							return self::n_dir_seps($server_tmp_dir);
 
-					throw new exception( // Fail in this scenario.
-						self::i18n('Unable to find a readable/writable temp directory.')
-					);
+					if(stripos(PHP_OS, 'win') === 0 && (is_dir('C:/Temp') || @mkdir('C:/Temp', 0775)))
+						if(is_readable('C:/Temp') && is_writable('C:/Temp'))
+							return self::n_dir_seps('C:/Temp');
+
+					if(stripos(PHP_OS, 'win') !== 0 && (is_dir('/tmp') || @mkdir('/tmp', 0775)))
+						if(is_readable('/tmp') && is_writable('/tmp'))
+							return self::n_dir_seps('/tmp');
+
+					throw new exception(self::i18n('Unable to find a readable/writable temp directory.'));
 				}
 
 			/**
@@ -1469,6 +1471,12 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 		websharks_core_v000000_dev::initialize(); // Also creates class alias.
 	}
+# -----------------------------------------------------------------------------------------------------------------------------------------
+# Version/namespace for this stub file.
+# -----------------------------------------------------------------------------------------------------------------------------------------
+$GLOBALS[__FILE__]['version'] = '000000-dev'; #!version!#
+$GLOBALS[__FILE__]['core_ns'] = 'websharks_core_v000000_dev';
+
 # -----------------------------------------------------------------------------------------------------------------------------------------
 # Inline webPhar handler.
 # -----------------------------------------------------------------------------------------------------------------------------------------
