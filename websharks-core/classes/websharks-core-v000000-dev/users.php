@@ -757,10 +757,10 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#url_missing', array_merge(array('form_field_code' => 'url'), compact('args')),
 							$this->translate('Required field. Missing URL.')
 						);
-					else if(isset($args['url']) && strlen($args['url']) && !preg_match($this->©url->regex_pattern, $args['url']))
+					else if(isset($args['url']) && strlen($args['url']) && !preg_match($this->©url->regex_valid_url, $args['url']))
 						return $this->©error(
 							__METHOD__.'#invalid_url', array_merge(array('form_field_code' => 'url'), compact('args')),
-							$this->translate('Invalid URL. Must start with `http://`.')
+							$this->translate('Invalid URL. Must start with `http://` and be a valid URL please.')
 						);
 					else if(isset($args['aim']) && empty($args['aim']) && in_array('aim', $optional_requirements, TRUE))
 						return $this->©error(

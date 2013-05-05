@@ -433,7 +433,7 @@ namespace websharks_core_v000000_dev
 							unset($_parsed['query'], $_parsed['fragment']);
 
 							// Normalize the URL now (piece it back together).
-							$url = $this->©url->un_parse($_parsed, FALSE, FALSE);
+							$url = $this->©url->unparse($_parsed, FALSE, FALSE);
 						}
 					unset($_parsed); // Just a little housekeeping here.
 

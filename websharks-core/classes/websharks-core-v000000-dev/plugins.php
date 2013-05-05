@@ -283,9 +283,6 @@ namespace websharks_core_v000000_dev
 			 * @param string $password Password for the plugin site (plain text).
 			 *    This is encrypted before we store it in the database.
 			 *
-			 * @see ``$this->___instance_config->plugin_site``.
-			 * @see ``$this->©url->to_plugin_site()``.
-			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
 			public function set_site_credentials($username, $password)
@@ -310,9 +307,6 @@ namespace websharks_core_v000000_dev
 			 *    If this is TRUE, and ``$username`` or ``$password`` are passed in, we'll update the database with the new values.
 			 *
 			 * @return array Array containing two elements: `username`, `password` (plain text).
-			 *
-			 * @see ``$this->___instance_config->plugin_site``.
-			 * @see ``$this->©url->to_plugin_site()``.
 			 */
 			public function get_site_credentials($username = '', $password = '', $update = FALSE)
 				{

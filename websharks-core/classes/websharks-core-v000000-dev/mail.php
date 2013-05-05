@@ -214,7 +214,7 @@ namespace websharks_core_v000000_dev
 						{
 							foreach($value as $_value)
 								$emails = array_merge($emails, $this->parse_emails_deep($_value));
-							unset($_value);
+							unset($_value); // A little housekeeping.
 
 							return $emails;
 						}
@@ -232,7 +232,7 @@ namespace websharks_core_v000000_dev
 							else if(strpos($_address, '@') !== FALSE)
 								$emails[] = $_address;
 						}
-					unset($_address, $_m);
+					unset($_address, $_m); // Housekeeping.
 
 					return array_unique($emails);
 				}

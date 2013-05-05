@@ -103,7 +103,7 @@ $exception = $this->data->exception;
 				</p>
 
 				<p class="float-half-right marginize">
-					<a href="<?= esc_attr(home_url('/')); ?>"><?= esc_html(get_bloginfo('name')); ?></a> »
+					<a href="<?= esc_attr($this->©url->to_wp_home_uri()); ?>"><?= esc_html(get_bloginfo('name')); ?></a> »
 				</p>
 
 				<div class="clear"></div>

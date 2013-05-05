@@ -787,6 +787,7 @@ namespace websharks_core_v000000_dev
 							        && is_file($___instance_config['plugin_dir'].'/plugin.php') && is_dir($___instance_config['plugin_dir'].'/classes')
 
 							        && !empty($___instance_config['plugin_site']) && is_string($___instance_config['plugin_site'])
+							        && ($___instance_config['plugin_site'] = rtrim($___instance_config['plugin_site'], '/'))
 							        && preg_match('/^http\:\/\/.+/i', $___instance_config['plugin_site'])
 
 							) // A fully validated ``$___instance_config`` array (we'll convert to an object now).

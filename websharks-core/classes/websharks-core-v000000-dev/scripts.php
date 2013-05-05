@@ -80,7 +80,7 @@ namespace websharks_core_v000000_dev
 					if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
 						$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes] = array(
 							'deps'     => array('jquery', 'jquery-ui-components'),
-							'url'      => $this->©url->to_core_dir_or_file('/client-side/scripts/core-libs/?'),
+							'url'      => $this->©url->to_core_dir_file('/client-side/scripts/core-libs').'/',
 							'ver'      => $this->___instance_config->core_ns_with_dashes,
 
 							'localize' => array( // Array of WebSharks™ Core JavaScript translations.
@@ -128,7 +128,7 @@ namespace websharks_core_v000000_dev
 							if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
 								$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
 									'deps'     => array($this->___instance_config->core_ns_stub_with_dashes),
-									'url'      => $this->©url->to_core_dir_or_file('/client-side/scripts/menu-pages/menu-pages-min.js'),
+									'url'      => $this->©url->to_core_dir_file('/client-side/scripts/menu-pages/menu-pages-min.js'),
 									'ver'      => $this->___instance_config->core_ns_with_dashes,
 
 									'localize' => array( // WebSharks™ Core translations.
@@ -180,12 +180,12 @@ namespace websharks_core_v000000_dev
 
 					// Some additional JavaScript instance config properties. These require additional server-side processing.
 
-					$data .= "'wp_load_url':'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_or_file($this->©files->wp_load()))."',";
-					$data .= "'core_dir_url':'".$this->©string->esc_js_sq($this->©url->to_core_dir_or_file())."',";
+					$data .= "'wp_load_url':'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_file($this->©file->wp_load()))."',";
+					$data .= "'core_dir_url':'".$this->©string->esc_js_sq($this->©url->to_core_dir_file())."',";
 
-					$data .= "'plugin_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_dir_or_file())."',";
-					$data .= "'plugin_data_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_data_dir_or_file())."',";
-					$data .= "'plugin_pro_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_pro_dir_or_file())."',";
+					$data .= "'plugin_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_dir_file())."',";
+					$data .= "'plugin_data_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_data_dir_file())."',";
+					$data .= "'plugin_pro_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_pro_dir_file())."',";
 
 					$data .= "'has_pro':".(($this->©plugin->has_pro()) ? 'true' : 'false').",";
 

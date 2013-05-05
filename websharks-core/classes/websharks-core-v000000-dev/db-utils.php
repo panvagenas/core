@@ -70,7 +70,7 @@ namespace websharks_core_v000000_dev
 
 					foreach($value as $_name => $_value)
 						{
-							if(is_array($_value))
+							if(is_array($_value) || is_object($_value))
 								$_value = serialize($_value);
 
 							if(is_numeric($_name))
@@ -78,12 +78,12 @@ namespace websharks_core_v000000_dev
 
 							$meta[$_name] = (string)$_value;
 						}
-					unset($_name, $_value);
+					unset($_name, $_value); // Housekeeping.
 
-					if(empty($meta))
+					if(empty($meta)) // Default key in this case.
 						$meta['_0'] = (string)$value;
 
-					return $meta;
+					return $meta; // Name/value pairs (NEVER empty).
 				}
 
 			/**
@@ -163,19 +163,17 @@ namespace websharks_core_v000000_dev
 
 					foreach($names as $_name)
 						{
-							if($this->©string->is_not_empty($_name))
+							if(!$this->©string->is_not_empty($_name))
+								throw $this->©exception(
+									__METHOD__.'#invalid_name', get_defined_vars(),
+									$this->i18n('Expecting a non-empty string `$_name` value.').
+									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
+								);
+							if(!isset($this->cache['meta_values'][$table][$rel_id][$_name]))
 								{
-									if(!isset($this->cache['meta_values'][$table][$rel_id][$_name]))
-										{
-											$query_names[]                                       = $_name;
-											$this->cache['meta_values'][$table][$rel_id][$_name] = FALSE;
-										}
+									$query_names[]                                       = $_name;
+									$this->cache['meta_values'][$table][$rel_id][$_name] = FALSE;
 								}
-							else throw $this->©exception(
-								__METHOD__.'#invalid_name', compact('_name'),
-								$this->i18n('Expecting a non-empty string `$_name` value.').
-								sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
-							);
 						}
 					unset($_name); // Just a little housekeeping here.
 
@@ -198,7 +196,6 @@ namespace websharks_core_v000000_dev
 									$this->cache['meta_values'][$table][$rel_id][$_result->name] = maybe_unserialize($_result->value);
 							unset($_result); // A little housekeeping.
 						}
-
 					if($count_names === 1)
 						return $this->cache['meta_values'][$table][$rel_id][$names[0]];
 
@@ -226,14 +223,13 @@ namespace websharks_core_v000000_dev
 
 					foreach($values as $_name => $_value)
 						{
-							if($this->©string->is_not_empty($_name))
-								unset($this->cache['meta_values'][$table][$rel_id][$_name]);
-
-							else throw $this->©exception(
-								__METHOD__.'#invalid_name', compact('_name'),
-								$this->i18n('Expecting a non-empty string `$_name` value.').
-								sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
-							);
+							if(!$this->©string->is_not_empty($_name))
+								throw $this->©exception(
+									__METHOD__.'#invalid_name', get_defined_vars(),
+									$this->i18n('Expecting a non-empty string `$_name` value.').
+									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
+								);
+							unset($this->cache['meta_values'][$table][$rel_id][$_name]);
 						}
 					unset($_name, $_value); // A little housekeeping.
 
@@ -265,14 +261,13 @@ namespace websharks_core_v000000_dev
 
 					foreach($values as $_name => $_value)
 						{
-							if($this->©string->is_not_empty($_name))
-								unset($this->cache['meta_values'][$table][$rel_id][$_name]);
-
-							else throw $this->©exception(
-								__METHOD__.'#invalid_name', compact('_name'),
-								$this->i18n('Expecting a non-empty string `$_name` value.').
-								sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
-							);
+							if(!$this->©string->is_not_empty($_name))
+								throw $this->©exception(
+									__METHOD__.'#invalid_name', get_defined_vars(),
+									$this->i18n('Expecting a non-empty string `$_name` value.').
+									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
+								);
+							unset($this->cache['meta_values'][$table][$rel_id][$_name]);
 						}
 					unset($_name, $_value); // A little housekeeping.
 
@@ -305,14 +300,13 @@ namespace websharks_core_v000000_dev
 
 					foreach(($names = array_unique($names)) as $_name)
 						{
-							if($this->©string->is_not_empty($_name))
-								unset($this->cache['meta_values'][$table][$rel_id][$_name]);
-
-							else throw $this->©exception(
-								__METHOD__.'#invalid_name', compact('_name'),
-								$this->i18n('Expecting a non-empty string `$_name` value.').
-								sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
-							);
+							if(!$this->©string->is_not_empty($_name))
+								throw $this->©exception(
+									__METHOD__.'#invalid_name', get_defined_vars(),
+									$this->i18n('Expecting a non-empty string `$_name` value.').
+									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
+								);
+							unset($this->cache['meta_values'][$table][$rel_id][$_name]);
 						}
 					unset($_name); // A little housekeeping.
 
@@ -396,53 +390,58 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(preg_match('/\.sql$/', $sql_file) && is_file($sql_file))
-						{
-							$table_prefix  = $this->©db_table->prefix;
-							$plugin_prefix = $this->___instance_config->plugin_prefix;
-							$charset       = ($this->©db->charset) ? $this->©db->charset : 'utf8';
-							$collate       = ($this->©db->collate) ? $this->©db->collate : 'utf8_unicode_ci';
+					$table_prefix  = $this->©db_table->prefix;
+					$plugin_prefix = $this->___instance_config->plugin_prefix;
+					$charset       = ($this->©db->charset) ? $this->©db->charset : 'utf8';
+					$collate       = ($this->©db->collate) ? $this->©db->collate : 'utf8_unicode_ci';
 
-							if(is_string($query = file_get_contents($sql_file)))
-								{
-									$replace = array(
-										'/^SET\s+.+?;$/im',
-										'/^\/\*\!.*?;$/im',
-										'/ENGINE\s*\=\s*\w+/i',
-										'/`'.preg_quote($plugin_prefix, '/').'/',
-										'/DEFAULT\s+CHARSET\s*\=\s*\w+/i',
-										'/DEFAULT\s+CHARACTER\s+SET\s*\=\s*\w+/i',
-										'/DEFAULT\s+CHARACTER\s+SET\s+\w+/i',
-										'/COLLATE\s*\=\s*\w+/i',
-										'/COLLATE\s+\w+/i'
-									);
-
-									$with = array(
-										'', // No SET statements.
-										'', // No code-containing comments.
-										'', // No engine specs (use default).
-										'`'.$this->©string->esc_refs($table_prefix),
-										'DEFAULT CHARSET='.$this->©string->esc_refs($charset),
-										'DEFAULT CHARACTER SET='.$this->©string->esc_refs($charset),
-										'DEFAULT CHARACTER SET '.$this->©string->esc_refs($charset),
-										'COLLATE='.$this->©string->esc_refs($collate),
-										'COLLATE '.$this->©string->esc_refs($collate)
-									);
-
-									if(is_string($query = preg_replace($replace, $with, $query)))
-										{
-											$queries = preg_split('/;$/m', $query, NULL, PREG_SPLIT_NO_EMPTY);
-											$queries = $this->©strings->trim_deep($queries);
-											$queries = $this->©array->remove_0b_strings_deep($queries);
-
-											return $queries;
-										}
-								}
-						}
-					throw $this->©exception(
-						__METHOD__.'#preparation_failure', compact('sql_file'),
-						sprintf($this->i18n('Unable to prepare queries from SQL file: `%1$s`.'), $sql_file)
+					$replace = array(
+						'/^SET\s+.+?;$/im',
+						'/^\/\*\!.*?;$/im',
+						'/ENGINE\s*\=\s*\w+/i',
+						'/`(?:wp_)?'.preg_quote($plugin_prefix, '/').'/',
+						'/DEFAULT\s+CHARSET\s*\=\s*\w+/i',
+						'/DEFAULT\s+CHARACTER\s+SET\s*\=\s*\w+/i',
+						'/DEFAULT\s+CHARACTER\s+SET\s+\w+/i',
+						'/COLLATE\s*\=\s*\w+/i',
+						'/COLLATE\s+\w+/i'
 					);
+					$with    = array(
+						'', // No SET statements.
+						'', // No code-containing comments.
+						'', // No engine specs (use default).
+						'`'.$this->©string->esc_refs($table_prefix),
+						'DEFAULT CHARSET='.$this->©string->esc_refs($charset),
+						'DEFAULT CHARACTER SET='.$this->©string->esc_refs($charset),
+						'DEFAULT CHARACTER SET '.$this->©string->esc_refs($charset),
+						'COLLATE='.$this->©string->esc_refs($collate),
+						'COLLATE '.$this->©string->esc_refs($collate)
+					);
+					if(!is_file($sql_file))
+						throw $this->©exception(
+							__METHOD__.'#nonexistent_sql_file', get_defined_vars(),
+							sprintf($this->i18n('Nonexistent SQL file: `%1$s`.'), $sql_file)
+						);
+					if($this->©file->extension($sql_file) !== 'sql')
+						throw $this->©exception(
+							__METHOD__.'#invalid_sql_file_extension', get_defined_vars(),
+							sprintf($this->i18n('Invalid SQL file extension: `%1$s`.'), $sql_file)
+						);
+					if(!is_string($query = file_get_contents($sql_file)))
+						throw $this->©exception(
+							__METHOD__.'#read_write_issues', get_defined_vars(),
+							sprintf($this->i18n('Unable to read SQL file: `%1$s`.'), $sql_file)
+						);
+					if(!is_string($query = preg_replace($replace, $with, $query)))
+						throw $this->©exception(
+							__METHOD__.'#preparation_failure', get_defined_vars(),
+							sprintf($this->i18n('Unable to prepare queries from SQL file: `%1$s`.'), $sql_file)
+						);
+					$queries = preg_split('/;$/m', $query, NULL, PREG_SPLIT_NO_EMPTY);
+					$queries = $this->©strings->trim_deep($queries);
+					$queries = $this->©array->remove_0b_strings_deep($queries);
+
+					return $queries;
 				}
 
 			/**
@@ -475,7 +474,7 @@ namespace websharks_core_v000000_dev
 								$_value = $this->typify_results_deep($_value, $_key);
 							unset($_key, $_value);
 
-							return $value;
+							return $value; // Array/object.
 						}
 					if(is_string($key) && is_numeric($value))
 						{
@@ -521,6 +520,7 @@ namespace websharks_core_v000000_dev
 					$query = preg_replace('/\s+LIMIT\s+[0-9\s,]*$/i', '', $query).' LIMIT 1';
 
 					$this->©db->query($query);
+
 					return (integer)$this->©db->get_var('SELECT FOUND_ROWS()');
 				}
 

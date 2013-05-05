@@ -36,9 +36,9 @@ namespace websharks_core_v000000_dev
 			 * @by-constructor Set dynamically by the class constructor.
 			 * @extenders Extenders should use a constructor that sets this value (if applicable).
 			 *
-			 * @var array Defaults to an array with one generic `___unit_test_table`.
+			 * @var array Defaults to an empty array.
 			 */
-			public $tables = array('___unit_test_table');
+			public $tables = array();
 
 			/**
 			 * Plugin DB tables install file.

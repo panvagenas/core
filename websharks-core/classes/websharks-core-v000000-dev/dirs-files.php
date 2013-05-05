@@ -131,7 +131,7 @@ namespace websharks_core_v000000_dev
 						}
 					unset($_real_from, $_real_to); // Housekeeping.
 
-					if(is_file($from) || $this->has_extension($from, $this::any_known_type))
+					if($this->has_extension($from) || is_file($from))
 						$from = dirname($from); // Need a directory to calculate from.
 
 					$from = preg_split('/\//', $this->n_seps($from));
@@ -366,7 +366,8 @@ namespace websharks_core_v000000_dev
 							$extensions = $this->©string->ify_deep($extensions);
 							$extensions = array_map('strtolower', $extensions);
 						}
-					if($type) $extensions = array_merge($extensions, $this->©file->extensions($type));
+					if($type) // Specific extension types (based on constants).
+						$extensions = array_merge($extensions, $this->©file->extensions($type));
 
 					return in_array($extension, $extensions, TRUE);
 				}
@@ -416,7 +417,7 @@ namespace websharks_core_v000000_dev
 					$dir_file = $dir_file_arp = $this->n_seps($dir_file);
 					$from_dir = $from_dir_file; // Translate this into a directory (as it should be).
 
-					if($from_dir && (is_file($from_dir) || $this->has_extension($from_dir, $this::any_known_type)))
+					if($from_dir && ($this->has_extension($from_dir) || is_file($from_dir)))
 						$from_dir = dirname($from_dir); // Need a directory to calculate from.
 
 					if($from_dir) // Did we get a from directory?

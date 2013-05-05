@@ -2811,15 +2811,25 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				);
 			if(!strlen($dir_file)) return ''; // Catch empty string.
 
-			$regex_scheme = substr($this->regex_valid_dir_file_stream_wrapper, 0, -2).'/';
-			if(preg_match($regex_scheme, $dir_file, $scheme)) // A PHP stream wrapper?
-				$dir_file = preg_replace($regex_scheme, '', $dir_file);
-
+			if(strpos($dir_file, '://' !== FALSE)) // Quick check here for optimization.
+				{
+					if(!isset(self::$static['n_dir_seps__regex_stream_wrapper']))
+						self::$static['n_dir_seps__regex_stream_wrapper'] = substr($this->regex_valid_dir_file_stream_wrapper, 0, -2).'/';
+					if(preg_match(self::$static['n_dir_seps__regex_stream_wrapper'], $dir_file, $stream_wrapper)) // A stream wrapper?
+						$dir_file = preg_replace(self::$static['n_dir_seps__regex_stream_wrapper'], '', $dir_file);
+				}
+			if(strpos($dir_file, ':' !== FALSE)) // Quick drive letter check here for optimization.
+				{
+					if(!isset(self::$static['n_dir_seps__regex_win_drive_letter']))
+						self::$static['n_dir_seps__regex_win_drive_letter'] = substr($this->regex_valid_win_drive_letter, 0, -2).'/';
+					if(preg_match(self::$static['n_dir_seps__regex_win_drive_letter'], $dir_file)) // It has a Windows® drive letter?
+						$dir_file = preg_replace_callback(self::$static['n_dir_seps__regex_win_drive_letter'], create_function('$m', 'return strtoupper($m[0]);'), $dir_file);
+				}
 			$dir_file = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $dir_file));
 			$dir_file = ($allow_trailing_slash) ? $dir_file : rtrim($dir_file, '/'); // Strip trailing slashes.
 
-			if(!empty($scheme[0])) // Scheme (force lowercase).
-				$dir_file = strtolower($scheme[0]).$dir_file;
+			if(!empty($stream_wrapper[0])) // Stream wrapper (force lowercase).
+				$dir_file = strtolower($stream_wrapper[0]).$dir_file;
 
 			return $dir_file; // Normalized now.
 		}
@@ -3120,6 +3130,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 * @inheritdoc websharks_core_v000000_dev::$regex_valid_dir_file_stream_wrapper
 	 */
 	public $regex_valid_dir_file_stream_wrapper = '/^[a-zA-Z0-9]+\:\/\/$/';
+
+	/**
+	 * @var string A directory/file drive letter validation pattern (for Windows®).
+	 *
+	 * @see websharks_core_v000000_dev::$regex_valid_win_drive_letter
+	 * @inheritdoc websharks_core_v000000_dev::$regex_valid_win_drive_letter
+	 */
+	public $regex_valid_win_drive_letter = '/^[a-zA-Z]\:(?:\/|\\\\)$/';
 
 	/**
 	 * Array of base 64 encoded PNG icons.

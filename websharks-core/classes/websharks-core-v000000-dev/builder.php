@@ -1254,33 +1254,53 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string:!empty', 'string', 'string:!empty', func_get_args());
 
 					$pattern = $this->regex($pattern_name);
+					$_this   = $this; // For callback handlers below (PHP v5.3).
 
-					switch($pattern_name)
+					switch($pattern_name) // Handle this pattern (by name).
 					{
 						case 'plugin_readme__php_requires_at_least_version':
 						case 'plugin_readme__php_tested_up_to_version':
 						case 'plugin_readme__wp_requires_at_least_version':
 						case 'plugin_readme__wp_tested_up_to_version':
 						case 'plugin_readme__wp_version_stable_tag':
-								$string = preg_replace($pattern, '${1}'.$this->©string->esc_refs($value), $string, -1, $replacements);
-								break;
+								$string = preg_replace_callback($pattern, function ($m) use ($_this, $value)
+									{
+										return $m['key'].$value; // New value.
+
+									}, $string, -1, $replacements);
+								break; // Stop here.
 
 						case 'php_code__deps_x__define_stand_alone_plugin_name':
 						case 'php_code__deps_x__define_stand_alone_plugin_dir_names':
-								$string = preg_replace($pattern, '${1}'.$this->©string->esc_refs($this->©string->esc_sq($value)).'${3}', $string, -1, $replacements);
-								break;
+								$string = preg_replace_callback($pattern, function ($m) use ($_this, $value)
+									{
+										return $m['open_define'].
+										       $m['open_sq'].$_this->©string->esc_sq($value).$m['close_sq'].
+										       $m['close_define_semicolon'].$m['marker']; // New value.
+
+									}, $string, -1, $replacements);
+								break; // Stop here.
 
 						case 'php_code__deps_x__declare_stand_alone_class_name':
-								$string = preg_replace($pattern, '${1}'.$this->©string->esc_refs($value).'${2}', $string, -1, $replacements);
-								break;
+								$string = preg_replace_callback($pattern, function ($m) use ($_this, $value)
+									{
+										return $m['class'].$value.$m['marker']; // New suffix.
+
+									}, $string, -1, $replacements);
+								break; // Stop here.
 
 						case 'php_code__quoted_string_with_version_marker':
 						case 'php_code__quoted_string_with_version_with_underscores_marker':
 						case 'php_code__quoted_string_with_version_with_dashes_marker':
 						case 'php_code__quoted_string_with_php_version_required_marker':
 						case 'php_code__quoted_string_with_wp_version_required_marker':
-								$string = preg_replace($pattern, '${1}'.$this->©string->esc_refs($this->©string->esc_sq($value)).'${3}', $string, -1, $replacements);
-								break;
+								$string = preg_replace_callback($pattern, function ($m) use ($_this, $value)
+									{
+										return $m['open_sq'].$_this->©string->esc_sq($value).$m['close_sq'].
+										       $m['possible_semicolon_or_comma'].$m['marker']; // New value.
+
+									}, $string, -1, $replacements);
+								break; // Stop here.
 
 						default: // What?
 							throw $this->©exception(
@@ -1288,6 +1308,8 @@ namespace websharks_core_v000000_dev
 								sprintf($this->i18n('Unexpected regex pattern name: `%1$s`.'), $pattern_name)
 							);
 					}
+					unset($_this); // Just a little housekeeping.
+
 					if(!$string || empty($replacements))
 						throw $this->©exception(
 							__METHOD__.'#regex_replacement_failure', get_defined_vars(),
@@ -1311,22 +1333,22 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string:!empty', func_get_args());
 
 					$patterns = array(
-						'plugin_readme__php_requires_at_least_version'                 => '/^(Requires\s+at\s+least\s+PHP\s+version\:\s*)(.*)$/im',
-						'plugin_readme__php_tested_up_to_version'                      => '/^(Tested\s+up\s+to\s+PHP\s+version\:\s*)(.*)$/im',
-						'plugin_readme__wp_requires_at_least_version'                  => '/^(Requires\s+at\s+least(?:\s+(?:WP|WordPress)\s+version)?\:\s*)(.*)$/im',
-						'plugin_readme__wp_tested_up_to_version'                       => '/^(Tested\s+up\s+to(?:\s+(?:WP|WordPress)\s+version)?\:\s*)(.*)$/im',
-						'plugin_readme__wp_version_stable_tag'                         => '/^((?:Version|Stable\s+tag)\:\s*)(.*)$/im',
+						'plugin_readme__php_requires_at_least_version'                 => '/^(?P<key>Requires\s+at\s+least\s+PHP\s+version\:\s*)(?P<value>.*)$/im',
+						'plugin_readme__php_tested_up_to_version'                      => '/^(?P<key>Tested\s+up\s+to\s+PHP\s+version\:\s*)(?P<value>.*)$/im',
+						'plugin_readme__wp_requires_at_least_version'                  => '/^(?P<key>Requires\s+at\s+least(?:\s+(?:WP|WordPress)\s+version)?\:\s*)(?P<value>.*)$/im',
+						'plugin_readme__wp_tested_up_to_version'                       => '/^(?P<key>Tested\s+up\s+to(?:\s+(?:WP|WordPress)\s+version)?\:\s*)(?P<value>.*)$/im',
+						'plugin_readme__wp_version_stable_tag'                         => '/^(?P<key>(?:Version|Stable\s+tag)\:\s*)(?P<value>.*)$/im',
 
-						'php_code__deps_x__define_stand_alone_plugin_name'             => '/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_NAME\'\s*,\s*\')(.*)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-name\!#)/i',
-						'php_code__deps_x__define_stand_alone_plugin_dir_names'        => '/(define\s*\(\s*\'___STAND_ALONE__PLUGIN_DIR_NAMES\'\s*,\s*\')(.*)(\'\s*\)\s*;\s*#\!stand\-alone\-plugin\-dir\-names\!#)/i',
+						'php_code__deps_x__define_stand_alone_plugin_name'             => '/(?P<open_define>define\s*\(\s*\'___STAND_ALONE__PLUGIN_NAME\'\s*,\s*)'.$this->©string->regex_frag_sq_value.'(?P<close_define_semicolon>\s*\)\s*;)(?P<marker>\s*#\!stand\-alone\-plugin\-name\!#)/i',
+						'php_code__deps_x__define_stand_alone_plugin_dir_names'        => '/(?P<open_define>define\s*\(\s*\'___STAND_ALONE__PLUGIN_DIR_NAMES\'\s*,\s*)'.$this->©string->regex_frag_sq_value.'(?P<close_define_semicolon>\s*\)\s*;)(?P<marker>\s*#\!stand\-alone\-plugin\-dir\-names\!#)/i',
 
-						'php_code__deps_x__declare_stand_alone_class_name'             => '/(class\s+deps_x_'.ltrim(rtrim(stub::$regex_valid_core_ns_version, '$/'), '/^').')(\s*#\!stand\-alone\!#)/i',
+						'php_code__deps_x__declare_stand_alone_class_name'             => '/(?P<class>class\s+deps_x_'.substr(stub::$regex_valid_core_ns_version, 2, -2).')(?P<marker>\s*#\!stand\-alone\!#)/i',
 
-						'php_code__quoted_string_with_version_marker'                  => '/(\')(.*)(\'\s*[;,]?\s*#\!version\!#)/i',
-						'php_code__quoted_string_with_version_with_underscores_marker' => '/(\')(.*)(\'\s*[;,]?\s*#\!version-with-underscores\!#)/i',
-						'php_code__quoted_string_with_version_with_dashes_marker'      => '/(\')(.*)(\'\s*[;,]?\s*#\!version-with-dashes\!#)/i',
-						'php_code__quoted_string_with_php_version_required_marker'     => '/(\')(.*)(\'\s*[;,]?\s*#\!php\-version\-required\!#)/i',
-						'php_code__quoted_string_with_wp_version_required_marker'      => '/(\')(.*)(\'\s*[;,]?\s*#\!wp\-version\-required\!#)/i'
+						'php_code__quoted_string_with_version_marker'                  => '/'.$this->©string->regex_frag_sq_value.'(?P<possible_semicolon_or_comma>\s*[;,]?)(?P<marker>\s*#\!version\!#)/i',
+						'php_code__quoted_string_with_version_with_underscores_marker' => '/'.$this->©string->regex_frag_sq_value.'(?P<possible_semicolon_or_comma>\s*[;,]?)(?P<marker>\s*#\!version-with-underscores\!#)/i',
+						'php_code__quoted_string_with_version_with_dashes_marker'      => '/'.$this->©string->regex_frag_sq_value.'(?P<possible_semicolon_or_comma>\s*[;,]?)(?P<marker>\s*#\!version-with-dashes\!#)/i',
+						'php_code__quoted_string_with_php_version_required_marker'     => '/'.$this->©string->regex_frag_sq_value.'(?P<possible_semicolon_or_comma>\s*[;,]?)(?P<marker>\s*#\!php\-version\-required\!#)/i',
+						'php_code__quoted_string_with_wp_version_required_marker'      => '/'.$this->©string->regex_frag_sq_value.'(?P<possible_semicolon_or_comma>\s*[;,]?)(?P<marker>\s*#\!wp\-version\-required\!#)/i'
 					);
 					if(empty($patterns[$matching]))
 						throw $this->©exception(

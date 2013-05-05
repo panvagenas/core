@@ -181,8 +181,8 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if(stripos($buffer, '</html>') === FALSE || !$this->©url->current())
-						return FALSE; // Is NOT HTML markup, or NOT a web request.
+					if(stripos($buffer, '</html>') === FALSE)
+						return FALSE; // Is NOT HTML markup.
 
 					foreach(headers_list() as $_header)
 						if(stripos($_header, 'Content-Type:') === 0)
@@ -408,7 +408,7 @@ namespace websharks_core_v000000_dev
 
 					$cache_part_file      = '%%code-checksum%%-compressor-part.css';
 					$cache_part_file_path = $cache_dir.'/'.$cache_part_file;
-					$cache_part_file_url  = $this->©url->to_wp_abs_dir_or_file($cache_dir.'/'.$cache_part_file);
+					$cache_part_file_url  = $this->©url->to_wp_abs_dir_file($cache_dir.'/'.$cache_part_file);
 
 					if(is_file($cache_parts_file_path) && filemtime($cache_parts_file_path) > strtotime('-'.$this->©options->get('compressor.cache_expiration')))
 						if(is_array($_cached_parts = maybe_unserialize(file_get_contents($cache_parts_file_path))))
@@ -436,7 +436,7 @@ namespace websharks_core_v000000_dev
 								}
 							else if($_css_tag_frag['link_href'])
 								{
-									if(($_css_tag_frag['link_href'] = $this->©url->resolve_relative($_css_tag_frag['link_href'], '', TRUE)) #
+									if(($_css_tag_frag['link_href'] = $this->©url->resolve_relative($_css_tag_frag['link_href']))
 									   && ($_css_code = $this->©url->remote($_css_tag_frag['link_href']))
 									) // We CAN resolve this? And we DID fetch something remotely?
 										{
@@ -515,7 +515,7 @@ namespace websharks_core_v000000_dev
 
 					$cache_part_file      = '%%code-checksum%%-compressor-part.js';
 					$cache_part_file_path = $cache_dir.'/'.$cache_part_file;
-					$cache_part_file_url  = $this->©url->to_wp_abs_dir_or_file($cache_dir.'/'.$cache_part_file);
+					$cache_part_file_url  = $this->©url->to_wp_abs_dir_file($cache_dir.'/'.$cache_part_file);
 
 					if(is_file($cache_parts_file_path) && filemtime($cache_parts_file_path) > strtotime('-'.$this->©options->get('compressor.cache_expiration')))
 						if(is_array($_cached_parts = maybe_unserialize(file_get_contents($cache_parts_file_path))))
@@ -543,7 +543,7 @@ namespace websharks_core_v000000_dev
 								}
 							else if($_js_tag_frag['script_src'])
 								{
-									if(($_js_tag_frag['script_src'] = $this->©url->resolve_relative($_js_tag_frag['script_src'], '', TRUE)) #
+									if(($_js_tag_frag['script_src'] = $this->©url->resolve_relative($_js_tag_frag['script_src']))
 									   && ($_js_code = $this->©url->remote($_js_tag_frag['script_src']))
 									) // We CAN resolve this? And we DID fetch something remotely?
 										{
@@ -999,7 +999,7 @@ namespace websharks_core_v000000_dev
 					// This is used as a callback for ``preg_replace()``, so it's NOT absolutely necessary.
 					// $this->check_arg_types('array', func_get_args());
 
-					return $m['import'].$m['open_encap'].$this->©url->resolve_relative($m['url'], $this->current_base, TRUE).$m['close_encap'];
+					return $m['import'].$m['open_encap'].$this->©url->resolve_relative($m['url'], $this->current_base).$m['close_encap'];
 				}
 
 			/**
@@ -1017,7 +1017,7 @@ namespace websharks_core_v000000_dev
 					// This is used as a callback for ``preg_replace()``, so it's NOT absolutely necessary.
 					// $this->check_arg_types('array', func_get_args());
 
-					return $m['url_'].$m['open_bracket'].$m['open_encap'].$this->©url->resolve_relative($m['url'], $this->current_base, TRUE).$m['close_encap'].$m['close_bracket'];
+					return $m['url_'].$m['open_bracket'].$m['open_encap'].$this->©url->resolve_relative($m['url'], $this->current_base).$m['close_encap'].$m['close_bracket'];
 				}
 
 			/**
@@ -1315,7 +1315,7 @@ namespace websharks_core_v000000_dev
 					if(!$this->©options->get('compressor.compress_css_code'))
 						return $css; // Nothing to do here.
 
-					$_regex = '/(?:https?\:)?\/\/'.preg_quote($this->©url->current_host(), '/').'\//i';
+					$_regex = '/'.$this->©url->regex_frag_scheme.preg_quote($this->©url->current_host(), '/').'\//i';
 					$css    = preg_replace($_regex, '/', $css); // To absolute paths.
 					unset ($_regex);
 

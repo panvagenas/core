@@ -32,7 +32,7 @@ namespace websharks_core_v000000_dev
 			 * @note Minimum 4 characters. Must be 4-60 characters in length.
 			 *    Usernames may NEVER exceed 60 characters (max DB column size).
 			 */
-			public $regex_valid_username = '/^[A-Za-z][A-Za-z0-9_\.@\-]{3,59}$/';
+			public $regex_valid_username = '/^[a-zA-Z][a-zA-Z0-9@._\-]{3,59}$/';
 
 			/**
 			 * Username regex pattern (for multisite networks).
@@ -53,7 +53,7 @@ namespace websharks_core_v000000_dev
 			 * @note This is NOT 100% RFC compliant. This does NOT grok i18n domains.
 			 * @see http://en.wikipedia.org/wiki/Email_address
 			 */
-			public $regex_valid_email = '/^[a-z0-9\!#\$%&\'\*\+\/\=\?\^_`\{\|\}~\-]+(?:\.?[a-z0-9\!#\$%&\'\*\+\/\=\?\^_`\{\|\}~\-]+)*@[a-z0-9]+(?:-*[a-z0-9]+)*(?:\.[a-z0-9]+(?:-*[a-z0-9]+)*)*\.[a-z]{2,6}$/i';
+			public $regex_valid_email = '/^[a-zA-Z0-9_!#$%&*+=?`{}~|\/\^\'\-]+(?:\.?[a-zA-Z0-9_!#$%&*+=?`{}~|\/\^\'\-]+)*@[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*(?:\.[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*)*(?:\.[a-zA-Z][a-zA-Z0-9]+)?$/';
 
 			/**
 			 * Which user are we working with?
@@ -65,7 +65,7 @@ namespace websharks_core_v000000_dev
 			 *    • A ``\WP_User`` object, indicates a specific user (which we'll obtain an object instance for).
 			 *    • A ``users`` object, indicates a specific user object instance.
 			 *
-			 * @return users|\s2member\users A user object instance.
+			 * @return users A user object instance.
 			 *    Else an exception is thrown (e.g. unable to determine).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
@@ -1000,7 +1000,7 @@ namespace websharks_core_v000000_dev
 						return $this->©error(
 							__METHOD__.'#already_active', get_defined_vars(),
 							sprintf($this->translate('User ID: `%1$s`. This account is already active.'), $user->ID).
-							sprintf($this->translate(' Please <a href="%1$s">log in</a>.'), esc_attr(wp_login_url()))
+							sprintf($this->translate(' Please <a href="%1$s">log in</a>.'), esc_attr($this->©url->to_wp_login()))
 						);
 
 					if($user->get_option('on_activation_send_welcome')) // Send welcome email?
@@ -1042,7 +1042,7 @@ namespace websharks_core_v000000_dev
 							$successes = $this->©success(
 								__METHOD__.'#success', get_defined_vars(),
 								$this->translate('Account activated successfully.').
-								sprintf($this->translate(' Please [CLICK HERE](%1$s) to log in.'), wp_login_url())
+								sprintf($this->translate(' Please [CLICK HERE](%1$s) to log in.'), $this->©url->to_wp_login())
 							);
 						}
 					$this->©action->set_call_data_for('©user_utils.®activate', get_defined_vars());
@@ -1258,26 +1258,23 @@ namespace websharks_core_v000000_dev
 							/** @var $user users A `users` object instance (via ``$response`` vars). */
 
 							if(!($redirect_to = $_r_redirect_to = (string)$this->©vars->_REQUEST('redirect_to')))
-								$redirect_to = admin_url('/');
+								$redirect_to = $this->©url->to_wp_admin_uri();
 
 							$redirect_to = apply_filters('login_redirect', $redirect_to, $_r_redirect_to, $user->wp, $user);
 
-							if(!$redirect_to || $redirect_to === 'wp-admin/'
-							   || $redirect_to === admin_url() || $redirect_to === admin_url('/')
-							   || preg_match('/\/wp-admin\/?$/', $redirect_to)
-							) // A default ``$redirect_to`` value.
+							if(!$redirect_to || rtrim($redirect_to, '/') === 'wp-admin' || preg_match('/\/wp-admin[\/?#]*$/', $redirect_to))
 								{
 									if(is_multisite() && !get_active_blog_for_user($user->ID) && !$user->is_super_admin())
-										$redirect_to = user_admin_url('/');
+										$redirect_to = $this->©url->to_wp_user_admin_uri();
 
 									else if(is_multisite() && !$user->wp->has_cap('read'))
-										$redirect_to = get_dashboard_url($user->ID, '/');
+										$redirect_to = $this->©url->to_wp_user_dashboard_uri($user->ID);
 
 									else if(!$user->wp->has_cap('edit_posts'))
-										$redirect_to = admin_url('/profile.php');
+										$redirect_to = $this->©url->to_wp_admin_uri('/profile.php');
 								}
 							if(!$redirect_to) // Absolute default value (if all else fails somehow).
-								$redirect_to = home_url('/'); // Redirect user to the home page.
+								$redirect_to = $this->©url->to_wp_home_uri(); // Redirect user to the home page.
 
 							if(force_ssl_admin() && $this->©url->is_in_wp_admin($redirect_to))
 								$redirect_to = $this->©url->set_scheme($redirect_to, 'https');
@@ -1534,7 +1531,7 @@ namespace websharks_core_v000000_dev
 
 									$successes = $this->©success(
 										__METHOD__.'#success', get_defined_vars(),
-										sprintf($this->translate('Password reset. Please [log in](%1$s).'), wp_login_url())
+										sprintf($this->translate('Password reset. Please [log in](%1$s).'), $this->©url->to_wp_login())
 									);
 								}
 						}

@@ -250,7 +250,7 @@ namespace websharks_core_v000000_dev
 			 *       • Private — {@link fw_constants::private_type}
 			 *       For private `call` actions, this will default to `86400` (24 hours).
 			 *
-			 * @param string  $base Optional. A base URL to use instead of ``home_url('/')``, which is the default value.
+			 * @param string  $base Optional. Defaults to WordPress® home URL. A base URL to use instead of the default value.
 			 *
 			 * @param boolean $use_action_key Optional. Defaults to a TRUE value. Links are compressed w/ the use of an action key.
 			 *    If this is FALSE, we'll embed the action array into the link itself. However, this can produce MUCH longer/uglier links.
@@ -300,7 +300,7 @@ namespace websharks_core_v000000_dev
 									$action_key_expires_after = $expires_after;
 								else $action_key_expires_after = 86400;
 						}
-					$base = ($base) ? $base : home_url('/');
+					$base = ($base) ? $base : $this->©url->to_wp_home_uri();
 
 					$query_args['a']['s'] = 'call'; // This IS a `call`.
 					$query_args['a']['c'] = $call; // Dynamic `©class.®method`.

@@ -195,6 +195,30 @@ namespace websharks_core_v000000_dev
 			const private_type = '___private_type';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
+			# URL types.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * @var string Represents `home` type.
+			 */
+			const home_type = '___home_type';
+
+			/**
+			 * @var string Represents `network_home` type.
+			 */
+			const network_home_type = '___network_home_type';
+
+			/**
+			 * @var string Represents `site` type.
+			 */
+			const site_type = '___site_type';
+
+			/**
+			 * @var string Represents `network_site` type.
+			 */
+			const network_site_type = '___network_site_type';
+
+			# --------------------------------------------------------------------------------------------------------------------------------
 			# MIME types.
 			# --------------------------------------------------------------------------------------------------------------------------------
 
