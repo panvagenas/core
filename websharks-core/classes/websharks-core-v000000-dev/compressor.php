@@ -135,10 +135,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Possibly compressed output.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert-failure-for-inspection // Note, this test could be modified (just a bit) to view the current outcome of the compression routine, and make any needed adjustments.
-			 * // This test covers everything else. However, we do run additional tests against the cache cleanup/purging routines, and CRON jobs below.
-			 *    (file_get_contents(dirname(dirname(dirname(__FILE__))).'/._dev-utilities/unit-test-files/compress-me.html')) === 'nill'
 			 */
 			public function compression_buffer($buffer)
 				{
@@ -1321,7 +1317,7 @@ namespace websharks_core_v000000_dev
 
 					if($this->©options->get('compressor.try_yui_compressor') && $this->©commands->java_possible())
 						{
-							$yui = dirname(dirname(dirname(__FILE__))).'/includes/yui-compressor.jar';
+							$yui = $this->©dir->n_seps_up(__FILE__, 3).'/includes/yui-compressor.jar';
 							$yui = $this->©commands->java.' -jar '.escapeshellarg($yui).' --type css --charset utf-8';
 
 							if(($compressed_css = (string)$this->©commands->exec($yui, $css)))
@@ -1353,7 +1349,7 @@ namespace websharks_core_v000000_dev
 
 					if($this->©options->get('compressor.try_yui_compressor') && $this->©commands->java_possible())
 						{
-							$yui = dirname(dirname(dirname(__FILE__))).'/includes/yui-compressor.jar';
+							$yui = $this->©dir->n_seps_up(__FILE__, 3).'/includes/yui-compressor.jar';
 							$yui = $this->©commands->java.' -jar '.escapeshellarg($yui).' --type js --charset utf-8';
 
 							if(($compressed_js = (string)$this->©commands->exec($yui, $js)))

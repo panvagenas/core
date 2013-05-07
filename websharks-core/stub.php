@@ -177,7 +177,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 					/*
 					 * Do NOT run this file from a root directory.
 					 */
-					if(substr(dirname(__FILE__), -1) === '/')
+					if(substr(self::n_dir_seps_up(__FILE__, 1, TRUE), -1) === '/')
 						throw new exception( // Fail here; do NOT access this file from a root directory.
 							sprintf(self::i18n('This file should NOT be accessed from a root directory: `%1$s`'), __FILE__));
 					/*
@@ -427,7 +427,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
-					$this_dir                     = self::n_dir_seps(dirname(__FILE__));
+					$this_dir                     = self::n_dir_seps_up(__FILE__);
 					$local_core_repo_dir_basename = basename(self::$local_core_repo_dir);
 					$is_phar                      = $this_phar = self::n_dir_seps(self::is_phar());
 
@@ -493,13 +493,12 @@ if(!class_exists('websharks_core_v000000_dev'))
 				{
 					// Current PHAR file w/stream prefix.
 
-					$is_phar = $phar = self::n_dir_seps(self::is_phar());
+					$is_phar  = $phar = self::n_dir_seps(self::is_phar());
+					$phar_dir = self::n_dir_seps_up($phar);
 
 					if(!$is_phar) // A couple of quick sanity checks.
 						throw new exception(self::i18n('This is NOT a PHAR file.'));
 					if(!self::can_phar()) throw new exception(self::cant_phar_msg());
-
-					$phar_dir = dirname($phar); // Need this below.
 
 					// Determine path info.
 
@@ -522,8 +521,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					$internal_uri = self::n_dir_seps($path_info, TRUE);
 					$internal_uri = '/'.ltrim($internal_uri, '/'); // Absolute (e.g. a URI).
-					if(substr($internal_uri, -1) === '/') // Handle directory indexes gracefully.
-						$internal_uri = $internal_uri.'/index.php';
+					if(substr($internal_uri, -1) === '/') // Handle directory indexes.
+						$internal_uri .= 'index.php';
 
 					$internal_uri_basename  = basename($internal_uri);
 					$internal_uri_extension = self::extension($internal_uri);
@@ -539,13 +538,13 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(substr($internal_uri_basename, -1) === '~')
 						return FALSE; // Do NOT serve backups; 403 (forbidden).
 
-					for($_i = 0, $_dir = dirname($phar.$internal_uri); $_i <= 100; $_i++)
+					for($_i = 0, $_dir = self::n_dir_seps_up($phar.$internal_uri); $_i <= 100; $_i++)
 						{
 							if($_i > 0 && $_dir === $phar_dir)
 								break; // Search complete now.
 
 							if($_i > 0) // Up one directory now?
-								$_dir = self::n_dir_seps(dirname($_dir), TRUE);
+								$_dir = self::n_dir_seps_up($_dir, 1, TRUE);
 
 							if(!$_dir || $_dir === '.' || substr($_dir, -1) === ':')
 								break; // Search complete now.
@@ -995,8 +994,6 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @return string Normalized directory/file path.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @TODO Check all uses of ``dirname()`` and be sure they normalize directory seps.
 			 */
 			public static function n_dir_seps($dir_file, $allow_trailing_slash = FALSE)
 				{
@@ -1027,6 +1024,40 @@ if(!class_exists('websharks_core_v000000_dev'))
 						$dir_file = strtolower($stream_wrapper[0]).$dir_file;
 
 					return $dir_file; // Normalized now.
+				}
+
+			/**
+			 * Normalizes directory/file separators (up X directories).
+			 *
+			 * @param string  $dir_file A directory/file path.
+			 *
+			 * @param integer $up Optional. Defaults to a value of `1`.
+			 *    Number of directories to move up.
+			 *
+			 * @param boolean $allow_trailing_slash Defaults to FALSE.
+			 *    If TRUE; and ``$dir_file`` contains a trailing slash; we'll leave it there.
+			 *
+			 * @return string Up one directory (normalized directory/file separators).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public static function n_dir_seps_up($dir_file, $up = 1, $allow_trailing_slash = FALSE)
+				{
+					if(!is_string($dir_file) || !is_integer($up) || !is_bool($allow_trailing_slash))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					if(!strlen($dir_file)) return ''; // Catch empty string.
+
+					$had_trailing_slash = in_array(substr($dir_file, -1), array(DIRECTORY_SEPARATOR, '\\', '/'), TRUE);
+
+					for($_i = 0; $_i < abs($up); $_i++)
+						$dir_file = dirname($dir_file);
+					unset($_i); // Housekeeping.
+
+					if($had_trailing_slash) $dir_file .= '/';
+
+					return self::n_dir_seps($dir_file, $allow_trailing_slash);
 				}
 
 			/**
@@ -1061,15 +1092,15 @@ if(!class_exists('websharks_core_v000000_dev'))
 					$dir_file = ltrim(self::n_dir_seps($dir_file), '/'); // Relative.
 
 					if($starting_dir === '__DIR__') // Using this for PHP v5.2 compatibility.
-						$starting_dir = dirname(__FILE__); // Current file directory.
+						$starting_dir = self::n_dir_seps_up(__FILE__); // Current directory.
 
 					else if(in_array($starting_dir, array('phar://', 'phar://__DIR__'), TRUE)) // With a PHAR stream wrapper?
-						$starting_dir = 'phar://'.preg_replace(substr(self::$regex_valid_dir_file_stream_wrapper, 0, -2).'/', '', dirname(__FILE__));
+						$starting_dir = 'phar://'.preg_replace(substr(self::$regex_valid_dir_file_stream_wrapper, 0, -2).'/', '', self::n_dir_seps_up(__FILE__));
 
 					for($_i = 0, $_dir = self::n_dir_seps($starting_dir); $_i <= 100; $_i++)
 						{
 							if($_i > 0) // Up one directory now?
-								$_dir = self::n_dir_seps(dirname($_dir), TRUE);
+								$_dir = self::n_dir_seps_up($_dir, 1, TRUE);
 
 							if(!$_dir || $_dir === '.' || substr($_dir, -1) === ':')
 								break; // Search complete (we're beyond even a root directory or scheme now).
@@ -1469,7 +1500,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @see http://php.net/manual/en/wrappers.php.php
 			 */
-			public static $regex_valid_dir_file_stream_wrapper = '/^[a-zA-Z0-9]+\:\/\/$/';
+			public static $regex_valid_dir_file_stream_wrapper = '/^(?P<stream_wrapper>[a-zA-Z0-9]+)\:\/\/$/';
 
 			/**
 			 * @var string A directory/file drive letter validation pattern (for Windows®).
@@ -1480,7 +1511,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @see http://en.wikipedia.org/wiki/Drive_letter_assignment
 			 */
-			public static $regex_valid_win_drive_letter = '/^[a-zA-Z]\:(?:\/|\\\\)$/';
+			public static $regex_valid_win_drive_letter = '/^(?P<drive_letter>[a-zA-Z])\:[\/\\\\]$/';
 		}
 
 		# -----------------------------------------------------------------------------------------------------------------------------------

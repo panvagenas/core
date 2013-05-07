@@ -8,8 +8,6 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120329
- *
- * @TODO Point references to `home_url()` and `site_url()` to methods in this class.
  */
 namespace websharks_core_v000000_dev
 	{
@@ -52,6 +50,16 @@ namespace websharks_core_v000000_dev
 			 * @TODO Update this so it can validate URI components also; instead of just `(?:[\/?#][^\s]*)?`.
 			 */
 			public $regex_valid_url = '/^(?:[a-zA-Z0-9]+\:)?\/\/(?:[a-zA-Z0-9\-_.~+%]+(?:\:[a-zA-Z0-9\-_.~+%]+)?@)?[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*(?:\.[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*)*(?:\.[a-zA-Z][a-zA-Z0-9]+)?(?:\:[0-9]+)?(?:[\/?#][^\s]*)?$/';
+
+			/**
+			 * Regex matches page on the end of a path.
+			 *
+			 * @return string Regex matches page on the end of a path.
+			 */
+			public function regex_wp_pagination_page()
+				{
+					return '/(?P<page>\/'.preg_quote($GLOBALS['wp_rewrite']->pagination_base, '/').'\/(?P<page_number>[0-9]+)\/?)(?=[?#]|$)/';
+				}
 
 			/**
 			 * Gets the current URL (via environment variables).
@@ -147,18 +155,19 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Parses a URL (or a URI/query/fragment only) into an array.
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string            $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
 			 * @note A query string or fragment MUST be prefixed with the appropriate delimiters.
 			 *    This is bad `name=value` (interpreted as path). This is good `?name=value` (query string).
 			 *    This is bad `anchor` (interpreted as path). This is good `#fragment` (fragment).
 			 *
-			 * @param integer $component Same as PHP's ``parse_url()`` component. Defaults to `-1`.
+			 * @param null|integer      $component Same as PHP's ``parse_url()`` component.
+			 *    Defaults to NULL; which defaults to an internal value of `-1` before we pass to PHP's ``parse_url()``.
 			 *
-			 * @param boolean $n_scheme Defaults to TRUE. Forces a normalized scheme if at all possible.
-			 *
-			 * @param boolean $n_path Defaults to TRUE. Forces a normalized path if at all possible.
+			 * @param null|integer      $normalize A bitmask. Defaults to NULL (indicating a default bitmask).
+			 *    Defaults include: {@link fw_constants::url_scheme}, {@link fw_constants::url_host}, {@link fw_constants::url_path}.
+			 *    However, we DO allow a trailing slash (even if path is being normalized by this parameter).
 			 *
 			 * @return array|string|integer|null If a component is requested, returns a string component (or an integer in the case of ``PHP_URL_PORT``).
 			 *    If a specific component is NOT requested, this returns a full array, of all component values.
@@ -170,79 +179,77 @@ namespace websharks_core_v000000_dev
 			 *    The array is also sorted by key (e.g. alphabetized).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('//example.com') === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('//example.com/') === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('//example.com#a') === array('fragment' => 'a', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('//example.com?a') === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => 'a', 'scheme' => '', 'user' => '')
-			 * @assert ('//example.com:80?a=a&b=b#c') === array('fragment' => 'c', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 80, 'query' => 'a=a&b=b', 'scheme' => '', 'user' => '')
-			 * @assert ('http://example.com/') === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => '', 'scheme' => 'http', 'user' => '')
-			 * @assert ('http://example.com') === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => '', 'scheme' => 'http', 'user' => '')
-			 * @assert ('https://example.com#a') === array('fragment' => 'a', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => '', 'scheme' => 'https', 'user' => '')
-			 * @assert ('https://example.com?a') === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => 'a', 'scheme' => 'https', 'user' => '')
-			 * @assert ('https://example.com?a=a&b=b#c') === array('fragment' => 'c', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => 'a=a&b=b', 'scheme' => 'https', 'user' => '')
-			 * @assert ('ftp://example.com/a/b/c?a=a&b=b#c') === array('fragment' => 'c', 'host' => 'example.com', 'pass' => '', 'path' => '/a/b/c', 'port' => 0, 'query' => 'a=a&b=b', 'scheme' => 'ftp', 'user' => '')
-			 * @assert ('//example.com', -1, FALSE, FALSE) === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '', 'port' => 0, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('http://example.com', -1, FALSE, FALSE) === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '', 'port' => 0, 'query' => '', 'scheme' => 'http', 'user' => '')
-			 * @assert ('//example.com:80') === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 80, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('//example.com:80', -1, TRUE) === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 80, 'query' => '', 'scheme' => 'http', 'user' => '')
-			 * @assert ('//example.com:80', -1, TRUE, FALSE) === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '', 'port' => 80, 'query' => '', 'scheme' => 'http', 'user' => '')
-			 * @assert ('//example.com:80', -1, FALSE, FALSE) === array('fragment' => '', 'host' => 'example.com', 'pass' => '', 'path' => '', 'port' => 80, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('//example.com:80#a', -1, FALSE, FALSE) === array('fragment' => 'a', 'host' => 'example.com', 'pass' => '', 'path' => '', 'port' => 80, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('//example.com:80#a', -1, FALSE, TRUE) === array('fragment' => 'a', 'host' => 'example.com', 'pass' => '', 'path' => '/', 'port' => 80, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('/#a') === array('fragment' => 'a', 'host' => '', 'pass' => '', 'path' => '/', 'port' => 0, 'query' => '', 'scheme' => '', 'user' => '')
-			 * @assert ('//#a') === NULL
 			 */
-			public function parse($url_uri_query_fragment, $component = -1, $n_scheme = TRUE, $n_path = TRUE)
+			public function parse($url_uri_query_fragment, $component = NULL, $normalize = NULL)
 				{
-					$this->check_arg_types('string', 'integer', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('string', array('null', 'integer'), array('null', 'integer'), func_get_args());
 
-					$x_protocol_scheme = FALSE; // Initialize this to FALSE value.
+					if(!isset($normalize)) // Use defaults?
+						$normalize = $this::url_scheme | $this::url_host | $this::url_path;
+
 					if(strpos($url_uri_query_fragment, '//') === 0 && preg_match($this->regex_valid_url, $url_uri_query_fragment))
 						{
 							$url_uri_query_fragment = $this->current_scheme().':'.$url_uri_query_fragment; // So URL is parsed properly.
 							// Works around a bug in ``parse_url()`` prior to PHP v5.4.7. See: <http://php.net/manual/en/function.parse-url.php>.
 							$x_protocol_scheme = TRUE; // Flag this, so we can remove scheme below.
 						}
-					// Use PHP's ``parse_url()`` function.
-					$parsed = @parse_url($url_uri_query_fragment, $component);
+					else $x_protocol_scheme = FALSE; // No scheme; or scheme is NOT cross-protocol compatible.
 
-					// Use empty string scheme, if we forced cross-protocol compatibility.
-					if($x_protocol_scheme)
+					$parsed = @parse_url($url_uri_query_fragment, ((!isset($component)) ? -1 : $component));
+
+					if($x_protocol_scheme) // Cross-protocol scheme?
 						{
-							if(is_array($parsed))
-								$parsed['scheme'] = '';
+							if(!isset($component) && is_array($parsed))
+								$parsed['scheme'] = ''; // No scheme.
+
 							else if($component === PHP_URL_SCHEME)
-								$parsed = '';
+								$parsed = ''; // No scheme.
 						}
-					if($n_scheme) // Normalize scheme?
+					if($normalize & $this::url_scheme) // Normalize scheme?
 						{
-							if($component === -1 && is_array($parsed))
+							if(!isset($component) && is_array($parsed))
 								{
 									if(!$this->©string->is($parsed['scheme']))
-										$parsed['scheme'] = '';
+										$parsed['scheme'] = ''; // No scheme.
 									$parsed['scheme'] = $this->n_scheme($parsed['scheme']);
 								}
 							else if($component === PHP_URL_SCHEME)
 								{
-									if(!$this->©string->is($parsed))
-										$parsed = '';
+									if(!is_string($parsed))
+										$parsed = ''; // No scheme.
 									$parsed = $this->n_scheme($parsed);
 								}
 						}
-					if($n_path) // On by default. Normalize path?
+					if($normalize & $this::url_host) // Normalize host?
 						{
-							if($component === -1 && is_array($parsed))
+							if(!isset($component) && is_array($parsed))
+								{
+									if(!$this->©string->is($parsed['host']))
+										$parsed['host'] = ''; // No host.
+									$parsed['host'] = $this->n_host($parsed['host']);
+								}
+							else if($component === PHP_URL_HOST)
+								{
+									if(!is_string($parsed))
+										$parsed = ''; // No scheme.
+									$parsed = $this->n_host($parsed);
+								}
+						}
+					if($normalize & $this::url_path) // Normalize path?
+						{
+							if(!isset($component) && is_array($parsed))
 								{
 									if(!$this->©string->is($parsed['path']))
-										$parsed['path'] = '/';
-									$parsed['path'] = $this->n_path_uri($parsed['path'], TRUE);
+										$parsed['path'] = '/'; // Home directory.
+									$parsed['path'] = $this->n_path_seps($parsed['path'], TRUE);
+									if(strpos($parsed['path'], '/') !== 0) $parsed['path'] = '/'.$parsed['path'];
 								}
 							else if($component === PHP_URL_PATH)
 								{
-									if(!$this->©string->is($parsed))
-										$parsed = '/';
-									$parsed = $this->n_path_uri($parsed, TRUE);
+									if(!is_string($parsed))
+										$parsed = '/'; // Home directory.
+									$parsed = $this->n_path_seps($parsed, TRUE);
+									if(strpos($parsed, '/') !== 0) $parsed = '/'.$parsed;
 								}
 						}
 					if(in_array(gettype($parsed), array('array', 'string', 'integer'), TRUE))
@@ -292,52 +299,37 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Unparses a URL (putting it all back together again).
 			 *
-			 * @param array   $parsed An array with at least one URL component.
+			 * @param array        $parsed An array with at least one URL component.
 			 *
-			 * @param boolean $n_scheme Defaults to TRUE. Forces a normalized scheme if at all possible.
-			 *
-			 * @param boolean $n_path Defaults to TRUE. Forces a normalized path if at all possible.
+			 * @param null|integer $normalize A bitmask. Defaults to NULL (indicating a default bitmask).
+			 *    Defaults include: {@link fw_constants::url_scheme}, {@link fw_constants::url_host}, {@link fw_constants::url_path}.
+			 *    However, we DO allow a trailing slash (even if path is being normalized by this parameter).
 			 *
 			 * @return string A full or partial URL, based on components provided in the ``$parsed`` array.
-			 *    It IS possible to receive an empty string, when/if ``$parsed`` does NOT contain any portion of a URL (i.e. it's empty).
+			 *    It IS possible to receive an empty string, when/if ``$parsed`` does NOT contain any portion of a URL.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert (array('host' => 'example.com')) === '//example.com/'
-			 * @assert (array('host' => 'example.com')) === '//example.com/'
-			 * @assert (array('host' => 'example.com', 'path' => 'a')) === '//example.com/a'
-			 * @assert (array('host' => 'example.com', 'path' => 'a'), TRUE) === 'http://example.com/a'
-			 * @assert (array('host' => 'example.com', 'path' => '/a'), TRUE) === 'http://example.com/a'
-			 * @assert (array('host' => 'example.com', 'path' => '/a/'), TRUE) === 'http://example.com/a/'
-			 * @assert (array('scheme' => 'https', 'host' => 'example.com', 'path' => '/a/', 'query' => 'a=a&b=b', 'fragment' => 'c'), TRUE) === 'https://example.com/a/?a=a&b=b#c'
-			 * @assert (array('scheme' => 'https', 'user' => 'websharks', 'host' => 'example.com', 'path' => '/a/', 'query' => 'a=a&b=b', 'fragment' => 'c'), TRUE) === 'https://websharks@example.com/a/?a=a&b=b#c'
-			 * @assert (array('scheme' => 'http', 'user' => 'websharks', 'pass' => 'wS', 'host' => 'example.com', 'path' => '/a/', 'query' => 'a=a&b=b', 'fragment' => 'c'), TRUE) === 'http://websharks:wS@example.com/a/?a=a&b=b#c'
-			 * @assert (array('scheme' => 'http', 'user' => 'websharks', 'pass' => 'wS', 'host' => 'example.com', 'port' => 80, 'path' => '/a/', 'query' => 'a=a&b=b', 'fragment' => 'c'), TRUE) === 'http://websharks:wS@example.com:80/a/?a=a&b=b#c'
-			 * @assert (array('scheme' => '', 'user' => 'websharks', 'pass' => 'wS', 'host' => 'example.com', 'port' => 80, 'path' => '/a/', 'query' => 'a=a&b=b', 'fragment' => 'c')) === '//websharks:wS@example.com:80/a/?a=a&b=b#c'
-			 * @assert (array('host' => 'example.com'), TRUE) === 'http://example.com/'
 			 */
-			public function unparse($parsed, $n_scheme = TRUE, $n_path = TRUE)
+			public function unparse($parsed, $normalize = NULL)
 				{
-					$this->check_arg_types('array', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('array', array('null', 'integer'), func_get_args());
 
 					$unparsed = ''; // Initialize string value.
 
-					// We do lots of type checks here, because this function *could* be passed an array
-					// that did NOT actually originate from ``parse_url()``; making this more compatible with a wide variety of uses.
+					if(!isset($normalize)) // Use defaults?
+						$normalize = $this::url_scheme | $this::url_host | $this::url_path;
 
-					// Handle `scheme`.
-					if($n_scheme) // Normalize scheme?
+					if($normalize & $this::url_scheme) // Normalize scheme?
 						{
 							if(!$this->©string->is($parsed['scheme']))
-								$parsed['scheme'] = '';
+								$parsed['scheme'] = ''; // No scheme.
 							$parsed['scheme'] = $this->n_scheme($parsed['scheme']);
 						}
 					if($this->©string->is_not_empty($parsed['scheme']))
 						$unparsed .= $parsed['scheme'].'://';
-					else if($this->©string->is_not_empty($parsed['host']))
-						$unparsed .= '//'; // Cross-protocol compatible.
+					else if($this->©string->is($parsed['scheme']) && $this->©string->is_not_empty($parsed['host']))
+						$unparsed .= '//'; // Cross-protocol compatible (ONLY if there is a host name also).
 
-					// Handle `user@` or `user:password@`.
 					if($this->©string->is_not_empty($parsed['user']))
 						{
 							$unparsed .= $parsed['user'];
@@ -345,32 +337,33 @@ namespace websharks_core_v000000_dev
 								$unparsed .= ':'.$parsed['pass'];
 							$unparsed .= '@';
 						}
-					// Handle `host`.
+					if($normalize & $this::url_host) // Normalize host?
+						{
+							if(!$this->©string->is($parsed['host']))
+								$parsed['host'] = ''; // No host.
+							$parsed['host'] = $this->n_host($parsed['host']);
+						}
 					if($this->©string->is_not_empty($parsed['host']))
 						$unparsed .= $parsed['host'];
 
-					// Handle `port` (accepts `integer|string` here).
-					// Do NOT to include a `port` if it's empty (perhaps `0`).
 					if($this->©integer->is_not_empty($parsed['port']))
-						$unparsed .= ':'.(string)$parsed['port'];
-					else if($this->©string->is_not_empty($parsed['port']) && is_numeric($parsed['port']))
-						$unparsed .= ':'.$parsed['port']; // We also accept string port numbers.
+						$unparsed .= ':'.(string)$parsed['port']; // A `0` value is excluded here.
+					else if($this->©string->is_not_empty($parsed['port']) && (integer)$parsed['port'])
+						$unparsed .= ':'.(string)(integer)$parsed['port']; // We also accept string port numbers.
 
-					// Handle `path`.
-					if($n_path) // Normalize path?
+					if($normalize & $this::url_path) // Normalize path?
 						{
 							if(!$this->©string->is($parsed['path']))
-								$parsed['path'] = '/';
-							$parsed['path'] = $this->n_path_uri($parsed['path'], TRUE);
+								$parsed['path'] = '/'; // Home directory.
+							$parsed['path'] = $this->n_path_seps($parsed['path'], TRUE);
+							if(strpos($parsed['path'], '/') !== 0) $parsed['path'] = '/'.$parsed['path'];
 						}
 					if($this->©string->is($parsed['path']))
 						$unparsed .= $parsed['path'];
 
-					// Handle `query`.
 					if($this->©string->is_not_empty($parsed['query']))
 						$unparsed .= '?'.$parsed['query'];
 
-					// Handle `fragment`.
 					if($this->©string->is_not_empty($parsed['fragment']))
 						$unparsed .= '#'.$parsed['fragment'];
 
@@ -398,83 +391,14 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Parses a URI from a URL (or a URI/query/fragment only).
-			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
-			 *    or only a query string, or only a fragment. Any of these can be parsed here.
-			 *
-			 * @param boolean $n_scheme Defaults to TRUE. Forces a normalized scheme if at all possible.
-			 *
-			 * @param boolean $n_path Defaults to TRUE. Forces a normalized path if at all possible.
-			 *
-			 * @param boolean $include_fragment Defaults to TRUE. Include a possible fragment?
-			 *
-			 * @return string|null A URI (i.e. a URL path), else NULL on any type of failure.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('https://example.com') === '/'
-			 * @assert ('http://example.com/') === '/'
-			 * @assert ('http://example.com/file.php') === '/file.php'
-			 * @assert ('http://example.com/file.php?a=a&b=b') === '/file.php?a=a&b=b'
-			 * @assert ('http://example.com//file.php?a=a&b=b#c,c;c') === '/file.php?a=a&b=b#c,c;c'
-			 * @assert ('http://example.com//file.php?a=a&b=b#c,c;c', FALSE) === '/file.php?a=a&b=b'
-			 * @assert ('http://example.com//a/b/c/file.php') === '/a/b/c/file.php'
-			 * @assert ('/a/b/c/file.php') === '/a/b/c/file.php'
-			 * @assert ('a/b/c/file.php') === '/a/b/c/file.php'
-			 * @assert ('//a/b/c/file.php?a=a&b=b') === '/b/c/file.php?a=a&b=b'
-			 * @assert ('\\a/b/c/file.php?a=a&b=b') === '/a/b/c/file.php?a=a&b=b'
-			 * @assert ('?a=a&b=b') === '/?a=a&b=b'
-			 * @assert ('a=a&b=b') === '/a=a&b=b'
-			 */
-			public function parse_uri($url_uri_query_fragment, $n_scheme = TRUE, $n_path = TRUE, $include_fragment = TRUE)
-				{
-					$this->check_arg_types('string', 'boolean', 'boolean', 'boolean', func_get_args());
-
-					if(($parts = $this->parse($url_uri_query_fragment, -1, $n_scheme, $n_path)))
-						{
-							$uri = $parts['path'];
-
-							if($parts['query'])
-								$uri .= '?'.$parts['query'];
-
-							if($parts['fragment'] && $include_fragment)
-								$uri .= '#'.$parts['fragment'];
-
-							return $uri;
-						}
-					return NULL; // Default return value.
-				}
-
-			/**
-			 * Parses a URI from a URL (or a URI/query/fragment only).
-			 *
-			 * @return string|null {@inheritdoc}
-			 *
-			 * @throws exception If unable to parse.
-			 *
-			 * @see parse_uri()
-			 * @inheritdoc parse_uri()
-			 */
-			public function must_parse_uri() // Arguments are NOT listed here.
-				{
-					if(is_null($parsed = call_user_func_array(array($this, 'parse_uri'), func_get_args())))
-						throw $this->©exception(
-							__METHOD__.'#failure', get_defined_vars(),
-							sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
-						);
-					return $parsed;
-				}
-
-			/**
 			 * Parses URI parts from a URL (or a URI/query/fragment only).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string       $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param boolean $n_scheme Defaults to TRUE. Forces a normalized scheme if at all possible.
-			 *
-			 * @param boolean $n_path Defaults to TRUE. Forces a normalized path if at all possible.
+			 * @param null|integer $normalize A bitmask. Defaults to NULL (indicating a default bitmask).
+			 *    Defaults include: {@link fw_constants::url_scheme}, {@link fw_constants::url_host}, {@link fw_constants::url_path}.
+			 *    However, we DO allow a trailing slash (even if path is being normalized by this parameter).
 			 *
 			 * @return array|null An array with the following components, else NULL on any type of failure.
 			 *
@@ -484,11 +408,11 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public function parse_uri_parts($url_uri_query_fragment, $n_scheme = TRUE, $n_path = TRUE)
+			public function parse_uri_parts($url_uri_query_fragment, $normalize = NULL)
 				{
-					$this->check_arg_types('string', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('string', array('null', 'integer'), func_get_args());
 
-					if(($parts = $this->parse($url_uri_query_fragment, -1, $n_scheme, $n_path)))
+					if(($parts = $this->parse($url_uri_query_fragment, NULL, $normalize)))
 						return array('path' => $parts['path'], 'query' => $parts['query'], 'fragment' => $parts['fragment']);
 
 					return NULL; // Default return value.
@@ -515,6 +439,56 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Parses a URI from a URL (or a URI/query/fragment only).
+			 *
+			 * @param string       $url_uri_query_fragment A full URL; or a partial URI;
+			 *    or only a query string, or only a fragment. Any of these can be parsed here.
+			 *
+			 * @param null|integer $normalize A bitmask. Defaults to NULL (indicating a default bitmask).
+			 *    Defaults include: {@link fw_constants::url_scheme}, {@link fw_constants::url_host}, {@link fw_constants::url_path}.
+			 *    However, we DO allow a trailing slash (even if path is being normalized by this parameter).
+			 *
+			 * @param boolean      $include_fragment Defaults to TRUE. Include a possible fragment?
+			 *
+			 * @return string|null A URI (i.e. a URL path), else NULL on any type of failure.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function parse_uri($url_uri_query_fragment, $normalize = NULL, $include_fragment = TRUE)
+				{
+					$this->check_arg_types('string', array('null', 'integer'), 'boolean', func_get_args());
+
+					if(($parts = $this->parse_uri_parts($url_uri_query_fragment, $normalize)))
+						{
+							if(!$include_fragment) // Ditch fragment?
+								unset($parts['fragment']);
+
+							return $this->unparse($parts, $normalize);
+						}
+					return NULL; // Default return value.
+				}
+
+			/**
+			 * Parses a URI from a URL (or a URI/query/fragment only).
+			 *
+			 * @return string|null {@inheritdoc}
+			 *
+			 * @throws exception If unable to parse.
+			 *
+			 * @see parse_uri()
+			 * @inheritdoc parse_uri()
+			 */
+			public function must_parse_uri() // Arguments are NOT listed here.
+				{
+					if(is_null($parsed = call_user_func_array(array($this, 'parse_uri'), func_get_args())))
+						throw $this->©exception(
+							__METHOD__.'#failure', get_defined_vars(),
+							sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
+						);
+					return $parsed;
+				}
+
+			/**
 			 * Resolves a relative URL into a full URL from a base.
 			 *
 			 * @param string  $relative_url_uri_query_fragment A full URL; or a partial URI;
@@ -529,20 +503,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If unable to parse ``$relative_url_uri_query_fragment``.
 			 * @throws exception If there is no ``$base``, and we're unable to detect current location.
 			 * @throws exception If unable to parse ``$base`` (or if ``$base`` has no host name).
-			 *
-			 * @assert ('file.php', 'http://example.com/') === 'http://example.com/file.php'
-			 * @assert ('../file.php', 'http://example.com/a/b') === 'http://example.com/file.php'
-			 * @assert ('/file.php', 'http://example.com/a/b/') === 'http://example.com/file.php'
-			 * @assert ('./file.php', 'http://example.com') === 'http://example.com/file.php'
-			 * @assert ('./file.php', 'http://example.com/') === 'http://example.com/file.php'
-			 * @assert ('file.php', '//example.com/') === '//example.com/file.php'
-			 * @assert ('/file.php', '//example.com/') === '//example.com/file.php'
-			 * @assert ('/file.php', '//example.com/', true) === 'http://example.com/file.php'
-			 * @assert ('/file.php', '//example.com//', true) === 'http://example.com/file.php'
-			 * @assert ('../../../../../././/./file.php', 'http://example.com/') === 'http://example.com/file.php'
-			 * @assert ('././././././././../../../file.php', 'http://example.com/a/') === 'http://example.com/file.php'
-			 * @assert ('file.php', 'https://example.com/') === 'https://example.com/file.php'
-			 * @assert ('file.php', 'https://example.com') === 'https://example.com/file.php'
 			 */
 			public function resolve_relative($relative_url_uri_query_fragment, $base_url = '')
 				{
@@ -551,8 +511,9 @@ namespace websharks_core_v000000_dev
 					if(!$base_url) // No base URL? The ``$base`` is optional (defaults to current URL).
 						$base_url = $this->current(); // Auto-detects current URL/location.
 
-					$relative_parts = $this->must_parse($relative_url_uri_query_fragment, -1, FALSE, FALSE);
-					$base_parts     = $parts = $this->must_parse($base_url, -1, FALSE, FALSE);
+					$relative_parts         = $this->must_parse($relative_url_uri_query_fragment, NULL, 0);
+					$relative_parts['path'] = $this->n_path_seps($relative_parts['path'], TRUE);
+					$base_parts             = $parts = $this->must_parse($base_url);
 
 					if($relative_parts['host']) // Already resolved?
 						{
@@ -568,7 +529,7 @@ namespace websharks_core_v000000_dev
 						{
 							if(strpos($relative_parts['path'], '/') === 0)
 								$parts['path'] = ''; // Reduce to nothing if relative is absolute.
-							else $parts['path'] = preg_replace('/\/[^\/]*$/', '', $parts['path']).'/'; // Reduce to trailing `/`.
+							else $parts['path'] = preg_replace('/\/[^\/]*$/', '', $parts['path']).'/'; // Reduce to nearest `/`.
 
 							// Replace `/./` and `/foo/../` with `/` (resolve relatives).
 							for($_i = 1, $parts['path'] = $parts['path'].$relative_parts['path']; $_i > 0;)
@@ -581,7 +542,8 @@ namespace websharks_core_v000000_dev
 
 							$parts['query'] = $relative_parts['query']; // Use relative query.
 						}
-					else if(strlen($relative_parts['query'])) $parts['query'] = $relative_parts['query'];
+					else if(strlen($relative_parts['query'])) // Only if there is a new query (or path above) in the relative.
+						$parts['query'] = $relative_parts['query']; // Relative query string supersedes base.
 
 					$parts['fragment'] = $relative_parts['fragment']; // Always changes.
 
@@ -900,12 +862,16 @@ namespace websharks_core_v000000_dev
 
 					$parts = $uri_parts = $this->must_parse_uri_parts($url_uri_query_fragment);
 
-					if(!$this->©env->is_using_fancy_permalinks() && ($post = $this->©post->by_path($parts['path'])))
+					if(!$this->©env->uses_fancy_permalinks() && ($post = $this->©post->by_path($parts['path'])))
 						{
 							$parts = $this->must_parse_uri_parts($this->to_wp_permalink_id($post->ID));
 
+							if(preg_match($this->regex_wp_pagination_page(), $uri_parts['path'], $pagination))
+								$parts['query'] .= ((!$parts['query']) ? '' : '&').'paged='.$pagination['page_number'];
+
 							if($uri_parts['query']) // Combine query strings?
 								$parts['query'] .= ((!$parts['query']) ? '' : '&').$uri_parts['query'];
+
 							$parts['fragment'] = $uri_parts['fragment']; // URI fragment always.
 						}
 					if(!$this->©file->has_extension($parts['path']))
@@ -1329,13 +1295,6 @@ namespace websharks_core_v000000_dev
 			 *    Else if file is NOT within WordPress; we return a direct URL using a `file://` stream wrapper.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert (__FILE__) === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/classes/websharks-core-v000000-dev/urlsTest.php')
-			 * @assert (dirname(__FILE__)) === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/classes/websharks-core-v000000-dev')
-			 * @assert (dirname(__FILE__).'/') === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/classes/websharks-core-v000000-dev')
-			 * @assert (ABSPATH.'wp-content/themes/twentyeleven') === site_url('/wp-content/themes/twentyeleven')
-			 * @assert (ABSPATH.'wp-content/plugins') === site_url('/wp-content/plugins')
-			 * @assert (ABSPATH.'wp-load.php') === site_url('/wp-load.php')
 			 */
 			public function to_wp_abs_dir_file($abs_dir_file, $scheme = '')
 				{
@@ -1348,7 +1307,7 @@ namespace websharks_core_v000000_dev
 					if($this->©file->has_extension($abs_dir_file) || is_file($abs_dir_file))
 						{
 							$file = '/'.basename($abs_dir_file);
-							$dir  = $this->©dir->n_seps(dirname($abs_dir_file));
+							$dir  = $this->©dir->n_seps_up($abs_dir_file);
 
 							if(($dir_realpath = realpath($dir)) && $dir_realpath !== $dir)
 								{
@@ -1464,11 +1423,6 @@ namespace websharks_core_v000000_dev
 			 *    Else an empty string on any type of failure.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('/client-side/scripts/core.js') === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/client-side/scripts/core.js')
-			 * @assert (__FILE__) === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/classes/websharks-core-v000000-dev/urlsTest.php')
-			 * @assert (dirname(__FILE__)) === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/classes/websharks-core-v000000-dev')
-			 * @assert (dirname(__FILE__).'/') === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/classes/websharks-core-v000000-dev')
 			 */
 			public function to_core_dir_file($dir_file = '', $scheme = '')
 				{
@@ -1499,11 +1453,6 @@ namespace websharks_core_v000000_dev
 			 *    Else an empty string on any type of failure.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('/client-side/scripts/core.js') === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/client-side/scripts/core.js')
-			 * @assert (__FILE__) === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/classes/websharks-core-v000000-dev/urlsTest.php')
-			 * @assert (dirname(__FILE__)) === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/classes/websharks-core-v000000-dev')
-			 * @assert (dirname(__FILE__).'/') === site_url('/wp-content/plugins/s2member-x/websharks-core-v000000-dev/classes/websharks-core-v000000-dev')
 			 */
 			public function to_plugin_dir_file($dir_file = '', $scheme = '')
 				{
@@ -1945,6 +1894,22 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Normalizes a URL host name.
+			 *
+			 * @param string $host An input URL host name.
+			 *
+			 * @return string A normalized URL host name (always lowercase).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function n_host($host)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return strtolower($host); // Normalized host name.
+				}
+
+			/**
 			 * Sets a particular scheme.
 			 *
 			 * @param string $url A full URL.
@@ -1973,7 +1938,7 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Normalizes a URL path/URI from a URL (or a URI/query/fragment only).
+			 * Normalizes a URL path from a URL (or a URI/query/fragment only).
 			 *
 			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be normalized here.
@@ -1981,44 +1946,63 @@ namespace websharks_core_v000000_dev
 			 * @param boolean $allow_trailing_slash Defaults to a FALSE value.
 			 *    If TRUE, and ``$url_uri_query_fragment`` contains a trailing slash; we'll leave it there.
 			 *
-			 * @return string A normalized URL path (or URI with query/fragment too).
-			 *    This will NOT return a full URL, even if a full URL was passed in (we return a path/URI only).
+			 * @return string Normalized URL (or a URI/query/fragment only).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @note This will NOT normalize a `query/fragment`; only the `path` portion.
-			 *    A URI is returned, but we ONLY work on the `path` here (to avoid corruption issues).
+			 * @throws exception If ``$url_uri_query_fragment`` is malformed.
 			 *
 			 * @assert ('//path\\to//') === '/path/to'
 			 * @assert ('path') === '/path'
 			 * @assert ('') === ''
 			 * @assert ('', TRUE) === '/'
 			 */
-			public function n_path_uri($url_uri_query_fragment, $allow_trailing_slash = FALSE)
+			public function n_path_seps($url_uri_query_fragment, $allow_trailing_slash = FALSE)
 				{
 					$this->check_arg_types('string', 'boolean', func_get_args());
 
-					if(!strlen($url_uri_query_fragment))
-						return ($allow_trailing_slash) ? '/' : '';
+					if(!strlen($url_uri_query_fragment)) return '';
 
-					if(!($parsed = $this->parse($url_uri_query_fragment, -1, FALSE, FALSE)))
-						// Unable to parse; use as path; assume no query/fragment in this scenario.
-						$parsed = array('path' => $url_uri_query_fragment, 'query' => '', 'fragment' => '');
+					if(!($parts = $this->parse($url_uri_query_fragment, NULL, 0)))
+						// Assume broken path (and we can try fixing it here).
+						$parts['path'] = $url_uri_query_fragment;
 
-					if($parsed['path']) // Normalize directory seps.
-						$parsed['path'] = $this->©dir->n_seps($parsed['path'], TRUE);
+					if(strlen($parts['path'])) // Normalize directory seps.
+						$parts['path'] = $this->©dir->n_seps($parts['path'], $allow_trailing_slash);
 
-					if(!$parsed['path'] || strpos($parsed['path'], '/') !== 0)
-						$parsed['path'] = '/'.$parsed['path'];
+					return $this->unparse($parts, 0); // Back together again.
+				}
 
-					if(!$allow_trailing_slash && $parsed['path'])
-						$parsed['path'] = rtrim($parsed['path'], '/');
+			/**
+			 * Normalizes a URL path (up X directories) from a URL (or a URI/query/fragment only).
+			 *
+			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 *    or only a query string, or only a fragment. Any of these can be normalized here.
+			 *
+			 * @param integer $up Optional. Defaults to a value of `1`.
+			 *    Number of directories to move up.
+			 *
+			 * @param boolean $allow_trailing_slash Defaults to a FALSE value.
+			 *    If TRUE, and ``$url_uri_query_fragment`` contains a trailing slash; we'll leave it there.
+			 *
+			 * @return string Normalized URL (up X directories) (or a URI/query/fragment only).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$url_uri_query_fragment`` is malformed.
+			 */
+			public function n_path_seps_up($url_uri_query_fragment, $up = 1, $allow_trailing_slash = FALSE)
+				{
+					$this->check_arg_types('string', 'integer', 'boolean', func_get_args());
 
-					$n_path_uri = $parsed['path']; // Rebuild now.
-					if($parsed['query']) $n_path_uri .= '?'.$parsed['query'];
-					if($parsed['fragment']) $n_path_uri .= '#'.$parsed['fragment'];
+					if(!strlen($url_uri_query_fragment)) return '';
 
-					return $n_path_uri; // Normalized path (or a URI).
+					if(!($parts = $this->parse($url_uri_query_fragment, NULL, 0)))
+						// Assume broken path (and we can try fixing it here).
+						$parts['path'] = $url_uri_query_fragment;
+
+					if(strlen($parts['path'])) // Normalize directory seps.
+						$parts['path'] = $this->©dir->n_seps_up($parts['path'], $up, $allow_trailing_slash);
+
+					return $this->unparse($parts, 0); // Back together again.
 				}
 
 			/**
@@ -2045,38 +2029,140 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'scalar', 'string', func_get_args());
 
-					$parts = $this->must_parse($url_uri_query_fragment, -1, FALSE, FALSE);
+					$parts = $this->must_parse($url_uri_query_fragment, NULL, 0);
 
-					if($parts['fragment'] && substr($parts['fragment'], 0, 1) === '!')
+					if($parts['fragment'] && $parts['fragment'][0] === '!')
 						$vars = $this->©vars->parse_query(ltrim($parts['fragment'], '!'));
 					else $vars = array(); // No vars; or it's an anchor (which we'll ditch here).
 
 					$vars[$name]       = (string)$value;
 					$parts['fragment'] = '!'.$this->©vars->build_query($vars);
 
-					return $this->unparse($parts, FALSE, FALSE);
+					return $this->unparse($parts, 0); // Back together again.
 				}
 
 			/**
-			 * Filters content redirection status.
+			 * Adds a query string signature onto a URL (or a URI/query/fragment only).
 			 *
-			 * @param integer $status A redirection status code.
+			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 *    or only a query string, or only a fragment. Any of these can be handled here.
 			 *
-			 * @return integer A status redirection code; possibly modified to a value of `302` by this filter.
+			 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
 			 *
-			 * @throws exception If invalid types are passed through arguments lists.
+			 * @return string A URL (or a URI/query/fragment only); now with a signature too (e.g. a query string).
 			 *
-			 * @see http://en.wikipedia.org/wiki/Web_browser_engine
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$sig_var`` is empty.
 			 *
-			 * @assert (301) === 301
+			 * @assert ('http://www.example.com/?this=that') matches '/^http\:\/\/www\.example\.com\/\?this\=that&_sig\=.+$/'
+			 * @assert ('http://www.example.com/?this=that', '_signature') matches '/^http\:\/\/www\.example\.com\/\?this\=that&_signature\=.+$/'
+			 * @assert ('/?this=that') matches '/^\/\?this\=that&_sig\=.+$/'
+			 * @assert ('this=that') matches '/^this\=that&_sig\=.+$/'
+			 * @assert ('') === matches '/^_sig\=.+$/'
 			 */
-			public function redirect_browsers_using_302_status($status)
+			public function add_query_sig($url_uri_query_fragment, $sig_var = '_sig')
 				{
-					$this->check_arg_types('integer', func_get_args());
+					$this->check_arg_types('string', 'string:!empty', func_get_args());
 
-					if($status === 301 && $this->©env->is_browser()) return 302;
+					$parts = $this->must_parse($url_uri_query_fragment, NULL, 0);
 
-					return $status; // Default value.
+					$vars = $this->©vars->parse_query($parts['query']);
+					unset($vars[$sig_var]); // Need to remove any existing signature variable.
+					$vars = $this->©array->remove_0b_strings_deep($this->©strings->trim_deep($vars));
+					$vars = serialize($this->©array->ksort_deep($vars));
+
+					$sig                                = ($time = time()).'-'.$this->©encryption->hmac_sha1_sign($vars.$time);
+					$url_uri_query_fragment_w_query_sig = add_query_arg(urlencode_deep(array($sig_var => $sig)), $url_uri_query_fragment);
+
+					return $url_uri_query_fragment_w_query_sig;
+				}
+
+			/**
+			 * Verifies a signature; in a URL (or a URI/query/fragment only).
+			 *
+			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 *    or only a query string, or only a fragment. Any of these can be handled here.
+			 *
+			 * @param boolean $check_time Optional. Defaults to FALSE.
+			 *    If TRUE, also check if the signature has expired, based on ``$exp_secs``.
+			 *
+			 * @param integer $exp_secs Optional. Defaults to `10`.
+			 *    If ``$check_time`` is TRUE, check if the signature has expired, based on ``$exp_secs``.
+			 *
+			 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
+			 *
+			 * @return boolean TRUE if the signature is OK, else FALSE.
+			 *
+			 * @assert $signed_url = $this->object->add_sig('http://www.example.com/?this=that');
+			 *    ($signed_url) === TRUE
+			 *
+			 * @assert $signed_url = $this->object->add_sig('http://www.example.com/?this=that');
+			 *    ($signed_url.'&that=this') === FALSE
+			 *
+			 * @assert $signed_url = $this->object->add_sig('http://www.example.com/?this=that', '_signature');
+			 *    ($signed_url, FALSE, 10, '_signature') === TRUE
+			 *
+			 * @assert $signed_url = $this->object->add_sig('http://www.example.com/?this=that', '_signature');
+			 *    ($signed_url, TRUE, 10, '_signature') === TRUE
+			 *
+			 * @assert $signed_url = $this->object->add_sig('/?this=that');
+			 *    ($signed_url) === TRUE
+			 *
+			 * @assert $signed_url = $this->object->add_sig('this=that');
+			 *    ($signed_url) === TRUE
+			 *
+			 * @assert $signed_url = $this->object->add_sig('');
+			 *    ($signed_url) === TRUE
+			 */
+			public function query_sig_ok($url_uri_query_fragment, $check_time = FALSE, $exp_secs = 10, $sig_var = '_sig')
+				{
+					$this->check_arg_types('string', 'boolean', 'integer', 'string:!empty', func_get_args());
+
+					if(!($parts = $this->parse($url_uri_query_fragment)))
+						return FALSE; // Not possible to check.
+
+					if(!$parts['query'] || !($vars = $this->©vars->parse_query($parts['query'])))
+						return FALSE; // No query string variables.
+
+					if(empty($vars[$sig_var]) || !preg_match('/^(?P<time>[0-9]+)\-(?P<sig>.+)$/', $vars[$sig_var], $sig_parts))
+						return FALSE; // There is no signature in the query string.
+
+					unset($vars[$sig_var]); // Need to remove the signature variable now.
+					$vars = $this->©array->remove_0b_strings_deep($this->©strings->trim_deep($vars));
+					$vars = serialize($this->©array->ksort_deep($vars));
+
+					$valid_sig = $this->©encryption->hmac_sha1_sign($vars.$sig_parts['time']);
+
+					if($check_time) // Checking time too?
+						return ($sig_parts['sig'] === $valid_sig && $sig_parts['time'] >= strtotime('-'.abs($exp_secs).' seconds'));
+
+					return ($sig_parts['sig'] === $valid_sig);
+				}
+
+			/**
+			 * Removes all signatures from a URL (or a URI/query/fragment only).
+			 *
+			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 *    or only a query string, or only a fragment. Any of these can be handled here.
+			 *
+			 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
+			 *
+			 * @return string A URL (or a URI/query/fragment only); without any signatures.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$sig_var`` is empty.
+			 *
+			 * @assert ('http://www.example.com/?this=that&_sig=hello') === 'http://www.example.com/?this=that'
+			 * @assert ('/?this=that&_sig=hello') === '/?this=that'
+			 * @assert ('this=that&_sig=hello') === 'this=that'
+			 * @assert ('_sig=hello') === ''
+			 * @assert ('') === ''
+			 */
+			public function remove_query_sig($url_uri_query_fragment, $sig_var = '_sig')
+				{
+					$this->check_arg_types('string', 'string:!empty', func_get_args());
+
+					return remove_query_arg($sig_var, $url_uri_query_fragment);
 				}
 
 			/**
@@ -2140,130 +2226,6 @@ namespace websharks_core_v000000_dev
 									return ($shorter_url = $backup);
 						}
 					return $url; // Default return value (failure).
-				}
-
-			/**
-			 * Adds a query string signature onto a URL (or a URI/query/fragment only).
-			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
-			 *    or only a query string, or only a fragment. Any of these can be handled here.
-			 *
-			 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
-			 *
-			 * @return string A URL (or a URI/query/fragment only); now with a signature too (e.g. a query string).
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$sig_var`` is empty.
-			 *
-			 * @assert ('http://www.example.com/?this=that') matches '/^http\:\/\/www\.example\.com\/\?this\=that&_sig\=.+$/'
-			 * @assert ('http://www.example.com/?this=that', '_signature') matches '/^http\:\/\/www\.example\.com\/\?this\=that&_signature\=.+$/'
-			 * @assert ('/?this=that') matches '/^\/\?this\=that&_sig\=.+$/'
-			 * @assert ('this=that') matches '/^this\=that&_sig\=.+$/'
-			 * @assert ('') === matches '/^_sig\=.+$/'
-			 */
-			public function add_query_sig($url_uri_query_fragment, $sig_var = '_sig')
-				{
-					$this->check_arg_types('string', 'string:!empty', func_get_args());
-
-					$parts = $this->must_parse($url_uri_query_fragment, -1, FALSE, FALSE);
-
-					$vars = $this->©vars->parse_query($parts['query']);
-					unset($vars[$sig_var]); // Need to remove any existing signature variable.
-					$vars = $this->©array->remove_0b_strings_deep($this->©strings->trim_deep($vars));
-					$vars = serialize($this->©array->ksort_deep($vars));
-
-					$sig                                = ($time = time()).'-'.$this->©encryption->hmac_sha1_sign($vars.$time);
-					$url_uri_query_fragment_w_query_sig = add_query_arg(urlencode_deep(array($sig_var => $sig)), $url_uri_query_fragment);
-
-					return $url_uri_query_fragment_w_query_sig;
-				}
-
-			/**
-			 * Verifies a signature; in a URL (or a URI/query/fragment only).
-			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
-			 *    or only a query string, or only a fragment. Any of these can be handled here.
-			 *
-			 * @param boolean $check_time Optional. Defaults to FALSE.
-			 *    If TRUE, also check if the signature has expired, based on ``$exp_secs``.
-			 *
-			 * @param integer $exp_secs Optional. Defaults to `10`.
-			 *    If ``$check_time`` is TRUE, check if the signature has expired, based on ``$exp_secs``.
-			 *
-			 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
-			 *
-			 * @return boolean TRUE if the signature is OK, else FALSE.
-			 *
-			 * @assert $signed_url = $this->object->add_sig('http://www.example.com/?this=that');
-			 *    ($signed_url) === TRUE
-			 *
-			 * @assert $signed_url = $this->object->add_sig('http://www.example.com/?this=that');
-			 *    ($signed_url.'&that=this') === FALSE
-			 *
-			 * @assert $signed_url = $this->object->add_sig('http://www.example.com/?this=that', '_signature');
-			 *    ($signed_url, FALSE, 10, '_signature') === TRUE
-			 *
-			 * @assert $signed_url = $this->object->add_sig('http://www.example.com/?this=that', '_signature');
-			 *    ($signed_url, TRUE, 10, '_signature') === TRUE
-			 *
-			 * @assert $signed_url = $this->object->add_sig('/?this=that');
-			 *    ($signed_url) === TRUE
-			 *
-			 * @assert $signed_url = $this->object->add_sig('this=that');
-			 *    ($signed_url) === TRUE
-			 *
-			 * @assert $signed_url = $this->object->add_sig('');
-			 *    ($signed_url) === TRUE
-			 */
-			public function query_sig_ok($url_uri_query_fragment, $check_time = FALSE, $exp_secs = 10, $sig_var = '_sig')
-				{
-					$this->check_arg_types('string', 'boolean', 'integer', 'string:!empty', func_get_args());
-
-					if(!($parts = $this->parse($url_uri_query_fragment, -1, FALSE, FALSE)))
-						return FALSE; // Not possible to check.
-
-					if(!$parts['query'] || !($vars = $this->©vars->parse_query($parts['query'])))
-						return FALSE; // No query string variables.
-
-					if(empty($vars[$sig_var]) || !preg_match('/^(?P<time>[0-9]+)\-(?P<sig>.+)$/', $vars[$sig_var], $sig_parts))
-						return FALSE; // There is no signature in the query string.
-
-					unset($vars[$sig_var]); // Need to remove the signature variable now.
-					$vars = $this->©array->remove_0b_strings_deep($this->©strings->trim_deep($vars));
-					$vars = serialize($this->©array->ksort_deep($vars));
-
-					$valid_sig = $this->©encryption->hmac_sha1_sign($vars.$sig_parts['time']);
-
-					if($check_time) // Checking time too?
-						return ($sig_parts['sig'] === $valid_sig && $sig_parts['time'] >= strtotime('-'.abs($exp_secs).' seconds'));
-
-					return ($sig_parts['sig'] === $valid_sig);
-				}
-
-			/**
-			 * Removes all signatures from a URL (or a URI/query/fragment only).
-			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
-			 *    or only a query string, or only a fragment. Any of these can be handled here.
-			 *
-			 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
-			 *
-			 * @return string A URL (or a URI/query/fragment only); without any signatures.
-			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$sig_var`` is empty.
-			 *
-			 * @assert ('http://www.example.com/?this=that&_sig=hello') === 'http://www.example.com/?this=that'
-			 * @assert ('/?this=that&_sig=hello') === '/?this=that'
-			 * @assert ('this=that&_sig=hello') === 'this=that'
-			 * @assert ('_sig=hello') === ''
-			 * @assert ('') === ''
-			 */
-			public function remove_query_sig($url_uri_query_fragment, $sig_var = '_sig')
-				{
-					$this->check_arg_types('string', 'string:!empty', func_get_args());
-
-					return remove_query_arg($sig_var, $url_uri_query_fragment);
 				}
 
 			/**
@@ -2370,6 +2332,28 @@ namespace websharks_core_v000000_dev
 						return FALSE; // Not something we can test? Catch this early.
 
 					return (preg_match('/\/wp-admin(?:\/|$)/', $parts['path'])) ? TRUE : FALSE;
+				}
+
+			/**
+			 * Filters content redirection status.
+			 *
+			 * @param integer $status A redirection status code.
+			 *
+			 * @return integer A status redirection code; possibly modified to a value of `302` by this filter.
+			 *
+			 * @throws exception If invalid types are passed through arguments lists.
+			 *
+			 * @see http://en.wikipedia.org/wiki/Web_browser_engine
+			 *
+			 * @assert (301) === 301
+			 */
+			public function redirect_browsers_using_302_status($status)
+				{
+					$this->check_arg_types('integer', func_get_args());
+
+					if($status === 301 && $this->©env->is_browser()) return 302;
+
+					return $status; // Default value.
 				}
 		}
 	}

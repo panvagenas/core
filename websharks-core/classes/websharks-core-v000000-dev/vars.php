@@ -660,7 +660,7 @@ namespace websharks_core_v000000_dev
 			 *       • {@link fw_constants::rfc1738}
 			 *       • {@link fw_constants::rfc3986}
 			 *
-			 * @param null        $nested_key Internal use only; for recursion.
+			 * @param null        $___nested_key Internal use only; for recursion.
 			 *
 			 * @return string A URL-encoded query string.
 			 *
@@ -685,9 +685,9 @@ namespace websharks_core_v000000_dev
 			 * @assert $array = array(1, 2, 3, array(4));
 			 *    ($array, 'prefix_', '&', NULL) === 'prefix_0=1&prefix_1=2&prefix_2=3&prefix_3[0]=4'
 			 */
-			public function build_query($value, $prefix = NULL, $separator = '&', $enc_type = self::rfc1738, $nested_key = NULL)
+			public function build_query($value, $prefix = NULL, $separator = '&', $enc_type = self::rfc1738, $___nested_key = NULL)
 				{
-					if(!isset($nested_key)) // Only check arg types initially (i.e. NOT in recursive calls).
+					if(!isset($___nested_key)) // Only check arg types initially (i.e. NOT in recursive calls).
 						$this->check_arg_types('', array('null', 'string'), array('null', 'string:!empty'), array('null', 'string:!empty'), array('null', 'string', 'integer'), func_get_args());
 
 					if(!isset($separator)) // System default?
@@ -702,8 +702,8 @@ namespace websharks_core_v000000_dev
 							else if($_value === FALSE)
 								$_value = '0';
 
-							if(isset($nested_key))
-								$_key = $nested_key.'['.$_key.']';
+							if(isset($___nested_key))
+								$_key = $___nested_key.'['.$_key.']';
 							else if(isset($prefix) && is_numeric($_key))
 								$_key = $prefix.$_key;
 
@@ -761,7 +761,7 @@ namespace websharks_core_v000000_dev
 			 *       • {@link fw_constants::rfc1738}
 			 *       • {@link fw_constants::rfc3986}
 			 *
-			 * @param null|array  $parent_array Internal use only; for recursion.
+			 * @param null|array  $___parent_array Internal use only; for recursion.
 			 *
 			 * @return array An array of data, based on the input ``$string`` value.
 			 *
@@ -790,13 +790,13 @@ namespace websharks_core_v000000_dev
 			 *    parse_str($string, $parse_str);
 			 *    ($string) === $parse_str
 			 */
-			public function parse_query($string, $convert_dots_spaces = TRUE, $dec_type = self::rfc1738, &$parent_array = NULL)
+			public function parse_query($string, $convert_dots_spaces = TRUE, $dec_type = self::rfc1738, &$___parent_array = NULL)
 				{
-					if(!isset($parent_array)) // Only check arg types initially (i.e. NOT in recursive calls).
+					if(!isset($___parent_array)) // Only check arg types initially (i.e. NOT in recursive calls).
 						$this->check_arg_types('string', 'boolean', array('null', 'string:!empty'), array('null', 'array'), func_get_args());
 
-					if(isset($parent_array))
-						$array = & $parent_array;
+					if(isset($___parent_array))
+						$array = & $___parent_array;
 					else $array = array(); // Initialize array.
 
 					foreach(explode('&', $string) as $_name_value)

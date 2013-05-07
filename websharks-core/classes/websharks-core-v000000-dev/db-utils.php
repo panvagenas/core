@@ -377,14 +377,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$sql_file`` is empty or invalid (i.e. NOT an SQL file).
 			 * @throws exception If we fail to prepare queries.
-			 *
-			 * @assert ('foo.sql') throws exception
-			 *
-			 * @assert-failure-for-review $sql_file = dirname(dirname(dirname(__FILE__))).'/._dev-utilities/unit-test-files/prep.sql';
-			 *    ($sql_file) === 'foo'
-			 *
-			 * @assert-failure-for-review $sql_file = dirname(dirname(dirname(__FILE__))).'/._dev-utilities/unit-test-files/empty.sql';
-			 *    ($sql_file) === 'foo'
 			 */
 			public function prep_sql_file_queries($sql_file)
 				{

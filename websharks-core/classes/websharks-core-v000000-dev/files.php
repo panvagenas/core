@@ -189,8 +189,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$file`` is NOT a string; or is an empty string.
 			 * @throws exception If ``$file`` is NOT actually a file.
 			 * @throws exception If ``$file`` is NOT readable.
-			 *
-			 * @assert (dirname(__FILE__).'/files.php') === '5.51 kbs'
 			 */
 			public function size_abbr($file)
 				{
@@ -335,7 +333,7 @@ namespace websharks_core_v000000_dev
 						);
 					if(filesize($file) < $max_size) return $file;
 
-					$archived_file = dirname($file).'/'.$this->abs_basename($file).'-archived-'.time().
+					$archived_file = $this->©dir->n_seps_up($file).'/'.$this->abs_basename($file).'-archived-'.time().
 					                 (($extension = $this->extension($file)) ? '.'.$extension : '');
 
 					$this->rename_to($file, $archived_file);
@@ -366,8 +364,9 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
 
-					$file = $this->©dir->n_seps($file);
-					$to   = $this->©dir->n_seps($to);
+					$file   = $this->©dir->n_seps($file);
+					$to     = $this->©dir->n_seps($to);
+					$to_dir = $this->©dir->n_seps_up($to);
 
 					if(!is_file($file))
 						throw $this->©exception(
@@ -387,17 +386,17 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Destination exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this file: `%1$s`.'), $to)
 						);
-					if(!is_dir(dirname($to)))
+					if(!is_dir($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_missing', get_defined_vars(),
 							$this->i18n('Destination\'s parent directory does NOT exist yet.').
-							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
-					if(!is_writable(dirname($to)))
+					if(!is_writable($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination\'s directory is not writable.').
-							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
 
 					if(!copy($file, $to))
@@ -434,8 +433,9 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
 
-					$file = $this->©dir->n_seps($file);
-					$to   = $this->©dir->n_seps($to);
+					$file   = $this->©dir->n_seps($file);
+					$to     = $this->©dir->n_seps($to);
+					$to_dir = $this->©dir->n_seps_up($to);
 
 					if(!is_file($file))
 						throw $this->©exception(
@@ -461,17 +461,17 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Destination exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
 						);
-					if(!is_dir(dirname($to)))
+					if(!is_dir($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_missing', get_defined_vars(),
 							$this->i18n('Destination\'s parent directory does NOT exist yet.').
-							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
-					if(!is_writable(dirname($to)))
+					if(!is_writable($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination\'s directory is not writable.').
-							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
 
 					if(!rename($file, $to))

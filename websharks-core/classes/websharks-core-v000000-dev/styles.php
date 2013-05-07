@@ -120,7 +120,7 @@ namespace websharks_core_v000000_dev
 					$themes = array(); // Initialize jQuery™ UI themes array.
 
 					$dirs   = $this->©dirs->where_templates_may_reside();
-					$dirs[] = dirname(dirname(dirname(__FILE__))).'/client-side';
+					$dirs[] = $this->©dir->n_seps_up(__FILE__, 3).'/client-side';
 
 					foreach(array_reverse($dirs) as $_dir) // For correct precedence.
 

@@ -829,8 +829,10 @@ namespace websharks_core_v000000_dev
 
 					$dir = $this->n_seps($dir);
 					$to  = $this->n_seps($to);
+					$to_dir  = $this->n_seps_up($to);
 
 					if(!isset($___initial_dir)) $___initial_dir = $dir;
+					$___initial_dir_dir = $this->n_seps_up($___initial_dir);
 					if(!isset($___ignore)) $___ignore = array();
 
 					if(!is_dir($dir))
@@ -858,11 +860,11 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to copy a directory; destination already exists.').
 							sprintf($this->i18n(' Please delete this file or directory: `%1$s`.'), $to)
 						);
-					if(!is_writable(dirname($to)))
+					if(!is_writable($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; destination not writable due to permission issues.').
-							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), $to_dir)
 						);
 					mkdir($to, 0755, TRUE); // Create the destination directory (with recursion).
 					clearstatcache(); // Clear cache before re-testing; (also makes other routines aware it exists).
@@ -895,8 +897,8 @@ namespace websharks_core_v000000_dev
 					   && basename($exclusions[$this::gitignore]) === '.gitignore' // MUST have a `.gitignore` basename.
 					) // This special array element is a `.gitignore` file; triggering automatic `.gitignore` exclusions.
 						{
-							$_gitignore_file = $exclusions[$this::gitignore];
-							$_gitignore_dir  = $this->©dir->n_seps(dirname($_gitignore_file));
+							$_gitignore_file = $this->n_seps($exclusions[$this::gitignore]);
+							$_gitignore_dir  = $this->n_seps_up($_gitignore_file);
 							unset($exclusions[$this::gitignore]);
 
 							if(!is_file($_gitignore_file))
@@ -904,11 +906,11 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#nonexistent_gitignore_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent `.gitignore` file: `%1$s`.'), $_gitignore_file)
 								);
-							if($_gitignore_dir !== dirname($___initial_dir))
+							if($_gitignore_dir !== $___initial_dir_dir)
 								throw $this->©exception(
 									__METHOD__.'#invalid_gitignore_file', get_defined_vars(),
 									sprintf($this->i18n('Invalid `.gitignore` file: `%1$s`.'), $_gitignore_file).
-									sprintf($this->i18n('Your `.gitignore` file MUST exist here: `%1$s`.'), dirname($___initial_dir).'/.gitignore')
+									sprintf($this->i18n('Your `.gitignore` file MUST exist here: `%1$s`.'), $___initial_dir_dir.'/.gitignore')
 								);
 							if(!$this->©command->git_possible())
 								throw $this->©exception(
@@ -939,14 +941,14 @@ namespace websharks_core_v000000_dev
 						{
 							if($_dir_file !== '.' && $_dir_file !== '..') // Ignore directory dots.
 								{
-									$_dir_file                   = $dir.'/'.$_dir_file;
-									$_dir_file_is_dir            = is_dir($_dir_file);
-									$_dir_file_abs_relative_path = '/'.preg_replace('/^'.preg_quote(dirname($___initial_dir), '/').'\//', '/', $_dir_file);
-									$_dir_file_abs_relative_path .= ($_dir_file_is_dir) ? '/' : ''; // Trailing dir separator on actual directories.
+									$_dir_file        = $dir.'/'.$_dir_file;
+									$_dir_file_is_dir = is_dir($_dir_file);
+									$_dir_file_arp    = preg_replace('/^'.preg_quote($___initial_dir_dir, '/').'\//', '/', $_dir_file);
+									$_dir_file_arp .= ($_dir_file_is_dir) ? '/' : ''; // Trailing dir separator on actual directories.
 									$_dir_file_to = $to.'/'.basename($_dir_file); // New copy location.
 
-									if((!isset($___ignore['globs']) && !isset($___ignore['extra_globs'])) || !$this->©dirs_files->ignore($_dir_file, dirname($___initial_dir), $this->©var->isset_or($___ignore['globs'], array()), $this->©var->isset_or($___ignore['extra_globs'], array()), $exclusions_case_insensitive, $exclusion_x_flags))
-										if(!$exclusions || !$this->©string->in_wildcard_patterns($_dir_file_abs_relative_path, $exclusions, $exclusions_case_insensitive, FALSE, $exclusion_x_flags))
+									if((!isset($___ignore['globs']) && !isset($___ignore['extra_globs'])) || !$this->©dirs_files->ignore($_dir_file, $___initial_dir_dir, $this->©var->isset_or($___ignore['globs'], array()), $this->©var->isset_or($___ignore['extra_globs'], array()), $exclusions_case_insensitive, $exclusion_x_flags))
+										if(!$exclusions || !$this->©string->in_wildcard_patterns($_dir_file_arp, $exclusions, $exclusions_case_insensitive, FALSE, $exclusion_x_flags))
 											{ // Only if this directory/file has NOT been excluded via the ``$exclusions`` array.
 
 												if($_dir_file_is_dir) // Recursive sub-directories.
@@ -956,7 +958,7 @@ namespace websharks_core_v000000_dev
 								}
 						}
 					closedir($_open_dir); // Close directory resource handle.
-					unset($_open_dir, $_dir_file, $_dir_file_is_dir, $_dir_file_abs_relative_path, $_dir_file_to);
+					unset($_open_dir, $_dir_file, $_dir_file_is_dir, $_dir_file_arp, $_dir_file_to);
 
 					clearstatcache(); // This makes other routines aware. Very important to clear the cache.
 
@@ -1008,8 +1010,9 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string:!empty', 'string:!empty', 'boolean', 'boolean', 'array:!empty', 'string:!empty', func_get_args());
 
-					$dir = $this->n_seps($dir);
-					$to  = $this->n_seps($to);
+					$dir    = $this->n_seps($dir);
+					$to     = $this->n_seps($to);
+					$to_dir = $this->n_seps_up($to);
 
 					if(!is_dir($dir))
 						throw $this->©exception(
@@ -1036,17 +1039,17 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Unable to PHAR a directory; invalid destination PHAR file.').
 							sprintf($this->i18n(' Please use a `.phar` extension instead of: `%1$s`.'), $to)
 						);
-					if(!is_dir(dirname($to)))
+					if(!is_dir($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#phar_to_dir_missing', get_defined_vars(),
 							$this->i18n('Destination PHAR directory does NOT exist yet.').
-							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
-					if(!is_writable(dirname($to)))
+					if(!is_writable($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; destination not writable due to permission issues.').
-							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), $to_dir)
 						);
 					if(!\Phar::canWrite())
 						throw $this->©exception(
@@ -1151,8 +1154,9 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
 
-					$dir = $this->n_seps($dir);
-					$to  = $this->n_seps($to);
+					$dir    = $this->n_seps($dir);
+					$to     = $this->n_seps($to);
+					$to_dir = $this->n_seps_up($to);
 
 					if(!class_exists('\\PclZip'))
 						require_once ABSPATH.'wp-admin/includes/class-pclzip.php';
@@ -1182,21 +1186,21 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Invalid ZIP extension. The destination must end with `.zip`.').
 							sprintf($this->i18n(' Instead got: `%1$s`.'), $to)
 						);
-					if(!is_dir(dirname($to)))
+					if(!is_dir($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#zip_to_dir_missing', get_defined_vars(),
 							$this->i18n('Destination ZIP directory does NOT exist yet.').
-							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
-					if(!is_writable(dirname($to)))
+					if(!is_writable($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#zip_to_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination ZIP directory is not writable.').
-							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
 
 					$archive = new \PclZip($to);
-					if(!$archive->create($dir, PCLZIP_OPT_REMOVE_PATH, dirname($dir)))
+					if(!$archive->create($dir, PCLZIP_OPT_REMOVE_PATH, $this->n_seps_up($dir)))
 						throw $this->©exception(
 							__METHOD__.'#pclzip_archive_failure#'.$archive->errorCode(), get_defined_vars(),
 							sprintf($this->i18n('PclZip archive failure: `%1$s`.'), $archive->errorInfo(TRUE))
@@ -1222,8 +1226,9 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
 
-					$dir = $this->n_seps($dir);
-					$to  = $this->n_seps($to);
+					$dir    = $this->n_seps($dir);
+					$to     = $this->n_seps($to);
+					$to_dir = $this->n_seps_up($to);
 
 					if(!is_dir($dir))
 						throw $this->©exception(
@@ -1250,17 +1255,17 @@ namespace websharks_core_v000000_dev
 							$this->i18n('Destination exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
 						);
-					if(!is_dir(dirname($to)))
+					if(!is_dir($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_missing', get_defined_vars(),
 							$this->i18n('Destination\'s parent directory does NOT exist yet.').
-							sprintf($this->i18n(' Please check this directory: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
-					if(!is_writable(dirname($to)))
+					if(!is_writable($to_dir))
 						throw $this->©exception(
 							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination\'s directory is not writable.').
-							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), dirname($to))
+							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
 
 					if(!rename($dir, $to))
@@ -1283,7 +1288,7 @@ namespace websharks_core_v000000_dev
 				{
 					$data_dir = $this->___instance_config->plugin_data_dir;
 
-					if(!is_dir($data_dir) && is_writable(dirname($data_dir)))
+					if(!is_dir($data_dir) && is_writable($this->n_seps_up($data_dir)))
 						{
 							mkdir($data_dir, 0775);
 							clearstatcache(); // Clear cache.

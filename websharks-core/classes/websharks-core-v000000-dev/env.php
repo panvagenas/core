@@ -462,7 +462,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return boolean TRUE if this WordPress® installation is using fancy permalinks.
 			 */
-			public function is_using_fancy_permalinks()
+			public function uses_fancy_permalinks()
 				{
 					return (get_option('permalink_structure')) ? TRUE : FALSE;
 				}

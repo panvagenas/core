@@ -38,6 +38,19 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Normalizes directory/file separators (up X directories).
+			 *
+			 * @return array {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::n_dir_seps_up()
+			 * @inheritdoc \websharks_core_v000000_dev::n_dir_seps_up()
+			 */
+			public function n_seps_up() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'n_dir_seps_up'), func_get_args());
+				}
+
+			/**
 			 * Locates a specific directory/file path.
 			 *
 			 * @return string {@inheritdoc}
@@ -78,13 +91,14 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If `DOCUMENT_ROOT` is empty, or is NOT a string.
+			 * @throws exception If `$to_dir_file` is empty, or is NOT a string.
 			 *
 			 * @assert ($_SERVER['DOCUMENT_ROOT'].'/path/to/a/dir/') === 'path/to/a/dir'
 			 * @assert ($_SERVER['DOCUMENT_ROOT'].'/path/to/a/file.php') === 'path/to/a/file.php'
 			 */
 			public function doc_root_path($to_dir_file, $try_realpaths = TRUE, $use_win_diff_drive_jctn = TRUE)
 				{
-					$this->check_arg_types('string', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('string:!empty', 'boolean', 'boolean', func_get_args());
 
 					if(!$this->©string->¤is_not_empty($doc_root = $this->©vars->_SERVER('DOCUMENT_ROOT')))
 						throw $this->©exception(
@@ -119,64 +133,68 @@ namespace websharks_core_v000000_dev
 			 */
 			public function rel_path($dir_file_from, $dir_file_to, $try_realpaths = TRUE, $use_win_diff_drive_jctn = TRUE)
 				{
-					$this->check_arg_types('string', 'string', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty', 'boolean', 'boolean', func_get_args());
 
-					if(!($from = $dir_file_from) || !($to = $dir_file_to))
-						return ''; // Default return value.
+					$from = $dir_file_from; // A shorter name.
+					$to   = $dir_file_to; // A shorter name for this too.
 
-					if($try_realpaths && ($_real_from = realpath($from)) && ($_real_to = realpath($to)))
-						{
-							$from = $_real_from; // Real path on server.
-							$to   = $_real_to; // Use real path on server.
-						}
-					unset($_real_from, $_real_to); // Housekeeping.
+					if($try_realpaths) // Try to find realpaths?
+						if(($_real_from = realpath($from)) && ($_real_to = realpath($to)))
+							{
+								$from = $_real_from; // Real path on server.
+								$to   = $_real_to; // Use real path on server.
+							}
+					unset($_real_from, $_real_to); // A little housekeeping.
 
 					if($this->has_extension($from) || is_file($from))
-						$from = dirname($from); // Need a directory to calculate from.
+						$from = $this->n_seps_up($from); // Up one. We need a directory.
 
-					$from = preg_split('/\//', $this->n_seps($from));
-					$to   = preg_split('/\//', $this->n_seps($to));
+					$from = preg_split('/\//', $this->n_seps($from)); // Allow empty values.
+					$to   = preg_split('/\//', $this->n_seps($to)); // Allow empty values here too.
+					// Either of these could have `[0] => ''` (we anticipate this in the routines below).
 
 					if($this->©env->is_windows()) // Handle Windows® drive issues here.
 						{
-							if(preg_match('/^(?P<drive_letter>[A-Z])\:$/i', $from[0], $_m))
-								$_from_drive = $_m['drive_letter'];
+							if($from[0] && preg_match(stub::$regex_valid_win_drive_letter, $from[0].'/', $_m))
+								$_from_drive = $_m['drive_letter']; // Uppercase.
 
-							if(preg_match('/^(?P<drive_letter>[A-Z])\:$/i', $to[0], $_m))
-								$_to_drive = $_m['drive_letter'];
+							if($to[0] && preg_match(stub::$regex_valid_win_drive_letter, $to[0].'/', $_m))
+								$_to_drive = $_m['drive_letter']; // Uppercase here too.
 
-							if(!empty($_from_drive) && empty($_to_drive))
+							if(!empty($_from_drive) && empty($_to_drive)) // Same drive?
 								{
 									$_to_drive = $_from_drive;
-									if(empty($to[0]))
-										$to[0] = $_to_drive.':';
-									else array_unshift($to, $_to_drive.':');
+									if(strlen($to[0])) // Shift drive on?
+										array_unshift($to, $_to_drive.':');
+									else $to[0] = $_to_drive.':'; // Set drive value.
 								}
-							else if(!empty($_to_drive) && empty($_from_drive))
+							if(!empty($_to_drive) && empty($_from_drive)) // Same drive?
 								{
 									$_from_drive = $_to_drive;
-									if(empty($from[0]))
-										$from[0] = $_from_drive.':';
-									else array_unshift($from, $_from_drive.':');
+									if(strlen($from[0])) // Shift drive on?
+										array_unshift($from, $_from_drive.':');
+									else $from[0] = $_from_drive.':'; // Set drive value.
 								}
 							if($use_win_diff_drive_jctn) // Attempt to create a Directory Junction (if needed)?
 								{
-									if(isset($_from_drive, $_to_drive) && strcasecmp($_from_drive, $_to_drive) !== 0)
+									if(isset($_from_drive, $_to_drive) && $_from_drive !== $_to_drive)
 										{
-											$_core_ns_stub_with_dashes = $this->___instance_config->core_ns_stub_with_dashes;
-											$_from_drive_jctn          = $_from_drive.':/'.$_core_ns_stub_with_dashes.'-'.$_to_drive.'-jctn';
+											$_from_drive_jctn = $_from_drive.':/'.$_to_drive.'-Drive';
+											$_jctn            = (is_dir($_from_drive_jctn)) ? $_from_drive_jctn : '';
 
-											$_temp_dir = $this->©dir->temp();
-											if(strcasecmp($_from_drive, $_temp_dir[0]) === 0)
-												$_temp_dir_jctn = $_temp_dir.'/'.$_core_ns_stub_with_dashes.'-'.$_to_drive.'-jctn';
-
-											$_jctn = (is_dir($_from_drive_jctn)) ? $_from_drive_jctn : '';
-											if(!$_jctn && !empty($_temp_dir_jctn) && is_dir($_temp_dir_jctn))
-												$_jctn = $_temp_dir_jctn;
-
-											if(!$_jctn) // A Directory Junction does NOT exist yet?
+											if(!$_jctn) // If unable to create a junction on the ``$_from_drive``; try temp directory.
 												{
-													try // Try creating a Directory Junction on the ``$_from_drive``.
+													$_temp_dir = $this->©dir->temp(); // Make sure temp directory has a drive letter.
+
+													if(preg_match(substr(stub::$regex_valid_win_drive_letter, 0, -2).'/', $_temp_dir, $_m) && $_from_drive === $_m['drive_letter'])
+														$_temp_dir_jctn = $_temp_dir.'/'.$_to_drive.'-Drive';
+
+													if(!empty($_temp_dir_jctn) && is_dir($_temp_dir_jctn))
+														$_jctn = $_temp_dir_jctn;
+												}
+											if(!$_jctn) // A directory junction does NOT exist yet?
+												{
+													try // Try creating a directory junction on the ``$_from_drive``.
 														{
 															$_jctn = $this->©dir->create_win_jctn($_from_drive_jctn, $_to_drive.':/');
 														}
@@ -203,25 +221,23 @@ namespace websharks_core_v000000_dev
 												array_unshift($to, $_jctn_dir);
 										}
 								}
-							else if(isset($_from_drive, $_to_drive) && strcasecmp($_from_drive, $_to_drive) !== 0)
-								{
-									throw $this->©exception(
-										__METHOD__.'#windows_drive', get_defined_vars(),
-										$this->i18n('Unable to generate a relative path across different Windows® drives.').
-										sprintf($this->i18n(' Drive from: `%1$s`, drive to: `%2$s`.'), $_from_drive.':/', $_to_drive.':/')
-									);
-								}
-							unset($_m, $_from_drive, $_to_drive, $_core_ns_stub_with_dashes, $_from_drive_jctn, $_temp_dir, $_temp_dir_jctn, $_jctn, $_jctn_dir);
+							else if(isset($_from_drive, $_to_drive) && $_from_drive !== $_to_drive)
+								throw $this->©exception(
+									__METHOD__.'#windows_drive', get_defined_vars(),
+									$this->i18n('Unable to generate a relative path across different Windows® drives.').
+									sprintf($this->i18n(' Drive from: `%1$s`, drive to: `%2$s`.'), $_from_drive.':/', $_to_drive.':/')
+								);
+							unset($_m, $_from_drive, $_to_drive, $_from_drive_jctn, $_temp_dir, $_temp_dir_jctn, $_jctn, $_jctn_dir);
 						}
 					foreach(array_keys($from) as $_depth) // Loop through each ``$from`` directory ``$_depth``.
 						if(isset($from[$_depth], $to[$_depth]) && $from[$_depth] === $to[$_depth])
 							unset($from[$_depth], $to[$_depth]);
-						else break;
+						else break; // MUST stop now.
 
 					$to = implode('/', $to);
+
 					for($_depth = 0; $_depth < count($from); $_depth++)
 						$to = '../'.$to;
-
 					unset($_depth); // A little housekeeping.
 
 					return $to; // Relative path.
@@ -414,17 +430,16 @@ namespace websharks_core_v000000_dev
 					                       array('array', 'string'), array('array', 'string'),
 					                       array('null', 'boolean'), array('null', 'integer'), func_get_args());
 
-					$dir_file = $dir_file_arp = $this->n_seps($dir_file);
-					$from_dir = $from_dir_file; // Translate this into a directory (as it should be).
+					$dir_file = $this->n_seps($dir_file);
 
-					if($from_dir && ($this->has_extension($from_dir) || is_file($from_dir)))
-						$from_dir = dirname($from_dir); // Need a directory to calculate from.
+					if($from_dir_file && ($this->has_extension($from_dir_file) || is_file($from_dir_file)))
+						$from_dir = $this->n_seps_up($from_dir_file); // Need a directory.
+					else $from_dir = $this->n_seps($from_dir_file); // Directory.
 
 					if($from_dir) // Did we get a from directory?
 						{
-							$from_dir = $this->n_seps($from_dir);
 							if($dir_file === $from_dir) return FALSE; // Do NOT ignore from directory.
-							$dir_file_arp = preg_replace('/^'.preg_quote($from_dir, '/').'\//', '/', $dir_file);
+							$dir_file = preg_replace('/^'.preg_quote($from_dir, '/').'\//', '/', $dir_file);
 						}
 					$globs       = ($globs !== $this::defaults && is_string($globs)) ? preg_split('/;+/', $globs, NULL, PREG_SPLIT_NO_EMPTY) : $globs;
 					$extra_globs = (is_string($extra_globs)) ? preg_split('/;+/', $extra_globs, NULL, PREG_SPLIT_NO_EMPTY) : $extra_globs;
@@ -444,24 +459,24 @@ namespace websharks_core_v000000_dev
 					$globs                  = array_merge($globs, $extra_globs);
 					$globs_case_insensitive = (boolean)$globs_case_insensitive;
 
-					for($_i = 0, $_dir_file_arp = $dir_file_arp; $_i <= 100; $_i++)
+					for($_i = 0, $_dir_file = $dir_file; $_i <= 100; $_i++)
 						{
 							if($_i > 0) // Up one directory now?
-								$_dir_file_arp = $this->n_seps(dirname($_dir_file_arp), TRUE);
+								$_dir_file = $this->n_seps_up($_dir_file, 1, TRUE);
 
-							if(!$_dir_file_arp || $_dir_file_arp === '.' || substr($_dir_file_arp, -1) === ':')
+							if(!$_dir_file || $_dir_file === '.' || substr($_dir_file, -1) === ':')
 								break; // Search complete (we're beyond even a root directory or scheme now).
 
-							if($this->©string->in_wildcard_patterns($_dir_file_arp, $globs, $globs_case_insensitive, FALSE, $glob_x_flags))
+							if($this->©string->in_wildcard_patterns($_dir_file, $globs, $globs_case_insensitive, FALSE, $glob_x_flags))
 								return TRUE; // We SHOULD ignore this directory/file.
 
-							if($this->©string->in_wildcard_patterns(basename($_dir_file_arp), $globs, $globs_case_insensitive, FALSE, $glob_x_flags))
+							if($this->©string->in_wildcard_patterns(basename($_dir_file), $globs, $globs_case_insensitive, FALSE, $glob_x_flags))
 								return TRUE; // We SHOULD ignore this directory/file.
 
-							if(substr($_dir_file_arp, -1) === '/') // Root directory or scheme?
+							if(substr($_dir_file, -1) === '/') // Root directory or scheme?
 								break; // Search complete (there is nothing more to search after this).
 						}
-					unset($_dir_file_arp); // Just a little housekeeping.
+					unset($_dir_file); // Just a little housekeeping.
 
 					return FALSE; // Default return value.
 				}

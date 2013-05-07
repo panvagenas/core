@@ -248,8 +248,8 @@ namespace websharks_core_v000000_dev
 					$dir          = $this->©dir->n_seps($dir);
 					$dir_basename = basename($dir);
 
-					if(!isset($___initial_dir))
-						$___initial_dir = $dir;
+					if(!isset($___initial_dir)) $___initial_dir = $dir;
+					$___initial_dir_dir = $this->©dir->n_seps_up($___initial_dir);
 
 					if(!is_dir($dir)) // Validate (must be a directory).
 						throw $this->©exception(
@@ -258,7 +258,7 @@ namespace websharks_core_v000000_dev
 						);
 					// Handle automatic directory exclusions.
 
-					if($this->©dir->ignore($dir, dirname($___initial_dir)))
+					if($this->©dir->ignore($dir, $___initial_dir_dir))
 						return; // Ignore this directory (it IS excluded).
 
 					if(preg_match('/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//', $dir.'/'))
@@ -273,12 +273,14 @@ namespace websharks_core_v000000_dev
 					if(preg_match(stub::$regex_valid_core_ns_version_with_dashes, $dir_basename) && $dir_basename !== basename($this->new_core_dir))
 						{
 							$_o_dir       = $dir; // Original directory.
-							$dir          = dirname($dir).'/'.basename($this->new_core_dir);
+							$dir          = $this->©dir->n_seps_up($dir).'/'.basename($this->new_core_dir);
 							$dir_basename = basename($dir);
 
-							if($_o_dir === $___initial_dir)
-								$___initial_dir = $dir;
-
+							if($_o_dir === $___initial_dir) // Update both of these.
+								{
+									$___initial_dir     = $dir;
+									$___initial_dir_dir = $this->©dir->n_seps_up($___initial_dir);
+								}
 							$this->©dir->rename_to($_o_dir, $dir);
 							unset($_o_dir); // Ditch this now.
 						}
@@ -314,7 +316,7 @@ namespace websharks_core_v000000_dev
 
 							// Handle automatic file name & file extension exclusions.
 
-							if($this->©file->ignore($_dir_file, dirname($___initial_dir)))
+							if($this->©file->ignore($_dir_file, $___initial_dir_dir))
 								continue; // Ignore this file (it IS excluded).
 
 							if($this->©file->has_extension($_dir_file, $this::binary_type))
@@ -325,7 +327,7 @@ namespace websharks_core_v000000_dev
 								if($_dir_file_abs_basename !== basename($this->new_core_dir))
 									{
 										$_o_dir_file = $_dir_file; // Original file.
-										$_dir_file   = dirname($_dir_file).'/'.basename($this->new_core_dir);
+										$_dir_file   = $this->©dir->n_seps_up($_dir_file).'/'.basename($this->new_core_dir);
 										if(strlen($_dir_file_extension)) // Has an extension?
 											$_dir_file .= '.'.$_dir_file_extension;
 

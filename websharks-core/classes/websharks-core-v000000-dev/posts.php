@@ -27,11 +27,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Gets a WordPress® post by path; instead of by ID.
 			 *
-			 * @note This does NOT work with paginated paths (ex: `/sample-page/2/` will fail).
-			 *
 			 * @param string $path A URL path (ex: `/sample-page/`, `/sample-page`, `sample-page`).
 			 *    This also works with sub-pages (ex: `/parent-page/sub-page/`).
 			 *    Also with post type prefixes (ex: `/post/hello-world/`).
+			 *    Also with pagination (ex: `/post/hello-world/page/2`).
 			 *
 			 * @param array  $exclude_types Optional. Defaults to ``array('revision', 'nav_menu_item')``.
 			 *    We will NOT search for these post types. Pass an empty array to search all post types.
@@ -43,19 +42,29 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @see http://codex.wordpress.org/Function_Reference/get_page_by_path
+			 *    NOTE: This supports MORE than just pages; even though the function name implies otherwise.
 			 */
 			public function by_path($path, $exclude_types = array('revision', 'nav_menu_item'))
 				{
 					$this->check_arg_types('string', 'array', func_get_args());
 
-					$path = trim($path, '/'); // Trim slashes.
+					$path = trim($path, '/'); // Trim all slashes.
+					$path = preg_replace($this->©url->regex_wp_pagination_page(), '', $path);
 
-					if($path && $path !== '/') foreach(get_post_types() as $_type)
-						if(!in_array($_type, $exclude_types, TRUE))
-							if(($_path = str_replace($_type.'/', '', $path)))
+					if($path && $path !== '/') foreach(get_post_types() as $_type) if(!in_array($_type, $exclude_types, TRUE))
+						{
+							$_type_slug  = $_type; // Default slug.
+							$_type_specs = get_post_type_object($_type);
+
+							if($this->©array->is_not_empty($_type_specs->rewrite))
+								if($this->©string->is_not_empty($_type_specs->rewrite['slug']))
+									$_type_slug = $_type_specs->rewrite['slug'];
+
+							if(($_path = preg_replace('/^'.preg_quote($_type_slug, '/').'\//', '', $path)))
 								if(($post = get_page_by_path($_path, OBJECT, $_type)))
 									return $post;
-					unset($_type); // Housekeeping.
+						}
+					unset($_type, $_type_specs, $_type_slug);
 
 					return NULL; // Default return value.
 				}

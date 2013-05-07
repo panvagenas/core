@@ -2835,6 +2835,33 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		}
 
 	/**
+	 * Normalizes directory/file separators (up X directories).
+	 *
+	 * @return string {@inheritdoc}
+	 *
+	 * @see websharks_core_v000000_dev::n_dir_seps_up()
+	 * @inheritdoc websharks_core_v000000_dev::n_dir_seps_up()
+	 */
+	public function n_dir_seps_up($dir_file, $up = 1, $allow_trailing_slash = FALSE)
+		{
+			if(!is_string($dir_file) || !is_integer($up) || !is_bool($allow_trailing_slash))
+				throw new exception( // Fail here; detected invalid arguments.
+					sprintf($this->i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+				);
+			if(!strlen($dir_file)) return ''; // Catch empty string.
+
+			$had_trailing_slash = in_array(substr($dir_file, -1), array(DIRECTORY_SEPARATOR, '\\', '/'), TRUE);
+
+			for($_i = 0; $_i < abs($up); $_i++)
+				$dir_file = dirname($dir_file);
+			unset($_i); // Housekeeping.
+
+			if($had_trailing_slash) $dir_file .= '/';
+
+			return $this->n_dir_seps($dir_file, $allow_trailing_slash);
+		}
+
+	/**
 	 * Attempts to get `/wp-load.php`.
 	 *
 	 * @return string {@inheritdoc}
@@ -2891,15 +2918,15 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			$dir_file = ltrim($this->n_dir_seps($dir_file), '/'); // Relative.
 
 			if($starting_dir === '__DIR__') // Using this for PHP v5.2 compatibility.
-				$starting_dir = dirname(__FILE__); // Current file directory.
+				$starting_dir = $this->n_dir_seps_up(__FILE__); // Current directory.
 
 			else if(in_array($starting_dir, array('phar://', 'phar://__DIR__'), TRUE)) // With a PHAR stream wrapper?
-				$starting_dir = 'phar://'.preg_replace(substr($this->regex_valid_dir_file_stream_wrapper, 0, -2).'/', '', dirname(__FILE__));
+				$starting_dir = 'phar://'.preg_replace(substr($this->regex_valid_dir_file_stream_wrapper, 0, -2).'/', '', $this->n_dir_seps_up(__FILE__));
 
 			for($_i = 0, $_dir = $this->n_dir_seps($starting_dir); $_i <= 100; $_i++)
 				{
 					if($_i > 0) // Up one directory now?
-						$_dir = $this->n_dir_seps(dirname($_dir), TRUE);
+						$_dir = $this->n_dir_seps_up($_dir, 1, TRUE);
 
 					if(!$_dir || $_dir === '.' || substr($_dir, -1) === ':')
 						break; // Search complete (we're beyond even a root directory or scheme now).

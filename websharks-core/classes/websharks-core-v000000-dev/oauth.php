@@ -261,7 +261,6 @@ namespace websharks_core_v000000_dev
 							$body                    = $this->©vars->build_raw_query($vars);
 							$headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 						}
-
 					$oauth_signature          = $this->sign($method, $url, $vars, $verifier);
 					$headers['Authorization'] = $oauth_signature['header'];
 
@@ -272,14 +271,12 @@ namespace websharks_core_v000000_dev
 						                 'method'       => $method, 'headers' => $headers, 'body' => $body
 						            )
 					);
-
 					if(!is_array($response))
 						return $this->©error(
 							__METHOD__, get_defined_vars(),
 							sprintf($this->i18n('OAuth API call: `%1$s » %2$s`).'), $method, $url).
 							$this->i18n(' Connection failure.')
 						);
-
 					$oauth = array(); // Initialize OAuth response array.
 
 					if($response['body']) // Detect response body type.
@@ -291,7 +288,6 @@ namespace websharks_core_v000000_dev
 									$oauth = $this->©vars->parse_query($response['body']);
 							$oauth = $this->©string->ify_deep($oauth);
 						}
-
 					if(isset($oauth['error']['status'])
 					   && $this->©string->is_not_empty($oauth['error']['status'])
 					) $error_code = $oauth['error']['status'];
@@ -324,13 +320,11 @@ namespace websharks_core_v000000_dev
 									);
 								}
 						}
-
 					$this->©success(
 						__METHOD__, get_defined_vars(),
 						sprintf($this->i18n('OAuth API call: `%1$s » %2$s`).'), $method, $url).
 						$this->i18n(' Status: `success`.')
 					);
-
 					if(empty($oauth))
 						return TRUE; // Assume success.
 
@@ -411,31 +405,31 @@ namespace websharks_core_v000000_dev
 					if(!$oauth_vars['oauth_verifier'] || !$signable_vars['oauth_verifier'])
 						unset($oauth_vars['oauth_verifier'], $signable_vars['oauth_verifier']);
 
-					if(($_parsed = $this->©url->parse($url, -1, FALSE, FALSE)))
+					if(($_url_parts = $this->©url->parse($url, NULL, 0 /* We normalize below. */)))
 						{
 							// Include GET vars (i.e. those in the query string)?
-							if($_parsed['query'] && in_array('GET', $this->signable_var_types, TRUE))
+							if($_url_parts['query'] && in_array('GET', $this->signable_var_types, TRUE))
 								{
-									$_query_vars   = $this->©vars->parse_raw_query($_parsed['query'], FALSE);
+									$_query_vars   = $this->©vars->parse_raw_query($_url_parts['query'], FALSE);
 									$signable_vars = array_merge($signable_vars, $_query_vars);
 									unset($_query_vars);
 								}
 							// According to OAuth specs.
-							$_parsed['scheme'] = strtolower($_parsed['scheme']);
-							$_parsed['host']   = strtolower($_parsed['host']);
+							$_url_parts['scheme'] = strtolower($_url_parts['scheme']);
+							$_url_parts['host']   = strtolower($_url_parts['host']);
 
 							// According to OAuth specs.
-							if($_parsed['scheme'] === 'http' && $_parsed['port'] === 80
-							   || $_parsed['scheme'] === 'https' && $_parsed['port'] === 443
-							) unset($_parsed['port']);
+							if($_url_parts['scheme'] === 'http' && $_url_parts['port'] === 80
+							   || $_url_parts['scheme'] === 'https' && $_url_parts['port'] === 443
+							) unset($_url_parts['port']);
 
 							// According to OAuth specs.
-							unset($_parsed['query'], $_parsed['fragment']);
+							unset($_url_parts['query'], $_url_parts['fragment']);
 
-							// Normalize the URL now (piece it back together).
-							$url = $this->©url->unparse($_parsed, FALSE, FALSE);
+							// Piece the URL back together now.
+							$url = $this->©url->unparse($_url_parts, 0);
 						}
-					unset($_parsed); // Just a little housekeeping here.
+					unset($_url_parts); // Just a little housekeeping here.
 
 					// Sort ``$signable_vars``; build raw query: ``$signable_vars_qs``.
 					$signable_vars    = $this->©array->ksort_deep($signable_vars, SORT_STRING);

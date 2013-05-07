@@ -101,6 +101,25 @@ namespace websharks_core_v000000_dev
 			const any_logic = '___any_logic';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
+			# Prepend/append/replace flags.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * @var string Represents `prepend` flag.
+			 */
+			const prepend = '___prepend';
+
+			/**
+			 * @var string Represents `append` flag.
+			 */
+			const append = '___append';
+
+			/**
+			 * @var string Represents `replace` flag.
+			 */
+			const replace = '___replace';
+
+			# --------------------------------------------------------------------------------------------------------------------------------
 			# Logging enabled/disabled flags.
 			# --------------------------------------------------------------------------------------------------------------------------------
 
@@ -288,6 +307,50 @@ namespace websharks_core_v000000_dev
 			 * @var string Represents `gitignore` array key.
 			 */
 			const gitignore = '___gitignore';
+
+			# --------------------------------------------------------------------------------------------------------------------------------
+			# URL parts/components bitmask for WebSharks™ Core.
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * @var integer Indicates scheme component in a URL.
+			 */
+			const url_scheme = 1;
+
+			/**
+			 * @var integer Indicates user component in a URL.
+			 */
+			const url_user = 2;
+
+			/**
+			 * @var integer Indicates pass component in a URL.
+			 */
+			const url_pass = 4;
+
+			/**
+			 * @var integer Indicates host component in a URL.
+			 */
+			const url_host = 8;
+
+			/**
+			 * @var integer Indicates port component in a URL.
+			 */
+			const url_port = 16;
+
+			/**
+			 * @var integer Indicates path component in a URL.
+			 */
+			const url_path = 32;
+
+			/**
+			 * @var integer Indicates query component in a URL.
+			 */
+			const url_query = 64;
+
+			/**
+			 * @var integer Indicates fragment component in a URL.
+			 */
+			const url_fragment = 128;
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Glob bitmask w/ additional WebSharks™ Core options.

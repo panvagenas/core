@@ -220,7 +220,7 @@ namespace websharks_core_v000000_dev
 					$this->core_dir      = $this->___instance_config->core_dir;
 
 					$this->plugin_dir      = ($plugin_dir) ? $this->©dir->n_seps($plugin_dir) : '';
-					$this->plugin_repo_dir = ($plugin_dir) ? dirname($plugin_dir) : '';
+					$this->plugin_repo_dir = ($plugin_dir) ? $this->©dir->n_seps_up($plugin_dir) : '';
 					$this->plugin_name     = ($plugin_dir && $plugin_name) ? $plugin_name : '';
 					$this->plugin_root_ns  = ($plugin_dir && $plugin_root_ns) ? $plugin_root_ns : '';
 					$this->distros_dir     = ($plugin_dir && $distros_dir) ? $this->©dir->n_seps($distros_dir) : '';
@@ -322,7 +322,7 @@ namespace websharks_core_v000000_dev
 									sprintf($this->i18n('Permission issues with downloads directory: `%1$s`.'), $this->downloads_dir)
 								);
 
-							$_plugins_dir           = dirname(dirname($this->plugin_dir));
+							$_plugins_dir           = $this->©dir->n_seps_up($this->plugin_dir, 2);
 							$_possible_pro_repo_dir = $_plugins_dir.'/'.basename($this->plugin_dir).'-pro';
 							$_possible_pro_dir      = $_possible_pro_repo_dir.'/'.basename($this->plugin_dir).'-pro';
 

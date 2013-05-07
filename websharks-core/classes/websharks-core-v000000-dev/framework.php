@@ -832,7 +832,7 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->core_site           = stub::$core_site;
 									$this->___instance_config->local_wp_dev_dir    = stub::$local_wp_dev_dir;
 									$this->___instance_config->local_core_repo_dir = stub::$local_core_repo_dir;
-									$this->___instance_config->core_dir            = stub::n_dir_seps(dirname(dirname(dirname(__FILE__))));
+									$this->___instance_config->core_dir            = stub::n_dir_seps_up(__FILE__, 3);
 									$this->___instance_config->core_classes_dir    = $this->___instance_config->core_dir.'/classes';
 
 									// Based on ``stub::$core_ns``.
@@ -2138,7 +2138,7 @@ namespace websharks_core_v000000_dev
 					      'plugin_name'    => stub::$core_name,
 					      'plugin_site'    => stub::$core_site,
 					      'plugin_version' => stub::$core_version,
-					      'plugin_dir'     => dirname(dirname(dirname(__FILE__)))));
+					      'plugin_dir'     => stub::n_dir_seps_up(__FILE__, 3)));
 
 				# -----------------------------------------------------------------------------------------------------------------------------
 				# Update WebSharks™ Core global stub w/ a reference to the latest available version at runtime.

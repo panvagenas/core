@@ -8,8 +8,6 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120329
- *
- * @TODO Update methods in this class with ___recursion parameters.
  */
 namespace websharks_core_v000000_dev
 	{
@@ -821,11 +819,11 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if ``$include_protected_private_properties`` is TRUE.
 			 *    Static properties are NEVER considered by this routine, because static properties are ignored while typecasting objects to arrays in PHP.
 			 *
-			 * @param mixed   $value Anything can be converted to an array.
+			 * @param mixed        $value Anything can be converted to an array.
 			 *    However, please see the details regarding parameter ``$include_scalars_resources``.
 			 *    By default, we do NOT arrayify scalars and/or resources in this routine.
 			 *
-			 * @param boolean $include_protected_private_properties Optional. Defaults to FALSE. By default, we do NOT include protected/private properties
+			 * @param boolean      $include_protected_private_properties Optional. Defaults to FALSE. By default, we do NOT include protected/private properties
 			 *    from objects now converted into arrays (even if they were accessible, which they are in this case). That is, when an object is converted to an array,
 			 *    all of its protected/private properties are included in the array, regardless of visibility (because PHP assumes there is no security issue once converted to an array).
 			 *    However, this behavior does come as a bit of a surprise, and it goes against the way most other WebSharks™ utility methods work. In addition, PHP will prefix
@@ -836,9 +834,11 @@ namespace websharks_core_v000000_dev
 			 *    When/if included, this routine removes the NULL byte and namespace\class paths, making protected/private property keys easy to access.
 			 *    Static properties are NEVER considered by this routine, because static properties are ignored while typecasting objects to arrays in PHP.
 			 *
-			 * @param boolean $include_scalars_resources Optional. Defaults to FALSE. By default, we do NOT arrayify scalars and/or resources.
+			 * @param boolean      $include_scalars_resources Optional. Defaults to FALSE. By default, we do NOT arrayify scalars and/or resources.
 			 *    Typecasting scalars and/or resources to arrays, counterintuitively results in an array with a single inner value.
 			 *    While this might be desirable in some cases, it is FALSE by default. Set this as TRUE, to enable such behavior.
+			 *
+			 * @param boolean      $___recursion Internal use only. Tracks recursion in this routine.
 			 *
 			 * @return array|mixed Arrayified value. Even objects are converted into array values by this routine.
 			 *    However, this method may also return other mixed value types, depending on the parameter: ``$include_scalars_resources``.
@@ -870,9 +870,10 @@ namespace websharks_core_v000000_dev
 			 * @assert (array(1,2,3), FALSE, TRUE) === array(array(1),array(2),array(3))
 			 * @assert (array(1,2,array(1,2,3,array())), FALSE, TRUE) === array(array(1),array(2),array(array(1),array(2),array(3),array()))
 			 */
-			public function ify_deep($value, $include_protected_private_properties = FALSE, $include_scalars_resources = FALSE)
+			public function ify_deep($value, $include_protected_private_properties = FALSE, $include_scalars_resources = FALSE, $___recursion = FALSE)
 				{
-					$this->check_arg_types('', 'boolean', 'boolean', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'boolean', 'boolean', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -893,7 +894,7 @@ namespace websharks_core_v000000_dev
 									unset($_key, $_value);
 								}
 							foreach($value as &$_value)
-								$_value = $this->ify_deep($_value, $include_protected_private_properties, $include_scalars_resources);
+								$_value = $this->ify_deep($_value, $include_protected_private_properties, $include_scalars_resources, TRUE);
 							unset($_value);
 
 							return $value;
@@ -963,7 +964,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays.
 			 *
-			 * @param array $array Input array.
+			 * @param array        $array Input array.
+			 *
+			 * @param boolean      $___recursion Internal use only.
 			 *
 			 * @return array Output array, with all lowercase keys (deeply).
 			 *    Integer keys are converted to string keys.
@@ -974,9 +977,10 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @assert (array('A' => 'A', 'B' => 'B')) === array('a' => 'A', 'b' => 'B')
 			 */
-			public function lc_keys_deep($array)
+			public function lc_keys_deep($array, $___recursion = FALSE)
 				{
-					$this->check_arg_types('array', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('array', 'boolean', func_get_args());
 
 					$lc_keys = array(); // Initialize new array.
 
@@ -985,7 +989,7 @@ namespace websharks_core_v000000_dev
 							$_key = strtolower((string)$_key);
 
 							if(is_array($_value))
-								$lc_keys[$_key] = $this->lc_keys_deep($_value);
+								$lc_keys[$_key] = $this->lc_keys_deep($_value, TRUE);
 							else $lc_keys[$_key] = $_value;
 						}
 					unset($_key, $_value);
@@ -999,9 +1003,11 @@ namespace websharks_core_v000000_dev
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays.
 			 * @note For mixed key types, use the `SORT_STRING` flag.
 			 *
-			 * @param array   $array Input array (NOT by reference).
-			 * @param integer $flags Same flags as PHP's ``ksort()`` function.
+			 * @param array        $array Input array (NOT by reference).
+			 * @param integer      $flags Same flags as PHP's ``ksort()`` function.
 			 *    Defaults to `SORT_REGULAR`.
+			 *
+			 * @param boolean      $___recursion Internal use only.
 			 *
 			 * @return array Output array, sorted by keys (deeply).
 			 *
@@ -1013,16 +1019,17 @@ namespace websharks_core_v000000_dev
 			 * @assert $array = array('B' => 'B', 'A' => 'A', 0 => 0, 1 => 1, 2 => 2, 12 => 12);
 			 *    ($array, SORT_STRING) === array(0 => 0, 1 => 1, 12 => 12, 2 => 2, 'A' => 'A', 'B' => 'B')
 			 */
-			public function ksort_deep($array, $flags = SORT_REGULAR)
+			public function ksort_deep($array, $flags = SORT_REGULAR, $___recursion = FALSE)
 				{
-					$this->check_arg_types('array', 'integer', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('array', 'integer', 'boolean', func_get_args());
 
 					ksort($array, $flags);
 
 					foreach($array as &$_value)
 						{
 							if(is_array($_value))
-								$_value = $this->ksort_deep($_value, $flags);
+								$_value = $this->ksort_deep($_value, $flags, TRUE);
 						}
 					unset($_value);
 
@@ -1034,7 +1041,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays.
 			 *
-			 * @param array $array An input array.
+			 * @param array        $array An input array.
+			 *
+			 * @param boolean      $___recursion Internal use only.
 			 *
 			 * @return array Output array with only non-numeric keys (deeply).
 			 *
@@ -1043,9 +1052,10 @@ namespace websharks_core_v000000_dev
 			 * @assert (array(0 => 0, 1 => 1, '2' => '2', 'A' => 'A')) === array('A' => 'A')
 			 * @assert (array(0 => 0, 1 => 1, '2' => '2', 'A' => 'A', 'B' => array(0 => 0, 1 => 1, '2' => '2', 'A' => 'A'))) === array('A' => 'A', 'B' => array('A' => 'A'))
 			 */
-			public function remove_numeric_keys_deep($array)
+			public function remove_numeric_keys_deep($array, $___recursion = FALSE)
 				{
-					$this->check_arg_types('array', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('array', 'boolean', func_get_args());
 
 					foreach($array as $_key => &$_value)
 						{
@@ -1053,7 +1063,7 @@ namespace websharks_core_v000000_dev
 								unset($array[$_key]);
 
 							else if(is_array($_value))
-								$_value = $this->remove_numeric_keys_deep($_value);
+								$_value = $this->remove_numeric_keys_deep($_value, TRUE);
 						}
 					unset($_key, $_value);
 
@@ -1065,7 +1075,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays.
 			 *
-			 * @param array $array An input array.
+			 * @param array        $array An input array.
+			 *
+			 * @param boolean      $___recursion Internal use only.
 			 *
 			 * @return array Output array with all empty values removed (deeply).
 			 *
@@ -1077,14 +1089,15 @@ namespace websharks_core_v000000_dev
 			 * @assert $array = array('0', 0, NULL, array(1, '', NULL));
 			 *    ($array) === array(3 => array(0 => 1, 1 => ''))
 			 */
-			public function remove_empty_values_deep($array)
+			public function remove_empty_values_deep($array, $___recursion = FALSE)
 				{
-					$this->check_arg_types('array', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('array', 'boolean', func_get_args());
 
 					foreach($array as $_key => &$_value)
 						{
 							if(is_array($_value))
-								$_value = $this->remove_empty_values_deep($_value);
+								$_value = $this->remove_empty_values_deep($_value, TRUE);
 
 							if(empty($_value))
 								unset ($array[$_key]);
@@ -1099,7 +1112,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays.
 			 *
-			 * @param array $array An input array.
+			 * @param array        $array An input array.
+			 *
+			 * @param boolean      $___recursion Internal use only.
 			 *
 			 * @return array Output array with all null values removed (deeply).
 			 *
@@ -1111,14 +1126,15 @@ namespace websharks_core_v000000_dev
 			 * @assert $array = array(NULL, NULL, NULL, array(1, '', NULL));
 			 *    ($array) === array(3 => array(0 => 1, 1 => ''))
 			 */
-			public function remove_nulls_deep($array)
+			public function remove_nulls_deep($array, $___recursion = FALSE)
 				{
-					$this->check_arg_types('array', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('array', 'boolean', func_get_args());
 
 					foreach($array as $_key => &$_value)
 						{
 							if(is_array($_value))
-								$_value = $this->remove_nulls_deep($_value);
+								$_value = $this->remove_nulls_deep($_value, TRUE);
 
 							else if(is_null($_value))
 								unset ($array[$_key]);
@@ -1133,7 +1149,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays.
 			 *
-			 * @param array $array An input array.
+			 * @param array        $array An input array.
+			 *
+			 * @param boolean      $___recursion Internal use only.
 			 *
 			 * @return array Output array with all 0-byte strings removed (deeply).
 			 *
@@ -1145,14 +1163,15 @@ namespace websharks_core_v000000_dev
 			 * @assert $array = array(NULL, array(1, '', NULL));
 			 *    ($array) === array(0 => NULL, 1 => array(0 => 1, 2 => NULL))
 			 */
-			public function remove_0b_strings_deep($array)
+			public function remove_0b_strings_deep($array, $___recursion = FALSE)
 				{
-					$this->check_arg_types('array', func_get_args());
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('array', 'boolean', func_get_args());
 
 					foreach($array as $_key => &$_value)
 						{
 							if(is_array($_value))
-								$_value = $this->remove_0b_strings_deep($_value);
+								$_value = $this->remove_0b_strings_deep($_value, TRUE);
 
 							else if(is_string($_value) && !strlen($_value))
 								unset ($array[$_key]);
@@ -1228,7 +1247,7 @@ namespace websharks_core_v000000_dev
 			 * @param integer              $search_dimensions The number of dimensions to search. Defaults to `-1` (infinite).
 			 *    If ``$preserve_keys`` is TRUE, consider setting this to a value of `1`.
 			 *
-			 * @param integer              $current_dimension For internal use only; used in recursion.
+			 * @param integer              $___current_dimension For internal use only; used in recursion.
 			 *
 			 * @return array The array of compiled key elements, else an empty array, if no key elements were found.
 			 *    By default, the return array will be indexed numerically (e.g. keys are NOT preserved here).
@@ -1249,9 +1268,9 @@ namespace websharks_core_v000000_dev
 			 * @assert $array = array('hello' => '~hello', 'there' => '~there', 'nested' => array('hello' => '~hello', 'there' => '~there'));
 			 *    ($array, array('hello', 'there', 'nested')) === array('~hello', '~there', array('hello' => '~hello', 'there' => '~there'), '~hello', '~there')
 			 */
-			public function compile_key_elements_deep($array, $keys, $preserve_keys = FALSE, $search_dimensions = -1, $current_dimension = 1)
+			public function compile_key_elements_deep($array, $keys, $preserve_keys = FALSE, $search_dimensions = -1, $___current_dimension = 1)
 				{
-					if($current_dimension === 1) // We only check arg types initially (i.e. do NOT check recursions).
+					if($___current_dimension === 1) // We only check arg types initially (i.e. do NOT check recursions).
 						$this->check_arg_types('array', array('string', 'integer', 'array'), 'boolean', 'integer', 'integer', func_get_args());
 
 					$key_elements = array(); // Initialize this array.
@@ -1263,8 +1282,8 @@ namespace websharks_core_v000000_dev
 								if($preserve_keys) $key_elements[$_key] = $_value;
 								else $key_elements[] = $_value;
 
-							if(($search_dimensions < 1 || $current_dimension < $search_dimensions) && is_array($_value)
-							   && ($_key_elements = $this->compile_key_elements_deep($_value, $keys, $preserve_keys, $search_dimensions, $current_dimension + 1))
+							if(($search_dimensions < 1 || $___current_dimension < $search_dimensions) && is_array($_value)
+							   && ($_key_elements = $this->compile_key_elements_deep($_value, $keys, $preserve_keys, $search_dimensions, $___current_dimension + 1))
 							) $key_elements = array_merge($key_elements, $_key_elements);
 						}
 					unset($_key, $_value, $_key_elements);
