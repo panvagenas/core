@@ -74,14 +74,14 @@ namespace websharks_core_v000000_dev
 							// unset($_preservation_matches, $_preservation_match_key, $_preservation_match);
 
 							if(isset($_preservations, $_preservation_placeholders)) // We have preservations?
-								$html = $this->©strings->replace_once($_preservations, $_preservation_placeholders, $html);
+							$html = $this->©strings->replace_once($_preservations, $_preservation_placeholders, $html);
 						}
 					// Now let's compress the HTML markup (as best we can).
 					$html = preg_replace($this->static['compressions'], $this->static['compress_with'], $html);
 
 					// If we DID find ``$preservations``, we'll need to restore them now.
 					if(isset($_preservations, $_preservation_placeholders)) // Restore preservations?
-						$html = $this->©strings->replace_once($_preservation_placeholders, $_preservations, $html);
+					$html = $this->©strings->replace_once($_preservation_placeholders, $_preservations, $html);
 
 					// Commenting this out for performance. It's not absolutely necessary.
 					// unset($_preservations, $_preservation_placeholders);

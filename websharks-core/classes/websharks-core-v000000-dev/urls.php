@@ -153,17 +153,17 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Parses a URL (or a URI/query/fragment only) into an array.
 			 *
-			 * @param string            $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string       $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
 			 * @note A query string or fragment MUST be prefixed with the appropriate delimiters.
 			 *    This is bad `name=value` (interpreted as path). This is good `?name=value` (query string).
 			 *    This is bad `anchor` (interpreted as path). This is good `#fragment` (fragment).
 			 *
-			 * @param null|integer      $component Same as PHP's ``parse_url()`` component.
+			 * @param null|integer $component Same as PHP's ``parse_url()`` component.
 			 *    Defaults to NULL; which defaults to an internal value of `-1` before we pass to PHP's ``parse_url()``.
 			 *
-			 * @param null|integer      $normalize A bitmask. Defaults to NULL (indicating a default bitmask).
+			 * @param null|integer $normalize A bitmask. Defaults to NULL (indicating a default bitmask).
 			 *    Defaults include: {@link fw_constants::url_scheme}, {@link fw_constants::url_host}, {@link fw_constants::url_path}.
 			 *    However, we DO allow a trailing slash (even if path is being normalized by this parameter).
 			 *
@@ -183,7 +183,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', array('null', 'integer'), array('null', 'integer'), func_get_args());
 
 					if(!isset($normalize)) // Use defaults?
-						$normalize = $this::url_scheme | $this::url_host | $this::url_path;
+					$normalize = $this::url_scheme | $this::url_host | $this::url_path;
 
 					if(strpos($url_uri_query_fragment, '//') === 0 && preg_match($this->regex_valid_url, $url_uri_query_fragment))
 						{
@@ -315,7 +315,7 @@ namespace websharks_core_v000000_dev
 					$unparsed = ''; // Initialize string value.
 
 					if(!isset($normalize)) // Use defaults?
-						$normalize = $this::url_scheme | $this::url_host | $this::url_path;
+					$normalize = $this::url_scheme | $this::url_host | $this::url_path;
 
 					if($normalize & $this::url_scheme) // Normalize scheme?
 						{
@@ -459,7 +459,7 @@ namespace websharks_core_v000000_dev
 					if(($parts = $this->parse_uri_parts($url_uri_query_fragment, $normalize)))
 						{
 							if(!$include_fragment) // Ditch fragment?
-								unset($parts['fragment']);
+							unset($parts['fragment']);
 
 							return $this->unparse($parts, $normalize);
 						}
@@ -489,10 +489,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Resolves a relative URL into a full URL from a base.
 			 *
-			 * @param string  $relative_url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $relative_url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $base_url A base URL. Optional. Defaults to current location.
+			 * @param string $base_url A base URL. Optional. Defaults to current location.
 			 *    This defaults to the current URL. See: {@link current()}.
 			 *
 			 * @return string A full URL; else an exception will be thrown.
@@ -507,7 +507,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', 'string', func_get_args());
 
 					if(!$base_url) // No base URL? The ``$base`` is optional (defaults to current URL).
-						$base_url = $this->current(); // Auto-detects current URL/location.
+					$base_url = $this->current(); // Auto-detects current URL/location.
 
 					$relative_parts         = $this->must_parse($relative_url_uri_query_fragment, NULL, 0);
 					$relative_parts['path'] = $this->n_path_seps($relative_parts['path'], TRUE);
@@ -516,13 +516,13 @@ namespace websharks_core_v000000_dev
 					if($relative_parts['host']) // Already resolved?
 						{
 							if(!$relative_parts['scheme']) // If no scheme, use base scheme.
-								$relative_parts['scheme'] = $base_parts['scheme'];
+							$relative_parts['scheme'] = $base_parts['scheme'];
 							return $this->unparse($relative_parts);
 						}
 					if(!$base_parts['host']) // We MUST have a base host name to resolve.
-						throw $this->©exception(__METHOD__.'#missing_base_host_name', get_defined_vars(),
-						                        sprintf($this->i18n('Unable to parse (missing base host name): `%1$s`.'), $base_url)
-						);
+					throw $this->©exception(__METHOD__.'#missing_base_host_name', get_defined_vars(),
+					                        sprintf($this->i18n('Unable to parse (missing base host name): `%1$s`.'), $base_url)
+					);
 					if(strlen($relative_parts['path'])) // It's important that we mimic browser behavior here.
 						{
 							if(strpos($relative_parts['path'], '/') === 0)
@@ -541,7 +541,7 @@ namespace websharks_core_v000000_dev
 							$parts['query'] = $relative_parts['query']; // Use relative query.
 						}
 					else if(strlen($relative_parts['query'])) // Only if there is a new query (or path above) in the relative.
-						$parts['query'] = $relative_parts['query']; // Relative query string supersedes base.
+					$parts['query'] = $relative_parts['query']; // Relative query string supersedes base.
 
 					$parts['fragment'] = $relative_parts['fragment']; // Always changes.
 
@@ -574,9 +574,9 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-login.php?action=logout`.
 			 *
-			 * @param string  $redirect_to Optional. A URL to redirect to after logout.
+			 * @param string $redirect_to Optional. A URL to redirect to after logout.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-login.php?action=logout`.
 			 *
@@ -594,9 +594,9 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-login.php?action=lostpassword`.
 			 *
-			 * @param string  $redirect_to Optional. A URL to redirect to after login.
+			 * @param string $redirect_to Optional. A URL to redirect to after login.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-login.php?action=lostpassword`.
 			 *
@@ -614,9 +614,9 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-login.php?action=register`.
 			 *
-			 * @param string  $redirect_to Optional. A URL to redirect to after registration.
+			 * @param string $redirect_to Optional. A URL to redirect to after registration.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-login.php?action=register`.
 			 *
@@ -634,7 +634,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-signup.php`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-signup.php`.
 			 *
@@ -654,7 +654,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-activate.php`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-activate.php`.
 			 *
@@ -672,7 +672,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-app.php`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-app.php`.
 			 *
@@ -690,7 +690,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-cron.php`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-cron.php`.
 			 *
@@ -708,7 +708,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-links-opml.php`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-links-opml.php`.
 			 *
@@ -726,7 +726,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-mail.php`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-mail.php`.
 			 *
@@ -744,7 +744,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/wp-trackback.php`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/wp-trackback.php`.
 			 *
@@ -762,7 +762,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a WordPress® URL to: `/xmlrpc.php`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string WordPress® URL to: `/xmlrpc.php`.
 			 *
@@ -780,7 +780,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a BuddyPress URL to: `/register`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string BuddyPress URL to: `/register`, if BuddyPress is installed; else an empty string.
 			 *
@@ -800,7 +800,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Builds a BuddyPress URL to: `/activate`.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string BuddyPress URL to: `/activate`, if BuddyPress is installed; else an empty string.
 			 *
@@ -840,10 +840,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® home/permalink URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® home/permalink URI (directory/file).
 			 *
@@ -868,7 +868,7 @@ namespace websharks_core_v000000_dev
 								$parts['query'] .= ((!$parts['query']) ? '' : '&').'paged='.$pagination['page_number'];
 
 							if($uri_parts['query']) // Combine query strings?
-								$parts['query'] .= ((!$parts['query']) ? '' : '&').$uri_parts['query'];
+							$parts['query'] .= ((!$parts['query']) ? '' : '&').$uri_parts['query'];
 
 							$parts['fragment'] = $uri_parts['fragment']; // URI fragment always.
 						}
@@ -901,10 +901,10 @@ namespace websharks_core_v000000_dev
 
 					$user = $this->©user_utils->which($user);
 					if(!$user->has_id()) // Does this user have an ID?
-						throw $this->©exception(
-							__METHOD__.'#id_missing', compact('user'),
-							$this->i18n('The `$user` has no ID (cannot get Dashboard URL).')
-						);
+					throw $this->©exception(
+						__METHOD__.'#id_missing', compact('user'),
+						$this->i18n('The `$user` has no ID (cannot get Dashboard URL).')
+					);
 					$parts = $this->must_parse_uri_parts($url_uri_query_fragment);
 
 					if(substr($parts['path'], -1) !== '/' && !$this->©file->has_extension($parts['path']))
@@ -918,10 +918,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® admin URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® admin URI (directory/file).
 			 *
@@ -944,10 +944,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® user admin URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® user admin URI (directory/file).
 			 *
@@ -970,10 +970,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® network admin URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® network admin URI (directory/file).
 			 *
@@ -996,10 +996,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® self admin URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® self admin URI (directory/file).
 			 *
@@ -1022,10 +1022,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® home URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® home URI (directory/file).
 			 *
@@ -1048,10 +1048,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® network home URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® network home URI (directory/file).
 			 *
@@ -1074,10 +1074,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® site URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® site URI (directory/file).
 			 *
@@ -1100,10 +1100,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® network site URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® network site URI (directory/file).
 			 *
@@ -1126,10 +1126,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® content URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® content URI (directory/file).
 			 *
@@ -1152,10 +1152,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® includes URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® includes URI (directory/file).
 			 *
@@ -1178,10 +1178,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® plugins URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® plugins URI (directory/file).
 			 *
@@ -1204,10 +1204,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® stylesheet URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® stylesheet URI (directory/file).
 			 *
@@ -1230,10 +1230,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a WordPress® template URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *
 			 * @return string URL leading to a WordPress® template URI (directory/file).
 			 *
@@ -1256,10 +1256,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Constructs a URL leading to a plugin site URI (directory/file).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be parsed here.
 			 *
-			 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
 			 *    Note: ``$this->___instance_config->plugin_site`` will always have an `http` scheme by default.
 			 *    This is a standard that is followed strictly by the WebSharks™ Core framework.
 			 *
@@ -1329,7 +1329,7 @@ namespace websharks_core_v000000_dev
 					// Remove stream wrappers (assuming WordPress® does NOT use these).
 
 					if(!isset($this->static['to_wp_abs_dir_file__regex_stream_wrapper'])) // We only need this ONE time.
-						$this->static['to_wp_abs_dir_file__regex_stream_wrapper'] = substr(stub::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
+					$this->static['to_wp_abs_dir_file__regex_stream_wrapper'] = substr(stub::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
 
 					if(strpos($dir, '://') !== FALSE)
 						$dir = preg_replace($this->static['to_wp_abs_dir_file__regex_stream_wrapper'], '', $dir);
@@ -1340,52 +1340,60 @@ namespace websharks_core_v000000_dev
 					// Check WordPress® absolute/root directory (this is enough in most cases).
 
 					if(strpos($dir.'/', ($wp_dir = $this->©dir->n_seps(ABSPATH)).'/') === 0)
-						return rtrim($this->to_wp_site_uri($this->©string->replace_once($wp_dir, '', $dir).$file, $scheme), '/');
+						return rtrim($this->to_wp_site_uri($this->encode_path_parts($this->©string->replace_once($wp_dir, '', $dir).$file), $scheme), '/');
 
 					if($dir_realpath && strpos($dir_realpath.'/', $wp_dir.'/') === 0)
-						return rtrim($this->to_wp_site_uri($this->©string->replace_once($wp_dir, '', $dir_realpath).$possible_real_file, $scheme), '/');
+						return rtrim($this->to_wp_site_uri($this->encode_path_parts($this->©string->replace_once($wp_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
 
 					// Check WordPress® content directory (in case this resides in a non-standard location).
 
 					if(strpos($dir.'/', ($wp_content_dir = $this->©dir->n_seps(WP_CONTENT_DIR)).'/') === 0)
-						return rtrim($this->to_wp_content_uri($this->©string->replace_once($wp_content_dir, '', $dir).$file, $scheme), '/');
+						return rtrim($this->to_wp_content_uri($this->encode_path_parts($this->©string->replace_once($wp_content_dir, '', $dir).$file), $scheme), '/');
 
 					if($dir_realpath && strpos($dir_realpath.'/', $wp_content_dir.'/') === 0)
-						return rtrim($this->to_wp_content_uri($this->©string->replace_once($wp_content_dir, '', $dir_realpath).$possible_real_file, $scheme), '/');
+						return rtrim($this->to_wp_content_uri($this->encode_path_parts($this->©string->replace_once($wp_content_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
 
 					// Check WordPress® includes directory (in case this resides in a non-standard location).
 
 					if(strpos($dir.'/', ($wp_includes_dir = $this->©dir->n_seps(ABSPATH.WPINC)).'/') === 0)
-						return rtrim($this->to_wp_includes_uri($this->©string->replace_once($wp_includes_dir, '', $dir).$file, $scheme), '/');
+						return rtrim($this->to_wp_includes_uri($this->encode_path_parts($this->©string->replace_once($wp_includes_dir, '', $dir).$file), $scheme), '/');
 
 					if($dir_realpath && strpos($dir_realpath.'/', $wp_includes_dir.'/') === 0)
-						return rtrim($this->to_wp_includes_uri($this->©string->replace_once($wp_includes_dir, '', $dir_realpath).$possible_real_file, $scheme), '/');
+						return rtrim($this->to_wp_includes_uri($this->encode_path_parts($this->©string->replace_once($wp_includes_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
 
 					// Check WordPress® plugins directory (in case this resides in a non-standard location).
 
 					if(strpos($dir.'/', ($wp_plugins_dir = $this->©dir->n_seps(WP_PLUGIN_DIR)).'/') === 0)
-						return rtrim($this->to_wp_plugins_uri($this->©string->replace_once($wp_plugins_dir, '', $dir).$file, $scheme), '/');
+						return rtrim($this->to_wp_plugins_uri($this->encode_path_parts($this->©string->replace_once($wp_plugins_dir, '', $dir).$file), $scheme), '/');
 
 					if($dir_realpath && strpos($dir_realpath.'/', $wp_plugins_dir.'/') === 0)
-						return rtrim($this->to_wp_plugins_uri($this->©string->replace_once($wp_plugins_dir, '', $dir_realpath).$possible_real_file, $scheme), '/');
+						return rtrim($this->to_wp_plugins_uri($this->encode_path_parts($this->©string->replace_once($wp_plugins_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
 
 					// Check WordPress® active style directory (in case this resides in a non-standard location).
 
 					if(strpos($dir.'/', ($wp_active_style_dir = $this->©dir->n_seps(get_stylesheet_directory())).'/') === 0)
-						return rtrim($this->to_wp_stylesheet_uri($this->©string->replace_once($wp_active_style_dir, '', $dir).$file, $scheme), '/');
+						return rtrim($this->to_wp_stylesheet_uri($this->encode_path_parts($this->©string->replace_once($wp_active_style_dir, '', $dir).$file), $scheme), '/');
 
 					if($dir_realpath && strpos($dir_realpath.'/', $wp_active_style_dir.'/') === 0)
-						return rtrim($this->to_wp_stylesheet_uri($this->©string->replace_once($wp_active_style_dir, '', $dir_realpath).$possible_real_file, $scheme), '/');
+						return rtrim($this->to_wp_stylesheet_uri($this->encode_path_parts($this->©string->replace_once($wp_active_style_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
 
 					// Check WordPress® active theme directory (in case this resides in a non-standard location).
 
 					if(strpos($dir.'/', ($wp_active_theme_dir = $this->©dir->n_seps(get_template_directory())).'/') === 0)
-						return rtrim($this->to_wp_template_uri($this->©string->replace_once($wp_active_theme_dir, '', $dir).$file, $scheme), '/');
+						return rtrim($this->to_wp_template_uri($this->encode_path_parts($this->©string->replace_once($wp_active_theme_dir, '', $dir).$file), $scheme), '/');
 
 					if($dir_realpath && strpos($dir_realpath.'/', $wp_active_theme_dir.'/') === 0)
-						return rtrim($this->to_wp_template_uri($this->©string->replace_once($wp_active_theme_dir, '', $dir_realpath).$possible_real_file, $scheme), '/');
+						return rtrim($this->to_wp_template_uri($this->encode_path_parts($this->©string->replace_once($wp_active_theme_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
 
-					return 'file://'.$dir.$file; // Default value.
+					// By default we use `file://`. Windows® drive letter is removed temporarily here.
+
+					if(!isset($this->static['to_wp_abs_dir_file__regex_win_drive_letter'])) // We only need this ONE time.
+					$this->static['to_wp_abs_dir_file__regex_win_drive_letter'] = substr(stub::$regex_valid_win_drive_letter, 0, -2).'/';
+
+					if(preg_match($this->static['to_wp_abs_dir_file__regex_win_drive_letter'], $dir, $_drive))
+						$dir = preg_replace($this->static['to_wp_abs_dir_file__regex_win_drive_letter'], '', $dir);
+
+					return 'file://'.((!empty($_drive[0])) ? $_drive[0] : '').$this->encode_path_parts($dir.$file);
 				}
 
 			/**
@@ -1697,7 +1705,7 @@ namespace websharks_core_v000000_dev
 								$args['headers']['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 						}
 					if(!empty($timeout)) // Do we have a ``$timeout`` value?
-						$args = array_merge(array('timeout' => $timeout), $args);
+					$args = array_merge(array('timeout' => $timeout), $args);
 
 					// Set default return value options.
 					$return_array      = $this->©boolean->isset_or($args['return_array'], FALSE);
@@ -1825,7 +1833,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Encodes ampersands in a URL (or a URI/query/fragment only); with the HTML entity `&amp;`.
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be encoded here.
 			 *
 			 * @return string Input URL (or a URI/query/fragment only); after having been converted by this routine.
@@ -1845,7 +1853,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Converts all ampersand entities in a URL (or a URI/query/fragment only); to just `&`.
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be normalized here.
 			 *
 			 * @return string Input URL (or a URI/query/fragment only); after having been normalized by this routine.
@@ -1928,7 +1936,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', 'string', func_get_args());
 
 					if(!$scheme) // Current scheme?
-						$scheme = $this->current_scheme();
+					$scheme = $this->current_scheme();
 
 					if($scheme !== '//') $scheme = $this->n_scheme($scheme).'://';
 
@@ -1947,7 +1955,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Normalized URL (or a URI/query/fragment only).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$url_uri_query_fragment`` is malformed.
 			 *
 			 * @assert ('//path\\to//') === '/path/to'
 			 * @assert ('path') === '/path'
@@ -1961,11 +1968,10 @@ namespace websharks_core_v000000_dev
 					if(!strlen($url_uri_query_fragment)) return '';
 
 					if(!($parts = $this->parse($url_uri_query_fragment, NULL, 0)))
-						// Assume broken path (and we can try fixing it here).
 						$parts['path'] = $url_uri_query_fragment;
 
-					if(strlen($parts['path'])) // Normalize directory seps.
-						$parts['path'] = $this->©dir->n_seps($parts['path'], $allow_trailing_slash);
+					if(strlen($parts['path'])) // Normalize directory separators.
+					$parts['path'] = $this->©dir->n_seps($parts['path'], $allow_trailing_slash);
 
 					return $this->unparse($parts, 0); // Back together again.
 				}
@@ -1985,7 +1991,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Normalized URL (up X directories) (or a URI/query/fragment only).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If ``$url_uri_query_fragment`` is malformed.
 			 */
 			public function n_path_seps_up($url_uri_query_fragment, $up = 1, $allow_trailing_slash = FALSE)
 				{
@@ -1994,11 +1999,35 @@ namespace websharks_core_v000000_dev
 					if(!strlen($url_uri_query_fragment)) return '';
 
 					if(!($parts = $this->parse($url_uri_query_fragment, NULL, 0)))
-						// Assume broken path (and we can try fixing it here).
 						$parts['path'] = $url_uri_query_fragment;
 
-					if(strlen($parts['path'])) // Normalize directory seps.
-						$parts['path'] = $this->©dir->n_seps_up($parts['path'], $up, $allow_trailing_slash);
+					if(strlen($parts['path'])) // Normalize directory separators.
+					$parts['path'] = $this->©dir->n_seps_up($parts['path'], $up, $allow_trailing_slash);
+
+					return $this->unparse($parts, 0); // Back together again.
+				}
+
+			/**
+			 * Encodes URL path parts (while preserving path separators).
+			 *
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
+			 *    or only a query string, or only a fragment. Any of these can be normalized here.
+			 *
+			 * @return string URL w/ encoded path parts (or a URI/query/fragment only).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function encode_path_parts($url_uri_query_fragment)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					if(!strlen($url_uri_query_fragment)) return '';
+
+					if(!($parts = $this->parse($url_uri_query_fragment, NULL, 0)))
+						$parts['path'] = $url_uri_query_fragment;
+
+					if(strlen($parts['path'])) // Encode path parts.
+					$parts['path'] = str_ireplace('%2F', '/', urlencode($parts['path']));
 
 					return $this->unparse($parts, 0); // Back together again.
 				}
@@ -2006,12 +2035,12 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Adds a query string name/value pair onto a URL's hash/anchor.
 			 *
-			 * @param string  $name The name of the variable we're adding. This CANNOT be empty.
+			 * @param string $name The name of the variable we're adding. This CANNOT be empty.
 			 *
-			 * @param string  $value The value that we're setting the variable to.
+			 * @param string $value The value that we're setting the variable to.
 			 *    This can be any scalar value. Converts to a string. This can be empty, but always scalar.
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be hashed by this routine.
 			 *
 			 * @return string Full URL with appended hash/anchor query string.
@@ -2042,10 +2071,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Adds a query string signature onto a URL (or a URI/query/fragment only).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be handled here.
 			 *
-			 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
+			 * @param string $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
 			 *
 			 * @return string A URL (or a URI/query/fragment only); now with a signature too (e.g. a query string).
 			 *
@@ -2132,7 +2161,7 @@ namespace websharks_core_v000000_dev
 					$valid_sig = $this->©encryption->hmac_sha1_sign($vars.$sig_parts['time']);
 
 					if($check_time) // Checking time too?
-						return ($sig_parts['sig'] === $valid_sig && $sig_parts['time'] >= strtotime('-'.abs($exp_secs).' seconds'));
+					return ($sig_parts['sig'] === $valid_sig && $sig_parts['time'] >= strtotime('-'.abs($exp_secs).' seconds'));
 
 					return ($sig_parts['sig'] === $valid_sig);
 				}
@@ -2140,10 +2169,10 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Removes all signatures from a URL (or a URI/query/fragment only).
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be handled here.
 			 *
-			 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
+			 * @param string $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
 			 *
 			 * @return string A URL (or a URI/query/fragment only); without any signatures.
 			 *
@@ -2194,26 +2223,26 @@ namespace websharks_core_v000000_dev
 					// First try custom APIs (if nothing specific was requested here).
 
 					if(!$specific_built_in_api) // Expose this filter to plugins.
-						if(($custom_url = trim($this->apply_filters('shorten', '', get_defined_vars()))) && stripos($custom_url, 'http') === 0)
-							return ($shorter_url = $custom_url);
+					if(($custom_url = trim($this->apply_filters('shorten', '', get_defined_vars()))) && stripos($custom_url, 'http') === 0)
+						return ($shorter_url = $custom_url);
 
 					if(!$specific_built_in_api && $custom_url_api) // A custom default URL API?
-						if(($custom_url_api = str_ireplace(array('%%long_url%%', '%%long_url_md5%%'),
-						                                   array(rawurlencode($url), urlencode(md5($url))), $custom_url_api))
-						) if(($custom_url = trim($this->remote($custom_url_api))) && stripos($custom_url, 'http') === 0)
-							return ($shorter_url = $custom_url);
+					if(($custom_url_api = str_ireplace(array('%%long_url%%', '%%long_url_md5%%'),
+					                                   array(rawurlencode($url), urlencode(md5($url))), $custom_url_api))
+					) if(($custom_url = trim($this->remote($custom_url_api))) && stripos($custom_url, 'http') === 0)
+						return ($shorter_url = $custom_url);
 
 					// Nothing custom; so let's go with the current built-in API.
 
 					if($current_built_in_api === 'goo_gl') // Google® shortener (recommended).
-						if(is_string($goo_gl_key = ($goo_gl_key = $this->©options->get('url_shortener.api_keys.goo_gl')) ? '?key='.urlencode($goo_gl_key) : ''))
-							if(is_array($goo_gl = json_decode(trim($this->remote('https://www.googleapis.com/urlshortener/v1/url'.$goo_gl_key, json_encode(array('longUrl' => $url)), array('headers' => array('Content-Type' => 'application/json')))), TRUE)))
-								if(($goo_gl_url = $this->©string->is_not_empty_or($goo_gl['id'], '')) && stripos($goo_gl_url, 'http') === 0)
-									return ($shorter_url = $goo_gl_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
+					if(is_string($goo_gl_key = ($goo_gl_key = $this->©options->get('url_shortener.api_keys.goo_gl')) ? '?key='.urlencode($goo_gl_key) : ''))
+						if(is_array($goo_gl = json_decode(trim($this->remote('https://www.googleapis.com/urlshortener/v1/url'.$goo_gl_key, json_encode(array('longUrl' => $url)), array('headers' => array('Content-Type' => 'application/json')))), TRUE)))
+							if(($goo_gl_url = $this->©string->is_not_empty_or($goo_gl['id'], '')) && stripos($goo_gl_url, 'http') === 0)
+								return ($shorter_url = $goo_gl_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
 
 					if($current_built_in_api === 'tiny_url') // TinyURL™ shortener.
-						if(($tiny_url = trim($this->remote('http://tinyurl.com/api-create.php?url='.rawurlencode($url)))) && stripos($tiny_url, 'http') === 0)
-							return ($shorter_url = $tiny_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
+					if(($tiny_url = trim($this->remote('http://tinyurl.com/api-create.php?url='.rawurlencode($url)))) && stripos($tiny_url, 'http') === 0)
+						return ($shorter_url = $tiny_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
 
 					// Still nothing. Let's try some backups.
 
@@ -2306,7 +2335,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Leads to a WordPress® administrative area?
 			 *
-			 * @param string  $url_uri_query_fragment A full URL; or a partial URI;
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 			 *    or only a query string, or only a fragment. Any of these can be tested here.
 			 *
 			 * @return boolean TRUE if ``$url_uri_query_fragment`` leads to a WordPress® administrative area.

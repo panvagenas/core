@@ -85,23 +85,23 @@ namespace websharks_core_v000000_dev
 					if($user instanceof users)
 						return $user;
 
-					else if(is_null($user))
+					if(is_null($user))
 						return $this->©user;
 
-					else if($this->©integer->is_not_empty($user))
+					if($this->©integer->is_not_empty($user))
 						return $this->©user($user);
 
-					else if(is_integer($user))
+					if(is_integer($user))
 						return $this->©user(-1);
 
-					else if($user instanceof \WP_User && $this->©integer->is_not_empty($user->ID))
+					if($user instanceof \WP_User && $this->©integer->is_not_empty($user->ID))
 						return $this->©user($user->ID);
 
-					else if($user instanceof \WP_User)
+					if($user instanceof \WP_User)
 						return $this->©user(-1);
 
 					throw $this->©exception(
-						__METHOD__.'#unexpected_user', compact('user'),
+						__METHOD__.'#unexpected_user', get_defined_vars(),
 						$this->i18n('Not sure which `$user` we\'re dealing with.').
 						sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($user))
 					);
@@ -307,16 +307,16 @@ namespace websharks_core_v000000_dev
 					if($this->©string->is_not_empty($data->first_name))
 						return $data->first_name;
 
-					else if($this->©string->is_not_empty($data->full_name))
+					if($this->©string->is_not_empty($data->full_name))
 						return $data->full_name;
 
-					else if($this->©string->is_not_empty($data->username))
+					if($this->©string->is_not_empty($data->username))
 						return $data->username;
 
-					else if($this->©string->is_not_empty($data->last_name))
+					if($this->©string->is_not_empty($data->last_name))
 						return $data->last_name;
 
-					else if($this->©string->is_not_empty($data->email))
+					if($this->©string->is_not_empty($data->email))
 						return $data->email;
 
 					// Else, use a default generic value (giving filters a chance to modify this).
@@ -350,10 +350,10 @@ namespace websharks_core_v000000_dev
 					$domain = ltrim((string)strstr($email, '@'), '@');
 
 					if(!$email) // Missing completely?
-						return $this->©error(
-							__METHOD__.'#missing_email', get_defined_vars(),
-							$this->translate('Missing email address (empty).')
-						);
+					return $this->©error(
+						__METHOD__.'#missing_email', get_defined_vars(),
+						$this->translate('Missing email address (empty).')
+					);
 					else if(is_multisite()) // A multisite network?
 						{
 							if(!preg_match($this->regex_valid_email, $email)
@@ -464,10 +464,10 @@ namespace websharks_core_v000000_dev
 					$domain = ltrim((string)strstr($email, '@'), '@');
 
 					if(!$email) // Missing completely?
-						return $this->©error(
-							__METHOD__.'#missing_email', get_defined_vars(),
-							$this->translate('Missing email address (empty).')
-						);
+					return $this->©error(
+						__METHOD__.'#missing_email', get_defined_vars(),
+						$this->translate('Missing email address (empty).')
+					);
 					else if(is_multisite()) // A network?
 						{
 							if(!preg_match($this->regex_valid_email, $email)
@@ -575,10 +575,10 @@ namespace websharks_core_v000000_dev
 					$form_field_code = 'username'; // For form errors.
 
 					if(!$username) // Missing completely?
-						return $this->©error(
-							__METHOD__.'#missing_username', get_defined_vars(),
-							$this->translate('Missing username (empty).')
-						);
+					return $this->©error(
+						__METHOD__.'#missing_username', get_defined_vars(),
+						$this->translate('Missing username (empty).')
+					);
 					else if(is_multisite()) // A multisite network?
 						{
 							if(!is_array($illegal_names = get_site_option('illegal_names')))
@@ -713,10 +713,10 @@ namespace websharks_core_v000000_dev
 					$form_field_code = 'password'; // For form errors.
 
 					if(!$password) // Missing completely?
-						return $this->©error(
-							__METHOD__.'#missing_password', get_defined_vars(),
-							$this->translate('Missing password (empty).')
-						);
+					return $this->©error(
+						__METHOD__.'#missing_password', get_defined_vars(),
+						$this->translate('Missing password (empty).')
+					);
 					else if(strlen($password) < $this->apply_filters('min_password_length', 6))
 						return $this->©error(
 							__METHOD__.'#password_too_short', get_defined_vars(),
@@ -816,13 +816,13 @@ namespace websharks_core_v000000_dev
 					// Handle some default values (when/if possible) & minor adjustments.
 
 					if(!$args['username'] && !is_multisite()) // Username is optional (but NOT on multisite networks).
-						$args['username'] = $args['email']; // Allows emails to serve as a username. Not recommended, but possible.
+					$args['username'] = $args['email']; // Allows emails to serve as a username. Not recommended, but possible.
 
 					if(is_multisite()) // Force lowercase in multisite networks. Allowed chars include: `a-z0-9` only (all lowercase).
-						$args['username'] = strtolower($args['username']); // WordPress® is VERY restrictive in a multisite network.
+					$args['username'] = strtolower($args['username']); // WordPress® is VERY restrictive in a multisite network.
 
 					if(!$args['password']) // If we were NOT given a plain text password, let's generate one automatically.
-						$args['password'] = $this->©string->random(15); // Not recommended, but possible.
+					$args['password'] = $this->©string->random(15); // Not recommended, but possible.
 
 					// Put array of `data` together for our call to ``wp_insert_user()`` below.
 
@@ -879,10 +879,10 @@ namespace websharks_core_v000000_dev
 									);
 								}
 							else if(!($user = $this->get_by('id', $user_id))) // A VERY wrong scenario.
-								throw $this->©exception(
-									__METHOD__.'#unable_to_acquire_user', get_defined_vars(),
-									sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $user_id)
-								);
+							throw $this->©exception(
+								__METHOD__.'#unable_to_acquire_user', get_defined_vars(),
+								sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $user_id)
+							);
 							else if(is_multisite() // In networks, we need to add the user to the current blog (formally).
 							        && is_wp_error($add_existing_user_to_blog = add_existing_user_to_blog(array('user_id' => $user->ID, 'role' => $args['role'])))
 							) // If errors occur here, we'll need to stop. The user MUST be formally added to the current blog.
@@ -920,9 +920,9 @@ namespace websharks_core_v000000_dev
 					// Handle emails and/or activation.
 
 					if($args['must_activate']) // Require email activation?
-						$this->send_activation_email($user->ID, $args['password'], $args['send_welcome']);
+					$this->send_activation_email($user->ID, $args['password'], $args['send_welcome']);
 					else if($args['send_welcome']) // Sends welcome msg.
-						$this->send_welcome_email($user->ID, $args['password']);
+					$this->send_welcome_email($user->ID, $args['password']);
 
 					// Fire `created` hook and return now.
 
@@ -978,11 +978,11 @@ namespace websharks_core_v000000_dev
 					if(!$decrypted_activation_key
 					   || strpos($decrypted_activation_key, '::') === FALSE
 					) // Unable to decrypt (or it's in the wrong format).
-						return $this->©error(
-							__METHOD__.'#invalid_activation_key', get_defined_vars(),
-							$this->translate('Activation failure. Invalid activation key.').
-							sprintf($this->translate(' Got: `%1$s`.'), $activation_key)
-						);
+					return $this->©error(
+						__METHOD__.'#invalid_activation_key', get_defined_vars(),
+						$this->translate('Activation failure. Invalid activation key.').
+						sprintf($this->translate(' Got: `%1$s`.'), $activation_key)
+					);
 
 					list($ID, $password) = explode('::', $decrypted_activation_key, 2);
 					$ID = (integer)$ID; // Force integer ID here.
@@ -990,11 +990,11 @@ namespace websharks_core_v000000_dev
 					if(!$ID || !$password // Check parts, user existence, and key MUST match what's on file.
 					   || !($user = $this->get_by('id', $ID)) || substr($activation_key, 0, 60) !== $user->activation_key
 					) // Something is wrong. This key does NOT match up in some way.
-						return $this->©error(
-							__METHOD__.'#invalid_activation_key', get_defined_vars(),
-							$this->translate('Activation failure. Invalid activation key.').
-							sprintf($this->translate(' Got: `%1$s`.'), $activation_key)
-						);
+					return $this->©error(
+						__METHOD__.'#invalid_activation_key', get_defined_vars(),
+						$this->translate('Activation failure. Invalid activation key.').
+						sprintf($this->translate(' Got: `%1$s`.'), $activation_key)
+					);
 
 					if(!$user->get_option('must_activate'))
 						return $this->©error(
@@ -1004,7 +1004,7 @@ namespace websharks_core_v000000_dev
 						);
 
 					if($user->get_option('on_activation_send_welcome')) // Send welcome email?
-						$this->send_welcome_email($user, $password);
+					$this->send_welcome_email($user, $password);
 
 					$user->delete_activation_key();
 					$user->delete_option('on_activation_send_welcome');
@@ -1071,10 +1071,10 @@ namespace websharks_core_v000000_dev
 
 					$user = $this->which($user);
 					if(!$user->has_id()) // Does this user have an ID?
-						throw $this->©exception(
-							__METHOD__.'#id_missing', compact('user'),
-							$this->i18n('The `$user` has no ID (cannot send activation email message).')
-						);
+					throw $this->©exception(
+						__METHOD__.'#id_missing', compact('user'),
+						$this->i18n('The `$user` has no ID (cannot send activation email message).')
+					);
 
 					$activation_key        = $this->©encryption->encrypt($user->ID.'::'.$password);
 					$activation_link       = $this->©action->link_for_call('©user_utils.®activate', $this::protected_type, array($activation_key));
@@ -1121,10 +1121,10 @@ namespace websharks_core_v000000_dev
 
 					$user = $this->which($user);
 					if(!$user->has_id()) // Does this user have an ID?
-						throw $this->©exception(
-							__METHOD__.'#id_missing', compact('user'),
-							$this->i18n('The `$user` has no ID (cannot send welcome email message).')
-						);
+					throw $this->©exception(
+						__METHOD__.'#id_missing', compact('user'),
+						$this->i18n('The `$user` has no ID (cannot send welcome email message).')
+					);
 
 					$template = $this->©template('emails/welcome.php', get_defined_vars());
 
@@ -1182,7 +1182,7 @@ namespace websharks_core_v000000_dev
 					if($username && !force_ssl_admin()
 					   && ($ID = $this->get_id_by('username', $username)) && get_user_option('use_ssl', $ID)
 					) // If the user wants SSL, force SSL administrative URLs.
-						force_ssl_admin(TRUE);
+					force_ssl_admin(TRUE);
 
 					$secure_cookie = (force_ssl_admin() && is_ssl()) ? TRUE : FALSE; // Only if forcing SSL administration (and this is an SSL login).
 
@@ -1274,7 +1274,7 @@ namespace websharks_core_v000000_dev
 										$redirect_to = $this->©url->to_wp_admin_uri('/profile.php');
 								}
 							if(!$redirect_to) // Absolute default value (if all else fails somehow).
-								$redirect_to = $this->©url->to_wp_home_uri(); // Redirect user to the home page.
+							$redirect_to = $this->©url->to_wp_home_uri(); // Redirect user to the home page.
 
 							if(force_ssl_admin() && $this->©url->is_in_wp_admin($redirect_to))
 								$redirect_to = $this->©url->set_scheme($redirect_to, 'https');
@@ -1422,19 +1422,19 @@ namespace websharks_core_v000000_dev
 
 					$user = $this->which($user);
 					if(!$user->has_id()) // Does this user have an ID?
-						throw $this->©exception(
-							__METHOD__.'#id_missing', compact('user'),
-							$this->i18n('The `$user` has no ID (cannot send password reset email message).')
-						);
+					throw $this->©exception(
+						__METHOD__.'#id_missing', compact('user'),
+						$this->i18n('The `$user` has no ID (cannot send password reset email message).')
+					);
 
 					if(!$user->activation_key)
 						$user->update_activation_key($this->©encryption->keygen(60));
 
 					if(!$user->activation_key) // Does this user have an activation key?
-						throw $this->©exception(
-							__METHOD__.'#activation_key_missing', compact('user'),
-							$this->i18n('The `$user` has no activation key (cannot send password reset email message).')
-						);
+					throw $this->©exception(
+						__METHOD__.'#activation_key_missing', compact('user'),
+						$this->i18n('The `$user` has no activation key (cannot send password reset email message).')
+					);
 
 					$activation_key            = $user->activation_key;
 					$password_reset_link       = $this->©action->link_for_call('©user_utils.®reset_password', $this::protected_type, array($activation_key));

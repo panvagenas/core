@@ -1052,7 +1052,7 @@ namespace websharks_core_v000000_dev
 			public function regex_pattern_in($regex, $value, $collect_key_props = FALSE, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('string', '', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('string', '', 'boolean', 'boolean', func_get_args());
 
 					$matching_key_props = array(); // Initialize.
 
@@ -1066,20 +1066,20 @@ namespace websharks_core_v000000_dev
 												{
 													if(($_matching_key_props = $this->regex_pattern_in($regex, $_value, $collect_key_props, TRUE)))
 														if($collect_key_props) // Are we collecting keys, or can we just return now?
-															$matching_key_props[] = array($_key_prop => $_matching_key_props);
+														$matching_key_props[] = array($_key_prop => $_matching_key_props);
 														else // We can return now.
-															return TRUE;
+														return TRUE;
 													unset($_matching_key_props);
 												}
 											else if(preg_match($regex, (string)$_value))
 												if($collect_key_props) $matching_key_props[] = $_key_prop;
 												else // We can return now.
-													return TRUE;
+												return TRUE;
 										}
 									unset($_key_prop, $_value);
 
 									if($collect_key_props) // Matching keys/properties.
-										return $matching_key_props;
+									return $matching_key_props;
 								}
 							else if(preg_match($regex, (string)$value))
 								return TRUE; // We can return now.
@@ -1137,7 +1137,7 @@ namespace websharks_core_v000000_dev
 			public function in_regex_patterns($string, $value, $collect_key_props = FALSE, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('string', '', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('string', '', 'boolean', 'boolean', func_get_args());
 
 					$matching_key_props = array(); // Initialize.
 
@@ -1149,9 +1149,9 @@ namespace websharks_core_v000000_dev
 										{
 											if(($_matching_key_props = $this->in_regex_patterns($string, $_value, $collect_key_props, TRUE)))
 												if($collect_key_props) // Are we collecting keys, or can we just return now?
-													$matching_key_props[] = array($_key_prop => $_matching_key_props);
+												$matching_key_props[] = array($_key_prop => $_matching_key_props);
 												else // We can return now.
-													return TRUE;
+												return TRUE;
 											unset($_matching_key_props);
 										}
 									else if(is_string($_value) && strlen($_value))
@@ -1159,13 +1159,13 @@ namespace websharks_core_v000000_dev
 											if(@preg_match($_value, $string))
 												if($collect_key_props) $matching_key_props[] = $_key_prop;
 												else // We can return now.
-													return TRUE;
+												return TRUE;
 										}
 								}
 							unset($_key_prop, $_value);
 
 							if($collect_key_props) // Matching keys/properties.
-								return $matching_key_props;
+							return $matching_key_props;
 						}
 					else if(is_string($value) && strlen($value))
 						{
@@ -1238,7 +1238,7 @@ namespace websharks_core_v000000_dev
 			public function wildcard_pattern_in($wildcard, $value, $case_insensitive = FALSE, $collect_key_props = FALSE, $x_flags = NULL, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
+					$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
 
 					$matching_key_props = array(); // Initialize.
 					$flags              = ($case_insensitive) ? FNM_CASEFOLD : 0;
@@ -1252,9 +1252,9 @@ namespace websharks_core_v000000_dev
 										{
 											if(($_matching_key_props = $this->wildcard_pattern_in($wildcard, $_value, $case_insensitive, $collect_key_props, $x_flags, TRUE)))
 												if($collect_key_props) // Are we collecting keys, or can we just return now?
-													$matching_key_props[] = array($_key_prop => $_matching_key_props);
+												$matching_key_props[] = array($_key_prop => $_matching_key_props);
 												else // We can return now.
-													return TRUE;
+												return TRUE;
 											unset($_matching_key_props);
 										}
 									else // Treat this as a string value.
@@ -1264,13 +1264,13 @@ namespace websharks_core_v000000_dev
 											if(fnmatch($wildcard, $_value, $flags))
 												if($collect_key_props) $matching_key_props[] = $_key_prop;
 												else // We can return now.
-													return TRUE;
+												return TRUE;
 										}
 								}
 							unset($_key_prop, $_value); // Housekeeping.
 
 							if($collect_key_props) // Matching keys/properties.
-								return $matching_key_props;
+							return $matching_key_props;
 						}
 					else // Treat this as a string value.
 						{
@@ -1347,7 +1347,7 @@ namespace websharks_core_v000000_dev
 			public function in_wildcard_patterns($string, $value, $case_insensitive = FALSE, $collect_key_props = FALSE, $x_flags = NULL, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
+					$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
 
 					$matching_key_props = array(); // Initialize.
 					$flags              = ($case_insensitive) ? FNM_CASEFOLD : 0;
@@ -1361,9 +1361,9 @@ namespace websharks_core_v000000_dev
 										{
 											if(($_matching_key_props = $this->in_wildcard_patterns($string, $_value, $case_insensitive, $collect_key_props, $x_flags, TRUE)))
 												if($collect_key_props) // Are we collecting keys, or can we just return now?
-													$matching_key_props[] = array($_key_prop => $_matching_key_props);
+												$matching_key_props[] = array($_key_prop => $_matching_key_props);
 												else // We can return now.
-													return TRUE;
+												return TRUE;
 											unset($_matching_key_props);
 										}
 									else // Treat this as a string value.
@@ -1373,13 +1373,13 @@ namespace websharks_core_v000000_dev
 											if(fnmatch($_value, $string, $flags))
 												if($collect_key_props) $matching_key_props[] = $_key_prop;
 												else // We can return now.
-													return TRUE;
+												return TRUE;
 										}
 								}
 							unset($_key_prop, $_value); // Housekeeping.
 
 							if($collect_key_props) // Matching keys/properties.
-								return $matching_key_props;
+							return $matching_key_props;
 						}
 					else // Treat this as a string value.
 						{
@@ -1436,7 +1436,7 @@ namespace websharks_core_v000000_dev
 			public function esc_dq_deep($value, $times = 1, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
+					$this->check_arg_types('', 'integer', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -1492,7 +1492,7 @@ namespace websharks_core_v000000_dev
 			public function esc_sq_deep($value, $times = 1, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
+					$this->check_arg_types('', 'integer', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -1553,7 +1553,7 @@ namespace websharks_core_v000000_dev
 			public function esc_js_sq_deep($value, $times = 1, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
+					$this->check_arg_types('', 'integer', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -1621,7 +1621,7 @@ namespace websharks_core_v000000_dev
 			public function esc_refs_deep($value, $times = 1, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
+					$this->check_arg_types('', 'integer', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -1694,7 +1694,7 @@ namespace websharks_core_v000000_dev
 			public function esc_sql_deep($value, $convert_nulls_no_esc = FALSE, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('', 'boolean', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -1757,7 +1757,7 @@ namespace websharks_core_v000000_dev
 			public function excerpt_deep($value, $max_length = 45, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'integer', 'boolean', func_get_args());
+					$this->check_arg_types('', 'integer', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -1812,7 +1812,7 @@ namespace websharks_core_v000000_dev
 			public function esc_shortcodes_deep($value, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'boolean', func_get_args());
+					$this->check_arg_types('', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -1845,7 +1845,7 @@ namespace websharks_core_v000000_dev
 						return $m[0]; // Already escaped.
 
 					else // Escape by wrapping with `[` ... `]`.
-						return '['.$m[0].']';
+					return '['.$m[0].']';
 				}
 
 			/**
@@ -1874,7 +1874,7 @@ namespace websharks_core_v000000_dev
 			public function preg_quote_deep($value, $delimiter = '', $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'string', 'boolean', func_get_args());
+					$this->check_arg_types('', 'string', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -1944,7 +1944,7 @@ namespace websharks_core_v000000_dev
 			public function trim_deep($value, $chars = '', $extra_chars = '', $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'string', 'string', 'boolean', func_get_args());
+					$this->check_arg_types('', 'string', 'string', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -1983,12 +1983,12 @@ namespace websharks_core_v000000_dev
 			public function strip_deep($value, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'boolean', func_get_args());
+					$this->check_arg_types('', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->strip_deep($_value, TRUE);
+							$_value = $this->strip_deep($_value, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value; // Array or object value.
@@ -2019,12 +2019,12 @@ namespace websharks_core_v000000_dev
 			public function slash_deep($value, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'boolean', func_get_args());
+					$this->check_arg_types('', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->slash_deep($_value, TRUE);
+							$_value = $this->slash_deep($_value, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value; // Array or object value.
@@ -2140,7 +2140,7 @@ namespace websharks_core_v000000_dev
 			public function trim_content_deep($value, $chars = '', $extra_chars = '', $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'string', 'string', 'boolean', func_get_args());
+					$this->check_arg_types('', 'string', 'string', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -2248,12 +2248,12 @@ namespace websharks_core_v000000_dev
 			public function trim_qts_deep($value, $trim_dsq = TRUE, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('', 'boolean', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->trim_qts_deep($_value, $trim_dsq, TRUE);
+							$_value = $this->trim_qts_deep($_value, $trim_dsq, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value; // Array or object value.
@@ -2404,12 +2404,12 @@ namespace websharks_core_v000000_dev
 			public function replace_once_deep($needle, $replace, $value, $case_insensitive = FALSE, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types(array('string', 'array'), array('string', 'array'), '', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types(array('string', 'array'), array('string', 'array'), '', 'boolean', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->replace_once_deep($needle, $replace, $_value, $case_insensitive, TRUE);
+							$_value = $this->replace_once_deep($needle, $replace, $_value, $case_insensitive, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value; // Array or object.
@@ -2419,7 +2419,7 @@ namespace websharks_core_v000000_dev
 							$value = (string)$value; // Force string value.
 
 							if($case_insensitive) // Case insensitive scenario?
-								$strpos = 'stripos'; // Use ``stripos()``.
+							$strpos = 'stripos'; // Use ``stripos()``.
 							else $strpos = 'strpos'; // Default.
 
 							if(is_array($needle)) // Array of needles?
@@ -2459,7 +2459,7 @@ namespace websharks_core_v000000_dev
 											$_length = strlen($needle);
 
 											if(is_array($replace)) // Use 1st element, else empty string.
-												$_replace = (isset($replace[0])) ? (string)$replace[0] : '';
+											$_replace = (isset($replace[0])) ? (string)$replace[0] : '';
 											else $_replace = $replace; // Use string value.
 
 											$value = substr_replace($value, $_replace, $_strpos, $_length);
@@ -2527,12 +2527,12 @@ namespace websharks_core_v000000_dev
 			public function strip_leading_indents_deep($value, $leading_at_line = 1, $add_leading_chars = '', $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'integer', 'string', 'boolean', func_get_args());
+					$this->check_arg_types('', 'integer', 'string', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->strip_leading_indents_deep($_value, $leading_at_line, $add_leading_chars, TRUE);
+							$_value = $this->strip_leading_indents_deep($_value, $leading_at_line, $add_leading_chars, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value;
@@ -2547,7 +2547,7 @@ namespace websharks_core_v000000_dev
 					unset($_m); // A little housekeeping.
 
 					if(strlen($add_leading_chars)) // Add leading chars?
-						$string = preg_replace("/^/m", $add_leading_chars, $string);
+					$string = preg_replace("/^/m", $add_leading_chars, $string);
 
 					return $string; // Stripped now.
 				}
@@ -2588,12 +2588,12 @@ namespace websharks_core_v000000_dev
 			public function strip_2_kb_chars_deep($value, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'boolean', func_get_args());
+					$this->check_arg_types('', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->strip_2_kb_chars_deep($_value, TRUE);
+							$_value = $this->strip_2_kb_chars_deep($_value, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value;
@@ -2663,7 +2663,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#failure', compact('base64_url_safe'),
 							$this->i18n('Base64 encoding failed (`$base64_url_safe` is NOT a string).')
 						);
-
 					$base64_url_safe = str_replace($url_unsafe_chars, $url_safe_chars, $base64_url_safe);
 					$base64_url_safe = (strlen($trim_padding_chars)) ? rtrim($base64_url_safe, $trim_padding_chars) : $base64_url_safe;
 
@@ -2746,7 +2745,7 @@ namespace websharks_core_v000000_dev
 			public function urldecode_ur_chars_deep($value, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'boolean', func_get_args());
+					$this->check_arg_types('', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -2799,7 +2798,7 @@ namespace websharks_core_v000000_dev
 			public function wrap_deep($value, $beginning = '', $end = '', $wrap_0b_strings = TRUE, $convert_nulls_no_wrap = FALSE, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'string', 'string', 'boolean', 'boolean', 'boolean', func_get_args());
+					$this->check_arg_types('', 'string', 'string', 'boolean', 'boolean', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -2843,12 +2842,12 @@ namespace websharks_core_v000000_dev
 			public function wordwrap_deep($value, $width = 75, $break = "\n", $cut = FALSE, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'integer', 'string', 'boolean', func_get_args());
+					$this->check_arg_types('', 'integer', 'string', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as &$_value) // Recursion.
-								$_value = $this->wordwrap_deep($_value, $width, $break, $cut, TRUE);
+							$_value = $this->wordwrap_deep($_value, $width, $break, $cut, TRUE);
 							unset($_value); // Housekeeping.
 
 							return $value; // Array or object value.
@@ -2915,7 +2914,7 @@ namespace websharks_core_v000000_dev
 			public function to_utf8_deep($value, $detection_order = array(), $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', array('string', 'array'), 'boolean', func_get_args());
+					$this->check_arg_types('', array('string', 'array'), 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -2970,7 +2969,7 @@ namespace websharks_core_v000000_dev
 			public function to_hex_deep($value, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'boolean', func_get_args());
+					$this->check_arg_types('', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -3030,7 +3029,7 @@ namespace websharks_core_v000000_dev
 			public function fnm_case_deep($value, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'boolean', func_get_args());
+					$this->check_arg_types('', 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
@@ -3049,10 +3048,10 @@ namespace websharks_core_v000000_dev
 							$regex_drive  = substr(stub::$regex_valid_win_drive_letter, 0, -2).'/';
 
 							if(preg_match($regex_scheme, $value, $_scheme)) // Windows® drive letter?
-								$value = preg_replace($regex_scheme, '', $value);
+							$value = preg_replace($regex_scheme, '', $value);
 
 							if(preg_match($regex_drive, $value, $_drive)) // PHP scheme wrapper?
-								$value = preg_replace($regex_drive, '', $value);
+							$value = preg_replace($regex_drive, '', $value);
 
 							for($_i = 0; $_i < strlen($value); $_i++)
 								{
@@ -3082,10 +3081,10 @@ namespace websharks_core_v000000_dev
 							$value = $_aA_value; // Use newly formulated string value.
 
 							if(!empty($_drive[0])) // Restore a Windows® drive letter?
-								$value = $_drive[0].$value; // Use entire match `[0]`.
+							$value = $_drive[0].$value; // Use entire match `[0]`.
 
 							if(!empty($_scheme[0])) // Restore a PHP scheme wrapper?
-								$value = $_scheme[0].$value; // Entire match `[0]`.
+							$value = $_scheme[0].$value; // Entire match `[0]`.
 
 							unset($_scheme, $_drive, $_aA_value, $_sq_brackets_open, $_i); // Housekeeping.
 						}

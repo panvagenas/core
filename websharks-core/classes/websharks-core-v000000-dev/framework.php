@@ -279,8 +279,8 @@ namespace websharks_core_v000000_dev
 				 * @method \websharks_core_v000000_dev\notices ©notices()
 				 * @method \websharks_core_v000000_dev\notices ©notice()
 				 *
-				 * @property \websharks_core_v000000_dev\oauth                          $©oauth
-				 * @method \websharks_core_v000000_dev\oauth ©oauth()
+				 * @property \websharks_core_v000000_dev\oauth_v1                       $©oauth_v1
+				 * @method \websharks_core_v000000_dev\oauth_v1 ©oauth_v1()
 				 *
 				 * @property \websharks_core_v000000_dev\options                        $©options
 				 * @property \websharks_core_v000000_dev\options                        $©option

@@ -128,7 +128,7 @@ namespace websharks_core_v000000_dev
 							if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
 								$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
 									'deps'     => array($this->___instance_config->core_ns_stub_with_dashes),
-									'url'      => $this->©url->to_core_dir_file('/client-side/scripts/menu-pages/menu-pages-min.js'),
+									'url'      => $this->©url->to_core_dir_file('/client-side/scripts/menu-pages/menu-pages.min.js'),
 									'ver'      => $this->___instance_config->core_ns_with_dashes,
 
 									'localize' => array( // WebSharks™ Core translations.

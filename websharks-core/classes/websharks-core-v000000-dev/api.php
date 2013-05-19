@@ -238,8 +238,8 @@ namespace websharks_core_v000000_dev
 		 * @method static \websharks_core_v000000_dev\notices notices()
 		 * @method static \websharks_core_v000000_dev\notices notice()
 		 *
-		 * @property \websharks_core_v000000_dev\oauth                   $oauth
-		 * @method static \websharks_core_v000000_dev\oauth oauth()
+		 * @property \websharks_core_v000000_dev\oauth_v1                $oauth_v1
+		 * @method static \websharks_core_v000000_dev\oauth_v1 oauth_v1()
 		 *
 		 * @property \websharks_core_v000000_dev\options                 $options
 		 * @property \websharks_core_v000000_dev\options                 $option

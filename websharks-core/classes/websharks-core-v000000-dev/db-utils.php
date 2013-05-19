@@ -264,7 +264,7 @@ namespace websharks_core_v000000_dev
 							if(!$this->©string->is_not_empty($_name))
 								throw $this->©exception(
 									__METHOD__.'#invalid_name', get_defined_vars(),
-									$this->i18n('Expecting a non-empty string `$_name` value.').
+									$this->i18n('Expecting a non-empty string key `$_name` value.').
 									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
 								);
 							unset($this->cache['meta_values'][$table][$rel_id][$_name]);

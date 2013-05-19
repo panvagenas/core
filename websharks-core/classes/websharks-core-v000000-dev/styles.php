@@ -82,7 +82,7 @@ namespace websharks_core_v000000_dev
 								if(!wp_style_is($_theme, 'registered')) // Available in all contexts.
 									$styles_to_register[$_theme] = array(
 										'deps' => array('ws-core-libs'),
-										'url'  => $this->©url->to_wp_abs_dir_file($_theme_dir.'/ui-theme-min.css'),
+										'url'  => $this->©url->to_wp_abs_dir_file($_theme_dir.'/ui-theme.min.css'),
 										'ver'  => $this->___instance_config->core_ns_with_dashes
 									);
 							unset($_theme, $_theme_dir); // A little housekeeping.
@@ -99,7 +99,7 @@ namespace websharks_core_v000000_dev
 							if(!wp_style_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
 								$styles_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
 									'deps' => array($current_menu_pages_theme),
-									'url'  => $this->©url->to_core_dir_file('/client-side/styles/menu-pages/menu-pages-min.css'),
+									'url'  => $this->©url->to_core_dir_file('/client-side/styles/menu-pages/menu-pages.min.css'),
 									'ver'  => $this->___instance_config->core_ns_with_dashes
 								);
 						}
@@ -130,7 +130,7 @@ namespace websharks_core_v000000_dev
 									{
 										if(strpos($_theme_dir, '.') === 0 || $_theme_dir === 'index.php')
 											continue; // Skip all dots and `index.php` files.
-										else if(is_file($_themes_dir.'/'.$_theme_dir.'/ui-theme-min.css'))
+										else if(is_file($_themes_dir.'/'.$_theme_dir.'/ui-theme.min.css'))
 											$themes['jquery-ui-theme-'.$_theme_dir] = $_themes_dir.'/'.$_theme_dir;
 									}
 								unset($_theme_dir); // Housekeeping.

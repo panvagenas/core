@@ -37,7 +37,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
 						);
-
 					if(!isset($this->static['no_cache_header_sent']))
 						{
 							foreach(headers_list() as $_header)
@@ -79,7 +78,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
 						);
-
 					$content_type = 'Content-Type: '.$type.(($is_utf8) ? '; charset=UTF-8' : '');
 
 					$this->©env->ob_end_clean(); // Cleans any existing output buffers.
@@ -109,7 +107,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
 						);
-
 					if(!defined('___UNIT_TEST')) // NOT while unit testing this routine.
 						header('Content-Encoding:'.((strlen($encoding)) ? ' '.$encoding : ''));
 				}

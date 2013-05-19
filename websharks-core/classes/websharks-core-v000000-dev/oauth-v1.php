@@ -1,6 +1,6 @@
 <?php
 /**
- * OAuth.
+ * OAuth v1.
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -15,14 +15,14 @@ namespace websharks_core_v000000_dev
 			exit('Do NOT access this file directly: '.basename(__FILE__));
 
 		/**
-		 * OAuth.
+		 * OAuth v1.
 		 *
 		 * @package WebSharks\Core
 		 * @since 120318
 		 *
 		 * @assert ($GLOBALS[__NAMESPACE__])
 		 */
-		class oauth extends framework
+		class oauth_v1 extends framework
 		{
 			/**
 			 * @var string URL, where we can request a new access token.
