@@ -1228,6 +1228,19 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Compiles a new array of all ``$key`` elements.
+			 *
+			 * @see compile_key_elements_deep()
+			 * @inheritdoc compile_key_elements_deep()
+			 *
+			 * @return array {@inheritdoc}
+			 */
+			public function compile_key_elements($array, $keys, $preserve_keys = FALSE, $search_dimensions = 1)
+				{
+					return $this->compile_key_elements_deep($array, $keys, $preserve_keys, $search_dimensions);
+				}
+
+			/**
 			 * Compiles a new array of all ``$key`` elements (deeply).
 			 *
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays.

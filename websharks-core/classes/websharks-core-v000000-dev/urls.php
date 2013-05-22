@@ -183,7 +183,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', array('null', 'integer'), array('null', 'integer'), func_get_args());
 
 					if(!isset($normalize)) // Use defaults?
-					$normalize = $this::url_scheme | $this::url_host | $this::url_path;
+						$normalize = $this::url_scheme | $this::url_host | $this::url_path;
 
 					if(strpos($url_uri_query_fragment, '//') === 0 && preg_match($this->regex_valid_url, $url_uri_query_fragment))
 						{
@@ -315,7 +315,7 @@ namespace websharks_core_v000000_dev
 					$unparsed = ''; // Initialize string value.
 
 					if(!isset($normalize)) // Use defaults?
-					$normalize = $this::url_scheme | $this::url_host | $this::url_path;
+						$normalize = $this::url_scheme | $this::url_host | $this::url_path;
 
 					if($normalize & $this::url_scheme) // Normalize scheme?
 						{
@@ -459,7 +459,7 @@ namespace websharks_core_v000000_dev
 					if(($parts = $this->parse_uri_parts($url_uri_query_fragment, $normalize)))
 						{
 							if(!$include_fragment) // Ditch fragment?
-							unset($parts['fragment']);
+								unset($parts['fragment']);
 
 							return $this->unparse($parts, $normalize);
 						}
@@ -507,7 +507,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', 'string', func_get_args());
 
 					if(!$base_url) // No base URL? The ``$base`` is optional (defaults to current URL).
-					$base_url = $this->current(); // Auto-detects current URL/location.
+						$base_url = $this->current(); // Auto-detects current URL/location.
 
 					$relative_parts         = $this->must_parse($relative_url_uri_query_fragment, NULL, 0);
 					$relative_parts['path'] = $this->n_path_seps($relative_parts['path'], TRUE);
@@ -516,13 +516,13 @@ namespace websharks_core_v000000_dev
 					if($relative_parts['host']) // Already resolved?
 						{
 							if(!$relative_parts['scheme']) // If no scheme, use base scheme.
-							$relative_parts['scheme'] = $base_parts['scheme'];
+								$relative_parts['scheme'] = $base_parts['scheme'];
 							return $this->unparse($relative_parts);
 						}
 					if(!$base_parts['host']) // We MUST have a base host name to resolve.
-					throw $this->©exception(__METHOD__.'#missing_base_host_name', get_defined_vars(),
-					                        sprintf($this->i18n('Unable to parse (missing base host name): `%1$s`.'), $base_url)
-					);
+						throw $this->©exception(__METHOD__.'#missing_base_host_name', get_defined_vars(),
+						                        sprintf($this->i18n('Unable to parse (missing base host name): `%1$s`.'), $base_url)
+						);
 					if(strlen($relative_parts['path'])) // It's important that we mimic browser behavior here.
 						{
 							if(strpos($relative_parts['path'], '/') === 0)
@@ -541,7 +541,7 @@ namespace websharks_core_v000000_dev
 							$parts['query'] = $relative_parts['query']; // Use relative query.
 						}
 					else if(strlen($relative_parts['query'])) // Only if there is a new query (or path above) in the relative.
-					$parts['query'] = $relative_parts['query']; // Relative query string supersedes base.
+						$parts['query'] = $relative_parts['query']; // Relative query string supersedes base.
 
 					$parts['fragment'] = $relative_parts['fragment']; // Always changes.
 
@@ -868,7 +868,7 @@ namespace websharks_core_v000000_dev
 								$parts['query'] .= ((!$parts['query']) ? '' : '&').'paged='.$pagination['page_number'];
 
 							if($uri_parts['query']) // Combine query strings?
-							$parts['query'] .= ((!$parts['query']) ? '' : '&').$uri_parts['query'];
+								$parts['query'] .= ((!$parts['query']) ? '' : '&').$uri_parts['query'];
 
 							$parts['fragment'] = $uri_parts['fragment']; // URI fragment always.
 						}
@@ -901,10 +901,10 @@ namespace websharks_core_v000000_dev
 
 					$user = $this->©user_utils->which($user);
 					if(!$user->has_id()) // Does this user have an ID?
-					throw $this->©exception(
-						__METHOD__.'#id_missing', compact('user'),
-						$this->i18n('The `$user` has no ID (cannot get Dashboard URL).')
-					);
+						throw $this->©exception(
+							__METHOD__.'#id_missing', compact('user'),
+							$this->i18n('The `$user` has no ID (cannot get Dashboard URL).')
+						);
 					$parts = $this->must_parse_uri_parts($url_uri_query_fragment);
 
 					if(substr($parts['path'], -1) !== '/' && !$this->©file->has_extension($parts['path']))
@@ -1329,7 +1329,7 @@ namespace websharks_core_v000000_dev
 					// Remove stream wrappers (assuming WordPress® does NOT use these).
 
 					if(!isset($this->static['to_wp_abs_dir_file__regex_stream_wrapper'])) // We only need this ONE time.
-					$this->static['to_wp_abs_dir_file__regex_stream_wrapper'] = substr(stub::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
+						$this->static['to_wp_abs_dir_file__regex_stream_wrapper'] = substr(stub::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
 
 					if(strpos($dir, '://') !== FALSE)
 						$dir = preg_replace($this->static['to_wp_abs_dir_file__regex_stream_wrapper'], '', $dir);
@@ -1388,7 +1388,7 @@ namespace websharks_core_v000000_dev
 					// By default we use `file://`. Windows® drive letter is removed temporarily here.
 
 					if(!isset($this->static['to_wp_abs_dir_file__regex_win_drive_letter'])) // We only need this ONE time.
-					$this->static['to_wp_abs_dir_file__regex_win_drive_letter'] = substr(stub::$regex_valid_win_drive_letter, 0, -2).'/';
+						$this->static['to_wp_abs_dir_file__regex_win_drive_letter'] = substr(stub::$regex_valid_win_drive_letter, 0, -2).'/';
 
 					if(preg_match($this->static['to_wp_abs_dir_file__regex_win_drive_letter'], $dir, $_drive))
 						$dir = preg_replace($this->static['to_wp_abs_dir_file__regex_win_drive_letter'], '', $dir);
@@ -1705,7 +1705,7 @@ namespace websharks_core_v000000_dev
 								$args['headers']['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 						}
 					if(!empty($timeout)) // Do we have a ``$timeout`` value?
-					$args = array_merge(array('timeout' => $timeout), $args);
+						$args = array_merge(array('timeout' => $timeout), $args);
 
 					// Set default return value options.
 					$return_array      = $this->©boolean->isset_or($args['return_array'], FALSE);
@@ -1936,7 +1936,7 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', 'string', func_get_args());
 
 					if(!$scheme) // Current scheme?
-					$scheme = $this->current_scheme();
+						$scheme = $this->current_scheme();
 
 					if($scheme !== '//') $scheme = $this->n_scheme($scheme).'://';
 
@@ -1971,7 +1971,7 @@ namespace websharks_core_v000000_dev
 						$parts['path'] = $url_uri_query_fragment;
 
 					if(strlen($parts['path'])) // Normalize directory separators.
-					$parts['path'] = $this->©dir->n_seps($parts['path'], $allow_trailing_slash);
+						$parts['path'] = $this->©dir->n_seps($parts['path'], $allow_trailing_slash);
 
 					return $this->unparse($parts, 0); // Back together again.
 				}
@@ -2002,7 +2002,7 @@ namespace websharks_core_v000000_dev
 						$parts['path'] = $url_uri_query_fragment;
 
 					if(strlen($parts['path'])) // Normalize directory separators.
-					$parts['path'] = $this->©dir->n_seps_up($parts['path'], $up, $allow_trailing_slash);
+						$parts['path'] = $this->©dir->n_seps_up($parts['path'], $up, $allow_trailing_slash);
 
 					return $this->unparse($parts, 0); // Back together again.
 				}
@@ -2027,7 +2027,7 @@ namespace websharks_core_v000000_dev
 						$parts['path'] = $url_uri_query_fragment;
 
 					if(strlen($parts['path'])) // Encode path parts.
-					$parts['path'] = str_ireplace('%2F', '/', urlencode($parts['path']));
+						$parts['path'] = str_ireplace('%2F', '/', urlencode($parts['path']));
 
 					return $this->unparse($parts, 0); // Back together again.
 				}
@@ -2161,7 +2161,7 @@ namespace websharks_core_v000000_dev
 					$valid_sig = $this->©encryption->hmac_sha1_sign($vars.$sig_parts['time']);
 
 					if($check_time) // Checking time too?
-					return ($sig_parts['sig'] === $valid_sig && $sig_parts['time'] >= strtotime('-'.abs($exp_secs).' seconds'));
+						return ($sig_parts['sig'] === $valid_sig && $sig_parts['time'] >= strtotime('-'.abs($exp_secs).' seconds'));
 
 					return ($sig_parts['sig'] === $valid_sig);
 				}
@@ -2223,26 +2223,26 @@ namespace websharks_core_v000000_dev
 					// First try custom APIs (if nothing specific was requested here).
 
 					if(!$specific_built_in_api) // Expose this filter to plugins.
-					if(($custom_url = trim($this->apply_filters('shorten', '', get_defined_vars()))) && stripos($custom_url, 'http') === 0)
-						return ($shorter_url = $custom_url);
+						if(($custom_url = trim($this->apply_filters('shorten', '', get_defined_vars()))) && stripos($custom_url, 'http') === 0)
+							return ($shorter_url = $custom_url);
 
 					if(!$specific_built_in_api && $custom_url_api) // A custom default URL API?
-					if(($custom_url_api = str_ireplace(array('%%long_url%%', '%%long_url_md5%%'),
-					                                   array(rawurlencode($url), urlencode(md5($url))), $custom_url_api))
-					) if(($custom_url = trim($this->remote($custom_url_api))) && stripos($custom_url, 'http') === 0)
-						return ($shorter_url = $custom_url);
+						if(($custom_url_api = str_ireplace(array('%%long_url%%', '%%long_url_md5%%'),
+						                                   array(rawurlencode($url), urlencode(md5($url))), $custom_url_api))
+						) if(($custom_url = trim($this->remote($custom_url_api))) && stripos($custom_url, 'http') === 0)
+							return ($shorter_url = $custom_url);
 
 					// Nothing custom; so let's go with the current built-in API.
 
 					if($current_built_in_api === 'goo_gl') // Google® shortener (recommended).
-					if(is_string($goo_gl_key = ($goo_gl_key = $this->©options->get('url_shortener.api_keys.goo_gl')) ? '?key='.urlencode($goo_gl_key) : ''))
-						if(is_array($goo_gl = json_decode(trim($this->remote('https://www.googleapis.com/urlshortener/v1/url'.$goo_gl_key, json_encode(array('longUrl' => $url)), array('headers' => array('Content-Type' => 'application/json')))), TRUE)))
-							if(($goo_gl_url = $this->©string->is_not_empty_or($goo_gl['id'], '')) && stripos($goo_gl_url, 'http') === 0)
-								return ($shorter_url = $goo_gl_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
+						if(is_string($goo_gl_key = ($goo_gl_key = $this->©options->get('url_shortener.api_keys.goo_gl')) ? '?key='.urlencode($goo_gl_key) : ''))
+							if(is_array($goo_gl = json_decode(trim($this->remote('https://www.googleapis.com/urlshortener/v1/url'.$goo_gl_key, json_encode(array('longUrl' => $url)), array('headers' => array('Content-Type' => 'application/json')))), TRUE)))
+								if(($goo_gl_url = $this->©string->is_not_empty_or($goo_gl['id'], '')) && stripos($goo_gl_url, 'http') === 0)
+									return ($shorter_url = $goo_gl_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
 
 					if($current_built_in_api === 'tiny_url') // TinyURL™ shortener.
-					if(($tiny_url = trim($this->remote('http://tinyurl.com/api-create.php?url='.rawurlencode($url)))) && stripos($tiny_url, 'http') === 0)
-						return ($shorter_url = $tiny_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
+						if(($tiny_url = trim($this->remote('http://tinyurl.com/api-create.php?url='.rawurlencode($url)))) && stripos($tiny_url, 'http') === 0)
+							return ($shorter_url = $tiny_url.'#'.(string)$this->parse($url, PHP_URL_HOST));
 
 					// Still nothing. Let's try some backups.
 

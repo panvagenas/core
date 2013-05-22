@@ -42,6 +42,9 @@ namespace websharks_core_v000000_dev
 					// Handles no-cache headers/constants.
 					add_action('init', array($this, '©no_cache.init'), 1);
 
+					// Keeps the DB cache fresh while site owners' work.
+					add_action('admin_init', array($this, '©db_cache.admin_init'), 1);
+
 					// For plugins that enable this option (only ONE plugin may add this hook).
 					if($this->©options->get('php.evaluate') && !isset($this->static['hooks']['php.evaluate']))
 						{

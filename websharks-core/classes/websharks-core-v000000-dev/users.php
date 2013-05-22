@@ -181,7 +181,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#user_init_hook', array('args' => $this->args),
 							$this->i18n('Doing it wrong (the `init` hook has NOT been fired yet).')
 						);
-
 					if($user_id && $user_id < 0)
 						// This is NO user (explicitly).
 						$this->ID = 0; // Set to `0` value.
@@ -504,7 +503,6 @@ namespace websharks_core_v000000_dev
 									if(is_object($wp = new \WP_User($this->ID)) && !empty($wp->ID))
 										$this->wp = $wp;
 								}
-
 							$this->populate(); // Repopulate.
 
 							// Restart session (if possible).
@@ -545,7 +543,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#headers_sent_already', array('ID' => $this->ID),
 							$this->i18n(' Doing it wrong! Headers have already been sent.')
 						);
-
 					if($this->is_current())
 						$this->session_end();
 
@@ -576,19 +573,16 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot delete).')
 						);
-
 					if($this->is_super_admin())
 						return $this->©error(
 							__METHOD__.'#super_admin', array('ID' => $this->ID, 'username' => $this->username),
 							sprintf($this->i18n('Cannot delete super administrator: `%1$s`.'), $this->username)
 						);
-
 					if(!wp_delete_user($this->ID, $reassign_posts_to_user_id))
 						return $this->©error(
 							__METHOD__.'#failure', array('ID' => $this->ID),
 							sprintf($this->i18n('Failed to delete user ID: `%1$s`.'), $this->ID)
 						);
-
 					$ID       = $this->ID;
 					$this->ID = 0;
 
@@ -673,7 +667,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot update).')
 						);
-
 					// Formulate & validate incoming args.
 
 					$default_args = array(
@@ -695,12 +688,11 @@ namespace websharks_core_v000000_dev
 						'data'           => NULL,
 						'profile_fields' => NULL
 					);
-
-					$args = $this->check_extension_arg_types(
+					$args         = $this->check_extension_arg_types(
 						'string', 'string', 'string', 'string', 'string', 'string', 'string',
 						'string', 'string', 'string', 'string', 'string', 'string', 'array', 'array', 'array', 'array', $default_args, $args
 					);
-					$args = $this->©array->remove_nulls_deep($args); // Remove NULL values (i.e. those we are NOT updating here).
+					$args         = $this->©array->remove_nulls_deep($args); // Remove NULL values (i.e. those we are NOT updating here).
 
 					// Build array of `data` for our call to ``wp_update_user()`` below.
 
@@ -777,7 +769,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#jabber_missing', array_merge(array('form_field_code' => 'jabber'), compact('args')),
 							$this->translate('Required field. Missing Jabber™ (or Google® Talk) username.')
 						);
-
 					// Validate a possible change in personal bio (i.e. user description).
 
 					if(isset($args['description']) && empty($args['description']) && in_array('description', $optional_requirements, TRUE))
@@ -785,7 +776,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#description_missing', array_merge(array('form_field_code' => 'description'), compact('args')),
 							$this->translate('Required field. Missing personal description.')
 						);
-
 					// Validate/update any additional profile fields (before we continue any further).
 
 					if(!empty($args['profile_fields']) && // Handled by class extenders via ``$this->update_profile_fields()``.
@@ -805,7 +795,6 @@ namespace websharks_core_v000000_dev
 								if($this->©string->is_not_empty($_key)) $this->update_option($_key, $_value);
 							unset($_key, $_value);
 						}
-
 					if(isset($args['meta']))
 						{
 							foreach($args['meta'] as $_key => $_value)
@@ -829,7 +818,7 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#unknown_wp_error', get_defined_vars(),
 									$this->translate('Unknown error (please try again).')
 								);
-							else return $this->©error(
+							return $this->©error(
 								__METHOD__.'#wp_error_'.$wp_update_user->get_error_code(), get_defined_vars(),
 								$wp_update_user->get_error_message() // Message from ``wp_update_user()``.
 							);
@@ -886,13 +875,11 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot update).')
 						);
-
 					if(isset($args['ip']) || isset($args['role']) || isset($args['activation_key']) || isset($args['options']) || isset($args['meta']) || isset($args['data']))
 						throw $this->©exception(
 							__METHOD__.'#security_issue', compact('args'),
 							$this->i18n('Security issue. Some of the data submitted, is NOT allowed during basic profile updates.')
 						);
-
 					extract($args); // Extract for call data.
 
 					if($optional_requirements && is_array($_optional_requirements = maybe_unserialize($this->©encryption->decrypt($optional_requirements))))
@@ -934,7 +921,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot update).')
 						);
-
 					if($optional_requirements && is_array($_optional_requirements = maybe_unserialize($this->©encryption->decrypt($optional_requirements))))
 						$optional_requirements = $_optional_requirements; // A specific set of optional fields to require.
 					else $optional_requirements = array(); // There are none.
@@ -973,7 +959,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot get option).')
 						);
-
 					return get_user_option($this->ID, $key);
 				}
 
@@ -996,7 +981,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot update option).')
 						);
-
 					if(is_null($value))
 						delete_user_option($this->ID, $key);
 					else update_user_option($this->ID, $key, $value);
@@ -1034,7 +1018,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot get meta).')
 						);
-
 					return get_user_meta($this->ID, $key, TRUE);
 				}
 
@@ -1057,7 +1040,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot update meta).')
 						);
-
 					if(is_null($value))
 						delete_user_meta($this->ID, $key);
 					else update_user_meta($this->ID, $key, $value);
@@ -1105,7 +1087,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot update activation key).')
 						);
-
 					$activation_key = (string)$activation_key;
 					$activation_key = (string)substr($activation_key, 0, 60);
 
@@ -1144,7 +1125,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot update password).')
 						);
-
 					wp_set_password($password, $this->ID);
 					$this->delete_activation_key();
 				}
@@ -1166,7 +1146,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot get WP role).')
 						);
-
 					if(isset($this->wp->roles[0]) && is_string($this->wp->roles[0]))
 						return $this->wp->roles[0];
 

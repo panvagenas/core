@@ -160,8 +160,6 @@ namespace websharks_core_v000000_dev
 
 							$notice['notice'] .= ' [ <a href="'.$dismiss.'">'.$this->i18n('dismiss this message').'</a> ]';
 						}
-
-					// Display this notice.
 					if(!defined('___UNIT_TEST'))
 						{
 							$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
