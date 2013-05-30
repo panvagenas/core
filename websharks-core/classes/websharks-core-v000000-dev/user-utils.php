@@ -709,6 +709,32 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Validates additional profile fields implemented by class extenders.
+			 *
+			 * @note This is NOT handled by the core. It requires a class extender to override this.
+			 *    By default, this method simply returns a TRUE value at all times.
+			 *
+			 * @param null|integer|\WP_User|users $user The user we're working with here.
+			 *
+			 * @param array                       $profile_field_values An associative array of profile field values (by code).
+			 *
+			 * @param string                      $context One of these values: {@link fw_constants::context_registration}, {@link fw_constants::context_profile_updates}.
+			 *    The context in which profile fields are being updated (defaults to {@link fw_constants::context_profile_updates}).
+			 *
+			 * @param array                       $args Optional. Arguments that control validation behavior.
+			 *
+			 * @return boolean|errors TRUE on success; else an errors object on failure.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function validate_profile_fields($user, $profile_field_values, $context = self::context_profile_updates, $args = array())
+				{
+					$this->check_arg_types($this->which_types(), 'array', 'string:!empty', 'array', func_get_args());
+
+					return TRUE; // Default return value.
+				}
+
+			/**
 			 * Creates a new WordPress® user.
 			 *
 			 * @param $args array Array of arguments:
@@ -749,6 +775,9 @@ namespace websharks_core_v000000_dev
 			 *  • (array)`meta` Optional associative array. Any additional user meta values.
 			 *       These are stored via ``update_user_meta()`` (e.g. site-wide meta values).
 			 *
+			 *  • (array)`profile_fields` Optional associative array w/ additional profile fields.
+			 *       See {@link users::update_profile_fields()} for further details (implemented by class extenders).
+			 *
 			 *  • (array)`data` Optional associative array. Any additional data you'd like to pass through ``wp_insert_user()``.
 			 *       See: http://codex.wordpress.org/Function_Reference/wp_insert_user
 			 *
@@ -765,29 +794,30 @@ namespace websharks_core_v000000_dev
 					// Formulate and validation incoming args.
 
 					$default_args = array(
-						'ip'            => '', // Required argument value.
-						'email'         => '', // Required argument value.
-						'username'      => '', // Required on multisite networks.
+						'ip'             => '', // Required argument value.
+						'email'          => '', // Required argument value.
+						'username'       => '', // Required on multisite networks.
 
-						'role'          => get_option('default_role'),
+						'role'           => get_option('default_role'),
 
-						'password'      => '',
-						'first_name'    => '',
-						'last_name'     => '',
-						'url'           => '',
+						'password'       => '',
+						'first_name'     => '',
+						'last_name'      => '',
+						'url'            => '',
 
-						'must_activate' => TRUE,
-						'send_welcome'  => TRUE,
+						'must_activate'  => TRUE,
+						'send_welcome'   => TRUE,
 
-						'options'       => array(),
-						'meta'          => array(),
-						'data'          => array()
+						'options'        => array(),
+						'meta'           => array(),
+						'profile_fields' => array(),
+						'data'           => array()
 					);
 					$args         = $this->check_extension_arg_types(
 						'string', 'string', 'string', 'string:!empty', // `ip`, `email`, `username`, `role`.
 						'string', 'string', 'string', 'string', // `password`, `first_name`, `last_name`, `url`.
 						'boolean', 'boolean', // `must_activate`, `send_welcome`.
-						'array', 'array', 'array', // `options`, `meta`, `data`.
+						'array', 'array', 'array', 'array', // `options`, `meta`, `profile_fields`, `data`.
 						$default_args, $args, ((is_multisite()) ? 3 : 2)
 					);
 					// Handle some default values (when/if possible) & minor adjustments.
@@ -816,6 +846,11 @@ namespace websharks_core_v000000_dev
 					$data = array_merge(array( // Format this based on site preference.
 					                           'display_name' => (string)substr($this->format_registration_display_name($data), 0, 250)
 					                    ), $data);
+					// Validate possible profile fields implemented by a site owner.
+
+					if($args['profile_fields']) // Handled by class extenders.
+						if($this->©errors->exist_in($profile_field_validations = $this->validate_profile_fields(NULL, $args['profile_fields'], $this::context_registration)))
+							return $profile_field_validations; // Profile field issue(s).
 
 					// Handles user creation in multisite networks (where the user already exists).
 
@@ -879,30 +914,31 @@ namespace websharks_core_v000000_dev
 								}
 						}
 					// Save IP address (as a meta value).
-
 					$user->update_meta('ip', $args['ip']);
 
-					// Handle possible option and/or meta values here.
-
+					// Handle possible option values.
 					foreach($args['options'] as $_key => $_value)
-						if($this->©string->is_not_empty($_key))
-							$user->update_option($_key, $_value);
+						if($this->©string->is_not_empty($_key)) $user->update_option($_key, $_value);
 					unset($_key, $_value);
 
+					// Handle possible meta values.
 					foreach($args['meta'] as $_key => $_value)
-						if($this->©string->is_not_empty($_key))
-							$user->update_meta($_key, $_value);
+						if($this->©string->is_not_empty($_key)) $user->update_meta($_key, $_value);
 					unset($_key, $_value);
 
+					// Handle possible profile fields.
+					if($args['profile_fields']) // Handled by class extenders.
+						if($this->©errors->exist_in($update_profile_fields = $user->update_profile_fields($args['profile_fields'], $this::context_registration)))
+							throw $this->©exception( // This really should NOT happen (profile fields are validated above).
+								__METHOD__.'#unexpected_validation_errors', get_defined_vars(),
+								$this->i18n('Unexpected registration validation errors when attempting to update profile fields.')
+							);
 					// Handle emails and/or activation.
-
-					if($args['must_activate']) // Require email activation?
+					if($args['must_activate']) // Requires email activation?
 						$this->send_activation_email($user->ID, $args['password'], $args['send_welcome']);
-					else if($args['send_welcome']) // Sends welcome msg.
-						$this->send_welcome_email($user->ID, $args['password']);
+					else if($args['send_welcome']) $this->send_welcome_email($user->ID, $args['password']);
 
 					// Fire `created` hook and return now.
-
 					$this->do_action('created', $user->ID, get_defined_vars());
 
 					return array('ID' => $user->ID, 'user' => $user, 'password' => $args['password']);

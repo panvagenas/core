@@ -65,7 +65,7 @@ namespace websharks_core_v000000_dev
 				{
 					parent::__construct($___instance_config);
 
-					$_r = $this->©vars->_REQUEST(); // Collects all current ``$_REQUEST`` vars.
+					$_r = $this->©vars->_REQUEST(NULL, TRUE); // REQUEST (including files).
 
 					if($this->©array->is_not_empty($_r[$this->___instance_config->plugin_var_ns]['a']))
 						$this->action = $_r[$this->___instance_config->plugin_var_ns]['a'];
@@ -77,13 +77,12 @@ namespace websharks_core_v000000_dev
 									$action_key = $_r[$this->___instance_config->plugin_var_ns.'_action'];
 									$action     = $this->©db_utils->get_transient($action_key);
 
-									if($this->©array->is_not_empty($action))
-										$this->action = $action;
-
-									else throw $this->©exception(
-										__METHOD__.'#invalid_or_expired_action_key', compact('_r'),
-										sprintf($this->i18n('Invalid or expired action key: `%1$s`.'), $action_key)
-									);
+									if(!$this->©array->is_not_empty($action))
+										throw $this->©exception(
+											__METHOD__.'#invalid_or_expired_action_key', get_defined_vars(),
+											sprintf($this->i18n('Invalid or expired action key: `%1$s`.'), $action_key)
+										);
+									$this->action = $action; // Define action property.
 								}
 							else // Treat the `action` as a slug (we construct an array from this).
 								$this->action = array('s' => $_r[$this->___instance_config->plugin_var_ns.'_action']);
@@ -376,7 +375,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#invalid_call', compact('call'),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
-
 					$hidden_inputs = '<input type="hidden" name="'.esc_attr($this->___instance_config->plugin_var_ns.'[a][s]').'" value="call" />';
 					$hidden_inputs .= '<input type="hidden" name="'.esc_attr($this->___instance_config->plugin_var_ns.'[a][c]').'" value="'.esc_attr($call).'" />';
 					$hidden_inputs .= '<input type="hidden" name="'.esc_attr($this->___instance_config->plugin_var_ns.'[a][t]').'" value="'.esc_attr($type).'" />';

@@ -889,13 +889,20 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string|integer $key Optional. Looking for a specific array key?
 			 *
+			 * @param boolean        $include_files Optional. Defaults to a FALSE value.
+			 *    If TRUE, we'll include ``$_FILES`` as part of the array — in a proprietary arrangement.
+			 *    NOTE: If a specific ``$key`` is requested, this parameter is ignored completely.
+			 *
 			 * @return array|mixed|null Copy of all ``$_POST`` vars (trimmed/stripped/cached), else an empty array.
 			 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
 			 *
 			 * @assert () is-type 'array'
 			 */
-			public function _POST($key = NULL)
+			public function _POST($key = NULL, $include_files = FALSE)
 				{
+					if(!isset($key) && $include_files)
+						return $this->merge_FILES_deeply_into($this->_super_global_tsc('_POST', $_POST));
+
 					return $this->_super_global_tsc('_POST', $_POST, $key);
 				}
 
@@ -904,13 +911,20 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string|integer $key Optional. Looking for a specific array key?
 			 *
+			 * @param boolean        $include_files Optional. Defaults to a FALSE value.
+			 *    If TRUE, we'll include ``$_FILES`` as part of the array — in a proprietary arrangement.
+			 *    NOTE: If a specific ``$key`` is requested, this parameter is ignored completely.
+			 *
 			 * @return array|mixed|null Copy of all ``$_REQUEST`` vars (trimmed/stripped/cached), else an empty array.
 			 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
 			 *
 			 * @assert () is-type 'array'
 			 */
-			public function _REQUEST($key = NULL)
+			public function _REQUEST($key = NULL, $include_files = FALSE)
 				{
+					if(!isset($key) && $include_files)
+						return $this->merge_FILES_deeply_into($this->_super_global_tsc('_REQUEST', $_REQUEST));
+
 					return $this->_super_global_tsc('_REQUEST', $_REQUEST, $key);
 				}
 
@@ -953,7 +967,7 @@ namespace websharks_core_v000000_dev
 								}
 							return (array)$_SESSION;
 						}
-					return ($key) ? NULL : array();
+					return (isset($key)) ? NULL : array();
 				}
 
 			/**
@@ -980,7 +994,139 @@ namespace websharks_core_v000000_dev
 								}
 							return (array)$_FILES;
 						}
-					return ($key) ? NULL : array();
+					return (isset($key)) ? NULL : array();
+				}
+
+			/**
+			 * Merges ``$_FILES`` deeply into another array.
+			 *
+			 * @param array $array The array to have ``$_FILES`` merged into.
+			 *
+			 * @return array The original ``$array`` with ``$_FILES`` merged in also.
+			 *    Files with `error` code `UPLOAD_ERR_NO_FILE`; will NOT be included in any way.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If the ``$_FILES`` array contains an unexpected data type.
+			 *
+			 * @note Files with `error` code `UPLOAD_ERR_NO_FILE`; will NOT be included in any way.
+			 * @note File `name` values are modified by this routine. We make sure each file name is unique.
+			 * @note Files are always merged as string values pointing to the base `name` for each file (always unique).
+			 *    In addition, a sibling array w/ key `___file_info` includes child keys created for each file in the array.
+			 *    Each array of info is an associative array of file data for each file.
+			 *
+			 * Example #1: `<input type="file" name="file" />`
+			 *
+			 *    `file => (string)name`
+			 *    `___file_info[file] = array('name' => '', 'tmp_name' => '', etc.)`
+			 *
+			 * Example #2: `<input type="file" name="fields[file]" />`
+			 *
+			 *    `fields[file] => (string)name`
+			 *    `fields[___file_info][file] = array('name' => '', 'tmp_name' => '', etc.)`
+			 *
+			 * Example #3: `<input type="file" name="files[]" multiple="multiple" />`
+			 *
+			 *    `files[0] => (string)name`
+			 *    `files[___file_info][0] = array('name' => '', 'tmp_name' => '', etc.)`
+			 *
+			 *    `files[1] => (string)name`
+			 *    `files[___file_info][1] = array('name' => '', 'tmp_name' => '', etc.)`
+			 *
+			 * Example #4: `<input type="file" name="fields[files][]" multiple="multiple" />`
+			 *
+			 *    `fields[files][0] => (string)name`
+			 *    `fields[files][___file_info][0] = array('name' => '', 'tmp_name' => '', etc.)`
+			 *
+			 *    `fields[files][1] => (string)name`
+			 *    `fields[files][___file_info][1] = array('name' => '', 'tmp_name' => '', etc.)`
+			 */
+			public function merge_FILES_deeply_into($array)
+				{
+					$this->check_arg_types('array', func_get_args());
+
+					if(!($_files = $this->_FILES()))
+						return $array; // No files.
+
+					$files = array(); // Initialize files.
+
+					foreach($_files as $_key => $_value)
+						{
+							if(!is_array($_value)) // This should NOT happen.
+								throw $this->©exception(
+									__METHOD__.'#unexpected_data_type', get_defined_vars(),
+									$this->i18n('Unexpected data type in ``$_FILES`` array.')
+								);
+							foreach($_value as $_file_info_key => $_scalar_or_nested_array_value)
+								$files[$_file_info_key][$_key] = $_scalar_or_nested_array_value;
+						}
+					unset($_key, $_value, $_file_info_key, $_scalar_or_nested_array_value);
+
+					foreach(array('name', 'tmp_name', 'type', 'size', 'error' /* MUST be last key. */) as $_file_info_key)
+						if(!empty($files[$_file_info_key])) $this->_merge_FILES_deeply_into($array, $_file_info_key, $files[$_file_info_key]);
+					unset($_file_info_key);
+
+					return $array; // With ``$_FILES`` merged in.
+				}
+
+			/**
+			 * Merges ``$_FILES`` deeply into another array (helper routine).
+			 *
+			 * @param array   $array The array to have ``$_FILES`` merged into (passed by reference).
+			 *
+			 * @param string  $file_info_key A specific file info key (`name`, `tmp_name`, `type`, `size`, `error`).
+			 *
+			 * @param array   $file_info_values An array of values which represent file info values.
+			 *    These might be scalar values; and/or nested array values (depending on the underlying `<form>` tag).
+			 *
+			 * @param integer $___depth For internal use only. Do NOT pass these in.
+			 * @param boolean $___recursion For internal use only.
+			 *
+			 * @works-by-reference Modifies the original ``$array`` by reference.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$file_info_key`` is empty; or it is NOT an associative array key.
+			 */
+			public function _merge_FILES_deeply_into(&$array, $file_info_key, $file_info_values, $___depth = 0, $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('array', 'string:!empty', 'array', 'integer', 'boolean', func_get_args());
+
+					static $keychain = array(); // Maintains a static keychain across all file info keys.
+
+					foreach($file_info_values as $_key => $_scalar_or_nested_array_value)
+						{
+							if(is_array($_scalar_or_nested_array_value))
+								{
+									if(!$this->©array->is($array[$_key]))
+										{
+											$keychain[$___depth][$_key] = TRUE;
+											$array[$_key]               = array();
+										}
+									$this->_merge_FILES_deeply_into($array[$_key], $file_info_key, $_scalar_or_nested_array_value, TRUE);
+									if(empty($array[$_key]) && isset($keychain[$___depth][$_key])) unset($array[$_key]);
+								}
+							else // Here's where everything comes together.
+								{
+									if($file_info_key === 'error' /* MUST be last key. */)
+										if($_scalar_or_nested_array_value === UPLOAD_ERR_NO_FILE)
+											{
+												unset($array[$_key], $array['___file_info'][$_key]);
+												if(empty($array['___file_info'])) unset($array['___file_info']);
+												continue; // Stop here after emptying keys we built-in.
+											}
+									if($file_info_key === 'name') // Handle file names.
+										{
+											$_extension                    = $this->©file->extension($_scalar_or_nested_array_value);
+											$_scalar_or_nested_array_value = $this->©string->unique_id(); // Make file name unique.
+											if($_extension) $_scalar_or_nested_array_value .= '.'.$_extension;
+											unset($_extension); // Housekeeping.
+
+											$array[$_key] = $_scalar_or_nested_array_value;
+										}
+									$array['___file_info'][$_key][$file_info_key] = $_scalar_or_nested_array_value;
+								}
+						}
+					if(!$___recursion && $file_info_key === 'error') $keychain = array(); // Reset this on last key.
 				}
 
 			/**
@@ -1007,7 +1153,7 @@ namespace websharks_core_v000000_dev
 								}
 							return (array)$_SERVER;
 						}
-					return ($key) ? NULL : array();
+					return (isset($key)) ? NULL : array();
 				}
 
 			/**

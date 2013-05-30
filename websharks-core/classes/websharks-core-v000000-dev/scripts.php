@@ -63,7 +63,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#init', NULL,
 							$this->i18n('Doing it wrong (`init` hook has NOT been fired yet).')
 						);
-
 					// Add components & register scripts (based on context).
 
 					$scripts_to_register = array(); // Initialize scripts to register.
@@ -75,7 +74,6 @@ namespace websharks_core_v000000_dev
 							'url'  => $this->©url->current_scheme().'//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js',
 							'ver'  => $this->___instance_config->core_ns_with_dashes
 						);
-
 					// Only if core has NOT already been registered by another WebSharks™ plugin.
 					if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
 						$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes] = array(
@@ -87,7 +85,7 @@ namespace websharks_core_v000000_dev
 
 								'get___instance_config__failure'                     => $this->i18n('Could NOT instance config value for key: `%1$s`.'),
 								'get___verifier__failure'                            => $this->i18n('Could NOT verifier for key: `%1$s`.'),
-								'get___i18n__failure'                                => $this->i18n('Could NOT translation string for key: `%1$s`.'),
+								'get___i18n__failure'                                => $this->i18n('Could NOT get translation string for key: `%1$s`.'),
 
 								'view_source__doc_title'                             => $this->translate('Source'),
 								'win_open__turn_off_popup_blockers'                  => $this->translate('Please turn off all popup blockers and try again.'),
@@ -98,14 +96,24 @@ namespace websharks_core_v000000_dev
 
 								'validate_ui_form__required_field'                   => $this->translate('This is a required field.'),
 								'validate_ui_form__mismatch_fields'                  => $this->translate('Mismatch (please check these fields).'),
+								'validate_ui_form__unique_field'                     => $this->translate('Please try again (this value MUST be unique please).'),
+
 								'validate_ui_form__required_select_at_least_one'     => $this->translate('Please select at least 1 option.'),
 								'validate_ui_form__required_select_at_least'         => $this->translate('Please select at least %1$s options.'),
+
+								'validate_ui_form__required_file'                    => $this->translate('A file MUST be selected please.'),
+								'validate_ui_form__required_file_at_least_one'       => $this->translate('Please select at least one file.'),
+								'validate_ui_form__required_file_at_least'           => $this->translate('Please select at least %1$s files.'),
+
 								'validate_ui_form__required_radio'                   => $this->translate('Please choose one of the available options.'),
+
 								'validate_ui_form__required_checkbox'                => $this->translate('This box MUST be checked please.'),
 								'validate_ui_form__required_check_at_least_one'      => $this->translate('Please check at least one box.'),
 								'validate_ui_form__required_check_at_least'          => $this->translate('Please check at least %1$s boxes.'),
+
 								'validate_ui_form__validation_description_prefix'    => $this->translate('<strong>REQUIRES:</strong>'),
 								'validate_ui_form__or_validation_description_prefix' => $this->translate('<strong>OR:</strong>'),
+
 								'validate_ui_form__check_issues_below'               => $this->translate('<strong>ERROR:</strong> please check the issues below.'),
 
 								'check_arg_types__diff_object_type'                  => $this->i18n('[a different object type]'),
@@ -151,7 +159,6 @@ namespace websharks_core_v000000_dev
 						$scripts_to_register['jquery'] = array(
 							'url' => $this->©url->current_scheme().'://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'
 						);
-
 					// Register scripts (if there are any to register).
 					if($scripts_to_register) $this->register($scripts_to_register);
 

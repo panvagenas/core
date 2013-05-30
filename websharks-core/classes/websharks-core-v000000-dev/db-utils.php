@@ -389,6 +389,7 @@ namespace websharks_core_v000000_dev
 
 					$replace = array(
 						'/^SET\s+.+?;$/im',
+						'/^\-{2}.*$/im',
 						'/^\/\*\!.*?;$/im',
 						'/ENGINE\s*\=\s*\w+/i',
 						'/`(?:wp_)?'.preg_quote($plugin_prefix, '/').'/',
@@ -400,6 +401,7 @@ namespace websharks_core_v000000_dev
 					);
 					$with    = array(
 						'', // No SET statements.
+						'', // No SQL comment lines.
 						'', // No code-containing comments.
 						'', // No engine specs (use default).
 						'`'.$this->©string->esc_refs($table_prefix),

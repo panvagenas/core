@@ -41,6 +41,10 @@ namespace websharks_core_v000000_dev
 
 					switch($custom_cap)
 					{
+						case 'manage_user_profile_fields':
+								$cap = 'edit_users';
+								break;
+
 						default:
 							$cap = 'administrator';
 							break;

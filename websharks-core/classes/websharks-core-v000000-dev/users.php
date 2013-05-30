@@ -181,10 +181,11 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#user_init_hook', array('args' => $this->args),
 							$this->i18n('Doing it wrong (the `init` hook has NOT been fired yet).')
 						);
-					if($user_id && $user_id < 0)
-						// This is NO user (explicitly).
-						$this->ID = 0; // Set to `0` value.
-
+					if($user_id && $user_id < 0) // NO user (explicitly).
+						{
+							$this->wp = NULL;
+							$this->ID = 0;
+						}
 					else if($user_id // A specific user by ID?
 					        && is_object($wp = new \WP_User($user_id))
 					        && !empty($wp->ID)
@@ -213,9 +214,7 @@ namespace websharks_core_v000000_dev
 						{
 							$this->is_current_default = TRUE;
 
-							if(is_object($wp = wp_get_current_user())
-							   && !empty($wp->ID)
-							) // Instance for current user.
+							if(is_object($wp = wp_get_current_user()) && !empty($wp->ID))
 								{
 									$this->wp = $wp;
 									$this->ID = $wp->ID;
@@ -228,8 +227,8 @@ namespace websharks_core_v000000_dev
 								sprintf($this->i18n('User ID: `%1$s` is missing vital components.'), $this->ID).
 								$this->i18n(' Possible database corruption.')
 							);
-							$this->ID = 0; // User is corrupt in some way.
-							$this->wp = NULL; // Force a NULL value in this case.
+							$this->wp = NULL;
+							$this->ID = 0;
 						}
 					$this->populate(); // Populate (if possible).
 				}
@@ -641,12 +640,12 @@ namespace websharks_core_v000000_dev
 			 *  • (array)`meta` Optional associative array. Any additional user meta values.
 			 *       These are stored via ``update_user_meta()`` (e.g. site-wide meta values).
 			 *
+			 *  • (array)`profile_fields` Optional associative array w/ additional profile fields.
+			 *       See {@link update_profile_fields()} for further details (implemented by class extenders).
+			 *
 			 *  • (array)`data` Optional associative array. Any additional data you'd like to pass through ``wp_update_user()``.
 			 *       See: http://codex.wordpress.org/Function_Reference/wp_update_user
 			 *       See: http://codex.wordpress.org/Function_Reference/wp_insert_user
-			 *
-			 *  • (array)`profile_fields` Optional associative array w/ additional profile fields.
-			 *       See ``$this->update_profile_fields()`` for further details (implemented by class extenders).
 			 *
 			 * @param string  $context One of these values: {@link fw_constants::context_registration}, {@link fw_constants::context_profile_updates}.
 			 *    The context in which this user is being updated (defaults to {@link fw_constants::context_profile_updates}).
@@ -685,8 +684,8 @@ namespace websharks_core_v000000_dev
 						'activation_key' => NULL,
 						'options'        => NULL,
 						'meta'           => NULL,
-						'data'           => NULL,
-						'profile_fields' => NULL
+						'profile_fields' => NULL,
+						'data'           => NULL
 					);
 					$args         = $this->check_extension_arg_types(
 						'string', 'string', 'string', 'string', 'string', 'string', 'string',
@@ -715,15 +714,15 @@ namespace websharks_core_v000000_dev
 
 					// Validate a possible change of email address (only if it has length).
 
-					if(isset($args['email']) && strlen($args['email'])
-					   && $this->©errors->exist_in($validate_email_change_of_address = $this->©user_utils->validate_email_change_of_address($args['email'], $this->email))
-					) return $validate_email_change_of_address; // An errors object instance.
+					if(isset($args['email']) && strlen($args['email']))
+						if($this->©errors->exist_in($validate_email_change_of_address = $this->©user_utils->validate_email_change_of_address($args['email'], $this->email)))
+							return $validate_email_change_of_address; // An errors object instance.
 
 					// Validate a possible change of password (only if it has length).
 
-					if(isset($args['password']) && strlen($args['password'])
-					   && $this->©errors->exist_in($validate_password = $this->©user_utils->validate_password($args['password']))
-					) return $validate_password; // An errors object instance.
+					if(isset($args['password']) && strlen($args['password']))
+						if($this->©errors->exist_in($validate_password = $this->©user_utils->validate_password($args['password'])))
+							return $validate_password; // An errors object instance.
 
 					// Validate a possible change of name (only if name(s) are required in this scenario).
 
@@ -732,12 +731,12 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#first_name_missing', array_merge(array('form_field_code' => 'first_name'), compact('args')),
 							$this->translate('Required field. Missing first name.')
 						);
-					else if(isset($args['last_name']) && empty($args['last_name']) && in_array('last_name', $optional_requirements, TRUE))
+					if(isset($args['last_name']) && empty($args['last_name']) && in_array('last_name', $optional_requirements, TRUE))
 						return $this->©error(
 							__METHOD__.'#last_name_missing', array_merge(array('form_field_code' => 'last_name'), compact('args')),
 							$this->translate('Required field. Missing last name.')
 						);
-					else if(isset($args['display_name']) && empty($args['display_name']) && in_array('display_name', $optional_requirements, TRUE))
+					if(isset($args['display_name']) && empty($args['display_name']) && in_array('display_name', $optional_requirements, TRUE))
 						return $this->©error(
 							__METHOD__.'#display_name_missing', array_merge(array('form_field_code' => 'display_name'), compact('args')),
 							$this->translate('Required field. Missing display name.')
@@ -749,22 +748,22 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#url_missing', array_merge(array('form_field_code' => 'url'), compact('args')),
 							$this->translate('Required field. Missing URL.')
 						);
-					else if(isset($args['url']) && strlen($args['url']) && !preg_match($this->©url->regex_valid_url, $args['url']))
+					if(isset($args['url']) && strlen($args['url']) && !preg_match($this->©url->regex_valid_url, $args['url']))
 						return $this->©error(
 							__METHOD__.'#invalid_url', array_merge(array('form_field_code' => 'url'), compact('args')),
 							$this->translate('Invalid URL. Must start with `http://` and be a valid URL please.')
 						);
-					else if(isset($args['aim']) && empty($args['aim']) && in_array('aim', $optional_requirements, TRUE))
+					if(isset($args['aim']) && empty($args['aim']) && in_array('aim', $optional_requirements, TRUE))
 						return $this->©error(
 							__METHOD__.'#aim_missing', array_merge(array('form_field_code' => 'aim'), compact('args')),
 							$this->translate('Required field. Missing AOL® screen name.')
 						);
-					else if(isset($args['yim']) && empty($args['yim']) && in_array('yim', $optional_requirements, TRUE))
+					if(isset($args['yim']) && empty($args['yim']) && in_array('yim', $optional_requirements, TRUE))
 						return $this->©error(
 							__METHOD__.'#yim_missing', array_merge(array('form_field_code' => 'yim'), compact('args')),
 							$this->translate('Required field. Missing Yahoo® ID.')
 						);
-					else if(isset($args['jabber']) && empty($args['jabber']) && in_array('jabber', $optional_requirements, TRUE))
+					if(isset($args['jabber']) && empty($args['jabber']) && in_array('jabber', $optional_requirements, TRUE))
 						return $this->©error(
 							__METHOD__.'#jabber_missing', array_merge(array('form_field_code' => 'jabber'), compact('args')),
 							$this->translate('Required field. Missing Jabber™ (or Google® Talk) username.')
@@ -776,40 +775,35 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#description_missing', array_merge(array('form_field_code' => 'description'), compact('args')),
 							$this->translate('Required field. Missing personal description.')
 						);
-					// Validate/update any additional profile fields (before we continue any further).
-
-					if(!empty($args['profile_fields']) && // Handled by class extenders via ``$this->update_profile_fields()``.
-					   $this->©errors->exist_in($update_profile_fields = $this->update_profile_fields($args['profile_fields'], $context))
-					) return $update_profile_fields; // An errors object instance.
-
-					// Update IP address (stored as a meta value).
-
-					if(isset($args['ip']))
+					if(isset($args['ip'])) // Update IP address.
 						$this->update_meta('ip', $args['ip']);
 
-					// Handles update of option and/or meta values for this user.
+					if(isset($args['activation_key'])) // Update activation key.
+						$this->update_activation_key($args['activation_key']);
 
-					if(isset($args['options']))
+					if(isset($args['options'])) // Update option values for this user.
 						{
 							foreach($args['options'] as $_key => $_value)
 								if($this->©string->is_not_empty($_key)) $this->update_option($_key, $_value);
 							unset($_key, $_value);
 						}
-					if(isset($args['meta']))
+					if(isset($args['meta'])) // Update meta values for this user.
 						{
 							foreach($args['meta'] as $_key => $_value)
 								if($this->©string->is_not_empty($_key)) $this->update_meta($_key, $_value);
 							unset($_key, $_value);
 						}
-					// Update activation key.
+					// Validate/update any additional profile fields.
 
-					if(isset($args['activation_key']))
-						$this->update_activation_key($args['activation_key']);
-
+					if(isset($args['profile_fields'])) // Handled by class extenders.
+						if($this->©errors->exist_in($update_profile_fields = $this->update_profile_fields($args['profile_fields'], $context)))
+							{
+								$this->refresh(); // Refresh (in case of updates above).
+								return $update_profile_fields; // Errors.
+							}
 					// Finalize the update for this user (fires `profile_update` hook in WordPress®).
-
+					// Given our own validation routines above, errors should NOT occur here; but we'll check anyway.
 					if(is_wp_error($wp_update_user = wp_update_user($this->©strings->slash_deep($data))))
-						// Given our own validation routines, errors should NOT occur here.
 						{
 							$this->refresh(); // Let's refresh (in case of updates above).
 
@@ -823,9 +817,7 @@ namespace websharks_core_v000000_dev
 								$wp_update_user->get_error_message() // Message from ``wp_update_user()``.
 							);
 						}
-					// Fire hook, refresh, and return now.
-
-					$this->do_action('update', $this, get_defined_vars());
+					$this->do_action('update', $this, get_defined_vars()); // Fire hook, refresh, and return now.
 
 					$this->refresh(); // Always refresh object instance after an update.
 
@@ -838,7 +830,7 @@ namespace websharks_core_v000000_dev
 			 * @note This is NOT handled by the core. It requires a class extender to override this.
 			 *    By default, this method simply returns a TRUE value at all times.
 			 *
-			 * @param array  $profile_field_values An associative array of profile fields (by name).
+			 * @param array  $profile_field_values An associative array of profile fields (by code).
 			 *
 			 * @param string $context One of these values: {@link fw_constants::context_registration}, {@link fw_constants::context_profile_updates}.
 			 *    The context in which profile fields are being updated (defaults to {@link fw_constants::context_profile_updates}).
@@ -877,7 +869,7 @@ namespace websharks_core_v000000_dev
 						);
 					if(isset($args['ip']) || isset($args['role']) || isset($args['activation_key']) || isset($args['options']) || isset($args['meta']) || isset($args['data']))
 						throw $this->©exception(
-							__METHOD__.'#security_issue', compact('args'),
+							__METHOD__.'#security_issue', get_defined_vars(),
 							$this->i18n('Security issue. Some of the data submitted, is NOT allowed during basic profile updates.')
 						);
 					extract($args); // Extract for call data.

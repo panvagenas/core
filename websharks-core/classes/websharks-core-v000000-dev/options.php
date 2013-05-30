@@ -369,8 +369,8 @@ namespace websharks_core_v000000_dev
 							$new_options = $this->©string->ify_deep($this->©array->ify_deep($new_options));
 
 							foreach($new_options as &$_new_option) // Variable by reference.
-								if(is_array($_new_option)) // Remove update markers.
-									unset($_new_option['___update']);
+								if(is_array($_new_option)) // Remove update markers and possible file info.
+									unset($_new_option['___update'], $_new_option['___file_info']);
 							unset($_new_option);
 
 							$this->options = array_merge($this->options, $new_options);

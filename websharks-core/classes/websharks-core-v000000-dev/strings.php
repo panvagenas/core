@@ -3117,32 +3117,71 @@ namespace websharks_core_v000000_dev
 			 * Gets a string containing a verbose description of: ``preg_last_error()``.
 			 *
 			 * @return string Verbose description of ``preg_last_error()``.
-			 *
-			 * @assert () === 'None: `PREG_NO_ERROR`.'
 			 */
 			public function preg_last_error()
 				{
-					$preg_last_error = preg_last_error();
+					$error_code = preg_last_error();
 
-					if($preg_last_error == PREG_NO_ERROR)
-						return $this->i18n('None: `PREG_NO_ERROR`.');
+					if($error_code == PREG_NO_ERROR)
+						return $this->i18n('No error: `PREG_NO_ERROR`.');
 
-					else if($preg_last_error == PREG_INTERNAL_ERROR)
+					if($error_code == PREG_INTERNAL_ERROR)
 						return $this->i18n('Internal: `PREG_INTERNAL_ERROR`.');
 
-					else if($preg_last_error == PREG_BACKTRACK_LIMIT_ERROR)
+					if($error_code == PREG_BACKTRACK_LIMIT_ERROR)
 						return $this->i18n('Backtrack limit exhausted: `PREG_BACKTRACK_LIMIT_ERROR`.');
 
-					else if($preg_last_error == PREG_RECURSION_LIMIT_ERROR)
+					if($error_code == PREG_RECURSION_LIMIT_ERROR)
 						return $this->i18n('Recursion limit exhausted: `PREG_RECURSION_LIMIT_ERROR`.');
 
-					else if($preg_last_error == PREG_BAD_UTF8_ERROR)
+					if($error_code == PREG_BAD_UTF8_ERROR)
 						return $this->i18n('Bad UTF8: `PREG_BAD_UTF8_ERROR`.');
 
-					else if($preg_last_error == PREG_BAD_UTF8_OFFSET_ERROR)
+					if($error_code == PREG_BAD_UTF8_OFFSET_ERROR)
 						return $this->i18n('Bad UTF8 offset: `PREG_BAD_UTF8_OFFSET_ERROR`.');
 
-					return $this->i18n('No PREG error.');
+					return $this->i18n('Unknown PREG error code.');
+				}
+
+			/**
+			 * Gets a string containing a verbose error code description.
+			 *
+			 * @param mixed $error_code The file upload error code.
+			 *
+			 * @return string Verbose description of ``$error_code``.
+			 */
+			public function file_upload_error($error_code)
+				{
+					if($error_code == UPLOAD_ERR_OK)
+						return $this->i18n('No error: `UPLOAD_ERR_OK`.');
+
+					if($error_code == UPLOAD_ERR_INI_SIZE)
+						return $this->i18n('Too large: `UPLOAD_ERR_INI_SIZE`.'.
+						                   ' The uploaded file exceeds the `upload_max_filesize` directive in `php.ini`.');
+
+					if($error_code == UPLOAD_ERR_FORM_SIZE)
+						return $this->i18n('Too large: `UPLOAD_ERR_FORM_SIZE`.'.
+						                   ' The uploaded file exceeds the `MAX_FILE_SIZE` directive that was specified in the HTML form.');
+
+					if($error_code == UPLOAD_ERR_PARTIAL)
+						return $this->i18n('Did not get entire file: `UPLOAD_ERR_PARTIAL`. The uploaded file was only partially uploaded.');
+
+					if($error_code == UPLOAD_ERR_NO_FILE)
+						return $this->i18n('Missing: `UPLOAD_ERR_NO_FILE`. No file was uploaded.');
+
+					if($error_code == UPLOAD_ERR_NO_TMP_DIR)
+						return $this->i18n('Missing temp directory on server: `UPLOAD_ERR_NO_TMP_DIR`.');
+
+					if($error_code == UPLOAD_ERR_CANT_WRITE)
+						return $this->i18n('Failed to write file to disk: `UPLOAD_ERR_CANT_WRITE`.');
+
+					if($error_code == UPLOAD_ERR_EXTENSION)
+						return $this->i18n('Exension failure: `UPLOAD_ERR_EXTENSION`.'.
+						                   ' A PHP extension stopped the file upload (this is an unusual error code).'.
+						                   ' PHP does not provide a way to ascertain which extension caused the file upload to stop.'.
+						                   ' Examining the list of loaded extensions with `phpinfo()` may help.');
+
+					return $this->i18n('Unknown file upload error code.');
 				}
 
 			/**

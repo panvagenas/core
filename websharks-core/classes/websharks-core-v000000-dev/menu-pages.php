@@ -234,8 +234,7 @@ namespace websharks_core_v000000_dev
 						array(
 						     'notice'   => $this->i18n('<p>Options saved successfully.</p>'),
 						     'on_pages' => array($this->___instance_config->plugin_root_ns_stub.'*')
-						)
-					);
+						));
 					$this->©action->set_call_data_for('©menu_pages.®update_options', get_defined_vars());
 				}
 		}

@@ -384,10 +384,10 @@
 			{
 				var $$ = this, $ = jQuery;
 
-				var undefinedVar;
+				var undefined_var;
 
 				for(var _i = 0; _i < arguments.length; _i++)
-					if(arguments[_i] === undefinedVar || arguments[_i] === null)
+					if(arguments[_i] === undefined_var || arguments[_i] === null)
 						return false;
 
 				return true;
@@ -626,7 +626,6 @@
 							          .addClass('ui-state-default')
 							          .removeClass('ui-state-highlight');
 					          });
-
 				// Buttonize `input|button` `type="submit|reset|button"` elements.
 
 				$(ui_form + ' input[type="submit"], ' + ui_form + ' input[type="reset"], ' + ui_form + ' input[type="button"], ' +
@@ -661,7 +660,6 @@
 
 						setTimeout(autofill.handler, 50);
 					}
-
 				// Password strength/mismatch indicators.
 
 				var password_strength_mismatch_status = function(password1, password2)
@@ -691,7 +689,6 @@
 
 						return 'strong'; // Default return value.
 					};
-
 				$(ui_form + ' .ui-form-field.ui-form-field-type-password.ui-form-field-confirm')
 					.each(function() // Handles password strength/mismatch indicators.
 					      {
@@ -711,7 +708,6 @@
 									             .html($$.get___i18n('password_strength_mismatch_status__' + strength_mismatch_status));
 							             }).trigger('keyup');
 					      });
-
 				// Form field validation.
 
 				$(ui_form)// Convert response errors for each form, into form field validation-errors.
@@ -765,7 +761,10 @@
 			};
 
 		/**
-		 * Validates form fields.
+		 * Validates form fields (VERY complex).
+		 *
+		 * @note This is an EXTREMELY COMPLEX routine that should NOT be modified without serious consideration.
+		 *    See standards here: \websharks_core_v000000_dev\form_fields in the WebSharks™ Core.
 		 *
 		 * @return {Boolean}
 		 */
@@ -775,15 +774,20 @@
 
 				$$.check_arg_types('object', arguments, 1);
 
-				var errors = {}, errors_exist = false, $id = null, scroll_to_errors = true;
+				var confirmation_errors = {}, unique_value_errors = {};
+				var required_minimum_errors = {}, rc_required_minimum_errors = {};
+				var validation_errors = {};
 
 				$('div.validation-errors', context).remove(); // Remove any existing errors.
 
 				$('.ui-form-field.ui-form-field-confirm', context)// Validation routine (for field confirmations).
 					.each(function() // Checks form fields that request user confirmation (e.g. we look for mismatched fields).
 					      {
-						      var $field1 = $(':input', this);
-						      var $field2 = $(':input', $(this).next('.ui-form-field'));
+						      var $field1 = $(':input', this).first();
+						      var $field2 = $(':input', $(this).next('.ui-form-field')).first();
+
+						      if(!$$.empty($field1.attr('readonly')) || !$$.empty($field2.attr('readonly')))
+							      return; // One of these is NOT even enabled (do nothing in this case).
 
 						      if(!$$.empty($field1.attr('disabled')) || !$$.empty($field2.attr('disabled')))
 							      return; // One of these is NOT even enabled (do nothing in this case).
@@ -791,34 +795,107 @@
 						      var id = $field1.attr('id');
 						      if($$.empty(id) || !$$.is_string(id))
 							      return; // Must have an ID.
+						      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
+
+						      confirmation_errors[id] = confirmation_errors[id] || [];
+
+						      var name = $field1.attr('name');
+						      if($$.empty(name) || !$$.is_string(name))
+							      return; // Must have a name.
+
+						      var tag_name = $field1.prop('tagName');
+						      if($$.empty(tag_name) || !$$.is_string(tag_name))
+							      return; // Must have a tag name.
+						      else tag_name = tag_name.toLowerCase();
+
+						      var type = $field1.attr('type'); // May need this below (for input tags).
+						      if(tag_name === 'input') // Must have a type for input tags.
+							      if($$.empty(type) || !$$.is_string(type))
+								      return; // Must have a type.
+							      else type = type.toLowerCase();
+
+						      if($.inArray(tag_name, ['button']) !== -1)
+							      return; // We do NOT compare buttons.
+
+						      if(tag_name === 'input' && $.inArray(type, ['hidden', 'file', 'radio', 'checkbox', 'image', 'button', 'reset', 'submit']) !== -1)
+							      return; // We do NOT compare any of these input types.
+
+						      // NOTE: It's possible for either of these values to be empty (perfectly OK).
 
 						      var field1_value = $field1.val(); // Possible array.
-						      if($$.is_string(field1_value)) field1_value = $.trim(field1_value);
+						      if($$.is_number(field1_value)) field1_value = String(field1_value); // Force numeric string.
+						      if($$.is_string(field1_value)) field1_value = $.trim(field1_value); // Trim string value.
 
 						      var field2_value = $field2.val(); // Possible array.
-						      if($$.is_string(field2_value)) field2_value = $.trim(field2_value);
+						      if($$.is_number(field2_value)) field2_value = String(field2_value); // Force numeric string.
+						      if($$.is_string(field2_value)) field2_value = $.trim(field2_value); // Trim string value.
 
-						      if(field1_value !== field2_value)
-							      {
-								      errors[id] = errors[id] || [];
-								      errors[id].push($$.get___i18n('validate_ui_form__mismatch_fields'));
-							      }
+						      if(field1_value !== field2_value) // Values are a mismatch?
+							      confirmation_errors[id].push($$.get___i18n('validate_ui_form__mismatch_fields'));
 					      });
+				$(':input[data-unique]', context)// Validation routine (for fields that MUST be unique).
+					.each(function() // Checks form fields that require unique values (this relies upon callbacks).
+					      {
+						      var $this = $(this); // jQuery object instance.
 
+						      if(!$$.empty($this.attr('readonly')) || !$$.empty($this.attr('disabled')))
+							      return; // It's NOT even enabled (or it's read-only).
+
+						      var id = $this.attr('id');
+						      if($$.empty(id) || !$$.is_string(id))
+							      return; // Must have an ID.
+						      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
+
+						      unique_value_errors[id] = unique_value_errors[id] || [];
+
+						      var name = $this.attr('name');
+						      if($$.empty(name) || !$$.is_string(name))
+							      return; // Must have a name.
+
+						      var tag_name = $this.prop('tagName');
+						      if($$.empty(tag_name) || !$$.is_string(tag_name))
+							      return; // Must have a tag name.
+						      else tag_name = tag_name.toLowerCase();
+
+						      var type = $this.attr('type'); // May need this below (for input tags).
+						      if(tag_name === 'input') // Must have a type for input tags.
+							      if($$.empty(type) || !$$.is_string(type))
+								      return; // Must have a type.
+							      else type = type.toLowerCase();
+
+						      if($.inArray(tag_name, ['button', 'select']) !== -1)
+							      return; // Exclude (these are NEVER checked for a unique value).
+
+						      if(tag_name === 'input' && $.inArray(type, ['file', 'radio', 'checkbox', 'image', 'button', 'reset', 'submit']) !== -1)
+						      // Notice that we do NOT exclude hidden input fields here.
+							      return; // Exclude (these are NEVER checked for a unique value).
+
+						      var callback = $this.attr('data-unique-callback'); // Need this below.
+						      if($$.empty(callback) || !$$.is_string(callback) || typeof $w[callback] !== 'function')
+							      return; // Must have a type.
+
+						      var value = $this.val(); // Possible array.
+						      if($$.is_number(value)) value = String(value); // Force numeric string.
+						      if($$.is_string(value)) value = $.trim(value); // Trim string value.
+
+						      if(!$$.empty(value) && $$.is_string(value) && !$w[callback](value))
+							      unique_value_errors[id].push($$.get___i18n('validate_ui_form__unique_field'));
+					      });
 				$(':input[data-required]', context)// Validation routine (for required fields).
 					.each(function() // Checks each `data-required` form field (some tag names are handled differently).
 					      {
 						      var $this = $(this); // jQuery object instance.
 
-						      if(!$$.empty($this.attr('disabled')))
-							      return; // It's NOT even enabled.
-
-						      var value = $this.val(); // Possible array.
-						      if($$.is_string(value)) value = $.trim(value);
+						      if(!$$.empty($this.attr('readonly')) || !$$.empty($this.attr('disabled')))
+							      return; // It's NOT even enabled (or it's read-only).
 
 						      var id = $this.attr('id');
 						      if($$.empty(id) || !$$.is_string(id))
 							      return; // Must have an ID.
+						      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
+
+						      required_minimum_errors[id] = required_minimum_errors[id] || [];
+						      rc_required_minimum_errors[id] = rc_required_minimum_errors[id] || [];
 
 						      var name = $this.attr('name');
 						      if($$.empty(name) || !$$.is_string(name))
@@ -835,130 +912,162 @@
 								      return; // Must have a type.
 							      else type = type.toLowerCase();
 
-						      var checked, validation_minimum; // Might need these.
+						      if($.inArray(tag_name, ['button']) !== -1)
+							      return; // Exclude (these are NEVER required).
 
-						      switch(tag_name/* Some tag names are handled a bit differently here. */)
+						      if(tag_name === 'input' && $.inArray(type, ['image', 'button', 'reset', 'submit']) !== -1)
+						      // Notice that we do NOT exclude hidden input fields here.
+							      return; // Exclude (these are NEVER required).
+
+						      var value = $this.val(); // Possible array.
+						      if($$.is_number(value)) value = String(value); // Force numeric string.
+						      if($$.is_string(value)) value = $.trim(value); // Trim string value.
+
+						      var validation_minimum, validation_min_max_type, validation_abs_minimum = null;
+						      var _i, files, checked; // For files/radios/checkboxes below.
+
+						      switch(tag_name) // Some tag names are handled a bit differently here.
 						      {
-							      case 'select': // We also check for multiple selections here.
+							      case 'select': // We also check for multiple selections (i.e. `multiple="multiple"`).
 
-								      if($this.attr('multiple')) // Allows multiple selections?
+								      if(!$$.empty($this.attr('multiple'))) // This field allows multiple selections?
 									      {
-										      validation_minimum = $this.attr('data-validation-minimum-0');
-										      validation_minimum = ($$.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
-
-										      if($$.isset(validation_minimum) && validation_minimum > 1)
+										      if($this.attr('data-validation-name-0')) // Has validators?
 											      {
-												      if(!$$.is_array(value) || value.length < validation_minimum)
+												      for(_i = 0; _i <= 24; _i++) // Iterate validation patterns.
 													      {
-														      errors[id] = errors[id] || [];
-														      errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_select_at_least'), validation_minimum));
+														      validation_minimum = $this.attr('data-validation-minimum-' + _i);
+														      validation_minimum = ($$.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
+														      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
+
+														      if(validation_min_max_type === 'array_length' && $$.isset(validation_minimum) && validation_minimum > 1)
+															      if(!$$.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
+																      validation_abs_minimum = validation_minimum;
 													      }
+												      if($$.isset(validation_abs_minimum) && (!$$.is_array(value) || value.length < validation_abs_minimum))
+													      required_minimum_errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_select_at_least'), validation_abs_minimum));
 											      }
-										      else if(!$$.is_array(value) || value.length < 1)
-											      {
-												      errors[id] = errors[id] || [];
-												      errors[id].push($$.get___i18n('validate_ui_form__required_select_at_least_one'));
-											      }
+										      if($$.empty(required_minimum_errors[id]) && (!$$.is_array(value) || value.length < 1))
+											      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_select_at_least_one'));
 									      }
 								      else if(!$$.is_string(value) || value.length < 1)
-									      {
-										      errors[id] = errors[id] || [];
-										      errors[id].push($$.get___i18n('validate_ui_form__required_field'));
-									      }
+									      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_field'));
+
 								      break; // Break switch handler.
 
-							      case 'input': // We also check for multiple radios/checkboxes.
+							      case 'input': // Check for multiple files/radios/checkboxes here too.
 
-								      if($.inArray(type, ['radio', 'checkbox']) !== -1)
-									      {
-										      id = id.replace(/\-\-\-[0-9]+$/, ''); // Strip possible radio/checkbox key.
+								      switch(type) // Handle various input types.
+								      {
+									      case 'file': // Handle file uploads.
+
+										      if(!$$.empty($this.attr('multiple'))) // Allows multiple files?
+											      {
+												      files = $this.prop('files'); // List of files (object: FileList).
+
+												      if($this.attr('data-validation-name-0')) // Has validators?
+													      {
+														      for(_i = 0; _i <= 24; _i++) // Iterate validation patterns.
+															      {
+																      validation_minimum = $this.attr('data-validation-minimum-' + _i);
+																      validation_minimum = ($$.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
+																      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
+
+																      if(validation_min_max_type === 'array_length' && $$.isset(validation_minimum) && validation_minimum > 1)
+																	      if(!$$.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
+																		      validation_abs_minimum = validation_minimum;
+															      }
+														      if($$.isset(validation_abs_minimum) && (!(files instanceof FileList) || files.length < validation_abs_minimum))
+															      required_minimum_errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_file_at_least'), validation_abs_minimum));
+													      }
+												      if($$.empty(required_minimum_errors[id]) && (!(files instanceof FileList) || files.length < 1))
+													      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_file_at_least_one'));
+											      }
+										      else if(!$$.is_string(value) || value.length < 1)
+											      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_file'));
+
+										      break; // Break switch handler.
+
+									      case 'radio': // Radio button(s).
 
 										      checked = $('input[id^="' + $$.esc_jquery_attr(id) + '"]:checked', context).length;
 
-										      if(type === 'radio') // Radios are easy.
+										      if(checked < 1) // MUST have at least one checked radio.
 											      {
-												      if(checked > 0) // We only need ONE radio check.
-													      return; // At least one radio is checked (we're OK here).
-
-												      else // Only one error for each radio group.
-													      {
-														      errors[id] = errors[id] || [];
-
-														      if(!$$.empty(errors[id]))
-															      return; // Only one error.
-
-														      errors[id].push($$.get___i18n('validate_ui_form__required_radio'));
-													      }
+												      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
+													      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_radio'));
+												      rc_required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_radio'));
 											      }
-										      else if($('input[id^="' + $$.esc_jquery_attr(id) + '"]', context).length > 1)
+										      break; // Break switch handler.
+
+									      case 'checkbox': // Checkbox(es).
+
+										      checked = $('input[id^="' + $$.esc_jquery_attr(id) + '"]:checked', context).length;
+
+										      if($('input[id^="' + $$.esc_jquery_attr(id) + '"]', context).length > 1) // Multiple?
 											      {
-												      validation_minimum = $this.attr('data-validation-minimum-0');
-												      validation_minimum = ($$.isset(validation_minimum)) ? Number(validation_minimum) : null;
-
-												      if($$.isset(validation_minimum) && validation_minimum > 1)
+												      if($this.attr('data-validation-name-0')) // Has validators?
 													      {
-														      if(checked < validation_minimum)
+														      for(_i = 0; _i <= 24; _i++) // Iterate validation patterns.
 															      {
-																      errors[id] = errors[id] || [];
+																      validation_minimum = $this.attr('data-validation-minimum-' + _i);
+																      validation_minimum = ($$.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
+																      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
-																      if(!$$.empty(errors[id]))
-																	      return; // Only one error.
-
-																      errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_check_at_least'), validation_minimum));
+																      if(validation_min_max_type === 'array_length' && $$.isset(validation_minimum) && validation_minimum > 1)
+																	      if(!$$.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
+																		      validation_abs_minimum = validation_minimum;
+															      }
+														      if($$.isset(validation_abs_minimum) && checked < validation_abs_minimum)
+															      {
+																      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
+																	      required_minimum_errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_check_at_least'), validation_abs_minimum));
+																      rc_required_minimum_errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_check_at_least'), validation_abs_minimum));
 															      }
 													      }
-												      else if(checked < 1)
+												      if($$.empty(required_minimum_errors[id]) && checked < 1)
 													      {
-														      errors[id] = errors[id] || [];
-
-														      if(!$$.empty(errors[id]))
-															      return; // Only one error.
-
-														      errors[id].push($$.get___i18n('validate_ui_form__required_check_at_least_one'));
+														      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
+															      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_check_at_least_one'));
+														      rc_required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_check_at_least_one'));
 													      }
 											      }
-										      else if(checked < 1)
-											      {
-												      errors[id] = errors[id] || [];
-												      errors[id].push($$.get___i18n('validate_ui_form__required_checkbox'));
-											      }
-									      }
-								      else if(!$$.is_string(value) || value.length < 1)
-									      {
-										      errors[id] = errors[id] || [];
-										      errors[id].push($$.get___i18n('validate_ui_form__required_field'));
-									      }
+										      else if(checked < 1) // A single checkbox.
+											      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_checkbox'));
+
+										      break; // Break switch handler.
+
+									      default: // All other input types (default handler).
+
+										      if(!$$.is_string(value) || value.length < 1)
+											      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_field'));
+
+										      break; // Break switch handler.
+								      }
 								      break; // Break switch handler.
 
-							      default: // Everything else (including file/textarea fields).
+							      default: // Everything else (including textarea fields).
 
 								      if(!$$.is_string(value) || value.length < 1)
-									      {
-										      errors[id] = errors[id] || [];
-										      errors[id].push($$.get___i18n('validate_ui_form__required_field'));
-									      }
+									      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_field'));
+
 								      break; // Break switch handler.
 						      }
 					      });
-
-				$(':input[data-validation-name-0]', context)// Validation (for data requirements).
+				$(':input[data-validation-name-0]', context) // Validation (for data requirements).
 					.each(function() // Checks each form field for attributes `data-requirements-name-[n]`.
 					      {
 						      var $this = $(this); // jQuery object instance.
 
-						      if(!$$.empty($this.attr('disabled')))
-							      return; // It's NOT even enabled.
-
-						      var value = $this.val(); // Possible array.
-						      if($$.is_string(value)) value = $.trim(value);
-
-						      if(!value.length && !$$.isset($this.attr('data-required')))
-						      // In this case, data requirements are ignored (value is empty).
-							      return; // NOT required (and value is currently empty).
+						      if(!$$.empty($this.attr('readonly')) || !$$.empty($this.attr('disabled')))
+							      return; // It's NOT even enabled (or it's read-only).
 
 						      var id = $this.attr('id');
 						      if($$.empty(id) || !$$.is_string(id))
 							      return; // Must have an ID.
+						      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
+
+						      validation_errors[id] = validation_errors[id] || [];
 
 						      var name = $this.attr('name');
 						      if($$.empty(name) || !$$.is_string(name))
@@ -975,25 +1084,47 @@
 								      return; // Must have a type.
 							      else type = type.toLowerCase();
 
-						      if($.inArray(tag_name, ['select']) !== -1)
-							      return; // Exclude (these have preset option value lists).
+						      if($.inArray(tag_name, ['button']) !== -1)
+							      return; // Exclude (these are NEVER validated here).
 
-						      if($.inArray(type, ['radio', 'checkbox']) !== -1)
-							      return; // Exclude (these have checked/preset values).
+						      if(tag_name === 'input' && $.inArray(type, ['image', 'button', 'reset', 'submit']) !== -1)
+						      // Notice that we do NOT exclude hidden input fields here.
+							      return; // Exclude (these are NEVER validated here).
 
+						      var value = $this.val(); // Possible array.
+						      if($$.is_number(value)) value = String(value); // Force numeric string.
+						      if($$.is_string(value)) value = $.trim(value); // Trim the value.
+
+						      if($$.empty(typeof value) || $$.empty(typeof value.length) || !value.length)
+							      if(!$$.isset($this.attr('data-required'))) return; // Empty (but NOT required).
+							      else // This value is required and it is NOT defined. We need to stop here.
+								      {
+									      validation_errors[id].push($$.get___i18n('validate_ui_form__required_field'));
+									      return; // We CANNOT validate this any further.
+								      }
 						      var validation_description_prefix, validation_name, validation_regex;
-						      var validation_minimum, validation_maximum, validation_description;
+						      var validation_minimum, validation_maximum, validation_min_max_type, validation_description;
 						      var regex_begin, regex_end, regex_pattern, regex_flags, regex;
+						      var id_validation_errors, rc_id_validation_errors;
+						      var _i, __i, files, size, checked;
 
-						      for(var _validation_errors = [], _i = 0; _i <= 24; _i++)
+						      for(id_validation_errors = [], rc_id_validation_errors = [], _i = 0; _i <= 24; _i++)
 							      {
+								      if(!$$.empty(id_validation_errors))
+									      validation_description_prefix = $$.get___i18n('validate_ui_form__or_validation_description_prefix');
+								      else validation_description_prefix = $$.get___i18n('validate_ui_form__validation_description_prefix');
+
 								      validation_name = $this.attr('data-validation-name-' + _i);
 								      if($$.empty(validation_name) || !$$.is_string(validation_name))
 									      continue; // Must have a validation name.
 
+								      validation_description = $this.attr('data-validation-description-' + _i);
+								      if($$.empty(validation_description) || !$$.is_string(validation_description))
+									      continue; // Must have a validation description.
+
 								      validation_regex = $this.attr('data-validation-regex-' + _i);
 								      if($$.empty(validation_regex) || !$$.is_string(validation_regex))
-									      continue; // Must have a regex validation pattern.
+									      validation_regex = '/[\\s\\S]*/';
 
 								      validation_minimum = $this.attr('data-validation-minimum-' + _i);
 								      validation_minimum = ($$.isset(validation_minimum)) ? Number(validation_minimum) : null;
@@ -1001,85 +1132,267 @@
 								      validation_maximum = $this.attr('data-validation-maximum-' + _i);
 								      validation_maximum = ($$.isset(validation_maximum)) ? Number(validation_maximum) : null;
 
-								      validation_description = $this.attr('data-validation-description-' + _i);
-								      if($$.empty(validation_description) || !$$.is_string(validation_description))
-									      continue; // Must have a validation description.
+								      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
-								      regex_begin = validation_regex.indexOf('/');
-								      regex_end = validation_regex.lastIndexOf('/');
+								      if((regex_begin = validation_regex.indexOf('/')) !== 0)
+									      continue; // We do NOT have a regex validation pattern.
 
-								      if(regex_begin === 0 && regex_end > 0)
+								      if((regex_end = validation_regex.lastIndexOf('/')) < 2)
+									      continue; // We do NOT have a regex validation pattern.
+
+								      regex_pattern = validation_regex.substr(regex_begin + 1, regex_end - 1);
+								      regex_flags = validation_regex.substr(regex_end + 1);
+								      regex = new RegExp(regex_pattern, regex_flags);
+
+								      if($$.empty(typeof id_validation_errors[_i])) // Still no error?
+									      switch(tag_name) // Perform regex validations (based on tag name).
 									      {
-										      regex_pattern = validation_regex.substr(regex_begin + 1, regex_end - 1);
-										      regex_flags = validation_regex.substr(regex_end + 1);
-										      regex = new RegExp(regex_pattern, regex_flags);
+										      case 'input': // This includes several type checks.
+
+											      switch(type) // Handle based on input type.
+											      {
+												      case 'file': // Deal with file uploads.
+
+													      if(!$$.empty($this.attr('multiple')) && (files = $this.prop('files')) instanceof FileList)
+														      {
+															      for(__i = 0; __i < files.length; __i++) if(!$$.is_string(files[__i].name) || !files[__i].name.match(regex))
+																      {
+																	      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+																	      break; // No need to check any further.
+																      }
+														      } // Else look for a single file.
+													      else if($$.empty($this.attr('multiple')))
+														      {
+															      if(!$$.is_string(value) || !value.match(regex)) // Regex validation.
+																      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+														      }
+													      break; // Break switch handler.
+
+												      default: // All other types (excluding radios/checkboxes).
+
+													      if($.inArray(type, ['radio', 'checkbox']) === -1) // Exclusions w/ predefined values.
+														      {
+															      if(!$$.is_string(value) || !value.match(regex)) // Regex validation.
+																      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+														      }
+													      break; // Break switch handler.
+											      }
+											      break; // Break switch handler.
+
+										      default: // All other tag names (excluding select fields).
+
+											      if(tag_name !== 'select') // Exclusions w/ predefined values.
+												      {
+													      if(!$$.is_string(value) || !value.match(regex)) // Regex validation.
+														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+												      }
+											      break; // Break switch handler.
 									      }
-								      else continue; // We do NOT have a regex validation pattern.
-
-								      if(_validation_errors.length)
-									      validation_description_prefix = $$.get___i18n('validate_ui_form__or_validation_description_prefix');
-								      else validation_description_prefix = $$.get___i18n('validate_ui_form__validation_description_prefix');
-
-								      if(!$$.is_string(value) || !value.match(regex))
-									      _validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
-
-								      else if($.inArray(validation_name, ['integer', 'float', 'numeric']) !== -1)
+								      if($$.empty(typeof id_validation_errors[_i]) && ($$.isset(validation_minimum) || $$.isset(validation_maximum)))
+									      switch(validation_min_max_type) // Handle this based on min/max type.
 									      {
-										      if($$.isset(validation_minimum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
-											      _validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+										      case 'numeric_value': // Against min/max numeric value.
 
-										      else if($$.isset(validation_maximum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
-											      _validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
-									      }
-								      else // We interpret minimum/maximum as character lengths.
-									      {
-										      if($$.isset(validation_minimum) && (!$$.is_string(value) || value.length < validation_minimum))
-											      _validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+											      switch(tag_name) // Handle based on tag name.
+											      {
+												      case 'input': // This includes several type checks.
 
-										      else if($$.isset(validation_maximum) && (!$$.is_string(value) || value.length > validation_maximum))
-											      _validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+													      switch(type) // Handle based on input type.
+													      {
+														      default: // All other types (excluding files/radios/checkboxes).
+															      if($.inArray(type, ['file', 'radio', 'checkbox']) === -1) // Exclusions w/ predefined and/or non-numeric values.
+																      {
+																	      if($$.isset(validation_minimum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
+																		      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+
+																	      else if($$.isset(validation_maximum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
+																		      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+																      }
+															      break; // Break switch handler.
+													      }
+													      break; // Break switch handler.
+
+												      default: // All other tag names (excluding select fields).
+
+													      if(tag_name !== 'select') // Exclusions w/ predefined values.
+														      {
+															      if($$.isset(validation_minimum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
+																      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+
+															      else if($$.isset(validation_maximum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
+																      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+														      }
+													      break; // Break switch handler.
+											      }
+											      break; // Break switch handler.
+
+										      case 'file_size': // Against total file size.
+
+											      switch(tag_name) // Handle based on tag name.
+											      {
+												      case 'input': // This includes several type checks.
+
+													      switch(type) // Handle based on input type.
+													      {
+														      case 'file': // Deal with file uploads.
+
+															      if((files = $this.prop('files')) instanceof FileList)
+																      {
+																	      for(size = 0, __i = 0; __i < files.length; __i++) size += files[__i].size;
+
+																	      if($$.isset(validation_minimum) && size < validation_minimum)
+																		      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+
+																	      else if($$.isset(validation_maximum) && size > validation_maximum)
+																		      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+																      }
+															      break; // Break switch handler.
+													      }
+													      break; // Break switch handler.
+											      }
+											      break; // Break switch handler.
+
+										      case 'string_length': // Against string length.
+
+											      switch(tag_name) // Handle based on tag name.
+											      {
+												      case 'input': // This includes several type checks.
+
+													      switch(type) // Handle based on input type.
+													      {
+														      default: // All other types (excluding files/radios/checkboxes).
+															      if($.inArray(type, ['file', 'radio', 'checkbox']) === -1) // Exclusions w/ predefined and/or n/a values.
+																      {
+																	      if($$.isset(validation_minimum) && (!$$.is_string(value) || value.length < validation_minimum))
+																		      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+
+																	      else if($$.isset(validation_maximum) && (!$$.is_string(value) || value.length > validation_maximum))
+																		      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+																      }
+															      break; // Break switch handler.
+													      }
+													      break; // Break switch handler.
+
+												      default: // All other tag names (excluding select fields).
+
+													      if(tag_name !== 'select') // Exclusions w/ predefined values.
+														      {
+															      if($$.isset(validation_minimum) && (!$$.is_string(value) || value.length < validation_minimum))
+																      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+
+															      else if($$.isset(validation_maximum) && (!$$.is_string(value) || value.length > validation_maximum))
+																      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+														      }
+													      break; // Break switch handler.
+											      }
+											      break; // Break switch handler.
+
+										      case 'array_length': // Against array lengths.
+
+											      switch(tag_name) // Handle based on tag name.
+											      {
+												      case 'select': // Select menus w/ multiple options possible.
+
+													      if(!$$.empty($this.attr('multiple')))
+														      {
+															      if($$.isset(validation_minimum) && (!$$.is_array(value) || value.length < validation_minimum))
+																      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+
+															      else if($$.isset(validation_maximum) && (!$$.is_array(value) || value.length > validation_maximum))
+																      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+														      }
+													      break; // Break switch handler.
+
+												      case 'input': // This includes several type checks.
+
+													      switch(type) // Handle based on input type.
+													      {
+														      case 'file': // Handle file uploads w/ multiple files possible.
+
+															      if(!$$.empty($this.attr('multiple'))) // Multiple files possible?
+																      {
+																	      files = $this.prop('files'); // List of files (object: FileList).
+
+																	      if($$.isset(validation_minimum) && (!(files instanceof FileList) || files.length < validation_minimum))
+																		      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+
+																	      else if($$.isset(validation_maximum) && (!(files instanceof FileList) || files.length > validation_maximum))
+																		      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+																      }
+															      break; // Break switch handler.
+
+														      case 'checkbox': // Checkboxes (more than one).
+
+															      if($('input[id^="' + $$.esc_jquery_attr(id) + '"]', context).length > 1) // Multiple?
+																      {
+																	      checked = $('input[id^="' + $$.esc_jquery_attr(id) + '"]:checked', context).length;
+
+																	      if($$.isset(validation_minimum) && checked < validation_minimum)
+																		      {
+																			      if($$.empty(rc_id_validation_errors)) // Only ONE error for each group.
+																				      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+																			      rc_id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+																		      }
+																	      else if($$.isset(validation_maximum) && checked > validation_maximum)
+																		      {
+																			      if($$.empty(rc_id_validation_errors)) // Only ONE error for each group.
+																				      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+																			      rc_id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
+																		      }
+																      }
+															      break; // Break switch handler.
+													      }
+													      break; // Break switch handler.
+											      }
+											      break; // Break switch handler.
 									      }
-								      if(!$$.isset(typeof _validation_errors[_i])) // Only need to pass ONE validation pattern.
-									      _validation_errors = []; // If this one passes, it negates all existing validation errors.
+								      if($$.empty(typeof id_validation_errors[_i]) && $$.empty(typeof rc_id_validation_errors[_i]))
+								      // If this one passes, it negates all existing validation errors (e.g. OR logic).
+									      id_validation_errors = [], rc_id_validation_errors = [];
 							      }
-						      if(_validation_errors.length)
-							      {
-								      errors[id] = errors[id] || [];
-								      errors[id] = errors[id].concat(_validation_errors);
-							      }
+						      validation_errors[id] = validation_errors[id].concat(id_validation_errors);
 					      });
+				var id, errors = {}, $id, errors_exist, scroll_to_errors = true;
 
-				for(var id in errors) // Scan all errors.
+				for(id in confirmation_errors) if(confirmation_errors.hasOwnProperty(id))
+					errors[id] = errors[id] || [], errors[id] = errors[id].concat(confirmation_errors[id]);
+
+				for(id in unique_value_errors) if(unique_value_errors.hasOwnProperty(id))
+					errors[id] = errors[id] || [], errors[id] = errors[id].concat(unique_value_errors[id]);
+
+				for(id in required_minimum_errors) if(required_minimum_errors.hasOwnProperty(id))
+					errors[id] = errors[id] || [], errors[id] = errors[id].concat(required_minimum_errors[id]);
+
+				for(id in validation_errors) if(validation_errors.hasOwnProperty(id))
+					errors[id] = errors[id] || [], errors[id] = errors[id].concat(validation_errors[id]);
+
+				for(id in errors) // Iterate all errors (from all of the routines above).
 					{
-						if(errors.hasOwnProperty(id) && errors[id].length > 0)
-							{
-								errors_exist = true;
+						if(!errors.hasOwnProperty(id) || $$.empty(errors[id]))
+							continue; // No errors in this entry.
 
-								$id = $('#' + id, context);
-								if(!$id.length) // Radios/checkboxes?
-									$id = $('#' + id + '-0', context);
+						errors_exist = true; // We DO have errors.
 
-								if(!$$.empty(scroll_to_errors))
-									{
-										$.scrollTo($id, {offset: {top: -50, left: 0}, duration: 500});
-										scroll_to_errors = false; // Done (no need to do it again).
-									}
-								$id.closest('.ui-form-field-container').after(
-										'<div class="responses validation-errors ui-widget ui-corner-bottom ui-state-error">' +
-										'<ul>' + // Includes an error icon prefix, for each list item we display.
+						if(!($id = $('#' + id, context)).length)
+							$id = $('#' + id + '---0', context); // Try radios/checkboxes.
 
-										'<li><span class="ui-icon ui-icon-alert"></span>' +
-										errors[id].join('</li><li><span class="ui-icon ui-icon-alert"></span>') +
-										'</li>' +
+						if(scroll_to_errors && !(scroll_to_errors = false))// No need to do it again.
+							$.scrollTo($id, {offset: {top: -50, left: 0}, duration: 500});
 
-										'</ul>' +
-										'</div>'
-									)// If it's inside an accordion, let's make sure the accordion is open.
-									.closest('.ui-accordion-content').prev('.ui-accordion-header.ui-state-default').click();
-							}
+						$id.closest('.ui-form-field-container').after(
+								'<div class="responses validation-errors ui-widget ui-corner-bottom ui-state-error">' +
+								'<ul>' + // Includes an error icon prefix, for each list item we display.
+
+								'<li><span class="ui-icon ui-icon-alert"></span>' +
+								errors[id].join('</li><li><span class="ui-icon ui-icon-alert"></span>') +
+								'</li>' +
+
+								'</ul>' +
+								'</div>'
+							) // If it's inside an accordion, let's make sure the accordion is open.
+							.closest('.ui-accordion-content').prev('.ui-accordion-header.ui-state-default').click();
 					}
-				if(errors_exist) // Do NOT submit this form yet (errors exist).
-					return false; // Stops form from being submitted here.
+				if(errors_exist) return false; // Prevents form from being submitted w/ errors.
 
 				return true; // Default return value.
 			};
@@ -1122,8 +1435,7 @@
 			{
 				var $$ = this, $ = jQuery;
 
-				return location.href.match(/\/wp-admin(?:\/|\?|$)/)
-					? true : false;
+				return location.href.match(/\/wp-admin(?:[\/?#]|$)/) ? true : false;
 			};
 
 		/**
@@ -1142,22 +1454,13 @@
 				var current_page, _matches, _page_slug;
 				var regex = new RegExp('^' + $$.preg_quote($$.get___instance_config('plugin_root_ns_stub')) + '(?:__(.+))?$');
 
-				if($$.is_admin() && !$$.empty(current_page = $$.get_query_var('page')))
+				if($$.is_admin() && !$$.empty(current_page = $$.get_query_var('page')) && (_matches = regex.exec(current_page)).length)
 					{
-						if((_matches = regex.exec(current_page)).length) // A plugin menu page?
-							{
-								_page_slug = (_matches.length >= 2 && !$$.empty(_matches[1]))
-									? _matches[1] : $$.get___instance_config('plugin_root_ns_stub');
+						_page_slug = (_matches.length >= 2 && !$$.empty(_matches[1])) ? _matches[1] : $$.get___instance_config('plugin_root_ns_stub');
 
-								if($$.empty(slug_s)) // Nothing in particular?
-									return _page_slug;
-
-								else if($$.is_string(slug_s) && _page_slug === slug_s)
-									return _page_slug;
-
-								else if($$.is_array(slug_s) && $.inArray(_page_slug, slug_s))
-									return _page_slug;
-							}
+						if($$.empty(slug_s)) return _page_slug;
+						if($$.is_string(slug_s) && _page_slug === slug_s) return _page_slug;
+						if($$.is_array(slug_s) && $.inArray(_page_slug, slug_s) !== -1) return _page_slug;
 					}
 				return false;
 			};
@@ -1186,7 +1489,6 @@
 
 						return; // All done.
 					}
-				// Support for older browsers.
 				var body = document.getElementsByTagName('body')[0];
 				if(obj && typeof body.createTextRange === 'function')
 					{
