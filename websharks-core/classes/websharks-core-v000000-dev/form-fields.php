@@ -382,7 +382,7 @@ namespace websharks_core_v000000_dev
 
 					$this->check_arg_types('', 'array', func_get_args());
 
-					$this->set_properties($properties);
+					if($properties) $this->set_properties($properties);
 
 					$this->defaults['ui_prefix']         = $this->ui_prefix;
 					$this->defaults['name_prefix']       = $this->name_prefix;
