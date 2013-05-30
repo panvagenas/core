@@ -426,16 +426,18 @@ namespace websharks_core_v000000_dev
 					$values                                 = $this->values($field_value); // Array (or NULL by default).
 					$field                                  = $this->standardize_field_config($field_value, $field); // Merge w/ defaults and standardize.
 					$this->generated_fields[$field['code']] = $field; // Indexed by code.
+					$html                                   = ''; // Initialize string value.
 
-					$html = '<div'.
-					        ' class="'.esc_attr($field['id_prefix'].$field['id'].' '.$field['ui_prefix'].'form-field-wrapper '.$field['ui_prefix'].'form-field-type-'.$field['type'].(($field['confirm']) ? ' '.$field['ui_prefix'].'form-field-confirm' : '').' '.$field['ui_prefix'].'form-field').
-					        (($field['block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['ui_prefix'].'form-field-type-block-rcs') : '').
-					        (($field['scrolling_block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['ui_prefix'].'form-field-type-scrolling-block-rcs') : '').
-					        esc_attr($field['div_wrapper_classes'].$field['common_classes']).'"'.
-					        $field['common_attrs'].
-					        '>';
+					if($field['type'] !== 'hidden')
+						$html .= '<div'.
+						         ' class="'.esc_attr($field['id_prefix'].$field['id'].' '.$field['ui_prefix'].'form-field-wrapper '.$field['ui_prefix'].'form-field-type-'.$field['type'].(($field['confirm']) ? ' '.$field['ui_prefix'].'form-field-confirm' : '').' '.$field['ui_prefix'].'form-field').
+						         (($field['block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['ui_prefix'].'form-field-type-block-rcs') : '').
+						         (($field['scrolling_block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['ui_prefix'].'form-field-type-scrolling-block-rcs') : '').
+						         esc_attr($field['div_wrapper_classes'].$field['common_classes']).'"'.
+						         $field['common_attrs'].
+						         '>';
 
-					if($field['label'])
+					if($field['label'] && $field['type'] !== 'hidden')
 						{
 							$html .= '<label'.
 							         ((in_array($field['type'], $this->multi_check_types, TRUE)) ? '' : ' for="'.esc_attr($field['id_prefix'].$field['id']).'"').
@@ -450,7 +452,7 @@ namespace websharks_core_v000000_dev
 
 							         '</label>';
 						}
-					if($field['details'])
+					if($field['details'] && $field['type'] !== 'hidden')
 						{
 							$html .= '<div'.
 							         ' class="'.esc_attr($field['ui_prefix'].'form-field-details'.$field['common_classes']).'"'.
@@ -461,12 +463,13 @@ namespace websharks_core_v000000_dev
 
 							         '</div>';
 						}
-					$html .= '<div'.
-					         ' class="'.esc_attr($field['ui_prefix'].'form-field-container '.$field['ui_prefix'].'state-default '.$field['ui_prefix'].'corner-all'.$field['common_classes']).'"'.
-					         $field['common_attrs'].
-					         '>';
+					if($field['type'] !== 'hidden')
+						$html .= '<div'.
+						         ' class="'.esc_attr($field['ui_prefix'].'form-field-container '.$field['ui_prefix'].'state-default '.$field['ui_prefix'].'corner-all'.$field['common_classes']).'"'.
+						         $field['common_attrs'].
+						         '>';
 
-					if(in_array($field['type'], $this->types_with_icons, TRUE))
+					if(in_array($field['type'], $this->types_with_icons, TRUE) && $field['type'] !== 'hidden')
 						{
 							$html .= '<span'.
 							         ' class="'.esc_attr($field['ui_prefix'].'form-field-icon '.$field['ui_prefix'].'icon '.$field['ui_prefix'].$field['icon'].$field['common_classes']).'"'.
@@ -582,7 +585,7 @@ namespace websharks_core_v000000_dev
 								}
 							unset($_key, $_option);
 						}
-					else if(in_array($field['type'], array('textarea'), TRUE))
+					else if($field['type'] === 'textarea')
 						{
 							$html .= '<textarea'.
 							         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
@@ -649,11 +652,12 @@ namespace websharks_core_v000000_dev
 									         ' value="'.esc_attr('___update').'"'.
 									         '/>';
 								}
-							$html .= '<input'.
+							$html .= '<input'. // MANY conditions here.
+
 							         ' type="'.esc_attr($field['type']).'"'.
 							         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
 							         ((in_array($field['type'], $this->button_types, TRUE)) ? '' : ' name="'.esc_attr($field['name_prefix'].$field['name'].(($field['type'] === 'file' && $field['multiple']) ? '[]' : '')).'"').
-							         ' class="'.esc_attr($field['ui_prefix'].'form-field-'.((in_array($field['type'], $this->button_types, TRUE)) ? 'tag-button' : 'tag').' '.$field['ui_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['ui_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
+							         (($field['type'] === 'hidden') ? '' : ' class="'.esc_attr($field['ui_prefix'].'form-field-'.((in_array($field['type'], $this->button_types, TRUE)) ? 'tag-button' : 'tag').' '.$field['ui_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['ui_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"').
 
 							         (($field['type'] === 'file') ? '' // Exclude (NOT possible to define a value for files).
 								         : ((in_array($field['type'], $this->single_check_types, TRUE)) ? ' value="'.esc_attr($field['checked_value']).'"'
@@ -674,10 +678,11 @@ namespace websharks_core_v000000_dev
 								           (($field['unique'] && !in_array($field['type'], array_merge($this->single_check_types, array('file')), TRUE)) ? ' data-unique="'.esc_attr('true').'" data-unique-callback="'.esc_attr($field['unique_callback_js']).'"' : '').
 								           (($field['validation_patterns']) ? ' '.$this->validation_attrs($field['validation_patterns']) : '')).
 
-							         (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
-							         (($field['title']) ? ' title="'.esc_attr($field['title']).'"' : '').
+							         (($field['type'] === 'hidden') ? '' // Exclude.
+								         : (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
+								           (($field['title']) ? ' title="'.esc_attr($field['title']).'"' : '')).
 
-							         ((in_array($field['type'], array_merge($this->button_types, $this->single_check_types, array('file')), TRUE)) ? '' // Exclude.
+							         ((in_array($field['type'], array_merge($this->button_types, $this->single_check_types, array('file', 'hidden')), TRUE)) ? '' // Exclude.
 								         : ((!$field['autocomplete']) ? ' autocomplete="off"' : '').
 								           ((!$field['spellcheck']) ? ' spellcheck="false"' : '')).
 
@@ -704,9 +709,10 @@ namespace websharks_core_v000000_dev
 					else throw $this->©exception(__METHOD__.'#invalid_type', get_defined_vars(),
 					                             sprintf($this->i18n('Invalid form field type: `%1$s`.'), $field['type']));
 
-					$html .= '</div>'; // Container.
+					if($field['type'] !== 'hidden') // Close container?
+						$html .= '</div>'; // Closes container dive tag now.
 
-					if($field['extra_details'])
+					if($field['extra_details'] && $field['type'] !== 'hidden')
 						{
 							$html .= '<div'.
 							         ' class="'.esc_attr($field['ui_prefix'].'form-field-extra-details'.$field['common_classes']).'"'.
@@ -717,7 +723,8 @@ namespace websharks_core_v000000_dev
 
 							         '</div>';
 						}
-					$html .= '</div>'; // Wrapper.
+					if($field['type'] !== 'hidden') // Close wrapper?
+						$html .= '</div>'; // Closes wrapper dive tag now.
 
 					if($field['confirm'] && in_array($field['type'], $this->confirmable_types, TRUE))
 						{
@@ -1216,7 +1223,7 @@ namespace websharks_core_v000000_dev
 								}
 							// Handle file errors (when/if applicable; during file uploads).
 
-							if($_field['type'] === 'file') // Should check?
+							if($_field['type'] === 'file' && $_file_info) // Should check?
 								{
 									if($_field['multiple']) // Allows multiple files?
 										{
@@ -1226,17 +1233,14 @@ namespace websharks_core_v000000_dev
 													             $this->translate('Invalid data type. Expecting an array.'));
 													continue; // We CANNOT validate this any further.
 												}
-											else if($_file_info) // We need to check for errors on any file.
-												{
-													foreach($_value as $__key => $__value)
-														if(!is_string($__value) || !isset($_file_info[$__key]) || $_file_info[$__key]['error'] !== UPLOAD_ERR_OK)
-															{
-																$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-																             $this->translate('File upload failure.').' '.$this->©string->file_upload_error($_file_info[$__key]['error']));
-																continue 2; // We CANNOT validate this any further.
-															}
-													unset($__key, $__value); // Housekeeping.
-												}
+											else foreach($_value as $__key => $__value)
+												if(!is_string($__value) || !isset($_file_info[$__key]) || $_file_info[$__key]['error'] !== UPLOAD_ERR_OK)
+													{
+														$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+														             $this->translate('File upload failure.').' '.$this->©string->file_upload_error($_file_info[$__key]['error']));
+														continue 2; // We CANNOT validate this any further.
+													}
+											unset($__key, $__value); // Housekeeping.
 										}
 									else // We're dealing with a single file in this case.
 										{
@@ -1246,7 +1250,7 @@ namespace websharks_core_v000000_dev
 													             $this->translate('Invalid data type. Expecting a string.'));
 													continue; // We CANNOT validate this any further.
 												}
-											else if($_file_info && $_file_info['error'] !== UPLOAD_ERR_OK)
+											else if($_file_info['error'] !== UPLOAD_ERR_OK)
 												{
 													$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
 													             $this->translate('File upload failure.').' '.$this->©string->file_upload_error($_file_info['error']));
@@ -1256,7 +1260,7 @@ namespace websharks_core_v000000_dev
 								}
 							// Handle file MIME types now (when/if applicable; during file uploads).
 
-							if($_field['type'] === 'file' && $_field['accept']) // Should check?
+							if($_field['type'] === 'file' && $_field['accept'] && $_file_info) // Should check?
 								{
 									$_mime_types        = $this->©file->mime_types();
 									$_wildcard_patterns = preg_split('/[;,]+/', $_field['accept'], NULL, PREG_SPLIT_NO_EMPTY);
@@ -1269,21 +1273,18 @@ namespace websharks_core_v000000_dev
 													             $this->translate('Invalid data type. Expecting an array.'));
 													continue; // We CANNOT validate this any further.
 												}
-											else if($_file_info) // We need to compare the MIME type sent by the browser to the `accept` wildcard patterns.
-												{
-													foreach($_value as $__key => $__value)
-														if(!is_string($__value) || !isset($_file_info[$__key])
-														   || (!$this->©string->in_wildcard_patterns($_file_info[$__key]['type'], $_wildcard_patterns, TRUE)
-														       && (!$_file_info[$__key]['name'] || !($__extension = $this->©file->extension($_file_info[$__key]['name'])) || empty($_mime_types[$__extension])
-														           || !$this->©string->in_wildcard_patterns($_mime_types[$__extension], $_wildcard_patterns, TRUE)))
-														) // Check MIME type from browser; and also MIME type as determined by the file extension.
-															{
-																$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-																             sprintf($this->translate('Invalid MIME type. Expecting: `%1$s`.'), $_field['accept']));
-																continue 2; // We CANNOT validate this any further.
-															}
-													unset($__key, $__value, $__extension); // Housekeeping.
-												}
+											else foreach($_value as $__key => $__value)
+												if(!is_string($__value) || !isset($_file_info[$__key])
+												   || (!$this->©string->in_wildcard_patterns($_file_info[$__key]['type'], $_wildcard_patterns, TRUE)
+												       && (!$_file_info[$__key]['name'] || !($__extension = $this->©file->extension($_file_info[$__key]['name'])) || empty($_mime_types[$__extension])
+												           || !$this->©string->in_wildcard_patterns($_mime_types[$__extension], $_wildcard_patterns, TRUE)))
+												) // Check MIME type from browser; and also MIME type as determined by the file extension.
+													{
+														$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+														             sprintf($this->translate('Invalid MIME type. Expecting: `%1$s`.'), $_field['accept']));
+														continue 2; // We CANNOT validate this any further.
+													}
+											unset($__key, $__value, $__extension); // Housekeeping.
 										}
 									else // We're dealing with a single file in this case.
 										{
@@ -1293,7 +1294,7 @@ namespace websharks_core_v000000_dev
 													             $this->translate('Invalid data type. Expecting a string.'));
 													continue; // We CANNOT validate this any further.
 												}
-											else if($_file_info && !$this->©string->in_wildcard_patterns($_file_info['type'], $_wildcard_patterns, TRUE)
+											else if(!$this->©string->in_wildcard_patterns($_file_info['type'], $_wildcard_patterns, TRUE)
 											        && (!$_file_info['name'] || !($__extension = $this->©file->extension($_file_info['name'])) || empty($_mime_types[$__extension])
 											            || !$this->©string->in_wildcard_patterns($_mime_types[$__extension], $_wildcard_patterns, TRUE))
 											) // Check MIME type from browser; and also MIME type as determined by the file extension.
@@ -1306,16 +1307,32 @@ namespace websharks_core_v000000_dev
 										}
 									unset($_mime_types, $_wildcard_patterns); // Housekeeping.
 								}
-							// Move file processing now (when/if applicable; during file uploads).
+							// Handle file processing now (when/if applicable; during file uploads).
+							// We ONLY move each file ONE time. This routine caches each `tmp_name` statically.
 
-							if($_field['type'] === 'file' && $_field['move_to_dir']) // Should move?
+							if($_field['type'] === 'file' && $_field['move_to_dir'] && $_file_info) // Should move?
 								{
-									$__move_to_dir = $this->©dir->n_seps(ABSPATH.$_field['move_to_dir']);
-									if(!is_dir($__move_to_dir) && is_writable($this->©dir->n_seps_up($__move_to_dir)))
+									$__abspath             = $this->©dir->n_seps(ABSPATH);
+									$_field['move_to_dir'] = $this->©dir->n_seps($_field['move_to_dir']);
+									if(strpos($_field['move_to_dir'].'/', $__abspath.'/') !== 0) // Force into WordPress®.
+										$_field['move_to_dir'] = $__abspath.'/'.ltrim($_field['move_to_dir'], '/');
+									unset($__abspath); // Housekeeping.
+
+									if(!is_dir($_field['move_to_dir']) && is_writable($this->©dir->n_seps_up($_field['move_to_dir'])))
 										{
-											mkdir($__move_to_dir, 0775, TRUE); // Recursively.
+											mkdir($_field['move_to_dir'], 0775, TRUE); // Recursively.
+											// However, the parent directory MUST exist already (as seen above).
 											clearstatcache(); // Clear cache before checking again.
-										}
+
+											if(!is_dir($_field['move_to_dir']) || !is_writable($_field['move_to_dir']))
+												{
+													$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+													             $this->translate('Unable to handle file upload(s). Unable to move uploaded file(s).').
+													             sprintf($this->translate(' Move-to directory NOT writable: `%1$s`.'), $_field['move_to_dir']));
+													continue; // We CANNOT validate this any further.
+												}
+										} // If we get here, the directory exists.
+
 									if($_field['multiple']) // Uploading multiple files?
 										{
 											if(!is_array($_value)) // Invalid data type?
@@ -1324,27 +1341,20 @@ namespace websharks_core_v000000_dev
 													             $this->translate('Invalid data type. Expecting an array.'));
 													continue; // We CANNOT validate this any further.
 												}
-											else if($_file_info) // We need to validate and move each file.
-												{
-													if(!is_dir($__move_to_dir) || !is_writable($__move_to_dir))
-														{
-															$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-															             $this->translate('Unable to handle file upload. Unable to move uploaded file.').
-															             sprintf($this->translate(' Move-to directory NOT writable: `%1$s`.'), $_field['move_to_dir']));
-															continue; // We CANNOT validate this any further.
-														}
-													else foreach($_value as $__key => $__value)
-														if(!is_string($__value) || !isset($_file_info[$__key])
-														   || !$_file_info[$__key]['tmp_name'] || !is_uploaded_file($_file_info[$__key]['tmp_name']) || !$_file_info[$__key]['name']
-														   || !move_uploaded_file($_file_info[$__key]['tmp_name'], $_field['move_to_dir'].'/'.$_file_info[$__key]['name'])
-														) // File `name` value is always unique. See {@link vars::_merge_FILES_deeply_into()}.
-															{
-																$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-																             sprintf($this->translate('Unable to handle file upload. Unable to move to: `%1$s`.'), $_field['move_to_dir']));
-																continue 2; // We CANNOT validate this any further.
-															}
-													unset($__key, $__value); // Housekeeping.
-												}
+											else foreach($_value as $__key => $__value)
+												if(!is_string($__value) || !isset($_file_info[$__key])
+												   || !$_file_info[$__key]['tmp_name'] || !$_file_info[$__key]['name']
+												   || (!isset($this->static[__FUNCTION__.'_moved_tmp_name_to'][$_file_info[$__key]['tmp_name']])
+												       && (!is_uploaded_file($_file_info[$__key]['tmp_name']) || !move_uploaded_file($_file_info[$__key]['tmp_name'], $_field['move_to_dir'].'/'.$_file_info[$__key]['name'])))
+												) // File `name` value is always unique. See {@link vars::_merge_FILES_deeply_into()}.
+													{
+														$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+														             sprintf($this->translate('Unable to handle file upload. Unable to move to: `%1$s`.'), $_field['move_to_dir']));
+														continue 2; // We CANNOT validate this any further.
+													}
+												else $this->static[__FUNCTION__.'_moved_tmp_name_to'][$_file_info[$__key]['tmp_name']] = $_field['move_to_dir'];
+
+											unset($__key, $__value); // Housekeeping.
 										}
 									else // We're dealing with a single file in this case.
 										{
@@ -1354,19 +1364,17 @@ namespace websharks_core_v000000_dev
 													             $this->translate('Invalid data type. Expecting a string.'));
 													continue; // We CANNOT validate this any further.
 												}
-											else if($_file_info) // We need to validate and move this file.
+											else if(!$_file_info['tmp_name'] || !$_file_info['name']
+											        || (!isset($this->static[__FUNCTION__.'_moved_tmp_name_to'][$_file_info['tmp_name']])
+											            && (!is_uploaded_file($_file_info['tmp_name']) || !move_uploaded_file($_file_info['tmp_name'], $_field['move_to_dir'].'/'.$_file_info['name'])))
+											) // File `name` value is always unique. See {@link vars::_merge_FILES_deeply_into()}.
 												{
-													if(!$_file_info['tmp_name'] || !is_uploaded_file($_file_info['tmp_name']) || !$_file_info['name']
-													   || !move_uploaded_file($_file_info['tmp_name'], $_field['move_to_dir'].'/'.$_file_info['name'])
-													) // File `name` value is always unique. See {@link vars::_merge_FILES_deeply_into()}.
-														{
-															$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-															             sprintf($this->translate('Unable to handle file upload. Unable to move to: `%1$s`.'), $_field['move_to_dir']));
-															continue; // We CANNOT validate this any further.
-														}
+													$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+													             sprintf($this->translate('Unable to handle file upload. Unable to move to: `%1$s`.'), $_field['move_to_dir']));
+													continue; // We CANNOT validate this any further.
 												}
+											else $this->static[__FUNCTION__.'_moved_tmp_name_to'][$_file_info['tmp_name']] = $_field['move_to_dir'];
 										}
-									unset($__move_to_dir); // Housekeeping.
 								}
 						}
 					unset($_key, $_field, $_value, $_file_info); // Housekeeping.
@@ -1545,7 +1553,8 @@ namespace websharks_core_v000000_dev
 					if($field['unique'] && !is_callable($field['unique_callback_php']))
 						throw $this->©exception(
 							__METHOD__.'#missing_unique_callback_php', get_defined_vars(),
-							$this->i18n('Form field. Invalid configuration (missing and/or invalid `unique_callback_php`).')
+							$this->i18n('Form field. Invalid configuration (missing and/or invalid `unique_callback_php`).').
+							sprintf($this->i18n(' Expecting callable. Got: `%1$s`.'), $this->©var->dump($field['unique_callback_php']))
 						);
 					// Handle validation patterns.
 
