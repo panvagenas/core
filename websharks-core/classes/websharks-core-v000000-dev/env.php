@@ -399,20 +399,17 @@ namespace websharks_core_v000000_dev
 						{
 							$this->static['admin_area'] = '';
 
-							if(!is_admin()) // NOT administrative?
-							$this->static['admin_area'] = '';
+							if(!is_admin()) // NOT in admin area.
+								$this->static['admin_area'] = '';
+
+							else if(is_multisite() && is_network_admin())
+								$this->static['admin_area'] = 'network-admin';
 
 							else if(is_blog_admin())
 								$this->static['admin_area'] = 'blog-admin';
 
 							else if(is_user_admin())
 								$this->static['admin_area'] = 'user-admin';
-
-							else if(is_network_admin())
-								$this->static['admin_area'] = 'network-admin';
-
-							else // Default administrative area.
-							$this->static['admin_area'] = 'blog-admin';
 						}
 					return $this->static['admin_area'];
 				}
@@ -429,9 +426,9 @@ namespace websharks_core_v000000_dev
 							$this->static['admin_page'] = '';
 
 							if(!is_admin()) // NOT in admin area.
-							return $this->static['admin_page'];
+								$this->static['admin_page'] = '';
 
-							if(!is_string($this->static['admin_page'] = $this->©vars->_REQUEST('page')) || !$this->static['admin_page'])
+							else if(!$this->©string->¤is_not_empty($this->static['admin_page'] = $this->©vars->_REQUEST('page')))
 								$this->static['admin_page'] = $this->©string->is_not_empty_or($GLOBALS['pagenow'], '');
 						}
 					return $this->static['admin_page'];
@@ -473,7 +470,7 @@ namespace websharks_core_v000000_dev
 			public function ob_end_clean()
 				{
 					if(ob_get_level()) // Cleans output buffers.
-					while(ob_get_level()) ob_end_clean();
+						while(ob_get_level()) ob_end_clean();
 				}
 
 			/**

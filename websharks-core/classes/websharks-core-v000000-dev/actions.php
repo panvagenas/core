@@ -159,7 +159,7 @@ namespace websharks_core_v000000_dev
 							return $this->__call($call, $args);
 
 					throw $this->©exception(
-						__METHOD__.'#invalid_or_expired_call_action_verifier', compact('action'),
+						__METHOD__.'#invalid_or_expired_call_action_verifier', get_defined_vars(),
 						$this->i18n('Invalid or expired `call` action verifier. Unable to process.').
 						sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($action))
 					);
@@ -169,10 +169,6 @@ namespace websharks_core_v000000_dev
 			 * Handles `ajax` call actions for the current plugin.
 			 *
 			 * @param array $action An action array, as returned by ``$this->is()``.
-			 *
-			 * @return mixed Probable script ``exit()`` after AJAX processing.
-			 *    If unit testing, we return the value returned by the method being called upon.
-			 *    This will NOT exit script execution during unit testing.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$action`` is empty; or if it CANNOT be called upon, for any reason.
@@ -196,16 +192,11 @@ namespace websharks_core_v000000_dev
 						if($this->verify_call($call, $type, $verifier))
 							{
 								$this->©headers->clean_status_type(200, 'text/plain', TRUE);
-
-								$return_value = $this->__call($call, $args);
-
-								if(defined('___UNIT_TEST'))
-									return $return_value;
-
-								exit(); // Else we exit by default.
+								$this->__call($call, $args);
+								exit(); // Stop here.
 							}
 					throw $this->©exception(
-						__METHOD__.'#invalid_or_expired_ajax_action_verifier', compact('action'),
+						__METHOD__.'#invalid_or_expired_ajax_action_verifier', get_defined_vars(),
 						$this->i18n('Invalid or expired `ajax` action verifier. Unable to process.').
 						sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($action))
 					);
@@ -276,10 +267,9 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', compact('call'),
+							__METHOD__.'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
-
 					if($type === $this::public_type)
 						{
 							if($action_key_expires_after === 0)
@@ -372,7 +362,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', compact('call'),
+							__METHOD__.'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					$hidden_inputs = '<input type="hidden" name="'.esc_attr($this->___instance_config->plugin_var_ns.'[a][s]').'" value="call" />';
@@ -547,7 +537,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', compact('call'),
+							__METHOD__.'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					switch($type) // Generates verifier (based on `call` action type).
@@ -580,7 +570,7 @@ namespace websharks_core_v000000_dev
 								return $expiration_time.'-'.$this->©encryption->hmac_sha1_sign($call.$type.$this->©user->ID.$expiration_time);
 					}
 					throw $this->©exception(
-						__METHOD__.'#invalid_type', compact('type'),
+						__METHOD__.'#invalid_type', get_defined_vars(),
 						$this->i18n('Invalid `$type`. Expecting `$this::public_type|$this::protected_type|$this::private_type`.').
 						sprintf($this->i18n(' Got: `%1$s`.'), $type)
 					);
@@ -634,7 +624,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', compact('call'),
+							__METHOD__.'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					return "'".$this->©string->esc_js_sq($type.'::'.$call)."':".
@@ -673,7 +663,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', compact('call'),
+							__METHOD__.'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					$this->call_data_for[$group][$call] = $structured_data;

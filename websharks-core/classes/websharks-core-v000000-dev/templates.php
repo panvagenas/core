@@ -717,14 +717,13 @@ namespace websharks_core_v000000_dev
 
 									/** @var $_xml_obj \SimpleXMLElement We're looking for this specific type of class. */
 
-									if(!$_xml_obj || !($_xml_obj instanceof \SimpleXMLElement)) // XML is corrupt in some way?
+									if(!$_xml_obj || !($_xml_obj instanceof \SimpleXMLElement)) // XML is corrupt?
 										throw $this->©exception(
-											__METHOD__.'#unparsable_xml_config', compact('_template_config', '_xml_obj'),
+											__METHOD__.'#unparsable_xml_config', get_defined_vars(),
 											sprintf($this->i18n('Unparsable XML `<template-config>` in `%1$s`.'), $this->file).
 											$this->i18n(' Please be sure to encode XML entities (i.e. special chars).').
 											sprintf($this->i18n(' Got: `%1$s`.'), $_template_config)
 										);
-
 									if($this->©xml->attribute($_xml_obj, 'file') !== $this->file)
 										continue; // It's NOT for this template file.
 

@@ -118,8 +118,7 @@ namespace websharks_core_v000000_dev
 					$this->cache['load_pro_class'] = TRUE;
 
 					if(is_file($this->___instance_config->plugin_pro_class_file)
-					   && (in_array($this->___instance_config->plugin_pro_dir_file_basename, $this->active(), TRUE)
-					       || defined('___UNIT_TEST')) // Also load pro add-on for unit tests.
+					   && in_array($this->___instance_config->plugin_pro_dir_file_basename, $this->active(), TRUE)
 					) // If pro add-on exists, it MUST be an active WordPress® plugin, like any other.
 						{
 							require_once $this->___instance_config->plugin_pro_class_file;

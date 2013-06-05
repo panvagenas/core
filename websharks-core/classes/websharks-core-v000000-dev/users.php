@@ -43,6 +43,12 @@ namespace websharks_core_v000000_dev
 			public $wp; // Defaults to a NULL value.
 
 			/**
+			 * @var boolean Was this object constructed for NO user (explicitly)?
+			 * @by-constructor Set dynamically by class constructor.
+			 */
+			public $is_no_user = FALSE;
+
+			/**
 			 * @var boolean Was this object constructed for the current default user?
 			 * @by-constructor Set dynamically by class constructor.
 			 */
@@ -176,15 +182,16 @@ namespace websharks_core_v000000_dev
 
 					$this->args = array('user_id' => $user_id, 'by' => $by, 'value' => $value);
 
-					if(!did_action('init') && !defined('___UNIT_TEST'))
+					if(!did_action('init'))
 						throw $this->©exception(
 							__METHOD__.'#user_init_hook', array('args' => $this->args),
 							$this->i18n('Doing it wrong (the `init` hook has NOT been fired yet).')
 						);
 					if($user_id && $user_id < 0) // NO user (explicitly).
 						{
-							$this->wp = NULL;
-							$this->ID = 0;
+							$this->is_no_user = TRUE;
+							$this->wp         = NULL;
+							$this->ID         = 0;
 						}
 					else if($user_id // A specific user by ID?
 					        && is_object($wp = new \WP_User($user_id))
@@ -395,6 +402,18 @@ namespace websharks_core_v000000_dev
 			public function is_logged_in()
 				{
 					return ($this->has_id() && get_current_user_id() === $this->ID);
+				}
+
+			/**
+			 * Is this NO user (explicitly)?
+			 *
+			 * @return boolean TRUE if this is NO user (explicitly); else FALSE.
+			 *
+			 * @assert () === FALSE
+			 */
+			public function is_no_user()
+				{
+					return ($this->is_no_user) ? TRUE : FALSE;
 				}
 
 			/**
@@ -615,7 +634,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Updates this user.
 			 *
-			 * @param         $args array Array of arguments:
+			 * @param         $args array Array of arguments.
 			 *
 			 *  • (string)`ip` Optional. IP address for this user.
 			 *
@@ -640,15 +659,16 @@ namespace websharks_core_v000000_dev
 			 *  • (array)`meta` Optional associative array. Any additional user meta values.
 			 *       These are stored via ``update_user_meta()`` (e.g. site-wide meta values).
 			 *
-			 *  • (array)`profile_fields` Optional associative array w/ additional profile fields.
-			 *       See {@link update_profile_fields()} for further details (implemented by class extenders).
-			 *
 			 *  • (array)`data` Optional associative array. Any additional data you'd like to pass through ``wp_update_user()``.
 			 *       See: http://codex.wordpress.org/Function_Reference/wp_update_user
 			 *       See: http://codex.wordpress.org/Function_Reference/wp_insert_user
 			 *
-			 * @param string  $context One of these values: {@link fw_constants::context_registration}, {@link fw_constants::context_profile_updates}.
-			 *    The context in which this user is being updated (defaults to {@link fw_constants::context_profile_updates}).
+			 *  • (array)`profile_fields` Optional associative array w/ additional profile fields (by code).
+			 *       See {@link validate_profile_fields()} for further details (implemented by class extenders).
+			 *
+			 *  • (null|integer|\WP_User|users)`updater` The user (updater) that we MAY validate against here.
+			 *       For instance, this MIGHT be used in some validations against profile field submissions.
+			 *       This defaults to `-1`, NO user (e.g. the systematic update of a user).
 			 *
 			 * @param array   $optional_requirements An array of optional fields, which we've decided to require in this scenario.
 			 *
@@ -657,9 +677,9 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If this user does NOT have an ID (e.g. we CANNOT update them).
 			 */
-			public function update($args, $context = self::context_profile_updates, $optional_requirements = array())
+			public function update($args, $optional_requirements = array())
 				{
-					$this->check_arg_types('array', 'string:!empty', 'array', func_get_args());
+					$this->check_arg_types('array', 'array', func_get_args());
 
 					if(!$this->has_id())
 						throw $this->©exception(
@@ -684,12 +704,14 @@ namespace websharks_core_v000000_dev
 						'activation_key' => NULL,
 						'options'        => NULL,
 						'meta'           => NULL,
+						'data'           => NULL,
 						'profile_fields' => NULL,
-						'data'           => NULL
+						'updater'        => -1
 					);
 					$args         = $this->check_extension_arg_types(
 						'string', 'string', 'string', 'string', 'string', 'string', 'string',
-						'string', 'string', 'string', 'string', 'string', 'string', 'array', 'array', 'array', 'array', $default_args, $args
+						'string', 'string', 'string', 'string', 'string', 'string', 'array', 'array', 'array', 'array',
+						$this->©user_utils->which_types(), $default_args, $args
 					);
 					$args         = $this->©array->remove_nulls_deep($args); // Remove NULL values (i.e. those we are NOT updating here).
 
@@ -726,53 +748,53 @@ namespace websharks_core_v000000_dev
 
 					// Validate a possible change of name (only if name(s) are required in this scenario).
 
-					if(isset($args['first_name']) && empty($args['first_name']) && in_array('first_name', $optional_requirements, TRUE))
+					if(isset($args['first_name']) && !$args['first_name'] && in_array('first_name', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#first_name_missing', array_merge(array('form_field_code' => 'first_name'), compact('args')),
+							__METHOD__.'#first_name_missing', array_merge(get_defined_vars(), array('form_field_code' => 'first_name')),
 							$this->translate('Required field. Missing first name.')
 						);
-					if(isset($args['last_name']) && empty($args['last_name']) && in_array('last_name', $optional_requirements, TRUE))
+					if(isset($args['last_name']) && !$args['last_name'] && in_array('last_name', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#last_name_missing', array_merge(array('form_field_code' => 'last_name'), compact('args')),
+							__METHOD__.'#last_name_missing', array_merge(get_defined_vars(), array('form_field_code' => 'last_name')),
 							$this->translate('Required field. Missing last name.')
 						);
-					if(isset($args['display_name']) && empty($args['display_name']) && in_array('display_name', $optional_requirements, TRUE))
+					if(isset($args['display_name']) && !$args['display_name'] && in_array('display_name', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#display_name_missing', array_merge(array('form_field_code' => 'display_name'), compact('args')),
+							__METHOD__.'#display_name_missing', array_merge(get_defined_vars(), array('form_field_code' => 'display_name')),
 							$this->translate('Required field. Missing display name.')
 						);
 					// Validate a possible change in online contact info (only if required in this scenario).
 
-					if(isset($args['url']) && empty($args['url']) && in_array('url', $optional_requirements, TRUE))
+					if(isset($args['url']) && !$args['url'] && in_array('url', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#url_missing', array_merge(array('form_field_code' => 'url'), compact('args')),
+							__METHOD__.'#url_missing', array_merge(get_defined_vars(), array('form_field_code' => 'url')),
 							$this->translate('Required field. Missing URL.')
 						);
 					if(isset($args['url']) && strlen($args['url']) && !preg_match($this->©url->regex_valid_url, $args['url']))
 						return $this->©error(
-							__METHOD__.'#invalid_url', array_merge(array('form_field_code' => 'url'), compact('args')),
+							__METHOD__.'#invalid_url', array_merge(get_defined_vars(), array('form_field_code' => 'url')),
 							$this->translate('Invalid URL. Must start with `http://` and be a valid URL please.')
 						);
-					if(isset($args['aim']) && empty($args['aim']) && in_array('aim', $optional_requirements, TRUE))
+					if(isset($args['aim']) && !$args['aim'] && in_array('aim', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#aim_missing', array_merge(array('form_field_code' => 'aim'), compact('args')),
+							__METHOD__.'#aim_missing', array_merge(get_defined_vars(), array('form_field_code' => 'aim')),
 							$this->translate('Required field. Missing AOL® screen name.')
 						);
-					if(isset($args['yim']) && empty($args['yim']) && in_array('yim', $optional_requirements, TRUE))
+					if(isset($args['yim']) && !$args['yim'] && in_array('yim', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#yim_missing', array_merge(array('form_field_code' => 'yim'), compact('args')),
+							__METHOD__.'#yim_missing', array_merge(get_defined_vars(), array('form_field_code' => 'yim')),
 							$this->translate('Required field. Missing Yahoo® ID.')
 						);
-					if(isset($args['jabber']) && empty($args['jabber']) && in_array('jabber', $optional_requirements, TRUE))
+					if(isset($args['jabber']) && !$args['jabber'] && in_array('jabber', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#jabber_missing', array_merge(array('form_field_code' => 'jabber'), compact('args')),
+							__METHOD__.'#jabber_missing', array_merge(get_defined_vars(), array('form_field_code' => 'jabber')),
 							$this->translate('Required field. Missing Jabber™ (or Google® Talk) username.')
 						);
 					// Validate a possible change in personal bio (i.e. user description).
 
-					if(isset($args['description']) && empty($args['description']) && in_array('description', $optional_requirements, TRUE))
+					if(isset($args['description']) && !$args['description'] && in_array('description', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#description_missing', array_merge(array('form_field_code' => 'description'), compact('args')),
+							__METHOD__.'#description_missing', array_merge(get_defined_vars(), array('form_field_code' => 'description')),
 							$this->translate('Required field. Missing personal description.')
 						);
 					if(isset($args['ip'])) // Update IP address.
@@ -796,7 +818,12 @@ namespace websharks_core_v000000_dev
 					// Validate/update any additional profile fields.
 
 					if(isset($args['profile_fields'])) // Handled by class extenders.
-						if($this->©errors->exist_in($update_profile_fields = $this->update_profile_fields($args['profile_fields'], $context)))
+						if($this->©errors->exist_in($validate_profile_fields = $this->©user_utils->validate_profile_fields($this, $args['updater'], $args['profile_fields'])))
+							{
+								$this->refresh(); // Refresh (in case of updates above).
+								return $validate_profile_fields; // Errors.
+							}
+						else if($this->©errors->exist_in($update_profile_fields = $this->update_profile_fields($args['profile_fields'])))
 							{
 								$this->refresh(); // Refresh (in case of updates above).
 								return $update_profile_fields; // Errors.
@@ -832,16 +859,13 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param array  $profile_field_values An associative array of profile fields (by code).
 			 *
-			 * @param string $context One of these values: {@link fw_constants::context_registration}, {@link fw_constants::context_profile_updates}.
-			 *    The context in which profile fields are being updated (defaults to {@link fw_constants::context_profile_updates}).
-			 *
 			 * @return boolean|errors TRUE on success; else an errors object on failure.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public function update_profile_fields($profile_field_values, $context = self::context_profile_updates)
+			public function update_profile_fields($profile_field_values)
 				{
-					$this->check_arg_types('array', 'string:!empty', func_get_args());
+					$this->check_arg_types('array', func_get_args());
 
 					return TRUE; // Default return value.
 				}
@@ -855,12 +879,15 @@ namespace websharks_core_v000000_dev
 			 * @param string $optional_requirements An encrypted/serialized array of optional fields, which we've decided to require.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 * @throws exception If the user has no ID (i.e. cannot update).
+			 * @throws exception If the user has no ID (i.e. cannot update profile in this case).
 			 * @throws exception If ``$args`` contains data NOT allowed during basic profile updates.
+			 *    Keys NOT allowed: `ip`, `role`, `activation_key`, `options`, `meta`, `data`.
 			 */
 			public function ®profile_update($args, $optional_requirements = '')
 				{
 					$this->check_arg_types('array', 'string', func_get_args());
+
+					$args['updater'] = $this->©user;
 
 					if(!$this->has_id())
 						throw $this->©exception(
@@ -868,9 +895,9 @@ namespace websharks_core_v000000_dev
 							$this->i18n('User has no ID (cannot update).')
 						);
 					if(isset($args['ip']) || isset($args['role']) || isset($args['activation_key']) || isset($args['options']) || isset($args['meta']) || isset($args['data']))
-						throw $this->©exception(
+						throw $this->©exception( // NOT allowed during basic profile updates. See {@link ®update()}.
 							__METHOD__.'#security_issue', get_defined_vars(),
-							$this->i18n('Security issue. Some of the data submitted, is NOT allowed during basic profile updates.')
+							$this->i18n('Security issue. Some data is NOT allowed during basic profile updates.')
 						);
 					extract($args); // Extract for call data.
 
@@ -880,7 +907,7 @@ namespace websharks_core_v000000_dev
 
 					unset($_optional_requirements); // Housekeeping.
 
-					if($this->©errors->exist_in($response = $this->update($args, $this::context_profile_updates, $optional_requirements)))
+					if($this->©errors->exist_in($response = $this->update($args, $optional_requirements)))
 						$errors = $response; // Define ``$errors`` for template.
 
 					else // We have success. Profile now up-to-date.
@@ -908,18 +935,22 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('array', 'string', func_get_args());
 
+					$args['updater'] = $this->©user;
+
 					if(!$this->has_id())
 						throw $this->©exception(
 							__METHOD__.'#id_missing', array('ID' => $this->ID),
 							$this->i18n('User has no ID (cannot update).')
 						);
+					extract($args); // Extract for call data.
+
 					if($optional_requirements && is_array($_optional_requirements = maybe_unserialize($this->©encryption->decrypt($optional_requirements))))
 						$optional_requirements = $_optional_requirements; // A specific set of optional fields to require.
 					else $optional_requirements = array(); // There are none.
 
 					unset($_optional_requirements); // Housekeeping.
 
-					if($this->©errors->exist_in($response = $this->update($args, $this::context_profile_updates, $optional_requirements)))
+					if($this->©errors->exist_in($response = $this->update($args, $optional_requirements)))
 						$errors = $response; // Define ``$errors`` for template use.
 
 					else // We have success. The user's profile has been updated.

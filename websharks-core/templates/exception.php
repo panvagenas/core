@@ -15,8 +15,7 @@ namespace websharks_core_v000000_dev;
  *    See: {@link http://codex.wordpress.org/Conditional_Tags}
  *
  * @note The current plugin instance is available through the special keyword: ``$this``.
- * @var $this framework Current plugin framework instance (extended by templates class).
- * @var $this templates Template instance (extends framework).
+ * @var $this templates|framework Template instance (extends framework).
  * @var $exception exception Exception class instance.
  */
 if(!defined('WPINC'))
@@ -24,7 +23,6 @@ if(!defined('WPINC'))
 
 $exception = $this->data->exception;
 ?>
-
 <!DOCTYPE html>
 
 <html>

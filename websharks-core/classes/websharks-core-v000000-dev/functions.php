@@ -105,8 +105,7 @@ namespace websharks_core_v000000_dev
 
 					$this->static['disabled'] = array();
 
-					if(!function_exists('ini_get'))
-						return $this->static['disabled'];
+					if(!function_exists('ini_get')) return $this->static['disabled'];
 
 					if(($_ini_val = trim(strtolower(ini_get('disable_functions')))))
 						$this->static['disabled'] = array_merge($this->static['disabled'], preg_split('/[\s;,]+/', $_ini_val, NULL, PREG_SPLIT_NO_EMPTY));
@@ -137,41 +136,31 @@ namespace websharks_core_v000000_dev
 			 *    Specific backtrace callers. See ``$offset`` for further details.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert (debug_backtrace(), 'last') === 'websharks_core_v000000_dev\\functionstest->testget_backtrace_callers'
 			 */
 			public function get_backtrace_callers($debug_backtrace, $position = NULL)
 				{
 					$this->check_arg_types('array', array('null', 'string', 'integer'), func_get_args());
 
-					$callers = array(); // Initialize array.
+					$callers    = array(); // Initialize array of callers.
+					$exclusions = array('require*', 'include*', 'call_user_func*', 'check_*arg_types');
 
-					$exclusions = array( // Do not report these in backtrace callers.
-						'require*', 'include*',
-						'call_user_func*', 'check_*arg_types'
-					);
-
-					foreach($debug_backtrace as $_caller) // Compile callers.
+					foreach($debug_backtrace as $_caller) // compile callers.
 						if(is_array($_caller) && $this->©string->is_not_empty($_caller['function'])
 						   && !$this->©string->in_wildcard_patterns($_caller['function'], $exclusions)
-						) // We exclude a few special functions here.
+						) // we exclude a few special functions here.
 							{
 								if($this->©strings->are_not_empty($_caller['class'], $_caller['type']))
 									$callers[] = $_caller['class'].$_caller['type'].$_caller['function'];
 								else $callers[] = $_caller['function'];
 							}
-					unset($_caller); // A little housekeeping.
+					unset($_caller); // a little housekeeping.
 
-					if($position === 'last')
-						return (!empty($callers[0])) ? strtolower($callers[0]) : 'unknown-caller';
-					else if($position === 'previous')
-						return (!empty($callers[1])) ? strtolower($callers[1]) : 'unknown-caller';
-					else if($position === 'before-previous')
-						return (!empty($callers[2])) ? strtolower($callers[2]) : 'unknown-caller';
-					else if(is_integer($position))
-						return (!empty($callers[$position])) ? strtolower($callers[$position]) : 'unknown-caller';
+					if($position === 'last') return (!empty($callers[0])) ? strtolower($callers[0]) : 'unknown-caller';
+					if($position === 'previous') return (!empty($callers[1])) ? strtolower($callers[1]) : 'unknown-caller';
+					if($position === 'before-previous') return (!empty($callers[2])) ? strtolower($callers[2]) : 'unknown-caller';
+					if(is_integer($position)) return (!empty($callers[$position])) ? strtolower($callers[$position]) : 'unknown-caller';
 
-					return array_map('strtolower', $callers); // Defaults to all callers.
+					return array_map('strtolower', $callers); // defaults to all callers.
 				}
 		}
 	}

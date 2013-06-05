@@ -67,11 +67,9 @@ namespace websharks_core_v000000_dev
 
 					// Load PHPMailer classes (if NOT already loaded).
 
-					if(!class_exists('PHPMailer'))
+					if(!class_exists('\\PHPMailer'))
 						require_once ABSPATH.WPINC.'/class-phpmailer.php';
-
-					if(!class_exists('SMTP'))
-						require_once ABSPATH.WPINC.'/class-smtp.php';
+					if(!class_exists('\\SMTP')) require_once ABSPATH.WPINC.'/class-smtp.php';
 
 					$default_mail_args = array(
 						'subject'     => '', // Required.
@@ -85,14 +83,12 @@ namespace websharks_core_v000000_dev
 						'string:!empty', 'string:!empty', 'string:!empty', array('string:!empty', 'array:!empty'),
 						array('string', 'array'), 'string', $default_mail_args, $mail, 4
 					);
-
 					// Recipients are always parsed into an array here.
 					if(!($mail['recipients'] = $this->parse_emails_deep($mail['recipients'])))
 						throw $this->©exception(
-							__METHOD__.'#recipients_missing', compact('mail'),
+							__METHOD__.'#recipients_missing', get_defined_vars(),
 							$this->i18n('Email failure. Missing and/or invalid `recipients` value.')
 						);
-
 					// Possible file attachment(s).
 					if($this->©string->is_not_empty($mail['attachments']))
 						$mail['attachments'] = array($mail['attachments']);
@@ -106,17 +102,16 @@ namespace websharks_core_v000000_dev
 
 							if(!$this->©string->is_not_empty($_attachment['path']))
 								throw $this->©exception(
-									__METHOD__.'#attachment_path_missing', compact('mail', '_attachment'),
+									__METHOD__.'#attachment_path_missing', get_defined_vars(),
 									$this->i18n('Email failure. Missing and/or invalid attachment `path` value.').
 									sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
 								);
-							else if(!is_file($_attachment['path']))
+							if(!is_file($_attachment['path']))
 								throw $this->©exception(
-									__METHOD__.'#nonexistent_attachment_path', compact('mail', '_attachment'),
+									__METHOD__.'#nonexistent_attachment_path', get_defined_vars(),
 									$this->i18n('Email failure. Nonexistent attachment `path` value.').
 									sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
 								);
-							// Other optional specifications.
 							$this->©string->is_not_empty_or($_attachment['name'], '', TRUE);
 							$this->©string->is_not_empty_or($_attachment['encoding'], 'base64', TRUE);
 							$this->©string->is_not_empty_or($_attachment['mime_type'], 'application/octet-stream', TRUE);

@@ -900,9 +900,10 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types($this->©user_utils->which_types(), 'string', 'string', func_get_args());
 
 					$user = $this->©user_utils->which($user);
-					if(!$user->has_id()) // Does this user have an ID?
+
+					if(!$user->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', compact('user'),
+							__METHOD__.'#id_missing', get_defined_vars(),
 							$this->i18n('The `$user` has no ID (cannot get Dashboard URL).')
 						);
 					$parts = $this->must_parse_uri_parts($url_uri_query_fragment);

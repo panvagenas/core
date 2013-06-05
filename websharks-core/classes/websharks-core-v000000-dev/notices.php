@@ -33,20 +33,6 @@ namespace websharks_core_v000000_dev
 			 * @return boolean TRUE if the notice was enqueued, else FALSE.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert $notice = '';
-			 *    ($notice) === FALSE
-			 *
-			 * @assert $notice = array();
-			 *    ($notice) === FALSE
-			 *
-			 * @assert $notice = array('notice' => '<p>Test error notice to display in list of Users (allow dismissals).</p>');
-			 * $notice['in_areas'] = array('blog-admin'); $notice['on_pages'] = array('users.php');
-			 * $notice['error'] = TRUE; $notice['allow_dismissals'] = TRUE;
-			 *    ($notice) === TRUE
-			 *
-			 * @assert $notice = '<p>Test notice.</p>';
-			 *    ($notice) === TRUE
 			 */
 			public function enqueue($notice)
 				{
@@ -93,30 +79,14 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return boolean TRUE if the notice is displayed, else FALSE.
 			 *
-			 * @note This returns TRUE during unit testing, if the notice would have been displayed, even though it was not.
-			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert $notice = '';
-			 *    ($notice) === FALSE
-			 *
-			 * @assert $notice = array();
-			 *    ($notice) === FALSE
-			 *
-			 * @assert $notice = array('notice' => '<p>Test error notice (allow dismissals).</p>');
-			 * $notice['error'] = TRUE; $notice['allow_dismissals'] = TRUE;
-			 *    ($notice) === TRUE
-			 *
-			 * @assert $notice = '<p>Test notice.</p>';
-			 *    ($notice) === TRUE
 			 */
 			public function display($notice)
 				{
 					$this->check_arg_types(array('string', 'array'), func_get_args());
 
 					// Not in an administrative area?
-					if(!(is_admin() || defined('___UNIT_TEST')))
-						return FALSE; // Do NOT display.
+					if(!is_admin()) return FALSE; // Do NOT display.
 
 					// Force array.
 					if(!is_array($notice))
@@ -129,25 +99,21 @@ namespace websharks_core_v000000_dev
 					// Standardize this notice.
 					$notice = $this->standardize($notice);
 
-					// Adding a prefix?
-					if($notice['with_prefix'])
+					if($notice['with_prefix']) // Adding a prefix?
 						{
+							$icon = ''; // Default. Assume we are NOT displaying an icon.
+
 							if($notice['with_prefix_icon']) // An icon?
-								{
-									$icon = '<span class="ui-icon ui-icon-'.esc_attr($notice['with_prefix_icon']).'"'.
-									        ' style="display:none;"'. // Hide until CSS forces it to display.
-									        '>'.
-									        '</span>';
-								}
-							else $icon = ''; // Not displaying an icon for this notice.
+								$icon = '<span class="ui-icon ui-icon-'.esc_attr($notice['with_prefix_icon']).'"'.
+								        ' style="display:none;"'. // Hide until CSS forces it to display.
+								        '>'.
+								        '</span>';
 
 							if(stripos($notice['notice'], '<p>') === 0)
 								$notice['notice'] = $this->©string->ireplace_once('<p>', '<p>'.$icon.'<strong>['.$this->___instance_config->plugin_name.' '.$this->i18n('says...').']</strong> ', $notice['notice']);
 							else $notice['notice'] = '<p>'.$icon.'<strong>['.$this->___instance_config->plugin_name.' '.$this->i18n('says...').']</strong></p>'.$notice['notice'];
 						}
-
-					// Allowing dismissals?
-					if($notice['allow_dismissals'])
+					if($notice['allow_dismissals']) // Allowing dismissals?
 						{
 							if(!is_array($dismissals = get_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals')))
 								add_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals', ($dismissals = array()), '', 'no');
@@ -160,30 +126,28 @@ namespace websharks_core_v000000_dev
 
 							$notice['notice'] .= ' [ <a href="'.$dismiss.'">'.$this->i18n('dismiss this message').'</a> ]';
 						}
-					if(!defined('___UNIT_TEST'))
-						{
-							$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
-							$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
+					$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
+					$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
-							if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->jquery_ui_themes()), TRUE))
-								$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
+					if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->jquery_ui_themes()), TRUE))
+						$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
-							$classes[] = 'ui'; // This enables WebSharks™ UI styles overall.
-							$classes[] = str_replace('jquery-ui-theme-', 'ui-theme-', $current_menu_pages_theme);
+					$classes[] = 'ui'; // This enables WebSharks™ UI styles overall.
+					$classes[] = str_replace('jquery-ui-theme-', 'ui-theme-', $current_menu_pages_theme);
 
-							echo '<div class="'.esc_attr(implode(' ', $classes)).'">'.
+					echo '<div class="'.esc_attr(implode(' ', $classes)).'">'.
 
-							     '<div class="notice fade '.(($notice['error']) ? 'error' : 'updated').
-							     ' ui-widget ui-state-'.(($notice['error']) ? 'error' : 'highlight').' ui-corner-all"'.
-							     '>'. // With WordPress® styles (and also with WebSharks™ UI theme styles).
+					     '<div class="notice fade '.(($notice['error']) ? 'error' : 'updated').
+					     ' ui-widget ui-state-'.(($notice['error']) ? 'error' : 'highlight').' ui-corner-all"'.
+					     '>'. // With WordPress® styles (and also with WebSharks™ UI theme styles).
 
-							     $notice['notice']. // HTML markup.
+					     $notice['notice']. // HTML markup.
 
-							     '<div class="clear"></div>'.
-							     '</div>'.
+					     '<div class="clear"></div>'.
+					     '</div>'.
 
-							     '</div>';
-						}
+					     '</div>';
+
 					return TRUE; // Notice displayed indicator.
 				}
 
@@ -198,18 +162,11 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @attaches-to `all_admin_notices` action hook.
 			 * @hook-priority Default is fine.
-			 *
-			 * @assert $notice = '<p>Test notice.</p>';
-			 * $this->object->enqueue($notice);
-			 *    () === TRUE
-			 *
-			 * @assert () === FALSE
 			 */
 			public function all_admin_notices()
 				{
 					// Not in an administrative area?
-					if(!(is_admin() || defined('___UNIT_TEST')))
-						return FALSE; // Do NOT process.
+					if(!is_admin()) return FALSE; // Do NOT process.
 
 					// Establish current area/page.
 					$current_area = $this->©env->admin_area();
@@ -245,13 +202,11 @@ namespace websharks_core_v000000_dev
 													else if($current_dismissal === $_notice['checksum'])
 														$_has_been_dismissed = TRUE; // Dismissing right now.
 												}
-
 											if(!empty($_notice['notice']) && !$_has_been_dismissed) // Should display?
 												{
 													if($this->display($_notice)) // Did display?
 														$notices_displayed = TRUE;
 												}
-
 											if(!$_notice['allow_dismissals'] || $_has_been_dismissed) // Dismiss?
 												{
 													unset($notices[$_checksum]);
@@ -265,7 +220,7 @@ namespace websharks_core_v000000_dev
 												}
 										}
 						}
-					unset($_checksum, $_notice, $_has_been_dismissed);
+					unset($_checksum, $_notice, $_has_been_dismissed); // Housekeeping.
 
 					if($notices_require_update)
 						update_option($this->___instance_config->plugin_root_ns_stub.'__notices', $notices);
@@ -282,41 +237,26 @@ namespace websharks_core_v000000_dev
 			 * @param array $notice An array of notice configuration parameters.
 			 *
 			 * @return array Standardized array of notice configuration parameters.
-			 *
-			 * @assert $defaults = array('allow_dismissals' => FALSE, 'error' => FALSE, 'in_areas' => array(), 'notice' => '', 'on_pages' => array(), 'on_time' => 0, 'with_prefix' => TRUE, 'with_prefix_icon' => 'info');
-			 *    (array()) === array_merge($defaults, array('checksum' => md5(serialize($defaults))))
 			 */
 			public function standardize($notice)
 				{
 					$this->check_arg_types('array', func_get_args());
 
-					$valid_keys = array(
-						'notice',
-						'error',
-						'on_pages',
-						'in_areas',
-						'on_time',
-						'with_prefix',
-						'with_prefix_icon',
-						'allow_dismissals'
+					$default_notice     = array(
+						'notice'           => '',
+						'error'            => FALSE,
+						'on_pages'         => array(),
+						'in_areas'         => array(),
+						'on_time'          => 0,
+						'with_prefix'      => TRUE,
+						'with_prefix_icon' => !empty($notice['error']) ? 'alert' : 'info',
+						'allow_dismissals' => FALSE,
+						'checksum'         => '' // Determined below.
 					);
-
-					$notice['notice']   = $this->©string->isset_or($notice['notice'], '');
-					$notice['error']    = $this->©boolean->isset_or($notice['error'], FALSE);
-					$notice['on_pages'] = $this->©array->isset_or($notice['on_pages'], array());
-					$notice['in_areas'] = $this->©array->isset_or($notice['in_areas'], array());
-					$notice['on_time']  = $this->©integer->isset_or($notice['on_time'], 0);
-
-					$default_prefix_icon        = ($notice['error']) ? 'alert' : 'info';
-					$notice['with_prefix']      = $this->©boolean->isset_or($notice['with_prefix'], TRUE);
-					$notice['with_prefix_icon'] = $this->©string->isset_or($notice['with_prefix_icon'], $default_prefix_icon);
-					$notice['allow_dismissals'] = $this->©boolean->isset_or($notice['allow_dismissals'], FALSE);
-
-					foreach($notice as $_key => $_value)
-						if(!in_array($_key, $valid_keys, TRUE))
-							unset($notice[$_key]);
-					unset($_key, $_value);
-
+					$notice             = $this->check_extension_arg_types(
+						'string', 'boolean', 'array', 'array', 'integer', 'boolean', 'string', 'boolean', 'string',
+						$default_notice, $notice
+					);
 					$notice             = $this->©array->ksort_deep($notice, SORT_STRING);
 					$notice['checksum'] = md5(serialize($notice));
 

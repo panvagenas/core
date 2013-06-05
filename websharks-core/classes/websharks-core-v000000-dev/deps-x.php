@@ -1860,7 +1860,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						}
 					# --------------------------------------------------------------------------------------------------------------------------
 
-					if($is_wp_loaded && defined('WP_DEBUG') && WP_DEBUG && !defined('___UNIT_TEST'))
+					if($is_wp_loaded && defined('WP_DEBUG') && WP_DEBUG)
 						{
 							$notices[] = array(
 								'auto_fix' => 'wp_debug_mode',

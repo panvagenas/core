@@ -32,27 +32,25 @@ namespace websharks_core_v000000_dev
 			 */
 			public function no_cache()
 				{
-					if(headers_sent() && !defined('___UNIT_TEST'))
+					if(headers_sent())
 						throw $this->©exception(
 							__METHOD__.'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
 						);
-					if(!isset($this->static['no_cache_header_sent']))
-						{
-							foreach(headers_list() as $_header)
-								if(stripos($_header, 'no-cache') !== FALSE)
-									{
-										$no_cache_header_already_sent_via_php = $_header;
-										break; // Stop now (nothing more to look for).
-									}
-							unset($_header); // A little housekeeping.
+					if(isset($this->static['no_cache_header_sent']))
+						return; // Sent already.
 
-							if(!isset($no_cache_header_already_sent_via_php))
-								if(!defined('___UNIT_TEST'))
-									nocache_headers();
+					foreach(headers_list() as $_header)
+						if(stripos($_header, 'no-cache') !== FALSE)
+							{
+								$no_cache_header_already_sent_via_php = $_header;
+								break; // Stop now (nothing more to look for).
+							}
+					unset($_header); // A little housekeeping.
 
-							$this->static['no_cache_header_sent'] = TRUE;
-						}
+					if(!isset($no_cache_header_already_sent_via_php)) nocache_headers();
+
+					$this->static['no_cache_header_sent'] = TRUE;
 				}
 
 			/**
@@ -80,13 +78,9 @@ namespace websharks_core_v000000_dev
 						);
 					$content_type = 'Content-Type: '.$type.(($is_utf8) ? '; charset=UTF-8' : '');
 
-					$this->©env->ob_end_clean(); // Cleans any existing output buffers.
-
-					if(!defined('___UNIT_TEST')) // NOT while unit testing this routine.
-						status_header($status); // HTTP status header, with status code.
-
-					if(!defined('___UNIT_TEST')) // NOT while unit testing this routine.
-						header($content_type); // Content-Type header (with possible charset).
+					$this->©env->ob_end_clean(); // Cleans output buffers.
+					status_header($status); // HTTP status header, with status code.
+					header($content_type); // Content-Type header (with possible charset).
 				}
 
 			/**
@@ -107,8 +101,7 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
 						);
-					if(!defined('___UNIT_TEST')) // NOT while unit testing this routine.
-						header('Content-Encoding:'.((strlen($encoding)) ? ' '.$encoding : ''));
+					header('Content-Encoding:'.((strlen($encoding)) ? ' '.$encoding : ''));
 				}
 		}
 	}

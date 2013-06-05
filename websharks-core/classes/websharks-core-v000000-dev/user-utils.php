@@ -716,6 +716,8 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param null|integer|\WP_User|users $user The user we're working with here.
 			 *
+			 * @param null|integer|\WP_User|users $reader_writer The user (reader/writer) that we need to check permissions against here.
+			 *
 			 * @param array                       $profile_field_values An associative array of profile field values (by code).
 			 *
 			 * @param string                      $context One of these values: {@link fw_constants::context_registration}, {@link fw_constants::context_profile_updates}.
@@ -727,9 +729,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public function validate_profile_fields($user, $profile_field_values, $context = self::context_profile_updates, $args = array())
+			public function validate_profile_fields($user, $reader_writer, $profile_field_values, $context = self::context_profile_updates, $args = array())
 				{
-					$this->check_arg_types($this->which_types(), 'array', 'string:!empty', 'array', func_get_args());
+					$this->check_arg_types($this->which_types(), $this->which_types(), 'array', 'string:!empty', 'array', func_get_args());
 
 					return TRUE; // Default return value.
 				}
@@ -775,11 +777,20 @@ namespace websharks_core_v000000_dev
 			 *  • (array)`meta` Optional associative array. Any additional user meta values.
 			 *       These are stored via ``update_user_meta()`` (e.g. site-wide meta values).
 			 *
-			 *  • (array)`profile_fields` Optional associative array w/ additional profile fields.
-			 *       See {@link users::update_profile_fields()} for further details (implemented by class extenders).
-			 *
 			 *  • (array)`data` Optional associative array. Any additional data you'd like to pass through ``wp_insert_user()``.
 			 *       See: http://codex.wordpress.org/Function_Reference/wp_insert_user
+			 *
+			 *  • (array)`profile_fields` Optional associative array w/ additional profile field values (by code).
+			 *       See {@link validate_profile_fields()} for further details (implemented by class extenders).
+			 *       See also {@link users::update_profile_fields()} for further details.
+			 *
+			 *  • (array)`profile_field_validation_args` Optional associative array w/ additional profile field validation args.
+			 *       See {@link validate_profile_fields()} for further details (implemented by class extenders).
+			 *       See also {@link users::update_profile_fields()} for further details.
+			 *
+			 *  • (null|integer|\WP_User|users)`creator` The user (creator) that we MAY validate against here.
+			 *       For instance, this MIGHT be used in some validations against profile field submissions.
+			 *       This defaults to `-1`, NO user (e.g. the systematic creation of a user).
 			 *
 			 * @return array|errors An associative array on success, with a new user ID & password; else an errors object on failure.
 			 *    The return array contains three elements: (integer)`ID`, (object)`user`, and (string)`password`.
@@ -794,30 +805,36 @@ namespace websharks_core_v000000_dev
 					// Formulate and validation incoming args.
 
 					$default_args = array(
-						'ip'             => '', // Required argument value.
-						'email'          => '', // Required argument value.
-						'username'       => '', // Required on multisite networks.
+						'ip'                            => '', // Required argument value.
+						'email'                         => '', // Required argument value.
+						'username'                      => '', // Required on multisite networks.
 
-						'role'           => get_option('default_role'),
+						'role'                          => get_option('default_role'),
 
-						'password'       => '',
-						'first_name'     => '',
-						'last_name'      => '',
-						'url'            => '',
+						'password'                      => '',
+						'first_name'                    => '',
+						'last_name'                     => '',
+						'url'                           => '',
 
-						'must_activate'  => TRUE,
-						'send_welcome'   => TRUE,
+						'must_activate'                 => TRUE,
+						'send_welcome'                  => TRUE,
 
-						'options'        => array(),
-						'meta'           => array(),
-						'profile_fields' => array(),
-						'data'           => array()
+						'options'                       => array(),
+						'meta'                          => array(),
+						'data'                          => array(),
+
+						'profile_fields'                => array(),
+						'profile_field_validation_args' => array(),
+
+						'creator'                       => -1
 					);
 					$args         = $this->check_extension_arg_types(
 						'string', 'string', 'string', 'string:!empty', // `ip`, `email`, `username`, `role`.
 						'string', 'string', 'string', 'string', // `password`, `first_name`, `last_name`, `url`.
 						'boolean', 'boolean', // `must_activate`, `send_welcome`.
-						'array', 'array', 'array', 'array', // `options`, `meta`, `profile_fields`, `data`.
+						'array', 'array', 'array', // `options`, `meta`, `data`.
+						'array', 'array', // `profile_fields`, `profile_field_validation_args`.
+						$this->which_types(), // `creator` (used in some validations).
 						$default_args, $args, ((is_multisite()) ? 3 : 2)
 					);
 					// Handle some default values (when/if possible) & minor adjustments.
@@ -846,23 +863,39 @@ namespace websharks_core_v000000_dev
 					$data = array_merge(array( // Format this based on site preference.
 					                           'display_name' => (string)substr($this->format_registration_display_name($data), 0, 250)
 					                    ), $data);
-					// Validate possible profile fields implemented by a site owner.
 
-					if($args['profile_fields']) // Handled by class extenders.
-						if($this->©errors->exist_in($profile_field_validations = $this->validate_profile_fields(NULL, $args['profile_fields'], $this::context_registration)))
-							return $profile_field_validations; // Profile field issue(s).
-
-					// Handles user creation in multisite networks (where the user already exists).
-
-					if(is_multisite() && $args['username'] && $args['email']
+					if(is_multisite() && $args['username'] && $args['email'] // Multisite user exists?
 					   && ($user_id = $this->username_email_exists_but_not_on_blog($args['username'], $args['email']))
-					   && !is_wp_error(add_existing_user_to_blog(array('user_id' => $user_id, 'role' => $args['role'])))
-					   && ($user = $this->get_by('id', $user_id)) // Make sure we can get an object instance for this user.
 					) // In a network, we can add existing users to this blog, IF they're already in the network (on another blog).
 						{
-							// We MUST update the password now, because the user will NOT understand what's actually happened here.
-							// This MAY lead to confusion, because now the password is different on other blogs in the network, of which they might be a member.
-							// Worst case scenario, the user will need to retrieve their password on other blogs in the network, of which they're a member.
+							if($this->©errors->exist_in($validate_password = $this->validate_password($args['password'])))
+								return $validate_password; // Password issue(s).
+
+							if($args['profile_fields'] && $this->©errors->exist_in( // Validate these too.
+								$validate_profile_fields = $this->validate_profile_fields(-1, $args['creator'],
+								                                                          $args['profile_fields'], $this::context_registration,
+								                                                          $args['profile_field_validation_args']))
+							) return $validate_profile_fields; // Profile field issue(s).
+
+							if(is_wp_error($add_existing_user_to_blog = add_existing_user_to_blog(array('user_id' => $user_id, 'role' => $args['role']))))
+								// If errors occur here, we'll need to stop. The user MUST be formally added to the current blog.
+								// Adding the user to this blog, MAY update their `primary_blog` and `source_domain`.
+								{
+									/** @var $add_existing_user_to_blog \WP_Error WordPress® error class. */
+									if(!$add_existing_user_to_blog->get_error_code() || !$add_existing_user_to_blog->get_error_message())
+										return $this->©error(
+											__METHOD__.'#unknown_wp_error', get_defined_vars(),
+											$this->translate('Unknown error (please try again).')
+										);
+									return $this->©error(
+										__METHOD__.'#wp_error_'.$add_existing_user_to_blog->get_error_code(), get_defined_vars(),
+										$add_existing_user_to_blog->get_error_message() // Message from ``add_existing_user_to_blog()``.
+									);
+								}
+							if(!($user = $this->get_by('id', $user_id))) // A VERY wrong scenario.
+								throw $this->©exception(__METHOD__.'#unable_to_acquire_user', get_defined_vars(),
+								                        sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $user_id));
+
 							$user->update_password($args['password']); // Set password quietly (i.e. no hooks).
 							do_action('user_register', $user->ID); // Actually a registration (so fire this hook).
 						}
@@ -877,6 +910,12 @@ namespace websharks_core_v000000_dev
 							if($this->©errors->exist_in($validate_password = $this->validate_password($args['password'])))
 								return $validate_password; // Password issue(s).
 
+							if($args['profile_fields'] && $this->©errors->exist_in( // Pre-validate these.
+								$validate_profile_fields = $this->validate_profile_fields(-1, $args['creator'],
+								                                                          $args['profile_fields'], $this::context_registration,
+								                                                          $args['profile_field_validation_args']))
+							) return $validate_profile_fields; // Profile field issue(s).
+
 							if(is_wp_error($wp_insert_user = $user_id = wp_insert_user($this->©strings->slash_deep($data))))
 								// Given our own validation routines, errors should NOT occur here (but just in case they do).
 								{
@@ -890,28 +929,25 @@ namespace websharks_core_v000000_dev
 										$wp_insert_user->get_error_message() // Message from ``wp_insert_user()``.
 									);
 								}
-							if(!($user = $this->get_by('id', $user_id))) // A VERY wrong scenario.
-								throw $this->©exception(
-									__METHOD__.'#unable_to_acquire_user', get_defined_vars(),
-									sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $user_id)
-								);
-							if(is_multisite() // In networks, we need to add the user to the current blog (formally).
-							   && is_wp_error($add_existing_user_to_blog = add_existing_user_to_blog(array('user_id' => $user->ID, 'role' => $args['role'])))
-							) // If errors occur here, we'll need to stop. The user MUST be formally added to the current blog.
-								// Adding the user to this blog, updates their `primary_blog` and `source_domain`.
-								{
-									/** @var $add_existing_user_to_blog \WP_Error WordPress® error class. */
-
-									if(!$add_existing_user_to_blog->get_error_code() || !$add_existing_user_to_blog->get_error_message())
+							if(is_multisite()) // In networks, we need to add the user to the current blog (formally).
+								if(is_wp_error($add_existing_user_to_blog = add_existing_user_to_blog(array('user_id' => $user_id, 'role' => $args['role']))))
+									// If errors occur here, we'll need to stop. The user MUST be formally added to the current blog.
+									// Adding the user to this blog, updates their `primary_blog` and `source_domain`.
+									{
+										/** @var $add_existing_user_to_blog \WP_Error WordPress® error class. */
+										if(!$add_existing_user_to_blog->get_error_code() || !$add_existing_user_to_blog->get_error_message())
+											return $this->©error(
+												__METHOD__.'#unknown_wp_error', get_defined_vars(),
+												$this->translate('Unknown error (please try again).')
+											);
 										return $this->©error(
-											__METHOD__.'#unknown_wp_error', get_defined_vars(),
-											$this->translate('Unknown error (please try again).')
+											__METHOD__.'#wp_error_'.$add_existing_user_to_blog->get_error_code(), get_defined_vars(),
+											$add_existing_user_to_blog->get_error_message() // Message from ``add_existing_user_to_blog()``.
 										);
-									return $this->©error(
-										__METHOD__.'#wp_error_'.$add_existing_user_to_blog->get_error_code(), get_defined_vars(),
-										$add_existing_user_to_blog->get_error_message() // Message from ``add_existing_user_to_blog()``.
-									);
-								}
+									}
+							if(!($user = $this->get_by('id', $user_id))) // A VERY wrong scenario.
+								throw $this->©exception(__METHOD__.'#unable_to_acquire_user', get_defined_vars(),
+								                        sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $user_id));
 						}
 					// Save IP address (as a meta value).
 					$user->update_meta('ip', $args['ip']);
@@ -927,12 +963,11 @@ namespace websharks_core_v000000_dev
 					unset($_key, $_value);
 
 					// Handle possible profile fields.
-					if($args['profile_fields']) // Handled by class extenders.
-						if($this->©errors->exist_in($update_profile_fields = $user->update_profile_fields($args['profile_fields'], $this::context_registration)))
-							throw $this->©exception( // This really should NOT happen (profile fields are validated above).
-								__METHOD__.'#unexpected_validation_errors', get_defined_vars(),
-								$this->i18n('Unexpected registration validation errors when attempting to update profile fields.')
-							);
+					if($args['profile_fields'] && $this->©errors->exist_in($user->update_profile_fields($args['profile_fields'])))
+						throw $this->©exception( // Should NOT happen (profile fields were already validated above).
+							__METHOD__.'#unexpected_profile_field_validation_errors', get_defined_vars(),
+							$this->i18n('Unexpected errors while updating profile fields.'));
+
 					// Handle emails and/or activation.
 					if($args['must_activate']) // Requires email activation?
 						$this->send_activation_email($user->ID, $args['password'], $args['send_welcome']);
@@ -1079,9 +1114,10 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types($this->which_types(), 'string:!empty', 'boolean', func_get_args());
 
 					$user = $this->which($user);
-					if(!$user->has_id()) // Does this user have an ID?
+
+					if(!$user->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', compact('user'),
+							__METHOD__.'#id_missing', get_defined_vars(),
 							$this->i18n('The `$user` has no ID (cannot send activation email message).')
 						);
 					$activation_key        = $this->©encryption->encrypt($user->ID.'::'.$password);
@@ -1128,9 +1164,10 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types($this->which_types(), 'string:!empty', func_get_args());
 
 					$user = $this->which($user);
-					if(!$user->has_id()) // Does this user have an ID?
+
+					if(!$user->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', compact('user'),
+							__METHOD__.'#id_missing', get_defined_vars(),
 							$this->i18n('The `$user` has no ID (cannot send welcome email message).')
 						);
 					$template = $this->©template('emails/welcome.php', get_defined_vars());
@@ -1355,7 +1392,7 @@ namespace websharks_core_v000000_dev
 
 							if(!$user->activation_key)
 								throw $this->©exception(
-									__METHOD__.'#missing_activation_key', compact('user'),
+									__METHOD__.'#missing_activation_key', get_defined_vars(),
 									sprintf($this->i18n('No activation key for user ID: `%1$s`.'), $user->ID)
 								);
 							$this->send_password_reset_email($user);
@@ -1420,9 +1457,10 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types($this->which_types(), func_get_args());
 
 					$user = $this->which($user);
-					if(!$user->has_id()) // Does this user have an ID?
+
+					if(!$user->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', compact('user'),
+							__METHOD__.'#id_missing', get_defined_vars(),
 							$this->i18n('The `$user` has no ID (cannot send password reset email message).')
 						);
 					if(!$user->activation_key)
@@ -1430,7 +1468,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$user->activation_key) // Does this user have an activation key?
 						throw $this->©exception(
-							__METHOD__.'#activation_key_missing', compact('user'),
+							__METHOD__.'#activation_key_missing', get_defined_vars(),
 							$this->i18n('The `$user` has no activation key (cannot send password reset email message).')
 						);
 					$activation_key            = $user->activation_key;

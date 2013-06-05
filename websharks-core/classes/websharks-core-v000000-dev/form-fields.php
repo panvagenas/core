@@ -764,20 +764,35 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @note This is an EXTREMELY COMPLEX routine that should NOT be modified without serious consideration.
+			 *
+			 * @security-note Callers should NEVER process disabled form fields (for security purposes).
+			 *    It's always possible for disabled fields to be submitted by malicious users (not common, but possible).
+			 *    This method does NOT validate disabled fields (we do NOT expect these to be submitted).
+			 *    Any routines that process form submissions should be sure NOT to process these.
+			 *
+			 * @note Given this complex/lengthy routine, the result of ANY call to this method is cached statically.
+			 *    An MD5 checksum is used to determine if we have ALREADY validated the ``$fields`` prior.
+			 *    If we have, there is NO need to validate them again.
 			 */
 			public function validate($field_values, $fields = NULL, $user = NULL, $args = array())
 				{
 					$this->check_arg_types('array', array('null', 'array'), $this->©user_utils->which_types(), 'array', func_get_args());
 
-					if(!isset($fields)) $fields = $this->generated_fields;
-					$user         = $this->©user_utils->which($user);
+					if(!isset($fields))
+						$fields = $this->generated_fields;
+					$user = $this->©user_utils->which($user);
+
 					$default_args = array( // Defaults.
 						'enforce_required_fields'  => TRUE,
-						'validate_readonly_fields' => FALSE,
+						'validate_readonly_fields' => TRUE,
 						'validate_disabled_fields' => FALSE
 					); // All of these arguments are optional at all times.
-					$args         = $this->check_extension_arg_types('boolean', 'boolean', 'boolean', 'boolean', $default_args, $args);
+					$args         = $this->check_extension_arg_types('boolean', 'boolean', 'boolean', $default_args, $args);
+					$md5          = md5(serialize($field_values).serialize($fields).serialize($user).serialize($args));
 					$errors       = $this->©errors(); // Initialize an errors object (we deal w/ these below).
+
+					if(isset($this->static[__FUNCTION__][$md5])) // Already validated these fields?
+						return $this->static[__FUNCTION__][$md5]; // We can save LOTS of time here.
 
 					if($args['enforce_required_fields']) foreach($fields as $_key => $_field)
 						{
@@ -809,23 +824,20 @@ namespace websharks_core_v000000_dev
 																	$_validation_abs_minimum = $_validation_pattern['minimum'];
 													}
 												if(isset($_validation_abs_minimum) && (!is_array($_value) || count($_value) < $_validation_abs_minimum))
-													$errors->add(
-														__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-														sprintf($this->translate('Please select at least %1$s options.'), $_validation_abs_minimum)
-													);
+													$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+													             sprintf($this->translate('Please select at least %1$s options.'), $_validation_abs_minimum));
+
 												else if(!is_array($_value) || count($_value) < 1)
-													$errors->add(
-														__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-														$this->translate('Please select at least 1 option.')
-													);
+													$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+													             $this->translate('Please select at least 1 option.'));
+
 												unset($_validation_pattern, $_validation_abs_minimum); // A bit of housekeeping here.
 											}
 										else if(!is_string($_value) || !strlen($_value))
-											$errors->add(
-												__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-												$this->translate('This is a required field.')
-											);
-										break;
+											$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+											             $this->translate('This is a required field.'));
+
+										break; // Break switch handler.
 
 								case 'file': // We also check for multiple files (i.e. `multiple="multiple"`).
 
@@ -839,42 +851,40 @@ namespace websharks_core_v000000_dev
 																	$_validation_abs_minimum = $_validation_pattern['minimum'];
 													}
 												if(isset($_validation_abs_minimum) && (!is_array($_value) || count($_value) < $_validation_abs_minimum))
-													$errors->add(
-														__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-														sprintf($this->translate('Please select at least %1$s files.'), $_validation_abs_minimum)
-													);
+													$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+													             sprintf($this->translate('Please select at least %1$s files.'), $_validation_abs_minimum));
+
 												else if(!is_array($_value) || count($_value) < 1)
-													$errors->add(
-														__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-														$this->translate('Please select at least one file.')
-													);
+													$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+													             $this->translate('Please select at least one file.'));
+
 												unset($_validation_pattern, $_validation_abs_minimum); // A bit of housekeeping here.
 											}
 										else if(!is_string($_value) || !strlen($_value))
-											$errors->add(
-												__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-												$this->translate('A file MUST be selected please.')
-											);
-										break;
+											$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+											             $this->translate('A file MUST be selected please.'));
 
-								case 'radio':
-								case 'radios':
+										break; // Break switch handler.
+
+								case 'radio': // Single radio button (not common).
+								case 'radios': // Multiple radio buttons.
+
 										if(!is_string($_value) || !strlen($_value))
-											$errors->add(
-												__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-												$this->translate('Please choose one of the available options.')
-											);
-										break;
+											$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+											             $this->translate('Please choose one of the available options.'));
 
-								case 'checkbox':
+										break; // Break switch handler.
+
+								case 'checkbox': // A single checkbox (string).
+
 										if(!is_string($_value) || !strlen($_value))
-											$errors->add(
-												__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-												$this->translate('This box MUST be checked please.')
-											);
-										break;
+											$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+											             $this->translate('This box MUST be checked please.'));
 
-								case 'checkboxes':
+										break; // Break switch handler.
+
+								case 'checkboxes': // Checkboxes (array).
+
 										foreach($_field['validation_patterns'] as $_validation_pattern)
 											{
 												if($_validation_pattern['min_max_type'] === 'array_length')
@@ -883,26 +893,24 @@ namespace websharks_core_v000000_dev
 															$_validation_abs_minimum = $_validation_pattern['minimum'];
 											}
 										if(isset($_validation_abs_minimum) && (!is_array($_value) || count($_value) < $_validation_abs_minimum))
-											$errors->add(
-												__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-												sprintf($this->translate('Please check at least %1$s boxes.'), $_validation_abs_minimum)
-											);
+											$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+											             sprintf($this->translate('Please check at least %1$s boxes.'), $_validation_abs_minimum));
+
 										else if(!is_array($_value) || count($_value) < 1)
-											$errors->add(
-												__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-												$this->translate('Please check at least one box.')
-											);
+											$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+											             $this->translate('Please check at least one box.'));
+
 										unset($_validation_pattern, $_validation_abs_minimum); // A bit of housekeeping here.
 
-										break;
+										break; // Break switch handler.
 
 								default: // Everything else (including textarea fields).
 
 									if(!is_string($_value) || !strlen($_value))
-										$errors->add(
-											__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
-											$this->translate('This is a required field.')
-										);
+										$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
+										             $this->translate('This is a required field.'));
+
+									break; // Break switch handler.
 							}
 						}
 					unset($_key, $_field, $_value); // Housekeeping.
@@ -916,7 +924,7 @@ namespace websharks_core_v000000_dev
 							// Collect file info (if applicable).
 
 							if(!empty($_field['type']) && $_field['type'] === 'file')
-								if(is_array($_value) && $this->©array->is($_value['___file_info']))
+								if(is_array($_value) && isset($_value['___file_info']) && is_array($_value['___file_info']))
 									{
 										$_file_info = $_value['___file_info'];
 										unset($_value['___file_info']); // Remove file info.
@@ -945,7 +953,7 @@ namespace websharks_core_v000000_dev
 							if($_field['readonly'] && !$args['validate_readonly_fields']) continue;
 							if($_field['disabled'] && !$args['validate_disabled_fields']) continue;
 
-							if(isset($_value) && $_field['disabled']) // Callers should handle this.
+							if(isset($_value) && $_field['disabled']) // This should NOT happen (but just in case).
 								{
 									$errors->add(__METHOD__.'#'.$_field['code'], array('form_field_code' => $_field['code']),
 									             $this->translate('Invalid data. Disabled fields should NOT be submitted w/ a value.'));
@@ -1321,7 +1329,7 @@ namespace websharks_core_v000000_dev
 									if(!is_dir($_field['move_to_dir']) && is_writable($this->©dir->n_seps_up($_field['move_to_dir'])))
 										{
 											mkdir($_field['move_to_dir'], 0775, TRUE); // Recursively.
-											// However, the parent directory MUST exist already (as seen above).
+											// ↑ However, the parent directory MUST exist already (as seen above).
 											clearstatcache(); // Clear cache before checking again.
 
 											if(!is_dir($_field['move_to_dir']) || !is_writable($_field['move_to_dir']))
@@ -1379,7 +1387,7 @@ namespace websharks_core_v000000_dev
 						}
 					unset($_key, $_field, $_value, $_file_info); // Housekeeping.
 
-					return ($errors->exist()) ? $errors : TRUE;
+					return ($this->static[__FUNCTION__][$md5] = ($errors->exist()) ? $errors : TRUE);
 				}
 
 			/**

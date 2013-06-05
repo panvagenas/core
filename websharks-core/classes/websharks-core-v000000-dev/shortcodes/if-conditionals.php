@@ -71,16 +71,16 @@ namespace websharks_core_v000000_dev\shortcodes
 							$content_if   = $this->©string->trim_content($_content_if['content']);
 							$content_else = $this->©string->trim_content($_content_else['content']);
 						}
-					else if($has_content_else_tag && !$has_content_if_tag) // Has one but NOT the other?
+					else if($has_content_else_tag && !$has_content_if_tag)
 						throw $this->©exception( // Has one but NOT the other.
-							__METHOD__.'#missing_content_if_tag', compact('content'),
+							__METHOD__.'#missing_content_if_tag', get_defined_vars(),
 							sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 							sprintf($this->i18n(' Missing {%1$s}{/%1$s} tag. You MUST provide BOTH {%1$s}{/%1$s} and {%2$s}{/%2$s} tags.'),
 							        $content_if_tag, $content_else_tag)
 						);
-					else if($has_content_if_tag && !$has_content_else_tag) // Has one but NOT the other?
+					else if($has_content_if_tag && !$has_content_else_tag)
 						throw $this->©exception( // Has one but NOT the other.
-							__METHOD__.'#missing_content_else_tag', compact('content'),
+							__METHOD__.'#missing_content_else_tag', get_defined_vars(),
 							sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 							sprintf($this->i18n(' Missing {%2$s}{/%2$s} tag. You MUST provide BOTH {%1$s}{/%1$s} and {%2$s}{/%2$s} tags.'),
 							        $content_if_tag, $content_else_tag)
@@ -90,37 +90,32 @@ namespace websharks_core_v000000_dev\shortcodes
 					// Finds attributes that contain operators.
 					// We collect & remove operators before processing expressions.
 
-					foreach($attr as $_attr_key => $_attr_value)
-						{
-							if(preg_match('/^(?:&&|&amp;&amp;|&#038;&#038;|AND|\|\||OR|[\!\=\<\>]+)$/i', $_attr_value))
-								{
-									unset($attr_expressions[$_attr_key]);
-									$attr_operators[] = strtolower($_attr_value);
+					foreach($attr as $_attr_key => $_attr_value) // Find operator attributes.
+						if(preg_match('/^(?:&&|&amp;&amp;|&#038;&#038;|AND|\|\||OR|[!=<>]+)$/i', $_attr_value))
+							{
+								unset($attr_expressions[$_attr_key]);
+								$attr_operators[] = strtolower($_attr_value);
 
-									if(preg_match('/^[\!\=\<\>]+$/i', $_attr_value))
-										throw $this->©exception(
-											__METHOD__.'#unsupported_operator', compact('_attr_value'),
-											sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
-											$this->i18n(' Simple conditionals CANNOT process operators like (`==` `!=` `<>`). Please use `AND` / `OR` logic only.'.
-											            ' Or, you could use advanced PHP conditionals instead of shortcodes.'
-											));
-								}
-						}
+								if(preg_match('/^[!=<>]+$/', $_attr_value))
+									throw $this->©exception( // Unsupported operator.
+										__METHOD__.'#unsupported_operator', get_defined_vars(),
+										sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
+										$this->i18n(' Simple conditionals CANNOT process operators like (`==` `!=` `<>`). Please use `AND` / `OR` logic only.'.
+										            ' Or, you could use advanced PHP conditionals instead of shortcodes.'
+										));
+							}
 					unset($_attr_key, $_attr_value); // Housekeeping.
 
 					// Let's keep things simple. Do NOT allow operator mixtures.
 
 					if(count($attr_operators = array_unique($attr_operators)) > 1)
-						{
-							throw $this->©exception(
-								__METHOD__.'#unsupported_operator_mix', compact('attr_operators'),
-								sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
-								$this->i18n(' It\'s NOT possible to mix logic using an AND/OR combination. Please stick to one type of logic or another.'.
-								            ' If both types of logic are needed, you MUST use two different shortcode expressions.'.
-								            ' Or, you could use advanced PHP conditionals instead of shortcodes.'
-								));
-						}
-
+						throw $this->©exception( // More than ONE operator!
+							__METHOD__.'#unsupported_operator_mix', get_defined_vars(),
+							sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
+							$this->i18n(' It\'s NOT possible to mix logic using an AND/OR combination. Please stick to one type of logic or another.'.
+							            ' If both types of logic are needed, you MUST use two different shortcode expressions.'.
+							            ' Or, you could use advanced PHP conditionals instead of shortcodes.'
+							));
 					// Determine the type of logic applied by this shortcode.
 
 					$logic = $this::all_logic; // This is the default logic type (MUST satisfy all expressions).
@@ -132,16 +127,14 @@ namespace websharks_core_v000000_dev\shortcodes
 					foreach($attr_expressions as $_attr_expression_key => $_attr_expression_value)
 						{
 							// Parse and validate the overall expression.
-
 							if(!preg_match('/^(?P<negating>\!)?(?P<function>.+?)(?:\()(?P<args>.*?)(?:\))$/', $_attr_expression_value, $_expression))
 								throw $this->©exception(
-									__METHOD__.'#invalid_expression', compact('_attr_expression_value'),
+									__METHOD__.'#invalid_expression', get_defined_vars(),
 									sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 									sprintf($this->i18n(' The following is an invalid expression: `%1$s`.'), $_attr_expression_value).
 									$this->i18n(' Please be sure to remove ALL spaces from your expression (for instance, remove spaces between arguments).').
 									sprintf($this->i18n(' Please use one or more of these conditional functions: `%1$s`.'), $this->©var->dump($functions_allowed))
 								);
-
 							// Define all expression components.
 
 							$_negating = (!empty($_expression['negating'])) ? TRUE : FALSE;
@@ -152,16 +145,19 @@ namespace websharks_core_v000000_dev\shortcodes
 
 							if($restrict_functions && !$this->©string->in_wildcard_patterns($_function, $functions_allowed))
 								throw $this->©exception(
-									__METHOD__.'#function_not_allowed', compact('_function'),
+									__METHOD__.'#function_not_allowed', get_defined_vars(),
 									sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 									sprintf($this->i18n(' The following function is NOT allowed in a shortcode (for security purposes): `%1$s`.'), $_function).
 									sprintf($this->i18n(' Functions allowed in shortcodes, are limited to: `%1$s`.'), $this->©var->dump($functions_allowed))
 								);
+							// Argument parsing (supports arrays, supports typecasting).
 
-							// Argument parsing (including support for arrays — and support for typecasting).
+							$_args = preg_replace('/^\{(?P<args>.*?)\}$/', '${1}', $_args, 1, $_args_are_array);
+							$_args = preg_replace_callback('/\{.+?\}/', function ($m)
+								{
+									return str_replace(',', ';', $m[0]); // Semicolons on nested array args.
 
-							$_args = preg_replace('/^\{(?P<args>.*?)\}$/', '$1', $_args, 1, $_args_are_array);
-							$_args = preg_replace_callback('/\{.+?\}/', function($m){ return str_replace(',', ';', $m[0]); }, $_args);
+								}, $_args); // Now we can split arguments (even arrays) on commas.
 							$_args = (strlen($_args)) ? preg_split('/\s*,\s*/', $_args) : array();
 							$_args = $this->typecast_args($_args);
 
@@ -172,7 +168,7 @@ namespace websharks_core_v000000_dev\shortcodes
 									if(!is_string($_arg)) // Already cast as another type?
 										continue; // If it's NOT a string anymore, no need to parse.
 
-									$_arg = preg_replace('/^\{(?P<args>.*?)\}$/', '$1', $_arg, 1, $_arg_is_array);
+									$_arg = preg_replace('/^\{(?P<args>.*?)\}$/', '${1}', $_arg, 1, $_arg_is_array);
 
 									if($_arg_is_array) // If this argument is an array, split on `;` character.
 										{
@@ -180,7 +176,7 @@ namespace websharks_core_v000000_dev\shortcodes
 											$_arg = $this->typecast_args($_arg);
 										}
 								}
-							unset($_arg); // Just a little housekeeping here.
+							unset($_arg, $_arg_is_array); // Just a little housekeeping here.
 
 							// Security validation (do NOT allow variables or expressions).
 							// This is NOT possible anyway, because we're NOT evaluating argument strings.
@@ -195,14 +191,13 @@ namespace websharks_core_v000000_dev\shortcodes
 							// The routine below is definitely NOT a complete scan, but it catches the most common mistakes.
 							// We don't want site owners using expressions which will NOT be evaluated anyway.
 
-							if(preg_match('/[\$\(\)]|new\s/i', serialize($_args)))
+							if(preg_match('/[$()]|new\s/i', serialize($_args)))
 								throw $this->©exception(
-									__METHOD__.'#argument_not_allowed', compact('_args'),
+									__METHOD__.'#argument_not_allowed', get_defined_vars(),
 									sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 									$this->i18n(' One of the following snippets appear in at least one function argument value: `$`, `(`, `)`, `new `.').
 									sprintf($this->i18n(' Please do NOT use a variable or expression as an argument value: `%1$s`.'), $this->©var->dump($_args))
 								);
-
 							// Process shortcode conditional.
 
 							if($_args_are_array) // A single array?
@@ -228,7 +223,7 @@ namespace websharks_core_v000000_dev\shortcodes
 						}
 					// Housekeeping (unset these temporary vars).
 					unset($_attr_expression_key, $_attr_expression_value, $_expression);
-					unset($_function, $_negating, $_args, $_args_are_array, $_arg_is_array, $_result);
+					unset($_negating, $_function, $_args, $_args_are_array, $_arg_is_array, $_result);
 
 					// Return content (w/ support for nested shortcodes).
 					return do_shortcode((($conditions_fail) ? $content_else : $content_if));
@@ -393,7 +388,6 @@ namespace websharks_core_v000000_dev\shortcodes
 									$_arg = $_m['arg'];
 									settype($_arg, $_m['type']);
 								}
-
 							// Handles numeric (integer) values.
 
 							else if(is_numeric($_arg) && strpos($_arg, '.') === FALSE)
@@ -401,12 +395,9 @@ namespace websharks_core_v000000_dev\shortcodes
 
 							// Handles boolean and NULL values.
 
-							else if(strcasecmp($_arg, 'TRUE') === 0)
-								$_arg = TRUE;
-							else if(strcasecmp($_arg, 'FALSE') === 0)
-								$_arg = FALSE;
-							else if(strcasecmp($_arg, 'NULL') === 0)
-								$_arg = NULL;
+							else if(strcasecmp($_arg, 'TRUE') === 0) $_arg = TRUE;
+							else if(strcasecmp($_arg, 'FALSE') === 0) $_arg = FALSE;
+							else if(strcasecmp($_arg, 'NULL') === 0) $_arg = NULL;
 						}
 					unset($_arg, $_m); // Just a little housekeeping.
 

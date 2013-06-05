@@ -58,12 +58,11 @@ namespace websharks_core_v000000_dev
 				{
 					parent::__construct($___instance_config);
 
-					if(!did_action('init') && !defined('___UNIT_TEST'))
+					if(!did_action('init'))
 						throw $this->©exception(
 							__METHOD__.'#init', NULL,
 							$this->i18n('Doing it wrong (`init` hook has NOT been fired yet).')
 						);
-
 					// Add components & register styles (based on context).
 
 					$styles_to_register = array(); // Initialize array of styles to register.
@@ -74,7 +73,6 @@ namespace websharks_core_v000000_dev
 							'url' => $this->©url->to_core_dir_file('/client-side/styles/core-libs').'/',
 							'ver' => $this->___instance_config->core_ns_with_dashes
 						);
-
 					if(is_admin() || $this->©options->get('styles.front_side.load'))
 						{
 							foreach($this->jquery_ui_themes() as $_theme => $_theme_dir)
@@ -87,7 +85,6 @@ namespace websharks_core_v000000_dev
 									);
 							unset($_theme, $_theme_dir); // A little housekeeping.
 						}
-
 					if(is_admin() && $this->©menu_page->is_plugin_page()) // For plugin menu pages.
 						{
 							$this->menu_page_components[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-pages';

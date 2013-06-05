@@ -2660,7 +2660,7 @@ namespace websharks_core_v000000_dev
 
 					if(!is_string($base64_url_safe = base64_encode($string)))
 						throw $this->©exception(
-							__METHOD__.'#failure', compact('base64_url_safe'),
+							__METHOD__.'#failure', get_defined_vars(),
 							$this->i18n('Base64 encoding failed (`$base64_url_safe` is NOT a string).')
 						);
 					$base64_url_safe = str_replace($url_unsafe_chars, $url_safe_chars, $base64_url_safe);

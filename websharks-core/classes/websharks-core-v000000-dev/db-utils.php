@@ -107,9 +107,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$table``, ``$rel_id_column``, or ``$rel_id`` are empty.
 			 * @throws exception If ``$table`` is invalid (i.e. non-existent).
 			 * @throws exception If unable to generate meta name/value pairs.
-			 *
-			 * @assert ('___unit_test_table', 'rel_id', 1, array()) === "INSERT INTO `wp_ws____unit_test_table`(`rel_id`,`name`,`value`,`time`) VALUES('1','metafy_type__array','','".time()."')"
-			 * @assert ('___unit_test_table', 'rel_id', 1, array('hello' => 'there')) === "INSERT INTO `wp_ws____unit_test_table`(`rel_id`,`name`,`value`,`time`) VALUES('1','hello','there','".time()."')"
 			 */
 			public function prep_metafy_query($table, $rel_id_column, $rel_id, $data, $update_on_duplicate_key = FALSE)
 				{
@@ -506,7 +503,7 @@ namespace websharks_core_v000000_dev
 
 					if(!preg_match('/^SELECT\s+/i', $query))
 						throw $this->©exception(
-							__METHOD__.'#invalid_query', compact('query'),
+							__METHOD__.'#invalid_query', get_defined_vars(),
 							$this->i18n('Cannot get `FOUND_ROWS()` (missing `SELECT` statement).').
 							sprintf($this->i18n(' This `$query` is NOT a `SELECT` statement: `%1$s`.'), $query)
 						);

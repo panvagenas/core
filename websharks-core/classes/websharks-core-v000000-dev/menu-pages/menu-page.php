@@ -171,19 +171,17 @@ namespace websharks_core_v000000_dev\menu_pages
 				{
 					$this->check_arg_types($this->___instance_config->core_ns_prefix.'\\menu_pages\\panels\\panel',
 					                       'boolean', 'boolean', func_get_args());
-
 					// Validation.
 					if(empty($panel->slug))
 						throw $this->©exception(
-							__METHOD__.'#slug_missing', compact('panel'),
+							__METHOD__.'#slug_missing', get_defined_vars(),
 							$this->i18n('Panel `slug` is empty. Check panel configuration.')
 						);
-					else if(empty($panel->heading_title))
+					if(empty($panel->heading_title))
 						throw $this->©exception(
-							__METHOD__.'#heading_title_missing', compact('panel'),
+							__METHOD__.'#heading_title_missing', get_defined_vars(),
 							$this->i18n('Panel has no `heading_title`. Check panel configuration.')
 						);
-
 					// Exclusion?
 					if($this->apply_filters('exclude_panel_by_slug', FALSE, $panel->slug))
 						return; // Filters can exclude panels.
@@ -208,7 +206,6 @@ namespace websharks_core_v000000_dev\menu_pages
 								|| in_array($panel->slug, $states['active'], TRUE)
 							) ? ' active-by-default' : '';
 						}
-
 					// Common classes/attributes.
 					$common_classes = array('panel', 'panel--'.esc_attr($this->©string->with_dashes($panel->slug)).esc_attr($active_by_default_class));
 					$common_attrs   = 'data-panel-slug="'.esc_attr($panel->slug).'" data-panel-index="'.esc_attr($panel_index).'"';

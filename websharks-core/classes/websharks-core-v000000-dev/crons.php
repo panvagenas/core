@@ -133,7 +133,7 @@ namespace websharks_core_v000000_dev
 										}
 								}
 							else throw $this->©exception(
-								__METHOD__.'#invalid_cron_job', compact('_cron_job'),
+								__METHOD__.'#invalid_cron_job', get_defined_vars(),
 								$this->i18n('Invalid CRON job (missing and/or invalid array keys).').
 								sprintf($this->i18n(' Got: `%1$s`.'), printf($_cron_job, TRUE))
 							);

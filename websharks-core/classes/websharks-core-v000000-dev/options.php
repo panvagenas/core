@@ -260,12 +260,11 @@ namespace websharks_core_v000000_dev
 					$validators      = $this->apply_filters('validators', $validators);
 
 					if(count($default_options) !== count($validators))
-						throw $this->©exception( // This is NOT a strict requirement, but it helps us catch mistakes.
-							__METHOD__.'#options_mismatch_to_validators', compact('default_options', 'validators'),
+						throw $this->©exception( // This helps us catch mistakes.
+							__METHOD__.'#options_mismatch_to_validators', get_defined_vars(),
 							$this->i18n('Options mismatch. If you add a new default option, please add a validator for it also.').
 							sprintf($this->i18n(' Got `%1$s` default options, `%2$s` validators. These should match up.'), count($default_options), count($validators))
 						);
-
 					if(!is_array($this->options = get_option($this->___instance_config->plugin_root_ns_stub.'__options')))
 						update_option($this->___instance_config->plugin_root_ns_stub.'__options', ($this->options = array()));
 
@@ -314,11 +313,11 @@ namespace websharks_core_v000000_dev
 					if($get_default && isset($this->default_options[$option_name]))
 						return $this->apply_filters('get_'.$option_name, $this->default_options[$option_name]);
 
-					else if(!$get_default && isset($this->options[$option_name]))
+					if(!$get_default && isset($this->options[$option_name]))
 						return $this->apply_filters('get_'.$option_name, $this->options[$option_name]);
 
-					else throw $this->©exception(
-						__METHOD__.'#unknown_option_name', compact('option_name'),
+					throw $this->©exception(
+						__METHOD__.'#unknown_option_name', get_defined_vars(),
 						sprintf($this->i18n('Unknown option name: `%1$s`.'), $option_name)
 					);
 				}
@@ -673,7 +672,7 @@ namespace websharks_core_v000000_dev
 
 												default: // Exception.
 													throw $this->©exception(
-														__METHOD__.'#unknown_validation_type', compact('_validation_type'),
+														__METHOD__.'#unknown_validation_type', get_defined_vars(),
 														sprintf($this->i18n('Unknown validation type: `%1$s`.'), $_validation_type)
 													);
 											}

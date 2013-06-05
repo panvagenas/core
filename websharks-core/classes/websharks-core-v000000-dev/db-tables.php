@@ -181,12 +181,12 @@ namespace websharks_core_v000000_dev
 
 					if($install === FALSE)
 						throw $this->©exception(
-							__METHOD__.'#install_failure', compact('install'),
+							__METHOD__.'#install_failure', get_defined_vars(),
 							$this->i18n('Unable to install DB tables (install failure).')
 						);
 					if($upgrade === FALSE)
 						throw $this->©exception(
-							__METHOD__.'#upgrade_failure', compact('upgrade'),
+							__METHOD__.'#upgrade_failure', get_defined_vars(),
 							$this->i18n('Unable to upgrade DB tables (upgrade failure).')
 						);
 					return TRUE;
@@ -226,7 +226,7 @@ namespace websharks_core_v000000_dev
 
 					if($uninstall === FALSE)
 						throw $this->©exception(
-							__METHOD__.'#uninstall_failure', compact('uninstall'),
+							__METHOD__.'#uninstall_failure', get_defined_vars(),
 							$this->i18n('Unable to uninstall DB tables (uninstall failure).')
 						);
 					return TRUE;
@@ -241,9 +241,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$table`` is empty, or does NOT exist.
-			 *
-			 * @assert ('foo') throws exception
-			 * @assert ('___unit_test_table') === 'wp_ws____unit_test_table'
 			 */
 			public function get($table)
 				{
@@ -253,7 +250,7 @@ namespace websharks_core_v000000_dev
 						return $this->prefix($table);
 
 					throw $this->©exception(
-						__METHOD__.'#unknown_db_table', compact('table'),
+						__METHOD__.'#unknown_db_table', get_defined_vars(),
 						sprintf($this->i18n('Unknown plugin DB table: `%1$s`.'), $table).
 						sprintf($this->i18n(' Current plugin tables include: `%1$s`.'), $this->©var->dump($this->tables))
 					);
@@ -279,7 +276,7 @@ namespace websharks_core_v000000_dev
 						return $this->©db->$table; // WordPress® table.
 
 					throw $this->©exception(
-						__METHOD__.'#unknown_wp_db_table', compact('table'),
+						__METHOD__.'#unknown_wp_db_table', get_defined_vars(),
 						sprintf($this->i18n('Unknown WordPress® DB table: `%1$s`.'), $table)
 					);
 				}

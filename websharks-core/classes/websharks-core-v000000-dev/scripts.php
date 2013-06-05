@@ -58,7 +58,7 @@ namespace websharks_core_v000000_dev
 				{
 					parent::__construct($___instance_config);
 
-					if(!did_action('init') && !defined('___UNIT_TEST'))
+					if(!did_action('init'))
 						throw $this->©exception(
 							__METHOD__.'#init', NULL,
 							$this->i18n('Doing it wrong (`init` hook has NOT been fired yet).')
