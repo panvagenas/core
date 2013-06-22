@@ -41,30 +41,17 @@ namespace websharks_core_v000000_dev
 			 */
 			public function __construct($___instance_config)
 				{
-					parent::__construct($___instance_config);
+					parent::__construct($___instance_config); // Construct instance.
 
 					$this->option = $this->___instance_config->plugin_root_ns_stub.'__db_cache';
 
 					if(!is_array($this->cache = get_option($this->option)))
 						{
-							delete_option($this->option);
+							delete_option($this->option); // Delete & recreate.
 							add_option($this->option, ($this->cache = array()), '', 'no');
 							// We do NOT want to autoload this option value, because that requires twice the memory.
 							// If we allowed WordPress® to autoload this, it would also be stored into a cache by WordPress® under `alloptions`.
 						}
-				}
-
-			/**
-			 * Handles automatic cache purges.
-			 *
-			 * @attaches-to WordPress® `admin_init` hook.
-			 * @hook-priority `1`
-			 *
-			 * @assertion-via WordPress®.
-			 */
-			public function admin_init()
-				{
-					$this->purge();
 				}
 
 			/**
@@ -76,6 +63,8 @@ namespace websharks_core_v000000_dev
 			 *    This is optional. Defaults to `default` group.
 			 *
 			 * @return null|mixed Value of cache entry (if it exists); else a NULL value.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
 			 */
 			public function get($entry, $group = 'default')
 				{
@@ -98,6 +87,8 @@ namespace websharks_core_v000000_dev
 			 *    This is optional. Defaults to `default` group.
 			 *
 			 * @return mixed Reverberates input ``$value`` back to the caller.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
 			 */
 			public function update($entry, $value, $group = 'default')
 				{
@@ -108,6 +99,19 @@ namespace websharks_core_v000000_dev
 					update_option($this->option, $this->cache);
 
 					return $this->cache[$group][$entry];
+				}
+
+			/**
+			 * Handles automatic cache purges.
+			 *
+			 * @attaches-to WordPress® `admin_init` hook.
+			 * @hook-priority `1`
+			 *
+			 * @assertion-via WordPress®.
+			 */
+			public function admin_init()
+				{
+					$this->purge();
 				}
 
 			/**

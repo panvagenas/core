@@ -78,9 +78,9 @@ namespace websharks_core_v000000_dev
 			 */
 			public $regex_integer_columns = array(
 				'/^ID$|_id$/',
-				'/(?:^|_)time(?:_|$)/',
-				'/(?:^|_)(?:order|limit|count|quantity|postal_code_range)(?:_|$)/',
-				'/^(?:require|unique|default|counts|recurs|taxable|listable|overrides|read_access|write_access|in_array)$/'
+				'/(?:^|_)(?:time|timeout)(?:_|$)/',
+				'/(?:^|_)(?:order|priority|limit|count|quantity|postal_code_range)(?:_|$)/',
+				'/^(?:require|unique|default|counts|recurs|taxable|listable|overrides|read_access|write_access|in_array|blocking|futuristic)$/'
 			);
 
 			/**
@@ -286,13 +286,13 @@ namespace websharks_core_v000000_dev
 			 */
 			public function imploded_for_regex()
 				{
-					if(!isset($this->cache['imploded_for_regex']))
+					if(!isset($this->cache[__FUNCTION__]))
 						{
-							$tables                            = $this->©strings->wrap_deep($this->tables, $this->prefix, '', FALSE);
-							$tables                            = $this->©strings->preg_quote_deep($tables, '/');
-							$this->cache['imploded_for_regex'] = implode('|', $tables);
+							$tables                    = $this->©strings->wrap_deep($this->tables, $this->prefix, '', FALSE);
+							$tables                    = $this->©strings->preg_quote_deep($tables, '/');
+							$this->cache[__FUNCTION__] = implode('|', $tables);
 						}
-					return $this->cache['imploded_for_regex'];
+					return $this->cache[__FUNCTION__];
 				}
 
 			/**

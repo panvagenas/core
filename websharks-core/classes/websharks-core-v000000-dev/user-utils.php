@@ -88,17 +88,11 @@ namespace websharks_core_v000000_dev
 					if(is_null($user))
 						return $this->©user;
 
-					if($this->©integer->is_not_empty($user))
+					if(is_integer($user))
 						return $this->©user($user);
 
-					if(is_integer($user))
-						return $this->©user(-1);
-
-					if($user instanceof \WP_User && $this->©integer->is_not_empty($user->ID))
-						return $this->©user($user->ID);
-
 					if($user instanceof \WP_User)
-						return $this->©user(-1);
+						return $this->©user($user->ID);
 
 					throw $this->©exception(
 						__METHOD__.'#unexpected_user', get_defined_vars(),
@@ -114,16 +108,16 @@ namespace websharks_core_v000000_dev
 			 */
 			public function which_types()
 				{
-					if(!isset($this->cache['which_types']))
+					if(!isset($this->cache[__FUNCTION__]))
 						{
-							$this->cache['which_types'] = array_unique(
+							$this->cache[__FUNCTION__] = array_unique(
 								array(
 								     'null', 'integer', '\\WP_User',
 								     $this->___instance_config->core_ns_prefix.'\\users',
 								     $this->___instance_config->plugin_root_ns_prefix.'\\users'
 								));
 						}
-					return $this->cache['which_types'];
+					return $this->cache[__FUNCTION__];
 				}
 
 			/**
@@ -155,25 +149,24 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', array('string:!empty', 'integer:!empty', 'array:!empty'), func_get_args());
 
-					$by = strtolower($by);
+					$by = strtolower($by); // Force lowercase for easier comparison below.
 
-					if($by === 'id' && is_numeric($value))
+					if($by === 'id' && is_numeric($value)) // Simplify this case.
 						{
 							if(($value = (integer)$value)
-							   && is_object($user = $this->©user($value))
-							   && $user->has_id()
-							) return $user;
+							   && ($user = $this->©user($value)) && $user->has_id()
+							) return $user; // User with an ID — good :-)
 						}
-					else if(($user_id = $this->get_id_by($by, $value))
-					        && is_object($user = $this->©user($user_id))
-					        && $user->has_id()
-					) return $user;
+					else if(($_id_by = $this->get_id_by($by, $value))
+					        && ($user = $this->©user($_id_by)) && $user->has_id()
+					) return $user; // User with an ID — good :-)
 
-					else if(is_object($user = $this->©user(NULL, $by, $value))
-					        && $user->is_populated()
-					) return $user;
+					else if(($user = $this->©user(NULL, $by, $value)) && $user->is_populated())
+						return $user; // Last ditch effort (perhaps NOT a real user).
 
-					return NULL; // Default return value.
+					unset($_id_by); // Housekeeping.
+
+					return NULL; // Failure.
 				}
 
 			/**
@@ -205,7 +198,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', array('string:!empty', 'integer:!empty', 'array:!empty'), func_get_args());
 
-					$by = strtolower($by);
+					$by = strtolower($by); // Force lowercase for easier comparison below.
 
 					if(in_array($by, array('id', 'username', 'email', 'activation_key'), TRUE))
 						{
@@ -264,47 +257,55 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types(array('array', 'object'), func_get_args());
 
-					if(is_array($data)) $data = (object)$data;
+					if(is_array($data)) $data = (object)$data; // Force object properties.
 
 					if($this->©string->is_not_empty($data->display_name))
-						return $data->display_name;
+						return $data->display_name; // That was easy :-)
 
-					switch($format = $this->©options->get('users.registration.display_name_format'))
+					switch($this->©options->get('users.registration.display_name_format'))
 					{
-						case 'email':
-								if($this->©string->is_not_empty($data->email))
-									return $data->email;
-								break;
+						// Each case falls through on failure (in order of precedence).
 
-						case 'username':
-								if($this->©string->is_not_empty($data->username))
-									return $data->username;
-								break;
+						case 'first_name': // First name?
 
-						case 'first_name':
 								if($this->©string->is_not_empty($data->first_name))
 									return $data->first_name;
-								break;
 
-						case 'last_name':
+						case 'full_name': // Full (first/last combo)?
+
+								if($this->©string->is_not_empty($data->full_name))
+									return $data->full_name; // Easy :-)
+
+								if($this->©string->is_not_empty($data->first_name) || $this->©string->is_not_empty($data->last_name))
+									return trim($this->©string->is_not_empty_or($data->first_name, '').' '.$this->©string->is_not_empty_or($data->last_name, ''));
+
+						case 'username': // Username?
+
+								if($this->©string->is_not_empty($data->username))
+									return $data->username;
+
+						case 'last_name': // Last name?
+
 								if($this->©string->is_not_empty($data->last_name))
 									return $data->last_name;
-								break;
 
-						case 'full_name':
-								if($this->©string->is_not_empty($data->full_name))
-									return $data->full_name;
-								else if($this->©string->is_not_empty($data->first_name) || $this->©string->is_not_empty($data->last_name))
-									return trim($this->©string->is_not_empty_or($data->first_name, '').' '.$this->©string->is_not_empty_or($data->last_name, ''));
-								break;
+						case 'email': // Use email address?
+
+								if($this->©string->is_not_empty($data->email))
+									return $data->email;
+
+						default: // Default logic (we will choose — w/ same precedence).
+
+							if($this->©string->is_not_empty($data->first_name)) return $data->first_name;
+							if($this->©string->is_not_empty($data->full_name)) return $data->full_name;
+							if($this->©string->is_not_empty($data->username)) return $data->username;
+							if($this->©string->is_not_empty($data->last_name)) return $data->last_name;
+							if($this->©string->is_not_empty($data->email)) return $data->email;
+
+							break; // Break switch handler (use last resort — below).
 					}
-					if($this->©string->is_not_empty($data->first_name)) return $data->first_name;
-					if($this->©string->is_not_empty($data->full_name)) return $data->full_name;
-					if($this->©string->is_not_empty($data->username)) return $data->username;
-					if($this->©string->is_not_empty($data->last_name)) return $data->last_name;
-					if($this->©string->is_not_empty($data->email)) return $data->email;
-
-					return $this->apply_filters('default_display_name', $this->translate('Anonymous', 'default-display-name'));
+					return $this->apply_filters('default_display_name', // Anonymous.
+					                            $this->translate('Anonymous', 'default-display-name'));
 				}
 
 			/**
@@ -973,8 +974,7 @@ namespace websharks_core_v000000_dev
 						$this->send_activation_email($user->ID, $args['password'], $args['send_welcome']);
 					else if($args['send_welcome']) $this->send_welcome_email($user->ID, $args['password']);
 
-					// Fire `created` hook and return now.
-					$this->do_action('created', $user->ID, get_defined_vars());
+					$this->do_action('creation', $user->ID, get_defined_vars());
 
 					return array('ID' => $user->ID, 'user' => $user, 'password' => $args['password']);
 				}
@@ -995,12 +995,17 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types(array('\\WP_User', '\\WP_Error'), func_get_args());
 
-					if(!is_wp_error($authentication) && get_user_option('must_activate', $authentication->ID))
-						return new \WP_Error(
+					if(!($authentication instanceof \WP_User)) return $authentication;
+
+					$user = $this->which($authentication->ID); // Get user object (by ID).
+					if(!$user->has_id()) return $authentication; // Sanity check.
+
+					if($user->get_option('must_activate'))
+						return new \WP_Error( // Activation is required in this case.
 							'must_activate', $this->translate('This account has NOT been activated yet. Please check your email for the activation link.')
 						);
-					if(!is_wp_error($authentication) && is_multisite() && !is_super_admin($authentication->ID) && !in_array(get_current_blog_id(), array_keys(get_blogs_of_user($authentication->ID)), TRUE))
-						return new \WP_Error(
+					if(is_multisite() && !$user->is_super_admin() && !in_array(get_current_blog_id(), array_keys(get_blogs_of_user($user->ID)), TRUE))
+						return new \WP_Error( // They do NOT belong on this child blog.
 							'invalid_username', $this->translate('Invalid username for this site.')
 						);
 					return $authentication; // Default return value.
@@ -1230,6 +1235,8 @@ namespace websharks_core_v000000_dev
 
 					if(is_wp_error($wp_signon = wp_signon(array('user_login' => $username, 'user_password' => $password, 'remember' => $remember), $secure_cookie)))
 						{
+							$this->do_action('login_denied', $username, get_defined_vars());
+
 							if(!$wp_signon->get_error_code() || !$wp_signon->get_error_message())
 								return $this->©error(
 									__METHOD__.'#unknown_wp_error', get_defined_vars(),
@@ -1245,6 +1252,8 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#unable_to_acquire_user', get_defined_vars(),
 							sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $wp_signon->ID)
 						);
+					$this->do_action('login_allowed', $user->ID, get_defined_vars());
+
 					return array('ID' => $user->ID, 'user' => $user, 'password' => $password);
 				}
 

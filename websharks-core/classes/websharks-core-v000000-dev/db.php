@@ -27,30 +27,6 @@ namespace websharks_core_v000000_dev
 		class db extends framework
 		{
 			/**
-			 * @var boolean TRUE if modifying plugin tables.
-			 * @see ``$this->is_modifying_plugin_tables()`` for further details.
-			 */
-			public $is_modifying_plugin_tables = FALSE;
-
-			/**
-			 * Are we currently modifying plugin tables?
-			 *
-			 * @param null|boolean $is_modifying_plugin_tables Defaults to a NULL value.
-			 *    If this is set, we'll update the current status of `is_modifying_plugin_tables`.
-			 *
-			 * @return boolean TRUE if modifying plugin tables, else FALSE by default.
-			 */
-			public function is_modifying_plugin_tables($is_modifying_plugin_tables = NULL)
-				{
-					$this->check_arg_types(array('null', 'boolean'), func_get_args());
-
-					if(isset($is_modifying_plugin_tables))
-						$this->is_modifying_plugin_tables = $is_modifying_plugin_tables;
-
-					return $this->is_modifying_plugin_tables;
-				}
-
-			/**
 			 * Checks overload properties (and dynamic singleton class instances).
 			 *
 			 * @param string $property Name of a valid overload property.
@@ -61,11 +37,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function __isset($property)
 				{
-					// Bypassing ``is_string()``, ``check_arg_types()`` and NON-empty check here, in favor of typecasting.
-					// Benchmark tests show a slight increase in performance this way, and since the PHP interpreter usually calls this, it's pretty safe.
-					// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
-					$property = (string)$property; // Typecasting this to a string value.
+					$property = (string)$property;
 
 					if(property_exists($GLOBALS['wpdb'], $property))
 						return isset($GLOBALS['wpdb']->$property);
@@ -87,10 +59,6 @@ namespace websharks_core_v000000_dev
 			 */
 			public function __get($property)
 				{
-					// Bypassing ``is_string()``, ``check_arg_types()`` and NON-empty check here, in favor of typecasting.
-					// Benchmark tests show a slight increase in performance this way, and since the PHP interpreter usually calls this, it's pretty safe.
-					// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
 					$property = (string)$property; // Typecasting this to a string value.
 
 					if(property_exists($GLOBALS['wpdb'], $property))
@@ -116,14 +84,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function __call($method, $args)
 				{
-					// Bypassing ``is_string()``, ``check_arg_types()`` and NON-empty check here, in favor of typecasting.
-					// Benchmark tests show a slight increase in performance this way, and since the PHP interpreter usually calls this, it's pretty safe.
-					// Worst case scenario, something attempts to pass an object, and PHP will throw an error about string conversion (which is good enough).
-
 					$method = (string)$method; // Typecasting this to a string value.
 					$args   = (array)$args; // Typecast these arguments to an array value.
 
-					if(method_exists($GLOBALS['wpdb'], $method)) // In the WordPress® database class?
+					if(method_exists($GLOBALS['wpdb'], $method)) // WordPress® DB method?
 						{
 							if(!in_array($method, array('escape', '_real_escape'), TRUE)
 							   && !$this->©plugin->is_active_at_current_version() && !$this->is_modifying_plugin_tables()
@@ -150,5 +114,29 @@ namespace websharks_core_v000000_dev
 						}
 					return parent::__call($method, $args); // Default return value.
 				}
+
+			/**
+			 * Are we currently modifying plugin tables?
+			 *
+			 * @param null|boolean $is_modifying_plugin_tables Defaults to a NULL value.
+			 *    If this is set, we'll update the current status of `is_modifying_plugin_tables`.
+			 *
+			 * @return boolean TRUE if modifying plugin tables, else FALSE by default.
+			 */
+			public function is_modifying_plugin_tables($is_modifying_plugin_tables = NULL)
+				{
+					$this->check_arg_types(array('null', 'boolean'), func_get_args());
+
+					if(isset($is_modifying_plugin_tables))
+						$this->is_modifying_plugin_tables = $is_modifying_plugin_tables;
+
+					return $this->is_modifying_plugin_tables;
+				}
+
+			/**
+			 * @var boolean TRUE if modifying plugin tables.
+			 * @note See {@link is_modifying_plugin_tables()} for further details.
+			 */
+			public $is_modifying_plugin_tables = FALSE; // Default value.
 		}
 	}

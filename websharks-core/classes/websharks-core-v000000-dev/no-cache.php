@@ -52,14 +52,12 @@ namespace websharks_core_v000000_dev
 			 */
 			public function headers()
 				{
-					if(!isset($this->static['headers_sent'])
-					   && !$this->©vars->_REQUEST('qcABC') // Respect Quick Cache.
-					) // Set no-cache headers (do NOT allow browsers to cache this).
-						{
-							$this->©headers->no_cache();
+					if(isset($this->static[__FUNCTION__]) || $this->©vars->_REQUEST('qcABC'))
+						return; // Already sent; or we're respecting Quick Cache.
 
-							$this->static['headers_sent'] = TRUE;
-						}
+					$this->©headers->no_cache();
+
+					$this->static[__FUNCTION__] = TRUE;
 				}
 
 			/**
@@ -67,36 +65,34 @@ namespace websharks_core_v000000_dev
 			 */
 			public function constants()
 				{
-					if(!isset($this->static['constants_defined'])
-					   && !$this->©vars->_REQUEST('qcAC') // Respect Quick Cache.
-					) // Set no-cache constants (do NOT allow WordPress® to cache this).
-						{
-							if(!defined('DONOTCACHEDB'))
-								/**
-								 * @var boolean For cache plugins.
-								 */
-								define ('DONOTCACHEDB', TRUE);
+					if(isset($this->static[__FUNCTION__]) || $this->©vars->_REQUEST('qcAC'))
+						return; // Already defined; or we're respecting Quick Cache.
 
-							if(!defined('DONOTCACHEPAGE'))
-								/**
-								 * @var boolean For cache plugins.
-								 */
-								define ('DONOTCACHEPAGE', TRUE);
+					if(!defined('DONOTCACHEDB'))
+						/**
+						 * @var boolean For cache plugins.
+						 */
+						define ('DONOTCACHEDB', TRUE);
 
-							if(!defined('DONOTCACHEOBJECT'))
-								/**
-								 * @var boolean For cache plugins.
-								 */
-								define ('DONOTCACHEOBJECT', TRUE);
+					if(!defined('DONOTCACHEPAGE'))
+						/**
+						 * @var boolean For cache plugins.
+						 */
+						define ('DONOTCACHEPAGE', TRUE);
 
-							if(!defined('QUICK_CACHE_ALLOWED'))
-								/**
-								 * @var boolean For Quick Cache.
-								 */
-								define ('QUICK_CACHE_ALLOWED', FALSE);
+					if(!defined('DONOTCACHEOBJECT'))
+						/**
+						 * @var boolean For cache plugins.
+						 */
+						define ('DONOTCACHEOBJECT', TRUE);
 
-							$this->static['constants_defined'] = TRUE;
-						}
+					if(!defined('QUICK_CACHE_ALLOWED'))
+						/**
+						 * @var boolean For Quick Cache.
+						 */
+						define ('QUICK_CACHE_ALLOWED', FALSE);
+
+					$this->static[__FUNCTION__] = TRUE;
 				}
 		}
 	}

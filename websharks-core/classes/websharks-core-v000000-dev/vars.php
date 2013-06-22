@@ -1183,21 +1183,21 @@ namespace websharks_core_v000000_dev
 
 					$checksum = md5(serialize($value)); // Current checksum (e.g. current array keys/values).
 
-					if(!isset($this->static['_super_global_tsc__'.$name], $this->static['_super_global_tsc__'.$name.'_checksum'])
-					   || $this->static['_super_global_tsc__'.$name.'_checksum'] !== $checksum
+					if(!isset($this->static[__FUNCTION__.'__'.$name], $this->static[__FUNCTION__.'__'.$name.'_checksum'])
+					   || $this->static[__FUNCTION__.'__'.$name.'_checksum'] !== $checksum
 					) // Either NOT yet defined; or values have changed since last cache.
 						{
-							$this->static['_super_global_tsc__'.$name]             = array();
-							$this->static['_super_global_tsc__'.$name.'_checksum'] = $checksum;
-							$this->static['_super_global_tsc__'.$name]             = $this->©strings->trim_strip_deep((array)$value);
+							$this->static[__FUNCTION__.'__'.$name]             = array();
+							$this->static[__FUNCTION__.'__'.$name.'_checksum'] = $checksum;
+							$this->static[__FUNCTION__.'__'.$name]             = $this->©strings->trim_strip_deep((array)$value);
 						}
 					if(isset($key)) // Requesting a specific key?
 						{
-							if(array_key_exists($key, $this->static['_super_global_tsc__'.$name]))
-								return $this->static['_super_global_tsc__'.$name][$key];
+							if(array_key_exists($key, $this->static[__FUNCTION__.'__'.$name]))
+								return $this->static[__FUNCTION__.'__'.$name][$key];
 							return NULL; // Default return value.
 						}
-					return $this->static['_super_global_tsc__'.$name];
+					return $this->static[__FUNCTION__.'__'.$name];
 				}
 
 			/**

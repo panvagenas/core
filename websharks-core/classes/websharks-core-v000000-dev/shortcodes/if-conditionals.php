@@ -244,12 +244,14 @@ namespace websharks_core_v000000_dev\shortcodes
 						'*::user_is_logged_in',
 
 						'*::user_has_passtag',
-						'*::user_has_any_passtag',
 						'*::user_has_passtags',
+						'*::user_has_any_passtag',
 
+						'*::user_can_passtag',
+						'*::user_can_passtags',
 						'*::user_can_access_passtag',
-						'*::user_can_access_any_passtag',
 						'*::user_can_access_passtags',
+						'*::user_can_access_any_passtag',
 
 						// WordPress® core (conditional tags, e.g. functions).
 						// See: <http://codex.wordpress.org/Conditional_Tags>.

@@ -77,10 +77,10 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if(!isset($this->static['current']))
-						$this->static['current'] = $this->current_scheme().'://'.$this->current_host().$this->current_uri();
+					if(!isset($this->static[__FUNCTION__]))
+						$this->static[__FUNCTION__] = $this->current_scheme().'://'.$this->current_host().$this->current_uri();
 
-					return ($scheme) ? $this->set_scheme($this->static['current'], $scheme) : $this->static['current'];
+					return ($scheme) ? $this->set_scheme($this->static[__FUNCTION__], $scheme) : $this->static[__FUNCTION__];
 				}
 
 			/**
@@ -92,15 +92,15 @@ namespace websharks_core_v000000_dev
 			 */
 			public function current_scheme()
 				{
-					if(!isset($this->static['current_scheme']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
 							$scheme = $this->©vars->_SERVER('REQUEST_SCHEME');
 
 							if($this->©string->is_not_empty($scheme))
-								$this->static['current_scheme'] = $this->n_scheme($scheme);
-							else $this->static['current_scheme'] = (is_ssl()) ? 'https' : 'http';
+								$this->static[__FUNCTION__] = $this->n_scheme($scheme);
+							else $this->static[__FUNCTION__] = (is_ssl()) ? 'https' : 'http';
 						}
-					return $this->static['current_scheme'];
+					return $this->static[__FUNCTION__];
 				}
 
 			/**
@@ -112,7 +112,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function current_host()
 				{
-					if(!isset($this->static['current_host']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
 							$host = $this->©vars->_SERVER('HTTP_HOST');
 
@@ -121,9 +121,9 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#missing_server_http_host', get_defined_vars(),
 									$this->i18n('Missing required `$_SERVER[\'HTTP_HOST\']`.')
 								);
-							$this->static['current_host'] = $host;
+							$this->static[__FUNCTION__] = $host;
 						}
-					return $this->static['current_host'];
+					return $this->static[__FUNCTION__];
 				}
 
 			/**
@@ -135,7 +135,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function current_uri()
 				{
-					if(!isset($this->static['current_uri']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
 							if(is_string($uri = $this->©vars->_SERVER('REQUEST_URI')))
 								$uri = $this->parse_uri($uri);
@@ -145,9 +145,9 @@ namespace websharks_core_v000000_dev
 									__METHOD__.'#missing_server_request_uri', get_defined_vars(),
 									$this->i18n('Missing required `$_SERVER[\'REQUEST_URI\']`.')
 								);
-							$this->static['current_uri'] = $uri;
+							$this->static[__FUNCTION__] = $uri;
 						}
-					return $this->static['current_uri'];
+					return $this->static[__FUNCTION__];
 				}
 
 			/**
@@ -818,6 +818,33 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Builds a WordPress® taxonomy URL (for a given term).
+			 *
+			 * @param null|object $term Optional. Defaults to the current term (if possible).
+			 *
+			 * @param string      $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 *
+			 * @return string Full URL to a WordPress® taxonomy URL (for a given term).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function to_wp_term($term = NULL, $scheme = '')
+				{
+					$this->check_arg_types(array('null', 'object'), 'string', func_get_args());
+
+					if(!isset($term)) $term = get_queried_object();
+
+					if(empty($term->term_id) || empty($term->taxonomy))
+						throw $this->©exception(
+							__METHOD__.'#invalid_term', get_defined_vars(),
+							$this->i18n('Invalid term. Missing `term_id`, `taxonomy` properties.')
+						);
+					if(!is_string($url = get_term_link($term))) $url = '';
+
+					return ($url && $scheme) ? $this->set_scheme($url, $scheme) : $url;
+				}
+
+			/**
 			 * Builds a WordPress® permalink URL (for a given Post ID).
 			 *
 			 * @param integer $id Optional. Defaults to the current Post ID.
@@ -832,7 +859,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('integer', 'string', func_get_args());
 
-					$url = (string)get_permalink($id);
+					if(!is_string($url = get_permalink($id))) $url = '';
 
 					return ($url && $scheme) ? $this->set_scheme($url, $scheme) : $url;
 				}
@@ -872,8 +899,7 @@ namespace websharks_core_v000000_dev
 
 							$parts['fragment'] = $uri_parts['fragment']; // URI fragment always.
 						}
-					if(!$this->©file->has_extension($parts['path']))
-						$parts['path'] = user_trailingslashit($parts['path']);
+					if(!$this->©file->has_extension($parts['path'])) $parts['path'] = user_trailingslashit($parts['path']);
 
 					$url = home_url($this->unparse($parts));
 
@@ -1283,6 +1309,32 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Builds a URL leading to an absolute URI (directory/file).
+			 *
+			 * @param string $url_uri_query_fragment A full URL; or a partial URI;
+			 *    or only a query string, or only a fragment. Any of these can be parsed here.
+			 *
+			 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+			 *
+			 * @return string URL leading to an absolute URI (directory/file).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function to_abs_uri($url_uri_query_fragment = '', $scheme = '')
+				{
+					$this->check_arg_types('string', 'string', func_get_args());
+
+					$parts = $this->must_parse_uri_parts($url_uri_query_fragment);
+
+					if(substr($parts['path'], -1) !== '/' && !$this->©file->has_extension($parts['path']))
+						$parts['path'] = trailingslashit($parts['path']);
+
+					$url = $this->current_scheme().'://'.$this->current_host().$this->unparse($parts);
+
+					return ($scheme) ? $this->set_scheme($url, $scheme) : $url;
+				}
+
+			/**
 			 * URL leading to a WordPress® `/directory-or-file`.
 			 *
 			 * @param string $abs_dir_file Absolute server path to a WordPress® `/directory-or-file`.
@@ -1329,14 +1381,14 @@ namespace websharks_core_v000000_dev
 						}
 					// Remove stream wrappers (assuming WordPress® does NOT use these).
 
-					if(!isset($this->static['to_wp_abs_dir_file__regex_stream_wrapper'])) // We only need this ONE time.
-						$this->static['to_wp_abs_dir_file__regex_stream_wrapper'] = substr(stub::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
+					if(!isset($this->static[__FUNCTION__.'__regex_stream_wrapper'])) // We only need this ONE time.
+						$this->static[__FUNCTION__.'__regex_stream_wrapper'] = substr(stub::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
 
 					if(strpos($dir, '://') !== FALSE)
-						$dir = preg_replace($this->static['to_wp_abs_dir_file__regex_stream_wrapper'], '', $dir);
+						$dir = preg_replace($this->static[__FUNCTION__.'__regex_stream_wrapper'], '', $dir);
 
 					if($dir_realpath && strpos($dir_realpath, '://') !== FALSE)
-						$dir_realpath = preg_replace($this->static['to_wp_abs_dir_file__regex_stream_wrapper'], '', $dir_realpath);
+						$dir_realpath = preg_replace($this->static[__FUNCTION__.'__regex_stream_wrapper'], '', $dir_realpath);
 
 					// Check WordPress® absolute/root directory (this is enough in most cases).
 
@@ -1388,11 +1440,11 @@ namespace websharks_core_v000000_dev
 
 					// By default we use `file://`. Windows® drive letter is removed temporarily here.
 
-					if(!isset($this->static['to_wp_abs_dir_file__regex_win_drive_letter'])) // We only need this ONE time.
-						$this->static['to_wp_abs_dir_file__regex_win_drive_letter'] = substr(stub::$regex_valid_win_drive_letter, 0, -2).'/';
+					if(!isset($this->static[__FUNCTION__.'__regex_win_drive_letter'])) // We only need this ONE time.
+						$this->static[__FUNCTION__.'__regex_win_drive_letter'] = substr(stub::$regex_valid_win_drive_letter, 0, -2).'/';
 
-					if(preg_match($this->static['to_wp_abs_dir_file__regex_win_drive_letter'], $dir, $_drive))
-						$dir = preg_replace($this->static['to_wp_abs_dir_file__regex_win_drive_letter'], '', $dir);
+					if(preg_match($this->static[__FUNCTION__.'__regex_win_drive_letter'], $dir, $_drive))
+						$dir = preg_replace($this->static[__FUNCTION__.'__regex_win_drive_letter'], '', $dir);
 
 					return 'file://'.((!empty($_drive[0])) ? $_drive[0] : '').$this->encode_path_parts($dir.$file);
 				}
@@ -1705,7 +1757,7 @@ namespace websharks_core_v000000_dev
 							if(!isset($args['headers']['Content-Type']))
 								$args['headers']['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 						}
-					if(!empty($timeout)) // Do we have a ``$timeout`` value?
+					if($timeout) // Do we have a ``$timeout`` value?
 						$args = array_merge(array('timeout' => $timeout), $args);
 
 					// Set default return value options.
@@ -1720,8 +1772,8 @@ namespace websharks_core_v000000_dev
 					$args['httpversion'] = $this->©string->isset_or($args['httpversion'], '1.1');
 
 					// Developers might like to fine tune things a bit further here.
-					$url  = $this->apply_filters('remote__url', $url, get_defined_vars());
-					$args = $this->apply_filters('remote__args', $args, get_defined_vars());
+					$url  = $this->apply_filters(__FUNCTION.'__url', $url, get_defined_vars());
+					$args = $this->apply_filters(__FUNCTION.'__args', $args, get_defined_vars());
 
 					// Now unset these ``$args``, so they don't get passed through WordPress® and cause problems.
 					unset($args['return_array'], $args['return_errors'], $args['return_xml_object'], $args['xml_object_flags']);
@@ -1868,10 +1920,10 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if(!isset($this->static['n_amps__regex']))
-						$this->static['n_amps__regex'] = '/(?:'.implode('|', array_keys($this->©strings->ampersand_entities)).')/';
+					if(!isset($this->static[__FUNCTION__.'__regex']))
+						$this->static[__FUNCTION__.'__regex'] = '/(?:'.implode('|', array_keys($this->©strings->ampersand_entities)).')/';
 
-					return preg_replace($this->static['n_amps__regex'], '&', $url_uri_query_fragment);
+					return preg_replace($this->static[__FUNCTION__.'__regex'], '&', $url_uri_query_fragment);
 				}
 
 			/**
@@ -2297,14 +2349,14 @@ namespace websharks_core_v000000_dev
 					if(!($parts = $this->parse($url_uri_query_fragment)))
 						return FALSE; // Not possible to check.
 
-					if(!isset($this->static['is_wp_root']))
-						$this->static['is_wp_root'] = array(
+					if(!isset($this->static[__FUNCTION__]))
+						$this->static[__FUNCTION__] = array(
 							'wp_home_parts'         => $this->must_parse($this->to_wp_home_uri()),
 							'wp_site_parts'         => $this->must_parse($this->to_wp_site_uri()),
 							'wp_network_home_parts' => $this->must_parse($this->to_wp_network_home_uri()),
 							'wp_network_site_parts' => $this->must_parse($this->to_wp_network_site_uri()),
 						);
-					$static =& $this->static['is_wp_root']; // A shorter reference.
+					$static =& $this->static[__FUNCTION__]; // A shorter reference.
 
 					if($any_type || in_array($this::home_type, $type, TRUE))
 						{
@@ -2359,7 +2411,7 @@ namespace websharks_core_v000000_dev
 					if(!$url_uri_query_fragment || !($parts = $this->parse($url_uri_query_fragment)))
 						return FALSE; // Not something we can test? Catch this early.
 
-					return (preg_match('/\/wp-admin(?:\/|$)/', $parts['path'])) ? TRUE : FALSE;
+					return (preg_match('/\/wp-admin(?:[\/?#]|$)/', $parts['path'])) ? TRUE : FALSE;
 				}
 
 			/**

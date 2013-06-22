@@ -58,10 +58,8 @@ namespace websharks_core_v000000_dev
 			 */
 			public $cron_jobs = array
 			(
-				array(
-					'©class.method' => '©compressor.cleanup_cache',
-					'schedule'      => 'daily'
-				)
+				array('©class.method' => '©compressor.cleanup_cache',
+				      'schedule'      => 'daily')
 			);
 
 			/**
@@ -94,10 +92,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function wp_loaded()
 				{
-					if(isset($this->static['loaded']))
+					if(isset($this->static[__FUNCTION__]))
 						return; // Already loaded.
 
-					$this->static['loaded'] = TRUE;
+					$this->static[__FUNCTION__] = TRUE;
 
 					if(!$this->©options->get('compressor.enable'))
 						return; // Disabled via configuration.

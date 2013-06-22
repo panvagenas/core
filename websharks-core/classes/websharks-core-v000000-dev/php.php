@@ -36,10 +36,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function init()
 				{
-					if(isset($this->static['initialized']))
+					if(isset($this->static[__FUNCTION__]))
 						return; // Already initialized.
 
-					$this->static['initialized'] = TRUE;
+					$this->static[__FUNCTION__] = TRUE;
 
 					add_filter('the_content', array($this, 'filter'), 1);
 					add_filter('get_the_excerpt', array($this, 'filter'), 1);

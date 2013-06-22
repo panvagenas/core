@@ -45,7 +45,7 @@ namespace websharks_core_v000000_dev
 								$cap = 'edit_users';
 								break;
 
-						default:
+						default: // Requires administrator.
 							$cap = 'administrator';
 							break;
 					}

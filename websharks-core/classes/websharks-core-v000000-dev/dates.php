@@ -56,6 +56,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 *    We fix this issue here, by removing timezone chars from ``$format``, when ``$utc`` is TRUE.
 			 *    Once the translation is completed, we add ` UTC` onto the end as a quick fix.
+			 *    TODO Review again upon release of WP 3.6. Hoping for a better solution.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
@@ -68,9 +69,10 @@ namespace websharks_core_v000000_dev
 					$time = ($time) ? abs($time) : time(); // Default time.
 					$time = ($utc) ? $time : $time + (get_option('gmt_offset') * 3600);
 
-					if($utc && preg_match('/[PIOTZe]/', $format))
+					if($utc && preg_match('/(?<!\\\\)[PIOTZe]/', $format))
 						{
-							$format = trim(preg_replace('/[PIOTZe]/', '', $format));
+							$format = preg_replace('/(?<!\\\\)[PIOTZe]/', '', $format);
+							$format = trim(preg_replace('/ {2,}/', ' ', $format));
 
 							return date_i18n($format, $time, $utc).' UTC';
 						}

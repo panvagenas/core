@@ -33,15 +33,15 @@ namespace websharks_core_v000000_dev
 			 */
 			public function get()
 				{
-					if(!isset($this->static['ip']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
-							$this->static['ip'] = 'unknown';
+							$this->static[__FUNCTION__] = 'unknown';
 
 							$_s = $this->©vars->_SERVER();
 
 							if($this->©options->get('ips.prioritize_remote_addr')
 							   && ($REMOTE_ADDR = $this->©ips->valid_public($_s['REMOTE_ADDR']))
-							) return ($this->static['ip'] = $REMOTE_ADDR);
+							) return ($this->static[__FUNCTION__] = $REMOTE_ADDR);
 
 							$sources = $this->apply_filters(
 								'sources', array(
@@ -57,12 +57,12 @@ namespace websharks_core_v000000_dev
 							);
 							foreach($sources as $_source) // Try each of these; in this order.
 								if(!isset($$_source) && ($$_source = $this->©ips->valid_public($_s[$_source])))
-									return ($this->static['ip'] = $$_source);
+									return ($this->static[__FUNCTION__] = $$_source);
 							unset($_source); // Housekeeping.
 
-							$this->static['ip'] = $this->©string->is_not_empty_or($_s['REMOTE_ADDR'], 'unknown');
+							$this->static[__FUNCTION__] = $this->©string->is_not_empty_or($_s['REMOTE_ADDR'], 'unknown');
 						}
-					return $this->static['ip'];
+					return $this->static[__FUNCTION__];
 				}
 
 			/**
@@ -83,9 +83,9 @@ namespace websharks_core_v000000_dev
 			 */
 			function valid_public(&$possible_ips)
 				{
-					if(!isset($this->static['private_ips']))
+					if(!isset($this->static[__FUNCTION__]['private_ips']))
 						{
-							$this->static['private_ips'] = array(
+							$this->static[__FUNCTION__]['private_ips'] = array(
 								array(
 									'min' => ip2long('0.0.0.0'),
 									'max' => ip2long('2.255.255.255')
@@ -122,21 +122,18 @@ namespace websharks_core_v000000_dev
 						}
 					if($this->©string->is_not_empty($possible_ips))
 						foreach(preg_split('/[\s;,]+/', trim($possible_ips)) as $_possible_ip)
-							{
-								if($_possible_ip && !in_array(($_ip2long = ip2long($_possible_ip)), array(-1, FALSE), TRUE))
-									{
-										foreach($this->static['private_ips'] as $_private_ip_range)
-											if($_ip2long >= $_private_ip_range['min'] && $_ip2long <= $_private_ip_range['max'])
-												continue 2; // This IP is in a private range.
-										unset($_private_ip_range); // Housekeeping.
+							if($_possible_ip && !in_array(($_ip2long = ip2long($_possible_ip)), array(-1, FALSE), TRUE))
+								{
+									foreach($this->static[__FUNCTION__]['private_ips'] as $_private_ip_range)
+										if($_ip2long >= $_private_ip_range['min'] && $_ip2long <= $_private_ip_range['max'])
+											continue 2; // This IP is in a private range.
+									unset($_private_ip_range); // Housekeeping.
 
-										// Else it's fine!
-										return long2ip($_ip2long);
-									}
-							}
+									return long2ip($_ip2long); // Else it's fine!
+								}
 					unset($_possible_ip, $_ip2long); // Housekeeping.
 
-					return ''; // Default return value (an empty string).
+					return ''; // Default return value.
 				}
 
 			/**
@@ -165,8 +162,7 @@ namespace websharks_core_v000000_dev
 							list ($net, $mask) = explode('/', $cidr, 2);
 							return (ip2long($ip) & ~((1 << (32 - $mask)) - 1)) === ip2long($net);
 						}
-					else if($ip === $cidr) // Exact match?
-						return TRUE;
+					else if($ip === $cidr) return TRUE; // Exact match?
 
 					return FALSE; // Default return value.
 				}

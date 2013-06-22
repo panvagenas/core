@@ -178,8 +178,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function build_instance_config_for_core_inline_data()
 				{
-					if(isset($this->cache['instance_config_for_core_inline_data']))
-						return $this->cache['instance_config_for_core_inline_data'];
+					if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
 
 					$data = 'var $'.$this->___instance_config->plugin_root_ns_stub.'___instance_config = {';
 
@@ -201,7 +200,7 @@ namespace websharks_core_v000000_dev
 					$data .= 'var $'.$this->___instance_config->core_ns_stub.'__current_plugin___instance_config = '.
 					         '$'.$this->___instance_config->plugin_root_ns_stub.'___instance_config;';
 
-					return ($this->cache['instance_config_for_core_inline_data'] = $data);
+					return ($this->cache[__FUNCTION__] = $data);
 				}
 
 			/**
@@ -211,8 +210,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function build_verifiers_for_core_inline_data()
 				{
-					if(isset($this->cache['verifiers_for_core_inline_data']))
-						return $this->cache['verifiers_for_core_inline_data'];
+					if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
 
 					$data = 'var $'.$this->___instance_config->plugin_root_ns_stub.'___verifiers = {';
 
@@ -231,7 +229,7 @@ namespace websharks_core_v000000_dev
 					$data .= 'var $'.$this->___instance_config->core_ns_stub.'__current_plugin___verifiers = '.
 					         '$'.$this->___instance_config->plugin_root_ns_stub.'___verifiers;';
 
-					return ($this->cache['verifiers_for_core_inline_data'] = $data);
+					return ($this->cache[__FUNCTION__] = $data);
 				}
 
 			/**
@@ -243,10 +241,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function build_additional_verifiers_for_core_inline_data()
 				{
-					if(isset($this->cache['additional_verifiers_for_core_inline_data']))
-						return $this->cache['additional_verifiers_for_core_inline_data'];
+					if(isset($this->cache[__FUNCTION__]))
+						return $this->cache[__FUNCTION__];
 
-					return ($this->cache['additional_verifiers_for_core_inline_data'] = '');
+					return ($this->cache[__FUNCTION__] = '');
 				}
 
 			/**
@@ -256,10 +254,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function build_front_side_inline_data()
 				{
-					if(isset($this->cache['front_side_inline_data']))
-						return $this->cache['front_side_inline_data'];
+					if(isset($this->cache[__FUNCTION__]))
+						return $this->cache[__FUNCTION__];
 
-					return ($this->cache['front_side_inline_data'] = '');
+					return ($this->cache[__FUNCTION__] = '');
 				}
 
 			/**
@@ -269,10 +267,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function build_stand_alone_inline_data()
 				{
-					if(isset($this->cache['stand_alone_inline_data']))
-						return $this->cache['stand_alone_inline_data'];
+					if(isset($this->cache[__FUNCTION__]))
+						return $this->cache[__FUNCTION__];
 
-					return ($this->cache['stand_alone_inline_data'] = '');
+					return ($this->cache[__FUNCTION__] = '');
 				}
 
 			/**
@@ -282,10 +280,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function build_menu_page_inline_data()
 				{
-					if(isset($this->cache['menu_page_inline_data']))
-						return $this->cache['menu_page_inline_data'];
+					if(isset($this->cache[__FUNCTION__]))
+						return $this->cache[__FUNCTION__];
 
-					return ($this->cache['menu_page_inline_data'] = '');
+					return ($this->cache[__FUNCTION__] = '');
 				}
 
 			/**

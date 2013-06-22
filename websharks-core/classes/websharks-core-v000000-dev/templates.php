@@ -149,7 +149,7 @@ namespace websharks_core_v000000_dev
 			public function email_styles()
 				{
 					$styles = '<style type="text/css">';
-					$styles .= file_get_contents($this->©file->template('styles/email.min.css'));
+					$styles .= file_get_contents($this->©file->template('client-side/styles/email.min.css'));
 					$styles .= '</style>'; // Inline email classes via `<style>` tag.
 
 					return $styles; // Return final styles.

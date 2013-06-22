@@ -430,7 +430,11 @@ namespace websharks_core_v000000_dev
 					                       array('array', 'string'), array('array', 'string'),
 					                       array('null', 'boolean'), array('null', 'integer'), func_get_args());
 
-					$dir_file = $this->n_seps($dir_file);
+					if(!isset($this->static[__FUNCTION__]))
+						$this->static[__FUNCTION__] = array();
+					$static =& $this->static[__FUNCTION__]; // Shorter reference.
+
+					$dir_file = $this->n_seps($dir_file); // Normalize directory seps.
 
 					if($from_dir_file && ($this->has_extension($from_dir_file) || is_file($from_dir_file)))
 						$from_dir = $this->n_seps_up($from_dir_file); // Need a directory.
@@ -446,13 +450,13 @@ namespace websharks_core_v000000_dev
 
 					if($globs === $this::defaults || !$this->©array->is_not_empty($globs)) // If there are NO specific globs (default behavior).
 						{
-							if(!isset($this->static['ignore_glob_defaults']) || !is_array($this->static['ignore_glob_defaults']))
+							if(!isset($static['ignore_glob_defaults']) || !is_array($static['ignore_glob_defaults']))
 								{
-									$globs = $this->static['ignore_glob_defaults'] = // From the `/.gitignore` file in the WebSharks™ Core repo directory.
+									$globs = $static['ignore_glob_defaults'] = // From the `/.gitignore` file in the WebSharks™ Core repo directory.
 										'._*;*~;*.bak;.idea;*.iml;*.ipr;*.iws;.git;.gitignore;.gitattributes;CVS;.cvsignore;.svn;_svn;.hg;.hgignore;SCCS;RCS;$RECYCLE.BIN;Desktop.ini;Thumbs.db;ehthumbs.db;.Spotlight-V100;.AppleDouble;.LSOverride;.DS_Store;.Trashes;Icon'."\r";
-									$globs = $this->static['ignore_glob_defaults'] = preg_split('/;+/', $globs, NULL, PREG_SPLIT_NO_EMPTY);
+									$globs = $static['ignore_glob_defaults'] = preg_split('/;+/', $globs, NULL, PREG_SPLIT_NO_EMPTY);
 								}
-							else $globs = $this->static['ignore_glob_defaults']; // We've already defined these once before.
+							else $globs = $static['ignore_glob_defaults']; // We've already defined these once before.
 
 							$globs_case_insensitive = TRUE; // This is forced to a TRUE value on default globs.
 						}

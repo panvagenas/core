@@ -37,7 +37,7 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
 						);
-					if(isset($this->static['no_cache_header_sent']))
+					if(isset($this->static[__FUNCTION__]))
 						return; // Sent already.
 
 					foreach(headers_list() as $_header)
@@ -50,7 +50,7 @@ namespace websharks_core_v000000_dev
 
 					if(!isset($no_cache_header_already_sent_via_php)) nocache_headers();
 
-					$this->static['no_cache_header_sent'] = TRUE;
+					$this->static[__FUNCTION__] = TRUE;
 				}
 
 			/**

@@ -915,69 +915,6 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				}
 			# --------------------------------------------------------------------------------------------------------------------------------
 
-			if(!filter_var(ini_get('short_open_tag'), FILTER_VALIDATE_BOOLEAN))
-				{
-					$errors[] = array(
-						'title'   => $this->i18n('PHP Short Open Tag: <code>&lt;?</code>'),
-						'message' => sprintf(
-							$this->i18n(
-								'PHP <code>v%1$s</code> MUST be configured with <code>short_open_tag=on</code> in your <a href="http://www.php.net/manual/en/ini.core.php#ini.short-open-tag" target="_blank" rel="xlink">php.ini</a> file.'.
-								' Please check <a href="http://www.php.net/manual/en/ini.core.php#ini.short-open-tag" target="_blank" rel="xlink">this article</a> for further details.'.
-								' Or, consult with your web hosting company about this message. You are currently running PHP with <code>short_open_tag=off</code>.'
-							), htmlspecialchars($php_version)
-						)
-					);
-				}
-			else // Pass on this check.
-				{
-					$passes[] = array(
-						'title'   => $this->i18n('PHP Short Open Tag: <code>&lt;?</code>'),
-						'message' => sprintf(
-							$this->i18n(
-								'You are currently running PHP <code>v%1$s</code>, with <code>short_open_tag=on</code>. So you\'re good here.'
-							), htmlspecialchars($php_version)
-						)
-					);
-				}
-			# --------------------------------------------------------------------------------------------------------------------------------
-
-			if(version_compare($php_version, '5.4', '<') && !filter_var(ini_get('short_open_tag'), FILTER_VALIDATE_BOOLEAN))
-				{
-					$errors[] = array(
-						'title'   => $this->i18n('PHP Echo Tag: <code>&lt;?=?&gt;</code>'),
-						'message' => sprintf(
-							$this->i18n(
-								'PHP <code>v%1$s</code> MUST be configured with <code>short_open_tag=on</code> in your <a href="http://www.php.net/manual/en/ini.core.php#ini.short-open-tag" target="_blank" rel="xlink">php.ini</a> file.'.
-								' Please check <a href="http://www.php.net/manual/en/ini.core.php#ini.short-open-tag" target="_blank" rel="xlink">this article</a> for further details.'.
-								' Or, consult with your web hosting company about this message. You are currently running PHP with <code>short_open_tag=off</code>.'
-							), htmlspecialchars($php_version)
-						)
-					);
-				}
-			else if(version_compare($php_version, '5.4', '>='))
-				{
-					$passes[] = array(
-						'title'   => $this->i18n('PHP Echo Tag: <code>&lt;?=?&gt;</code>'),
-						'message' => sprintf(
-							$this->i18n(
-								'PHP <code>v%1$s</code> supports the echo tag (<code>&lt;?=?&gt;</code>) at all times. So you\'re good here.'
-							), htmlspecialchars($php_version)
-						)
-					);
-				}
-			else // Pass on this check.
-				{
-					$passes[] = array(
-						'title'   => $this->i18n('PHP Echo Tag: <code>&lt;?=?&gt;</code>'),
-						'message' => sprintf(
-							$this->i18n(
-								'You are currently running PHP <code>v%1$s</code>, with <code>short_open_tag=on</code>. Support for PHP echo tags (<code>&lt;?=?&gt;</code>) is enabled.'
-							), htmlspecialchars($php_version)
-						)
-					);
-				}
-			# --------------------------------------------------------------------------------------------------------------------------------
-
 			$_curl_possible               = extension_loaded('curl');
 			$_curl_version                = ($_curl_possible) ? curl_version() : array();
 			$_curl_over_ssl_possible      = ($_curl_possible && $_curl_version['features'] & CURL_VERSION_SSL);

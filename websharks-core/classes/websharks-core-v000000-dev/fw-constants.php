@@ -38,6 +38,11 @@ namespace websharks_core_v000000_dev
 			const core = '___core';
 
 			/**
+			 * @var string Represents `all` of something.
+			 */
+			const all = '___all';
+
+			/**
 			 * @var string Represents `defaults`.
 			 */
 			const defaults = '___defaults';

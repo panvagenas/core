@@ -99,16 +99,16 @@ namespace websharks_core_v000000_dev
 			 */
 			public function possible()
 				{
-					if(!isset($this->static['possible']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
-							$this->static['possible'] = FALSE;
+							$this->static[__FUNCTION__] = FALSE;
 
 							if($this->©function->is_possible('exec')
 							   && $this->©function->is_possible('shell_exec')
 							   && $this->©function->is_possible('proc_open')
-							) $this->static['possible'] = TRUE;
+							) $this->static[__FUNCTION__] = TRUE;
 						}
-					return $this->static['possible'];
+					return $this->static[__FUNCTION__];
 				}
 
 			/**
@@ -121,14 +121,14 @@ namespace websharks_core_v000000_dev
 			 */
 			public function unix_possible()
 				{
-					if(!isset($this->static['unix_possible']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
-							$this->static['unix_possible'] = FALSE;
+							$this->static[__FUNCTION__] = FALSE;
 
 							if($this->possible() && $this->©env->is_unix())
-								$this->static['unix_possible'] = TRUE;
+								$this->static[__FUNCTION__] = TRUE;
 						}
-					return $this->static['unix_possible'];
+					return $this->static[__FUNCTION__];
 				}
 
 			/**
@@ -141,14 +141,14 @@ namespace websharks_core_v000000_dev
 			 */
 			public function windows_possible()
 				{
-					if(!isset($this->static['windows_possible']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
-							$this->static['windows_possible'] = FALSE;
+							$this->static[__FUNCTION__] = FALSE;
 
 							if($this->possible() && $this->©env->is_windows())
-								$this->static['windows_possible'] = TRUE;
+								$this->static[__FUNCTION__] = TRUE;
 						}
-					return $this->static['windows_possible'];
+					return $this->static[__FUNCTION__];
 				}
 
 			/**
@@ -161,15 +161,15 @@ namespace websharks_core_v000000_dev
 			 */
 			public function java_possible()
 				{
-					if(!isset($this->static['java_possible']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
-							$this->static['java_possible'] = FALSE;
+							$this->static[__FUNCTION__] = FALSE;
 
 							if($this->possible() && is_array($java = $this->exec($this->java.' -version', '', TRUE)))
 								if($java['status'] === 0 && stripos($java['output'], 'error') === FALSE && stripos($java['output'], 'version') !== FALSE)
-									$this->static['java_possible'] = TRUE;
+									$this->static[__FUNCTION__] = TRUE;
 						}
-					return $this->static['java_possible'];
+					return $this->static[__FUNCTION__];
 				}
 
 			/**
@@ -182,15 +182,15 @@ namespace websharks_core_v000000_dev
 			 */
 			public function git_possible()
 				{
-					if(!isset($this->static['git_possible']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
-							$this->static['git_possible'] = FALSE;
+							$this->static[__FUNCTION__] = FALSE;
 
 							if($this->possible() && is_array($git = $this->exec($this->git.' --version', '', TRUE)))
 								if($git['status'] === 0 && stripos($git['output'], 'error') === FALSE && stripos($git['output'], 'version') !== FALSE)
-									$this->static['git_possible'] = TRUE;
+									$this->static[__FUNCTION__] = TRUE;
 						}
-					return $this->static['git_possible'];
+					return $this->static[__FUNCTION__];
 				}
 
 			/**

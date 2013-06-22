@@ -32,10 +32,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function activation()
 				{
-					if(!isset($this->cache['activations'])) $this->cache['activations'] = 0;
-					$this->cache['activations']++; // Record each call to this method (incrementing `activations`).
+					if(!isset($this->cache[__FUNCTION__])) $this->cache[__FUNCTION__] = 0;
+					$this->cache[__FUNCTION__]++; // Record each call (incrementing counter).
 
-					if($this->cache['activations'] > 1 /* More than ONE time? */)
+					if($this->cache[__FUNCTION__] > 1 /* More than ONE time? */)
 						return; // Only run this routine ONE time.
 
 					$reactivating = (bool)$this->©plugin->last_active_version();
@@ -111,10 +111,10 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if(!isset($this->cache['deactivations'])) $this->cache['deactivations'] = 0;
-					$this->cache['deactivations']++; // Record each call to this method (incrementing `deactivations`).
+					if(!isset($this->cache[__FUNCTION__])) $this->cache[__FUNCTION__] = 0;
+					$this->cache[__FUNCTION__]++; // Record each call (incrementing counter).
 
-					if($this->cache['deactivations'] > 1 /* More than ONE time? */)
+					if($this->cache[__FUNCTION__] > 1 /* More than ONE time? */)
 						return; // Only run this routine ONE time.
 
 					if(!$uninstall || !$this->©options->get('installer.deactivation.uninstalls'))

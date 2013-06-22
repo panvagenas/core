@@ -69,7 +69,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent.')
 						);
-
 					setcookie($name, $value, $expires, COOKIEPATH, COOKIE_DOMAIN);
 					setcookie($name, $value, $expires, SITECOOKIEPATH, COOKIE_DOMAIN);
 
@@ -93,7 +92,6 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent.')
 						);
-
 					setcookie($name, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN);
 					setcookie($name, '', time() - 3600, SITECOOKIEPATH, COOKIE_DOMAIN);
 

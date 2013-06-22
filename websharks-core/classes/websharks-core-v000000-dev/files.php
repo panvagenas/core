@@ -38,6 +38,19 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Gets a file MIME type.
+			 *
+			 * @return string {@inheritdoc}
+			 *
+			 * @see \websharks_core_v000000_dev::mime_type()
+			 * @inheritdoc \websharks_core_v000000_dev::mime_type()
+			 */
+			public function mime_type() // Arguments are NOT listed here.
+				{
+					return call_user_func_array(array('\\websharks_core_v000000_dev', 'mime_type'), func_get_args());
+				}
+
+			/**
 			 * A map of MIME types.
 			 *
 			 * @return array {@inheritdoc}

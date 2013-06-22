@@ -41,10 +41,16 @@ namespace websharks_core_v000000_dev
 			 *       Strings may contain multiple email addresses (comma or semicolon separated); which this routine parses into an array.
 			 *       NOTE: Emails are ALWAYS sent ONE at a time; making the concept of CC/BCC addresses irrelevant.
 			 *
-			 *     • `attachments` (optional). An absolute file path, or an array of absolute file paths.
+			 *    • `headers` (string|array, optional). A custom header string, or an array of custom header strings.
+			 *       All header strings are self-contained. We do NOT support any special array elements here.
+			 *       Example: `Header: value` (where each string is an email header).
+			 *
+			 *     • `attachments` (string|array, optional). An absolute file path, or an array of absolute file paths.
+			 *       File paths can be absolute, or relative to the current WordPress® `ABSPATH`; if that is easier.
+			 *
 			 *       Or, this can also be an array of attachment configurations.
-			 *          Possible attachment configuration elements include:
-			 *             • `path` (absolute server path to a file, NOT empty).
+			 *          Possible attachment configuration elements include.
+			 *             • `path` (absolute or relative server path to a file, NOT empty).
 			 *             • `name` (optional string name for this file, defaults to ``basename()``).
 			 *             • `encoding` (optional string encoding type, defaults to `base64`).
 			 *             • `mime_type` (optional string MIME type, defaults to `application/octet-stream`).
@@ -54,12 +60,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If required configuration elements are missing and/or invalid.
-			 *
-			 * @assert $mail = array('subject' => 'Test Subject', 'message' => 'Test'."\n".'Message', 'from_addr' => get_bloginfo('admin_email'), 'from_name' => 'WebSharks™ Core', 'recipients' => get_bloginfo('admin_email'), 'attachments' => __FILE__);
-			 *    ($mail) === TRUE
-			 *
-			 * @assert $mail = array('subject' => 'Test Subject', 'message' => 'Test'."\n".'Message', 'from_addr' => get_bloginfo('admin_email'), 'recipients' => get_bloginfo('admin_email'));
-			 *    ($mail) === TRUE
 			 */
 			public function send($mail)
 				{
@@ -72,16 +72,17 @@ namespace websharks_core_v000000_dev
 					if(!class_exists('\\SMTP')) require_once ABSPATH.WPINC.'/class-smtp.php';
 
 					$default_mail_args = array(
+						'from_addr'   => '', // Required.
 						'subject'     => '', // Required.
 						'message'     => '', // Required.
-						'from_addr'   => '', // Required.
 						'recipients'  => '', // Required (string|array).
 						'attachments' => '', // Optional (string|array).
-						'from_name'   => '', // Optional from name.
+						'headers'     => '', // Optional (string|array).
+						'from_name'   => '' // Optional from name.
 					);
 					$mail              = $this->check_extension_arg_types(
 						'string:!empty', 'string:!empty', 'string:!empty', array('string:!empty', 'array:!empty'),
-						array('string', 'array'), 'string', $default_mail_args, $mail, 4
+						array('string', 'array'), array('string', 'array'), 'string', $default_mail_args, $mail, 4
 					);
 					// Recipients are always parsed into an array here.
 					if(!($mail['recipients'] = $this->parse_emails_deep($mail['recipients'])))
@@ -89,6 +90,21 @@ namespace websharks_core_v000000_dev
 							__METHOD__.'#recipients_missing', get_defined_vars(),
 							$this->i18n('Email failure. Missing and/or invalid `recipients` value.')
 						);
+					// Possible header(s).
+					if($this->©string->is_not_empty($mail['headers']))
+						$mail['headers'] = array($mail['headers']);
+					$this->©array->isset_or($mail['headers'], array(), TRUE);
+
+					// Standardize/validate each header.
+					foreach($mail['headers'] as $_header)
+						if(!$this->©string->is_not_empty($_header))
+							throw $this->©exception(
+								__METHOD__.'#header_missing', get_defined_vars(),
+								$this->i18n('Email failure. Missing and/or invalid `header`.').
+								sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_header))
+							);
+					unset($_header); // Just a little housekeeping.
+
 					// Possible file attachment(s).
 					if($this->©string->is_not_empty($mail['attachments']))
 						$mail['attachments'] = array($mail['attachments']);
@@ -106,15 +122,23 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Email failure. Missing and/or invalid attachment `path` value.').
 									sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
 								);
-							if(!is_file($_attachment['path']))
-								throw $this->©exception(
-									__METHOD__.'#nonexistent_attachment_path', get_defined_vars(),
-									$this->i18n('Email failure. Nonexistent attachment `path` value.').
-									sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
-								);
-							$this->©string->is_not_empty_or($_attachment['name'], '', TRUE);
-							$this->©string->is_not_empty_or($_attachment['encoding'], 'base64', TRUE);
-							$this->©string->is_not_empty_or($_attachment['mime_type'], 'application/octet-stream', TRUE);
+							if(!is_file($_attachment['path'])) // Perhaps relative?
+								if(!is_file(ABSPATH.$_attachment['path']))
+									throw $this->©exception(
+										__METHOD__.'#nonexistent_attachment_path', get_defined_vars(),
+										$this->i18n('Email failure. Nonexistent attachment `path` value.').
+										sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
+									);
+								else $_attachment['path'] = ABSPATH.$_attachment['path'];
+
+							if(!$this->©string->is_not_empty($_attachment['name']))
+								$_attachment['name'] = basename($_attachment['path']);
+
+							if(!$this->©string->is_not_empty($_attachment['encoding']))
+								$_attachment['encoding'] = 'base64'; // Default encoding.
+
+							if(!$this->©string->is_not_empty($_attachment['mime_type']))
+								$_attachment['mime_type'] = $this->©file->mime_type($_attachment['path']);
 						}
 					unset($_attachment); // Just a little housekeeping.
 
@@ -126,35 +150,39 @@ namespace websharks_core_v000000_dev
 							$mailer->CharSet  = 'UTF-8';
 							$mailer->Subject  = $mail['subject'];
 
-							if(strip_tags($mail['message']) === $mail['message'])
-								$mail['message'] = nl2br($mail['message']);
-							$mailer->MsgHTML($mail['message']);
-
 							$mailer->SetFrom($mail['from_addr'], $mail['from_name']);
 
 							foreach($mail['recipients'] as $_recipient_addr)
 								$mailer->AddAddress($_recipient_addr);
 							unset($_recipient_addr);
 
-							foreach($mail['attachments'] as $_attachment)
-								$mailer->AddAttachment(
-									$_attachment['path'],
-									$_attachment['name'],
-									$_attachment['encoding'],
-									$_attachment['mime_type']
-								);
-							unset($_attachment);
+							foreach($mail['headers'] as $_header)
+								$mailer->AddCustomHeader($_header);
+							unset($_header); // Housekeeping.
 
-							if($this->©option->get('mail.smtp'))
+							if(!$this->©string->is_html($mail['message']))
+								$mail['message'] = nl2br(esc_html($mail['message']));
+							$mailer->MsgHTML($mail['message']);
+
+							foreach($mail['attachments'] as $_attachment)
+								$mailer->AddAttachment($_attachment['path'], $_attachment['name'],
+								                       $_attachment['encoding'], $_attachment['mime_type']);
+							unset($_attachment); // Housekeeping.
+
+							if($this->©option->get('mail.smtp')) // Use SMTP server?
 								{
 									$mailer->SMTPSecure = $this->©option->get('mail.smtp.secure');
 									$mailer->Host       = $this->©option->get('mail.smtp.host');
 									$mailer->Port       = (integer)$this->©option->get('mail.smtp.port');
-									$mailer->SMTPAuth   = (boolean)$this->©option->get('mail.smtp.username');
-									$mailer->Username   = $this->©option->get('mail.smtp.username');
-									$mailer->Password   = $this->©option->get('mail.smtp.password');
+
+									$mailer->SMTPAuth = (boolean)$this->©option->get('mail.smtp.username');
+									$mailer->Username = $this->©option->get('mail.smtp.username');
+									$mailer->Password = $this->©option->get('mail.smtp.password');
+
+									if($this->©option->get('mail.smtp.force_from') && $this->©option->get('mail.smtp.from_addr'))
+										$mailer->SetFrom($this->©option->get('mail.smtp.from_addr'), $this->©option->get('mail.smtp.from_name'));
 								}
-							$mailer->Send();
+							$mailer->Send(); // Send this email message.
 						}
 					catch(\phpmailerException $exception)
 						{
@@ -175,57 +203,51 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed $value Any value can be converted into a string that may form an email address.
+			 * @param mixed   $value Any value can be converted into a string that may form an email address.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
-			 * @return array Array of parsed email addresses.
+			 * @param boolean $strict Optional. Defaults to FALSE (faster). Parses all strings w/ `@` signs.
+			 *    If TRUE, we will validate each address; and we ONLY return 100% valid email addresses.
 			 *
-			 * @assert $string = 'Jason Caldwell <jason@example.com>';
-			 *    ($string) === array('jason@example.com')
+			 * @param boolean $___recursion Internal use only (indicates function recursion).
 			 *
-			 * @assert $string = 'Jason Caldwell <jason@example.com>, Jason Caldwell <jason@example.com>';
-			 *    ($string) === array('jason@example.com')
+			 * @return array Unique array of all parsed email addresses (lowercase).
 			 *
-			 * @assert $string = 'Jason Caldwell <jason1@example.com>, jason2@example.com';
-			 *    ($string) === array('jason1@example.com', 'jason2@example.com')
-			 *
-			 * @assert $string = '<jason1@example.com>; Jason Caldwell <jason2@example.com> ; jason3@example.com';
-			 *    ($string) === array('jason1@example.com', 'jason2@example.com', 'jason3@example.com')
-			 *
-			 * @assert $array = array('Jason Caldwell <jason1@example.com>; Jason Caldwell <jason2@example.com>');
-			 *    ($array) === array('jason1@example.com', 'jason2@example.com')
-			 *
-			 * @assert $array = array('Jason Caldwell <jason1@example.com>', 'Jason Caldwell <jason2@example.com>');
-			 *    ($array) === array('jason1@example.com', 'jason2@example.com')
-			 *
-			 * @assert $array = array('Jason Caldwell <jason1@example.com>; Jason Caldwell <jason2@example.com>', 'jason5@example.com; <jason3@example.com>');
-			 *    ($array) === array('jason1@example.com', 'jason2@example.com', 'jason5@example.com', 'jason3@example.com')
+			 * @throws exception If invalid types are passed through arguments list.
 			 */
-			public function parse_emails_deep($value)
+			public function parse_emails_deep($value, $strict = FALSE, $___recursion = FALSE)
 				{
-					$emails = array(); // Initialize array.
+					if(!$___recursion) // Only for initial caller.
+						$this->check_arg_types('', 'boolean', 'boolean', func_get_args());
+
+					$emails = array(); // Initialize array of email addresses.
 
 					if(is_array($value) || is_object($value))
 						{
-							foreach($value as $_value)
-								$emails = array_merge($emails, $this->parse_emails_deep($_value));
+							foreach($value as $_value) // Collect all emails.
+								$emails = array_merge($emails, $this->parse_emails_deep($_value, $strict, TRUE));
 							unset($_value); // A little housekeeping.
 
-							return $emails;
+							return array_unique($emails);
 						}
 					$value                       = strtolower((string)$value);
 					$delimiter                   = (strpos($value, ';') !== FALSE) ? ';' : ',';
 					$regex_delimitation_splitter = '/'.preg_quote($delimiter, '/').'+/';
 
-					foreach($this->©strings->trim_deep(preg_split($regex_delimitation_splitter, $value)) as $_address)
-						{
-							if(preg_match('/\<(?P<email>.+?)\>/', $_address, $_m)
-							   && strpos($_m['email'], '@') !== FALSE
-							)
-								$emails[] = ($_address = $_m['email']);
+					$possible_addresses = preg_split($regex_delimitation_splitter, $value, NULL, PREG_SPLIT_NO_EMPTY);
+					$possible_addresses = $this->©strings->trim_deep($possible_addresses);
 
-							else if(strpos($_address, '@') !== FALSE)
-								$emails[] = $_address;
+					foreach($possible_addresses as $_address) // Iterate all possible addresses.
+						{
+							if(strpos($_address, '@') === FALSE) continue; // NOT an address.
+
+							if(strpos($_address, '<') !== FALSE && preg_match('/\<(?P<address_in_brackets>.+?)\>/', $_address, $_m))
+								if(strpos($_m['address_in_brackets'], '@') !== FALSE && (!$strict || is_email($_m['address_in_brackets'])))
+									{
+										$emails[] = $_m['address_in_brackets'];
+										continue; // Inside brackets; all done here.
+									}
+							if(!$strict || is_email($_address)) $emails[] = $_address;
 						}
 					unset($_address, $_m); // Housekeeping.
 

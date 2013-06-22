@@ -135,8 +135,9 @@ namespace websharks_core_v000000_dev
 						'widgets.enable_shortcodes'                          => '0',
 
 						'mail.smtp'                                          => '0',
-						'mail.smtp.from'                                     => get_bloginfo('admin_email'),
 						'mail.smtp.force_from'                               => '0',
+						'mail.smtp.from_name'                                => get_bloginfo('name'),
+						'mail.smtp.from_addr'                                => get_bloginfo('admin_email'),
 						'mail.smtp.host'                                     => '',
 						'mail.smtp.port'                                     => '0',
 						'mail.smtp.secure'                                   => '',
@@ -223,8 +224,9 @@ namespace websharks_core_v000000_dev
 						'widgets.enable_shortcodes'                          => array('string:numeric >=' => 0),
 
 						'mail.smtp'                                          => array('string:numeric >=' => 0),
-						'mail.smtp.from'                                     => array('string:!empty'),
 						'mail.smtp.force_from'                               => array('string:numeric >=' => 0),
+						'mail.smtp.from_name'                                => array('string:!empty'),
+						'mail.smtp.from_addr'                                => array('string:!empty'),
 						'mail.smtp.host'                                     => array('string:!empty'),
 						'mail.smtp.port'                                     => array('string:numeric >=' => 1),
 						'mail.smtp.secure'                                   => array('string:in_array' => array('ssl', 'tls')),
@@ -423,8 +425,7 @@ namespace websharks_core_v000000_dev
 
 					foreach($this->options as $_key => &$_value)
 						{
-							if(!isset($this->default_options[$_key]))
-								unset($this->options[$_key]);
+							if(!isset($this->default_options[$_key])) unset($this->options[$_key]);
 
 							else if(!in_array(gettype($_value), array('string', 'array'), TRUE))
 								$_value = $this->default_options[$_key];
@@ -437,120 +438,109 @@ namespace websharks_core_v000000_dev
 									foreach($this->validators[$_key] as $_validation_key => $_data)
 										{
 											// Can be a combination of numeric/associative keys.
+
 											if(is_numeric($_validation_key)) // A numeric key?
 												{
-													$_validation_type = $_data; // ``$_data`` as type.
-													$_data            = NULL; // Nullify ``$_data`` now.
+													$_validation_type = $_data; // As type.
+													$_data            = NULL; // Nullify data.
 												}
 											else // Associative key with possible ``$_data``.
 												{
-													$_validation_type = $_validation_key;
 													/** @var mixed $_data */
+													$_validation_type = $_validation_key;
 												}
-
-											switch($_validation_type) // Handle validation type.
+											switch($_validation_type) // By validation type.
 											{
-												// Validation only.
-												case 'string':
+												case 'string': // Validation only.
 
 														if(!is_string($_value))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'string:!empty':
+												case 'string:!empty': // Validation only.
 
 														if(!is_string($_value) || empty($_value))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'string:strlen':
+												case 'string:strlen': // Validation only.
 														if(!is_string($_value) || !strlen($_value))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'string:strlen <=':
+												case 'string:strlen <=': // Validation only.
 
 														if(!is_string($_value) || (is_numeric($_data) && strlen($_value) > $_data))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'string:strlen >=':
+												case 'string:strlen >=': // Validation only.
 
 														if(!is_string($_value) || (is_numeric($_data) && strlen($_value) < $_data))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'string:numeric':
+												case 'string:numeric': // Validation only.
 
 														if(!is_string($_value) || !is_numeric($_value))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'string:numeric <=':
+												case 'string:numeric <=': // Validation only.
 
 														if(!is_string($_value) || !is_numeric($_value) || (is_numeric($_data) && $_value > $_data))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'string:numeric >=':
+												case 'string:numeric >=': // Validation only.
 
 														if(!is_string($_value) || !is_numeric($_value) || (is_numeric($_data) && $_value < $_data))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'string:preg_match':
+												case 'string:preg_match': // Validation only.
 
 														if(!is_string($_value) || (is_string($_data) && !preg_match($_data, $_value)))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'string:in_array':
+												case 'string:in_array': // Validation only.
 
 														if(!is_string($_value) || (is_array($_data) && !in_array($_value, $_data)))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation w/procedure.
-												case 'string:strtolower':
+												case 'string:strtolower': // Validation w/procedure.
 
 														if(!is_string($_value))
 															{
@@ -563,8 +553,7 @@ namespace websharks_core_v000000_dev
 																break; // Do next validation.
 															}
 
-												// Validation w/procedure.
-												case 'string:preg_replace':
+												case 'string:preg_replace': // Validation w/procedure.
 
 														if(!is_string($_value))
 															{
@@ -572,64 +561,56 @@ namespace websharks_core_v000000_dev
 																break 2; // Done validating here.
 															}
 														else if(is_array($_data) && $this->©strings->are_set($_data['replace'], $_data['with']))
-															{
-																$_value = preg_replace($_data['replace'], $_data['with'], $_value);
-																break; // Do next validation.
-															}
-														else break; // Do next validation.
+															$_value = preg_replace($_data['replace'], $_data['with'], $_value);
 
-												// Validation only.
-												case 'array':
+														break; // Do next validation.
+
+												case 'array': // Validation only.
 
 														if(!is_array($_value))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'array:!empty':
+												case 'array:!empty': // Validation only.
 
 														if(!is_array($_value) || empty($_value))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'array:count <=':
+												case 'array:count <=': // Validation only.
 
 														if(!is_array($_value) || (is_numeric($_data) && count($_value) > $_data))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'array:count >=':
+												case 'array:count >=': // Validation only.
 
 														if(!is_array($_value) || (is_numeric($_data) && count($_value) < $_data))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'array:containing':
+												case 'array:containing': // Validation only.
 
 														if(!is_array($_value) || !in_array($_data, $_value, TRUE))
 															{
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'array:containing-any-of':
+												case 'array:containing-any-of': // Validation only.
 
 														if(!is_array($_value))
 															{
@@ -639,18 +620,16 @@ namespace websharks_core_v000000_dev
 														else if(is_array($_data))
 															{
 																foreach($_data as $_data_value)
-																	{
-																		if(in_array($_data_value, $_value, TRUE))
-																			break; // Do next validation.
-																	}
-																unset($_data_value);
+																	if(in_array($_data_value, $_value, TRUE))
+																		break; // Do next validation.
+
+																unset($_data_value); // Housekeeping.
 																$_value = $this->default_options[$_key];
 																break 2; // Done validating here.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
-												// Validation only.
-												case 'array:containing-all-of':
+												case 'array:containing-all-of': // Validation only.
 
 														if(!is_array($_value))
 															{
@@ -665,10 +644,9 @@ namespace websharks_core_v000000_dev
 																			$_value = $this->default_options[$_key];
 																			break 2; // Done validating here.
 																		}
-																unset($_data_value);
-																break; // Do next validation.
+																unset($_data_value); // Housekeeping.
 															}
-														else break; // Do next validation.
+														break; // Do next validation.
 
 												default: // Exception.
 													throw $this->©exception(

@@ -29,10 +29,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function load()
 				{
-					if(isset($this->cache['loaded']))
+					if(isset($this->cache[__FUNCTION__]))
 						return; // Already loaded.
 
-					$this->cache['loaded'] = TRUE;
+					$this->cache[__FUNCTION__] = TRUE;
 
 					// Don't load the core.
 					if($this->is_core()) return;
@@ -58,10 +58,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function load_classes_dir()
 				{
-					if(isset($this->cache['load_classes_dir']))
+					if(isset($this->cache[__FUNCTION__]))
 						return; // Already attempted this once.
 
-					$this->cache['load_classes_dir'] = TRUE;
+					$this->cache[__FUNCTION__] = TRUE;
 
 					autoloader::add_classes_dir($this->___instance_config->plugin_classes_dir);
 				}
@@ -71,10 +71,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function load_api_classes()
 				{
-					if(isset($this->cache['load_api_classes']))
+					if(isset($this->cache[__FUNCTION__]))
 						return; // Already attempted this once.
 
-					$this->cache['load_api_classes'] = TRUE;
+					$this->cache[__FUNCTION__] = TRUE;
 
 					if(is_file($this->___instance_config->plugin_api_class_file))
 						require_once $this->___instance_config->plugin_api_class_file;
@@ -93,10 +93,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function load_api_funcs()
 				{
-					if(isset($this->cache['load_api_funcs']))
+					if(isset($this->cache[__FUNCTION__]))
 						return; // Already attempted this once.
 
-					$this->cache['load_api_funcs'] = TRUE;
+					$this->cache[__FUNCTION__] = TRUE;
 
 					// Define these in an API class file if you wish to override these defaults.
 
@@ -112,10 +112,10 @@ namespace websharks_core_v000000_dev
 			 */
 			public function load_pro_class()
 				{
-					if(isset($this->cache['load_pro_class']))
+					if(isset($this->cache[__FUNCTION__]))
 						return; // Already attempted this once.
 
-					$this->cache['load_pro_class'] = TRUE;
+					$this->cache[__FUNCTION__] = TRUE;
 
 					if(is_file($this->___instance_config->plugin_pro_class_file)
 					   && in_array($this->___instance_config->plugin_pro_dir_file_basename, $this->active(), TRUE)
@@ -182,15 +182,15 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if(!isset($this->cache['is_active_at_current_version']) || $reconsider === $this::reconsider)
+					if(!isset($this->cache[__FUNCTION__]) || $reconsider === $this::reconsider)
 						{
-							$this->cache['is_active_at_current_version'] = FALSE;
+							$this->cache[__FUNCTION__] = FALSE;
 
 							if(($last_active_version = $this->last_active_version())
 							   && version_compare($last_active_version, $this->___instance_config->plugin_version, '>=')
-							) $this->cache['is_active_at_current_version'] = TRUE;
+							) $this->cache[__FUNCTION__] = TRUE;
 						}
-					return $this->cache['is_active_at_current_version'];
+					return $this->cache[__FUNCTION__];
 				}
 
 			/**
@@ -483,16 +483,16 @@ namespace websharks_core_v000000_dev
 			 */
 			public function active()
 				{
-					if(!isset($this->static['active']))
+					if(!isset($this->static[__FUNCTION__]))
 						{
 							$active = (is_array($active = get_option('active_plugins'))) ? $active : array();
 
 							if(is_multisite() && is_array($active_sitewide_plugins = get_site_option('active_sitewide_plugins')))
 								$active = array_unique(array_merge($active, $active_sitewide_plugins));
 
-							$this->static['active'] = $active;
+							$this->static[__FUNCTION__] = $active;
 						}
-					return $this->static['active'];
+					return $this->static[__FUNCTION__];
 				}
 		}
 	}

@@ -42,28 +42,31 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', func_get_args());
 
-					if(!isset($this->static['preservations'], $this->static['compressions'], $this->static['compress_with']))
+					if(!isset($this->static[__FUNCTION__]))
+						$this->static[__FUNCTION__] = array();
+					$static =& $this->static[__FUNCTION__]; // Shorter reference.
+
+					if(!isset($static['preservations'], $static['compressions'], $static['compress_with']))
 						{
-							$this->static['preservations'] = array(
+							$static['preservations'] = array(
 								'special_tags'            => '\<(pre|code|script|style|textarea)[\s\>].*?\<\/\\2>',
 								'ie_conditional_comments' => '\<\!--\[if\s*[^\]]*\]\>.*?\<\!\[endif\]--\>',
 								'special_attributes'      => '\s(?:style|on[a-z]+)\s*\=\s*(["\']).*?\\3'
 							);
-							$this->static['preservations'] = // Implode for regex capture.
-								'/(?P<preservation>'.implode('|', $this->static['preservations']).')/is';
+							$static['preservations'] = // Implode for regex capture.
+								'/(?P<preservation>'.implode('|', $static['preservations']).')/is';
 
-							$this->static['compressions']['remove_html_comments']  = '/\<\!--.*?--\>/s';
-							$this->static['compress_with']['remove_html_comments'] = '';
+							$static['compressions']['remove_html_comments']  = '/\<\!--.*?--\>/s';
+							$static['compress_with']['remove_html_comments'] = '';
 
-							$this->static['compressions']['remove_extra_whitespace']  = '/\s+/';
-							$this->static['compress_with']['remove_extra_whitespace'] = ' ';
+							$static['compressions']['remove_extra_whitespace']  = '/\s+/';
+							$static['compress_with']['remove_extra_whitespace'] = ' ';
 
-							$this->static['compressions']['remove_extra_whitespace_in_self_closing_tags']  = '/\s+\/\>/';
-							$this->static['compress_with']['remove_extra_whitespace_in_self_closing_tags'] = '/>';
+							$static['compressions']['remove_extra_whitespace_in_self_closing_tags']  = '/\s+\/\>/';
+							$static['compress_with']['remove_extra_whitespace_in_self_closing_tags'] = '/>';
 						}
-
 					// Check if the HTML markup contains what we consider ``$preservations``.
-					if(preg_match_all($this->static['preservations'], $html, $_preservation_matches, PREG_SET_ORDER))
+					if(preg_match_all($static['preservations'], $html, $_preservation_matches, PREG_SET_ORDER))
 						{
 							foreach($_preservation_matches as $_preservation_match_key => $_preservation_match)
 								{
@@ -74,14 +77,14 @@ namespace websharks_core_v000000_dev
 							// unset($_preservation_matches, $_preservation_match_key, $_preservation_match);
 
 							if(isset($_preservations, $_preservation_placeholders)) // We have preservations?
-							$html = $this->©strings->replace_once($_preservations, $_preservation_placeholders, $html);
+								$html = $this->©strings->replace_once($_preservations, $_preservation_placeholders, $html);
 						}
 					// Now let's compress the HTML markup (as best we can).
-					$html = preg_replace($this->static['compressions'], $this->static['compress_with'], $html);
+					$html = preg_replace($static['compressions'], $static['compress_with'], $html);
 
 					// If we DID find ``$preservations``, we'll need to restore them now.
 					if(isset($_preservations, $_preservation_placeholders)) // Restore preservations?
-					$html = $this->©strings->replace_once($_preservation_placeholders, $_preservations, $html);
+						$html = $this->©strings->replace_once($_preservation_placeholders, $_preservations, $html);
 
 					// Commenting this out for performance. It's not absolutely necessary.
 					// unset($_preservations, $_preservation_placeholders);

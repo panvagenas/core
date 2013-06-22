@@ -111,7 +111,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function jquery_ui_themes()
 				{
-					if(is_array($cache = $this->©db_cache->get('styles.jquery_ui_themes')))
+					if(is_array($cache = $this->©db_cache->get(__METHOD__)))
 						return $cache; // Already cached these.
 
 					$themes = array(); // Initialize jQuery™ UI themes array.
@@ -134,7 +134,7 @@ namespace websharks_core_v000000_dev
 							}
 					unset($_dir, $_themes_dir); // Final housekeeping.
 
-					return $this->©db_cache->update('styles.jquery_ui_themes', $themes);
+					return $this->©db_cache->update(__METHOD__, $themes);
 				}
 
 			/**

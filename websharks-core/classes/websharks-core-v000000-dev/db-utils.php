@@ -121,9 +121,9 @@ namespace websharks_core_v000000_dev
 
 					foreach($this->metafy($data) as $_name => $_value)
 						$_values[] = "(".$this->comma_quotify(array($rel_id, $_name, $_value, $_time)).")";
+					$query .= " VALUES".implode(',', $_values); // Implode values.
 
-					$query .= " VALUES".implode(',', $_values);
-					unset($_time, $_name, $_value, $_values);
+					unset($_time, $_name, $_value, $_values); // Housekeeping.
 
 					if($update_on_duplicate_key)
 						$query .= " ON DUPLICATE KEY UPDATE".
@@ -133,16 +133,42 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Purges meta values from our object cache.
+			 *
+			 * @param string       $table Unprefixed table name.
+			 * @param string       $rel_id_column Column name for related ID.
+			 * @param string       $rel_id Value in the related ID column.
+			 * @param string       $name Optional. If purging ONLY a specific meta key name.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$table``, ``$rel_id_column``, or ``$rel_id`` are empty.
+			 */
+			public function purge_meta_values_cache($table, $rel_id_column, $rel_id, $name = '')
+				{
+					$this->check_arg_types('string:!empty', 'string:!empty', 'integer:!empty', 'string', func_get_args());
+
+					if($name) // We only need to purge a specific name?
+						unset($this->cache['get_meta_values'][$table][$rel_id_column][$rel_id][$name]);
+					else unset($this->cache['get_meta_values'][$table][$rel_id_column][$rel_id]);
+				}
+
+			/**
 			 * Gets meta value(s) from a specific meta table.
 			 *
-			 * @param string $table Unprefixed table name.
-			 * @param string $rel_id_column Column name for related ID.
-			 * @param string $rel_id Value in the related ID column.
-			 * @param array  $names Name(s) associated with meta values.
+			 * @param string       $table Unprefixed table name.
+			 * @param string       $rel_id_column Column name for related ID.
+			 * @param string       $rel_id Value in the related ID column.
 			 *
-			 * @return mixed If ``$names`` contains only ONE name, we simply return its meta value.
-			 *    If multiple ``$names`` are requested, we return an associative array with each meta name/value.
-			 *    Meta values that do NOT exist, are still included; but they default to a FALSE boolean value.
+			 * @param string|array $names Optional. A string name; or an array of name(s) associated with meta values.
+			 *    Or this can also be set to {@fw_constants::all}; indicating ALL meta values (e.g. for all names automatically).
+			 *    This defaults to a value of {@fw_constants::all}; indicating an array of all meta name/value pairs.
+			 *
+			 * @return mixed If ``$names`` is a string, we simply return a meta value matching the meta key name.
+			 *    If an array of ``$names`` (or {@fw_constants::all}) are requested, we return an associative array with each meta name/value.
+			 *    Requested meta values that do NOT exist, are still included; but they default to a FALSE boolean value.
+			 *
+			 * @note See also: {@link refresh_meta_values_cache()}, {@link insert_meta_values()}, {@link update_meta_values()}, {@link delete_meta_values()}.
+			 *    ~ These methods automatically purge cache keys filled by this routine; which is VERY important to consider.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$table``, ``$rel_id_column``, or ``$rel_id`` are empty.
@@ -150,15 +176,48 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$names`` is empty, or if it contains an empty or non-string value.
 			 *    Meta names are ALWAYS strings (and they should NEVER be empty).
 			 */
-			public function get_meta_values($table, $rel_id_column, $rel_id, $names)
+			public function get_meta_values($table, $rel_id_column, $rel_id, $names = self::all)
 				{
-					$this->check_arg_types('string:!empty', 'string:!empty', 'integer:!empty', 'array:!empty', func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty', 'integer:!empty', array('string:!empty', 'array:!empty'), func_get_args());
 
-					$names       = array_unique($names);
-					$count_names = count($names);
-					$query_names = array();
+					$cache =& $this->cache[__FUNCTION__][$table][$rel_id_column][$rel_id]; // Shorter reference for use below.
 
-					foreach($names as $_name)
+					// We do NOT cache queries that require all name/value pairs; as this could lead to memory issues.
+					// If caching needs to occur against queries for ALL meta name/value pairs; it should be implemented separately.
+					if($names === $this::all) // We need to query for ALL names automatically in this case?
+						{
+							$values = array(); // Initialize.
+
+							$query =
+								"SELECT".
+								" `".$this->©string->esc_sql($table)."`.`name`,".
+								" `".$this->©string->esc_sql($table)."`.`value`".
+
+								" FROM".
+								" `".$this->©string->esc_sql($this->©db_tables->get($table))."` AS `".$this->©string->esc_sql($table)."`".
+
+								" WHERE".
+								" `".$this->©string->esc_sql($table)."`.`".$this->©string->esc_sql((string)$rel_id_column)."` = '".$this->©string->esc_sql((string)$rel_id)."'".
+								" AND `".$this->©string->esc_sql($table)."`.`name` IS NOT NULL AND `".$this->©string->esc_sql($table)."`.`name` != ''";
+
+							if(is_array($results = $this->©db->get_results($query, OBJECT)))
+								foreach($this->typify_results_deep($results) as $_result)
+									$values[$_result->name] = maybe_unserialize($_result->value);
+							unset($_result); // A little housekeeping.
+
+							return $values; // All name/value pairs.
+						}
+					// Handle all other meta value queries here (w/ caching enabled).
+
+					$query_names           = array();
+					$is_single_string_name = FALSE;
+
+					if(is_string($names)) // Single?
+						{
+							$is_single_string_name = TRUE;
+							$names                 = array($names);
+						}
+					foreach(($names = array_unique($names)) as $_name)
 						{
 							if(!$this->©string->is_not_empty($_name))
 								throw $this->©exception(
@@ -166,10 +225,10 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Expecting a non-empty string `$_name` value.').
 									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
 								);
-							if(!isset($this->cache['meta_values'][$table][$rel_id][$_name]))
+							if(!isset($cache[$_name])) // We have NO value for this name yet?
 								{
-									$query_names[]                                       = $_name;
-									$this->cache['meta_values'][$table][$rel_id][$_name] = FALSE;
+									$cache[$_name] = FALSE; // Defaults to FALSE here.
+									$query_names[] = $_name; // MUST query DB below.
 								}
 						}
 					unset($_name); // Just a little housekeeping here.
@@ -190,13 +249,13 @@ namespace websharks_core_v000000_dev
 
 							if(is_array($results = $this->©db->get_results($query, OBJECT)))
 								foreach($this->typify_results_deep($results) as $_result)
-									$this->cache['meta_values'][$table][$rel_id][$_result->name] = maybe_unserialize($_result->value);
+									$cache[$_result->name] = maybe_unserialize($_result->value);
 							unset($_result); // A little housekeeping.
 						}
-					if($count_names === 1)
-						return $this->cache['meta_values'][$table][$rel_id][$names[0]];
+					if(count($names) === 1 && $is_single_string_name)
+						return $cache[$names[0]]; // Single value.
 
-					return $this->©array->compile_key_elements_deep($this->cache['meta_values'][$table][$rel_id], $names, TRUE, 1);
+					return $this->©array->compile_key_elements_deep($cache, $names, TRUE, 1);
 				}
 
 			/**
@@ -226,7 +285,7 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Expecting a non-empty string `$_name` value.').
 									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
 								);
-							unset($this->cache['meta_values'][$table][$rel_id][$_name]);
+							$this->purge_meta_values_cache($table, $rel_id_column, $rel_id, $_name);
 						}
 					unset($_name, $_value); // A little housekeeping.
 
@@ -264,7 +323,7 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Expecting a non-empty string key `$_name` value.').
 									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
 								);
-							unset($this->cache['meta_values'][$table][$rel_id][$_name]);
+							$this->purge_meta_values_cache($table, $rel_id_column, $rel_id, $_name);
 						}
 					unset($_name, $_value); // A little housekeeping.
 
@@ -278,10 +337,13 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Deletes meta value(s) from a specific meta table.
 			 *
-			 * @param string $table Unprefixed table name.
-			 * @param string $rel_id_column Column name for related ID.
-			 * @param string $rel_id Value in the related ID column.
-			 * @param array  $names Name(s) associated with meta values.
+			 * @param string       $table Unprefixed table name.
+			 * @param string       $rel_id_column Column name for related ID.
+			 * @param string       $rel_id Value in the related ID column.
+			 *
+			 * @param string|array $names Optional. A string name; or an array of name(s) associated with meta values.
+			 *    Or this can also be set to {@fw_constants::all}; indicating ALL meta values (e.g. for all names automatically).
+			 *    This defaults to a value of {@fw_constants::all}; indicating the deletion of any/all names.
 			 *
 			 * @return integer The number of rows affected by this deletion.
 			 *
@@ -291,9 +353,27 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$names`` is empty, or if it contains an empty or non-string value.
 			 *    Meta names are ALWAYS strings (and they should NEVER be empty).
 			 */
-			public function delete_meta_values($table, $rel_id_column, $rel_id, $names)
+			public function delete_meta_values($table, $rel_id_column, $rel_id, $names = self::all)
 				{
-					$this->check_arg_types('string:!empty', 'string:!empty', 'integer:!empty', 'array:!empty', func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty',
+					                       'integer:!empty', array('string:!empty', 'array:!empty'), func_get_args());
+
+					if($names === $this::all) // Deleting all names automatically?
+						{
+							$this->purge_meta_values_cache($table, $rel_id_column, $rel_id);
+
+							return (integer)$this->©db->query(
+								"DELETE".
+								" `".$this->©string->esc_sql($table)."`". // By table name for future expansion.
+
+								" FROM".
+								" `".$this->©string->esc_sql($this->©db_tables->get($table))."` AS `".$this->©string->esc_sql($table)."`".
+
+								" WHERE".
+								" `".$this->©string->esc_sql($table)."`.`".$this->©string->esc_sql((string)$rel_id_column)."` = '".$this->©string->esc_sql((string)$rel_id)."'"
+							);
+						}
+					if(is_string($names)) $names = array($names); // Any other string is converted to an array.
 
 					foreach(($names = array_unique($names)) as $_name)
 						{
@@ -303,13 +383,13 @@ namespace websharks_core_v000000_dev
 									$this->i18n('Expecting a non-empty string `$_name` value.').
 									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
 								);
-							unset($this->cache['meta_values'][$table][$rel_id][$_name]);
+							$this->purge_meta_values_cache($table, $rel_id_column, $rel_id, $_name);
 						}
 					unset($_name); // A little housekeeping.
 
 					return (integer)$this->©db->query(
 						"DELETE".
-						" `".$this->©string->esc_sql($table)."`".
+						" `".$this->©string->esc_sql($table)."`". // By table name for future expansion.
 
 						" FROM".
 						" `".$this->©string->esc_sql($this->©db_tables->get($table))."` AS `".$this->©string->esc_sql($table)."`".
@@ -373,6 +453,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$sql_file`` is empty or invalid (i.e. NOT an SQL file).
+			 * @throws exception If ``$sql_file`` does NOT have an `sql` file extension.
 			 * @throws exception If we fail to prepare queries.
 			 */
 			public function prep_sql_file_queries($sql_file)
@@ -432,7 +513,7 @@ namespace websharks_core_v000000_dev
 					$queries = $this->©strings->trim_deep($queries);
 					$queries = $this->©array->remove_0b_strings_deep($queries);
 
-					return $queries;
+					return $queries; // Ready for SQL queries.
 				}
 
 			/**
@@ -444,9 +525,11 @@ namespace websharks_core_v000000_dev
 			 *    Array/object keys MUST be strings, in order to match ``$this->©db_tables->regex_(integer|float)_columns``.
 			 *    Integer keys are ignored completely.
 			 *
-			 * @param null|string|integer $key Used during recursion (this is primarily an internal argument value).
+			 * @param null|string|integer $___key Used during recursion (this is an internal argument value).
 			 *    If any string key matches a regex pattern in ``$this->©db_tables->regex_(integer|float)_columns``;
 			 *    AND, the existing associative value is numeric, this routine forces an (integer or float).
+			 *
+			 * @param boolean             $___recursion Internal use only (tracks recursion).
 			 *
 			 * @return mixed|array|object Mixed. Normally an array/object (i.e. a DB result set).
 			 *
@@ -455,28 +538,29 @@ namespace websharks_core_v000000_dev
 			 * @assert (array('ID' => '1')) === array('ID' => 1)
 			 * @assert (array('ID' => '1', 'related_id' => array('related_id' => '2'))) === array('ID' => 1, 'related_id' => array('related_id' => 2))
 			 */
-			public function typify_results_deep($value, $key = NULL)
+			public function typify_results_deep($value, $___key = NULL, $___recursion = FALSE)
 				{
-					$this->check_arg_types('', array('null', 'integer', 'string'), func_get_args());
+					if(!$___recursion) // Only for initial caller.
+						$this->check_arg_types('', array('null', 'integer', 'string'), 'boolean', func_get_args());
 
 					if(is_array($value) || is_object($value))
 						{
 							foreach($value as $_key => &$_value)
-								$_value = $this->typify_results_deep($_value, $_key);
+								$_value = $this->typify_results_deep($_value, $_key, TRUE);
 							unset($_key, $_value);
 
 							return $value; // Array/object.
 						}
-					if(is_string($key) && is_numeric($value))
+					if(is_string($___key) && is_numeric($value))
 						{
-							if($this->©string->in_regex_patterns($key, $this->©db_tables->regex_integer_columns)
-							   && !$this->©string->in_regex_patterns($key, $this->©db_tables->regex_float_columns)
-							   && !$this->©string->in_regex_patterns($key, $this->©db_tables->regex_string_columns)
+							if($this->©string->in_regex_patterns($___key, $this->©db_tables->regex_integer_columns)
+							   && !$this->©string->in_regex_patterns($___key, $this->©db_tables->regex_float_columns)
+							   && !$this->©string->in_regex_patterns($___key, $this->©db_tables->regex_string_columns)
 							) return (integer)$value;
 
-							if($this->©string->in_regex_patterns($key, $this->©db_tables->regex_float_columns)
-							   && !$this->©string->in_regex_patterns($key, $this->©db_tables->regex_integer_columns)
-							   && !$this->©string->in_regex_patterns($key, $this->©db_tables->regex_string_columns)
+							if($this->©string->in_regex_patterns($___key, $this->©db_tables->regex_float_columns)
+							   && !$this->©string->in_regex_patterns($___key, $this->©db_tables->regex_integer_columns)
+							   && !$this->©string->in_regex_patterns($___key, $this->©db_tables->regex_string_columns)
 							) return (float)$value;
 						}
 					return $value; // Default return value.

@@ -811,6 +811,22 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Is a string in HTML format?
+			 *
+			 * @param string $string Any input string to test here.
+			 *
+			 * @return boolean TRUE if string is HTML; else FALSE.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function is_html($string)
+				{
+					$this->check_arg_types('string', func_get_args());
+
+					return (strpos($string, '<') !== FALSE && preg_match('/\<[^<>]+\>/', $string)) ? TRUE : FALSE;
+				}
+
+			/**
 			 * Is a PHP userland name?
 			 *
 			 * @param string $string Any input string.
@@ -1253,8 +1269,7 @@ namespace websharks_core_v000000_dev
 											if(($_matching_key_props = $this->wildcard_pattern_in($wildcard, $_value, $case_insensitive, $collect_key_props, $x_flags, TRUE)))
 												if($collect_key_props) // Are we collecting keys, or can we just return now?
 													$matching_key_props[] = array($_key_prop => $_matching_key_props);
-												else // We can return now.
-													return TRUE;
+												else return TRUE; // We can return now.
 											unset($_matching_key_props);
 										}
 									else // Treat this as a string value.
@@ -1263,8 +1278,7 @@ namespace websharks_core_v000000_dev
 
 											if(fnmatch($wildcard, $_value, $flags))
 												if($collect_key_props) $matching_key_props[] = $_key_prop;
-												else // We can return now.
-													return TRUE;
+												else return TRUE; // We can return now.
 										}
 								}
 							unset($_key_prop, $_value); // Housekeeping.
@@ -1362,8 +1376,7 @@ namespace websharks_core_v000000_dev
 											if(($_matching_key_props = $this->in_wildcard_patterns($string, $_value, $case_insensitive, $collect_key_props, $x_flags, TRUE)))
 												if($collect_key_props) // Are we collecting keys, or can we just return now?
 													$matching_key_props[] = array($_key_prop => $_matching_key_props);
-												else // We can return now.
-													return TRUE;
+												else return TRUE; // We can return now.
 											unset($_matching_key_props);
 										}
 									else // Treat this as a string value.
@@ -1372,8 +1385,7 @@ namespace websharks_core_v000000_dev
 
 											if(fnmatch($_value, $string, $flags))
 												if($collect_key_props) $matching_key_props[] = $_key_prop;
-												else // We can return now.
-													return TRUE;
+												else return TRUE; // We can return now.
 										}
 								}
 							unset($_key_prop, $_value); // Housekeeping.
@@ -2467,6 +2479,302 @@ namespace websharks_core_v000000_dev
 									return $value; // Return string value.
 								}
 						}
+				}
+
+			/**
+			 * Process replacement codes (case insensitive).
+			 *
+			 * @param string       $string A string to run replacements on.
+			 *
+			 * @param array        $meta_vars Optional. Defaults to an empty array.
+			 *    ~ This array is always given precedence over any other secondary ``$vars``.
+			 *    This is the primary array of data which will be used to replace codes in the ``$string``.
+			 *    This is normally an associative array, but a numerically indexed array is also allowable.
+			 *
+			 * @param array        $vars Optional (any other secondary vars). Defaults to an empty array.
+			 *    This is an additional array of data which will be used to replace codes in the ``$string``.
+			 *    This is normally an associative array, but a numerically indexed array is also allowable.
+			 *
+			 * @param boolean      $urlencode Optional. Defaults to a FALSE value.
+			 *    If this is TRUE, all replacement code values will be urlencoded automatically.
+			 *    Setting this to a TRUE value also enables some additional magic replacement codes.
+			 *
+			 * @param string       $implode_non_scalars Optional. By default, any non-scalar values
+			 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
+			 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values.
+			 *
+			 * @return string String after replacing all codes.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function ireplace_codes($string, $meta_vars = array(), $vars = array(), $urlencode = FALSE, $implode_non_scalars = '')
+				{
+					$this->check_arg_types('string', 'array', 'array', 'boolean', 'string', func_get_args());
+
+					return $this->replace_codes_deep($string, $meta_vars, $vars, TRUE, FALSE, $urlencode, $implode_non_scalars);
+				}
+
+			/**
+			 * Process replacement codes deeply (case insensitive).
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @param mixed        $value Any value can be converted into a string to run replacements on.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @param array        $meta_vars Optional. Defaults to an empty array.
+			 *    ~ This array is always given precedence over any other secondary ``$vars``.
+			 *    This is the primary array of data which will be used to replace codes in the ``$value``.
+			 *    This is normally an associative array, but a numerically indexed array is also allowable.
+			 *
+			 * @param array        $vars Optional (any other secondary vars). Defaults to an empty array.
+			 *    This is an additional array of data which will be used to replace codes in the ``$value``.
+			 *    This is normally an associative array, but a numerically indexed array is also allowable.
+			 *
+			 * @param boolean      $preserve_types Optional. Defaults to a FALSE value.
+			 *    If this is TRUE, we will preserve data types; only searching/replacing existing string values deeply.
+			 *    By default, anything that is NOT an array/object is converted to a string by this routine.
+			 *
+			 * @param boolean      $urlencode Optional. Defaults to a FALSE value.
+			 *    If this is TRUE, all replacement code values will be urlencoded automatically.
+			 *    Setting this to a TRUE value also enables some additional magic replacement codes.
+			 *
+			 * @param string       $implode_non_scalars Optional. By default, any non-scalar values
+			 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
+			 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values.
+			 *
+			 * @return mixed Values after replacing all codes (deeply).
+			 *    By default, any values that were NOT strings|arrays|objects, will be converted to strings by this routine.
+			 *    However, you can pass ``$preserve_types`` as TRUE to prevent this from occurring.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function ireplace_codes_deep($value, $meta_vars = array(), $vars = array(), $preserve_types = FALSE, $urlencode = FALSE, $implode_non_scalars = '')
+				{
+					$this->check_arg_types('', 'array', 'array', 'boolean', 'boolean', 'string', func_get_args());
+
+					return $this->replace_codes_deep($value, $meta_vars, $vars, TRUE, $preserve_types, $urlencode, $implode_non_scalars);
+				}
+
+			/**
+			 * Process replacement codes.
+			 *
+			 * @param string       $string A string to run replacements on.
+			 *
+			 * @param array        $meta_vars Optional. Defaults to an empty array.
+			 *    ~ This array is always given precedence over any other secondary ``$vars``.
+			 *    This is the primary array of data which will be used to replace codes in the ``$string``.
+			 *    This is normally an associative array, but a numerically indexed array is also allowable.
+			 *
+			 * @param array        $vars Optional (any other secondary vars). Defaults to an empty array.
+			 *    This is an additional array of data which will be used to replace codes in the ``$string``.
+			 *    This is normally an associative array, but a numerically indexed array is also allowable.
+			 *
+			 * @param boolean      $case_insensitive Case insensitive? Defaults to a FALSE value (caSe sensitivity on).
+			 *    If TRUE, the search/replace routine is NOT caSe sensitive (e.g. `%%uSer.Id%%` is the same as `%%user.ID%%`).
+			 *
+			 * @param boolean      $urlencode Optional. Defaults to a FALSE value.
+			 *    If this is TRUE, all replacement code values will be urlencoded automatically.
+			 *    Setting this to a TRUE value also enables some additional magic replacement codes.
+			 *
+			 * @param string       $implode_non_scalars Optional. By default, any non-scalar values
+			 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
+			 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values.
+			 *
+			 * @return string String after replacing all codes.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function replace_codes($string, $meta_vars = array(), $vars = array(), $case_insensitive = FALSE, $urlencode = FALSE, $implode_non_scalars = '')
+				{
+					$this->check_arg_types('string', 'array', 'array', 'boolean', 'boolean', 'string', func_get_args());
+
+					return $this->replace_codes_deep($string, $meta_vars, $vars, $case_insensitive, FALSE, $urlencode, $implode_non_scalars);
+				}
+
+			/**
+			 * Process replacement codes deeply.
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+			 * @note This routine will usually NOT include private, protected or static properties of an object class.
+			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+			 *
+			 * @param mixed        $value Any value can be converted into a string to run replacements on.
+			 *    Actually, objects can't, but this recurses into objects.
+			 *
+			 * @note In additional to array keys found in either ``$primary_vars`` or ``$vars``;
+			 *    any single or nested ``$value`` may also reference array keys and/or object properties (max ONE dimension).
+			 *    This is accomplished using a single dotted syntax; very much like JavaScript object property value references.
+			 *
+			 *    • For instance, if you want the value of ``$user->ID``; use replacement code: ``%%user.ID%%``.
+			 *    • Or, if you want the value of array key ``$user['ID']``; use the same dotted syntax: ``%%user.ID%%``.
+			 *
+			 * @note In additional to array keys found in either ``$primary_vars`` or ``$vars``;
+			 *    any single or nested ``$value`` may also contain any of the following MAGIC replacement codes.
+			 *
+			 *    • For all variables in their raw/unprocessed state.
+			 *       • `%%__var_dump_all_raw__%%` Indicating a dump of all variables; via {@link vars::dump()}.
+			 *       • `%%__serialize_all_raw__%%` Indicating a serialized array of all variables; via {@link serialize()}.
+			 *       • `%%__json_encode_all_raw__%%` Indicating a JSON encoded version of all variables; via {@link json_encode()}.
+			 *
+			 *    • These ONLY work if ``$urlencode`` is TRUE (they're for URLs only).
+			 *       • `%%__query_string_all_processed__%%` Indicating all processed variables (as a query string suitable for URLs).
+			 *       • `%%__query_string_all_processed_in_array__%%` Indicating all processed variables (as a query string suitable for URLs — in an array).
+			 *          Variables are wrapped inside a single array key using `plugin_var_ns`; for the current plugin.
+			 *
+			 * @param array        $meta_vars Optional. Defaults to an empty array.
+			 *    ~ This array is always given precedence over any other secondary ``$vars``.
+			 *    This is the primary array of data which will be used to replace codes in the ``$value``.
+			 *    This is normally an associative array, but a numerically indexed array is also allowable.
+			 *
+			 * @param array        $vars Optional (any other secondary vars). Defaults to an empty array.
+			 *    This is an additional array of data which will be used to replace codes in the ``$value``.
+			 *    This is normally an associative array, but a numerically indexed array is also allowable.
+			 *
+			 * @param boolean      $case_insensitive Case insensitive? Defaults to a FALSE value (caSe sensitivity on).
+			 *    If TRUE, the search/replace routine is NOT caSe sensitive (e.g. `%%uSer.Id%%` is the same as `%%user.ID%%`).
+			 *
+			 * @param boolean      $preserve_types Optional. Defaults to a FALSE value.
+			 *    If this is TRUE, we will preserve data types; only searching/replacing existing string values deeply.
+			 *    By default, anything that is NOT an array/object is converted to a string by this routine.
+			 *
+			 * @param boolean      $urlencode Optional. Defaults to a FALSE value.
+			 *    If this is TRUE, all replacement code values will be urlencoded automatically.
+			 *    Setting this to a TRUE value also enables some additional magic replacement codes.
+			 *
+			 *    • These ONLY work if ``$urlencode`` is TRUE (they're for URLs only).
+			 *       • `%%__query_string_all_processed__%%` Indicating all processed variables (as a query string suitable for URLs).
+			 *       • `%%__query_string_all_processed_in_array__%%` Indicating all processed variables (as a query string suitable for URLs — in an array).
+			 *          Variables are wrapped inside a single array key using `plugin_var_ns`; for the current plugin.
+			 *
+			 * @param string       $implode_non_scalars Optional. By default, any non-scalar values
+			 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
+			 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values by.
+			 *
+			 * @param boolean      $___recursion Internal use only.
+			 *
+			 * @return mixed Values after replacing all codes (deeply).
+			 *    By default, any values that were NOT strings|arrays|objects, will be converted to strings by this routine.
+			 *    However, you can pass ``$preserve_types`` as TRUE to prevent this from occurring.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function replace_codes_deep($value, $meta_vars = array(), $vars = array(), $case_insensitive = FALSE,
+			                                   $preserve_types = FALSE, $urlencode = FALSE, $implode_non_scalars = '', $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('', 'array', 'array', 'boolean', 'boolean', 'boolean', 'string', 'boolean', func_get_args());
+
+					if(is_array($value) || is_object($value)) // Array/object recursion.
+						{
+							foreach($value as &$_value) // Handles deep array/object recursion.
+								$_value = $this->replace_codes_deep($_value, $meta_vars, $vars, $case_insensitive,
+								                                    $preserve_types, $urlencode, $implode_non_scalars, TRUE);
+							unset($_value); // Just a little housekeeping.
+
+							return $value; // Array/object value.
+						}
+					if(!$preserve_types || is_string($value)) // Replace?
+						{
+							$value = (string)$value; // Force string if we get here.
+							if(strpos($value, '%%') === FALSE) return $value; // No codes?
+
+							$all_raw_unified_vars = $meta_vars + $vars;
+							$all_processed_vars   = array(); // Initialize this array.
+
+							if(!isset($this->static[__FUNCTION__]['__return_value']))
+								$this->static[__FUNCTION__]['__return_value'] = create_function('$value', 'return $value;');
+
+							$_this        = $this; // Self reference (for use in callbacks below).
+							$urlencode_   = ($urlencode) ? 'urlencode' : $this->static[__FUNCTION__]['__return_value'];
+							$str_replace_ = ($case_insensitive) ? 'str_ireplace' : 'str_replace'; // CaSe.
+
+							if(stripos($value, '%%__var_dump_all_raw__%%') !== FALSE) // Magic code (dumps all vars).
+								$value = $str_replace_('%%__var_dump_all_raw__%%', $urlencode_($this->©vars->dump($all_raw_unified_vars)), $value);
+
+							if(stripos($value, '%%__serialize_all_raw__%%') !== FALSE) // Magic code (serialize all).
+								$value = $str_replace_('%%__serialize_all_raw__%%', $urlencode_(serialize($all_raw_unified_vars)), $value);
+
+							if(stripos($value, '%%__json_encode_all_raw__%%') !== FALSE) // Magic code (JSON encode all).
+								$value = $str_replace_('%%__json_encode_all_raw__%%', $urlencode_(json_encode($all_raw_unified_vars)), $value);
+
+							if(strpos($value, '%%') === FALSE) return $value; // All done now?
+
+							foreach($all_raw_unified_vars as $_var_key => $_var_value) // Iterate ALL variables.
+								{
+									if(is_resource($_var_value)) continue; // Never. We do NOT process resource values.
+
+									if(!is_scalar($_var_value)) // Array/object (we excluded resources in the condition above).
+										{
+											if(stripos($value, '%%'.$_var_key.'.') !== FALSE) // Key/property codes?
+												{
+													$_var_array = (array)$_var_value; // Force array.
+													if($case_insensitive) // Force lowercase keys in this caSe :-)
+														$_var_array = array_change_key_case($_var_array, CASE_LOWER);
+
+													$value = preg_replace_callback('/%%'.preg_quote($_var_key, '/').'\.(?P<key>.+?)%%/'.(($case_insensitive) ? 'i' : ''),
+														function ($m) use ($_this, $case_insensitive, $implode_non_scalars, $urlencode_, $_var_array)
+															{
+																if($case_insensitive)
+																	$m['key'] = strtolower($m['key']);
+
+																if(!isset($_var_array[$m['key']])) return '';
+																if(is_resource($_var_array[$m['key']])) return '';
+
+																if(!is_scalar($var_key_value = $_var_array[$m['key']]))
+																	{
+																		if($implode_non_scalars) // Implode?
+																			{
+																				$var_key_value = (array)$var_key_value; // Objects to arrays.
+																				$var_key_value = $_this->©array->to_one_dimension($var_key_value);
+																				$var_key_value = implode($implode_non_scalars, $var_key_value);
+																			}
+																		else $var_key_value = json_encode($var_key_value); // JSON encode.
+																	}
+																else if($var_key_value === FALSE) $var_key_value = '0'; // As a string `0`.
+
+																$var_key_value = (string)$var_key_value; // Force string.
+
+																return $urlencode_($var_key_value); // Possible encoding here.
+
+															}, $value); // Keys/properties done now.
+
+													unset($_this, $_var_array); // Housekeeping.
+												}
+											if($implode_non_scalars) // Implode?
+												{
+													$_var_value = (array)$_var_value; // Objects to arrays.
+													$_var_value = $this->©array->to_one_dimension($_var_value);
+													$_var_value = implode($implode_non_scalars, $_var_value);
+												}
+											else $_var_value = json_encode($_var_value); // JSON encode.
+										}
+									else if($_var_value === FALSE) $_var_value = '0'; // As a string `0`.
+
+									$_var_value                    = (string)$_var_value; // Force string.
+									$all_processed_vars[$_var_key] = $_var_value; // Records all key/value pairs.
+									$value                         = $str_replace_('%%'.$_var_key.'%%', $urlencode_($_var_value), $value);
+
+									if(strpos($value, '%%') === FALSE) return $value; // All done now?
+								}
+							unset($_var_key, $_var_value); // A little housekeeping now.
+
+							if($urlencode && stripos($value, '%%__query_string_all_processed__%%') !== FALSE) // Magic code (query string).
+								$value = $str_replace_('%%__query_string_all_processed__%%', $this->©vars->build_query($all_processed_vars), $value);
+
+							if($urlencode && stripos($value, '%%__query_string_all_processed_in_array__%%') !== FALSE) // Magic code (query string).
+								$value = $str_replace_('%%__query_string_all_processed_in_array__%%', // Wraps them into an array (using `plugin_var_ns`).
+								                       $this->©vars->build_query(array($this->___instance_config->plugin_var_ns => $all_processed_vars)), $value);
+
+							if(strpos($value, '%%') === FALSE) return $value; // All done now?
+
+							$value = preg_replace('/%%.+?%%/', '', $value); // Anything we don't have a value for.
+						}
+					return $value; // Final return value.
 				}
 
 			/**

@@ -26,133 +26,133 @@ namespace websharks_core_v000000_dev
 		{
 			/**
 			 * @var array Constructor arguments.
-			 * @by-constructor Set dynamically by class constructor.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $args = array();
 
 			/**
 			 * @var integer WordPress® ID.
-			 * @by-constructor Set dynamically by class constructor.
+			 * @by-constructor Set by class constructor.
 			 */
-			public $ID = 0;
+			public $ID = 0; // No ID (default).
 
 			/**
 			 * @var \WP_User WordPress® object instance.
-			 * @by-constructor Set dynamically by class constructor.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $wp; // Defaults to a NULL value.
 
 			/**
 			 * @var boolean Was this object constructed for NO user (explicitly)?
-			 * @by-constructor Set dynamically by class constructor.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $is_no_user = FALSE;
 
 			/**
 			 * @var boolean Was this object constructed for the current default user?
-			 * @by-constructor Set dynamically by class constructor.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $is_current_default = FALSE;
 
 			/**
 			 * @var string Current and/or last known IP address.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $ip = '';
 
 			/**
 			 * @var string WordPress® email address.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $email = '';
 
 			/**
 			 * @var string WordPress® username.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $username = '';
 
 			/**
 			 * @var string WordPress® nicename.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $nicename = '';
 
 			/**
 			 * @var string WordPress® encrypted password.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $password = '';
 
 			/**
 			 * @var string WordPress® first name.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $first_name = '';
 
 			/**
 			 * @var string WordPress® last name.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $last_name = '';
 
 			/**
 			 * @var string WordPress® full name.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $full_name = '';
 
 			/**
 			 * @var string WordPress® display name.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $display_name = '';
 
 			/**
 			 * @var string URL associated with this user.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $url = '';
 
 			/**
 			 * @var string AOL® Instant Messenger name for this user.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $aim = '';
 
 			/**
 			 * @var string Yahoo® Messenger name for this user.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $yim = '';
 
 			/**
 			 * @var string Jabber™ (or Google® Talk) name for this user.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $jabber = '';
 
 			/**
 			 * @var string Description (or bio details) for this user.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $description = '';
 
 			/**
 			 * @var integer WordPress® registration time.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $registration_time = 0;
 
 			/**
 			 * @var string WordPress® activation key.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $activation_key = '';
 
 			/**
 			 * @var integer WordPress® status.
-			 * @population Set dynamically, by population routine.
+			 * @by-constructor Set by class constructor.
 			 */
 			public $status = 0;
 
@@ -167,77 +167,94 @@ namespace websharks_core_v000000_dev
 			 *    If this and ``$by``, ``$value`` are all NULL, we construct an instance for the current user.
 			 *
 			 * @param null|string               $by Search for a user, by a particular type of value?
-			 *    For further details, please check method: ``©user_utils->get_id_by()``.
+			 *    For further details, please see {@link user_utils::get_id_by()}.
 			 *
 			 * @param null|string|integer|array $value A value to search for (e.g. username(s), email address(es), ID(s)).
+			 *    For further details, please see {@link user_utils::get_id_by()}.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
 			public function __construct($___instance_config, $user_id = NULL, $by = NULL, $value = NULL)
 				{
-					parent::__construct($___instance_config);
+					parent::__construct($___instance_config); // Parent constructor.
 
-					$this->check_arg_types('', array('null', 'integer:!empty'), array('null', 'string:!empty'),
+					$this->check_arg_types('', array('null', 'integer'), array('null', 'string:!empty'),
 					                       array('null', 'string:!empty', 'integer:!empty', 'array:!empty'), func_get_args());
 
-					$this->args = array('user_id' => $user_id, 'by' => $by, 'value' => $value);
-
 					if(!did_action('init'))
-						throw $this->©exception(
-							__METHOD__.'#user_init_hook', array('args' => $this->args),
+						throw $this->©exception( // Should NOT happen.
+							__METHOD__.'#user_init_hook', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('Doing it wrong (the `init` hook has NOT been fired yet).')
 						);
-					if($user_id && $user_id < 0) // NO user (explicitly).
-						{
-							$this->is_no_user = TRUE;
-							$this->wp         = NULL;
-							$this->ID         = 0;
-						}
-					else if($user_id // A specific user by ID?
-					        && is_object($wp = new \WP_User($user_id))
-					        && !empty($wp->ID)
-					) // Instance for a specific user.
-						{
-							$this->wp = $wp;
-							$this->ID = $wp->ID;
-						}
-					else if($by && $value && strtolower($by) === 'id' && is_numeric($value)
-					        && is_object($wp = new \WP_User((integer)$value))
-					        && !empty($wp->ID)
-					) // Instance for a specific user.
-						{
-							$this->wp = $wp;
-							$this->ID = $wp->ID;
-						}
-					else if($by && $value && ($user_id = $this->©user_utils->get_id_by($by, $value))
-					        && is_object($wp = new \WP_User($user_id))
-					        && !empty($wp->ID)
-					) // Instance for a specific user.
-						{
-							$this->wp = $wp;
-							$this->ID = $wp->ID;
-						}
-					else if(is_null($user_id) && is_null($by) && is_null($value))
-						{
-							$this->is_current_default = TRUE;
+					if($user_id && $user_id < 0) $by = $value = NULL; // Nullify.
+					$this->args = array('user_id' => $user_id, 'by' => $by, 'value' => $value);
 
-							if(is_object($wp = wp_get_current_user()) && !empty($wp->ID))
+					if(!isset($user_id) && !isset($by) && !isset($value)) // Current user?
+						{
+							if(($_wp = wp_get_current_user()) && !empty($_wp->ID))
 								{
-									$this->wp = $wp;
-									$this->ID = $wp->ID;
+									$this->wp = $_wp;
+									$this->ID = $_wp->ID;
 								}
+							$this->is_current_default = TRUE;
 						}
+					else if($user_id && $user_id < 0) // NO user (explicitly)?
+						{
+							$this->ID         = 0;
+							$this->wp         = NULL;
+							$this->is_no_user = TRUE;
+						}
+					else if($user_id // A specific user ID?
+					        && ($_wp = new \WP_User($user_id))
+					        && !empty($_wp->ID)
+					) // Instance for a specific user.
+						{
+							$this->wp = $_wp;
+							$this->ID = $_wp->ID;
+						}
+					else if($by && $value // Search by ID value?
+					        && strtolower($by) === 'id' && is_numeric($value)
+					        && ($_wp = new \WP_User((integer)$value))
+					        && !empty($_wp->ID)
+					) // Instance for a specific user.
+						{
+							$this->wp = $_wp;
+							$this->ID = $_wp->ID;
+						}
+					else if($by && $value // Search by any other value?
+					        && ($_id_by = $this->©user_utils->get_id_by($by, $value))
+					        && ($_wp = new \WP_User($_id_by))
+					        && !empty($_wp->ID)
+					) // Instance for a specific user.
+						{
+							$this->wp = $_wp;
+							$this->ID = $_wp->ID;
+						}
+					// Else by default this instance has no ID (all default properties).
+					// This is NOT the same as having NO user (explicitly) via `-1`; which identifies this instance
+					// as having been purposely instantiated for such a purpose (e.g. to indicate NO user explicitly).
+
 					if($this->ID && (!$this->wp || !$this->wp->user_email || !$this->wp->user_login || !$this->wp->user_nicename))
 						{
-							$this->©error( // For diagnostics reports.
-								__METHOD__, array('args' => $this->args, 'ID' => $this->ID, 'wp' => $this->wp),
-								sprintf($this->i18n('User ID: `%1$s` is missing vital components.'), $this->ID).
-								$this->i18n(' Possible database corruption.')
-							);
+							$this->©error(__METHOD__, array_merge(get_defined_vars(), array('user' => $this)), // For diagnostics.
+							              sprintf($this->i18n('User ID: `%1$s` is missing vital components.'), $this->ID).
+							              $this->i18n(' Possible database corruption.'));
 							$this->wp = NULL;
 							$this->ID = 0;
 						}
+					unset($_wp, $_id_by); // Housekeeping.
+
 					$this->populate(); // Populate (if possible).
+				}
+
+			/**
+			 * Handles wake-up (after being unserialized)
+			 *
+			 * @see http://www.php.net/manual/en/language.oop5.magic.php#object.wakeup
+			 */
+			public function __wakeup()
+				{
+					$this->refresh(); // Refresh object instance.
 				}
 
 			/**
@@ -482,71 +499,97 @@ namespace websharks_core_v000000_dev
 			 *    By default, with a NULL value, we simply refresh the entire object instance.
 			 *    If this is a string (or an array), we only refresh specific components.
 			 *
-			 * @return null Nothing. Simply refreshes this object instance.
-			 *
-			 * @assert () === NULL
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If an array contains invalid component keys/values (e.g. NOT strings).
 			 */
 			public function refresh($components = NULL)
 				{
 					$this->check_arg_types(array('null', 'string:!empty', 'array:!empty'), func_get_args());
 
-					if(is_null($components))
+					if(isset($components)) goto refresh_components; // Specific components only?
+
+					refresh: // Target point. Refreshes entire user object instance.
+
+					$this->wp    = NULL;
+					$this->cache = array();
+
+					$this->ip                = '';
+					$this->email             = '';
+					$this->username          = '';
+					$this->nicename          = '';
+					$this->password          = '';
+					$this->first_name        = '';
+					$this->last_name         = '';
+					$this->full_name         = '';
+					$this->display_name      = '';
+					$this->url               = '';
+					$this->aim               = '';
+					$this->yim               = '';
+					$this->jabber            = '';
+					$this->description       = '';
+					$this->registration_time = 0;
+					$this->activation_key    = '';
+					$this->status            = 0;
+
+					if($this->has_id()) // User exists?
 						{
-							$this->wp    = NULL;
-							$this->cache = array();
+							clean_user_cache($this->ID);
+							wp_cache_delete($this->ID, 'user_meta');
 
-							$this->ip                = '';
-							$this->email             = '';
-							$this->username          = '';
-							$this->nicename          = '';
-							$this->password          = '';
-							$this->first_name        = '';
-							$this->last_name         = '';
-							$this->full_name         = '';
-							$this->display_name      = '';
-							$this->url               = '';
-							$this->aim               = '';
-							$this->yim               = '';
-							$this->jabber            = '';
-							$this->description       = '';
-							$this->registration_time = 0;
-							$this->activation_key    = '';
-							$this->status            = 0;
+							if(($_wp = new \WP_User($this->ID)) && !empty($_wp->ID))
+								$this->wp = $_wp;
 
-							if($this->has_id())
-								{
-									clean_user_cache($this->ID);
-									wp_cache_delete($this->ID, 'user_meta');
-
-									if(is_object($wp = new \WP_User($this->ID)) && !empty($wp->ID))
-										$this->wp = $wp;
-								}
-							$this->populate(); // Repopulate.
-
-							// Restart session (if possible).
-							if($this->is_current() && !headers_sent())
-								$this->session_start();
+							unset($_wp); // Housekeeping.
 						}
-					else // Only refresh specific data components.
+					$this->populate(); // Repopulate.
+
+					// Restart session (if possible).
+					if($this->is_current() && !headers_sent())
+						$this->session_start();
+
+					return; // Stop here. We are NOT refreshing specific components in this case.
+
+					refresh_components: // Target point. Refresh specific components only.
+
+					foreach((array)$components as $_component_or_key => $_component_or_value)
+						switch(gettype($_component_or_key)) // String or integer array key.
 						{
-							foreach((array)$components as $_component => $_value)
-								{
-									if(is_integer($_component) && $this->©string->is_not_empty($_value))
-										{
-											if(isset($this->cache[$_value]))
-												unset($this->cache[$_value]);
-										}
-									if($this->©string->is_not_empty($_component)) // Associative.
-										{
-											if(isset($this->$_component))
-												$this->$_component = $_value;
+							case 'integer': // Numeric key (value is cache component).
 
-											if(isset($this->cache[$_component]))
-												unset($this->cache[$_component]);
+									if(!$this->©string->is_not_empty($_component_or_value))
+										throw $this->©exception(__METHOD__.'#invalid_component_or_value', array_merge(get_defined_vars(), array('user' => $this)),
+										                        $this->i18n('Invalid component. Expecting string NOT empty.').
+										                        sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_component_or_value))
+										);
+									unset($this->cache[$_component_or_value]); // Refresh cache (if exists).
+
+									break; // Break switch handler.
+
+							case 'string': // Associative component/property key.
+								// The ``$_component_or_value`` is a newly refreshed property value.
+								// The new value MUST have a data type matching the existing value data type.
+
+									if(!$this->©string->is_not_empty($_component_or_key))
+										throw $this->©exception(__METHOD__.'#invalid_component_or_key', array_merge(get_defined_vars(), array('user' => $this)),
+										                        $this->i18n('Invalid component. Expecting string NOT empty.').
+										                        sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_component_or_key))
+										);
+									if(property_exists($this, $_component_or_key))
+										{
+											if(gettype($this->$_component_or_key) !== gettype($_component_or_value))
+												throw $this->©exception(__METHOD__.'#invalid_component_or_value_type', array_merge(get_defined_vars(), array('user' => $this)),
+												                        sprintf($this->i18n('Invalid component value type. Expecting: `%1$s`.'), gettype($this->$_component_or_key)).
+												                        sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_component_or_value)));
+
+											$this->$_component_or_key = $_component_or_value; // Refresh property value.
 										}
-								}
-							unset($_component, $_value); // Housekeeping.
+									unset($this->cache[$_component_or_key]); // Refresh cache too (if exists).
+
+									break; // Break switch handler.
 						}
+					unset($_component_or_key, $_component_or_value); // Housekeeping.
+
+					return; // Stop here. For uniformity in this case handler.
 				}
 
 			/**
@@ -558,14 +601,13 @@ namespace websharks_core_v000000_dev
 				{
 					if(headers_sent())
 						throw $this->©exception(
-							__METHOD__.'#headers_sent_already', array('ID' => $this->ID),
+							__METHOD__.'#headers_sent_already', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n(' Doing it wrong! Headers have already been sent.')
 						);
-					if($this->is_current())
-						$this->session_end();
+					if($this->is_current()) $this->session_end();
+					if($this->is_current() && $this->has_id()) wp_logout();
 
-					if($this->is_current() && $this->has_id())
-						wp_logout();
+					$this->do_action('logout', $this, get_defined_vars());
 				}
 
 			/**
@@ -588,21 +630,23 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot delete).')
 						);
 					if($this->is_super_admin())
 						return $this->©error(
-							__METHOD__.'#super_admin', array('ID' => $this->ID, 'username' => $this->username),
+							__METHOD__.'#super_admin', array_merge(get_defined_vars(), array('user' => $this)),
 							sprintf($this->i18n('Cannot delete super administrator: `%1$s`.'), $this->username)
 						);
 					if(!wp_delete_user($this->ID, $reassign_posts_to_user_id))
 						return $this->©error(
-							__METHOD__.'#failure', array('ID' => $this->ID),
+							__METHOD__.'#failure', array_merge(get_defined_vars(), array('user' => $this)),
 							sprintf($this->i18n('Failed to delete user ID: `%1$s`.'), $this->ID)
 						);
-					$ID       = $this->ID;
-					$this->ID = 0;
+					$this->do_action('delete', $this, array_merge(get_defined_vars(), array('user' => $this)));
+
+					$ID       = $this->ID; // Save for use below.
+					$this->ID = 0; // Delete this ID now (force empty ID).
 
 					$this->wp    = NULL;
 					$this->cache = array();
@@ -683,7 +727,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot update).')
 						);
 					// Formulate & validate incoming args.
@@ -750,51 +794,51 @@ namespace websharks_core_v000000_dev
 
 					if(isset($args['first_name']) && !$args['first_name'] && in_array('first_name', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#first_name_missing', array_merge(get_defined_vars(), array('form_field_code' => 'first_name')),
+							__METHOD__.'#first_name_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'first_name')),
 							$this->translate('Required field. Missing first name.')
 						);
 					if(isset($args['last_name']) && !$args['last_name'] && in_array('last_name', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#last_name_missing', array_merge(get_defined_vars(), array('form_field_code' => 'last_name')),
+							__METHOD__.'#last_name_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'last_name')),
 							$this->translate('Required field. Missing last name.')
 						);
 					if(isset($args['display_name']) && !$args['display_name'] && in_array('display_name', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#display_name_missing', array_merge(get_defined_vars(), array('form_field_code' => 'display_name')),
+							__METHOD__.'#display_name_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'display_name')),
 							$this->translate('Required field. Missing display name.')
 						);
 					// Validate a possible change in online contact info (only if required in this scenario).
 
 					if(isset($args['url']) && !$args['url'] && in_array('url', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#url_missing', array_merge(get_defined_vars(), array('form_field_code' => 'url')),
+							__METHOD__.'#url_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'url')),
 							$this->translate('Required field. Missing URL.')
 						);
 					if(isset($args['url']) && strlen($args['url']) && !preg_match($this->©url->regex_valid_url, $args['url']))
 						return $this->©error(
-							__METHOD__.'#invalid_url', array_merge(get_defined_vars(), array('form_field_code' => 'url')),
+							__METHOD__.'#invalid_url', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'url')),
 							$this->translate('Invalid URL. Must start with `http://` and be a valid URL please.')
 						);
 					if(isset($args['aim']) && !$args['aim'] && in_array('aim', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#aim_missing', array_merge(get_defined_vars(), array('form_field_code' => 'aim')),
+							__METHOD__.'#aim_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'aim')),
 							$this->translate('Required field. Missing AOL® screen name.')
 						);
 					if(isset($args['yim']) && !$args['yim'] && in_array('yim', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#yim_missing', array_merge(get_defined_vars(), array('form_field_code' => 'yim')),
+							__METHOD__.'#yim_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'yim')),
 							$this->translate('Required field. Missing Yahoo® ID.')
 						);
 					if(isset($args['jabber']) && !$args['jabber'] && in_array('jabber', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#jabber_missing', array_merge(get_defined_vars(), array('form_field_code' => 'jabber')),
+							__METHOD__.'#jabber_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'jabber')),
 							$this->translate('Required field. Missing Jabber™ (or Google® Talk) username.')
 						);
 					// Validate a possible change in personal bio (i.e. user description).
 
 					if(isset($args['description']) && !$args['description'] && in_array('description', $optional_requirements, TRUE))
 						return $this->©error(
-							__METHOD__.'#description_missing', array_merge(get_defined_vars(), array('form_field_code' => 'description')),
+							__METHOD__.'#description_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'description')),
 							$this->translate('Required field. Missing personal description.')
 						);
 					if(isset($args['ip'])) // Update IP address.
@@ -836,15 +880,15 @@ namespace websharks_core_v000000_dev
 
 							if(!$wp_update_user->get_error_code() || !$wp_update_user->get_error_message())
 								return $this->©error(
-									__METHOD__.'#unknown_wp_error', get_defined_vars(),
+									__METHOD__.'#unknown_wp_error', array_merge(get_defined_vars(), array('user' => $this)),
 									$this->translate('Unknown error (please try again).')
 								);
 							return $this->©error(
-								__METHOD__.'#wp_error_'.$wp_update_user->get_error_code(), get_defined_vars(),
+								__METHOD__.'#wp_error_'.$wp_update_user->get_error_code(), array_merge(get_defined_vars(), array('user' => $this)),
 								$wp_update_user->get_error_message() // Message from ``wp_update_user()``.
 							);
 						}
-					$this->do_action('update', $this, get_defined_vars()); // Fire hook, refresh, and return now.
+					$this->do_action('update', $this, array_merge(get_defined_vars(), array('user' => $this)));
 
 					$this->refresh(); // Always refresh object instance after an update.
 
@@ -891,12 +935,12 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot update).')
 						);
 					if(isset($args['ip']) || isset($args['role']) || isset($args['activation_key']) || isset($args['options']) || isset($args['meta']) || isset($args['data']))
 						throw $this->©exception( // NOT allowed during basic profile updates. See {@link ®update()}.
-							__METHOD__.'#security_issue', get_defined_vars(),
+							__METHOD__.'#security_issue', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('Security issue. Some data is NOT allowed during basic profile updates.')
 						);
 					extract($args); // Extract for call data.
@@ -913,11 +957,11 @@ namespace websharks_core_v000000_dev
 					else // We have success. Profile now up-to-date.
 						{
 							$successes = $this->©success(
-								__METHOD__.'#success', get_defined_vars(),
+								__METHOD__.'#success', array_merge(get_defined_vars(), array('user' => $this)),
 								$this->translate('Profile updated successfully.')
 							);
 						}
-					$this->©action->set_call_data_for('©users.®profile_update', get_defined_vars());
+					$this->©action->set_call_data_for('©users.®profile_update', array_merge(get_defined_vars(), array('user' => $this)));
 				}
 
 			/**
@@ -939,7 +983,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot update).')
 						);
 					extract($args); // Extract for call data.
@@ -956,11 +1000,11 @@ namespace websharks_core_v000000_dev
 					else // We have success. The user's profile has been updated.
 						{
 							$successes = $this->©success(
-								__METHOD__.'#success', get_defined_vars(),
+								__METHOD__.'#success', array_merge(get_defined_vars(), array('user' => $this)),
 								$this->i18n('User updated successfully.')
 							);
 						}
-					$this->©action->set_call_data_for('©users.®update', get_defined_vars());
+					$this->©action->set_call_data_for('©users.®update', array_merge(get_defined_vars(), array('user' => $this)));
 				}
 
 			/**
@@ -979,10 +1023,10 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot get option).')
 						);
-					return get_user_option($this->ID, $key);
+					return get_user_option($key, $this->ID);
 				}
 
 			/**
@@ -1001,7 +1045,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot update option).')
 						);
 					if(is_null($value))
@@ -1038,7 +1082,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot get meta).')
 						);
 					return get_user_meta($this->ID, $key, TRUE);
@@ -1060,7 +1104,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot update meta).')
 						);
 					if(is_null($value))
@@ -1107,7 +1151,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot update activation key).')
 						);
 					$activation_key = (string)$activation_key;
@@ -1145,7 +1189,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot update password).')
 						);
 					wp_set_password($password, $this->ID);
@@ -1166,7 +1210,7 @@ namespace websharks_core_v000000_dev
 				{
 					if(!$this->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', array('ID' => $this->ID),
+							__METHOD__.'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
 							$this->i18n('User has no ID (cannot get WP role).')
 						);
 					if(isset($this->wp->roles[0]) && is_string($this->wp->roles[0]))

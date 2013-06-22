@@ -538,6 +538,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 					if(substr($internal_uri_basename, -1) === '~')
 						return FALSE; // Do NOT serve backups; 403 (forbidden).
 
+					$_allow_from_all_htaccess_file = FALSE; // Initialize to a FALSE value.
+
 					for($_i = 0, $_dir = self::n_dir_seps_up($phar.$internal_uri); $_i <= 100; $_i++)
 						{
 							if($_i > 0 && $_dir === $phar_dir)
@@ -564,18 +566,21 @@ if(!class_exists('websharks_core_v000000_dev'))
 							if(strcasecmp($_dir_basename, 'app_data') === 0)
 								return FALSE; // Private; 403 (forbidden).
 
-							if(is_file($_dir.'/.htaccess')) // Apache™ compatibility.
+							if(!$_allow_from_all_htaccess_file && is_file($_dir.'/.htaccess'))
 								{
 									if(!is_readable($_dir.'/.htaccess'))
 										return FALSE; // Unreadable; 403 (forbidden).
 
 									if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
 										return FALSE; // Private; 403 (forbidden).
+
+									if(stripos(file_get_contents($_dir.'/.htaccess'), 'allow from all') !== FALSE)
+										$_allow_from_all_htaccess_file = TRUE;
 								}
 							if(substr($_dir, -1) === '/') // Root directory or scheme?
 								break; // Search complete (there is nothing more to search after this).
 						}
-					unset($_i, $_dir, $_dir_basename);
+					unset($_i, $_dir, $_dir_basename, $_allow_from_all_htaccess_file);
 
 					// Process MIME-type headers.
 
@@ -941,6 +946,33 @@ if(!class_exists('websharks_core_v000000_dev'))
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
 					return strtolower(ltrim((string)strrchr(basename($dir_file), '.'), '.'));
+				}
+
+			/**
+			 * Determines a file's MIME type.
+			 *
+			 * @param string  $file A file path.
+			 *
+			 * @param string  $default_mime_type Defaults to `application/octet-stream`.
+			 *    This can be passed as an empty string to make it easier to test for a failure here.
+			 *
+			 * @return string File's MIME type; else ``$default_mime_type`` value.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public static function mime_type($file, $default_mime_type = 'application/octet-stream')
+				{
+					if(!is_string($file) || !$file || !is_string($default_mime_type))
+						throw new exception( // Fail here; detected invalid arguments.
+							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						);
+					$mime_types = self::mime_types();
+					$extension  = self::extension($file);
+
+					if($extension && !empty($mime_types[$extension]))
+						return $mime_types[$extension];
+
+					return $default_mime_type;
 				}
 
 			/**

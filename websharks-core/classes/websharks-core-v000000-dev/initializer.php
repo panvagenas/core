@@ -46,10 +46,10 @@ namespace websharks_core_v000000_dev
 					add_action('admin_init', array($this, '©db_cache.admin_init'), 1);
 
 					// For plugins that enable this option (only ONE plugin may add this hook).
-					if($this->©options->get('php.evaluate') && !isset($this->static['hooks']['php.evaluate']))
+					if($this->©options->get('php.evaluate') && !isset($this->static[__FUNCTION__]['php.evaluate']))
 						{
 							add_action('init', array($this, '©php.init'), 2);
-							$this->static['hooks']['php.evaluate'] = TRUE;
+							$this->static[__FUNCTION__]['php.evaluate'] = TRUE;
 						}
 					// Handles plugin actions.
 					add_action('init', array($this, '©actions.init'), 2);
@@ -59,10 +59,10 @@ namespace websharks_core_v000000_dev
 					add_action('wp_loaded', array($this, '©db_utils.wp_loaded'), 10000);
 
 					// For plugins that enable this option (only ONE plugin may add this hook).
-					if($this->©options->get('compressor.enable') && !isset($this->static['hooks']['compressor']))
+					if($this->©options->get('compressor.enable') && !isset($this->static[__FUNCTION__]['compressor']))
 						{
 							add_action('wp_loaded', array($this, '©compressor.wp_loaded'), 10000);
-							$this->static['hooks']['compressor'] = TRUE;
+							$this->static[__FUNCTION__]['compressor'] = TRUE;
 						}
 					// For plugins that need to authenticate users.
 					if($this->©options->get('users.attach_wp_authentication_filter'))
@@ -81,25 +81,24 @@ namespace websharks_core_v000000_dev
 					add_action('admin_print_styles', array($this, '©styles.admin_print_styles'), 9);
 
 					// Records HTTP communication (only ONE plugin needs to add this hook).
-					if($this->©env->is_in_wp_debug_mode() && !isset($this->static['hooks']['urls.http_api_debug']))
+					if($this->©env->is_in_wp_debug_mode() && !isset($this->static[__FUNCTION__]['urls.http_api_debug']))
 						{
 							add_action('http_api_debug', array($this, '©urls.http_api_debug'), 1000, 5);
-							$this->static['hooks']['http_api_debug'] = TRUE;
+							$this->static[__FUNCTION__]['http_api_debug'] = TRUE;
 						}
 					// For plugins that enable this option (only ONE plugin needs to add this filter).
-					if($this->©options->get('widgets.enable_shortcodes') && !isset($this->static['hooks']['widgets.enable_shortcodes']))
+					if($this->©options->get('widgets.enable_shortcodes') && !isset($this->static[__FUNCTION__]['widgets.enable_shortcodes']))
 						{
 							add_filter('widget_text', 'do_shortcode');
-							$this->static['hooks']['widgets.enable_shortcodes'] = TRUE;
+							$this->static[__FUNCTION__]['widgets.enable_shortcodes'] = TRUE;
 						}
 					// Add `[if]` shortcodes (only ONE plugin may add these shortcodes).
-					if($this->©options->get('shortcodes.if_conditionals.enable') && !isset($this->static['hooks']['shortcodes.if_conditionals']))
+					if($this->©options->get('shortcodes.if_conditionals.enable') && !isset($this->static[__FUNCTION__]['shortcodes.if_conditionals']))
 						{
 							for($_i = 0; $_i <= 3; $_i++) // Allows nested shortcodes with `_`, `__`, `___` prefixes.
 								add_shortcode(str_repeat('_', $_i).'if', array($this, '©shortcodes__if_conditionals.do_shortcode'));
+							$this->static[__FUNCTION__]['shortcodes.if_conditionals'] = TRUE;
 							unset($_i); // Housekeeping.
-
-							$this->static['hooks']['shortcodes.if_conditionals'] = TRUE;
 						}
 					// Handles `update_plugins` array (for pro upgrades).
 					add_filter('pre_site_transient_update_plugins', array($this, '©plugins.pre_site_transient_update_plugins'), 11, 1);
