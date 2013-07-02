@@ -174,12 +174,12 @@ namespace websharks_core_v000000_dev\menu_pages
 					// Validation.
 					if(empty($panel->slug))
 						throw $this->©exception(
-							__METHOD__.'#slug_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#slug_missing', get_defined_vars(),
 							$this->i18n('Panel `slug` is empty. Check panel configuration.')
 						);
 					if(empty($panel->heading_title))
 						throw $this->©exception(
-							__METHOD__.'#heading_title_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#heading_title_missing', get_defined_vars(),
 							$this->i18n('Panel has no `heading_title`. Check panel configuration.')
 						);
 					// Exclusion?

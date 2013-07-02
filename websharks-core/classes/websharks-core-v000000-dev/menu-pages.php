@@ -145,7 +145,7 @@ namespace websharks_core_v000000_dev
 									else add_menu_page($_menu_page['doc_title'], $_menu_page['menu_title'], $_menu_page['cap_required'], $_slug, $_menu_page['displayer'], $this->©string->isset_or($_menu_page['icon'], ''));
 								}
 							else throw $this->©exception(
-								__METHOD__.'#invalid_menu_page_config', get_defined_vars(),
+								$this->method(__FUNCTION__).'#invalid_menu_page_config', get_defined_vars(),
 								sprintf($this->i18n('Invalid menu page configuration: %1$s'), $this->©var->dump($_menu_page))
 							);
 						}

@@ -27,6 +27,58 @@ namespace websharks_core_v000000_dev
 		class db extends framework
 		{
 			/**
+			 * WordPress® database object instance.
+			 *
+			 * @var \wpdb WordPress® database object instance.
+			 * @by-constructor Set dynamically by class constructor.
+			 */
+			public $wpdb; // Defaults to a NULL value.
+
+			/**
+			 * @var boolean TRUE if modifying plugin tables.
+			 * @note See {@link is_modifying_plugin_tables()} for further details.
+			 */
+			public $is_modifying_plugin_tables = FALSE; // Default value.
+
+			/**
+			 * Constructor.
+			 *
+			 * @param object|array $___instance_config Required at all times.
+			 *    A parent object instance, which contains the parent's ``$___instance_config``,
+			 *    or a new ``$___instance_config`` array.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function __construct($___instance_config)
+				{
+					parent::__construct($___instance_config);
+
+					if(!isset($GLOBALS['wpdb']) || !($GLOBALS['wpdb'] instanceof \wpdb))
+						throw $this->©exception($this->method(__FUNCTION__).'#wpdb_missing', get_defined_vars(),
+						                        $this->i18n('Missing WordPress® database class instance.'));
+
+					$this->wpdb = $GLOBALS['wpdb'];
+				}
+
+			/**
+			 * Are we currently modifying plugin tables?
+			 *
+			 * @param null|boolean $is_modifying_plugin_tables Defaults to a NULL value.
+			 *    If this is set, we'll update the current status of `is_modifying_plugin_tables`.
+			 *
+			 * @return boolean TRUE if modifying plugin tables, else FALSE by default.
+			 */
+			public function is_modifying_plugin_tables($is_modifying_plugin_tables = NULL)
+				{
+					$this->check_arg_types(array('null', 'boolean'), func_get_args());
+
+					if(isset($is_modifying_plugin_tables))
+						$this->is_modifying_plugin_tables = $is_modifying_plugin_tables;
+
+					return $this->is_modifying_plugin_tables;
+				}
+
+			/**
 			 * Checks overload properties (and dynamic singleton class instances).
 			 *
 			 * @param string $property Name of a valid overload property.
@@ -39,8 +91,8 @@ namespace websharks_core_v000000_dev
 				{
 					$property = (string)$property;
 
-					if(property_exists($GLOBALS['wpdb'], $property))
-						return isset($GLOBALS['wpdb']->$property);
+					if(property_exists($this->wpdb, $property))
+						return isset($this->wpdb->$property);
 
 					return parent::__isset($property); // Default return value.
 				}
@@ -61,8 +113,8 @@ namespace websharks_core_v000000_dev
 				{
 					$property = (string)$property; // Typecasting this to a string value.
 
-					if(property_exists($GLOBALS['wpdb'], $property))
-						return $GLOBALS['wpdb']->$property;
+					if(property_exists($this->wpdb, $property))
+						return $this->wpdb->$property;
 
 					return parent::__get($property); // Default return value.
 				}
@@ -87,14 +139,14 @@ namespace websharks_core_v000000_dev
 					$method = (string)$method; // Typecasting this to a string value.
 					$args   = (array)$args; // Typecast these arguments to an array value.
 
-					if(method_exists($GLOBALS['wpdb'], $method)) // WordPress® DB method?
+					if(method_exists($this->wpdb, $method)) // Method in WordPress® database class?
 						{
-							if(!in_array($method, array('escape', '_real_escape'), TRUE)
+							if(!in_array($method, array('escape', '_real_escape'), TRUE) // Early exclusion.
 							   && !$this->©plugin->is_active_at_current_version() && !$this->is_modifying_plugin_tables()
-								// Stops plugin table queries, when plugin is NOT active at it's current version (on the current blog).
-							) // NOTE: We try to catch `escape`, `_real_escape` early, to prevent any unnecessary processing here.
+								// Stops plugin table queries, when plugin is NOT active at it's current version (on current blog).
+							) // NOTE: We try to catch `escape`, `_real_escape` early, to prevent unnecessary processing here.
 								{
-									if(!empty($args[0]) && is_string($args[0])) // Can we inspect this argument?
+									if(!empty($args[0]) && is_string($args[0])) // Can inspect?
 										{
 											$lc_method                        = strtolower($method);
 											$plugin_tables_imploded_for_regex = $this->©db_tables->imploded_for_regex();
@@ -107,36 +159,12 @@ namespace websharks_core_v000000_dev
 												|| (in_array($lc_method, array('insert', 'replace', '_insert_replace_helper', 'update', 'delete'), TRUE)
 												    && preg_match('/^(?:'.$plugin_tables_imploded_for_regex.')$/', $args[0]))
 
-											) return NULL; // Nullify. Stops plugin table queries.
+											) return NULL; // Nullify. Stop plugin queries.
 										}
 								} // Else call upon the WordPress® DB class.
-							return call_user_func_array(array($GLOBALS['wpdb'], $method), $args);
+							return call_user_func_array(array($this->wpdb, $method), $args);
 						}
 					return parent::__call($method, $args); // Default return value.
 				}
-
-			/**
-			 * Are we currently modifying plugin tables?
-			 *
-			 * @param null|boolean $is_modifying_plugin_tables Defaults to a NULL value.
-			 *    If this is set, we'll update the current status of `is_modifying_plugin_tables`.
-			 *
-			 * @return boolean TRUE if modifying plugin tables, else FALSE by default.
-			 */
-			public function is_modifying_plugin_tables($is_modifying_plugin_tables = NULL)
-				{
-					$this->check_arg_types(array('null', 'boolean'), func_get_args());
-
-					if(isset($is_modifying_plugin_tables))
-						$this->is_modifying_plugin_tables = $is_modifying_plugin_tables;
-
-					return $this->is_modifying_plugin_tables;
-				}
-
-			/**
-			 * @var boolean TRUE if modifying plugin tables.
-			 * @note See {@link is_modifying_plugin_tables()} for further details.
-			 */
-			public $is_modifying_plugin_tables = FALSE; // Default value.
 		}
 	}

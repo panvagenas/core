@@ -96,7 +96,7 @@ namespace websharks_core_v000000_dev
 						}
 					catch(\exception $_exception) // Rethrow a standard exception class.
 						{
-							throw new \exception(
+							throw new \exception( // Standard exceptions are also caught by our exception handler.
 								sprintf(stub::i18n('Could NOT instantiate exception code: `%1$s` with message: `%2$s`.'), $code, $message).
 								sprintf(stub::i18n(' Failure caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
 							);
@@ -111,28 +111,27 @@ namespace websharks_core_v000000_dev
 			 */
 			public function wp_debug_log()
 				{
-					if($this->wp_debug_log && $this->plugin->©env->is_in_wp_debug_log_mode())
-						{
-							$log_dir  = $this->plugin->©dir->log(constant(get_class($this->plugin).'::private_type'), 'debug');
-							$log_file = $this->plugin->©file->maybe_archive($log_dir.'/debug.log');
+					if(!$this->wp_debug_log || !$this->plugin->©env->is_in_wp_debug_log_mode())
+						return; // Logging NOT enabled. Stop here.
 
-							file_put_contents(
-								$log_file,
-								$this->plugin->i18n('— EXCEPTION —')."\n".
-								$this->plugin->i18n('Exception Code').': '.$this->getCode()."\n".
-								$this->plugin->i18n('Exception Line #').': '.$this->getLine()."\n".
-								$this->plugin->i18n('Exception File').': '.$this->getFile()."\n".
-								$this->plugin->i18n('Exception Time').': '.$this->plugin->©env->time_details()."\n".
-								$this->plugin->i18n('Memory Details').': '.$this->plugin->©env->memory_details()."\n".
-								$this->plugin->i18n('Version Details').': '.$this->plugin->©env->version_details()."\n".
-								$this->plugin->i18n('Current User ID').': '.$this->plugin->©user->ID."\n".
-								$this->plugin->i18n('Current User Email').': '.$this->plugin->©user->email."\n".
-								$this->plugin->i18n('Exception Message').': '.$this->getMessage()."\n\n".
-								$this->plugin->i18n('Exception Stack Trace').': '.$this->getTraceAsString()."\n\n".
-								$this->plugin->i18n('Exception Data (if applicable)').': '.$this->plugin->©var->dump($this->data)."\n\n",
-								FILE_APPEND
-							);
-						}
+					$log_dir  = $this->plugin->©dir->log(constant(get_class($this->plugin).'::private_type'), 'debug');
+					$log_file = $this->plugin->©file->maybe_archive($log_dir.'/debug.log');
+
+					file_put_contents( // Log this exception!
+						$log_file, $this->plugin->i18n('— EXCEPTION —')."\n".
+						           $this->plugin->i18n('Exception Code').': '.$this->getCode()."\n".
+						           $this->plugin->i18n('Exception Line #').': '.$this->getLine()."\n".
+						           $this->plugin->i18n('Exception File').': '.$this->getFile()."\n".
+						           $this->plugin->i18n('Exception Time').': '.$this->plugin->©env->time_details()."\n".
+						           $this->plugin->i18n('Memory Details').': '.$this->plugin->©env->memory_details()."\n".
+						           $this->plugin->i18n('Version Details').': '.$this->plugin->©env->version_details()."\n".
+						           $this->plugin->i18n('Current User ID').': '.$this->plugin->©user->ID."\n".
+						           $this->plugin->i18n('Current User Email').': '.$this->plugin->©user->email."\n".
+						           $this->plugin->i18n('Exception Message').': '.$this->getMessage()."\n\n".
+						           $this->plugin->i18n('Exception Stack Trace').': '.$this->getTraceAsString()."\n\n".
+						           $this->plugin->i18n('Exception Data (if applicable)').': '.$this->plugin->©var->dump($this->data)."\n\n",
+						FILE_APPEND
+					);
 				}
 
 			/**
@@ -145,9 +144,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function db_log()
 				{
-					if($this->db_log)
-						{
-						}
+					if(!$this->db_log) return;
 				}
 		}
 	}

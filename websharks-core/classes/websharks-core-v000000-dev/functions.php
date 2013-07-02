@@ -126,14 +126,16 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param array               $debug_backtrace Array from ``debug_backtrace()``.
 			 *
-			 * @param null|string|integer $position Defaults to a NULL value (indicating a full array of all callers).
+			 * @param null|string|integer $position Default is NULL (all callers).
+			 *
+			 *    • NULL indicates a full array of all callers.
 			 *    • Set to `last`, to get the last caller.
 			 *    • Set to `previous`, to get the previous caller.
-			 *    • Set to `before-previous`, to receive caller, before previous caller.
-			 *    • Set to an integer value, to specify an exact array index position.
+			 *    • Set to `before-previous` to receive caller before previous caller.
+			 *    • Set to an integer value to specify an exact array index position.
 			 *
-			 * @return array|string Array of all backtrace callers. Or, a string with a specific backtrace caller.
-			 *    Specific backtrace callers. See ``$offset`` for further details.
+			 * @return array|string Array of all backtrace callers (default behavior).
+			 *    Or, a string with a specific backtrace caller. See ``$position`` for details.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
@@ -141,26 +143,33 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('array', array('null', 'string', 'integer'), func_get_args());
 
-					$callers    = array(); // Initialize array of callers.
-					$exclusions = array('require*', 'include*', 'call_user_func*', 'check_*arg_types');
+					$callers = array(); // Initialize.
 
-					foreach($debug_backtrace as $_caller) // compile callers.
-						if(is_array($_caller) && $this->©string->is_not_empty($_caller['function'])
-						   && !$this->©string->in_wildcard_patterns($_caller['function'], $exclusions)
-						) // we exclude a few special functions here.
-							{
-								if($this->©strings->are_not_empty($_caller['class'], $_caller['type']))
-									$callers[] = $_caller['class'].$_caller['type'].$_caller['function'];
-								else $callers[] = $_caller['function'];
-							}
-					unset($_caller); // a little housekeeping.
+					$exclusions = array( // Exclude these.
+						'require', 'require_once',
+						'include', 'include_once',
+						'call_user_func', 'call_user_func_array',
+						'check_arg_types', 'check_extension_arg_types'
+					);
+					foreach($debug_backtrace as $_caller) // Compile callers.
+						{
+							if(!is_array($_caller)) continue;
+							if(!$this->©string->is_not_empty($_caller['function'])) continue;
+							if(in_array(strtolower($_caller['function']), $exclusions)) continue;
 
+							if($this->©strings->are_not_empty($_caller['class'], $_caller['type']))
+								$callers[] = $_caller['class'].$_caller['type'].$_caller['function'];
+							else $callers[] = $_caller['function'];
+						}
+					unset($_caller); // A little housekeeping.
+
+					if(!isset($position)) return array_map('strtolower', $callers);
 					if($position === 'last') return (!empty($callers[0])) ? strtolower($callers[0]) : 'unknown-caller';
 					if($position === 'previous') return (!empty($callers[1])) ? strtolower($callers[1]) : 'unknown-caller';
 					if($position === 'before-previous') return (!empty($callers[2])) ? strtolower($callers[2]) : 'unknown-caller';
 					if(is_integer($position)) return (!empty($callers[$position])) ? strtolower($callers[$position]) : 'unknown-caller';
 
-					return array_map('strtolower', $callers); // defaults to all callers.
+					return array_map('strtolower', $callers); // Defaults to all callers.
 				}
 		}
 	}

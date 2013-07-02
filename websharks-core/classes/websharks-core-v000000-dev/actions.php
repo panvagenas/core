@@ -45,11 +45,12 @@ namespace websharks_core_v000000_dev
 			 */
 			public function init()
 				{
-					if($this->is('call'))
-						$this->call($this->action);
+					if(!$this->is()) return;
 
-					else if($this->is('ajax'))
-						$this->ajax($this->action);
+					$this->©env->increase_db_wait_timeout();
+
+					if($this->is('call')) $this->call($this->action);
+					else if($this->is('ajax')) $this->ajax($this->action);
 				}
 
 			/**
@@ -79,7 +80,7 @@ namespace websharks_core_v000000_dev
 
 									if(!$this->©array->is_not_empty($action))
 										throw $this->©exception(
-											__METHOD__.'#invalid_or_expired_action_key', get_defined_vars(),
+											$this->method(__FUNCTION__).'#invalid_or_expired_action_key', get_defined_vars(),
 											sprintf($this->i18n('Invalid or expired action key: `%1$s`.'), $action_key)
 										);
 									$this->action = $action; // Define action property.
@@ -159,7 +160,7 @@ namespace websharks_core_v000000_dev
 							return $this->__call($call, $args);
 
 					throw $this->©exception(
-						__METHOD__.'#invalid_or_expired_call_action_verifier', get_defined_vars(),
+						$this->method(__FUNCTION__).'#invalid_or_expired_call_action_verifier', get_defined_vars(),
 						$this->i18n('Invalid or expired `call` action verifier. Unable to process.').
 						sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($action))
 					);
@@ -196,7 +197,7 @@ namespace websharks_core_v000000_dev
 								exit(); // Stop here.
 							}
 					throw $this->©exception(
-						__METHOD__.'#invalid_or_expired_ajax_action_verifier', get_defined_vars(),
+						$this->method(__FUNCTION__).'#invalid_or_expired_ajax_action_verifier', get_defined_vars(),
 						$this->i18n('Invalid or expired `ajax` action verifier. Unable to process.').
 						sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($action))
 					);
@@ -267,7 +268,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					if($type === $this::public_type)
@@ -362,7 +363,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					$hidden_inputs = '<input type="hidden" name="'.esc_attr($this->___instance_config->plugin_var_ns.'[a][s]').'" value="call" />';
@@ -537,7 +538,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					switch($type) // Generates verifier (based on `call` action type).
@@ -570,7 +571,7 @@ namespace websharks_core_v000000_dev
 								return $expiration_time.'-'.$this->©encryption->hmac_sha1_sign($call.$type.$this->©user->ID.$expiration_time);
 					}
 					throw $this->©exception(
-						__METHOD__.'#invalid_type', get_defined_vars(),
+						$this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
 						$this->i18n('Invalid `$type`. Expecting `$this::public_type|$this::protected_type|$this::private_type`.').
 						sprintf($this->i18n(' Got: `%1$s`.'), $type)
 					);
@@ -624,7 +625,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					return "'".$this->©string->esc_js_sq($type.'::'.$call)."':".
@@ -663,7 +664,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
-							__METHOD__.'#invalid_call', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					$this->call_data_for[$group][$call] = $structured_data;

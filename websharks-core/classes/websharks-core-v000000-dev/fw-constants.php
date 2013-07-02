@@ -35,61 +35,76 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents the `core`.
 			 */
-			const core = '___core';
+			const core = '___core___';
 
 			/**
 			 * @var string Represents `all` of something.
 			 */
-			const all = '___all';
+			const all = '___all___';
 
 			/**
 			 * @var string Represents `defaults`.
 			 */
-			const defaults = '___defaults';
+			const defaults = '___defaults___';
 
 			/**
 			 * @var string Represents a reconsideration.
 			 */
-			const reconsider = '___reconsider';
+			const reconsider = '___reconsider___';
 
 			/**
 			 * @var string Represents own components.
 			 */
-			const own_components = '___own_components';
+			const own_components = '___own_components___';
 
 			/**
 			 * @var string Represents a direct call, as opposed to a hook/filter.
 			 */
-			const direct_call = '___direct_call';
+			const direct_call = '___direct_call___';
 
 			/**
 			 * @var string Represents do `echo` command.
 			 */
-			const do_echo = '___do_echo';
+			const do_echo = '___do_echo___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Return value types.
 			# --------------------------------------------------------------------------------------------------------------------------------
 
 			/**
+			 * @var string Represents `boolean`.
+			 */
+			const boolean = '___boolean___';
+
+			/**
+			 * @var string Represents `float`.
+			 */
+			const float = '___float___';
+
+			/**
+			 * @var string Represents `integer`.
+			 */
+			const integer = '___integer___';
+
+			/**
 			 * @var string Represents `object` properties.
 			 */
-			const object_p = '___object_p';
+			const object_p = '___object_p___';
 
 			/**
 			 * @var string Represents associative `array`.
 			 */
-			const array_a = '___array_a';
+			const array_a = '___array_a___';
 
 			/**
 			 * @var string Represents numeric `array`.
 			 */
-			const array_n = '___array_n';
+			const array_n = '___array_n___';
 
 			/**
 			 * @var string Represents space-separated `string`.
 			 */
-			const space_sep_string = '___space_sep_string';
+			const space_sep_string = '___space_sep_string___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Conditional logic types.
@@ -98,12 +113,12 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents `all` logic.
 			 */
-			const all_logic = '___all_logic';
+			const all_logic = '___all_logic___';
 
 			/**
 			 * @var string Represents `any` logic.
 			 */
-			const any_logic = '___any_logic';
+			const any_logic = '___any_logic___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Prepend/append/replace flags.
@@ -112,17 +127,17 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents `prepend` flag.
 			 */
-			const prepend = '___prepend';
+			const prepend = '___prepend___';
 
 			/**
 			 * @var string Represents `append` flag.
 			 */
-			const append = '___append';
+			const append = '___append___';
 
 			/**
 			 * @var string Represents `replace` flag.
 			 */
-			const replace = '___replace';
+			const replace = '___replace___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Logging enabled/disabled flags.
@@ -131,12 +146,12 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents logging enabled.
 			 */
-			const log_enable = '___log_enable';
+			const log_enable = '___log_enable___';
 
 			/**
 			 * @var string Represents logging disabled.
 			 */
-			const log_disable = '___log_disable';
+			const log_disable = '___log_disable___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# RFC types (standards).
@@ -145,12 +160,12 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents conformity with rfc1738.
 			 */
-			const rfc1738 = '___rfc1738';
+			const rfc1738 = '___rfc1738___';
 
 			/**
 			 * @var string Represents conformity with rfc3986.
 			 */
-			const rfc3986 = '___rfc3986';
+			const rfc3986 = '___rfc3986___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Regex flavors.
@@ -159,12 +174,12 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents PHP regex flavor.
 			 */
-			const regex_php = '___regex_php';
+			const regex_php = '___regex_php___';
 
 			/**
 			 * @var string Represents JavaScript regex flavor.
 			 */
-			const regex_js = '___regex_js';
+			const regex_js = '___regex_js___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Context types.
@@ -173,17 +188,17 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents `profile_updates` context.
 			 */
-			const context_registration = '___context_registration';
+			const context_registration = '___context_registration___';
 
 			/**
 			 * @var string Represents `profile_updates` context.
 			 */
-			const context_profile_updates = '___context_profile_updates';
+			const context_profile_updates = '___context_profile_updates___';
 
 			/**
 			 * @var string Represents `profile_updates` context.
 			 */
-			const context_profile_views = '___context_profile_views';
+			const context_profile_views = '___context_profile_views___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# String replacement types.
@@ -192,12 +207,12 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents ``preg_replace()`` type.
 			 */
-			const preg_replace_type = '___preg_replace_type';
+			const preg_replace_type = '___preg_replace_type___';
 
 			/**
 			 * @var string Represents ``str_replace()`` type.
 			 */
-			const str_replace_type = '___str_replace_type';
+			const str_replace_type = '___str_replace_type___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Permission types.
@@ -206,17 +221,17 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents a `public` type.
 			 */
-			const public_type = '___public_type';
+			const public_type = '___public_type___';
 
 			/**
 			 * @var string Represents a `protected` type.
 			 */
-			const protected_type = '___protected_type';
+			const protected_type = '___protected_type___';
 
 			/**
 			 * @var string Represents a `private` type.
 			 */
-			const private_type = '___private_type';
+			const private_type = '___private_type___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# URL types.
@@ -225,22 +240,22 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents `home` type.
 			 */
-			const home_type = '___home_type';
+			const home_type = '___home_type___';
 
 			/**
 			 * @var string Represents `network_home` type.
 			 */
-			const network_home_type = '___network_home_type';
+			const network_home_type = '___network_home_type___';
 
 			/**
 			 * @var string Represents `site` type.
 			 */
-			const site_type = '___site_type';
+			const site_type = '___site_type___';
 
 			/**
 			 * @var string Represents `network_site` type.
 			 */
-			const network_site_type = '___network_site_type';
+			const network_site_type = '___network_site_type___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# MIME types.
@@ -249,22 +264,22 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents `textual` type.
 			 */
-			const textual_type = '___textual_type';
+			const textual_type = '___textual_type___';
 
 			/**
 			 * @var string Represents `compressable` type.
 			 */
-			const compressable_type = '___compressable_type';
+			const compressable_type = '___compressable_type___';
 
 			/**
 			 * @var string Represents `cacheable` type.
 			 */
-			const cacheable_type = '___cacheable_type';
+			const cacheable_type = '___cacheable_type___';
 
 			/**
 			 * @var string Represents `binary` type.
 			 */
-			const binary_type = '___binary_type';
+			const binary_type = '___binary_type___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Filesystem types.
@@ -273,12 +288,12 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents `file` type.
 			 */
-			const file_type = '___file_type';
+			const file_type = '___file_type___';
 
 			/**
 			 * @var string Represents `dir` type.
 			 */
-			const dir_type = '___dir_type';
+			const dir_type = '___dir_type___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Generalized types.
@@ -287,12 +302,12 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents `any known` type.
 			 */
-			const any_known_type = '___any_known_type';
+			const any_known_type = '___any_known_type___';
 
 			/**
 			 * @var string Represents `any` type.
 			 */
-			const any_type = '___any_type';
+			const any_type = '___any_type___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# Exclusion types.
@@ -301,17 +316,17 @@ namespace websharks_core_v000000_dev
 			/**
 			 * @var string Represents `ignore_globs` array key.
 			 */
-			const ignore_globs = '___ignore_globs';
+			const ignore_globs = '___ignore_globs___';
 
 			/**
 			 * @var string Represents `ignore_extra_globs` array key.
 			 */
-			const ignore_extra_globs = '___ignore_extra_globs';
+			const ignore_extra_globs = '___ignore_extra_globs___';
 
 			/**
 			 * @var string Represents `gitignore` array key.
 			 */
-			const gitignore = '___gitignore';
+			const gitignore = '___gitignore___';
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 			# URL parts/components bitmask for WebSharks™ Core.

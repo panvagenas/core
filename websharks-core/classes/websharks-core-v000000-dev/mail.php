@@ -87,7 +87,7 @@ namespace websharks_core_v000000_dev
 					// Recipients are always parsed into an array here.
 					if(!($mail['recipients'] = $this->parse_emails_deep($mail['recipients'])))
 						throw $this->©exception(
-							__METHOD__.'#recipients_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#recipients_missing', get_defined_vars(),
 							$this->i18n('Email failure. Missing and/or invalid `recipients` value.')
 						);
 					// Possible header(s).
@@ -99,7 +99,7 @@ namespace websharks_core_v000000_dev
 					foreach($mail['headers'] as $_header)
 						if(!$this->©string->is_not_empty($_header))
 							throw $this->©exception(
-								__METHOD__.'#header_missing', get_defined_vars(),
+								$this->method(__FUNCTION__).'#header_missing', get_defined_vars(),
 								$this->i18n('Email failure. Missing and/or invalid `header`.').
 								sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_header))
 							);
@@ -118,14 +118,14 @@ namespace websharks_core_v000000_dev
 
 							if(!$this->©string->is_not_empty($_attachment['path']))
 								throw $this->©exception(
-									__METHOD__.'#attachment_path_missing', get_defined_vars(),
+									$this->method(__FUNCTION__).'#attachment_path_missing', get_defined_vars(),
 									$this->i18n('Email failure. Missing and/or invalid attachment `path` value.').
 									sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
 								);
 							if(!is_file($_attachment['path'])) // Perhaps relative?
 								if(!is_file(ABSPATH.$_attachment['path']))
 									throw $this->©exception(
-										__METHOD__.'#nonexistent_attachment_path', get_defined_vars(),
+										$this->method(__FUNCTION__).'#nonexistent_attachment_path', get_defined_vars(),
 										$this->i18n('Email failure. Nonexistent attachment `path` value.').
 										sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
 									);
@@ -186,11 +186,11 @@ namespace websharks_core_v000000_dev
 						}
 					catch(\phpmailerException $exception)
 						{
-							return $this->©error(__METHOD__, get_defined_vars(), $exception->getMessage());
+							return $this->©error($this->method(__FUNCTION__), get_defined_vars(), $exception->getMessage());
 						}
 					catch(\exception $exception)
 						{
-							return $this->©error(__METHOD__, get_defined_vars(), $exception->getMessage());
+							return $this->©error($this->method(__FUNCTION__), get_defined_vars(), $exception->getMessage());
 						}
 					return TRUE; // Default return value.
 				}

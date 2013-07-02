@@ -38,7 +38,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', func_get_args());
 
-					if(is_string($cookie = $this->©vars->_COOKIE($name)) && $cookie)
+					if($this->©string->¤is_not_empty($cookie = $this->©vars->_COOKIE($name)))
 						$value = $this->©encryption->decrypt($cookie);
 
 					return (!empty($value)) ? $value : '';
@@ -66,13 +66,13 @@ namespace websharks_core_v000000_dev
 
 					if(headers_sent())
 						throw $this->©exception(
-							__METHOD__.'#headers_sent_already', get_defined_vars(),
+							$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent.')
 						);
 					setcookie($name, $value, $expires, COOKIEPATH, COOKIE_DOMAIN);
 					setcookie($name, $value, $expires, SITECOOKIEPATH, COOKIE_DOMAIN);
 
-					if($name !== TEST_COOKIE) $_COOKIE[$name] = $value;
+					if($name !== TEST_COOKIE) $_COOKIE[$name] = $value; // Update in real-time.
 				}
 
 			/**
@@ -89,7 +89,7 @@ namespace websharks_core_v000000_dev
 
 					if(headers_sent())
 						throw $this->©exception(
-							__METHOD__.'#headers_sent_already', get_defined_vars(),
+							$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
 							$this->i18n(' Doing it wrong! Headers have already been sent.')
 						);
 					setcookie($name, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN);

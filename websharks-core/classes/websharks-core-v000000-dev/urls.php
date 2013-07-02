@@ -118,7 +118,7 @@ namespace websharks_core_v000000_dev
 
 							if(!$this->©string->is_not_empty($host))
 								throw $this->©exception(
-									__METHOD__.'#missing_server_http_host', get_defined_vars(),
+									$this->method(__FUNCTION__).'#missing_server_http_host', get_defined_vars(),
 									$this->i18n('Missing required `$_SERVER[\'HTTP_HOST\']`.')
 								);
 							$this->static[__FUNCTION__] = $host;
@@ -142,7 +142,7 @@ namespace websharks_core_v000000_dev
 
 							if(!$this->©string->is_not_empty($uri))
 								throw $this->©exception(
-									__METHOD__.'#missing_server_request_uri', get_defined_vars(),
+									$this->method(__FUNCTION__).'#missing_server_request_uri', get_defined_vars(),
 									$this->i18n('Missing required `$_SERVER[\'REQUEST_URI\']`.')
 								);
 							$this->static[__FUNCTION__] = $uri;
@@ -288,7 +288,7 @@ namespace websharks_core_v000000_dev
 				{
 					if(is_null($parsed = call_user_func_array(array($this, 'parse'), func_get_args())))
 						throw $this->©exception(
-							__METHOD__.'#failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
 						);
 					return $parsed;
@@ -382,7 +382,7 @@ namespace websharks_core_v000000_dev
 				{
 					if('' === ($unparsed = call_user_func_array(array($this, 'unparse'), func_get_args())))
 						throw $this->©exception(
-							__METHOD__.'#failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							sprintf($this->i18n('Unable to unparse: `%1$s`.'), $this->©var->dump(func_get_arg(0)))
 						);
 					return $unparsed;
@@ -430,7 +430,7 @@ namespace websharks_core_v000000_dev
 				{
 					if(is_null($parts = call_user_func_array(array($this, 'parse_uri_parts'), func_get_args())))
 						throw $this->©exception(
-							__METHOD__.'#failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
 						);
 					return $parts;
@@ -480,7 +480,7 @@ namespace websharks_core_v000000_dev
 				{
 					if(is_null($parsed = call_user_func_array(array($this, 'parse_uri'), func_get_args())))
 						throw $this->©exception(
-							__METHOD__.'#failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
 						);
 					return $parsed;
@@ -520,7 +520,7 @@ namespace websharks_core_v000000_dev
 							return $this->unparse($relative_parts);
 						}
 					if(!$base_parts['host']) // We MUST have a base host name to resolve.
-						throw $this->©exception(__METHOD__.'#missing_base_host_name', get_defined_vars(),
+						throw $this->©exception($this->method(__FUNCTION__).'#missing_base_host_name', get_defined_vars(),
 						                        sprintf($this->i18n('Unable to parse (missing base host name): `%1$s`.'), $base_url)
 						);
 					if(strlen($relative_parts['path'])) // It's important that we mimic browser behavior here.
@@ -836,7 +836,7 @@ namespace websharks_core_v000000_dev
 
 					if(empty($term->term_id) || empty($term->taxonomy))
 						throw $this->©exception(
-							__METHOD__.'#invalid_term', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_term', get_defined_vars(),
 							$this->i18n('Invalid term. Missing `term_id`, `taxonomy` properties.')
 						);
 					if(!is_string($url = get_term_link($term))) $url = '';
@@ -929,7 +929,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$user->has_id())
 						throw $this->©exception(
-							__METHOD__.'#id_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
 							$this->i18n('The `$user` has no ID (cannot get Dashboard URL).')
 						);
 					$parts = $this->must_parse_uri_parts($url_uri_query_fragment);
@@ -1644,10 +1644,10 @@ namespace websharks_core_v000000_dev
 						}
 					if($this->©string->is_not_empty($plugin_site_response['error']))
 						return $this->©error(
-							__METHOD__.'#plugin_site_error', get_defined_vars(), $plugin_site_response['error']
+							$this->method(__FUNCTION__).'#plugin_site_error', get_defined_vars(), $plugin_site_response['error']
 						);
 					return $this->©error( // Assume connectivity issue.
-						__METHOD__.'#plugin_site_connectivity_issue', get_defined_vars(),
+						$this->method(__FUNCTION__).'#plugin_site_connectivity_issue', get_defined_vars(),
 						$this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
 						$this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
 					);
@@ -1701,10 +1701,10 @@ namespace websharks_core_v000000_dev
 						}
 					if($this->©string->is_not_empty($plugin_site_response['error']))
 						return $this->©error(
-							__METHOD__.'#plugin_site_error', get_defined_vars(), $plugin_site_response['error']
+							$this->method(__FUNCTION__).'#plugin_site_error', get_defined_vars(), $plugin_site_response['error']
 						);
 					return $this->©error( // Assume connectivity issue.
-						__METHOD__.'#plugin_site_connectivity_issue', get_defined_vars(),
+						$this->method(__FUNCTION__).'#plugin_site_connectivity_issue', get_defined_vars(),
 						$this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
 						$this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
 					);
@@ -1825,7 +1825,7 @@ namespace websharks_core_v000000_dev
 
 							// Generate errors.
 							$errors = $this->©errors(
-								__METHOD__, get_defined_vars(), $response->get_error_message()
+								$this->method(__FUNCTION__), get_defined_vars(), $response->get_error_message()
 							);
 
 							// Returning errors?

@@ -129,7 +129,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->can_replicate)
 						throw $this->©exception(
-							__METHOD__.'#cannot_replicate', get_defined_vars(),
+							$this->method(__FUNCTION__).'#cannot_replicate', get_defined_vars(),
 							$this->i18n('Security check. Unable to replicate (not allowed here).')
 						);
 					// Construct object properties.
@@ -149,19 +149,19 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($this->into_dir))
 						throw $this->©exception(
-							__METHOD__.'#invalid_into_dir', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_into_dir', get_defined_vars(),
 							sprintf($this->i18n('Invalid directory: `%1$s`.'), $this->into_dir).
 							$this->i18n(' This is NOT an existing directory that we can replicate into.')
 						);
 					if($this->update_dir !== $this->new_core_dir && !is_dir($this->update_dir))
 						throw $this->©exception(
-							__METHOD__.'#invalid_update_dir', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_update_dir', get_defined_vars(),
 							sprintf($this->i18n('Invalid directory: `%1$s`.'), $this->into_dir).
 							$this->i18n(' This is NOT an existing directory that we can update files in.')
 						);
 					if(!$this->©string->is_plugin_version($this->version))
 						throw $this->©exception(
-							__METHOD__.'#invalid_version', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_version', get_defined_vars(),
 							sprintf($this->i18n('Invalid %1$s version: `%2$s`.'), $this->___instance_config->core_name, $this->version)
 						);
 					// Object construction & initial validation complete.
@@ -185,7 +185,7 @@ namespace websharks_core_v000000_dev
 						{
 							if($this->new_core_dir === $this->core_dir)
 								throw $this->©exception(
-									__METHOD__.'#new_core_dir_exists', get_defined_vars(),
+									$this->method(__FUNCTION__).'#new_core_dir_exists', get_defined_vars(),
 									$this->i18n('The new core directory already exists; and removal is NOT possible.').
 									sprintf($this->i18n(' Cannot replicate into self: `%1$s`.'), $this->new_core_dir)
 								);
@@ -198,7 +198,7 @@ namespace websharks_core_v000000_dev
 
 					// Return success; which becomes the value of ``$this->success``.
 
-					return $this->©success(__METHOD__.'#complete', get_defined_vars(),
+					return $this->©success($this->method(__FUNCTION__).'#complete', get_defined_vars(),
 					                       $this->i18n('Replication completed successfully.').
 					                       sprintf($this->i18n(' Replicated into: `%1$s`.'), $this->new_core_dir)
 					);
@@ -253,7 +253,7 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($dir)) // Validate (must be a directory).
 						throw $this->©exception(
-							__METHOD__.'#nonexistent_dir', get_defined_vars(),
+							$this->method(__FUNCTION__).'#nonexistent_dir', get_defined_vars(),
 							sprintf($this->i18n('Non-existent directory: `%1$s`.'), $dir)
 						);
 					// Handle automatic directory exclusions.
@@ -286,13 +286,13 @@ namespace websharks_core_v000000_dev
 						}
 					if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#unreadable_dir', get_defined_vars(),
+							$this->method(__FUNCTION__).'#unreadable_dir', get_defined_vars(),
 							$this->i18n('Unable to search a directory; not readable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 					if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
-							__METHOD__.'#opendir_failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#opendir_failure', get_defined_vars(),
 							$this->i18n('Unable to search a directory; cannot open for some unknown reason.').
 							sprintf($this->i18n(' Make this directory readable please: `%1$s`.'), $dir)
 						);
@@ -342,7 +342,7 @@ namespace websharks_core_v000000_dev
 
 							if(!is_readable($_dir_file) || !is_writable($_dir_file))
 								throw $this->©exception(
-									__METHOD__.'#read_write_file_issue', get_defined_vars(),
+									$this->method(__FUNCTION__).'#read_write_file_issue', get_defined_vars(),
 									$this->i18n('Unable to search a file; cannot read/write due to permission issues.').
 									sprintf($this->i18n(' Make this file readable/writable please: `%1$s`.'), $_dir_file)
 								);
@@ -350,7 +350,7 @@ namespace websharks_core_v000000_dev
 
 							if(!is_string($_file = file_get_contents($_dir_file)))
 								throw $this->©exception(
-									__METHOD__.'#read_file_contents_issue', get_defined_vars(),
+									$this->method(__FUNCTION__).'#read_file_contents_issue', get_defined_vars(),
 									$this->i18n('Unable to search a file; cannot read file contents for some unknown reason.').
 									sprintf($this->i18n(' Make this file readable/writable please: `%1$s`.'), $_dir_file)
 								);
@@ -369,7 +369,7 @@ namespace websharks_core_v000000_dev
 
 									if(!$_file || strpos($_file, $this->new_core_ns_version) === FALSE)
 										throw $this->©exception(
-											__METHOD__.'#search_replace_failure', get_defined_vars(),
+											$this->method(__FUNCTION__).'#search_replace_failure', get_defined_vars(),
 											sprintf($this->i18n('Unable to properly search/replace file: `%1$s`.'), $_dir_file).
 											sprintf($this->i18n('Last PCRE regex error: `%1$s`.'), $this->©string->preg_last_error())
 										);
@@ -380,14 +380,14 @@ namespace websharks_core_v000000_dev
 
 									if(!$_file || strpos($_file, $this->new_core_ns_version_with_dashes) === FALSE)
 										throw $this->©exception(
-											__METHOD__.'#search_replace_failure', get_defined_vars(),
+											$this->method(__FUNCTION__).'#search_replace_failure', get_defined_vars(),
 											sprintf($this->i18n('Unable to properly search/replace file: `%1$s`.'), $_dir_file).
 											sprintf($this->i18n('Last PCRE regex error: `%1$s`.'), $this->©string->preg_last_error())
 										);
 								}
 							if(!file_put_contents($_dir_file, $_file))
 								throw $this->©exception(
-									__METHOD__.'#read_write_issues', get_defined_vars(),
+									$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 									$this->i18n('Unable to properly search/replace file due to permission issues.').
 									sprintf($this->i18n(' Make this file readable/writable please: `%1$s`.'), $_dir_file)
 								);

@@ -96,7 +96,7 @@ namespace websharks_core_v000000_dev
 								!is_array($_cron_job) || !$this->©string->is_not_empty($_cron_job['©class.method'])
 								|| substr_count($_cron_job['©class.method'], '©') !== 1 || substr_count($_cron_job['©class.method'], '.') !== 1
 								|| !$this->©string->is_not_empty($_cron_job['schedule']) || !in_array($_cron_job['schedule'], $schedules, TRUE)
-							) throw $this->©exception(__METHOD__.'#invalid_cron_job', get_defined_vars(),
+							) throw $this->©exception($this->method(__FUNCTION__).'#invalid_cron_job', get_defined_vars(),
 							                          $this->i18n('Invalid CRON job (missing and/or invalid array keys).').
 							                          sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_cron_job))
 							);

@@ -906,6 +906,93 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Gets array values from a specific dimension.
+			 *
+			 * @note This is a recursive scan running deeply into multiple dimensions of an array.
+			 *    This allows you to obtain all values from a specific dimension; in ANY key.
+			 *
+			 * @param array    $array Any input array will do fine here.
+			 *
+			 * @param integer  $from_dimension Optional. Defaults to `1`; but normally this is `2` or higher.
+			 *    In the case of `1`, it's simpler to just call `array_values()` (native to PHP).
+			 *
+			 * @param boolean  $preserve_keys Optional. Defaults to a FALSE value.
+			 *
+			 *    If this is TRUE, we'll preserve existing keys. However, please use CAUTION with this.
+			 *       Use only when there is CERTAINTY about what the input array contains.
+			 *
+			 *    CAUTION: An example which demonstrates conflicting keys.
+			 *       Values from the 2nd and/or 3rd dimensions have duplicate keys.
+			 *       ~ Duplicate keys will override previous keys.
+			 *
+			 *    ``$array[0][1][2] = 'hello';``
+			 *    ``$array[1][1][2] = 'world';``
+			 *
+			 *    Values from 2nd dimension = ``array(1 => 'world')``; e.g. missing 1st value.
+			 *    Values from 3rd dimension = ``array(2 => 'world')``; e.g. missing 1st value.
+			 *
+			 * @param integer  $___current_dimension Internal use only.
+			 * @param boolean  $___recursion Internal use only.
+			 *
+			 * @return array Array values (numerically indexed); else an empty array on failure.
+			 *    If the requested dimension is NOT available; an empty array (e.g. a failure).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function values($array, $from_dimension = 1, $preserve_keys = FALSE, $___current_dimension = 1, $___recursion = FALSE)
+				{
+					if(!$___recursion) // Only for the initial caller.
+						$this->check_arg_types('array', 'integer', 'boolean', 'integer:!empty', 'boolean', func_get_args());
+
+					if($from_dimension <= 1) // This is exactly the same as `array_values()`.
+						return array_values($array); // Just in case it's called this way.
+
+					$values = array(); // Initialize array of values.
+
+					foreach($array as $_value)
+						{
+							if(!is_array($_value)) continue;
+
+							foreach($_value as $__key => $__value)
+								if($preserve_keys) $values[$__key] = $__value;
+								else $values[] = $__value; // Better (default behavior).
+							unset($__key, $__value); // Housekeeping.
+						}
+					unset($_value); // Housekeeping.
+
+					if($from_dimension === $___current_dimension + 1) return $values;
+
+					return $this->values($values, $from_dimension, $preserve_keys, $___current_dimension + 1, TRUE);
+				}
+
+			/**
+			 * Builds an array w/ ONE dimension; using DOT `.` keys (e.g. `key.ID`).
+			 *
+			 * @param array $array Any input array will do fine here.
+			 *
+			 * @return array An array w/ ONE dimension; using DOT `.` keys.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function dot_keys($array)
+				{
+					$this->check_arg_types('array', func_get_args());
+
+					foreach(($iterator = $this->iterator($array)) as $_value)
+						{
+							$_keys = array(); // Initialize keys.
+
+							foreach(range(0, $iterator->getDepth()) as $_depth)
+								$_keys[] = $iterator->getSubIterator($_depth)->key();
+
+							$dot_keys[join('.', $_keys)] = $_value;
+
+							unset($_keys, $_depth); // Housekeeping.
+						}
+					return (!empty($dot_keys)) ? $dot_keys : array();
+				}
+
+			/**
 			 * Converts PHP arrays into JS arrays/objects (or JS array values; or JS object properties).
 			 *
 			 * @note This follows JSON standards; except we use single quotes instead of double quotes.
@@ -1346,6 +1433,22 @@ namespace websharks_core_v000000_dev
 					unset($_key, $_value, $_parent); // Housekeeping.
 
 					return $array; // Return current array.
+				}
+
+			/**
+			 * Recursive iterator.
+			 *
+			 * @param array $array Any input array will do fine here.
+			 *
+			 * @return \RecursiveIteratorIterator Recursive iterator.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function iterator($array)
+				{
+					$this->check_arg_types('array', func_get_args());
+
+					return new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array));
 				}
 		}
 	}

@@ -185,7 +185,7 @@ namespace websharks_core_v000000_dev
 
 						default: // Throw exception (invalid type).
 							throw $this->©exception(
-								__METHOD__.'#unknown_type', get_defined_vars(),
+								$this->method(__FUNCTION__).'#unknown_type', get_defined_vars(),
 								sprintf($this->i18n('Unknown extension type: `%1$s`.'), $type)
 							);
 					}
@@ -209,12 +209,12 @@ namespace websharks_core_v000000_dev
 
 					if(!is_file($file))
 						throw $this->©exception(
-							__METHOD__.'#nonexistent_file', get_defined_vars(),
+							$this->method(__FUNCTION__).'#nonexistent_file', get_defined_vars(),
 							sprintf($this->i18n('Nonexistent file: `%1$s`.'), $file)
 						);
 					if(!is_readable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_issues', get_defined_vars(),
 							$this->i18n('Expecting a readable file (permission issues).').
 							sprintf($this->i18n(' Got: `%1$s`.'), $file)
 						);
@@ -340,7 +340,7 @@ namespace websharks_core_v000000_dev
 
 					if(!is_readable($file) || !is_writable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Expecting a readable/writable file (permission issues).').
 							sprintf($this->i18n(' Got: `%1$s`.'), $file)
 						);
@@ -383,38 +383,38 @@ namespace websharks_core_v000000_dev
 
 					if(!is_file($file))
 						throw $this->©exception(
-							__METHOD__.'#nonexistent_source', get_defined_vars(),
+							$this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
 							sprintf($this->i18n('Unable to copy. Nonexistent source: `%1$s`.'), $file)
 						);
 					if(!is_readable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_issues', get_defined_vars(),
 							sprintf($this->i18n('Unable to copy this file: `%1$s`.'), $file).
 							$this->i18n(' Possible permission issues. This file is not readable.')
 						);
 
 					if(file_exists($to))
 						throw $this->©exception(
-							__METHOD__.'#destination_exists', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_exists', get_defined_vars(),
 							$this->i18n('Destination exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this file: `%1$s`.'), $to)
 						);
 					if(!is_dir($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#destination_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_dir_missing', get_defined_vars(),
 							$this->i18n('Destination\'s parent directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
 					if(!is_writable($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination\'s directory is not writable.').
 							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
 
 					if(!copy($file, $to))
 						throw $this->©exception(
-							__METHOD__.'#failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							sprintf($this->i18n('Unable to copy this file: `%1$s`; to `%2$s`.'), $file, $to).
 							$this->i18n(' Possible permission issues. Please copy this file manually.')
 						);
@@ -452,44 +452,44 @@ namespace websharks_core_v000000_dev
 
 					if(!is_file($file))
 						throw $this->©exception(
-							__METHOD__.'#nonexistent_source', get_defined_vars(),
+							$this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
 							sprintf($this->i18n('Unable to rename. Nonexistent source: `%1$s`.'), $file)
 						);
 					if(!is_readable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_issues', get_defined_vars(),
 							sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
 							$this->i18n(' Possible permission issues. This file is not readable.')
 						);
 					if(!is_writable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
 							$this->i18n(' Possible permission issues. This file is not writable.')
 						);
 
 					if(file_exists($to))
 						throw $this->©exception(
-							__METHOD__.'#destination_exists', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_exists', get_defined_vars(),
 							$this->i18n('Destination exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
 						);
 					if(!is_dir($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#destination_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_dir_missing', get_defined_vars(),
 							$this->i18n('Destination\'s parent directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
 					if(!is_writable($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination\'s directory is not writable.').
 							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
 
 					if(!rename($file, $to))
 						throw $this->©exception(
-							__METHOD__.'#rename_failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#rename_failure', get_defined_vars(),
 							sprintf($this->i18n('Rename failure. Could NOT rename: `%1$s`; to: `%2$s`.'), $file, $to)
 						);
 					clearstatcache(); // Make other routines aware.
@@ -533,7 +533,7 @@ namespace websharks_core_v000000_dev
 						{
 							if(!$this->©string->is_not_empty($_file))
 								throw $this->©exception(
-									__METHOD__.'#invalid_file', get_defined_vars(),
+									$this->method(__FUNCTION__).'#invalid_file', get_defined_vars(),
 									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $this->©var->dump($_file)).
 									$this->i18n(' Each file MUST be represented by a (string) that is NOT empty.')
 								);
@@ -541,12 +541,12 @@ namespace websharks_core_v000000_dev
 
 							if(!is_file($_file))
 								throw $this->©exception(
-									__METHOD__.'#invalid_file', get_defined_vars(),
+									$this->method(__FUNCTION__).'#invalid_file', get_defined_vars(),
 									sprintf($this->i18n('Unable to delete this file path. NOT a file: `%1$s`.'), $_file)
 								);
 							if(!is_writable($_file) || !unlink($_file))
 								throw $this->©exception(
-									__METHOD__.'#read_write_issues', get_defined_vars(),
+									$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $_file).
 									$this->i18n(' Possible permission issues. Please delete this file manually.')
 								);
@@ -603,31 +603,31 @@ namespace websharks_core_v000000_dev
 
 					if(!is_file($file))
 						throw $this->©exception(
-							__METHOD__.'#nonexistent_source', get_defined_vars(),
+							$this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
 							sprintf($this->i18n('Unable to search/replace: `%1$s`.'), $file).
 							$this->i18n(' This is NOT an existing file.')
 						);
 					if(!is_readable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							sprintf($this->i18n('Unable to search/replace in this file: `%1$s`.'), $file).
 							$this->i18n(' Possible permission issues. This file is not readable.')
 						);
 					if(!is_writable($file))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							sprintf($this->i18n('Unable to search/replace in this file: `%1$s`.'), $file).
 							$this->i18n(' Possible permission issues. This file is not writable.')
 						);
 
 					if(!is_resource($_file_resource = fopen($file, 'rb')))
 						throw $this->©exception(
-							__METHOD__.'#file_resource', get_defined_vars(),
+							$this->method(__FUNCTION__).'#file_resource', get_defined_vars(),
 							sprintf($this->i18n('Unable to open file resource: `%1$s`.'), $file)
 						);
 					if(!is_resource($_temp_file_resource = fopen($temp_file, 'ab')))
 						throw $this->©exception(
-							__METHOD__.'#temp_file_resource', get_defined_vars(),
+							$this->method(__FUNCTION__).'#temp_file_resource', get_defined_vars(),
 							sprintf($this->i18n('Unable to open temp file resource: `%1$s`.'), $temp_file)
 						);
 
@@ -641,7 +641,7 @@ namespace websharks_core_v000000_dev
 
 							if(!fwrite($_temp_file_resource, $_line))
 								throw $this->©exception(
-									__METHOD__.'#temp_write_failure', get_defined_vars(),
+									$this->method(__FUNCTION__).'#temp_write_failure', get_defined_vars(),
 									sprintf($this->i18n('Failed to write a chunk of bytes to: `%1$s`.'), $temp_file)
 								);
 						}

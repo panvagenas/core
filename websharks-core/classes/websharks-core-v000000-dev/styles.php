@@ -60,7 +60,7 @@ namespace websharks_core_v000000_dev
 
 					if(!did_action('init'))
 						throw $this->©exception(
-							__METHOD__.'#init', NULL,
+							$this->method(__FUNCTION__).'#init', NULL,
 							$this->i18n('Doing it wrong (`init` hook has NOT been fired yet).')
 						);
 					// Add components & register styles (based on context).
@@ -111,7 +111,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function jquery_ui_themes()
 				{
-					if(is_array($cache = $this->©db_cache->get(__METHOD__)))
+					if(is_array($cache = $this->©db_cache->get($this->method(__FUNCTION__))))
 						return $cache; // Already cached these.
 
 					$themes = array(); // Initialize jQuery™ UI themes array.
@@ -134,7 +134,7 @@ namespace websharks_core_v000000_dev
 							}
 					unset($_dir, $_themes_dir); // Final housekeeping.
 
-					return $this->©db_cache->update(__METHOD__, $themes);
+					return $this->©db_cache->update($this->method(__FUNCTION__), $themes);
 				}
 
 			/**
@@ -186,7 +186,7 @@ namespace websharks_core_v000000_dev
 								|| !$this->©string->is_not_empty($_style['url'])
 							) // This MUST be an array with a `url` string.
 								throw $this->©exception(
-									__METHOD__.'#url_missing', get_defined_vars(),
+									$this->method(__FUNCTION__).'#url_missing', get_defined_vars(),
 									$this->i18n('Invalid style configuration. Missing and/or invalid `url`.').
 									sprintf($this->i18n(' Problematic style handle: `%1$s`.'), $_handle)
 								);

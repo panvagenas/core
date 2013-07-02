@@ -508,6 +508,24 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Increases MySQL `wait_timeout` for current session.
+			 *
+			 * @param integer $timeout Optional. Defaults to `300` seconds.
+			 */
+			public function increase_db_wait_timeout($timeout = 300)
+				{
+					$timeout = (integer)$timeout;
+
+					if(isset($this->static[__FUNCTION__]))
+						if($this->static[__FUNCTION__] >= $timeout)
+							return;
+
+					$this->static[__FUNCTION__] = $timeout;
+
+					$this->©db->query('SET SESSION `wait_timeout` = '.$timeout);
+				}
+
+			/**
 			 * Maximizes memory and time limitations.
 			 */
 			public function maximize_time_memory_limits()
@@ -529,11 +547,12 @@ namespace websharks_core_v000000_dev
 				{
 					if(!$this->is_cron_job())
 						throw $this->©exception(
-							__METHOD__.'#not_cron_job', get_defined_vars(),
+							$this->method(__FUNCTION__).'#not_cron_job', get_defined_vars(),
 							$this->i18n('NOT a CRON job.')
 						);
 					$this->ignore_user_abort();
 					$this->maximize_time_memory_limits();
+					$this->increase_db_wait_timeout(900);
 				}
 
 			/**
@@ -543,13 +562,15 @@ namespace websharks_core_v000000_dev
 				{
 					if(!$this->is_cli())
 						throw $this->©exception(
-							__METHOD__.'#not_cli', get_defined_vars(),
+							$this->method(__FUNCTION__).'#not_cli', get_defined_vars(),
 							$this->i18n('NOT a command-line interface.')
 						);
 					$this->enable_all_error_reporting();
+
 					$this->ob_end_clean();
 					$this->ignore_user_abort();
 					$this->maximize_time_memory_limits();
+					$this->increase_db_wait_timeout(900);
 				}
 
 			/**

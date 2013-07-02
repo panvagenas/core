@@ -25,17 +25,6 @@ namespace websharks_core_v000000_dev
 		class db_utils extends framework
 		{
 			/**
-			 * @var array Array of CRON jobs associated with this class.
-			 */
-			public $cron_jobs = array
-			(
-				array(
-					'©class.method' => '©db_utils.cleanup_expired_transients',
-					'schedule'      => 'daily'
-				)
-			);
-
-			/**
 			 * Handles loading sequence.
 			 *
 			 * @attaches-to WordPress® `wp_loaded` action hook.
@@ -51,12 +40,24 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * @var array Array of CRON jobs associated with this class.
+			 */
+			public $cron_jobs = array
+			(
+				array(
+					'©class.method' =>
+					'©db_utils.cleanup_expired_transients',
+					'schedule'      => 'daily'
+				)
+			);
+
+			/**
 			 * Prepares meta names/values.
 			 *
 			 * @param mixed $value Any mixed data value is fine.
 			 *
 			 * @note Very important for this routine to ALLOW empty values.
-			 *    Sometimes meta values are suppose to be empty.
+			 *    Sometimes meta values are supposed to be empty (e.g. empty on purpose).
 			 *
 			 * @return array Array of name/value pairs (the array is NEVER empty).
 			 *
@@ -182,8 +183,9 @@ namespace websharks_core_v000000_dev
 
 					$cache =& $this->cache[__FUNCTION__][$table][$rel_id_column][$rel_id]; // Shorter reference for use below.
 
-					// We do NOT cache queries that require all name/value pairs; as this could lead to memory issues.
-					// If caching needs to occur against queries for ALL meta name/value pairs; it should be implemented separately.
+					// CAUTION: We do NOT cache queries that require all name/value pairs; as this could lead to memory issues.
+					// If caching needs to occur against queries for ALL meta name/value pairs; please implement separately.
+
 					if($names === $this::all) // We need to query for ALL names automatically in this case?
 						{
 							$values = array(); // Initialize.
@@ -207,8 +209,6 @@ namespace websharks_core_v000000_dev
 
 							return $values; // All name/value pairs.
 						}
-					// Handle all other meta value queries here (w/ caching enabled).
-
 					$query_names           = array();
 					$is_single_string_name = FALSE;
 
@@ -220,8 +220,8 @@ namespace websharks_core_v000000_dev
 					foreach(($names = array_unique($names)) as $_name)
 						{
 							if(!$this->©string->is_not_empty($_name))
-								throw $this->©exception(
-									__METHOD__.'#invalid_name', get_defined_vars(),
+								throw $this->©exception( // Should NOT happen.
+									$this->method(__FUNCTION__).'#invalid_name', get_defined_vars(),
 									$this->i18n('Expecting a non-empty string `$_name` value.').
 									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
 								);
@@ -235,7 +235,7 @@ namespace websharks_core_v000000_dev
 
 					if($query_names) // Some we don't have yet?
 						{
-							$query =
+							$query = // This WILL be cached (as seen below).
 								"SELECT".
 								" `".$this->©string->esc_sql($table)."`.`name`,".
 								" `".$this->©string->esc_sql($table)."`.`value`".
@@ -252,8 +252,7 @@ namespace websharks_core_v000000_dev
 									$cache[$_result->name] = maybe_unserialize($_result->value);
 							unset($_result); // A little housekeeping.
 						}
-					if(count($names) === 1 && $is_single_string_name)
-						return $cache[$names[0]]; // Single value.
+					if($is_single_string_name) return $cache[$names[0]]; // Single value.
 
 					return $this->©array->compile_key_elements_deep($cache, $names, TRUE, 1);
 				}
@@ -281,7 +280,7 @@ namespace websharks_core_v000000_dev
 						{
 							if(!$this->©string->is_not_empty($_name))
 								throw $this->©exception(
-									__METHOD__.'#invalid_name', get_defined_vars(),
+									$this->method(__FUNCTION__).'#invalid_name', get_defined_vars(),
 									$this->i18n('Expecting a non-empty string `$_name` value.').
 									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
 								);
@@ -289,11 +288,7 @@ namespace websharks_core_v000000_dev
 						}
 					unset($_name, $_value); // A little housekeeping.
 
-					return (integer)$this->©db->query(
-						$this->©db_utils->prep_metafy_query(
-							$table, $rel_id_column, $rel_id, $values, TRUE
-						)
-					);
+					return (integer)$this->©db->query($this->©db_utils->prep_metafy_query($table, $rel_id_column, $rel_id, $values, TRUE));
 				}
 
 			/**
@@ -319,7 +314,7 @@ namespace websharks_core_v000000_dev
 						{
 							if(!$this->©string->is_not_empty($_name))
 								throw $this->©exception(
-									__METHOD__.'#invalid_name', get_defined_vars(),
+									$this->method(__FUNCTION__).'#invalid_name', get_defined_vars(),
 									$this->i18n('Expecting a non-empty string key `$_name` value.').
 									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
 								);
@@ -327,11 +322,7 @@ namespace websharks_core_v000000_dev
 						}
 					unset($_name, $_value); // A little housekeeping.
 
-					return (integer)$this->©db->query(
-						$this->©db_utils->prep_metafy_query(
-							$table, $rel_id_column, $rel_id, $values, FALSE
-						)
-					);
+					return (integer)$this->©db->query($this->©db_utils->prep_metafy_query($table, $rel_id_column, $rel_id, $values, FALSE));
 				}
 
 			/**
@@ -379,7 +370,7 @@ namespace websharks_core_v000000_dev
 						{
 							if(!$this->©string->is_not_empty($_name))
 								throw $this->©exception(
-									__METHOD__.'#invalid_name', get_defined_vars(),
+									$this->method(__FUNCTION__).'#invalid_name', get_defined_vars(),
 									$this->i18n('Expecting a non-empty string `$_name` value.').
 									sprintf($this->i18n(' Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
 								);
@@ -412,6 +403,8 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return string A comma-delimited, single-quoted array of values, for an SQL query.
 			 *
+			 * @note It is VERY important for this routine to preserve the order of the input array.
+			 *
 			 * @assert (array('hello', 'there')) === "'hello','there'"
 			 */
 			public function comma_quotify($array, $convert_nulls_no_esc_wrap = FALSE)
@@ -430,6 +423,8 @@ namespace websharks_core_v000000_dev
 			 * @param array $array An array of values (ONE dimension only here).
 			 *
 			 * @return string A comma-delimited, backticked array of values, for an SQL query.
+			 *
+			 * @note It is VERY important for this routine to preserve the order of the input array.
 			 *
 			 * @assert (array('hello', 'there')) === "`hello`,`there`"
 			 */
@@ -491,22 +486,22 @@ namespace websharks_core_v000000_dev
 					);
 					if(!is_file($sql_file))
 						throw $this->©exception(
-							__METHOD__.'#nonexistent_sql_file', get_defined_vars(),
+							$this->method(__FUNCTION__).'#nonexistent_sql_file', get_defined_vars(),
 							sprintf($this->i18n('Nonexistent SQL file: `%1$s`.'), $sql_file)
 						);
 					if($this->©file->extension($sql_file) !== 'sql')
 						throw $this->©exception(
-							__METHOD__.'#invalid_sql_file_extension', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_sql_file_extension', get_defined_vars(),
 							sprintf($this->i18n('Invalid SQL file extension: `%1$s`.'), $sql_file)
 						);
 					if(!is_string($query = file_get_contents($sql_file)))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							sprintf($this->i18n('Unable to read SQL file: `%1$s`.'), $sql_file)
 						);
 					if(!is_string($query = preg_replace($replace, $with, $query)))
 						throw $this->©exception(
-							__METHOD__.'#preparation_failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#preparation_failure', get_defined_vars(),
 							sprintf($this->i18n('Unable to prepare queries from SQL file: `%1$s`.'), $sql_file)
 						);
 					$queries = preg_split('/;$/m', $query, NULL, PREG_SPLIT_NO_EMPTY);
@@ -587,7 +582,7 @@ namespace websharks_core_v000000_dev
 
 					if(!preg_match('/^SELECT\s+/i', $query))
 						throw $this->©exception(
-							__METHOD__.'#invalid_query', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_query', get_defined_vars(),
 							$this->i18n('Cannot get `FOUND_ROWS()` (missing `SELECT` statement).').
 							sprintf($this->i18n(' This `$query` is NOT a `SELECT` statement: `%1$s`.'), $query)
 						);
@@ -768,11 +763,9 @@ namespace websharks_core_v000000_dev
 					$transient_prefix         = '_'.$this->___instance_config->plugin_prefix.'transient_';
 					$transient_timeout_prefix = '_'.$this->___instance_config->plugin_prefix.'transient_timeout_';
 
-					if(!$confirmation)
-						return 0; // Added security.
+					if(!$confirmation) return 0; // Added security.
 
 					$query = // Purge all transients (for the current plugin).
-
 						"DELETE".
 						" `transients`".
 
@@ -803,8 +796,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if(!$confirmation)
-						return 0; // Added security.
+					if(!$confirmation) return 0; // Added security.
 
 					return $this->©crons->delete(TRUE, $this->cron_jobs);
 				}
@@ -826,8 +818,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if(!$confirmation)
-						return FALSE; // Added security.
+					if(!$confirmation) return FALSE; // Added security.
 
 					$this->cleanup_expired_transients();
 					$this->delete_cron_jobs(TRUE);
@@ -852,8 +843,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('boolean', func_get_args());
 
-					if(!$confirmation)
-						return FALSE; // Added security.
+					if(!$confirmation) return FALSE; // Added security.
 
 					$this->delete_transients(TRUE);
 					$this->delete_cron_jobs(TRUE);

@@ -127,7 +127,7 @@ namespace websharks_core_v000000_dev
 					// Otherwise, let's do a little explaining here.
 
 					throw $this->©exception(
-						__METHOD__.'#eval_missing', get_defined_vars(),
+						$this->method(__FUNCTION__).'#eval_missing', get_defined_vars(),
 						$this->i18n( // Let's do a little explaining here. Why do we NEED ``eval()``?
 							'The PHP `eval()` function (an application requirement) has been disabled on this server.'.
 							' Please check with your hosting provider to resolve this issue and have the PHP `eval()` function enabled.').

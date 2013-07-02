@@ -102,7 +102,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->©string->¤is_not_empty($doc_root = $this->©vars->_SERVER('DOCUMENT_ROOT')))
 						throw $this->©exception(
-							__METHOD__.'#doc_root_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#doc_root_missing', get_defined_vars(),
 							$this->i18n('Invalid and/or empty `DOCUMENT_ROOT` (expecting string NOT empty).')
 						);
 					return $this->rel_path($doc_root, $to_dir_file, $try_realpaths, $use_win_diff_drive_jctn);
@@ -211,7 +211,7 @@ namespace websharks_core_v000000_dev
 															unset($_exception); // Housekeeping.
 														}
 													if(!$_jctn) throw $this->©exception(
-														__METHOD__.'#windows_drive', get_defined_vars(),
+														$this->method(__FUNCTION__).'#windows_drive', get_defined_vars(),
 														$this->i18n('Unable to generate a relative path across different Windows® drives.').
 														sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $_from_drive_jctn, $_to_drive.':/')
 													);
@@ -223,7 +223,7 @@ namespace websharks_core_v000000_dev
 								}
 							else if(isset($_from_drive, $_to_drive) && $_from_drive !== $_to_drive)
 								throw $this->©exception(
-									__METHOD__.'#windows_drive', get_defined_vars(),
+									$this->method(__FUNCTION__).'#windows_drive', get_defined_vars(),
 									$this->i18n('Unable to generate a relative path across different Windows® drives.').
 									sprintf($this->i18n(' Drive from: `%1$s`, drive to: `%2$s`.'), $_from_drive.':/', $_to_drive.':/')
 								);
@@ -285,7 +285,7 @@ namespace websharks_core_v000000_dev
 					unset($_dir); // Housekeeping.
 
 					throw $this->©exception(
-						__METHOD__.'#dir_file_missing', get_defined_vars(),
+						$this->method(__FUNCTION__).'#dir_file_missing', get_defined_vars(),
 						sprintf($this->i18n('Unable to locate template directory/file: `%1$s`.'), $dir_file)
 					);
 				}
@@ -560,23 +560,23 @@ namespace websharks_core_v000000_dev
 
 					if($flags & $this::glob_nocheck)
 						throw $this->©exception( // NOT possible on some systems.
-							__METHOD__.'#glob_nocheck_not_possible', get_defined_vars(),
+							$this->method(__FUNCTION__).'#glob_nocheck_not_possible', get_defined_vars(),
 							$this->i18n('The `glob_nocheck` flag is NOT supported here.')
 						);
 					if($flags & $this::glob_period && !($flags & $this::glob_brace))
 						throw $this->©exception( // NOT possible on some systems.
-							__METHOD__.'#glob_period_not_possible_w/o_glob_brace', get_defined_vars(),
+							$this->method(__FUNCTION__).'#glob_period_not_possible_w/o_glob_brace', get_defined_vars(),
 							$this->i18n('The `glob_brace` flag is missing; it\'s required for `glob_period`.')
 						);
 					if(!$this->©function->is_possible('glob'))
 						throw $this->©exception( // NOT possible.
-							__METHOD__.'#glob_not_possible', get_defined_vars(),
+							$this->method(__FUNCTION__).'#glob_not_possible', get_defined_vars(),
 							$this->i18n('Compatibility issue. The `glob()` PHP function is NOT supported by this server.').
 							$this->i18n(' If you\'re running an old Sun-OS server, please upgrade to the latest release.')
 						);
 					if(!defined('GLOB_AVAILABLE_FLAGS') || !defined('GLOB_BRACE') || !(GLOB_AVAILABLE_FLAGS & GLOB_BRACE))
 						throw $this->©exception( // NOT possible on some systems.
-							__METHOD__.'#glob_brace_not_possible', get_defined_vars(),
+							$this->method(__FUNCTION__).'#glob_brace_not_possible', get_defined_vars(),
 							$this->i18n('Compatibility issue. The `GLOB_BRACE` flag is NOT supported by this server.').
 							$this->i18n(' `GLOB_BRACE` is NOT compatible w/ Solaris and other non-GNU servers.')
 						);

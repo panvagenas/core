@@ -1027,7 +1027,7 @@ namespace websharks_core_v000000_dev
 							$property = (string)$property;
 
 							throw new exception(
-								$this, __METHOD__.'#read_only_magic_property_error_via____set()', get_defined_vars(),
+								$this, $this->method(__FUNCTION__).'#read_only_magic_property_error_via____set()', get_defined_vars(),
 								sprintf($this->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
 								sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 							);
@@ -1056,7 +1056,7 @@ namespace websharks_core_v000000_dev
 							$property = (string)$property;
 
 							throw new exception(
-								$this, __METHOD__.'#read_only_magic_property_error_via____unset()', get_defined_vars(),
+								$this, $this->method(__FUNCTION__).'#read_only_magic_property_error_via____unset()', get_defined_vars(),
 								sprintf($this->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
 								sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 							);
@@ -1191,11 +1191,11 @@ namespace websharks_core_v000000_dev
 
 							if($©strpos === FALSE && strpos($property, "\xa9") !== FALSE) // 1-byte `©` symbol?
 								throw new exception( // Detailed error; this is HARD to figure out when it happens.
-									$this, __METHOD__.'#undefined_magic_property_error_via__get()', get_defined_vars(),
+									$this, $this->method(__FUNCTION__).'#undefined_magic_property_error_via__get()', get_defined_vars(),
 									sprintf($this->i18n('Undefined property: `%1$s`. Possible issue with encoding.'), $property).
 									$this->i18n(' Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
 								);
-							throw new exception($this, __METHOD__.'#undefined_magic_property_error_via__get()', get_defined_vars(),
+							throw new exception($this, $this->method(__FUNCTION__).'#undefined_magic_property_error_via__get()', get_defined_vars(),
 							                    sprintf($this->i18n('Undefined property: `%1$s`.'), $property)
 							);
 						}
@@ -1348,11 +1348,11 @@ namespace websharks_core_v000000_dev
 								}
 							if($©strpos === FALSE && strpos($method, "\xa9") !== FALSE) // 1 byte `©` symbol?
 								throw new exception( // Detailed error; this is HARD to figure out when it happens.
-									$this, __METHOD__.'#undefined_magic_method_error_via__call()', get_defined_vars(),
+									$this, $this->method(__FUNCTION__).'#undefined_magic_method_error_via__call()', get_defined_vars(),
 									sprintf($this->i18n('Undefined method: `%1$s`. Possible issue with encoding.'), $method).
 									$this->i18n(' Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
 								);
-							throw new exception($this, __METHOD__.'#undefined_magic_method_error_via__call()', get_defined_vars(),
+							throw new exception($this, $this->method(__FUNCTION__).'#undefined_magic_method_error_via__call()', get_defined_vars(),
 							                    sprintf($this->i18n('Undefined method: `%1$s`.'), $method)
 							);
 						}
@@ -1503,7 +1503,7 @@ namespace websharks_core_v000000_dev
 								// However, this CAN be useful in certain scenarios, where we want to absolutely enforce required arguments.
 								{
 									throw $this->©exception(
-										__METHOD__.'#args_missing', compact('arg_type_hints', 'args', 'required_args'),
+										$this->method(__FUNCTION__).'#args_missing', compact('arg_type_hints', 'args', 'required_args'),
 										sprintf($this->i18n('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
 										        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $required_args, $total_args).
 										sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args))
@@ -1715,7 +1715,7 @@ namespace websharks_core_v000000_dev
 									$type_given = (is_object($problem['value'])) ? get_class($problem['value']) : gettype($problem['value']);
 
 									throw $this->©exception(
-										__METHOD__.'#invalid_args', compact('arg_type_hints', 'args', 'required_args'),
+										$this->method(__FUNCTION__).'#invalid_args', compact('arg_type_hints', 'args', 'required_args'),
 										sprintf($this->i18n('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
 										        $position, $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $types, $empty, $type_given).
 										sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args))
@@ -1801,7 +1801,7 @@ namespace websharks_core_v000000_dev
 									) // Missing a required argument (e.g. key is missing completely).
 										{
 											throw $this->©exception(
-												__METHOD__.'#args_missing', get_defined_vars(),
+												$this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
 												sprintf($this->i18n('`%1$s` requires missing argument `%2$s`.'),
 												        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $_default_arg_key).
 												sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args))
@@ -1848,6 +1848,7 @@ namespace websharks_core_v000000_dev
 					 *    Each property MUST already exist, and value types MUST match up.
 					 *
 					 * @throws exception If invalid types are passed through arguments list.
+					 * @throws exception If attempting to set a special property (e.g. `___*`).
 					 * @throws exception If attempting to set an undefined property (i.e. non-existent).
 					 * @throws exception If attempting to set a property value, which has a different value type.
 					 *    Properties with an existing NULL value, are an exception to this rule.
@@ -1855,8 +1856,6 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @final May NOT be overridden by extenders.
 					 * @public Available for public usage.
-					 *
-					 * @assert (array('___instance_config' => $this->object->___instance_config)) === TRUE
 					 */
 					final public function set_properties($properties = array())
 						{
@@ -1864,20 +1863,45 @@ namespace websharks_core_v000000_dev
 
 							foreach($properties as $_property => $_value)
 								{
+									if(strpos($_property, '___') === 0)
+										throw $this->©exception( // Do NOT allow special properties here.
+											$this->method(__FUNCTION__).'#special_property', get_defined_vars(),
+											sprintf($this->i18n('Attempting to set special property: `%1$s`.'), $_property)
+										);
 									if(!property_exists($this, $_property))
 										throw $this->©exception( // NOT already defined.
-											__METHOD__.'#nonexistent_property', get_defined_vars(),
+											$this->method(__FUNCTION__).'#nonexistent_property', get_defined_vars(),
 											sprintf($this->i18n('Attempting to set nonexistent property: `%1$s`.'), $_property)
 										);
 									if(!is_null($this->$_property) && gettype($_value) !== gettype($this->$_property))
 										throw $this->©exception( // Invalid property type.
-											__METHOD__.'#invalid_property_type', get_defined_vars(),
+											$this->method(__FUNCTION__).'#invalid_property_type', get_defined_vars(),
 											sprintf($this->i18n('Property type mismatch for property name: `%1$s`.'), $_property).
 											sprintf($this->i18n(' Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
 										);
 									$this->$_property = $_value; // Sets/updates existing property value.
 								}
 							unset($_property, $_value); // A little housekeeping.
+						}
+
+					/**
+					 * Gets `__METHOD__` for current class.
+					 *
+					 * @param string $function Pass `__FUNCTION__` from another method.
+					 *    Current class is prepended to this (very much like `__METHOD__`).
+					 *
+					 * @return string `__METHOD__` for current class; i.e. ``get_class($this)``.
+					 *
+					 * @throws exception If invalid types are passed through arguments list.
+					 *
+					 * @final May NOT be overridden by extenders.
+					 * @public Available for public usage.
+					 */
+					final public function method($function)
+						{
+							$function = (string)$function; // Force string.
+
+							return $this->___instance_config->ns_class.'::'.$function;
 						}
 
 					# --------------------------------------------------------------------------------------------------------------------------

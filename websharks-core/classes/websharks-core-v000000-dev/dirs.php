@@ -132,19 +132,19 @@ namespace websharks_core_v000000_dev
 
 					if(!$is_target_dir)
 						throw $this->©exception(
-							__METHOD__.'#target_not_dir', get_defined_vars(),
+							$this->method(__FUNCTION__).'#target_not_dir', get_defined_vars(),
 							$this->i18n('Unable to create a Windows® Directory Junction. Invalid target.').
 							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target)
 						);
 					else if(!$this->©commands->windows_possible())
 						throw $this->©exception(
-							__METHOD__.'#not_possible', get_defined_vars(),
+							$this->method(__FUNCTION__).'#not_possible', get_defined_vars(),
 							$this->i18n('Not possible to create a Windows® Directory Junction.').
 							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target)
 						);
 					else if(!$this->delete_win_jctn($jctn))
 						throw $this->©exception(
-							__METHOD__.'#jctn_exists', get_defined_vars(),
+							$this->method(__FUNCTION__).'#jctn_exists', get_defined_vars(),
 							$this->i18n('Unable to create a Windows® Directory Junction. Already exists.').
 							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target)
 						);
@@ -157,7 +157,7 @@ namespace websharks_core_v000000_dev
 
 					if($mklink_status !== 0 || $mklink_errors->exist())
 						throw $this->©exception(
-							__METHOD__.'#issue', get_defined_vars(),
+							$this->method(__FUNCTION__).'#issue', get_defined_vars(),
 							$this->i18n('Failed to create a Windows® Directory Junction.').
 							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target).
 							sprintf($this->i18n(' The command: `%1$s`, returned a non-zero status or error; `mklink` said: `%2$s`'),
@@ -167,7 +167,7 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($jctn)) // Now we test this again.
 						throw $this->©exception(
-							__METHOD__.'#failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							$this->i18n('Failed to create a Windows® Directory Junction.').
 							sprintf($this->i18n(' Please create a Directory Junction here: `%1$s`, pointing to: `%2$s`.'), $jctn, $target)
 						);
@@ -201,33 +201,33 @@ namespace websharks_core_v000000_dev
 
 					if($is_jctn_file)
 						throw $this->©exception(
-							__METHOD__.'#file', get_defined_vars(),
+							$this->method(__FUNCTION__).'#file', get_defined_vars(),
 							$this->i18n('Unable to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' This is NOT a Directory Junction (it\'s a file): `%1$s`.'), $jctn)
 						);
 					else if(!$is_jctn_dir)
 						throw $this->©exception(
-							__METHOD__.'#not_dir', get_defined_vars(),
+							$this->method(__FUNCTION__).'#not_dir', get_defined_vars(),
 							$this->i18n('Unable to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' This is NOT a Directory Junction: `%1$s`.'), $jctn)
 						);
 					else if(!$is_jctn_link)
 						throw $this->©exception(
-							__METHOD__.'#not_link', get_defined_vars(),
+							$this->method(__FUNCTION__).'#not_link', get_defined_vars(),
 							$this->i18n('Unable to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' This is NOT a Directory Junction: `%1$s`.'), $jctn)
 						);
 
 					if(!is_writable($jctn))
 						throw $this->©exception(
-							__METHOD__.'#permissions', get_defined_vars(),
+							$this->method(__FUNCTION__).'#permissions', get_defined_vars(),
 							$this->i18n('Unable to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' This Directory Junction is NOT writable: `%1$s`.'), $jctn)
 						);
 
 					if(!$this->©commands->windows_possible())
 						throw $this->©exception(
-							__METHOD__.'#not_possible', get_defined_vars(),
+							$this->method(__FUNCTION__).'#not_possible', get_defined_vars(),
 							$this->i18n('Not possible to delete a Windows® Directory Junction.').
 							sprintf($this->i18n(' Please delete this Directory Junction: `%1$s`.'), $jctn)
 						);
@@ -240,7 +240,7 @@ namespace websharks_core_v000000_dev
 
 					if($rmdir_status !== 0 || $rmdir_errors->exist())
 						throw $this->©exception(
-							__METHOD__.'#issue', get_defined_vars(),
+							$this->method(__FUNCTION__).'#issue', get_defined_vars(),
 							sprintf($this->i18n('The command: `%1$s`, returned a non-zero status or error. Rmdir said: `%2$s`'),
 							        $rmdir_args, $rmdir_errors->get_message())
 						);
@@ -282,7 +282,7 @@ namespace websharks_core_v000000_dev
 
 					if(!$dir || !is_dir($dir) || !is_readable($dir) || !($handle = opendir($dir)))
 						throw $this->©exception(
-							__METHOD__.'#cannot_read_dir', NULL,
+							$this->method(__FUNCTION__).'#cannot_read_dir', NULL,
 							sprintf($this->i18n('Unable to read directory: `%1$s`'), $dir)
 						);
 
@@ -304,12 +304,12 @@ namespace websharks_core_v000000_dev
 						{
 							if(!is_file($dir.'/checksum.txt') && !is_writable($dir))
 								throw $this->©exception(
-									__METHOD__.'#permission_issue', get_defined_vars(),
+									$this->method(__FUNCTION__).'#permission_issue', get_defined_vars(),
 									sprintf($this->i18n('Need this directory to be writable: `%1$s`'), $dir)
 								);
 							if(is_file($dir.'/checksum.txt') && !is_writable($dir.'/checksum.txt'))
 								throw $this->©exception(
-									__METHOD__.'#permission_issue', get_defined_vars(),
+									$this->method(__FUNCTION__).'#permission_issue', get_defined_vars(),
 									sprintf($this->i18n('Need this file to be writable: `%1$s`'), $dir.'/checksum.txt')
 								);
 							file_put_contents($dir.'/checksum.txt', $checksum);
@@ -343,7 +343,7 @@ namespace websharks_core_v000000_dev
 
 					if(!in_array($type, array($this::public_type, $this::private_type), TRUE))
 						throw $this->©exception(
-							__METHOD__.'#invalid_type', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
 							$this->i18n('Invalid cache type sub-directory. Expecting class contant for public or private type.').
 							sprintf($this->i18n(' Instead got: `%1$s`.'), $type)
 						);
@@ -353,7 +353,7 @@ namespace websharks_core_v000000_dev
 						{
 							if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
 								throw $this->©exception(
-									__METHOD__.'#relative_paths', get_defined_vars(),
+									$this->method(__FUNCTION__).'#relative_paths', get_defined_vars(),
 									$this->i18n('Expecting a sub-directory with NO relative paths.').
 									sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
 								);
@@ -374,7 +374,7 @@ namespace websharks_core_v000000_dev
 
 							if(!is_dir($cache_type_sub_dir) || !is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
 								throw $this->©exception(
-									__METHOD__.'#read_write_issues', get_defined_vars(),
+									$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 									$this->i18n('Unable to create a readable/writable cache type sub-directory.').
 									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
 								);
@@ -387,7 +387,7 @@ namespace websharks_core_v000000_dev
 
 					else if(!is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to find a readable/writable cache type sub-directory.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
 						);
@@ -450,7 +450,7 @@ namespace websharks_core_v000000_dev
 
 					if(!in_array($type, array($this::public_type, $this::private_type), TRUE))
 						throw $this->©exception(
-							__METHOD__.'#invalid_type', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
 							$this->i18n('Invalid log type sub-directory. Expecting class contant for public or private type.').
 							sprintf($this->i18n(' Instead got: `%1$s`.'), $type)
 						);
@@ -460,7 +460,7 @@ namespace websharks_core_v000000_dev
 						{
 							if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
 								throw $this->©exception(
-									__METHOD__.'#relative_paths', get_defined_vars(),
+									$this->method(__FUNCTION__).'#relative_paths', get_defined_vars(),
 									$this->i18n('Expecting a sub-directory with NO relative paths.').
 									sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
 								);
@@ -482,7 +482,7 @@ namespace websharks_core_v000000_dev
 
 							if(!is_dir($log_type_sub_dir) || !is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
 								throw $this->©exception(
-									__METHOD__.'#read_write_issues', get_defined_vars(),
+									$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 									$this->i18n('Unable to create a readable/writable log type sub-directory.').
 									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
 								);
@@ -495,7 +495,7 @@ namespace websharks_core_v000000_dev
 
 					else if(!is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to find a readable/writable log type sub-directory.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
 						);
@@ -554,7 +554,7 @@ namespace websharks_core_v000000_dev
 						{
 							if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
 								throw $this->©exception(
-									__METHOD__.'#relative_paths', get_defined_vars(),
+									$this->method(__FUNCTION__).'#relative_paths', get_defined_vars(),
 									$this->i18n('Expecting a sub-directory with NO relative paths.').
 									sprintf($this->i18n(' Instead got: `%1$s`.'), $sub_dir)
 								);
@@ -576,7 +576,7 @@ namespace websharks_core_v000000_dev
 
 							if(!is_dir($media_sub_dir) || !is_readable($media_sub_dir) || !is_writable($media_sub_dir))
 								throw $this->©exception(
-									__METHOD__.'#read_write_issues', get_defined_vars(),
+									$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 									$this->i18n('Unable to create a private readable/writable `media` directory.').
 									sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_sub_dir)
 								);
@@ -589,7 +589,7 @@ namespace websharks_core_v000000_dev
 
 					else if(!is_readable($media_sub_dir) || !is_writable($media_sub_dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to find a private readable/writable media directory.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $media_sub_dir)
 						);
@@ -650,25 +650,25 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($dir))
 						throw $this->©exception(
-							__METHOD__.'#not_a_directory', get_defined_vars(),
+							$this->method(__FUNCTION__).'#not_a_directory', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; argument value is NOT a directory path.').
 							sprintf($this->i18n(' The invalid directory path given: `%1$s`.'), $dir)
 						);
 					if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; not readable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $dir)
 						);
 					if(!is_writable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; not writable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable/writable please: `%1$s`.'), $dir)
 						);
 					if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to remove a directory; cannot open, for some unknown reason.').
 							sprintf($this->i18n(' Make this directory readable/writable please: `%1$s`.'), $dir)
 						);
@@ -692,7 +692,7 @@ namespace websharks_core_v000000_dev
 					clearstatcache(); // This makes other routines aware. Very important to clear the cache.
 
 					if(!$rmdir) throw $this->©exception(
-						__METHOD__.'#possible_read_write_or_existing_resource_handle_issues', get_defined_vars(),
+						$this->method(__FUNCTION__).'#possible_read_write_or_existing_resource_handle_issues', get_defined_vars(),
 						sprintf($this->i18n('Unable to remove this directory: `%1$s`.'), $dir)
 					);
 					return TRUE; // It's a good day in Eureka!
@@ -837,32 +837,32 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($dir))
 						throw $this->©exception(
-							__METHOD__.'#source_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#source_dir_missing', get_defined_vars(),
 							$this->i18n('Unable to copy a directory (source `dir` missing).').
 							sprintf($this->i18n('Non-existent source directory: `%1$s`.'), $dir)
 						);
 					if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; not readable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 					if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; cannot open for some unknown reason.').
 							sprintf($this->i18n(' Make this directory readable please: `%1$s`.'), $dir)
 						);
 
 					if(file_exists($to))
 						throw $this->©exception(
-							__METHOD__.'#destination_to_exists', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_to_exists', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; destination already exists.').
 							sprintf($this->i18n(' Please delete this file or directory: `%1$s`.'), $to)
 						);
 					if(!is_writable($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; destination not writable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), $to_dir)
 						);
@@ -871,7 +871,7 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($to))
 						throw $this->©exception(
-							__METHOD__.'#mkdir_to_failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#mkdir_to_failure', get_defined_vars(),
 							$this->i18n('Unable to copy a directory; destination creation failure.').
 							sprintf($this->i18n(' Please create this directory: `%1$s`.'), $to)
 						);
@@ -903,24 +903,24 @@ namespace websharks_core_v000000_dev
 
 							if(!is_file($_gitignore_file))
 								throw $this->©exception(
-									__METHOD__.'#nonexistent_gitignore_file', get_defined_vars(),
+									$this->method(__FUNCTION__).'#nonexistent_gitignore_file', get_defined_vars(),
 									sprintf($this->i18n('Nonexistent `.gitignore` file: `%1$s`.'), $_gitignore_file)
 								);
 							if($_gitignore_dir !== $___initial_dir_dir)
 								throw $this->©exception(
-									__METHOD__.'#invalid_gitignore_file', get_defined_vars(),
+									$this->method(__FUNCTION__).'#invalid_gitignore_file', get_defined_vars(),
 									sprintf($this->i18n('Invalid `.gitignore` file: `%1$s`.'), $_gitignore_file).
 									sprintf($this->i18n('Your `.gitignore` file MUST exist here: `%1$s`.'), $___initial_dir_dir.'/.gitignore')
 								);
 							if(!$this->©command->git_possible())
 								throw $this->©exception(
-									__METHOD__.'#git_command_not_possible', get_defined_vars(),
+									$this->method(__FUNCTION__).'#git_command_not_possible', get_defined_vars(),
 									sprintf($this->i18n('You specified the following `.gitignore` file: `%1$s`.'), $_gitignore_file).
 									$this->i18n(' However, the `git` command is NOT possible in the current environment.')
 								);
 							if(isset($exclusion_x_flags) && $exclusion_x_flags !== FNM_CASEFOLD)
 								throw $this->©exception(
-									__METHOD__.'#gitignore_not_compatible_w/exclusion_x_flags', get_defined_vars(),
+									$this->method(__FUNCTION__).'#gitignore_not_compatible_w/exclusion_x_flags', get_defined_vars(),
 									sprintf($this->i18n('You specified the following `.gitignore` file: `%1$s`.'), $_gitignore_file).
 									$this->i18n(' You\'re attempting to mix `.gitignore` functionality w/ additional exclusion flags; which is NOT compatible.'),
 									$this->i18n(' The only additional exclusion flag supported together with `.gitignore` is the `FNM_CASEFOLD` flag.')
@@ -1016,57 +1016,57 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($dir))
 						throw $this->©exception(
-							__METHOD__.'#source_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#source_dir_missing', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory (source `dir` missing).').
 							sprintf($this->i18n('Non-existent source directory: `%1$s`.'), $dir)
 						);
 					if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; not readable, due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 
 					if(file_exists($to))
 						throw $this->©exception(
-							__METHOD__.'#existing_phar', get_defined_vars(),
+							$this->method(__FUNCTION__).'#existing_phar', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; destination PHAR file already exists.').
 							sprintf($this->i18n(' Please delete this file first: `%1$s`.'), $to)
 						);
 					if($this->extension($to) !== 'phar')
 						throw $this->©exception(
-							__METHOD__.'#invalid_phar_file', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_phar_file', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; invalid destination PHAR file.').
 							sprintf($this->i18n(' Please use a `.phar` extension instead of: `%1$s`.'), $to)
 						);
 					if(!is_dir($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#phar_to_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#phar_to_dir_missing', get_defined_vars(),
 							$this->i18n('Destination PHAR directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
 					if(!is_writable($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; destination not writable due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), $to_dir)
 						);
 					if(!\Phar::canWrite())
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; PHP configuration does NOT allow write access.').
 							$this->i18n(' Need this INI setting please: `phar.readonly = 0`.')
 						);
 
 					if(!is_file($stub_file))
 						throw $this->©exception(
-							__METHOD__.'#missing_stub_file', get_defined_vars(),
+							$this->method(__FUNCTION__).'#missing_stub_file', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; missing stub file.').
 							sprintf($this->i18n(' File does NOT exist: `%1$s`.'), $stub_file)
 						);
 					if(!is_readable($stub_file))
 						throw $this->©exception(
-							__METHOD__.'#stub_file_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#stub_file_issues', get_defined_vars(),
 							$this->i18n('Unable to PHAR a directory; permission issues with stub file.').
 							sprintf($this->i18n(' Need this file to be writable please: `%1$s`.'), $stub_file)
 						);
@@ -1163,38 +1163,38 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($dir))
 						throw $this->©exception(
-							__METHOD__.'#source_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#source_dir_missing', get_defined_vars(),
 							$this->i18n('Unable to ZIP a directory (source `dir` missing).').
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);
 					if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to ZIP a directory; not readable; due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 
 					if(file_exists($to))
 						throw $this->©exception(
-							__METHOD__.'#existing_zip', get_defined_vars(),
+							$this->method(__FUNCTION__).'#existing_zip', get_defined_vars(),
 							$this->i18n('Destination ZIP exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this ZIP archive: `%1$s`.'), $to)
 						);
 					if($this->extension($to) !== 'zip')
 						throw $this->©exception(
-							__METHOD__.'#invalid_zip', get_defined_vars(),
+							$this->method(__FUNCTION__).'#invalid_zip', get_defined_vars(),
 							$this->i18n('Invalid ZIP extension. The destination must end with `.zip`.').
 							sprintf($this->i18n(' Instead got: `%1$s`.'), $to)
 						);
 					if(!is_dir($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#zip_to_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#zip_to_dir_missing', get_defined_vars(),
 							$this->i18n('Destination ZIP directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
 					if(!is_writable($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#zip_to_dir_permissions', get_defined_vars(),
+							$this->method(__FUNCTION__).'#zip_to_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination ZIP directory is not writable.').
 							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
@@ -1202,7 +1202,7 @@ namespace websharks_core_v000000_dev
 					$archive = new \PclZip($to);
 					if(!$archive->create($dir, PCLZIP_OPT_REMOVE_PATH, $this->n_seps_up($dir)))
 						throw $this->©exception(
-							__METHOD__.'#pclzip_archive_failure#'.$archive->errorCode(), get_defined_vars(),
+							$this->method(__FUNCTION__).'#pclzip_archive_failure#'.$archive->errorCode(), get_defined_vars(),
 							sprintf($this->i18n('PclZip archive failure: `%1$s`.'), $archive->errorInfo(TRUE))
 						);
 					return $to; // It's a good day in Eureka!
@@ -1232,45 +1232,45 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($dir))
 						throw $this->©exception(
-							__METHOD__.'#source_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#source_dir_missing', get_defined_vars(),
 							$this->i18n('Unable to rename a directory (source `dir` missing).').
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);
 					if(!is_readable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to rename a directory; not readable; due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 					if(!is_writable($dir))
 						throw $this->©exception(
-							__METHOD__.'#read_write_issues', get_defined_vars(),
+							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 							$this->i18n('Unable to rename a directory; not writable; due to permission issues.').
 							sprintf($this->i18n(' Need this directory to be writable please: `%1$s`.'), $dir)
 						);
 
 					if(file_exists($to))
 						throw $this->©exception(
-							__METHOD__.'#destination_exists', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_exists', get_defined_vars(),
 							$this->i18n('Destination exists; it MUST first be deleted please.').
 							sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
 						);
 					if(!is_dir($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#destination_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_dir_missing', get_defined_vars(),
 							$this->i18n('Destination\'s parent directory does NOT exist yet.').
 							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
 					if(!is_writable($to_dir))
 						throw $this->©exception(
-							__METHOD__.'#destination_dir_permissions', get_defined_vars(),
+							$this->method(__FUNCTION__).'#destination_dir_permissions', get_defined_vars(),
 							$this->i18n('Destination\'s directory is not writable.').
 							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
 
 					if(!rename($dir, $to))
 						throw $this->©exception(
-							__METHOD__.'#rename_failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#rename_failure', get_defined_vars(),
 							sprintf($this->i18n('Rename failure. Could NOT rename: `%1$s`; to: `%2$s`.'), $dir, $to)
 						);
 					return $to; // It's a good day in Eureka!
@@ -1338,7 +1338,7 @@ namespace websharks_core_v000000_dev
 
 					if(!is_dir($dir = $this->n_seps($dir)))
 						throw $this->©exception(
-							__METHOD__.'#source_dir_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#source_dir_missing', get_defined_vars(),
 							$this->i18n('Unable to iterate a directory (source `dir` missing).').
 							sprintf($this->i18n(' Non-existent source directory: `%1$s`.'), $dir)
 						);

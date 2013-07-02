@@ -719,7 +719,7 @@ namespace websharks_core_v000000_dev
 
 									if(!$_xml_obj || !($_xml_obj instanceof \SimpleXMLElement)) // XML is corrupt?
 										throw $this->©exception(
-											__METHOD__.'#unparsable_xml_config', get_defined_vars(),
+											$this->method(__FUNCTION__).'#unparsable_xml_config', get_defined_vars(),
 											sprintf($this->i18n('Unparsable XML `<template-config>` in `%1$s`.'), $this->file).
 											$this->i18n(' Please be sure to encode XML entities (i.e. special chars).').
 											sprintf($this->i18n(' Got: `%1$s`.'), $_template_config)

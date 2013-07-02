@@ -166,33 +166,30 @@ namespace websharks_core_v000000_dev
 			 *    This is a required argument, but a NULL value is accepted here (that's fine).
 			 *
 			 * @param string $message Required diagnostic message (must NOT be empty).
-			 *
-			 * @return null Nothing. Simply logs diagnostics (if `WP_DEBUG_LOG` is enabled).
 			 */
 			public function wp_debug_log($code, $data, $message)
 				{
 					$this->check_arg_types('string:!empty', '', 'string:!empty', func_get_args());
 
-					if($this->wp_debug_log && $this->©env->is_in_wp_debug_log_mode())
-						{
-							$log_dir  = $this->©dir->log($this::private_type, 'debug');
-							$log_file = $this->©file->maybe_archive($log_dir.'/debug.log');
+					if(!$this->wp_debug_log || !$this->©env->is_in_wp_debug_log_mode())
+						return; // Logging NOT enabled. Stop here.
 
-							file_put_contents(
-								$log_file,
-								$this->i18n('— DIAGNOSTIC —')."\n".
-								$this->i18n('Diagnostic Type').': '.$this->type."\n".
-								$this->i18n('Diagnostic Code').': '.$code."\n".
-								$this->i18n('Diagnostic Time').': '.$this->©env->time_details()."\n".
-								$this->i18n('Memory Details').': '.$this->©env->memory_details()."\n".
-								$this->i18n('Version Details').': '.$this->©env->version_details()."\n".
-								$this->i18n('Current User ID').': '.$this->©user->ID."\n".
-								$this->i18n('Current User Email').': '.$this->©user->email."\n".
-								$this->i18n('Diagnostic Message').': '.$message."\n".
-								$this->i18n('Diagnostic Data (if applicable)').': '.$this->©var->dump($data)."\n\n",
-								FILE_APPEND
-							);
-						}
+					$log_dir  = $this->©dir->log($this::private_type, 'debug');
+					$log_file = $this->©file->maybe_archive($log_dir.'/debug.log');
+
+					file_put_contents( // Log this diagnostic!
+						$log_file, $this->i18n('— DIAGNOSTIC —')."\n".
+						           $this->i18n('Diagnostic Type').': '.$this->type."\n".
+						           $this->i18n('Diagnostic Code').': '.$code."\n".
+						           $this->i18n('Diagnostic Time').': '.$this->©env->time_details()."\n".
+						           $this->i18n('Memory Details').': '.$this->©env->memory_details()."\n".
+						           $this->i18n('Version Details').': '.$this->©env->version_details()."\n".
+						           $this->i18n('Current User ID').': '.$this->©user->ID."\n".
+						           $this->i18n('Current User Email').': '.$this->©user->email."\n".
+						           $this->i18n('Diagnostic Message').': '.$message."\n".
+						           $this->i18n('Diagnostic Data (if applicable)').': '.$this->©var->dump($data)."\n\n",
+						FILE_APPEND
+					);
 				}
 
 			/**
@@ -207,16 +204,12 @@ namespace websharks_core_v000000_dev
 			 *    This is a required argument, but a NULL value is accepted here (that's fine).
 			 *
 			 * @param string $message Required diagnostic message (must NOT be empty).
-			 *
-			 * @return null Nothing. Simply logs diagnostics into a database (if implemented).
 			 */
 			public function db_log($code, $data, $message)
 				{
 					$this->check_arg_types('string:!empty', '', 'string:!empty', func_get_args());
 
-					if($this->db_log)
-						{
-						}
+					if(!$this->db_log) return;
 				}
 
 			/**

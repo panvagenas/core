@@ -73,14 +73,14 @@ namespace websharks_core_v000000_dev\shortcodes
 						}
 					else if($has_content_else_tag && !$has_content_if_tag)
 						throw $this->©exception( // Has one but NOT the other.
-							__METHOD__.'#missing_content_if_tag', get_defined_vars(),
+							$this->method(__FUNCTION__).'#missing_content_if_tag', get_defined_vars(),
 							sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 							sprintf($this->i18n(' Missing {%1$s}{/%1$s} tag. You MUST provide BOTH {%1$s}{/%1$s} and {%2$s}{/%2$s} tags.'),
 							        $content_if_tag, $content_else_tag)
 						);
 					else if($has_content_if_tag && !$has_content_else_tag)
 						throw $this->©exception( // Has one but NOT the other.
-							__METHOD__.'#missing_content_else_tag', get_defined_vars(),
+							$this->method(__FUNCTION__).'#missing_content_else_tag', get_defined_vars(),
 							sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 							sprintf($this->i18n(' Missing {%2$s}{/%2$s} tag. You MUST provide BOTH {%1$s}{/%1$s} and {%2$s}{/%2$s} tags.'),
 							        $content_if_tag, $content_else_tag)
@@ -98,7 +98,7 @@ namespace websharks_core_v000000_dev\shortcodes
 
 								if(preg_match('/^[!=<>]+$/', $_attr_value))
 									throw $this->©exception( // Unsupported operator.
-										__METHOD__.'#unsupported_operator', get_defined_vars(),
+										$this->method(__FUNCTION__).'#unsupported_operator', get_defined_vars(),
 										sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 										$this->i18n(' Simple conditionals CANNOT process operators like (`==` `!=` `<>`). Please use `AND` / `OR` logic only.'.
 										            ' Or, you could use advanced PHP conditionals instead of shortcodes.'
@@ -110,7 +110,7 @@ namespace websharks_core_v000000_dev\shortcodes
 
 					if(count($attr_operators = array_unique($attr_operators)) > 1)
 						throw $this->©exception( // More than ONE operator!
-							__METHOD__.'#unsupported_operator_mix', get_defined_vars(),
+							$this->method(__FUNCTION__).'#unsupported_operator_mix', get_defined_vars(),
 							sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 							$this->i18n(' It\'s NOT possible to mix logic using an AND/OR combination. Please stick to one type of logic or another.'.
 							            ' If both types of logic are needed, you MUST use two different shortcode expressions.'.
@@ -129,7 +129,7 @@ namespace websharks_core_v000000_dev\shortcodes
 							// Parse and validate the overall expression.
 							if(!preg_match('/^(?P<negating>\!)?(?P<function>.+?)(?:\()(?P<args>.*?)(?:\))$/', $_attr_expression_value, $_expression))
 								throw $this->©exception(
-									__METHOD__.'#invalid_expression', get_defined_vars(),
+									$this->method(__FUNCTION__).'#invalid_expression', get_defined_vars(),
 									sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 									sprintf($this->i18n(' The following is an invalid expression: `%1$s`.'), $_attr_expression_value).
 									$this->i18n(' Please be sure to remove ALL spaces from your expression (for instance, remove spaces between arguments).').
@@ -145,7 +145,7 @@ namespace websharks_core_v000000_dev\shortcodes
 
 							if($restrict_functions && !$this->©string->in_wildcard_patterns($_function, $functions_allowed))
 								throw $this->©exception(
-									__METHOD__.'#function_not_allowed', get_defined_vars(),
+									$this->method(__FUNCTION__).'#function_not_allowed', get_defined_vars(),
 									sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 									sprintf($this->i18n(' The following function is NOT allowed in a shortcode (for security purposes): `%1$s`.'), $_function).
 									sprintf($this->i18n(' Functions allowed in shortcodes, are limited to: `%1$s`.'), $this->©var->dump($functions_allowed))
@@ -193,7 +193,7 @@ namespace websharks_core_v000000_dev\shortcodes
 
 							if(preg_match('/[$()]|new\s/i', serialize($_args)))
 								throw $this->©exception(
-									__METHOD__.'#argument_not_allowed', get_defined_vars(),
+									$this->method(__FUNCTION__).'#argument_not_allowed', get_defined_vars(),
 									sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
 									$this->i18n(' One of the following snippets appear in at least one function argument value: `$`, `(`, `)`, `new `.').
 									sprintf($this->i18n(' Please do NOT use a variable or expression as an argument value: `%1$s`.'), $this->©var->dump($_args))
@@ -242,16 +242,28 @@ namespace websharks_core_v000000_dev\shortcodes
 						// See: <http://www.s2member.com/codex/>.
 
 						'*::user_is_logged_in',
+						'*::user_is_populated',
 
 						'*::user_has_passtag',
 						'*::user_has_passtags',
 						'*::user_has_any_passtag',
+
+						'*::user_had_passtag',
+						'*::user_had_passtags',
+						'*::user_did_have_passtag',
+						'*::user_did_have_passtags',
+						'*::user_did_have_any_passtag',
+						'*::user_had_any_passtag',
 
 						'*::user_can_passtag',
 						'*::user_can_passtags',
 						'*::user_can_access_passtag',
 						'*::user_can_access_passtags',
 						'*::user_can_access_any_passtag',
+
+						'*::user_will_access_passtag',
+						'*::user_will_access_passtags',
+						'*::user_will_access_any_passtag',
 
 						// WordPress® core (conditional tags, e.g. functions).
 						// See: <http://codex.wordpress.org/Conditional_Tags>.

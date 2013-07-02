@@ -263,7 +263,7 @@ namespace websharks_core_v000000_dev
 
 					if(count($default_options) !== count($validators))
 						throw $this->©exception( // This helps us catch mistakes.
-							__METHOD__.'#options_mismatch_to_validators', get_defined_vars(),
+							$this->method(__FUNCTION__).'#options_mismatch_to_validators', get_defined_vars(),
 							$this->i18n('Options mismatch. If you add a new default option, please add a validator for it also.').
 							sprintf($this->i18n(' Got `%1$s` default options, `%2$s` validators. These should match up.'), count($default_options), count($validators))
 						);
@@ -319,7 +319,7 @@ namespace websharks_core_v000000_dev
 						return $this->apply_filters('get_'.$option_name, $this->options[$option_name]);
 
 					throw $this->©exception(
-						__METHOD__.'#unknown_option_name', get_defined_vars(),
+						$this->method(__FUNCTION__).'#unknown_option_name', get_defined_vars(),
 						sprintf($this->i18n('Unknown option name: `%1$s`.'), $option_name)
 					);
 				}
@@ -650,7 +650,7 @@ namespace websharks_core_v000000_dev
 
 												default: // Exception.
 													throw $this->©exception(
-														__METHOD__.'#unknown_validation_type', get_defined_vars(),
+														$this->method(__FUNCTION__).'#unknown_validation_type', get_defined_vars(),
 														sprintf($this->i18n('Unknown validation type: `%1$s`.'), $_validation_type)
 													);
 											}

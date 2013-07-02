@@ -105,7 +105,7 @@ namespace websharks_core_v000000_dev
 			 * Handles automatic cache purges.
 			 *
 			 * @attaches-to WordPress® `admin_init` hook.
-			 * @hook-priority `1`
+			 * @hook-priority `1` does fine.
 			 *
 			 * @assertion-via WordPress®.
 			 */

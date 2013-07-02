@@ -49,7 +49,7 @@ namespace websharks_core_v000000_dev
 
 					if(!strlen($key))
 						throw $this->©exception(
-							__METHOD__.'#key_missing', get_defined_vars(),
+							$this->method(__FUNCTION__).'#key_missing', get_defined_vars(),
 							$this->i18n('No encryption key.')
 						);
 					return $key; // It's a good day in Eureka!
@@ -124,7 +124,7 @@ namespace websharks_core_v000000_dev
 
 							if(!is_string($e = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $iv)) || !strlen($e))
 								throw $this->©exception(
-									__METHOD__.'#failure', get_defined_vars(),
+									$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 									$this->i18n('String encryption failed (`$e` is NOT string; or it has no length).')
 								);
 							$e = '~r2:'.$iv.(($w_md5_cs) ? ':'.md5($e) : '').'|'.$e;
@@ -192,7 +192,7 @@ namespace websharks_core_v000000_dev
 								{
 									if(!is_string($string = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $iv_md5_e['e'], MCRYPT_MODE_CBC, $iv_md5_e['iv'])) || !strlen($string))
 										throw $this->©exception(
-											__METHOD__.'#failure', get_defined_vars(),
+											$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 											$this->i18n('String decryption failed (`$string` is NOT a string; or it has no length).')
 										);
 									if(strlen($string = preg_replace('/^~r2\|/', '', $string, 1, $r2)) && $r2)
@@ -243,7 +243,7 @@ namespace websharks_core_v000000_dev
 
 					if(!strlen($e))
 						throw $this->©exception(
-							__METHOD__.'#failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							$this->i18n('String encryption failed (`$e` has no length).')
 						);
 					$e = '~xe'.(($w_md5_cs) ? ':'.md5($e) : '').'|'.$e;
@@ -315,7 +315,7 @@ namespace websharks_core_v000000_dev
 
 									if(!strlen($string))
 										throw $this->©exception(
-											__METHOD__.'#failure', get_defined_vars(),
+											$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 											$this->i18n('String decryption failed (`$string` has no length).')
 										);
 									if(strlen($string = preg_replace('/^~xe\|/', '', $string, 1, $xe)) && $xe)
@@ -371,7 +371,7 @@ namespace websharks_core_v000000_dev
 					else $windows_msg = ''; // No Windows® message otherwise.
 
 					throw $this->©exception(
-						__METHOD__.'#failure', get_defined_vars(),
+						$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 						$this->i18n( // Provide some detail here.
 							'Unable to generate an RSA-SHA1 signature.'.
 							' Please make sure your installation of PHP is compiled with the OpenSSL extension.'.

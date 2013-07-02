@@ -273,7 +273,7 @@ namespace websharks_core_v000000_dev
 					);
 					if(!is_array($response))
 						return $this->©error(
-							__METHOD__, get_defined_vars(),
+							$this->method(__FUNCTION__), get_defined_vars(),
 							sprintf($this->i18n('OAuth API call: `%1$s » %2$s`).'), $method, $url).
 							$this->i18n(' Connection failure.')
 						);
@@ -313,7 +313,7 @@ namespace websharks_core_v000000_dev
 							if($error_code) // Error is NOT permissible (we MUST fail).
 								{
 									return $this->©error(
-										__METHOD__, get_defined_vars(),
+										$this->method(__FUNCTION__), get_defined_vars(),
 										sprintf($this->i18n('OAuth API call: `%1$s » %2$s`).'), $method, $url).
 										sprintf($this->i18n(' Error code: `%1$s`.'), $error_code).
 										sprintf($this->i18n(' Message: `%1$s`.'), $error_message)
@@ -321,7 +321,7 @@ namespace websharks_core_v000000_dev
 								}
 						}
 					$this->©success(
-						__METHOD__, get_defined_vars(),
+						$this->method(__FUNCTION__), get_defined_vars(),
 						sprintf($this->i18n('OAuth API call: `%1$s » %2$s`).'), $method, $url).
 						$this->i18n(' Status: `success`.')
 					);

@@ -33,17 +33,6 @@ namespace websharks_core_v000000_dev
 			 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 			 *
 			 * @return boolean TRUE if the variable ``(isset() && is_string())``, else FALSE.
-			 *
-			 * @assert $string = '';
-			 *    ($string) === TRUE
-			 *
-			 * @assert $integer = 1;
-			 *    ($integer) === FALSE
-			 *
-			 * @assert $array = array();
-			 *    ($array) === FALSE
-			 *
-			 * @assert ($foo) === FALSE
 			 */
 			public function is(&$var)
 				{
@@ -77,23 +66,6 @@ namespace websharks_core_v000000_dev
 			 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 			 *
 			 * @return boolean TRUE if the variable is ``(!empty() && is_string())``, else FALSE.
-			 *
-			 * @assert $string = '';
-			 *    ($string) === FALSE
-			 *
-			 * @assert $string = '1';
-			 *    ($string) === TRUE
-			 *
-			 * @assert $integer = 1;
-			 *    ($integer) === FALSE
-			 *
-			 * @assert $array = array();
-			 *    ($array) === FALSE
-			 *
-			 * @assert $array = array(1);
-			 *    ($array) === FALSE
-			 *
-			 * @assert ($foo) === FALSE
 			 */
 			public function is_not_empty(&$var)
 				{
@@ -134,33 +106,6 @@ namespace websharks_core_v000000_dev
 			 *    Else returns ``$or`` (which could be any mixed data type — defaults to an empty string).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert $a = 'a';
-			 *    ($a) === 'a'
-			 * @assert $a = FALSE;
-			 *    ($a, 'b') === 'b'
-			 * @assert $zero = '0';
-			 *    ($zero) === '0'
-			 * @assert $NULL = NULL;
-			 *    ($NULL) === ''
-			 * @assert $_1 = 1;
-			 *    ($_1) === ''
-			 * @assert $empty_string = '';
-			 *    ($empty_string, 'a') === ''
-			 * @assert $TRUE = TRUE;
-			 *    ($TRUE, 'a') === 'a'
-			 * @assert $one = '1';
-			 *    ($one, '2') === '1'
-			 * @assert $false = FALSE;
-			 *    ($false, '1') === '1'
-			 *
-			 * @assert $empty_array = array();
-			 *    ($empty_array, '0') === '0'
-			 * @assert $array = array('2');
-			 *    ($array, '1') === '1'
-			 *
-			 * @assert ($foo, '') === ''
-			 * @assert ($foo, 'or') === 'or'
 			 */
 			public function isset_or(&$var, $or = '', $set_var = FALSE)
 				{
@@ -208,33 +153,6 @@ namespace websharks_core_v000000_dev
 			 *    Else returns ``$or`` (which could be any mixed data type — defaults to an empty string).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert $a = 'a';
-			 *    ($a) === 'a'
-			 * @assert $zero = '0';
-			 *    ($zero) === ''
-			 * @assert $zero = '0';
-			 *    ($zero, 'a') === 'a'
-			 * @assert $NULL = NULL;
-			 *    ($NULL) === ''
-			 * @assert $_1 = 1;
-			 *    ($_1) === ''
-			 * @assert $empty_string = '';
-			 *    ($empty_string, 'a') === 'a'
-			 * @assert $TRUE = TRUE;
-			 *    ($TRUE, 'a') === 'a'
-			 * @assert $one = '1';
-			 *    ($one, '2') === '1'
-			 * @assert $false = FALSE;
-			 *    ($false, '1') === '1'
-			 *
-			 * @assert $empty_array = array();
-			 *    ($empty_array, '0') === '0'
-			 * @assert $array = array('2');
-			 *    ($array, '1') === '1'
-			 *
-			 * @assert ($foo, '') === ''
-			 * @assert ($foo, 'or') === 'or'
 			 */
 			public function is_not_empty_or(&$var, $or = '', $set_var = FALSE)
 				{
@@ -304,23 +222,6 @@ namespace websharks_core_v000000_dev
 			 * @params-variable-length
 			 *
 			 * @return boolean TRUE if all arguments are strings, else FALSE.
-			 *
-			 * @assert $a = 'a';
-			 *    ($a, $b) === FALSE
-			 * @assert $a = new \stdClass();
-			 *    ($a, $b) === FALSE
-			 * @assert $_0 = 0; $c = new \stdClass();
-			 *    ($_0, $c) === FALSE
-			 * @assert $string1 = ''; $string2 = '2'; $string3 = '3';
-			 *    ($string1, $string2, $string3) === TRUE
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hello';
-			 *    ($obj, $obj, $obj) === FALSE
-			 * @assert $empty_array = array();
-			 *    ($empty_array) === FALSE
-			 * @assert $array = array('2');
-			 *    ($array) === FALSE
-			 *
-			 * @assert ($foo, $foo, $foo) === FALSE
 			 */
 			public function are_set(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 				{
@@ -387,21 +288,6 @@ namespace websharks_core_v000000_dev
 			 * @params-variable-length
 			 *
 			 * @return boolean TRUE if all arguments are strings, and they're NOT empty, else FALSE.
-			 *
-			 * @assert $a = 'a'; $b = 'b';
-			 *    ($a, $b) === TRUE
-			 * @assert $NULL = NULL;
-			 *    ($NULL) === FALSE
-			 * @assert $_1 = 1; $_2 = 2;
-			 *    ($_1, $_2) === FALSE
-			 * @assert $_1 = 1; $empty_string = '';
-			 *    ($_1, $empty_string) === FALSE
-			 * @assert $_1 = 1; $a = 'a'; $b = 'b'; $empty_string = '';
-			 *    ($_1, $a, $b, $empty_string) === FALSE
-			 * @assert $non_empty_string = '-'; $another_non_empty_string = '-';
-			 *    ($non_empty_string, $another_non_empty_string) === TRUE
-			 *
-			 * @assert ($foo, $foo, $foo) === FALSE
 			 */
 			public function are_not_empty(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 				{
@@ -476,39 +362,6 @@ namespace websharks_core_v000000_dev
 			 *    Can have multidimensional arrays/objects containing strings.
 			 *    Can have empty arrays; e.g. we consider these to be data containers.
 			 *    Can have empty objects; e.g. we consider these data containers.
-			 *
-			 * @assert $a = 'a'; $b = 'b';
-			 *    ($a, $b) === TRUE
-			 * @assert $NULL = NULL;
-			 *    ($NULL) === FALSE
-			 * @assert $_1 = 1; $_2 = 2;
-			 *    ($_1, $_2) === FALSE
-			 * @assert $_1 = 1; $empty_string = '';
-			 *    ($_1, $empty_string) === FALSE
-			 * @assert $_1 = 1; $a = 'a'; $b = 'b'; $empty_string = '';
-			 *    ($_1, $a, $b, $empty_string) === FALSE
-			 * @assert $non_empty_string = '-'; $another_non_empty_string = '-';
-			 *    ($non_empty_string, $another_non_empty_string) === TRUE
-			 *
-			 * @assert $a = 'a'; $b = 'b'; $c = array('c');
-			 *    ($a, $b, $c) === TRUE
-			 * @assert $a = 'a'; $b = 'b'; $c = array(TRUE);
-			 *    ($a, $b, $c) === FALSE
-			 * @assert $a = 'a'; $b = 'b'; $c = array('c', array('c', array('c', array('c'))));
-			 *    ($a, $b, $c) === TRUE
-			 * @assert $a = ''; $b = 'b'; $c = array('c', array('c', array('c', array('c'))));
-			 *    ($a, $b, $c) === FALSE
-			 * @assert $a = 'a'; $b = 'b'; $c = array('c', array('c', array('c', array(''))));
-			 *    ($a, $b, $c) === FALSE
-			 *
-			 * @assert $a = 'a'; $b = 'b'; $c = array('c', array('c', array('c', array('c')))); $d = new \stdClass(); $d->a = 'a';
-			 *    ($a, $b, $c, $d) === TRUE
-			 * @assert $a = 'a'; $b = 'b'; $c = array('c', array('c', array('c', array('c')))); $d = new \stdClass(); $d->a = '0';
-			 *    ($a, $b, $c, $d) === FALSE
-			 * @assert $a = 'a'; $b = 'b'; $c = array('c', array('c', array('c', array('c')))); $d = new \stdClass(); $d->a = '';
-			 *    ($a, $b, $c, $d) === FALSE
-			 *
-			 * @assert ($foo, $foo, $foo) === FALSE
 			 */
 			public function are_not_empty_in(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 				{
@@ -593,25 +446,6 @@ namespace websharks_core_v000000_dev
 			 * @params-variable-length
 			 *
 			 * @return string The first string argument that's NOT empty, else an empty string.
-			 *
-			 * @assert $a = 'a'; $b = 'b';
-			 *    ($a, $b) === 'a'
-			 * @assert $NULL = NULL;
-			 *    ($NULL) === ''
-			 * @assert $_1 = 1; $_2 = 2;
-			 *    ($_1, $_2) === ''
-			 * @assert $_1 = 1; $empty_string = '';
-			 *    ($_1, $empty_string) === ''
-			 * @assert $_1 = 1; $empty_string = ''; $a = 'a'; $b = 'b';
-			 *    ($_1, $empty_string, $a, $b) === 'a'
-			 * @assert $empty_string = ''; $another_empty_string = '';
-			 *    ($empty_string, $another_empty_string) === ''
-			 * @assert $empty_string = ''; $a = 'a'; $non_empty_string = '-';
-			 *    ($empty_string, $a, $non_empty_string) === 'a'
-			 * @assert $empty_string = ''; $another_empty_string = ''; $non_empty_string = '-';
-			 *    ($empty_string, $another_empty_string, $non_empty_string) === '-'
-			 *
-			 * @assert ($foo, $foo, $foo) === ''
 			 */
 			public function not_empty_coalesce(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 				{
@@ -678,25 +512,6 @@ namespace websharks_core_v000000_dev
 			 * @params-variable-length
 			 *
 			 * @return string The first string argument, else an empty string.
-			 *
-			 * @assert $a = 'a'; $b = 'b';
-			 *    ($a, $b) === 'a'
-			 * @assert $NULL = NULL;
-			 *    ($NULL) === ''
-			 * @assert $_1 = 1; $_2 = 2;
-			 *    ($_1, $_2) === ''
-			 * @assert $_1 = 1; $empty_string = '';
-			 *    ($_1, $empty_string) === ''
-			 * @assert $_1 = 1; $a = 'a'; $b = 'b'; $empty_string = '';
-			 *    ($_1, $a, $b, $empty_string) === 'a'
-			 * @assert $_1 = 1; $empty_string = ''; $another_empty_string = ''; $a = 'a';
-			 *    ($_1, $empty_string, $another_empty_string, $a) === ''
-			 * @assert $empty_string = ''; $another_empty_string = ''; $non_empty_string = '-';
-			 *    ($empty_string, $another_empty_string, $non_empty_string) === ''
-			 * @assert $empty_string = ''; $a = 'a'; $non_empty_string = '-';
-			 *    ($empty_string, $a, $non_empty_string) === ''
-			 *
-			 * @assert ($foo, $foo, $foo) === ''
 			 */
 			public function isset_coalesce(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 				{
@@ -733,33 +548,6 @@ namespace websharks_core_v000000_dev
 			 * @return boolean TRUE for: TRUE, 'TRUE', 'true', 1, '1', 'on', 'ON', 'yes', 'YES' — else FALSE.
 			 *    Any resource/object/array is of course NOT one of these values, and will always return FALSE.
 			 *    In other words, any value that is NOT scalar, is NOT TRUE.
-			 *
-			 * @assert ('a') === FALSE
-			 * @assert ('0') === FALSE
-			 * @assert (NULL) === FALSE
-			 * @assert (0) === FALSE
-			 * @assert (1) === TRUE
-			 * @assert ('') === FALSE
-			 * @assert (TRUE) === TRUE
-			 * @assert ('1') === TRUE
-			 * @assert ('yes') === TRUE
-			 * @assert ('YES') === TRUE
-			 * @assert ('false') === FALSE
-			 * @assert ('FALSE') === FALSE
-			 * @assert ('no') === FALSE
-			 * @assert ('NO') === FALSE
-			 * @assert ('off') === FALSE
-			 * @assert ('OFF') === FALSE
-			 * @assert ('on') === TRUE
-			 * @assert ('ON') === TRUE
-			 * @assert ('true') === TRUE
-			 * @assert ('TRUE') === TRUE
-			 * @assert (array()) === FALSE
-			 * @assert (array('hello' => 'hello')) === FALSE
-			 * @assert (new \stdClass()) === FALSE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hello';
-			 *    ($obj) === FALSE
 			 */
 			public function is_true($var)
 				{
@@ -777,33 +565,6 @@ namespace websharks_core_v000000_dev
 			 * @return boolean TRUE for anything that is (NOT): TRUE, 'TRUE', 'true', 1, '1', 'on', 'ON', 'yes', 'YES' — else FALSE.
 			 *    Any resource/object/array is of course NOT one of these values (which means it ``is_false()``).
 			 *    In other words, any value that is NOT scalar, is NOT TRUE.
-			 *
-			 * @assert ('a') === TRUE
-			 * @assert ('0') === TRUE
-			 * @assert (NULL) === TRUE
-			 * @assert (0) === TRUE
-			 * @assert (1) === FALSE
-			 * @assert ('') === TRUE
-			 * @assert (TRUE) === FALSE
-			 * @assert ('1') === FALSE
-			 * @assert ('yes') === FALSE
-			 * @assert ('YES') === FALSE
-			 * @assert ('false') === TRUE
-			 * @assert ('FALSE') === TRUE
-			 * @assert ('no') === TRUE
-			 * @assert ('NO') === TRUE
-			 * @assert ('off') === TRUE
-			 * @assert ('OFF') === TRUE
-			 * @assert ('on') === FALSE
-			 * @assert ('ON') === FALSE
-			 * @assert ('true') === FALSE
-			 * @assert ('TRUE') === FALSE
-			 * @assert (array()) === TRUE
-			 * @assert (array('hello' => 'hello')) === TRUE
-			 * @assert (new \stdClass()) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hello';
-			 *    ($obj) === TRUE
 			 */
 			public function is_false($var)
 				{
@@ -970,16 +731,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Stringified value. This forces an initial string value at all times.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert (NULL) === ''
-			 * @assert ('1') === '1'
-			 * @assert (TRUE) === '1'
-			 * @assert (FALSE) === ''
-			 * @assert (1.1) === '1.1'
-			 * @assert (1.2) === '1.2'
-			 * @assert ('hello') === 'hello'
-			 * @assert (array(1)) === 'Array'
-			 * @assert (array()) === 'Array'
 			 */
 			public function ify($value)
 				{
@@ -1000,15 +751,6 @@ namespace websharks_core_v000000_dev
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
 			 * @return string|array|object Stringified value, array, or an object.
-			 *
-			 * @assert (NULL) === ''
-			 * @assert ('1') === '1'
-			 * @assert (TRUE) === '1'
-			 * @assert (FALSE) === ''
-			 * @assert (array(array(1), array(TRUE), array(FALSE))) === array(array('1'), array('1'), array(''))
-			 * @assert (array(array(1), array(2.30))) === array(array('1'), array('2.3'))
-			 * @assert $obj = new \stdClass(); $obj->prop = '1'; // Prop converts to string.
-			 *    (array(array(0), array($obj))) === array(array('0'), array($obj))
 			 */
 			public function ify_deep($value)
 				{
@@ -1050,20 +792,6 @@ namespace websharks_core_v000000_dev
 			 *       the ``$collect_key_props`` flag is ignored completely (e.g. there's no object/array to search).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('/^hello$/', array('hello', 'world')) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hello'; $obj->world = 'world';
-			 *    ('/^hello$/', array(array($obj))) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hello'; $obj->world = 'world';
-			 *    ('/^hello$/', $obj) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hello'; $obj->world = 'world';
-			 *    ('/^hello$/', array(TRUE, array($obj, 1, TRUE))) === TRUE
-			 *
-			 * @assert ('/^hello$/', array(TRUE, array(array(), 1, TRUE))) === FALSE
-			 * @assert ('/^hello$/', 'hello') === TRUE
 			 */
 			public function regex_pattern_in($regex, $value, $collect_key_props = FALSE, $___recursion = FALSE)
 				{
@@ -1137,18 +865,6 @@ namespace websharks_core_v000000_dev
 			 *    that may occur as a result of a non-regex string comparison being applied inadvertently.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('hello', array('/^hello$/', '/^world$/')) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = '/^hello$/'; $obj->world = '/^world$/';
-			 *    ('hello', $obj) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = '/^hello$/'; $obj->world = '/^world$/';
-			 *    ('hello', array(1, TRUE, array(1, TRUE, $obj))) === TRUE
-			 *
-			 * @assert ('hello', array(1, TRUE, array(1, TRUE, array()))) === FALSE
-			 * @assert ('hello', array(1, TRUE, array('/^hello$/', TRUE, array()))) === TRUE
-			 * @assert ('hello', '/^hello$/') === TRUE
 			 */
 			public function in_regex_patterns($string, $value, $collect_key_props = FALSE, $___recursion = FALSE)
 				{
@@ -1226,32 +942,9 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @see http://linux.die.net/man/3/fnmatch The underlying functionality provided by this routine.
-			 *
-			 * @assert ('hell*', array('hello', 'world')) === TRUE
-			 * @assert ('WorLd*', array('hello', 'world')) === FALSE
-			 * @assert ('WorLd*', array('hello', 'world'), TRUE) === TRUE
-			 * @assert ('HELL*', array('hello', 'world')) === FALSE
-			 * @assert ('HELL*', array('foo', 'bar'), FALSE) === FALSE
-			 * @assert ('?[zye]l*', array('foo', 'bar')) === FALSE
-			 * @assert ('?[zye]l*', array('foo', 'hello')) === TRUE
-			 * @assert ('?[zye]L*', array('foo', 'hello')) === FALSE
-			 * @assert ('?[zye]L*', array('foo', 'hello'), TRUE) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hello'; $obj->world = 'world';
-			 *    ('hell*', array(array($obj))) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hello'; $obj->world = 'world';
-			 *    ('hell*', $obj) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hello'; $obj->world = 'world';
-			 *    ('hell*', array(TRUE, array($obj, 1, TRUE))) === TRUE
-			 *
-			 * @assert ('hell*', array(TRUE, array(array(), 1, TRUE))) === FALSE
-			 * @assert ('hell*', 'hello') === TRUE
-			 *
-			 * @assert ('hell*', array(TRUE, array(array(), 1, TRUE)), TRUE, TRUE) is-type 'array'
 			 */
-			public function wildcard_pattern_in($wildcard, $value, $case_insensitive = FALSE, $collect_key_props = FALSE, $x_flags = NULL, $___recursion = FALSE)
+			public function wildcard_pattern_in($wildcard, $value, $case_insensitive = FALSE,
+			                                    $collect_key_props = FALSE, $x_flags = NULL, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
 						$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
@@ -1266,7 +959,9 @@ namespace websharks_core_v000000_dev
 								{
 									if(is_array($_value) || is_object($_value))
 										{
-											if(($_matching_key_props = $this->wildcard_pattern_in($wildcard, $_value, $case_insensitive, $collect_key_props, $x_flags, TRUE)))
+											if(($_matching_key_props = // Keys are stored below.
+												$this->wildcard_pattern_in($wildcard, $_value, $case_insensitive, $collect_key_props, $x_flags, TRUE))
+											)
 												if($collect_key_props) // Are we collecting keys, or can we just return now?
 													$matching_key_props[] = array($_key_prop => $_matching_key_props);
 												else return TRUE; // We can return now.
@@ -1336,29 +1031,9 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @see http://linux.die.net/man/3/fnmatch The underlying functionality provided by this routine.
-			 *
-			 * @assert ('hello', array('hell*')) === TRUE
-			 * @assert ('HeLlO', array('hell*')) === FALSE
-			 * @assert ('HeLlO', array('hell*'), TRUE) === TRUE
-			 * @assert ('HeLlO', array('foo', 'hell*')) === FALSE
-			 * @assert ('HeLlO', array('foo', 'bar')) === FALSE
-			 * @assert ('HeLlO', array('foo', '[hH][eE][lL]*[oO]')) === TRUE
-			 * @assert ('HeLlO', array('foo', '[hH][eE][lL][lL][oO]')) === TRUE
-			 * @assert ('HeLlO', array('foo', '?[zye]LL*')) === FALSE
-			 * @assert ('HeLlO', array('foo', '?[zye]LL*'), TRUE) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hell*'; $obj->world = 'world*';
-			 *    ('hello', $obj) === TRUE
-			 *
-			 * @assert $obj = new \stdClass(); $obj->hello = 'hell*'; $obj->world = 'world*';
-			 *    ('hello', array(1, TRUE, array(1, TRUE, $obj))) === TRUE
-			 *
-			 * @assert ('hello', array(1, TRUE, array(1, TRUE, array()))) === FALSE
-			 * @assert ('hello', 'hell*') === TRUE
-			 *
-			 * @assert ('hello', array('hello', 1, TRUE, array(1, TRUE, array('h*'))), TRUE, TRUE) is-type 'array'
 			 */
-			public function in_wildcard_patterns($string, $value, $case_insensitive = FALSE, $collect_key_props = FALSE, $x_flags = NULL, $___recursion = FALSE)
+			public function in_wildcard_patterns($string, $value, $case_insensitive = FALSE,
+			                                     $collect_key_props = FALSE, $x_flags = NULL, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
 						$this->check_arg_types('string', '', 'boolean', 'boolean', array('null', 'integer'), 'boolean', func_get_args());
@@ -1373,7 +1048,9 @@ namespace websharks_core_v000000_dev
 								{
 									if(is_array($_value) || is_object($_value))
 										{
-											if(($_matching_key_props = $this->in_wildcard_patterns($string, $_value, $case_insensitive, $collect_key_props, $x_flags, TRUE)))
+											if(($_matching_key_props = // Keys are stored below.
+												$this->in_wildcard_patterns($string, $_value, $case_insensitive, $collect_key_props, $x_flags, TRUE))
+											)
 												if($collect_key_props) // Are we collecting keys, or can we just return now?
 													$matching_key_props[] = array($_key_prop => $_matching_key_props);
 												else return TRUE; // We can return now.
@@ -1414,10 +1091,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Escaped string.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('"quotes"') === '\\"quotes\\"'
-			 * @assert ('"quotes"', 0) === '"quotes"'
-			 * @assert ('"quotes"', 2) === '\\\\"quotes\\\\"'
 			 */
 			public function esc_dq($string, $times = 1)
 				{
@@ -1470,10 +1143,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Escaped string.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ("'quotes'") === "\\'quotes\\'"
-			 * @assert ("'quotes'", 0) === "'quotes'"
-			 * @assert ("'quotes'", 2) === "\\\\'quotes\\\\'"
 			 */
 			public function esc_sq($string, $times = 1)
 				{
@@ -1526,11 +1195,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Escaped string, ready for JavaScript.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ("'quotes'") === "\\'quotes\\'"
-			 * @assert ("'quotes'", 0) === "'quotes'"
-			 * @assert ("'quotes'", 2) === "\\\\'quotes\\\\'"
-			 * @assert ("'quotes''\r\n\n", 2) === "\\\\'quotes\\\\'\\\\'".'\n\n'
 			 */
 			public function esc_js_sq($string, $times = 1)
 				{
@@ -1590,11 +1254,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Escaped string.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('\\1') === '\\\\1'
-			 * @assert ('\\1', 2) === '\\\\\\1'
-			 * @assert ('$hello') === '\\$hello'
-			 * @assert ('$hello', 2) === '\\\\$hello'
 			 */
 			public function esc_refs($string, $times = 1)
 				{
@@ -1621,14 +1280,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Escaped string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('\\1') === '\\\\1'
-			 * @assert ('\\1', 2) === '\\\\\\1'
-			 * @assert ('$hello') === '\\$hello'
-			 * @assert ('$hello', 2) === '\\\\$hello'
-			 * @assert (array('\\1')) === array('\\\\1')
-			 * @assert (array('$hello')) === array('\\$hello')
-			 * @assert (array(array('$hello'), array('$hello'))) === array(array('\\$hello'), array('\\$hello'))
 			 */
 			public function esc_refs_deep($value, $times = 1, $___recursion = FALSE)
 				{
@@ -1662,9 +1313,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note This method intentionally has NO ``$times`` parameter, because that makes no sense for SQL.
 			 *    In addition, if we attempted to use ``$times`` here, it would negate WordPress's ability to use ``mysql_real_escape_string()``.
-			 *
-			 * @assert ('\\foo') === '\\\\foo'
-			 * @assert ("foo's") === "foo\'s"
 			 */
 			public function esc_sql($string, $convert_nulls_no_esc = FALSE)
 				{
@@ -1697,11 +1345,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @note This method intentionally has NO ``$times`` parameter, because that makes no sense for SQL.
 			 *    In addition, if we attempted to use ``$times`` here, it would negate WordPress's ability to use ``mysql_real_escape_string()``.
-			 *
-			 * @assert ('\\foo') === '\\\\foo'
-			 * @assert ("foo's") === "foo\'s"
-			 * @assert (array('\\foo')) === array('\\\\foo')
-			 * @assert (array(array('\\foo'), array("foo's"))) === array(array('\\\\foo'), array("foo\'s"))
 			 */
 			public function esc_sql_deep($value, $convert_nulls_no_esc = FALSE, $___recursion = FALSE)
 				{
@@ -1733,8 +1376,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Plain text excerpt (i.e. all HTML tags stripped).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('Hello world.', 5) === 'He...'
 			 */
 			public function excerpt($string, $max_length = 45)
 				{
@@ -1762,9 +1403,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Plain text excerpt (i.e. all HTML tags stripped), array, or object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('Hello world.', 5) === 'He...'
-			 * @assert (array(array('Hello world.'), array('Hello')), 5) === array(array('He...'), array('Hello'))
 			 */
 			public function excerpt_deep($value, $max_length = 45, $___recursion = FALSE)
 				{
@@ -1793,9 +1431,6 @@ namespace websharks_core_v000000_dev
 			 * @return string String with registered WordPress® Shortcodes escaped.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('[gallery]') === '[[gallery]]'
-			 * @assert ('[gallery][/gallery]') === '[[gallery][/gallery]]'
 			 */
 			public function esc_shortcodes($string)
 				{
@@ -1848,8 +1483,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Escaped Shortcode.
 			 *
 			 * @throws exception If invalid types are passed through arguments list (disabled).
-			 *
-			 * @assert (array('[hello]')) === '[[hello]]'
 			 */
 			public function _esc_shortcodes($m)
 				{
@@ -1878,10 +1511,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Escaped string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert (array('$hello'), '/') === array('\\$hello')
-			 * @assert (array(array('$hello:'), array('$hello:')), '/') === array(array('\\$hello\\:'), array('\\$hello\\:'))
-			 * @assert ('$hello', '/') === '\\$hello'
 			 */
 			public function preg_quote_deep($value, $delimiter = '', $___recursion = FALSE)
 				{
@@ -1912,10 +1541,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Trimmed string.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert (' hello ') === 'hello'
-			 * @assert ('.. hello @.. ', '', '.@') === 'hello'
-			 * @assert ('.. hello @.. ', '.@') === ' hello @.. '
 			 */
 			public function trim($string, $chars = '', $extra_chars = '')
 				{
@@ -1945,13 +1570,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Trimmed string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert (' hello ') === 'hello'
-			 * @assert ('.. hello @.. ', '', '.@') === 'hello'
-			 * @assert ('.. hello @.. ', '.@') === ' hello @.. '
-			 * @assert (array(' hello ')) === array('hello')
-			 * @assert (array(array('.. hello @.. '), array('.. hello @.. ')), '', '.@') === array(array('hello'), array('hello'))
-			 * @assert (array(array('.. hello @.. '), array('.. hello @.. ')), '.@') === array(array(' hello @.. '), array(' hello @.. '))
 			 */
 			public function trim_deep($value, $chars = '', $extra_chars = '', $___recursion = FALSE)
 				{
@@ -1988,9 +1606,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Stripped string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('\\hello\\') === 'hello'
-			 * @assert (array('\\hello\\', array('\\hello\\'))) === array('hello', array('hello'))
 			 */
 			public function strip_deep($value, $___recursion = FALSE)
 				{
@@ -2024,9 +1639,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Slashed string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ("Jason's") === 'Jason\\'s'
-			 * @assert (array("Jason's", array("Jason's"))) === array('Jason\\'s', array('Jason\\'s'))
 			 */
 			public function slash_deep($value, $___recursion = FALSE)
 				{
@@ -2057,10 +1669,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Trimmed string value.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert (' hello ') === 'hello'
-			 * @assert ('.. hello @.. ', '', '.@') === 'hello'
-			 * @assert ('.. foo\\\'s @.. ', '.@') === ' foo\'s @.. '
 			 */
 			public function trim_strip($string, $chars = '', $extra_chars = '')
 				{
@@ -2088,16 +1696,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Trimmed/stripped string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert (' hello ') === 'hello'
-			 * @assert ('.. hello @.. ', '', '.@') === 'hello'
-			 * @assert ('.. hello @.. ', '.@') === ' hello @.. '
-			 * @assert (array(' hello ')) === array('hello')
-			 * @assert (array('.. hello @.. '), '', '.@') === array('hello')
-			 * @assert (array('.. hello @.. '), '.@') === array(' hello @.. ')
-			 * @assert (array('.. foo\\\'s @.. '), '.@') === array(' foo\'s @.. ')
-			 * @assert (array(array('.. foo\\\'s @.. '), array('.. foo\\\'s @.. ')), '.@') === array(array(' foo\'s @.. '), array(' foo\'s @.. '))
-			 * @assert (array(array('.. hello @..\\ '), array('.. hello @..\\ ')), '', '.@') === array(array('hello'), array('hello'))
 			 */
 			public function trim_strip_deep($value, $chars = '', $extra_chars = '')
 				{
@@ -2182,8 +1780,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Trimmed string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('"hello"') === 'hello'
 			 */
 			public function trim_dq_deep($value)
 				{
@@ -2204,8 +1800,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Trimmed string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ("'hello'") === 'hello'
 			 */
 			public function trim_sq_deep($value)
 				{
@@ -2226,8 +1820,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Trimmed string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('\'"hello"\'') === 'hello'
 			 */
 			public function trim_dsq_deep($value)
 				{
@@ -2253,9 +1845,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Trimmed string, array, object.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('&quot;\'"hello"\'&quot;') === 'hello'
-			 * @assert ('&quot;\'"hello"\'&quot;', FALSE) === '\'"hello"\''
 			 */
 			public function trim_qts_deep($value, $trim_dsq = TRUE, $___recursion = FALSE)
 				{
@@ -2290,9 +1879,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside ``$needle`` or ``$replace`` values.
 			 *    To avoid string conversion errors from PHP, please refrain from passing objects in ``$needle`` or ``$replace`` arrays (that would make no sense anyway).
-			 *
-			 * @assert ('hello-', '', 'hello-hello-there') === 'hello-there'
-			 * @assert ('heLlo-', '', 'HELLO-hello-there') === 'hello-there'
 			 */
 			public function ireplace_once($needle, $replace, $string)
 				{
@@ -2322,13 +1908,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside ``$needle`` or ``$replace`` values.
 			 *    To avoid string conversion errors from PHP, please refrain from passing objects in ``$needle`` or ``$replace`` arrays (that would make no sense anyway).
-			 *
-			 * @assert ('hello-', '', 'hello-hello-there') === 'hello-there'
-			 * @assert ('heLlo-', '', 'HELLO-hello-there') === 'hello-there'
-			 * @assert ('heLlo-', '', array('HELLO-hello-there', 'HELLO-hello-there')) === array('hello-there', 'hello-there')
-			 * @assert (array('heLlo-', '-ThEre'), '', array('HELLO-hello-there', 'HELLO-hello-there')) === array('hello', 'hello')
-			 * @assert (array('heLlo-', '-ThEre'), array('hi-', '-jason'), array('HELLO-hello-there', 'HELLO-hello-there')) === array('hi-hello-jason', 'hi-hello-jason')
-			 * @assert ('heLlo-', '', array('HELLO-hello-there', 'hello-there')) === array('hello-there', 'there')
 			 */
 			public function ireplace_once_deep($needle, $replace, $value)
 				{
@@ -2354,16 +1933,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside ``$needle`` or ``$replace`` values.
 			 *    To avoid string conversion errors from PHP, please refrain from passing objects in ``$needle`` or ``$replace`` arrays (that would make no sense anyway).
-			 *
-			 * @assert ('hello-', '', 'hello-hello-there') === 'hello-there'
-			 * @assert ('heLlo-', '', 'HELLO-hello-there') === 'HELLO-hello-there'
-			 * @assert ('heLlo-', '', 'HELLO-hello-there', TRUE) === 'hello-there'
-			 * @assert ('heLlo-', array(), 'HELLO-hello-there', TRUE) === 'hello-there'
-			 * @assert ('heLlo-', array('hi-'), 'HELLO-hello-there', TRUE) === 'hi-hello-there'
-			 * @assert ('heLlo-', array('hi-'), 'HELLO-hello-there') === 'HELLO-hello-there'
-			 * @assert (array('heLlo-', '-theRe'), array('hi-'), 'HELLO-hello-there', TRUE) === 'hi-hello'
-			 * @assert (array('heLlo-', '-theRe'), array('hi-', '-jason'), 'HELLO-hello-there', TRUE) === 'hi-hello-jason'
-			 * @assert (array('heLlo-', '-there'), array('hi-', '-jason'), 'HELLO-hello-there') === 'HELLO-hello-jason'
 			 */
 			public function replace_once($needle, $replace, $string, $case_insensitive = FALSE)
 				{
@@ -2400,18 +1969,6 @@ namespace websharks_core_v000000_dev
 			 *    To avoid string conversion errors from PHP, please refrain from passing objects in ``$needle`` or ``$replace`` arrays (that would make no sense anyway).
 			 *
 			 * @see http://stackoverflow.com/questions/8177296/when-to-use-strtr-vs-str-replace
-			 *
-			 * @assert ('hello-', '', 'hello-hello-there') === 'hello-there'
-			 * @assert ('heLlo-', '', 'HELLO-hello-there') === 'HELLO-hello-there'
-			 * @assert ('heLlo-', '', 'HELLO-hello-there', TRUE) === 'hello-there'
-			 * @assert ('heLlo-', array(), 'HELLO-hello-there', TRUE) === 'hello-there'
-			 * @assert ('heLlo-', array('hi-'), 'HELLO-hello-there', TRUE) === 'hi-hello-there'
-			 * @assert ('heLlo-', array('hi-'), 'HELLO-hello-there') === 'HELLO-hello-there'
-			 * @assert (array('heLlo-', '-theRe'), array('hi-'), 'HELLO-hello-there', TRUE) === 'hi-hello'
-			 * @assert (array('heLlo-', '-theRe'), array('hi-', '-jason'), 'HELLO-hello-there', TRUE) === 'hi-hello-jason'
-			 * @assert (array('heLlo-', '-there'), array('hi-', '-jason'), 'HELLO-hello-there') === 'HELLO-hello-jason'
-			 * @assert (array('heLlo-', '-theRe'), array('hi-', '-jason'), array('HELLO-hello-there', 'HELLO-hello-there'), TRUE) === array('hi-hello-jason', 'hi-hello-jason')
-			 * @assert (array('heLlo-', '-there'), array('hi-', '-jason'), array('HELLO-hello-there', 'HELLO-hello-there')) === array('HELLO-hello-jason', 'HELLO-hello-jason')
 			 */
 			public function replace_once_deep($needle, $replace, $value, $case_insensitive = FALSE, $___recursion = FALSE)
 				{
@@ -2603,28 +2160,7 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed        $value Any value can be converted into a string to run replacements on.
-			 *    Actually, objects can't, but this recurses into objects.
-			 *
-			 * @note In additional to array keys found in either ``$primary_vars`` or ``$vars``;
-			 *    any single or nested ``$value`` may also reference array keys and/or object properties (max ONE dimension).
-			 *    This is accomplished using a single dotted syntax; very much like JavaScript object property value references.
-			 *
-			 *    • For instance, if you want the value of ``$user->ID``; use replacement code: ``%%user.ID%%``.
-			 *    • Or, if you want the value of array key ``$user['ID']``; use the same dotted syntax: ``%%user.ID%%``.
-			 *
-			 * @note In additional to array keys found in either ``$primary_vars`` or ``$vars``;
-			 *    any single or nested ``$value`` may also contain any of the following MAGIC replacement codes.
-			 *
-			 *    • For all variables in their raw/unprocessed state.
-			 *       • `%%__var_dump_all_raw__%%` Indicating a dump of all variables; via {@link vars::dump()}.
-			 *       • `%%__serialize_all_raw__%%` Indicating a serialized array of all variables; via {@link serialize()}.
-			 *       • `%%__json_encode_all_raw__%%` Indicating a JSON encoded version of all variables; via {@link json_encode()}.
-			 *
-			 *    • These ONLY work if ``$urlencode`` is TRUE (they're for URLs only).
-			 *       • `%%__query_string_all_processed__%%` Indicating all processed variables (as a query string suitable for URLs).
-			 *       • `%%__query_string_all_processed_in_array__%%` Indicating all processed variables (as a query string suitable for URLs — in an array).
-			 *          Variables are wrapped inside a single array key using `plugin_var_ns`; for the current plugin.
+			 * @param mixed        $value Any value will do just fine here.
 			 *
 			 * @param array        $meta_vars Optional. Defaults to an empty array.
 			 *    ~ This array is always given precedence over any other secondary ``$vars``.
@@ -2646,15 +2182,12 @@ namespace websharks_core_v000000_dev
 			 *    If this is TRUE, all replacement code values will be urlencoded automatically.
 			 *    Setting this to a TRUE value also enables some additional magic replacement codes.
 			 *
-			 *    • These ONLY work if ``$urlencode`` is TRUE (they're for URLs only).
-			 *       • `%%__query_string_all_processed__%%` Indicating all processed variables (as a query string suitable for URLs).
-			 *       • `%%__query_string_all_processed_in_array__%%` Indicating all processed variables (as a query string suitable for URLs — in an array).
-			 *          Variables are wrapped inside a single array key using `plugin_var_ns`; for the current plugin.
-			 *
 			 * @param string       $implode_non_scalars Optional. By default, any non-scalar values
-			 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
+			 *    in ``$meta_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
 			 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values by.
 			 *
+			 * @param boolean      $___raw_vars Internal use only.
+			 * @param boolean      $___vars Internal use only.
 			 * @param boolean      $___recursion Internal use only.
 			 *
 			 * @return mixed Values after replacing all codes (deeply).
@@ -2664,117 +2197,125 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 */
 			public function replace_codes_deep($value, $meta_vars = array(), $vars = array(), $case_insensitive = FALSE,
-			                                   $preserve_types = FALSE, $urlencode = FALSE, $implode_non_scalars = '', $___recursion = FALSE)
+			                                   $preserve_types = FALSE, $urlencode = FALSE, $implode_non_scalars = '',
+			                                   $___raw_vars = NULL, $___vars = NULL, $___recursion = FALSE)
 				{
 					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('', 'array', 'array', 'boolean', 'boolean', 'boolean', 'string', 'boolean', func_get_args());
+						$this->check_arg_types('', 'array', 'array', 'boolean', 'boolean', 'boolean', 'string',
+						                       array('null', 'array'), array('null', 'array'), 'boolean', func_get_args());
+
+					if(!isset($this->static[__FUNCTION__]['__return_value']))
+						$this->static[__FUNCTION__]['__return_value'] = create_function('$value', 'return $value;');
+
+					prepare_and_process_all_recursion_vars: // Prepare & process recursion variables.
+
+					if(isset($___raw_vars, $___vars)) goto replace_codes_deep; // Did this?
+
+					$___raw_vars = $meta_vars + $vars; // A union between these two.
+					$___vars     = array(); // Initialize this (we're building it below).
+
+					foreach($___raw_vars + $this->©array->dot_keys($___raw_vars) as $_key => $_value)
+						{
+							if(is_resource($_value)) continue; // Bypass.
+
+							if(!is_scalar($_value)) // Array/object; NOT a resource.
+								{
+									if($implode_non_scalars) // Implode these values?
+										{
+											$_value = (array)$_value; // Objects to arrays.
+											$_value = $this->©array->to_one_dimension($_value);
+											$_value = implode($implode_non_scalars, $_value);
+										}
+									else $_value = json_encode($_value); // JSON encode.
+								}
+							else if($_value === FALSE) $_value = '0'; // As a string.
+
+							$___vars[$_key] = (string)$_value;
+						}
+					unset($_key, $_value); // Housekeeping.
+
+					replace_codes_deep: // Target point. Do the magic here :-)
 
 					if(is_array($value) || is_object($value)) // Array/object recursion.
 						{
 							foreach($value as &$_value) // Handles deep array/object recursion.
 								$_value = $this->replace_codes_deep($_value, $meta_vars, $vars, $case_insensitive,
-								                                    $preserve_types, $urlencode, $implode_non_scalars, TRUE);
+								                                    $preserve_types, $urlencode, $implode_non_scalars,
+								                                    $___raw_vars, $___vars, TRUE);
 							unset($_value); // Just a little housekeeping.
 
+							if(!$___recursion) // Run a 2nd time (supporting nested `%%` codes).
+								return $this->replace_codes_deep($value, $meta_vars, $vars, $case_insensitive,
+								                                 $preserve_types, $urlencode, $implode_non_scalars,
+								                                 $___raw_vars, $___vars, TRUE);
 							return $value; // Array/object value.
 						}
-					if(!$preserve_types || is_string($value)) // Replace?
+					if($preserve_types && !is_string($value)) return $value;
+					if(!($value = (string)$value) || strpos($value, '%%') === FALSE) return $value;
+
+					$str_replace_ = ($case_insensitive) ? 'str_ireplace' : 'str_replace'; // CaSe handler.
+					$urlencode_   = ($urlencode) ? 'urlencode' : $this->static[__FUNCTION__]['__return_value'];
+
+					if(stripos($value, '%%__var_dump__%%') !== FALSE) // Dump all vars.
+						$value = $str_replace_('%%__var_dump__%%', $urlencode_($this->©vars->dump($___raw_vars)), $value);
+
+					if(stripos($value, '%%__serialize__%%') !== FALSE) // Serialize all vars.
+						$value = $str_replace_('%%__serialize__%%', $urlencode_(serialize($___raw_vars)), $value);
+
+					if(stripos($value, '%%__json_encode__%%') !== FALSE) // JSON encode all vars.
+						$value = $str_replace_('%%__json_encode__%%', $urlencode_(json_encode($___raw_vars)), $value);
+
+					if($urlencode && stripos($value, '%%__query_string__%%') !== FALSE) // Query string.
+						$value = $str_replace_('%%__query_string__%%', // Wraps them into an array (using `plugin_var_ns`).
+						                       $this->©vars->build_query(array($this->___instance_config->plugin_var_ns => $___vars)), $value);
+
+					$_iteration_counter = 1; // Check completion every 10th iteration to save time.
+
+					foreach($___vars as $_key => $_value) // There could be MANY keys here.
 						{
-							$value = (string)$value; // Force string if we get here.
-							if(strpos($value, '%%') === FALSE) return $value; // No codes?
+							$value = $str_replace_('%%'.$_key.'%%', $urlencode_($_value), $value);
 
-							$all_raw_unified_vars = $meta_vars + $vars;
-							$all_processed_vars   = array(); // Initialize this array.
-
-							if(!isset($this->static[__FUNCTION__]['__return_value']))
-								$this->static[__FUNCTION__]['__return_value'] = create_function('$value', 'return $value;');
-
-							$_this        = $this; // Self reference (for use in callbacks below).
-							$urlencode_   = ($urlencode) ? 'urlencode' : $this->static[__FUNCTION__]['__return_value'];
-							$str_replace_ = ($case_insensitive) ? 'str_ireplace' : 'str_replace'; // CaSe.
-
-							if(stripos($value, '%%__var_dump_all_raw__%%') !== FALSE) // Magic code (dumps all vars).
-								$value = $str_replace_('%%__var_dump_all_raw__%%', $urlencode_($this->©vars->dump($all_raw_unified_vars)), $value);
-
-							if(stripos($value, '%%__serialize_all_raw__%%') !== FALSE) // Magic code (serialize all).
-								$value = $str_replace_('%%__serialize_all_raw__%%', $urlencode_(serialize($all_raw_unified_vars)), $value);
-
-							if(stripos($value, '%%__json_encode_all_raw__%%') !== FALSE) // Magic code (JSON encode all).
-								$value = $str_replace_('%%__json_encode_all_raw__%%', $urlencode_(json_encode($all_raw_unified_vars)), $value);
-
-							if(strpos($value, '%%') === FALSE) return $value; // All done now?
-
-							foreach($all_raw_unified_vars as $_var_key => $_var_value) // Iterate ALL variables.
-								{
-									if(is_resource($_var_value)) continue; // Never. We do NOT process resource values.
-
-									if(!is_scalar($_var_value)) // Array/object (we excluded resources in the condition above).
-										{
-											if(stripos($value, '%%'.$_var_key.'.') !== FALSE) // Key/property codes?
-												{
-													$_var_array = (array)$_var_value; // Force array.
-													if($case_insensitive) // Force lowercase keys in this caSe :-)
-														$_var_array = array_change_key_case($_var_array, CASE_LOWER);
-
-													$value = preg_replace_callback('/%%'.preg_quote($_var_key, '/').'\.(?P<key>.+?)%%/'.(($case_insensitive) ? 'i' : ''),
-														function ($m) use ($_this, $case_insensitive, $implode_non_scalars, $urlencode_, $_var_array)
-															{
-																if($case_insensitive)
-																	$m['key'] = strtolower($m['key']);
-
-																if(!isset($_var_array[$m['key']])) return '';
-																if(is_resource($_var_array[$m['key']])) return '';
-
-																if(!is_scalar($var_key_value = $_var_array[$m['key']]))
-																	{
-																		if($implode_non_scalars) // Implode?
-																			{
-																				$var_key_value = (array)$var_key_value; // Objects to arrays.
-																				$var_key_value = $_this->©array->to_one_dimension($var_key_value);
-																				$var_key_value = implode($implode_non_scalars, $var_key_value);
-																			}
-																		else $var_key_value = json_encode($var_key_value); // JSON encode.
-																	}
-																else if($var_key_value === FALSE) $var_key_value = '0'; // As a string `0`.
-
-																$var_key_value = (string)$var_key_value; // Force string.
-
-																return $urlencode_($var_key_value); // Possible encoding here.
-
-															}, $value); // Keys/properties done now.
-
-													unset($_this, $_var_array); // Housekeeping.
-												}
-											if($implode_non_scalars) // Implode?
-												{
-													$_var_value = (array)$_var_value; // Objects to arrays.
-													$_var_value = $this->©array->to_one_dimension($_var_value);
-													$_var_value = implode($implode_non_scalars, $_var_value);
-												}
-											else $_var_value = json_encode($_var_value); // JSON encode.
-										}
-									else if($_var_value === FALSE) $_var_value = '0'; // As a string `0`.
-
-									$_var_value                    = (string)$_var_value; // Force string.
-									$all_processed_vars[$_var_key] = $_var_value; // Records all key/value pairs.
-									$value                         = $str_replace_('%%'.$_var_key.'%%', $urlencode_($_var_value), $value);
-
-									if(strpos($value, '%%') === FALSE) return $value; // All done now?
-								}
-							unset($_var_key, $_var_value); // A little housekeeping now.
-
-							if($urlencode && stripos($value, '%%__query_string_all_processed__%%') !== FALSE) // Magic code (query string).
-								$value = $str_replace_('%%__query_string_all_processed__%%', $this->©vars->build_query($all_processed_vars), $value);
-
-							if($urlencode && stripos($value, '%%__query_string_all_processed_in_array__%%') !== FALSE) // Magic code (query string).
-								$value = $str_replace_('%%__query_string_all_processed_in_array__%%', // Wraps them into an array (using `plugin_var_ns`).
-								                       $this->©vars->build_query(array($this->___instance_config->plugin_var_ns => $all_processed_vars)), $value);
-
-							if(strpos($value, '%%') === FALSE) return $value; // All done now?
-
-							$value = preg_replace('/%%.+?%%/', '', $value); // Anything we don't have a value for.
+							if($_iteration_counter >= 10) $_iteration_counter = 0;
+							if(!$_iteration_counter && strpos($value, '%%') === FALSE) return $value;
+							$_iteration_counter++; // Increment counter.
 						}
-					return $value; // Final return value.
+					unset($_iteration_counter, $_key, $_value); // Housekeeping.
+
+					if(strpos($value, '.*') !== FALSE && strpos($value, '%%') !== FALSE)
+						{
+							$_this = $this; // Need reference for the callback in PHP < v5.4.
+							$value = preg_replace_callback('/%%(?P<pattern>.+?\.\*)(?:\|(?P<delimiter>.*?))?'.
+							                               '(?P<include_keys>\[(?P<key_delimiter>.*?)\])?%%/s',
+								function ($m) use ($_this, $case_insensitive, $___vars, $urlencode_ /* Closure. */)
+									{
+										$values      = array();
+										$___var_keys = array_keys($___vars);
+										$keys        = $_this->wildcard_pattern_in($m['pattern'], $___var_keys, $case_insensitive, TRUE);
+										foreach($keys as $_key) $values[$___var_keys[$_key]] = $___vars[$___var_keys[$_key]];
+
+										if(empty($m['delimiter'])) $m['delimiter'] = ', ';
+										if(empty($m['include_keys'])) $m['include_keys'] = '';
+										if(empty($m['key_delimiter'])) $m['key_delimiter'] = ' = ';
+
+										if($m['delimiter'] === '&' && !$m['include_keys']) // This indicates a query string.
+											return $_this->©vars->build_query(array($_this->___instance_config->plugin_var_ns => $values));
+
+										$m['delimiter']     = str_replace(array('\r', '\n', '\t'), array("\r", "\n", "\t"), $m['delimiter']);
+										$m['key_delimiter'] = str_replace(array('\r', '\n', '\t'), array("\r", "\n", "\t"), $m['key_delimiter']);
+
+										if($m['include_keys']) foreach($values as $_key => &$_value)
+											$_value = $_key.$m['key_delimiter'].$_value; // Custom key delimiter.
+										unset($_value); // Housekeeping.
+
+										return $urlencode_(implode($m['delimiter'], $values));
+									}, $value);
+							unset($_this); // Housekeeping.
+						}
+					if(!$___recursion) // Run a 2nd time (supporting nested `%%` codes).
+						return $this->replace_codes_deep($value, $meta_vars, $vars, $case_insensitive,
+						                                 $preserve_types, $urlencode, $implode_non_scalars,
+						                                 $___raw_vars, $___vars, TRUE);
+					return preg_replace('/%%.+?%%/', '', $value);
 				}
 
 			/**
@@ -2796,8 +2337,6 @@ namespace websharks_core_v000000_dev
 			 * @return string String minus leading indentation.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ("  \t  hello\n  \t  there") === 'hello'."\n".'there'
 			 */
 			public function strip_leading_indents($string, $leading_at_line = 1, $add_leading_chars = '')
 				{
@@ -2868,8 +2407,6 @@ namespace websharks_core_v000000_dev
 			 * @return string Output string, after characters NOT on a standard U.S. keyboard have been stripped.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert ('hello® there') === 'hello there'
 			 */
 			public function strip_2_kb_chars($string)
 				{
@@ -2924,8 +2461,6 @@ namespace websharks_core_v000000_dev
 			 * @return string A randomly generated string, based on configuration.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert () !empty TRUE
 			 */
 			public function random($length = 12, $special_chars = TRUE, $extra_special_chars = FALSE)
 				{
@@ -2959,8 +2494,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If the call to ``base64_encode()`` fails.
-			 *
-			 * @assert ('hello') !empty TRUE
 			 */
 			public function base64_url_safe_encode($string, $url_unsafe_chars = array('+', '/'), $url_safe_chars = array('-', '_'), $trim_padding_chars = '=')
 				{
@@ -2968,7 +2501,7 @@ namespace websharks_core_v000000_dev
 
 					if(!is_string($base64_url_safe = base64_encode($string)))
 						throw $this->©exception(
-							__METHOD__.'#failure', get_defined_vars(),
+							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							$this->i18n('Base64 encoding failed (`$base64_url_safe` is NOT a string).')
 						);
 					$base64_url_safe = str_replace($url_unsafe_chars, $url_safe_chars, $base64_url_safe);
@@ -2995,10 +2528,6 @@ namespace websharks_core_v000000_dev
 			 *    was NOT base64 encoded to begin with. Helps prevent accidental data corruption.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert $string = 'hello';
-			 * $base64 = $this->object->base64_url_safe_encode($string);
-			 *    ($base64) === 'hello'
 			 */
 			public function base64_url_safe_decode($base64_url_safe, $url_unsafe_chars = array('+', '/'), $url_safe_chars = array('-', '_'), $trim_padding_chars = '=')
 				{
@@ -3046,9 +2575,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Decoded string, array, object.
 			 *
 			 * @see http://www.faqs.org/rfcs/rfc3986.html
-			 *
-			 * @assert $array = array(urlencode('hello-there now'));
-			 *    ($array) === array('hello-there+now')
 			 */
 			public function urldecode_ur_chars_deep($value, $___recursion = FALSE)
 				{
@@ -3096,12 +2622,6 @@ namespace websharks_core_v000000_dev
 			 * @return string|array|object Wrapped string, array, object (possible `NULL` string if ``$convert_null_no_wrap`` is TRUE).
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert $array = array('hello', 'there', '');
-			 *    ($array, 'begin:', ':end') === array('begin:hello:end', 'begin:there:end', 'begin::end')
-			 *
-			 * @assert $array = array('hello', 'there', '');
-			 *    ($array, 'begin:', ':end', FALSE) === array('begin:hello:end', 'begin:there:end', '')
 			 */
 			public function wrap_deep($value, $beginning = '', $end = '', $wrap_0b_strings = TRUE, $convert_nulls_no_wrap = FALSE, $___recursion = FALSE)
 				{
@@ -3410,9 +2930,6 @@ namespace websharks_core_v000000_dev
 			 * @return string The original ``$json`` code w/ double-quoted property names.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
-			 *
-			 * @assert $invalid_json = '{a:1,b:2,c:3,d:4,"e":5}';
-			 *    ($invalid_json) === '{"a":1,"b":2,"c":3,"d":4,"e":5}'
 			 */
 			public function json_dq_property_names($json)
 				{

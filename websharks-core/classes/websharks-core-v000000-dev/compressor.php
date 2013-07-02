@@ -814,7 +814,7 @@ namespace websharks_core_v000000_dev
 										$_rules_2_top[] = $_rule['rule'];
 
 									$css = $this->©string->replace_once($_rules_2_top, '', $css);
-									$css = $this->move_css_charsets_namespaces_2_top($css, $recursion++);
+									$css = $this->move_css_charsets_namespaces_2_top($css, $recursion + 1);
 									$css = implode("\n\n", $_rules_2_top)."\n\n".$css;
 								}
 							unset($_rules, $_rule, $_rules_2_top); // Housekeeping.
@@ -891,7 +891,7 @@ namespace websharks_core_v000000_dev
 										$_rules_2_top[] = $_rule['rule'];
 
 									$css = $this->©strings->replace_once($_rules_2_top, '', $css);
-									$css = $this->maybe_wrap_css_media($css, $media, $recursion++);
+									$css = $this->maybe_wrap_css_media($css, $media, $recursion + 1);
 									$css = implode("\n\n", $_rules_2_top)."\n\n".$css;
 								}
 							unset($_rules, $_rule, $_rules_2_top); // Housekeeping.

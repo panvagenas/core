@@ -1053,7 +1053,7 @@ namespace websharks_core_v000000_dev
 						{
 							if(!is_array($_value)) // This should NOT happen.
 								throw $this->©exception(
-									__METHOD__.'#unexpected_data_type', get_defined_vars(),
+									$this->method(__FUNCTION__).'#unexpected_data_type', get_defined_vars(),
 									$this->i18n('Unexpected data type in ``$_FILES`` array.')
 								);
 							foreach($_value as $_file_info_key => $_scalar_or_nested_array_value)

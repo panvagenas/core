@@ -60,7 +60,7 @@ namespace websharks_core_v000000_dev
 
 					if(!did_action('init'))
 						throw $this->©exception(
-							__METHOD__.'#init', NULL,
+							$this->method(__FUNCTION__).'#init', NULL,
 							$this->i18n('Doing it wrong (`init` hook has NOT been fired yet).')
 						);
 					// Add components & register scripts (based on context).
@@ -334,7 +334,7 @@ namespace websharks_core_v000000_dev
 							   || !$this->©string->is_not_empty($_script['url'])
 							) // This MUST be an array with a `url` string.
 								throw $this->©exception(
-									__METHOD__.'#url_missing', get_defined_vars(),
+									$this->method(__FUNCTION__).'#url_missing', get_defined_vars(),
 									$this->i18n('Invalid script configuration. Missing and/or invalid `url`.').
 									sprintf($this->i18n(' Problematic script handle: `%1$s`.'), $_handle)
 								);
