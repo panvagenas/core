@@ -27,8 +27,8 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Handles no-cache headers/constants.
 			 *
-			 * @attaches-to WordPress® `wp` hook.
-			 * @hook-priority `1`
+			 * @attaches-to WordPress® `init` action hook.
+			 * @hook-priority `-1` Before most everything else.
 			 *
 			 * @assertion-via WordPress®.
 			 */

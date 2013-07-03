@@ -278,12 +278,7 @@ namespace websharks_core_v000000_dev
 			 * @extenders Can be overridden by class extenders.
 			 *
 			 * @attaches-to WordPress® `init` action hook.
-			 * @hook-priority `1`.
-			 *
-			 * @hook-disabled-by-default Plugins should add this hook if sessions are implemented.
-			 *    add_action('init', array($this, '©user.init'), 1);
-			 *
-			 * @assert () === NULL
+			 * @hook-priority `-2` Before EVERYTHING else.
 			 */
 			public function init()
 				{

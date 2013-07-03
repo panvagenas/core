@@ -28,7 +28,7 @@ namespace websharks_core_v000000_dev
 			 * Initializer.
 			 *
 			 * @attaches-to WordPress® `init` action hook.
-			 * @hook-priority `2`, when/if PHP enabled by options.
+			 * @hook-priority `-1` Before most everything else.
 			 *
 			 * @return null Nothing.
 			 *

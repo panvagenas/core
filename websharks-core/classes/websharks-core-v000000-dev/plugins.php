@@ -228,7 +228,7 @@ namespace websharks_core_v000000_dev
 			 * Filters site transients, to allow for custom ZIP files during plugin updates.
 			 *
 			 * @attaches-to WordPress® filter `pre_site_transient_update_plugins`.
-			 * @filter-priority `11` (after other default filters).
+			 * @filter-priority `PHP_INT_MAX` After most everything else.
 			 *
 			 * @param boolean|mixed $transient This is passed by WordPress® as a FALSE value (initially).
 			 *    However, it could be filtered by other plugins, so we need to check for an array.

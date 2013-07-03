@@ -985,7 +985,7 @@ namespace websharks_core_v000000_dev
 			 * Additional user authentications.
 			 *
 			 * @attaches-to WordPress® filter `wp_authenticate_user`.
-			 * @filter-priority `1000`
+			 * @filter-priority `PHP_INT_MAX` After most everything else.
 			 *
 			 * @param \WP_User|\WP_Error $authentication A `WP_User` object on success, else a `WP_Error` object failure.
 			 *

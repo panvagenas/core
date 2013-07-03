@@ -28,7 +28,7 @@ namespace websharks_core_v000000_dev
 			 * Handles loading sequence.
 			 *
 			 * @attaches-to WordPress® `wp_loaded` action hook.
-			 * @hook-priority `10000`.
+			 * @hook-priority `PHP_INT_MAX`.
 			 *
 			 * @return null Nothing.
 			 *

@@ -1772,8 +1772,8 @@ namespace websharks_core_v000000_dev
 					$args['httpversion'] = $this->©string->isset_or($args['httpversion'], '1.1');
 
 					// Developers might like to fine tune things a bit further here.
-					$url  = $this->apply_filters(__FUNCTION.'__url', $url, get_defined_vars());
-					$args = $this->apply_filters(__FUNCTION.'__args', $args, get_defined_vars());
+					$url  = $this->apply_filters(__FUNCTION__.'__url', $url, get_defined_vars());
+					$args = $this->apply_filters(__FUNCTION__.'__args', $args, get_defined_vars());
 
 					// Now unset these ``$args``, so they don't get passed through WordPress® and cause problems.
 					unset($args['return_array'], $args['return_errors'], $args['return_xml_object'], $args['xml_object_flags']);
@@ -1844,7 +1844,7 @@ namespace websharks_core_v000000_dev
 			 * Catches details sent through the WordPress® ``WP_Http`` class.
 			 *
 			 * @attaches-to WordPress® `http_api_debug` hook (if ``WP_DEBUG`` mode is enabled).
-			 * @hook-priority `1000` (if ``WP_DEBUG`` mode is enabled).
+			 * @hook-priority `PHP_INT_MAX` After most everything else (if ``WP_DEBUG`` mode is enabled).
 			 *
 			 * @param array  $response ``WP_Http`` response array.
 			 * @param string $state ``WP_Http`` current state (i.e. `response`).

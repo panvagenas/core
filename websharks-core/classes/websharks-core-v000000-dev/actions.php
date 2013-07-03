@@ -39,7 +39,8 @@ namespace websharks_core_v000000_dev
 			 * Handles actions.
 			 *
 			 * @attaches-to WordPress® `init` action hook.
-			 * @hook-priority `2`.
+			 * @hook-priority `2` Before most everything else.
+			 *    BUT, after other VERY early hooks are complete.
 			 *
 			 * @assert () === NULL
 			 */
