@@ -176,6 +176,9 @@ namespace websharks_core_v000000_dev
 		 * @method static \websharks_core_v000000_dev\functions function()
 		 * @method static \websharks_core_v000000_dev\functions ©function()
 		 *
+		 * @property \websharks_core_v000000_dev\gmp                     $gmp
+		 * @method static \websharks_core_v000000_dev\gmp gmp()
+		 *
 		 * @property \websharks_core_v000000_dev\headers                 $headers
 		 * @property \websharks_core_v000000_dev\headers                 $header
 		 * @method static \websharks_core_v000000_dev\headers headers()

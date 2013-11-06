@@ -541,13 +541,13 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Should this template display errors?
 			 *
-			 * @return boolean TRUE if this template should display errors.
-			 *    Otherwise, this returns a FALSE value.
+			 * @return errors|boolean Errors if this template should display errors.
+			 *    Otherwise, this returns a boolean FALSE value.
 			 */
 			public function has_errors()
 				{
 					if($this->errors && $this->©errors->exist_in($this->errors))
-						return TRUE; // Yes.
+						return $this->errors; // Yes.
 
 					return FALSE; // Default return value.
 				}
@@ -555,13 +555,13 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Should this template display successes?
 			 *
-			 * @return boolean TRUE if this template should display successes.
-			 *    Otherwise, this returns a FALSE value.
+			 * @return successes|boolean Successes if this template should display successes.
+			 *    Otherwise, this returns a boolean FALSE value.
 			 */
 			public function has_successes()
 				{
 					if($this->successes && $this->©successes->exist_in($this->successes))
-						return TRUE; // Yes.
+						return $this->successes; // Yes.
 
 					return FALSE; // Default return value.
 				}
@@ -569,13 +569,13 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Should this template display messages?
 			 *
-			 * @return boolean TRUE if this template should display messages.
-			 *    Otherwise, this returns a FALSE value.
+			 * @return messages|boolean Messages if this template should display messages.
+			 *    Otherwise, this returns a boolean FALSE value.
 			 */
 			public function has_messages()
 				{
 					if($this->messages && $this->©messages->exist_in($this->messages))
-						return TRUE; // Yes.
+						return $this->messages; // Yes.
 
 					return FALSE; // Default return value.
 				}
@@ -603,36 +603,27 @@ namespace websharks_core_v000000_dev
 			 */
 			public function responses()
 				{
-					$responses = ''; // Initialize.
+					$responses = ''; // Initialize responses (as HTML markup).
 
 					if($this->has_errors()) // Do we have errors?
-						{
-							$prefix = '<span class="ui-icon ui-icon-alert"></span>';
+						$responses .= // Errors (as HTML markup). Also w/ a specific icon.
+							'<div class="responses errors ui-widget ui-corner-all ui-state-error">'.
+							'<ul>'.$this->errors->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-alert"></span>').'</ul>'.
+							'</div>';
 
-							$responses .= // Errors.
-								'<div class="responses errors ui-widget ui-corner-all ui-state-error">'.
-								'<ul>'.$this->errors->get_messages_as_list_items('', 0, $prefix).'</ul>'.
-								'</div>';
-						}
 					if($this->has_successes()) // Do we have successes?
-						{
-							$prefix = '<span class="ui-icon ui-icon-check"></span>';
+						$responses .= // Successes (as HTML markup). Also w/ a specific icon.
+							'<div class="responses successes ui-widget ui-corner-all ui-state-highlight">'.
+							'<ul>'.$this->successes->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-check"></span>').'</ul>'.
+							'</div>';
 
-							$responses .= // Successes.
-								'<div class="responses successes ui-widget ui-corner-all ui-state-highlight">'.
-								'<ul>'.$this->successes->get_messages_as_list_items('', 0, $prefix).'</ul>'.
-								'</div>';
-						}
 					if($this->has_messages()) // Do we have messages?
-						{
-							$prefix = '<span class="ui-icon ui-icon-info"></span>';
+						$responses .= // Messages (as HTML markup). Also w/ a specific icon.
+							'<div class="responses messages ui-widget ui-corner-all ui-state-highlight">'.
+							'<ul>'.$this->messages->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-info"></span>').'</ul>'.
+							'</div>';
 
-							$responses .= // Messages.
-								'<div class="responses messages ui-widget ui-corner-all ui-state-highlight">'.
-								'<ul>'.$this->messages->get_messages_as_list_items('', 0, $prefix).'</ul>'.
-								'</div>';
-						}
-					return $responses; // All types of responses.
+					return $responses; // All types of responses (as HTML markup).
 				}
 
 			/**
@@ -650,33 +641,34 @@ namespace websharks_core_v000000_dev
 						{
 							$this->errors = $data;
 							$this->data   = new \stdClass();
+							return $this->data; // Object properties.
 						}
-					else if($data && $this->©successes->instance_in($data))
+					if($data && $this->©successes->instance_in($data))
 						{
 							$this->successes = $data;
 							$this->data      = new \stdClass();
+							return $this->data; // Object properties.
 						}
-					else if($data && $this->©messages->instance_in($data))
+					if($data && $this->©messages->instance_in($data))
 						{
 							$this->messages = $data;
 							$this->data     = new \stdClass();
+							return $this->data; // Object properties.
 						}
-					else // It's an array and/or object value of another type.
-						{
-							$this->data = (object)$data; // Force object value.
+					$this->data = (object)$data; // Array/object of another type.
 
-							if(isset($this->data->user))
-								$this->data->user = $this->©user_utils->which($this->data->user);
+					if(property_exists($this->data, 'user'))
+						$this->data->user = $this->©user_utils->which($this->data->user);
 
-							if(isset($this->data->errors) && $this->©errors->instance_in($this->data->errors))
-								$this->errors = $this->data->errors;
+					if(isset($this->data->errors) && $this->©errors->instance_in($this->data->errors))
+						$this->errors = $this->data->errors;
 
-							if(isset($this->data->successes) && $this->©successes->instance_in($this->data->successes))
-								$this->successes = $this->data->successes;
+					if(isset($this->data->successes) && $this->©successes->instance_in($this->data->successes))
+						$this->successes = $this->data->successes;
 
-							if(isset($this->data->messages) && $this->©messages->instance_in($this->data->messages))
-								$this->messages = $this->data->messages;
-						}
+					if(isset($this->data->messages) && $this->©messages->instance_in($this->data->messages))
+						$this->messages = $this->data->messages;
+
 					return $this->data; // Object properties.
 				}
 

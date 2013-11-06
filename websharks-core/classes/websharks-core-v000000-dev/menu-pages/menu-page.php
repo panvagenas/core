@@ -484,7 +484,7 @@ namespace websharks_core_v000000_dev\menu_pages
 
 					$this->©options->update(array('menu_pages.panels.order' => $order));
 
-					$this->©action->set_call_data_for('©menu_pages__menu_page.®update_content_panels_order', get_defined_vars());
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 				}
 
 			/**
@@ -522,7 +522,7 @@ namespace websharks_core_v000000_dev\menu_pages
 
 					$this->©options->update(array('menu_pages.panels.state' => $state));
 
-					$this->©action->set_call_data_for('©menu_pages__menu_page.®update_content_panels_state', get_defined_vars());
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 				}
 
 			/**
@@ -684,7 +684,7 @@ namespace websharks_core_v000000_dev\menu_pages
 
 					$this->©options->update(array('menu_pages.panels.order' => $order));
 
-					$this->©action->set_call_data_for('©menu_pages__menu_page.®update_sidebar_panels_order', get_defined_vars());
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 				}
 
 			/**
@@ -735,7 +735,7 @@ namespace websharks_core_v000000_dev\menu_pages
 
 					$this->©options->update(array('menu_pages.panels.state' => $state));
 
-					$this->©action->set_call_data_for('©menu_pages__menu_page.®update_sidebar_panels_state', get_defined_vars());
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 				}
 
 			/**

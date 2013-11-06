@@ -140,7 +140,7 @@ namespace websharks_core_v000000_dev
 						'mail.smtp.from_addr'                                => get_bloginfo('admin_email'),
 						'mail.smtp.host'                                     => '',
 						'mail.smtp.port'                                     => '0',
-						'mail.smtp.secure'                                   => '',
+						'mail.smtp.secure'                                   => '', // tls or ssl
 						'mail.smtp.username'                                 => '',
 						'mail.smtp.password'                                 => '',
 

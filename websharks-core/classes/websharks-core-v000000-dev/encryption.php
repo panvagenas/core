@@ -33,9 +33,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments lists.
 			 * @throws exception If unable to obtain a valid encryption key, by any means.
-			 *
-			 * @assert ('key') === 'key'
-			 * @assert () !empty TRUE
 			 */
 			public function key($key = '')
 				{
@@ -103,8 +100,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments lists.
 			 * @throws exception If string encryption fails.
-			 *
-			 * @assert ('hello') !empty TRUE
 			 */
 			public function encrypt($string, $key = '', $w_md5_cs = TRUE)
 				{
@@ -156,24 +151,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments lists.
 			 * @throws exception If a validated RIJNDAEL 256 string decryption fails.
-			 *
-			 * @assert $e = $this->object->encrypt('hello');
-			 *    ($e) === 'hello'
-			 *
-			 * @assert $e = $this->object->encrypt('hello+there');
-			 *    ($e) === 'hello+there'
-			 *
-			 * @assert $e = $this->object->encrypt('hello+there', 'caldwell.jason.key');
-			 *    ($e, 'caldwell.jason.key') === 'hello+there'
-			 *
-			 * @assert $e = $this->object->encrypt('hello+there', 'caldwell.jason.key');
-			 *    ($e, 'caldwell.jason.different.key') === ''
-			 *
-			 * @assert $e = $this->object->encrypt('hello+there', 'caldwell.jason.key');
-			 *    ('hello', 'caldwell.jason.different.key') === ''
-			 *
-			 * @assert $e = $this->object->encrypt('hello+there', 'caldwell.jason.key');
-			 *    ('hello', 'caldwell.jason.key') === ''
 			 */
 			public function decrypt($base64, $key = '')
 				{
@@ -223,8 +200,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments lists.
 			 * @throws exception If string encryption fails.
-			 *
-			 * @assert ('hello') !empty TRUE
 			 */
 			public function xencrypt($string, $key = '', $w_md5_cs = TRUE)
 				{
@@ -271,29 +246,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments lists.
 			 * @throws exception If a validated XOR string decryption fails.
-			 *
-			 * @assert $e = $this->object->xencrypt('hello');
-			 *    ($e) === 'hello'
-			 *
-			 * @assert $e = $this->object->xencrypt('hello+there');
-			 *    ($e) === 'hello+there'
-			 *
-			 * @assert $e = $this->object->xencrypt('hello+there', 'caldwell.jason.key');
-			 *    ($e, 'caldwell.jason.key') === 'hello+there'
-			 *
-			 * @assert $e = $this->object->xencrypt('hello+there', 'caldwell.jason.key');
-			 * // WARNING, this still decrypts, because the key is close enough, for the length of 'hello+there'.
-			 *    ($e, 'caldwell.jason.different.key') === 'hello+there'
-			 *
-			 * @assert $e = $this->object->xencrypt('hello+there', 'caldwell.jason.key');
-			 * // This works as expected, the key is different enough, for the length of 'hello+there'.
-			 *    ($e, 'a.different.key') === ''
-			 *
-			 * @assert $e = $this->object->xencrypt('hello+there', 'caldwell.jason.key');
-			 *    ('hello', 'caldwell.jason.different.key') === ''
-			 *
-			 * @assert $e = $this->object->xencrypt('hello+there', 'caldwell.jason.key');
-			 *    ('hello', 'caldwell.jason.key') === ''
 			 */
 			public function xdecrypt($base64, $key = '')
 				{
@@ -395,8 +347,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$openssl`` is empty.
-			 *
-			 * @assert ('hello') !empty TRUE
 			 */
 			public function _rsa_sha1_shell_sign($string, $key = '', $openssl = 'openssl')
 				{
@@ -429,14 +379,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments lists.
 			 *
 			 * @see http://www.faqs.org/qa/qa-14736.html
-			 *
-			 * @assert ('hello') === '-----BEGIN RSA PRIVATE KEY-----'."\n".'hello'."\n".'-----END RSA PRIVATE KEY-----'
-			 * @assert ('-----BEGIN RSA PRIVATE KEY-----."\n".'hello') === '-----BEGIN RSA PRIVATE KEY-----'."\n".'hello'."\n".'-----END RSA PRIVATE KEY-----'
-			 * @assert ('hello'."\n".'-----END RSA PRIVATE KEY-----') === '-----BEGIN RSA PRIVATE KEY-----'."\n".'hello'."\n".'-----END RSA PRIVATE KEY-----'
-			 *
-			 * @assert $invalid_key = '-----INVALID-----'."\n".'hello'."\n".'-----INVALID-----';
-			 * // WARNING: We do NOT fix keys with more than two boundary lines (i.e. with multiple signatures).
-			 *    ($invalid_key."\n\n".$invalid_key) === $invalid_key."\n\n".$invalid_key
 			 */
 			public function _rsa_sha1_key_fix_wrappers($key)
 				{

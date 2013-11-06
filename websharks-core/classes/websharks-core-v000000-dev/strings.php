@@ -766,6 +766,36 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Converts char counts into a string of chars.
+			 *
+			 * @param array   $char_counts An array of char counts. See {@link count_chars()}.
+			 *
+			 * @param boolean $key_is_ascii_code Optional. Defaults to a TRUE value. See {@link count_chars()}.
+			 *    If this is FALSE, each array key is treated as the char value, instead of an ASCII code.
+			 *
+			 * @return string String of all chars; in order of the underlying array keys. Ex: `aabbcdeffgg...`.
+			 *    PHP's {@link count_chars()} function returns a list of ASCII codes in ascending order.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function chars($char_counts, $key_is_ascii_code = TRUE)
+				{
+					$this->check_arg_types('array', 'boolean', func_get_args());
+
+					$chars = ''; // Initialize chars we're building below.
+
+					foreach($char_counts as $_key => $_count)
+						{
+							if($key_is_ascii_code) // See {@link count_chars()}.
+								$chars .= str_repeat(chr((integer)$_key), (integer)$_count);
+							else $chars .= str_repeat((string)$_key, (integer)$_count);
+						}
+					unset($_key, $_count); // Housekeeping.
+
+					return $chars; // Ex: aabbcdeffgg...
+				}
+
+			/**
 			 * Match a regex pattern against other values.
 			 *
 			 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
@@ -1760,8 +1790,11 @@ namespace websharks_core_v000000_dev
 
 							return $this->trim_deep($value, $chars, $extra_chars);
 						}
-					$whitespace = implode('|', array_keys($this->html_whitespace));
-					$value      = preg_replace('/^(?:'.$whitespace.')+|(?:'.$whitespace.')+$/', '', (string)$value);
+					if(!isset($this->static[__FUNCTION__.'_whitespace']))
+						$this->static[__FUNCTION__.'_whitespace'] = implode('|', array_keys($this->html_whitespace));
+					$whitespace =& $this->static[__FUNCTION__.'_whitespace']; // Shorter reference.
+
+					$value = preg_replace('/^(?:'.$whitespace.')+|(?:'.$whitespace.')+$/', '', (string)$value);
 
 					return $this->trim_deep($value, $chars, $extra_chars);
 				}

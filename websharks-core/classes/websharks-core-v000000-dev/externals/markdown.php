@@ -11,12 +11,12 @@
 */
 namespace websharks_core_v000000_dev\externals;
 
-if(!defined('WPINC'))
+if(!defined('WPINC')) // MUST have WordPress.
 	exit('Do NOT access this file directly: '.basename(__FILE__));
 
 class markdown // Base class for Markdown Extra!
 {
-	const  MARKDOWNLIB_VERSION  =  "1.3-rc2";
+	const  MARKDOWNLIB_VERSION  =  "1.3";
 
 	### Simple Function Interface ###
 

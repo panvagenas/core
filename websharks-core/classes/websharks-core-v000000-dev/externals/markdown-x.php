@@ -11,8 +11,11 @@
 */
 namespace websharks_core_v000000_dev\externals;
 
-if(!defined('WPINC'))
+if(!defined('WPINC')) // MUST have WordPress.
 	exit('Do NOT access this file directly: '.basename(__FILE__));
+
+if(!class_exists('\\websharks_core_v000000_dev\\autoloader'))
+	require_once dirname(__FILE__).'/markdown.php'; // Base class.
 
 class markdown_x extends markdown // Markdown Extra!
 {
@@ -336,7 +339,7 @@ class markdown_x extends markdown // Markdown Extra!
 				|
 					# Fenced code block marker
 					(?<= ^ | \n )
-					[ ]{0,'.($indent+3).'}~{3,}
+					[ ]{0,'.($indent+3).'}(?:~{3,}|`{3,})
 									[ ]*
 					(?:
 					\.?[-_:a-zA-Z0-9]+ # standalone class name
@@ -408,7 +411,7 @@ class markdown_x extends markdown // Markdown Extra!
 			#
 			# Check for: Fenced code block marker.
 			#
-			else if (preg_match('{^\n?([ ]{0,'.($indent+3).'})(~+)}', $tag, $capture)) {
+			else if (preg_match('{^\n?([ ]{0,'.($indent+3).'})(~+|`+)}', $tag, $capture)) {
 				# Fenced code block marker: find matching end marker.
 				$fence_indent = strlen($capture[1]); # use captured indent in re
 				$fence_re = $capture[2]; # use captured fence in re
@@ -1257,7 +1260,7 @@ class markdown_x extends markdown // Markdown Extra!
 				(?:\n|\A)
 				# 1: Opening marker
 				(
-					~{3,} # Marker: three tilde or more.
+					(?:~{3,}|`{3,}) # 3 or more tildes/backticks.
 				)
 				[ ]*
 				(?:

@@ -205,7 +205,7 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Generates a link that performs a dynamic `©class.®method` action call.
+			 * Generates a link/URL that performs a dynamic `©class.®method` action call.
 			 *
 			 * @param string  $call A dynamic `©class.®method` action call that we need to make.
 			 *
@@ -252,9 +252,9 @@ namespace websharks_core_v000000_dev
 			 *    Defaults to the computed ``$expires_after`` value. Set this to override the default value. Set to `-1` for no link expiration time.
 			 *    Note: it is usually NOT necessary to pass this value in, because it's synchronized with ``$expires_after``.
 			 *
-			 * @return string Link for a dynamic `©class.®method` action call (using an action key, or with array elements in the link itself).
+			 * @return string Link/URL for a dynamic `©class.®method` action call (using an action key, or with array elements in the URL).
 			 *
-			 * @security-note Exposing this link can lead to a security issue.
+			 * @security-note Exposing this URL can lead to a security issue.
 			 *    NEVER call upon this method without first checking permissions/capabilities.
 			 *    A different capability might be required for any given action call.
 			 *
@@ -263,35 +263,45 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$call`` is NOT a valid dynamic `©class.®method` action call.
 			 * @throws exception If ``$type`` is NOT a valid type.
 			 */
-			public function link_for_call($call, $type, $args = array(), $expires_after = 0, $base = '', $use_action_key = TRUE, $action_key_expires_after = 0)
+			public function url_for_call($call, $type, $args = array(), $expires_after = 0, $base = '',
+			                             $use_action_key = TRUE, $action_key_expires_after = 0)
 				{
-					$this->check_arg_types('string:!empty', 'string:!empty', 'array', 'integer', 'string', 'boolean', 'integer', func_get_args());
+					$this->check_arg_types('string:!empty', 'string:!empty', // Others optional :-)
+					                       'array', 'integer', 'string', 'boolean', 'integer', func_get_args());
 
 					if(!$this->is_dynamic_call($call))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_call', get_defined_vars(),
 							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
-					if($type === $this::public_type)
-						{
-							if($action_key_expires_after === 0)
-								$action_key_expires_after = -1;
-						}
-					else if($type === $this::protected_type)
-						{
-							if($action_key_expires_after === 0)
-								if($expires_after > 0)
-									$action_key_expires_after = $expires_after;
-								else $action_key_expires_after = 604800;
-						}
-					else if($type === $this::private_type)
-						{
-							if($action_key_expires_after === 0)
-								if($expires_after > 0)
-									$action_key_expires_after = $expires_after;
-								else $action_key_expires_after = 86400;
-						}
-					$base = ($base) ? $base : $this->©url->to_wp_home_uri();
+					switch($type) // Action key expiration time (based on type).
+					{
+						case $this::public_type: // Does NOT expire.
+
+								if($action_key_expires_after === 0)
+									$action_key_expires_after = -1;
+
+								break; // Break switch handler.
+
+						case $this::protected_type: // In 7 days.
+
+								if($action_key_expires_after === 0)
+									if($expires_after > 0) // Automatically.
+										$action_key_expires_after = $expires_after;
+									else $action_key_expires_after = 604800;
+
+								break; // Break switch handler.
+
+						case $this::private_type: // In 24 hours.
+
+								if($action_key_expires_after === 0)
+									if($expires_after > 0) // Automatically.
+										$action_key_expires_after = $expires_after;
+									else $action_key_expires_after = 86400;
+
+								break; // Break switch handler.
+					}
+					if(!$base) $base = $this->©url->to_wp_home_uri();
 
 					$query_args['a']['s'] = 'call'; // This IS a `call`.
 					$query_args['a']['c'] = $call; // Dynamic `©class.®method`.
@@ -430,7 +440,7 @@ namespace websharks_core_v000000_dev
 
 					switch($type) // Handles verification (based on `call` action type).
 					{
-						case $this::public_type: // Does NOT include ``$expiration_time-``. Does NOT expire.
+						case $this::public_type: // No ``$expiration_time-``. Does NOT expire.
 
 								if($verifier === $this->get_call_verifier($call, $type))
 									return TRUE; // Simple enough (this looks OK).
@@ -446,7 +456,7 @@ namespace websharks_core_v000000_dev
 
 								break; // Break (unable to verify).
 
-						case $this::private_type: // Requires user, and an ``$expiration_time-``.
+						case $this::private_type: // Requires user & an ``$expiration_time-``.
 
 								if($this->©user->is_logged_in()) // Requires a logged-in user w/ an ID.
 									// Verifier includes a user ID (it MUST match up with the current user).
@@ -571,7 +581,7 @@ namespace websharks_core_v000000_dev
 
 								return $expiration_time.'-'.$this->©encryption->hmac_sha1_sign($call.$type.$this->©user->ID.$expiration_time);
 					}
-					throw $this->©exception(
+					throw $this->©exception( // Should NOT happen!
 						$this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
 						$this->i18n('Invalid `$type`. Expecting `$this::public_type|$this::protected_type|$this::private_type`.').
 						sprintf($this->i18n(' Got: `%1$s`.'), $type)
@@ -660,13 +670,12 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', array('array', 'object'), 'string', func_get_args());
 
-					$structured_data = $this->parse_call_data($data); // Into a structured object.
-					$group           = ($group) ? $group : $call; // Defaults to same value as ``$call``.
+					$structured_data = $this->parse_call_data($data); // Structured object.
+					$group           = ($group) ? $group : $call; // Defaults to ``$call`` value.
 
 					if(!$this->is_dynamic_call($call))
-						throw $this->©exception(
-							$this->method(__FUNCTION__).'#invalid_call', get_defined_vars(),
-							sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
+						throw $this->©exception($this->method(__FUNCTION__).'#invalid_call', get_defined_vars(),
+						                        sprintf($this->i18n('Invalid dynamic `$call` action: `%1$s`.'), $call)
 						);
 					$this->call_data_for[$group][$call] = $structured_data;
 				}
@@ -682,52 +691,46 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types(array('array', 'object'), func_get_args());
 
-					// New structured data.
-
-					$structured_data = new \stdClass();
-
-					// Default property values.
-
-					$structured_data->errors    = NULL;
-					$structured_data->successes = NULL;
-					$structured_data->messages  = NULL;
-					$structured_data->data      = NULL;
-
-					// Fills structured data properties.
+					$structured_data         = new \stdClass();
+					$structured_data->errors = $structured_data->successes // Defaults.
+						= $structured_data->messages = $structured_data->data = NULL;
 
 					if($data && $this->©errors->instance_in($data))
 						{
 							$structured_data->errors = $data;
 							$structured_data->data   = new \stdClass();
+
+							return $structured_data; // Object properties.
 						}
-					else if($data && $this->©successes->instance_in($data))
+					if($data && $this->©successes->instance_in($data))
 						{
 							$structured_data->successes = $data;
 							$structured_data->data      = new \stdClass();
+
+							return $structured_data; // Object properties.
 						}
-					else if($data && $this->©messages->instance_in($data))
+					if($data && $this->©messages->instance_in($data))
 						{
 							$structured_data->messages = $data;
 							$structured_data->data     = new \stdClass();
+
+							return $structured_data; // Object properties.
 						}
-					else // It's an array and/or object value of another type.
-						{
-							$structured_data->data = (object)$data; // Object value.
+					$structured_data->data = (object)$data; // Array/object of another type.
 
-							if(isset($structured_data->data->user))
-								$structured_data->data->user = $this->©user_utils->which($structured_data->data->user);
+					if(property_exists($structured_data->data, 'user'))
+						$structured_data->data->user = $this->©user_utils->which($structured_data->data->user);
 
-							if(isset($structured_data->data->errors) && $this->©errors->instance_in($structured_data->data->errors))
-								$structured_data->errors = $structured_data->data->errors;
+					if(isset($structured_data->data->errors) && $this->©errors->instance_in($structured_data->data->errors))
+						$structured_data->errors = $structured_data->data->errors;
 
-							if(isset($structured_data->data->successes) && $this->©successes->instance_in($structured_data->data->successes))
-								$structured_data->successes = $structured_data->data->successes;
+					if(isset($structured_data->data->successes) && $this->©successes->instance_in($structured_data->data->successes))
+						$structured_data->successes = $structured_data->data->successes;
 
-							if(isset($structured_data->data->messages) && $this->©messages->instance_in($structured_data->data->messages))
-								$structured_data->messages = $structured_data->data->messages;
-						}
-					// Returns a structured data object instance.
-					return $structured_data; // Properties in `$structured_data->data`.
+					if(isset($structured_data->data->messages) && $this->©messages->instance_in($structured_data->data->messages))
+						$structured_data->messages = $structured_data->data->messages;
+
+					return $structured_data; // Object properties.
 				}
 
 			/**
@@ -766,7 +769,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					$group = ($group) ? $group : $call; // Defaults to ``$call``.
+					$group = ($group) ? $group : $call; // Defaults to ``$call`` value.
 
 					if(isset($this->call_data_for[$group][$call]->data))
 						return $this->call_data_for[$group][$call]->data;
@@ -780,8 +783,8 @@ namespace websharks_core_v000000_dev
 			 * @param string $call A dynamic `©class.®method` action call that we need to check on.
 			 * @param string $group Optional. A call action group (defaults to ``$call``).
 			 *
-			 * @return boolean TRUE if this `call` action has errors.
-			 *    Otherwise, this returns a FALSE value.
+			 * @return errors|boolean Errors if this `call` action has errors.
+			 *    Otherwise, this returns a boolean FALSE value.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$call`` is empty.
@@ -790,11 +793,11 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					$group = ($group) ? $group : $call; // Defaults to ``$call``.
+					$group = ($group) ? $group : $call; // Defaults to ``$call`` value.
 
 					if(isset($this->call_data_for[$group][$call]->errors)
 					   && $this->©errors->exist_in($this->call_data_for[$group][$call]->errors)
-					) return TRUE; // Yes.
+					) return $this->call_data_for[$group][$call]->errors;
 
 					return FALSE; // Default return value.
 				}
@@ -805,8 +808,8 @@ namespace websharks_core_v000000_dev
 			 * @param string $call A dynamic `©class.®method` action call that we need to check on.
 			 * @param string $group Optional. A call action group (defaults to ``$call``).
 			 *
-			 * @return boolean TRUE if this `call` action has successes.
-			 *    Otherwise, this returns a FALSE value.
+			 * @return successes|boolean Successes if this `call` action has successes.
+			 *    Otherwise, this returns a boolean FALSE value.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$call`` is empty.
@@ -815,11 +818,11 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					$group = ($group) ? $group : $call; // Defaults to ``$call``.
+					$group = ($group) ? $group : $call; // Defaults to ``$call`` value.
 
 					if(isset($this->call_data_for[$group][$call]->successes)
 					   && $this->©successes->exist_in($this->call_data_for[$group][$call]->successes)
-					) return TRUE; // Yes.
+					) return $this->call_data_for[$group][$call]->successes;
 
 					return FALSE; // Default return value.
 				}
@@ -830,8 +833,8 @@ namespace websharks_core_v000000_dev
 			 * @param string $call A dynamic `©class.®method` action call that we need to check on.
 			 * @param string $group Optional. A call action group (defaults to ``$call``).
 			 *
-			 * @return boolean TRUE if this `call` action has messages.
-			 *    Otherwise, this returns a FALSE value.
+			 * @return messages|boolean Messages if this `call` action has messages.
+			 *    Otherwise, this returns a boolean FALSE value.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If ``$call`` is empty.
@@ -840,11 +843,11 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					$group = ($group) ? $group : $call; // Defaults to ``$call``.
+					$group = ($group) ? $group : $call; // Defaults to ``$call`` value.
 
 					if(isset($this->call_data_for[$group][$call]->messages)
 					   && $this->©messages->exist_in($this->call_data_for[$group][$call]->messages)
-					) return TRUE; // Yes.
+					) return $this->call_data_for[$group][$call]->messages;
 
 					return FALSE; // Default return value.
 				}
@@ -865,7 +868,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					$group = ($group) ? $group : $call; // Defaults to ``$call``.
+					$group = ($group) ? $group : $call; // Defaults to ``$call`` value.
 
 					if($this->has_call_data_errors_for($call, $group)
 					   || $this->has_call_data_successes_for($call, $group)
@@ -892,51 +895,31 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-					$responses = ''; // Initialize.
-					$group     = ($group) ? $group : $call; // Defaults to ``$call``.
+					$group = ($group) ? $group : $call; // Defaults to ``$call`` value.
 
-					if($this->has_call_data_responses_for($call, $group) && isset($this->call_data_for[$group][$call]))
-						{
-							$structured_data = $this->call_data_for[$group][$call];
+					if(!$this->has_call_data_responses_for($call, $group)) return ''; // Nothing.
 
-							if($this->has_call_data_errors_for($call, $group))
-								{
-									$prefix = '<span class="ui-icon ui-icon-alert"></span>';
+					$responses = ''; // Initialize responses (as HTML markup).
 
-									$errors = $structured_data->errors;
-									/** @var $errors errors */
+					if(($errors = $this->has_call_data_errors_for($call, $group)))
+						$responses .= // Errors (as HTML markup). Also w/ a specific icon.
+							'<div class="responses errors ui-widget ui-corner-all ui-state-error">'.
+							'<ul>'.$errors->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-alert"></span>').'</ul>'.
+							'</div>';
 
-									$responses .= // Errors.
-										'<div class="responses errors ui-widget ui-corner-all ui-state-error">'.
-										'<ul>'.$errors->get_messages_as_list_items('', 0, $prefix).'</ul>'.
-										'</div>';
-								}
-							if($this->has_call_data_successes_for($call, $group))
-								{
-									$prefix = '<span class="ui-icon ui-icon-check"></span>';
+					if(($successes = $this->has_call_data_successes_for($call, $group)))
+						$responses .= // Successes (as HTML markup). Also w/ a specific icon.
+							'<div class="responses successes ui-widget ui-corner-all ui-state-highlight">'.
+							'<ul>'.$successes->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-check"></span>').'</ul>'.
+							'</div>';
 
-									$successes = $structured_data->successes;
-									/** @var $successes successes */
+					if(($messages = $this->has_call_data_messages_for($call, $group)))
+						$responses .= // Messages (as HTML markup). Also w/ a specific icon.
+							'<div class="responses messages ui-widget ui-corner-all ui-state-highlight">'.
+							'<ul>'.$messages->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-info"></span>').'</ul>'.
+							'</div>';
 
-									$responses .= // Successes.
-										'<div class="responses successes ui-widget ui-corner-all ui-state-highlight">'.
-										'<ul>'.$successes->get_messages_as_list_items('', 0, $prefix).'</ul>'.
-										'</div>';
-								}
-							if($this->has_call_data_messages_for($call, $group))
-								{
-									$prefix = '<span class="ui-icon ui-icon-info"></span>';
-
-									$messages = $structured_data->messages;
-									/** @var $messages messages */
-
-									$responses .= // Messages.
-										'<div class="responses messages ui-widget ui-corner-all ui-state-highlight">'.
-										'<ul>'.$messages->get_messages_as_list_items('', 0, $prefix).'</ul>'.
-										'</div>';
-								}
-						}
-					return $responses; // All types of responses.
+					return $responses; // All types of responses (as HTML markup).
 				}
 		}
 	}

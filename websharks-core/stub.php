@@ -1,4 +1,19 @@
 <?php
+/*                                                                                      a
+                                                                                       aaa
+                                                                                      aaaaa
+                                                              hhhh        hhhh       aaa aaa        rrrrrrrr
+                                                  sssssss     hhhh        hhhh      aaaa aaaa      rrrrrrrrrrr    kkkk
+www        w        ww eeeeeeeee  bbbbbbbb      sssssssssss   hhhh        hhhh     aaaa   aaaa     rrrr   rrrrr   kkkk     kkk      ssss
+ www      www      www eeeeeeeee  bbbbbbbbb    sssss    sss   hhhh        hhhh    aaaaa   aaaaa    rrrr   rrrrr   kkkk   kkkkk   sssssssss
+  www    wwwww    www  eee        bbb   bbb     sssss         hhhhhhhhhhhhhhhh   aaaaa     aaaaa   rrrrrrrrrr     kkkk  kkkk     ssss  sss
+   www  www www  www   eeeeeeeee  bbbbbbbb       ssssssss     hhhhhhhhhhhhhhhh  aaaaaaaaaaaaaaaaa  rrrrrrrr       kkkkkkkkk      sssss
+    www ww   ww www    eeeeeeeee  bbbbbbbbbb        sssssss   hhhh        hhhh aaaaaaaaaaaaaaaaaaa rrrrrrrrr      kkkkkkkk        ssssssss
+     wwww     wwww     eee        bbb    bbb            ssss  hhhh        hhhh aaaaa         aaaaa rrrr  rrrr     kkkk kkkkk          sssss
+      ww       ww      eeeeeeeee  bbbbbbbbbb   ssss     ssss  hhhh        hhhh aaaa           aaaa rrrr   rrrrr   kkkk  kkkkk   sss     sss
+      ww       ww      eeeeeeeee  bbbbbbbb     sssssssssssss  hhhh        hhhh aaa             aaa rrrr    rrrrr  kkkk    kkkkk sssssssssss
+                                                 ssssssss     hhhh        hhhh aa               aa rrrr      rrrr kkkk     kkkk   sssssss
+     wswswswswswswswswswswswswswswswswsws                                                                                               ®*/
 /**
  * Stub: WebSharks™ Core.
  *
@@ -60,7 +75,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @note For internal/development use only.
 			 */
-			public static $local_wp_dev_dir = 'E:/EasyPHP/wordpress';
+			public static $local_wp_dev_dir = 'e:/easyphp/wordpress.loc';
 
 			/**
 			 * Local WebSharks™ Core repo directory.
@@ -69,7 +84,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @note For internal/development use only.
 			 */
-			public static $local_core_repo_dir = 'E:/WebSharks/core';
+			public static $local_core_repo_dir = 'e:/websharks/core';
 
 			/**
 			 * WebSharks™ Core stub.

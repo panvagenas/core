@@ -81,6 +81,7 @@ namespace # Global namespace.
 		class websharks_core__forms extends \websharks_core_v000000_dev\forms{}
 		class websharks_core__framework extends \websharks_core_v000000_dev\framework{}
 		class websharks_core__functions extends \websharks_core_v000000_dev\functions{}
+		class websharks_core__gmp extends \websharks_core_v000000_dev\gmp{}
 		class websharks_core__headers extends \websharks_core_v000000_dev\headers{}
 		class websharks_core__html_minifier extends \websharks_core_v000000_dev\html_minifier{}
 		class websharks_core__initializer extends \websharks_core_v000000_dev\initializer{}

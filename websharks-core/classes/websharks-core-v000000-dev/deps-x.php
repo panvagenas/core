@@ -87,7 +87,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *
 	 * @note For internal/development use only.
 	 */
-	protected static $local_wp_dev_dir = 'E:/EasyPHP/wordpress';
+	protected static $local_wp_dev_dir = 'e:/easyphp/wordpress.loc';
 
 	/**
 	 * A static cache (for all instances).

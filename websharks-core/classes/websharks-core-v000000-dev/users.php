@@ -984,14 +984,11 @@ namespace websharks_core_v000000_dev
 					if($this->©errors->exist_in($response = $this->update($args, $optional_requirements)))
 						$errors = $response; // Define ``$errors`` for template.
 
-					else // We have success. Profile now up-to-date.
-						{
-							$successes = $this->©success(
-								$this->method(__FUNCTION__).'#success', array_merge(get_defined_vars(), array('user' => $this)),
-								$this->translate('Profile updated successfully.')
-							);
-						}
-					$this->©action->set_call_data_for('©users.®profile_update', array_merge(get_defined_vars(), array('user' => $this)));
+					else $successes = $this->©success( // We have success. Profile now up-to-date :-)
+						$this->method(__FUNCTION__).'#success', array_merge(get_defined_vars(), array('user' => $this)),
+						$this->translate('Profile updated successfully.'));
+
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), array_merge(get_defined_vars(), array('user' => $this)));
 				}
 
 			/**
@@ -1027,14 +1024,11 @@ namespace websharks_core_v000000_dev
 					if($this->©errors->exist_in($response = $this->update($args, $optional_requirements)))
 						$errors = $response; // Define ``$errors`` for template use.
 
-					else // We have success. The user's profile has been updated.
-						{
-							$successes = $this->©success(
-								$this->method(__FUNCTION__).'#success', array_merge(get_defined_vars(), array('user' => $this)),
-								$this->i18n('User updated successfully.')
-							);
-						}
-					$this->©action->set_call_data_for('©users.®update', array_merge(get_defined_vars(), array('user' => $this)));
+					else $successes = $this->©success( // We have success. The user's profile has been updated :-)
+						$this->method(__FUNCTION__).'#success', array_merge(get_defined_vars(), array('user' => $this)),
+						$this->i18n('User updated successfully.'));
+
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), array_merge(get_defined_vars(), array('user' => $this)));
 				}
 
 			/**

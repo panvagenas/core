@@ -737,18 +737,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
 			 * @see {@link http://www.php.net/manual/en/language.types.integer.php#language.types.integer.casting}
-			 *
-			 * @assert (NULL) === 0
-			 * @assert ('1') === 1
-			 * @assert ('1.0') === 1
-			 * @assert ('1.23') === 1
-			 * @assert (TRUE) === 1
-			 * @assert (FALSE) === 0
-			 * @assert ('hello') === 0
-			 * @assert (1.0) === 1
-			 * @assert (1.7) === 1
-			 *
-			 * @assert (array(1.2)) === 1
 			 */
 			public function ify($value)
 				{
@@ -771,20 +759,6 @@ namespace websharks_core_v000000_dev
 			 * @return integer|array|object Intified value, array, or an object.
 			 *
 			 * @see {@link http://www.php.net/manual/en/language.types.integer.php#language.types.integer.casting}
-			 *
-			 * @assert (NULL) === 0
-			 * @assert ('1') === 1
-			 * @assert ('1.0') === 1
-			 * @assert ('1.23') === 1
-			 * @assert (TRUE) === 1
-			 * @assert (FALSE) === 0
-			 * @assert ('hello') === 0
-			 * @assert (1.0) === 1
-			 * @assert (1.7) === 1
-			 * @assert (array(array(1), array(TRUE), array(FALSE))) === array(array(1), array(1), array(0))
-			 * @assert (array(array(1), array(2.30))) === array(array(1), array(2))
-			 * @assert $obj = new \stdClass(); $obj->prop = '1'; // Prop converts to integer.
-			 *    (array(array('hello'), array($obj))) === array(array(0), array($obj))
 			 */
 			public function ify_deep($value)
 				{
@@ -797,6 +771,107 @@ namespace websharks_core_v000000_dev
 							return $value;
 						}
 					return (integer)$value;
+				}
+
+			/**
+			 * Finds the next highest power of 2 :-)
+			 *
+			 * @param integer $integer Any input integer value.
+			 *
+			 * @return integer Next highest power of 2.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function next_power_of_2($integer)
+				{
+					$this->check_arg_types('integer', func_get_args());
+
+					if($integer <= 2) return 2;
+					if($this->is_power_of_2($integer))
+						return $integer;
+
+					while(($integer_lsb = $integer & ($integer - 1)))
+						$integer = $integer_lsb; // Minus LSB ;-)
+					return ($power_of_2 = $integer << 1);
+				}
+
+			/**
+			 * Checks if an integer is already a power of 2.
+			 *
+			 * @param integer $integer Any input integer value.
+			 *
+			 * @return boolean TRUE if it's a power of 2.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function is_power_of_2($integer)
+				{
+					$this->check_arg_types('integer', func_get_args());
+
+					return !($integer & ($integer - 1));
+				}
+
+			/**
+			 * Calculates percentage value.
+			 *
+			 * @param integer|float $value Amount/value to calculate.
+			 *
+			 * @param integer|float $of Percentage of what? Defaults to `100`.
+			 *    NOTE: This value may NOT be empty. That's not possible to calculate.
+			 *
+			 * @param integer       $precision Optional. Defaults to `0`; no decimal place.
+			 *
+			 * @param boolean       $format_string Optional. Defaults to a FALSE value.
+			 *    If this is TRUE, a string is returned; and it is formatted (e.g. `[percent]%`).
+			 *
+			 * @return integer|float Percentage. A float if ``$precision`` is passed; else an integer (default behavior).
+			 *    If ``$format_string`` is TRUE, the value is always converted to string format (e.g. `[percent]%`).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$of`` is empty (e.g. NOT possible to calculate).
+			 */
+			public function percent($value, $of = 100, $precision = 0, $format_string = FALSE)
+				{
+					$this->check_arg_types(array('integer', 'float'), array('integer:!empty', 'float:!empty'), 'integer', 'boolean', func_get_args());
+
+					$percent = number_format(($value / $of) * 100, $precision, '.', '');
+					$percent = ($precision) ? (float)$percent : (integer)$percent;
+
+					if($format_string) // Format (e.g. add suffix)?
+						$percent .= '%';
+
+					return $percent;
+				}
+
+			/**
+			 * Calculates percentage difference.
+			 *
+			 * @param integer|float $from Amount to calculate from.
+			 *
+			 * @param integer|float $to Amount to calculate (e.g. the value now).
+			 *
+			 * @param integer       $precision Optional. Defaults to `0`; no decimal place.
+			 *
+			 * @param boolean       $format_string Optional. Defaults to a FALSE value.
+			 *    If this is TRUE, a string is returned; and it is formatted (e.g. `+|-[percent]%`).
+			 *
+			 * @return integer|float|string Percentage. A float if ``$precision`` is passed; else an integer (default behavior).
+			 *    If ``$format_string`` is TRUE, the value is always converted to string format (e.g. `+|-[percent]%`).
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 */
+			public function percent_diff($from, $to, $precision = 0, $format_string = FALSE)
+				{
+					$this->check_arg_types(array('integer', 'float'), array('integer', 'float'), 'integer', 'boolean', func_get_args());
+
+					if(!$from) $from++ & $to++; // Stop division by `0`.
+					$percent = number_format(($to - $from) * 100 / $from, $precision, '.', '');
+					$percent = ($precision) ? (float)$percent : (integer)$percent;
+
+					if($format_string) // Format return value (e.g. add a prefix/suffix)?
+						$percent = ($percent > 0) ? '+'.$percent.'%' : $percent.'%';
+
+					return $percent;
 				}
 		}
 	}

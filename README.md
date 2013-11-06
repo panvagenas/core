@@ -1,4 +1,4 @@
-# WebSharks™ Core
+## WebSharks™ Core
 
 #### The WebSharks™ Core framework (for WordPress®)
 

@@ -226,6 +226,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param float   $bytes File size in bytes. A (float) value.
 			 *    We need this converted to a (float), so it's possible to deal with numbers beyond that of an integer.
+			 *
 			 * @param integer $precision Number of decimals to use.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.

@@ -145,7 +145,8 @@ namespace websharks_core_v000000_dev
 					try // PHPMailer (catch exceptions).
 						{
 							$mailer = new \PHPMailer(TRUE);
-
+							
+							$mailer->IsMail();
 							$mailer->SingleTo = TRUE;
 							$mailer->CharSet  = 'UTF-8';
 							$mailer->Subject  = $mail['subject'];
@@ -171,6 +172,8 @@ namespace websharks_core_v000000_dev
 
 							if($this->©option->get('mail.smtp')) // Use SMTP server?
 								{
+									$mailer->IsSMTP(); // Flag for SMTP use in this case.
+									
 									$mailer->SMTPSecure = $this->©option->get('mail.smtp.secure');
 									$mailer->Host       = $this->©option->get('mail.smtp.host');
 									$mailer->Port       = (integer)$this->©option->get('mail.smtp.port');

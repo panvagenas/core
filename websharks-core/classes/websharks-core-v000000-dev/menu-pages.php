@@ -206,7 +206,7 @@ namespace websharks_core_v000000_dev
 
 					$this->©options->update(array('menu_pages.theme' => $new_theme));
 
-					$this->©action->set_call_data_for('©menu_pages.®update_theme', get_defined_vars());
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 				}
 
 			/**
@@ -231,11 +231,10 @@ namespace websharks_core_v000000_dev
 					$this->©options->update($new_options, TRUE);
 
 					$this->©notice->enqueue( // Displays in plugin pages only.
-						array(
-						     'notice'   => $this->i18n('<p>Options saved successfully.</p>'),
-						     'on_pages' => array($this->___instance_config->plugin_root_ns_stub.'*')
-						));
-					$this->©action->set_call_data_for('©menu_pages.®update_options', get_defined_vars());
+						array('notice'   => $this->i18n('<p>Options saved successfully.</p>'),
+						      'on_pages' => array($this->___instance_config->plugin_root_ns_stub.'*')));
+
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 				}
 		}
 	}

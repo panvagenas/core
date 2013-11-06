@@ -1097,9 +1097,8 @@ namespace websharks_core_v000000_dev
 								sprintf($this->translate(' Please [CLICK HERE](%1$s) to log in.'), $this->©url->to_wp_login())
 							);
 						}
-					$this->©action->set_call_data_for('©user_utils.®activate', get_defined_vars());
-
 					$this->©headers->clean_status_type(200, 'text/html', TRUE);
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 					exit($this->©template('activation.php', get_defined_vars())->content);
 				}
 
@@ -1128,9 +1127,9 @@ namespace websharks_core_v000000_dev
 							$this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
 							$this->i18n('The `$user` has no ID (cannot send activation email message).')
 						);
-					$activation_key        = $this->©encryption->encrypt($user->ID.'::'.$password);
-					$activation_link       = $this->©action->link_for_call('©user_utils.®activate', $this::protected_type, array($activation_key));
-					$activation_short_link = $this->©url->shorten($activation_link);
+					$activation_key       = $this->©encryption->encrypt($user->ID.'::'.$password);
+					$activation_url       = $this->©action->url_for_call('©user_utils.®activate', $this::protected_type, array($activation_key));
+					$activation_short_url = $this->©url->shorten($activation_url);
 
 					$template = $this->©template('emails/activation.php', get_defined_vars());
 
@@ -1294,7 +1293,7 @@ namespace websharks_core_v000000_dev
 						{
 							$errors = $response; // Set `errors` for template.
 
-							$this->©action->set_call_data_for('©user_utils.®login', get_defined_vars());
+							$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 
 							if((string)$this->©vars->_REQUEST('via_shortcode'))
 								return; // Allow shortcode to handle.
@@ -1329,7 +1328,7 @@ namespace websharks_core_v000000_dev
 							if(force_ssl_admin() && $this->©url->is_in_wp_admin($redirect_to))
 								$redirect_to = $this->©url->set_scheme($redirect_to, 'https');
 
-							$this->©action->set_call_data_for('©user_utils.®login', get_defined_vars());
+							$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 
 							wp_safe_redirect($redirect_to).exit();
 						}
@@ -1353,14 +1352,14 @@ namespace websharks_core_v000000_dev
 
 					$this->©user->logout(); // Logs current user out of WordPress®.
 
-					$this->©action->set_call_data_for('©user_utils.®logout', get_defined_vars());
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 
 					if(($redirect_to = (string)$this->©vars->_REQUEST('redirect_to')))
 						wp_safe_redirect($redirect_to).exit();
 
 					else // Else handle this w/ template display (e.g. a logged-out message).
 						{
-							$messages = $this->©message(
+							$messages = $this->©message( // For template.
 								$this->method(__FUNCTION__).'#logged-out', get_defined_vars(),
 								$this->translate('You are now logged-out.')
 							);
@@ -1447,9 +1446,8 @@ namespace websharks_core_v000000_dev
 								$this->translate('Please check your email for a password reset link.')
 							);
 						}
-					$this->©action->set_call_data_for('©user_utils.®lost_password', get_defined_vars());
-
 					$this->©headers->clean_status_type(200, 'text/html', TRUE);
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 					exit($this->©template('lost-password.php', get_defined_vars())->content);
 				}
 
@@ -1480,9 +1478,9 @@ namespace websharks_core_v000000_dev
 							$this->method(__FUNCTION__).'#activation_key_missing', get_defined_vars(),
 							$this->i18n('The `$user` has no activation key (cannot send password reset email message).')
 						);
-					$activation_key            = $user->activation_key;
-					$password_reset_link       = $this->©action->link_for_call('©user_utils.®reset_password', $this::protected_type, array($activation_key));
-					$password_reset_short_link = $this->©url->shorten($password_reset_link);
+					$activation_key           = $user->activation_key;
+					$password_reset_url       = $this->©action->url_for_call('©user_utils.®reset_password', $this::protected_type, array($activation_key));
+					$password_reset_short_url = $this->©url->shorten($password_reset_url);
 
 					$template = $this->©template('emails/password-reset.php', get_defined_vars());
 
@@ -1570,15 +1568,14 @@ namespace websharks_core_v000000_dev
 								{
 									extract($response); // Extracts response vars.
 
-									$successes = $this->©success(
+									$successes = $this->©success( // For template.
 										$this->method(__FUNCTION__).'#success', get_defined_vars(),
 										sprintf($this->translate('Password reset. Please [log in](%1$s).'), $this->©url->to_wp_login())
 									);
 								}
 						}
-					$this->©action->set_call_data_for('©user_utils.®reset_password', get_defined_vars());
-
 					$this->©headers->clean_status_type(200, 'text/html', TRUE);
+					$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 					exit($this->©template('reset-password.php', get_defined_vars())->content);
 				}
 		}

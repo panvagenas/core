@@ -1393,49 +1393,6 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
-			 * Suffixes parent keys containing non-array values.
-			 *
-			 * @param array     $array An input array (which should have at least two dimensions).
-			 *    If the parent array does NOT have at least two dimensions, nothing is going to happen here.
-			 *
-			 * @param string    $suffix The desired key suffix string.
-			 *
-			 * @param null      $___parent For internal use only.
-			 *
-			 * @param boolean   $___recursion For internal use only.
-			 *
-			 * @return array Copy of original ``$array`` after having some keys renamed (e.g. suffixed).
-			 */
-			public function suffix_parent_keys_containing_non_array_values($array, $suffix = '', $___parent = NULL, $___recursion = FALSE)
-				{
-					if(!$___recursion) // Only for the initial caller.
-						$this->check_arg_types('array', 'string', array('null', 'array'), 'boolean', func_get_args());
-
-					$has_non_array_values = FALSE; // Initialize.
-
-					foreach($array as $_value) if(!is_array($_value))
-						{
-							$has_non_array_values = TRUE; // Has a non-array value.
-							break; // No need to continue any further.
-						}
-					if($has_non_array_values && isset($___parent))
-						{
-							$___parent['array'][$___parent['array_key'].$suffix] = $___parent['array_value'];
-							unset($___parent['array'][$___parent['array_key']]);
-						}
-					else if(!$has_non_array_values) foreach($array as $_key => &$_value) // All arrays.
-						{
-							$_parent['array']       =& $array;
-							$_parent['array_key']   = $_key;
-							$_parent['array_value'] = $_value;
-							$_value                 = $this->suffix_parent_keys_containing_non_array_values($_value, $suffix, $_parent, TRUE);
-						}
-					unset($_key, $_value, $_parent); // Housekeeping.
-
-					return $array; // Return current array.
-				}
-
-			/**
 			 * Recursive iterator.
 			 *
 			 * @param array $array Any input array will do fine here.

@@ -453,7 +453,7 @@ namespace websharks_core_v000000_dev
 							if(!isset($static['ignore_glob_defaults']) || !is_array($static['ignore_glob_defaults']))
 								{
 									$globs = $static['ignore_glob_defaults'] = // From the `/.gitignore` file in the WebSharks™ Core repo directory.
-										'._*;*~;*.bak;.idea;*.iml;*.ipr;*.iws;.git;.gitignore;.gitattributes;CVS;.cvsignore;.svn;_svn;.hg;.hgignore;SCCS;RCS;$RECYCLE.BIN;Desktop.ini;Thumbs.db;ehthumbs.db;.Spotlight-V100;.AppleDouble;.LSOverride;.DS_Store;.Trashes;Icon'."\r";
+										'._*;*~;*.bak;.idea;*.iml;*.ipr;*.iws;.git;.gitignore;.gitattributes;CVS;.cvsignore;.svn;_svn;.hg;.hgignore;SCCS;RCS;$RECYCLE.BIN;Desktop.ini;Thumbs.db;ehthumbs.db;.Spotlight-V100;.AppleDouble;.LSOverride;.DS_Store;.Trashes;Icon;.elasticbeanstalk'."\r";
 									$globs = $static['ignore_glob_defaults'] = preg_split('/;+/', $globs, NULL, PREG_SPLIT_NO_EMPTY);
 								}
 							else $globs = $static['ignore_glob_defaults']; // We've already defined these once before.

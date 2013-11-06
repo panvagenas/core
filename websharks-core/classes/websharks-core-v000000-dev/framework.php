@@ -217,6 +217,9 @@ namespace websharks_core_v000000_dev
 				 * @method \websharks_core_v000000_dev\functions ©functions()
 				 * @method \websharks_core_v000000_dev\functions ©function()
 				 *
+				 * @property \websharks_core_v000000_dev\gmp                            $©gmp
+				 * @method \websharks_core_v000000_dev\gmp ©gmp()
+				 *
 				 * @property \websharks_core_v000000_dev\headers                        $©headers
 				 * @property \websharks_core_v000000_dev\headers                        $©header
 				 * @method \websharks_core_v000000_dev\headers ©headers()
@@ -755,19 +758,20 @@ namespace websharks_core_v000000_dev
 
 							if($___instance_config instanceof framework)
 								$___parent_instance_config = $___instance_config->___instance_config;
-							else $___parent_instance_config = NULL;
+							else $___parent_instance_config = NULL; // No parent config.
 
-							if($___parent_instance_config) // We can bypass validation here.
+							$ns_class = get_class($this); // Always NEED ``$this`` (used in cache entry).
+
+							if($___parent_instance_config) // Can we bypass validation in this case?
 								{
-									$cache_entry = $___parent_instance_config->plugin_root_ns.($ns_class = get_class($this));
+									$cache_entry = $___parent_instance_config->plugin_root_ns.$ns_class;
 
 									if(isset(static::$___instance_config_cache[$cache_entry]))
 										{
 											$this->___instance_config = static::$___instance_config_cache[$cache_entry];
 											return; // Using cache. Nothing more to do here.
 										}
-									$this->___instance_config           = clone $___parent_instance_config;
-									$this->___instance_config->ns_class = $ns_class; // `namespace\sub_namespace\class_name`.
+									$this->___instance_config = clone $___parent_instance_config;
 								}
 							else if(is_array($___instance_config) && count($___instance_config) === 6
 
@@ -790,42 +794,22 @@ namespace websharks_core_v000000_dev
 							        && ($___instance_config['plugin_site'] = rtrim($___instance_config['plugin_site'], '/'))
 							        && preg_match('/^http\:\/\/.+/i', $___instance_config['plugin_site'])
 
-							) // A fully validated ``$___instance_config`` array (we'll convert to an object now).
+							) // A fully validated ``$___instance_config`` array (we'll convert to an object).
 								{
-									$this->___instance_config           = (object)$___instance_config;
-									$cache_entry                        = $this->___instance_config->plugin_root_ns.($ns_class = get_class($this));
-									$this->___instance_config->ns_class = $ns_class; // `namespace\sub_namespace\class_name`.
+									$cache_entry = $___instance_config['plugin_root_ns'].$ns_class;
 
 									if(isset(static::$___instance_config_cache[$cache_entry]))
 										{
 											$this->___instance_config = static::$___instance_config_cache[$cache_entry];
 											return; // Using cache (nothing more to do here).
 										}
-									if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns]) || !($GLOBALS[$this->___instance_config->plugin_root_ns] instanceof framework))
-										{
-											if($this->___instance_config->plugin_root_ns !== stub::$core_ns)
-												$load_plugin = TRUE; // Not the core (only plugins).
-											$GLOBALS[$this->___instance_config->plugin_root_ns] = $this;
-										}
+									$this->___instance_config = (object)$___instance_config;
 								}
-							else throw new \exception(
-								sprintf(stub::i18n('Invalid `$___instance_config` to constructor: `%1$s`'), print_r($___instance_config, TRUE))
-							);
-
-							// Based on `namespace\sub_namespace\class_name` for ``$this`` class.
-							$this->___instance_config->ns_class_prefix           = '\\'.$this->___instance_config->ns_class;
-							$this->___instance_config->ns_class_with_underscores = stub::with_underscores($this->___instance_config->ns_class);
-							$this->___instance_config->ns_class_with_dashes      = stub::with_dashes($this->___instance_config->ns_class);
-							$this->___instance_config->ns_class_basename         = basename(str_replace('\\', '/', $this->___instance_config->ns_class));
-
-							// Check `namespace\sub_namespace\class_name` for validation issues.
-							if(!preg_match(stub::$regex_valid_plugin_ns_class, $this->___instance_config->ns_class))
-								throw new \exception(
-									sprintf(stub::i18n('Namespace\\class contains invalid chars: `%1$s`.'), $this->___instance_config->ns_class)
-								);
+							else throw new \exception(sprintf(stub::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
+							                                  print_r($___instance_config, TRUE))); // Definitely wrong!
 
 							// Mostly from core stub. These properties will NOT change from one class instance to another.
-							if(!$___parent_instance_config) // ONLY if we did NOT get a ``$___parent_instance``.
+							if(!$___parent_instance_config) // Only if we did NOT get a ``$___parent_instance``.
 								{
 									// Miscellaneous core properties (mostly from the stub).
 									$this->___instance_config->core_name           = stub::$core_name;
@@ -856,28 +840,44 @@ namespace websharks_core_v000000_dev
 
 									// Check core `namespace` for validation issues.
 									if(!preg_match(stub::$regex_valid_core_ns_version, $this->___instance_config->core_ns))
-										throw new \exception(
-											sprintf(stub::i18n('Invalid core namespace: `%1$s`.'), $this->___instance_config->core_ns)
-										);
+										throw new \exception(sprintf(stub::i18n('Invalid core namespace: `%1$s`.'),
+										                             $this->___instance_config->core_ns));
 								}
+							// Check `namespace\sub_namespace\class` for validation issues.
+							if(!preg_match(stub::$regex_valid_plugin_ns_class, ($this->___instance_config->ns_class = $ns_class)))
+								throw new \exception(sprintf(stub::i18n('Namespace\\class contains invalid chars: `%1$s`.'),
+								                             $this->___instance_config->ns_class));
+
+							// The `namespace\sub_namespace\class` for ``$this`` class.
+							$this->___instance_config->ns_class_prefix           = '\\'.$this->___instance_config->ns_class;
+							$this->___instance_config->ns_class_with_underscores = stub::with_underscores($this->___instance_config->ns_class);
+							$this->___instance_config->ns_class_with_dashes      = stub::with_dashes($this->___instance_config->ns_class);
+							$this->___instance_config->ns_class_basename         = basename(str_replace('\\', '/', $this->___instance_config->ns_class));
+
+							// The `sub_namespace\class` for ``$this`` class.
+							$this->___instance_config->sub_ns_class                  = ltrim(strstr($this->___instance_config->ns_class, '\\'), '\\');
+							$this->___instance_config->sub_ns_class_with_underscores = stub::with_underscores($this->___instance_config->sub_ns_class);
+							$this->___instance_config->sub_ns_class_with_dashes      = stub::with_dashes($this->___instance_config->sub_ns_class);
+
 							// The `namespace\sub_namespace` for ``$this`` class.
-							$this->___instance_config->ns = (string)substr($this->___instance_config->ns_class, 0, strrpos($this->___instance_config->ns_class, '\\'));
+							$this->___instance_config->ns = substr($this->___instance_config->ns_class, 0,
+							                                       strrpos($this->___instance_config->ns_class, '\\'));
 
 							// Only if we're NOT in the same namespace as the ``$___parent_instance``.
 							if(!$___parent_instance_config || $___parent_instance_config->ns !== $this->___instance_config->ns)
 								{
-									// Based on `namespace\sub_namespace` for ``$this`` class.
+									// The `namespace\sub_namespace` for ``$this`` class.
 									$this->___instance_config->ns_prefix           = '\\'.$this->___instance_config->ns;
 									$this->___instance_config->ns_with_underscores = stub::with_underscores($this->___instance_config->ns);
 									$this->___instance_config->ns_with_dashes      = stub::with_dashes($this->___instance_config->ns);
 
-									// Based on `namespace` for ``$this`` class.
+									// The `namespace` for ``$this`` class.
 									$this->___instance_config->root_ns             = strstr($this->___instance_config->ns_class, '\\', TRUE);
 									$this->___instance_config->root_ns_prefix      = '\\'.$this->___instance_config->root_ns;
 									$this->___instance_config->root_ns_with_dashes = stub::with_dashes($this->___instance_config->root_ns);
 								}
-							// Based entirely on the current plugin. These properties will NOT change from one class instance to another.
-							if(!$___parent_instance_config) // ONLY need this routine if we did NOT get a ``$___parent_instance``.
+							// Based entirely on current plugin. These properties will NOT change from one class instance to another.
+							if(!$___parent_instance_config) // Only need this routine if we did NOT get a ``$___parent_instance``.
 								{
 									// Based on `plugin_version`.
 									$this->___instance_config->plugin_version_with_underscores = stub::with_underscores($this->___instance_config->plugin_version);
@@ -892,32 +892,23 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->plugin_root_ns_with_dashes = stub::with_dashes($this->___instance_config->plugin_root_ns);
 
 									// Based on plugin's root `namespace` (via `plugin_root_ns`).
-									// Here we check to see if this plugin is actually the WebSharks™ Core.
-									// In this case we need to use the WebSharks™ Core stub instead of the plugin's root namespace.
+									$this->___instance_config->plugin_root_ns_stub             = $this->___instance_config->plugin_root_ns;
+									$this->___instance_config->plugin_root_ns_stub_with_dashes = $this->___instance_config->plugin_root_ns_with_dashes;
 									if($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns)
 										{
 											$this->___instance_config->plugin_root_ns_stub             = $this->___instance_config->core_ns_stub;
 											$this->___instance_config->plugin_root_ns_stub_with_dashes = $this->___instance_config->core_ns_stub_with_dashes;
-										}
-									else // Otherwise, proceed normally. In this case, we're just making a copy of `plugin_root_ns` properties.
-										{
-											$this->___instance_config->plugin_root_ns_stub             = $this->___instance_config->plugin_root_ns;
-											$this->___instance_config->plugin_root_ns_stub_with_dashes = $this->___instance_config->plugin_root_ns_with_dashes;
 										}
 									// Based on the plugin's directory (i.e. `plugin_dir`).
 									$this->___instance_config->plugin_dir_basename      = basename($this->___instance_config->plugin_dir);
 									$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/plugin.php';
 
 									// Based on the plugin's directory (i.e. `plugin_dir`).
-									$this->___instance_config->plugin_data_dir = $this->___instance_config->plugin_dir.'-data';
-
 									if($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns)
-										$this->___instance_config->plugin_data_dir = // The WebSharks™ Core uses a temp dir.
-											stub::get_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes.'-data';
+										$this->___instance_config->plugin_data_dir = stub::get_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes.'-data';
+									else $this->___instance_config->plugin_data_dir = stub::n_dir_seps(WP_CONTENT_DIR).'/'.$this->___instance_config->plugin_dir_basename.'-data';
 
-									if(stripos($this->___instance_config->plugin_data_dir, 'phar://') === 0)
-										$this->___instance_config->plugin_data_dir = substr($this->___instance_config->plugin_data_dir, 7);
-
+									// Based on the plugin's directory (i.e. `plugin_dir`).
 									$this->___instance_config->plugin_data_dir = // Give filters a chance to modify this if they'd like to.
 										apply_filters($this->___instance_config->plugin_root_ns_stub.'__data_dir', $this->___instance_config->plugin_data_dir);
 
@@ -941,17 +932,16 @@ namespace websharks_core_v000000_dev
 									$this->___instance_config->plugin_pro_class_file  = $this->___instance_config->plugin_pro_classes_dir.'/'.$this->___instance_config->plugin_root_ns_with_dashes.'/pro.php';
 								}
 							// Based on `plugin_root_ns_stub`.
-							// AND, also on `namespace\sub_namespace\class_name` for ``$this`` class.
+							// Also on `namespace\sub_namespace\class` for ``$this`` class.
 							// Here we swap out the real root namespace, in favor of the plugin's root namespace.
 							// This is helpful when we need to build strings for hooks, filters, contextual slugs, and the like.
-							$root_ns_length                                                          = strlen($this->___instance_config->root_ns);
-							$ns_class_x_same_as_class                                                = preg_replace('/_x$/', '', $this->___instance_config->ns_class);
-							$this->___instance_config->plugin_stub_as_root_ns_class                  = $this->___instance_config->plugin_root_ns_stub.substr($ns_class_x_same_as_class, $root_ns_length);
+							$this->___instance_config->plugin_stub_as_root_ns_class                  = // Extended classes (e.g. `_x`) are treated the same here.
+								$this->___instance_config->plugin_root_ns_stub.substr(preg_replace('/_x$/', '', $this->___instance_config->ns_class), ($root_ns_length = strlen($this->___instance_config->root_ns)));
 							$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores = stub::with_underscores($this->___instance_config->plugin_stub_as_root_ns_class);
 							$this->___instance_config->plugin_stub_as_root_ns_class_with_dashes      = stub::with_dashes($this->___instance_config->plugin_stub_as_root_ns_class);
 
 							// Based on `plugin_root_ns_stub`.
-							// AND, also on `namespace\sub_namespace` for ``$this`` class.
+							// Also on `namespace\sub_namespace` for ``$this`` class.
 							// Here we swap out the real root namespace, in favor of the plugin's root namespace.
 							// This is helpful when we need to build strings for hooks, filters, contextual slugs, and the like.
 							$this->___instance_config->plugin_stub_as_root_ns                  = $this->___instance_config->plugin_root_ns_stub.substr($this->___instance_config->ns, $root_ns_length);
@@ -961,7 +951,15 @@ namespace websharks_core_v000000_dev
 							// Now let's cache ``$this->___instance_config`` for easy re-use.
 							static::$___instance_config_cache[$cache_entry] = $this->___instance_config;
 
-							if(!empty($load_plugin)) $this->©plugin->load(); // Load up plugin upon first instance.
+							// Check global reference & load plugin (if applicable).
+							if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns])
+							   || !($GLOBALS[$this->___instance_config->plugin_root_ns] instanceof framework)
+							) // Create global reference & load plugin on first instance (if applicable).
+								{
+									if($this->___instance_config->plugin_root_ns !== stub::$core_ns)
+										$this->©plugin->load(); // Not the core (only load plugins).
+									$GLOBALS[$this->___instance_config->plugin_root_ns] = $this;
+								}
 						}
 
 					# --------------------------------------------------------------------------------------------------------------------------
@@ -1026,7 +1024,7 @@ namespace websharks_core_v000000_dev
 						{
 							$property = (string)$property;
 
-							throw new exception(
+							throw new exception( // Do NOT allow this.
 								$this, $this->method(__FUNCTION__).'#read_only_magic_property_error_via____set()', get_defined_vars(),
 								sprintf($this->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
 								sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
@@ -1055,7 +1053,7 @@ namespace websharks_core_v000000_dev
 						{
 							$property = (string)$property;
 
-							throw new exception(
+							throw new exception( // Do NOT allow this.
 								$this, $this->method(__FUNCTION__).'#read_only_magic_property_error_via____unset()', get_defined_vars(),
 								sprintf($this->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
 								sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
@@ -1196,8 +1194,7 @@ namespace websharks_core_v000000_dev
 									$this->i18n(' Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
 								);
 							throw new exception($this, $this->method(__FUNCTION__).'#undefined_magic_property_error_via__get()', get_defined_vars(),
-							                    sprintf($this->i18n('Undefined property: `%1$s`.'), $property)
-							);
+							                    sprintf($this->i18n('Undefined property: `%1$s`.'), $property));
 						}
 
 					/**
@@ -1353,8 +1350,7 @@ namespace websharks_core_v000000_dev
 									$this->i18n(' Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
 								);
 							throw new exception($this, $this->method(__FUNCTION__).'#undefined_magic_method_error_via__call()', get_defined_vars(),
-							                    sprintf($this->i18n('Undefined method: `%1$s`.'), $method)
-							);
+							                    sprintf($this->i18n('Undefined method: `%1$s`.'), $method));
 						}
 
 					# --------------------------------------------------------------------------------------------------------------------------
@@ -1437,46 +1433,6 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @final May NOT be overridden by extenders.
 					 * @public Available for public usage.
-					 *
-					 * @assert ('string', 'array', 'object', array('', array(), 'string-not-object')) throws exception
-					 * @assert ('string', array('hello'), 1) === TRUE
-					 * @assert ('string', array('hello'), 2) throws exception
-					 * @assert (':!empty', array('')) throws exception
-					 * @assert (':!empty', 1) === TRUE
-					 * @assert (array('string', 'object'), 'array', 'object', array(new \stdClass)) === TRUE
-					 * @assert (array('string', 'object'), 'array', 'object', array('')) === TRUE
-					 * @assert (array('string', 'object', 'integer', 'float'), 'array', 'object', array(1)) === TRUE
-					 * @assert ('string', array('string', 'object', 'integer', 'float'), 'object', array('', new \stdClass)) === TRUE
-					 * @assert ('string', array('object', 'null'), 'object', array('', new \stdClass)) === TRUE
-					 * @assert ('string', array('object', 'null'), 'object', array('', NULL)) === TRUE
-					 * @assert ('string', array('null', 'object'), 'object', array('', NULL)) === TRUE
-					 * @assert ('string', array('object', 'null'), 'object', array('', 1)) throws exception
-					 * @assert ('string', '!object', 'object', array('', new \stdClass)) throws exception
-					 * @assert ('string', '!object', 'object', array('', 12)) === TRUE
-					 * @assert ('!string', '!object', 'object', array(new \stdClass, 12)) === TRUE
-					 * @assert (array('!string','!object'), array('!integer','!object'), 'object', array(new \stdClass, 12)) === TRUE
-					 * @assert (array('integer','!object'), 'object', array(new \stdClass)) throws exception
-					 * @assert (array('integer','!object','integer'), 'object', array(1)) === TRUE
-					 * @assert ('string', 'array', 'object', array('')) === TRUE
-					 * @assert ('string:!empty', array('hello')) === TRUE
-					 * @assert ('string', 'array', 'object', array('', new \stdClass)) throws exception
-					 * @assert ('string', 'array', 'object', array(array())) throws exception
-					 * @assert ('string', 'array', 'object', array(1)) throws exception
-					 * @assert ('scalar', 'array', 'object', array(1)) === TRUE
-					 * @assert ('scalar', 'array', 'object', array(0.1)) === TRUE
-					 * @assert ('numeric', 'array', 'object', array(0.1)) === TRUE
-					 * @assert ('numeric', 'array', 'object', array('1.2')) === TRUE
-					 * @assert ('WP_User', 'array', 'object', array(new \WP_User)) === TRUE
-					 * @assert ('WP_User', 'array', 'object', array('WP_User')) throws exception
-					 * @assert ('string:!empty', array('')) throws exception
-					 * @assert (array('string:!empty','array:!empty'), array(0, array())) throws exception
-					 * @assert (array('string:!empty','array:!empty'), array('0')) throws exception
-					 * @assert (array('string:!empty','array:!empty'), array(array('hello'))) === TRUE
-					 * @assert (array('string:!empty','array:!empty'), array('hello')) === TRUE
-					 * @assert (array('null','integer:!empty','\\websharks_core_v000000_dev\\users'), array($this->object->©user)) === TRUE
-					 *
-					 * @assert $args = array('', array(), new \stdClass, 1.0, 1, TRUE, tmpfile(), 'anything', 'scalar-string', 1, 1.2, '1.2', 1.2, 1, NULL, 'hello', array());
-					 *    ('string', 'array', 'object', 'float', 'integer', 'boolean', 'resource', '', 'scalar', 'scalar', 'scalar', 'numeric', 'numeric', 'numeric', 'null', 'string:!empty', '!string', $args) === TRUE
 					 */
 					final public function check_arg_types()
 						{
@@ -1495,29 +1451,24 @@ namespace websharks_core_v000000_dev
 							$total_args          = count($args); // Total arguments passed into the function/method we're checking.
 							$total_arg_positions = $total_args - 1; // Based on total number of arguments.
 
-							// Commenting this out for performance. It's not absolutely necessary.
-							# unset($_arg_type_hints__args__required_args, $_last_arg_value);
+							// Commenting for performance. NOT absolutely necessary.
+							# unset($_arg_type_hints__args__required_args, $_last_arg_value); // Housekeeping.
 
-							if($total_args < $required_args) // Forcing a minimum number of arguments?
-								// This is NOT needed in most cases. PHP should have already triggered a warning about missing arguments.
-								// However, this CAN be useful in certain scenarios, where we want to absolutely enforce required arguments.
-								{
-									throw $this->©exception(
-										$this->method(__FUNCTION__).'#args_missing', compact('arg_type_hints', 'args', 'required_args'),
-										sprintf($this->i18n('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
-										        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $required_args, $total_args).
-										sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args))
-									);
-								}
-							else if($total_args === 0) // No arguments (no problem).
-								return TRUE; // We can stop right here in this case.
+							if($total_args < $required_args) // Enforcing minimum args?
+								throw $this->©exception( // Need to be VERY descriptive here.
+									$this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
+									sprintf($this->i18n('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
+									        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $required_args, $total_args).
+									sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
 
-							foreach($arg_type_hints as $_arg_position => $_arg_type_hints)
+							if($total_args === 0) return TRUE; // Stop here (no arguments to check).
+
+							foreach($arg_type_hints as $_arg_position => $_arg_type_hints) // Type hints.
 								{
 									if($_arg_position > $total_arg_positions) // Argument not even passed in?
 										continue; // Argument was not even passed in (we don't need to check this value).
 
-									unset($_last_arg_type_key); // Unset before iterating (we'll define below, if necessary).
+									unset($_last_arg_type_key); // Unset before iterating (define below if necessary).
 
 									foreach(($_arg_types = (array)$_arg_type_hints) as $_arg_type_key => $_arg_type)
 										{
@@ -1568,7 +1519,6 @@ namespace websharks_core_v000000_dev
 												case 'null':
 
 														$is_ = static::$___is_type_checks[$_arg_type];
-														/** @var $is_ string */
 
 														if(!$is_($args[$_arg_position])) // Not this type?
 															{
@@ -1609,7 +1559,6 @@ namespace websharks_core_v000000_dev
 												case '!null':
 
 														$is_ = static::$___is_type_checks[$_arg_type];
-														/** @var $is_ string */
 
 														if($is_($args[$_arg_position])) // Is this type?
 															{
@@ -1650,7 +1599,6 @@ namespace websharks_core_v000000_dev
 												case 'null:!empty':
 
 														$is_ = static::$___is_type_checks[$_arg_type];
-														/** @var $is_ string */
 
 														if(!$is_($args[$_arg_position]) || empty($args[$_arg_position]))
 															// Now, have we exhausted the list of possible types?
@@ -1704,8 +1652,8 @@ namespace websharks_core_v000000_dev
 											}
 										}
 								}
-							// Commenting this out for performance. It's not absolutely necessary.
-							# unset($_arg_position, $_arg_type_hints, $_arg_types, $_arg_type_key, $_last_arg_type_key, $_arg_type, $is_, $_negating, $_checking_if_empty);
+							// Commenting for performance. NOT absolutely necessary.
+							# unset($_arg_position, $_arg_type_hints, $_arg_types, $_arg_type_key, $_last_arg_type_key, $_arg_type, $is_);
 
 							if(!empty($problem)) // We have a problem!
 								{
@@ -1714,12 +1662,11 @@ namespace websharks_core_v000000_dev
 									$empty      = ($problem['empty']) ? $this->i18n('empty').' ' : '';
 									$type_given = (is_object($problem['value'])) ? get_class($problem['value']) : gettype($problem['value']);
 
-									throw $this->©exception(
-										$this->method(__FUNCTION__).'#invalid_args', compact('arg_type_hints', 'args', 'required_args'),
+									throw $this->©exception( // Need to be VERY descriptive here.
+										$this->method(__FUNCTION__).'#invalid_args', get_defined_vars(),
 										sprintf($this->i18n('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
 										        $position, $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $types, $empty, $type_given).
-										sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args))
-									);
+										sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
 								}
 							return TRUE; // Default return value (no problem).
 						}
@@ -1755,16 +1702,6 @@ namespace websharks_core_v000000_dev
 					 *
 					 * @final May NOT be overridden by extenders.
 					 * @public Available for public usage.
-					 *
-					 * @assert $default_args = array('hello' => 'hello', 'world' => 'world');
-					 *    $args = array('hello' => 'hi', 'hi' => 'there');
-					 *    ('string:!empty', $default_args, $args) === array('hello' => 'hi', 'world' => 'world')
-					 *
-					 * @assert $default_args = array('hello' => 'hello', 'world' => 'world');
-					 * // Note: array keys that do NOT intersect, are automatically ignored by this routine (intentionally).
-					 * // In this case, the `hi` element is completely removed, before we check arg types and/or extend the defaults.
-					 *    $args = array('hello' => 'hi', 'hi' => 'there'); // The `hi` element does NOT exist in ``$default_args``.
-					 *    ('string:!empty', $default_args, $args, 2) throws exception
 					 */
 					final public function check_extension_arg_types()
 						{
@@ -1772,7 +1709,7 @@ namespace websharks_core_v000000_dev
 							$_last_arg_value                                    = array_pop($_arg_type_hints__default_args__args__required_args);
 							$required_args                                      = 0; // Default number of required arguments.
 
-							if(is_integer($_last_arg_value)) // Do we have required arguments in the last position?
+							if(is_integer($_last_arg_value)) // Do we have required arguments in last position?
 								{
 									$required_args = $_last_arg_value; // Number of required arguments.
 									$args          = (array)array_pop($_arg_type_hints__default_args__args__required_args);
@@ -1780,14 +1717,13 @@ namespace websharks_core_v000000_dev
 							else $args = (array)$_last_arg_value; // Use ``$_last_arg_value`` as ``$args``.
 
 							$default_args   = (array)array_pop($_arg_type_hints__default_args__args__required_args);
-							$arg_type_hints = $_arg_type_hints__default_args__args__required_args; // Remaining arguments (type hints).
+							$arg_type_hints = $_arg_type_hints__default_args__args__required_args; // Type hints (remaining args).
 
-							// Commenting this out for performance. It's not absolutely necessary.
+							// Commenting for performance. NOT absolutely necessary.
 							# unset($_arg_type_hints__default_args__args__required_args, $_last_arg_value);
 
-							// Initializes several important arrays that we're building below.
-
-							$default_arg_key_positions = $extension_args = $intersecting_args = $intersecting_arg_type_hints = array();
+							$default_arg_key_positions = // Initialize these important arrays (build them below).
+							$extension_args = $intersecting_args = $intersecting_arg_type_hints = array();
 
 							// Builds a legend of default argument key positions; and checks for missing argument keys.
 
@@ -1796,43 +1732,35 @@ namespace websharks_core_v000000_dev
 									$default_arg_key_positions[$_default_arg_key] = // Numeric indexes.
 										$_default_arg_key_position; // This builds a legend for routines below.
 
-									if( // Checks required argument keys.
-										$_default_arg_key_position < $required_args && !array_key_exists($_default_arg_key, $args)
-									) // Missing a required argument (e.g. key is missing completely).
-										{
-											throw $this->©exception(
-												$this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
-												sprintf($this->i18n('`%1$s` requires missing argument `%2$s`.'),
-												        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $_default_arg_key).
-												sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args))
-											);
-										}
+									if($_default_arg_key_position < $required_args && !array_key_exists($_default_arg_key, $args))
+										throw $this->©exception( // Missing required arg! We're VERY descriptive here.
+											$this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
+											sprintf($this->i18n('`%1$s` requires missing argument key `%2$s`.'),
+											        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $_default_arg_key).
+											sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
 								}
-							// Commenting this out for performance. It's not absolutely necessary.
-							# unset($_default_arg_key_position, $_default_arg_key); // Just a little housekeeping.
+							// Commenting for performance. NOT absolutely necessary.
+							# unset($_default_arg_key_position, $_default_arg_key); // Housekeeping.
 
-							// Constructs ``$extension_args``, ``$intersecting_args``, and ``$intersecting_arg_type_hints``.
+							// Build ``$extension_args``, ``$intersecting_args`` and ``$intersecting_arg_type_hints``.
 
 							foreach(array_intersect_key($default_args, $args) as $_default_arg_key => $_default_arg)
 								{
-									$extension_args[$_default_arg_key] = & $args[$_default_arg_key];
-									$intersecting_args[]               = & $args[$_default_arg_key];
+									$extension_args[$_default_arg_key] =& $args[$_default_arg_key];
+									$intersecting_args[]               =& $args[$_default_arg_key];
 
 									if(isset($arg_type_hints[$default_arg_key_positions[$_default_arg_key]]))
-										$intersecting_arg_type_hints[] = & $arg_type_hints[$default_arg_key_positions[$_default_arg_key]];
+										$intersecting_arg_type_hints[] =& $arg_type_hints[$default_arg_key_positions[$_default_arg_key]];
 								}
-							// Commenting this out for performance. It's not absolutely necessary here.
-							# unset($_default_arg_key, $_default_arg); // Unset temporary vars. Just a little housekeeping.
+							// Commenting for performance. NOT absolutely necessary.
+							# unset($_default_arg_key, $_default_arg); // Housekeeping.
 
-							// Now we put everything together (into a single array); and ``check_arg_types()``.
+							// Put everything into a single array & ``check_arg_types()``.
 
 							$arg_type_hints__args   = $intersecting_arg_type_hints;
-							$arg_type_hints__args[] = & $intersecting_args;
+							$arg_type_hints__args[] =& $intersecting_args;
 
-							call_user_func_array( // Checks argument types.
-								array($this, 'check_arg_types'), $arg_type_hints__args);
-
-							// Return extended arguments now.
+							call_user_func_array(array($this, 'check_arg_types'), $arg_type_hints__args);
 
 							return array_merge($default_args, $extension_args);
 						}
@@ -1887,7 +1815,7 @@ namespace websharks_core_v000000_dev
 					/**
 					 * Gets `__METHOD__` for current class.
 					 *
-					 * @param string $function Pass `__FUNCTION__` from another method.
+					 * @param string $function Pass `__FUNCTION__` from any class member.
 					 *    Current class is prepended to this (very much like `__METHOD__`).
 					 *
 					 * @return string `__METHOD__` for current class; i.e. ``get_class($this)``.
@@ -1902,6 +1830,27 @@ namespace websharks_core_v000000_dev
 							$function = (string)$function; // Force string.
 
 							return $this->___instance_config->ns_class.'::'.$function;
+						}
+
+					/**
+					 * Gets dynamic `©class.®method` for current class.
+					 *
+					 * @param string $function Pass `__FUNCTION__` from any class member.
+					 *    Current sub-namespace class is prepended; and we prefix a `©` symbol also.
+					 *    Please be sure `__FUNCTION__` begins w/ `®` as a registered call action handler.
+					 *
+					 * @return string Dynamic `©class.®method` for current class; i.e. ``get_class($this)``.
+					 *
+					 * @throws exception If invalid types are passed through arguments list.
+					 *
+					 * @final May NOT be overridden by extenders.
+					 * @public Available for public usage.
+					 */
+					final public function dynamic_call($function)
+						{
+							$function = (string)$function; // Force string.
+
+							return '©'.$this->___instance_config->sub_ns_class_with_underscores.'.'.$function;
 						}
 
 					# --------------------------------------------------------------------------------------------------------------------------

@@ -79,7 +79,7 @@ namespace websharks_core_v000000_dev
 			public $regex_integer_columns = array(
 				'/^ID$|_id$/',
 				'/(?:^|_)(?:time|timeout)(?:_|$)/',
-				'/(?:^|_)(?:includes|requires)(?:_|$)/',
+				'/(?:^|_)(?:respects|includes|requires)(?:_|$)/',
 				'/(?:^|_)(?:order|priority|limit|count|quantity|postal_code_range|nth)(?:_|$)/',
 				'/^(?:consolidate|unique|singular|futuristic|blocking)$/',
 				'/^(?:counts|recurs|overrides|taxable|listable)$/',
