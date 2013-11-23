@@ -26,6 +26,10 @@ Tags: websharks, websharks core, framework, plugin framework, development, devel
 
 WebSharks™ Core framework for WordPress® plugin development.
 
+== Description ==
+
+You can learn more about the WebSharks™ Core at [GitHub®](http://github.com/WebSharks/Core).
+
 == Installation ==
 
 = The WebSharks™ Core is very easy to install (instructions) =
@@ -35,13 +39,8 @@ WebSharks™ Core framework for WordPress® plugin development.
 
 **Note: there are NO configurable options since this is a plugin framework only.**
 
-== Description ==
-
-WebSharks™ Core framework for WordPress® plugin development.
-
-You can learn more about the WebSharks™ Core at [GitHub®](http://github.com/WebSharks/Core).
-
 == Changelog ==
 
 = v000000-dev =
+
 * (WebSharks™ Core) **Initial beta release**.

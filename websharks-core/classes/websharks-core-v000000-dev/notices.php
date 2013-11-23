@@ -254,8 +254,8 @@ namespace websharks_core_v000000_dev
 						'checksum'         => '' // Determined below.
 					);
 					$notice             = $this->check_extension_arg_types(
-						'string', 'boolean', 'array', 'array', 'integer', 'boolean', 'string', 'boolean', 'string',
-						$default_notice, $notice
+					                           'string', 'boolean', 'array', 'array', 'integer', 'boolean', 'string', 'boolean', 'string',
+					                           $default_notice, $notice
 					);
 					$notice             = $this->©array->ksort_deep($notice, SORT_STRING);
 					$notice['checksum'] = md5(serialize($notice));
