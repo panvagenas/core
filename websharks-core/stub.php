@@ -75,7 +75,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @note For internal/development use only.
 			 */
-			public static $local_wp_dev_dir = 'e:/easyphp/wordpress.loc';
+			public static $local_wp_dev_dir = '~/Apache/wordpress.loc';
 
 			/**
 			 * Local WebSharks™ Core repo directory.
@@ -84,7 +84,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @note For internal/development use only.
 			 */
-			public static $local_core_repo_dir = 'e:/websharks/core';
+			public static $local_core_repo_dir = '~/WebSharks/core';
 
 			/**
 			 * WebSharks™ Core stub.

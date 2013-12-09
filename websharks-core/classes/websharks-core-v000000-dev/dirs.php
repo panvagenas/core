@@ -110,8 +110,6 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If ``$target`` does NOT exist; or if it does exist, but it's NOT a directory.
 			 * @throws exception If the Junction needs to be created; but Windows® commands are NOT possible.
 			 * @throws exception If creation of a Directory Junction fails for any reason.
-			 *
-			 * @assert ('C:/websharks-core-jctn-tester', 'E:/') === 'C:/websharks-core-jctn-tester'
 			 */
 			public function create_win_jctn($jctn, $target)
 				{
