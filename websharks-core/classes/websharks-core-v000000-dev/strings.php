@@ -2074,22 +2074,22 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Process replacement codes (case insensitive).
 			 *
-			 * @param string       $string A string to run replacements on.
+			 * @param string  $string A string to run replacements on.
 			 *
-			 * @param array        $meta_vars Optional. Defaults to an empty array.
+			 * @param array   $meta_vars Optional. Defaults to an empty array.
 			 *    ~ This array is always given precedence over any other secondary ``$vars``.
 			 *    This is the primary array of data which will be used to replace codes in the ``$string``.
 			 *    This is normally an associative array, but a numerically indexed array is also allowable.
 			 *
-			 * @param array        $vars Optional (any other secondary vars). Defaults to an empty array.
+			 * @param array   $vars Optional (any other secondary vars). Defaults to an empty array.
 			 *    This is an additional array of data which will be used to replace codes in the ``$string``.
 			 *    This is normally an associative array, but a numerically indexed array is also allowable.
 			 *
-			 * @param boolean      $urlencode Optional. Defaults to a FALSE value.
+			 * @param boolean $urlencode Optional. Defaults to a FALSE value.
 			 *    If this is TRUE, all replacement code values will be urlencoded automatically.
 			 *    Setting this to a TRUE value also enables some additional magic replacement codes.
 			 *
-			 * @param string       $implode_non_scalars Optional. By default, any non-scalar values
+			 * @param string  $implode_non_scalars Optional. By default, any non-scalar values
 			 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
 			 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values.
 			 *
@@ -2112,27 +2112,27 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed        $value Any value can be converted into a string to run replacements on.
+			 * @param mixed   $value Any value can be converted into a string to run replacements on.
 			 *    Actually, objects can't, but this recurses into objects.
 			 *
-			 * @param array        $meta_vars Optional. Defaults to an empty array.
+			 * @param array   $meta_vars Optional. Defaults to an empty array.
 			 *    ~ This array is always given precedence over any other secondary ``$vars``.
 			 *    This is the primary array of data which will be used to replace codes in the ``$value``.
 			 *    This is normally an associative array, but a numerically indexed array is also allowable.
 			 *
-			 * @param array        $vars Optional (any other secondary vars). Defaults to an empty array.
+			 * @param array   $vars Optional (any other secondary vars). Defaults to an empty array.
 			 *    This is an additional array of data which will be used to replace codes in the ``$value``.
 			 *    This is normally an associative array, but a numerically indexed array is also allowable.
 			 *
-			 * @param boolean      $preserve_types Optional. Defaults to a FALSE value.
+			 * @param boolean $preserve_types Optional. Defaults to a FALSE value.
 			 *    If this is TRUE, we will preserve data types; only searching/replacing existing string values deeply.
 			 *    By default, anything that is NOT an array/object is converted to a string by this routine.
 			 *
-			 * @param boolean      $urlencode Optional. Defaults to a FALSE value.
+			 * @param boolean $urlencode Optional. Defaults to a FALSE value.
 			 *    If this is TRUE, all replacement code values will be urlencoded automatically.
 			 *    Setting this to a TRUE value also enables some additional magic replacement codes.
 			 *
-			 * @param string       $implode_non_scalars Optional. By default, any non-scalar values
+			 * @param string  $implode_non_scalars Optional. By default, any non-scalar values
 			 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
 			 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values.
 			 *
@@ -2152,25 +2152,25 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Process replacement codes.
 			 *
-			 * @param string       $string A string to run replacements on.
+			 * @param string  $string A string to run replacements on.
 			 *
-			 * @param array        $meta_vars Optional. Defaults to an empty array.
+			 * @param array   $meta_vars Optional. Defaults to an empty array.
 			 *    ~ This array is always given precedence over any other secondary ``$vars``.
 			 *    This is the primary array of data which will be used to replace codes in the ``$string``.
 			 *    This is normally an associative array, but a numerically indexed array is also allowable.
 			 *
-			 * @param array        $vars Optional (any other secondary vars). Defaults to an empty array.
+			 * @param array   $vars Optional (any other secondary vars). Defaults to an empty array.
 			 *    This is an additional array of data which will be used to replace codes in the ``$string``.
 			 *    This is normally an associative array, but a numerically indexed array is also allowable.
 			 *
-			 * @param boolean      $case_insensitive Case insensitive? Defaults to a FALSE value (caSe sensitivity on).
+			 * @param boolean $case_insensitive Case insensitive? Defaults to a FALSE value (caSe sensitivity on).
 			 *    If TRUE, the search/replace routine is NOT caSe sensitive (e.g. `%%uSer.Id%%` is the same as `%%user.ID%%`).
 			 *
-			 * @param boolean      $urlencode Optional. Defaults to a FALSE value.
+			 * @param boolean $urlencode Optional. Defaults to a FALSE value.
 			 *    If this is TRUE, all replacement code values will be urlencoded automatically.
 			 *    Setting this to a TRUE value also enables some additional magic replacement codes.
 			 *
-			 * @param string       $implode_non_scalars Optional. By default, any non-scalar values
+			 * @param string  $implode_non_scalars Optional. By default, any non-scalar values
 			 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
 			 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values.
 			 *
@@ -2193,35 +2193,35 @@ namespace websharks_core_v000000_dev
 			 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
 			 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
 			 *
-			 * @param mixed        $value Any value will do just fine here.
+			 * @param mixed   $value Any value will do just fine here.
 			 *
-			 * @param array        $meta_vars Optional. Defaults to an empty array.
+			 * @param array   $meta_vars Optional. Defaults to an empty array.
 			 *    ~ This array is always given precedence over any other secondary ``$vars``.
 			 *    This is the primary array of data which will be used to replace codes in the ``$value``.
 			 *    This is normally an associative array, but a numerically indexed array is also allowable.
 			 *
-			 * @param array        $vars Optional (any other secondary vars). Defaults to an empty array.
+			 * @param array   $vars Optional (any other secondary vars). Defaults to an empty array.
 			 *    This is an additional array of data which will be used to replace codes in the ``$value``.
 			 *    This is normally an associative array, but a numerically indexed array is also allowable.
 			 *
-			 * @param boolean      $case_insensitive Case insensitive? Defaults to a FALSE value (caSe sensitivity on).
+			 * @param boolean $case_insensitive Case insensitive? Defaults to a FALSE value (caSe sensitivity on).
 			 *    If TRUE, the search/replace routine is NOT caSe sensitive (e.g. `%%uSer.Id%%` is the same as `%%user.ID%%`).
 			 *
-			 * @param boolean      $preserve_types Optional. Defaults to a FALSE value.
+			 * @param boolean $preserve_types Optional. Defaults to a FALSE value.
 			 *    If this is TRUE, we will preserve data types; only searching/replacing existing string values deeply.
 			 *    By default, anything that is NOT an array/object is converted to a string by this routine.
 			 *
-			 * @param boolean      $urlencode Optional. Defaults to a FALSE value.
+			 * @param boolean $urlencode Optional. Defaults to a FALSE value.
 			 *    If this is TRUE, all replacement code values will be urlencoded automatically.
 			 *    Setting this to a TRUE value also enables some additional magic replacement codes.
 			 *
-			 * @param string       $implode_non_scalars Optional. By default, any non-scalar values
+			 * @param string  $implode_non_scalars Optional. By default, any non-scalar values
 			 *    in ``$meta_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
 			 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values by.
 			 *
-			 * @param boolean      $___raw_vars Internal use only.
-			 * @param boolean      $___vars Internal use only.
-			 * @param boolean      $___recursion Internal use only.
+			 * @param boolean $___raw_vars Internal use only.
+			 * @param boolean $___vars Internal use only.
+			 * @param boolean $___recursion Internal use only.
 			 *
 			 * @return mixed Values after replacing all codes (deeply).
 			 *    By default, any values that were NOT strings|arrays|objects, will be converted to strings by this routine.
@@ -2534,8 +2534,8 @@ namespace websharks_core_v000000_dev
 
 					if(!is_string($base64_url_safe = base64_encode($string)))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-							$this->i18n('Base64 encoding failed (`$base64_url_safe` is NOT a string).')
+						           $this->method(__FUNCTION__).'#failure', get_defined_vars(),
+						           $this->i18n('Base64 encoding failed (`$base64_url_safe` is NOT a string).')
 						);
 					$base64_url_safe = str_replace($url_unsafe_chars, $url_safe_chars, $base64_url_safe);
 					$base64_url_safe = (strlen($trim_padding_chars)) ? rtrim($base64_url_safe, $trim_padding_chars) : $base64_url_safe;
