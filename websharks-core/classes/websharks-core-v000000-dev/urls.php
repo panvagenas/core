@@ -1621,7 +1621,7 @@ namespace websharks_core_v000000_dev
 					$plugin_site_credentials = $this->©plugin->get_site_credentials($username, $password, TRUE);
 
 					$plugin_site_post_vars = array('data' => array( // See: <http://git.io/tHGlQw> for API specs.
-						'slug'     => $this->___instance_config->plugin_dir_basename, 'version' => '', //  Not applicable.
+						'slug'     => $this->___instance_config->plugin_dir_basename, 'version' => 'latest-stable',
 						'username' => $plugin_site_credentials['username'], 'password' => $plugin_site_credentials['password']
 					));
 					$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/products/update-sync.php'), $plugin_site_post_vars);
