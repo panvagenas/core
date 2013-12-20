@@ -118,8 +118,8 @@ namespace websharks_core_v000000_dev
 
 							if(!$this->©string->is_not_empty($host))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#missing_server_http_host', get_defined_vars(),
-									$this->i18n('Missing required `$_SERVER[\'HTTP_HOST\']`.')
+								           $this->method(__FUNCTION__).'#missing_server_http_host', get_defined_vars(),
+								           $this->i18n('Missing required `$_SERVER[\'HTTP_HOST\']`.')
 								);
 							$this->static[__FUNCTION__] = $host;
 						}
@@ -142,8 +142,8 @@ namespace websharks_core_v000000_dev
 
 							if(!$this->©string->is_not_empty($uri))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#missing_server_request_uri', get_defined_vars(),
-									$this->i18n('Missing required `$_SERVER[\'REQUEST_URI\']`.')
+								           $this->method(__FUNCTION__).'#missing_server_request_uri', get_defined_vars(),
+								           $this->i18n('Missing required `$_SERVER[\'REQUEST_URI\']`.')
 								);
 							$this->static[__FUNCTION__] = $uri;
 						}
@@ -288,8 +288,8 @@ namespace websharks_core_v000000_dev
 				{
 					if(is_null($parsed = call_user_func_array(array($this, 'parse'), func_get_args())))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-							sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
+						           $this->method(__FUNCTION__).'#failure', get_defined_vars(),
+						           sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
 						);
 					return $parsed;
 				}
@@ -382,8 +382,8 @@ namespace websharks_core_v000000_dev
 				{
 					if('' === ($unparsed = call_user_func_array(array($this, 'unparse'), func_get_args())))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-							sprintf($this->i18n('Unable to unparse: `%1$s`.'), $this->©var->dump(func_get_arg(0)))
+						           $this->method(__FUNCTION__).'#failure', get_defined_vars(),
+						           sprintf($this->i18n('Unable to unparse: `%1$s`.'), $this->©var->dump(func_get_arg(0)))
 						);
 					return $unparsed;
 				}
@@ -430,8 +430,8 @@ namespace websharks_core_v000000_dev
 				{
 					if(is_null($parts = call_user_func_array(array($this, 'parse_uri_parts'), func_get_args())))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-							sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
+						           $this->method(__FUNCTION__).'#failure', get_defined_vars(),
+						           sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
 						);
 					return $parts;
 				}
@@ -480,8 +480,8 @@ namespace websharks_core_v000000_dev
 				{
 					if(is_null($parsed = call_user_func_array(array($this, 'parse_uri'), func_get_args())))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-							sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
+						           $this->method(__FUNCTION__).'#failure', get_defined_vars(),
+						           sprintf($this->i18n('Unable to parse: `%1$s`.'), (string)func_get_arg(0))
 						);
 					return $parsed;
 				}
@@ -836,8 +836,8 @@ namespace websharks_core_v000000_dev
 
 					if(empty($term->term_id) || empty($term->taxonomy))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#invalid_term', get_defined_vars(),
-							$this->i18n('Invalid term. Missing `term_id`, `taxonomy` properties.')
+						           $this->method(__FUNCTION__).'#invalid_term', get_defined_vars(),
+						           $this->i18n('Invalid term. Missing `term_id`, `taxonomy` properties.')
 						);
 					if(!is_string($url = get_term_link($term))) $url = '';
 
@@ -929,8 +929,8 @@ namespace websharks_core_v000000_dev
 
 					if(!$user->has_id())
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
-							$this->i18n('The `$user` has no ID (cannot get Dashboard URL).')
+						           $this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
+						           $this->i18n('The `$user` has no ID (cannot get Dashboard URL).')
 						);
 					$parts = $this->must_parse_uri_parts($url_uri_query_fragment);
 
@@ -1615,41 +1615,39 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', 'string', func_get_args());
 
 					// Connects to the plugin site (POST array includes `username`, `password`, `version`).
-					// The plugin site should return a serialized array, with a `zip` element (full URL to a ZIP file).
+					// The plugin site should return a JSON object with `version`, `zip` elements (e.g. version + full URL to a ZIP file).
 					// If an error occurs at the plugin site, the plugin site can return an `error` element, w/ an error message.
 
 					$plugin_site_credentials = $this->©plugin->get_site_credentials($username, $password, TRUE);
 
-					$plugin_site_post_vars = array(
-						$this->___instance_config->plugin_var_ns.'_update_sync' => array(
-							'username' => $plugin_site_credentials['username'],
-							'password' => $plugin_site_credentials['password'],
-							'version'  => $this->___instance_config->plugin_version
-						)
-					);
-					$plugin_site_response  = $this->remote($this->to_plugin_site_uri(), $plugin_site_post_vars);
-					if(!is_array($plugin_site_response = maybe_unserialize($plugin_site_response)))
-						$plugin_site_response = array();
+					$plugin_site_post_vars = array('data' => array( // See: <http://git.io/tHGlQw> for API specs.
+						'slug'     => $this->___instance_config->plugin_dir_basename, 'version' => $this->___instance_config->plugin_version,
+						'username' => $plugin_site_credentials['username'], 'password' => $plugin_site_credentials['password']
+					));
+					$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/products/update-sync.php'), $plugin_site_post_vars);
+					if(!is_array($plugin_site_response = json_decode($plugin_site_response, TRUE))) $plugin_site_response = array();
 
-					if($this->©string->is_not_empty($plugin_site_response['zip']))
+					if($this->©strings->are_not_empty($plugin_site_response['version'], $plugin_site_response['zip']))
 						{
-							$update_args                                                         = array(
+							$update_args                                                             = array(
 								'action'   => 'upgrade-plugin',
 								'plugin'   => $this->___instance_config->plugin_dir_file_basename,
 								'_wpnonce' => wp_create_nonce('upgrade-plugin_'.$this->___instance_config->plugin_dir_file_basename)
 							);
-							$update_args[$this->___instance_config->plugin_var_ns.'_update_zip'] = $plugin_site_response['zip'];
+							$update_args[$this->___instance_config->plugin_var_ns.'_update_version'] = $plugin_site_response['version'];
+							$update_args[$this->___instance_config->plugin_var_ns.'_update_zip']     = $plugin_site_response['zip'];
 
 							return add_query_arg(urlencode_deep($update_args), $this->to_wp_admin_uri('/update.php'));
 						}
 					if($this->©string->is_not_empty($plugin_site_response['error']))
 						return $this->©error(
-							$this->method(__FUNCTION__).'#plugin_site_error', get_defined_vars(), $plugin_site_response['error']
+						            $this->method(__FUNCTION__).'#plugin_site_error', get_defined_vars(),
+						            $plugin_site_response['error']
 						);
 					return $this->©error( // Assume connectivity issue.
-						$this->method(__FUNCTION__).'#plugin_site_connectivity_issue', get_defined_vars(),
-						$this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
-						$this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
+					            $this->method(__FUNCTION__).'#plugin_site_connectivity_issue', get_defined_vars(),
+					            $this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
+					            $this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
 					);
 				}
 
@@ -1672,41 +1670,39 @@ namespace websharks_core_v000000_dev
 					$this->check_arg_types('string', 'string', func_get_args());
 
 					// Connects to the plugin site (POST array includes `username`, `password`, `version`).
-					// The plugin site should return a serialized array, with a `zip` element (full URL to a ZIP file).
+					// The plugin site should return a JSON object with `version`, `zip` elements (e.g. version + full URL to a ZIP file).
 					// If an error occurs at the plugin site, the plugin site can return an `error` element, w/ an error message.
 
 					$plugin_site_credentials = $this->©plugin->get_site_credentials($username, $password, TRUE);
 
-					$plugin_site_post_vars = array(
-						$this->___instance_config->plugin_var_ns.'_pro_update_sync' => array(
-							'username' => $plugin_site_credentials['username'],
-							'password' => $plugin_site_credentials['password'],
-							'version'  => $this->___instance_config->plugin_version
-						)
-					);
-					$plugin_site_response  = $this->remote($this->to_plugin_site_uri(), $plugin_site_post_vars);
-					if(!is_array($plugin_site_response = maybe_unserialize($plugin_site_response)))
-						$plugin_site_response = array();
+					$plugin_site_post_vars = array('data' => array( // See: <http://git.io/tHGlQw> for API specs.
+						'slug'     => $this->___instance_config->plugin_pro_dir_basename, 'version' => $this->___instance_config->plugin_version,
+						'username' => $plugin_site_credentials['username'], 'password' => $plugin_site_credentials['password']
+					));
+					$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/products/update-sync.php'), $plugin_site_post_vars);
+					if(!is_array($plugin_site_response = json_decode($plugin_site_response, TRUE))) $plugin_site_response = array();
 
-					if($this->©string->is_not_empty($plugin_site_response['zip']))
+					if($this->©strings->are_not_empty($plugin_site_response['version'], $plugin_site_response['zip']))
 						{
-							$update_args                                                             = array(
+							$update_args                                                                 = array(
 								'action'   => 'upgrade-plugin',
 								'plugin'   => $this->___instance_config->plugin_pro_dir_file_basename,
 								'_wpnonce' => wp_create_nonce('upgrade-plugin_'.$this->___instance_config->plugin_pro_dir_file_basename)
 							);
-							$update_args[$this->___instance_config->plugin_var_ns.'_pro_update_zip'] = $plugin_site_response['zip'];
+							$update_args[$this->___instance_config->plugin_var_ns.'_pro_update_version'] = $plugin_site_response['version'];
+							$update_args[$this->___instance_config->plugin_var_ns.'_pro_update_zip']     = $plugin_site_response['zip'];
 
 							return add_query_arg(urlencode_deep($update_args), $this->to_wp_admin_uri('/update.php'));
 						}
 					if($this->©string->is_not_empty($plugin_site_response['error']))
 						return $this->©error(
-							$this->method(__FUNCTION__).'#plugin_site_error', get_defined_vars(), $plugin_site_response['error']
+						            $this->method(__FUNCTION__).'#plugin_site_error', get_defined_vars(),
+						            $plugin_site_response['error']
 						);
 					return $this->©error( // Assume connectivity issue.
-						$this->method(__FUNCTION__).'#plugin_site_connectivity_issue', get_defined_vars(),
-						$this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
-						$this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
+					            $this->method(__FUNCTION__).'#plugin_site_connectivity_issue', get_defined_vars(),
+					            $this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
+					            $this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
 					);
 				}
 
@@ -1778,8 +1774,7 @@ namespace websharks_core_v000000_dev
 					// Now unset these ``$args``, so they don't get passed through WordPress® and cause problems.
 					unset($args['return_array'], $args['return_errors'], $args['return_xml_object'], $args['xml_object_flags']);
 
-					// Process with ``wp_remote_request()``.
-					$response = wp_remote_request($url, $args);
+					$response = wp_remote_request($url, $args); // Process with ``wp_remote_request()``.
 
 					// Now let's handle return values provided by this routine.
 
@@ -1825,7 +1820,7 @@ namespace websharks_core_v000000_dev
 
 							// Generate errors.
 							$errors = $this->©errors(
-								$this->method(__FUNCTION__), get_defined_vars(), $response->get_error_message()
+							               $this->method(__FUNCTION__), get_defined_vars(), $response->get_error_message()
 							);
 
 							// Returning errors?
@@ -2260,9 +2255,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
-			 * @assert ('http://www.google.com/') === 'http://goo.gl/fbsS'
-			 * @assert ('http://www.websharks-inc.com/', 'tiny_url') === 'http://tinyurl.com/29foqso'
-			 * @assert ('http://www.websharks-inc.com/') === 'http://goo.gl/wRAFl'
+			 * @assert ("http://www.google.com/") === "http://goo.gl/fbsS"
+			 * @assert ("http://www.websharks-inc.com/", 'tiny_url') === "http://tinyurl.com/29foqso"
+			 * @assert ("http://www.websharks-inc.com/") === "http://goo.gl/wRAFl"
 			 */
 			public function shorten($url, $specific_built_in_api = '', $try_backups = TRUE)
 				{
@@ -2330,13 +2325,13 @@ namespace websharks_core_v000000_dev
 			 * @assert ('/') === TRUE
 			 * @assert ('/?query') === TRUE
 			 * @assert ('/wordpress/') === FALSE
-			 * @assert ('http://www.wordpress.loc') === TRUE
-			 * @assert ('http://www.wordpress.loc/') === TRUE
-			 * @assert ('http://www.wordpress.loc/#!hash_query=string') === TRUE
-			 * @assert ('http://www.wordpress.loc/?query=string') === TRUE
-			 * @assert ('http://www.wordpress.loc/wordpress/?query=string') === FALSE
-			 * @assert ('http://foo.wordpress.loc/?query=string') === FALSE
-			 * @assert ('http://foo.wordpress.loc') === FALSE
+			 * @assert ("http://www.wordpress.loc") === TRUE
+			 * @assert ("http://www.wordpress.loc/") === TRUE
+			 * @assert ("http://www.wordpress.loc/#!hash_query=string") === TRUE
+			 * @assert ("http://www.wordpress.loc/?query=string") === TRUE
+			 * @assert ("http://www.wordpress.loc/wordpress/?query=string") === FALSE
+			 * @assert ("http://foo.wordpress.loc/?query=string") === FALSE
+			 * @assert ("http://foo.wordpress.loc") === FALSE
 			 * @assert ('/?query=string') === TRUE
 			 */
 			public function is_wp_root($url_uri_query_fragment, $type = self::any_type)
@@ -2395,14 +2390,14 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
-			 * @assert ('http://example.com/wp-admin') === TRUE
-			 * @assert ('http://example.com/wp-admin#fragment') === TRUE
-			 * @assert ('http://example.com/child-blog/wp-admin#fragment') === TRUE
+			 * @assert ("http://example.com/wp-admin") === TRUE
+			 * @assert ("http://example.com/wp-admin#fragment") === TRUE
+			 * @assert ("http://example.com/child-blog/wp-admin#fragment") === TRUE
 			 * @assert ('/child-blog/wp-admin#fragment') === TRUE
 			 * @assert ('child-blog/wp-admin#fragment') === TRUE
 			 * @assert ('//child-blog.example.com/wp-admin#fragment') === TRUE
 			 * @assert ('?example=example#fragment') === FALSE
-			 * @assert ('http://example.com/wp-admin-zone') === FALSE
+			 * @assert ("http://example.com/wp-admin-zone") === FALSE
 			 */
 			public function is_in_wp_admin($url_uri_query_fragment)
 				{

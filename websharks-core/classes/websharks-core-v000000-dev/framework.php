@@ -860,8 +860,7 @@ namespace websharks_core_v000000_dev
 							$this->___instance_config->sub_ns_class_with_dashes      = stub::with_dashes($this->___instance_config->sub_ns_class);
 
 							// The `namespace\sub_namespace` for ``$this`` class.
-							$this->___instance_config->ns = substr($this->___instance_config->ns_class, 0,
-							                                       strrpos($this->___instance_config->ns_class, '\\'));
+							$this->___instance_config->ns = substr($this->___instance_config->ns_class, 0, strrpos($this->___instance_config->ns_class, '\\'));
 
 							// Only if we're NOT in the same namespace as the ``$___parent_instance``.
 							if(!$___parent_instance_config || $___parent_instance_config->ns !== $this->___instance_config->ns)
@@ -1456,10 +1455,10 @@ namespace websharks_core_v000000_dev
 
 							if($total_args < $required_args) // Enforcing minimum args?
 								throw $this->©exception( // Need to be VERY descriptive here.
-									$this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
-									sprintf($this->i18n('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
-									        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $required_args, $total_args).
-									sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
+								           $this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
+								           sprintf($this->i18n('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
+								                   $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $required_args, $total_args).
+								           sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
 
 							if($total_args === 0) return TRUE; // Stop here (no arguments to check).
 
@@ -1663,10 +1662,10 @@ namespace websharks_core_v000000_dev
 									$type_given = (is_object($problem['value'])) ? get_class($problem['value']) : gettype($problem['value']);
 
 									throw $this->©exception( // Need to be VERY descriptive here.
-										$this->method(__FUNCTION__).'#invalid_args', get_defined_vars(),
-										sprintf($this->i18n('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
-										        $position, $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $types, $empty, $type_given).
-										sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
+									           $this->method(__FUNCTION__).'#invalid_args', get_defined_vars(),
+									           sprintf($this->i18n('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
+									                   $position, $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $types, $empty, $type_given).
+									           sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
 								}
 							return TRUE; // Default return value (no problem).
 						}
@@ -1734,10 +1733,10 @@ namespace websharks_core_v000000_dev
 
 									if($_default_arg_key_position < $required_args && !array_key_exists($_default_arg_key, $args))
 										throw $this->©exception( // Missing required arg! We're VERY descriptive here.
-											$this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
-											sprintf($this->i18n('`%1$s` requires missing argument key `%2$s`.'),
-											        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $_default_arg_key).
-											sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
+										           $this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
+										           sprintf($this->i18n('`%1$s` requires missing argument key `%2$s`.'),
+										                   $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $_default_arg_key).
+										           sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
 								}
 							// Commenting for performance. NOT absolutely necessary.
 							# unset($_default_arg_key_position, $_default_arg_key); // Housekeeping.
@@ -1793,19 +1792,19 @@ namespace websharks_core_v000000_dev
 								{
 									if(strpos($_property, '___') === 0)
 										throw $this->©exception( // Do NOT allow special properties here.
-											$this->method(__FUNCTION__).'#special_property', get_defined_vars(),
-											sprintf($this->i18n('Attempting to set special property: `%1$s`.'), $_property)
+										           $this->method(__FUNCTION__).'#special_property', get_defined_vars(),
+										           sprintf($this->i18n('Attempting to set special property: `%1$s`.'), $_property)
 										);
 									if(!property_exists($this, $_property))
 										throw $this->©exception( // NOT already defined.
-											$this->method(__FUNCTION__).'#nonexistent_property', get_defined_vars(),
-											sprintf($this->i18n('Attempting to set nonexistent property: `%1$s`.'), $_property)
+										           $this->method(__FUNCTION__).'#nonexistent_property', get_defined_vars(),
+										           sprintf($this->i18n('Attempting to set nonexistent property: `%1$s`.'), $_property)
 										);
 									if(!is_null($this->$_property) && gettype($_value) !== gettype($this->$_property))
 										throw $this->©exception( // Invalid property type.
-											$this->method(__FUNCTION__).'#invalid_property_type', get_defined_vars(),
-											sprintf($this->i18n('Property type mismatch for property name: `%1$s`.'), $_property).
-											sprintf($this->i18n(' Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
+										           $this->method(__FUNCTION__).'#invalid_property_type', get_defined_vars(),
+										           sprintf($this->i18n('Property type mismatch for property name: `%1$s`.'), $_property).
+										           sprintf($this->i18n(' Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
 										);
 									$this->$_property = $_value; // Sets/updates existing property value.
 								}

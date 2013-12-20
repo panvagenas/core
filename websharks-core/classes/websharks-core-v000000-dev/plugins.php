@@ -144,9 +144,9 @@ namespace websharks_core_v000000_dev
 					if(class_exists($this->___instance_config->plugin_root_ns_prefix.'\\menu_pages\\update_sync'))
 						{
 							$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
-								'<p>'.$this->i18n('Your pro add-on MUST be updated now.').
-								sprintf($this->i18n(' Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
-								'</p>'
+							              '<p>'.$this->i18n('Your pro add-on MUST be updated now.').
+							              sprintf($this->i18n(' Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
+							              '</p>'
 							);
 						}
 				}
@@ -237,39 +237,42 @@ namespace websharks_core_v000000_dev
 			 */
 			public function pre_site_transient_update_plugins($transient)
 				{
-					if(is_admin() && $this->©env->is_admin_page('update.php'))
+					if(!is_admin() || !$this->©env->is_admin_page('update.php'))
+						return $transient; // Nothing to do here.
+
+					$plugin_update_version = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_update_version');
+					$plugin_update_zip     = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_update_zip');
+
+					if($this->©strings->are_not_empty($plugin_update_version, $plugin_update_zip))
 						{
-							$plugin_update_zip     = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_update_zip');
-							$plugin_pro_update_zip = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_pro_update_zip');
+							if(!is_array($transient)) $transient = new \stdClass();
 
-							if($this->©string->is_not_empty($plugin_update_zip))
-								{
-									if(!is_array($transient)) $transient = new \stdClass();
+							$transient->last_checked                                                  = time();
+							$transient->checked[$this->___instance_config->plugin_dir_file_basename]  = $this->___instance_config->plugin_version;
+							$transient->response[$this->___instance_config->plugin_dir_file_basename] = (object)array(
+								'id'          => 0, # N/A
+								'slug'        => $this->___instance_config->plugin_dir_basename,
+								'url'         => $this->©menu_page->url('update_sync'),
+								'new_version' => $plugin_update_version,
+								'package'     => $plugin_update_zip
+							);
+						}
+					$plugin_pro_update_version = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_pro_update_version');
+					$plugin_pro_update_zip     = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_pro_update_zip');
 
-									$transient->last_checked                                                  = time();
-									$transient->checked[$this->___instance_config->plugin_dir_file_basename]  = '000000-dev';
-									$transient->response[$this->___instance_config->plugin_dir_file_basename] = (object)array(
-										'id'          => 0, # N/A
-										'slug'        => $this->___instance_config->plugin_dir_basename,
-										'new_version' => $this->___instance_config->plugin_version,
-										'url'         => $this->©menu_page->url('update_sync'),
-										'package'     => $plugin_update_zip
-									);
-								}
-							else if($this->©string->is_not_empty($plugin_pro_update_zip))
-								{
-									if(!is_array($transient)) $transient = new \stdClass();
+					if($this->©strings->are_not_empty($plugin_pro_update_version, $plugin_pro_update_zip))
+						{
+							if(!is_array($transient)) $transient = new \stdClass();
 
-									$transient->last_checked                                                      = time();
-									$transient->checked[$this->___instance_config->plugin_pro_dir_file_basename]  = '000000-dev';
-									$transient->response[$this->___instance_config->plugin_pro_dir_file_basename] = (object)array(
-										'id'          => 0, # N/A
-										'slug'        => $this->___instance_config->plugin_pro_dir_basename,
-										'new_version' => $this->___instance_config->plugin_version,
-										'url'         => $this->©menu_page->url('update_sync'),
-										'package'     => $plugin_pro_update_zip
-									);
-								}
+							$transient->last_checked                                                      = time();
+							$transient->checked[$this->___instance_config->plugin_pro_dir_file_basename]  = $this->___instance_config->plugin_version;
+							$transient->response[$this->___instance_config->plugin_pro_dir_file_basename] = (object)array(
+								'id'          => 0, # N/A
+								'slug'        => $this->___instance_config->plugin_pro_dir_basename,
+								'url'         => $this->©menu_page->url('update_sync'),
+								'new_version' => $plugin_pro_update_version,
+								'package'     => $plugin_pro_update_zip
+							);
 						}
 					return $transient; // Possibly modified now.
 				}
