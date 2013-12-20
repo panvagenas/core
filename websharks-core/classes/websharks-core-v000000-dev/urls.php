@@ -1614,14 +1614,14 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', 'string', func_get_args());
 
-					// Connects to the plugin site (POST array includes `username`, `password`, `version`).
+					// Connects to the plugin site (POST array includes `slug`, `version`, `username`, `password`).
 					// The plugin site should return a JSON object with `version`, `zip` elements (e.g. version + full URL to a ZIP file).
 					// If an error occurs at the plugin site, the plugin site can return an `error` element, w/ an error message.
 
 					$plugin_site_credentials = $this->©plugin->get_site_credentials($username, $password, TRUE);
 
 					$plugin_site_post_vars = array('data' => array( // See: <http://git.io/tHGlQw> for API specs.
-						'slug'     => $this->___instance_config->plugin_dir_basename, 'version' => $this->___instance_config->plugin_version,
+						'slug'     => $this->___instance_config->plugin_dir_basename, 'version' => '', //  Not applicable.
 						'username' => $plugin_site_credentials['username'], 'password' => $plugin_site_credentials['password']
 					));
 					$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/products/update-sync.php'), $plugin_site_post_vars);
@@ -1669,7 +1669,7 @@ namespace websharks_core_v000000_dev
 				{
 					$this->check_arg_types('string', 'string', func_get_args());
 
-					// Connects to the plugin site (POST array includes `username`, `password`, `version`).
+					// Connects to the plugin site (POST array includes `slug`, `version`, `username`, `password`).
 					// The plugin site should return a JSON object with `version`, `zip` elements (e.g. version + full URL to a ZIP file).
 					// If an error occurs at the plugin site, the plugin site can return an `error` element, w/ an error message.
 
