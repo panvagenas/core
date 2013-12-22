@@ -233,7 +233,7 @@ namespace websharks_core_v000000_dev
 			 * @param boolean|mixed $transient This is passed by WordPress® as a FALSE value (initially).
 			 *    However, it could be filtered by other plugins, so we need to check for an array.
 			 *
-			 * @return array|boolean|mixed A modified array, else the original value.
+			 * @return object|boolean|mixed A modified object, else the original value.
 			 */
 			public function pre_site_transient_update_plugins($transient)
 				{
@@ -245,13 +245,12 @@ namespace websharks_core_v000000_dev
 
 					if($this->©strings->are_not_empty($plugin_update_version, $plugin_update_zip))
 						{
-							if(!is_array($transient)) $transient = new \stdClass();
+							if(!is_object($transient)) $transient = new \stdClass();
 
 							$transient->last_checked                                                  = time();
 							$transient->checked[$this->___instance_config->plugin_dir_file_basename]  = $this->___instance_config->plugin_version;
 							$transient->response[$this->___instance_config->plugin_dir_file_basename] = (object)array(
-								'id'          => 0, # N/A
-								'slug'        => $this->___instance_config->plugin_dir_basename,
+								'id'          => 0, 'slug' => $this->___instance_config->plugin_dir_basename,
 								'url'         => $this->©menu_page->url('update_sync'),
 								'new_version' => $plugin_update_version,
 								'package'     => $plugin_update_zip
@@ -262,13 +261,12 @@ namespace websharks_core_v000000_dev
 
 					if($this->©strings->are_not_empty($plugin_pro_update_version, $plugin_pro_update_zip))
 						{
-							if(!is_array($transient)) $transient = new \stdClass();
+							if(!is_object($transient)) $transient = new \stdClass();
 
 							$transient->last_checked                                                      = time();
 							$transient->checked[$this->___instance_config->plugin_pro_dir_file_basename]  = $this->___instance_config->plugin_version;
 							$transient->response[$this->___instance_config->plugin_pro_dir_file_basename] = (object)array(
-								'id'          => 0, # N/A
-								'slug'        => $this->___instance_config->plugin_pro_dir_basename,
+								'id'          => 0, 'slug' => $this->___instance_config->plugin_pro_dir_basename,
 								'url'         => $this->©menu_page->url('update_sync'),
 								'new_version' => $plugin_pro_update_version,
 								'package'     => $plugin_pro_update_zip
