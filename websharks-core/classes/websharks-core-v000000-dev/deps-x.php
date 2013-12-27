@@ -87,7 +87,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *
 	 * @note For internal/development use only.
 	 */
-	protected static $local_wp_dev_dir = '/home/jaswsinc/Apache/wordpress.loc';
+	protected static $local_wp_dev_dir = '%%$_SERVER[HOME]%%/Apache/wordpress.loc';
+
+	/**
+	 * Initialized yet?
+	 *
+	 * @var boolean Initialized yet?
+	 */
+	protected static $initialized = FALSE;
 
 	/**
 	 * A static cache (for all instances).
@@ -95,6 +102,45 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 * @var array A static cache (for all instances).
 	 */
 	protected static $static = array();
+
+	# --------------------------------------------------------------------------------------------------------------------------------------
+	# Static initializer (see also: bottom of this file).
+	# --------------------------------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Static initializer; this runs ONE time only.
+	 *
+	 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
+	 *
+	 * @throws exception If attempting to run this from a root directory.
+	 */
+	public static function initialize()
+		{
+			if(self::$initialized)
+				return TRUE; // Initialized already.
+			/*
+			 * Do NOT run this file from a root directory.
+			 */
+			if(substr(self::n_dir_seps_up(__FILE__, 1, TRUE), -1) === '/')
+				throw new exception( // Fail here; do NOT access this file from a root directory.
+					sprintf(self::i18n('This file should NOT be accessed from a root directory: `%1$s`'), __FILE__));
+			/*
+			 * Handle some dynamic regex replacement codes in class properties (as follows).
+			 */
+			$_server_home_dir       = (!empty($_SERVER['HOME'])) ? (string)$_SERVER['HOME'] : '';
+			self::$local_wp_dev_dir = str_replace('%%$_SERVER[HOME]%%', $_server_home_dir, self::$local_wp_dev_dir);
+
+			/*
+			 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
+			 */
+			if(!$GLOBALS[__FILE__]['is_in_stand_alone_mode'] && !class_exists('websharks_core__deps_x') && function_exists('class_alias'))
+				class_alias('deps_x_websharks_core_v000000_dev', 'websharks_core__deps_x');
+
+			if($GLOBALS[__FILE__]['is_in_stand_alone_mode'] && !class_exists('websharks_core__deps_x_stand_alone') && function_exists('class_alias'))
+				class_alias('deps_x_stand_alone_websharks_core_v000000_dev', 'websharks_core__deps_x_stand_alone');
+
+			return (self::$initialized = TRUE);
+		}
 
 	# --------------------------------------------------------------------------------------------------------------------------------------
 	# Main method (this is what we'll be calling upon — for the most part).
@@ -263,8 +309,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('PHP Version'),
 						'message' => sprintf(
 							$this->i18n(
-								'PHP v%1$s (or higher) is required to run %2$s.'.
-								' You are currently running PHP <code>v%3$s</code>. Please upgrade.'
+							     'PHP v%1$s (or higher) is required to run %2$s.'.
+							     ' You are currently running PHP <code>v%3$s</code>. Please upgrade.'
 							), htmlspecialchars($php_version_required), htmlspecialchars($plugin_name), htmlspecialchars($php_version)
 						)
 					);
@@ -275,8 +321,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('PHP Version'),
 						'message' => sprintf(
 							$this->i18n(
-								'You are currently running PHP <code>%1$s</code> (which is fine).'.
-								' Minimum required version is: <code>%2$s</code>.'
+							     'You are currently running PHP <code>%1$s</code> (which is fine).'.
+							     ' Minimum required version is: <code>%2$s</code>.'
 							), htmlspecialchars($php_version), htmlspecialchars($php_version_required)
 						)
 					);
@@ -289,8 +335,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('WordPress® Version'),
 						'message' => sprintf(
 							$this->i18n(
-								'WordPress® v%1$s (or higher) is required to run %2$s.'.
-								' You are currently running WordPress® <code>v%3$s</code>. Please <a href="%4$s">upgrade</a>.'
+							     'WordPress® v%1$s (or higher) is required to run %2$s.'.
+							     ' You are currently running WordPress® <code>v%3$s</code>. Please <a href="%4$s">upgrade</a>.'
 							), htmlspecialchars($wp_version_required), htmlspecialchars($plugin_name), htmlspecialchars($wp_version), esc_attr(admin_url('/update-core.php'))
 						)
 					);
@@ -301,8 +347,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('WordPress® Version'),
 						'message' => sprintf(
 							$this->i18n(
-								'You are currently running WordPress® <code>%1$s</code> (which is fine).'.
-								' Minimum required version is: <code>%2$s</code>'
+							     'You are currently running WordPress® <code>%1$s</code> (which is fine).'.
+							     ' Minimum required version is: <code>%2$s</code>'
 							), htmlspecialchars($wp_version), htmlspecialchars($wp_version_required)
 						)
 					);
@@ -315,11 +361,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Phar Extension (PHP Archives)'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing Phar extension. %1$s needs the <a href="http://php.net/manual/en/book.phar.php" target="_blank" rel="xlink">Phar</a> extension for PHP.'.
-								' The Phar extension provides a way for developers to put large portions (or even entire PHP applications) into a single file called a "phar" (PHP Archive) for easy distribution and installation.'.
-								' In addition to providing this service, the phar extension also provides a file-format abstraction method for creating and manipulating tar and zip files through the PharData class.'.
-								' Note, this extension should have been enabled with just a default installation of PHP v5.3+.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing Phar extension. %1$s needs the <a href="http://php.net/manual/en/book.phar.php" target="_blank" rel="xlink">Phar</a> extension for PHP.'.
+							     ' The Phar extension provides a way for developers to put large portions (or even entire PHP applications) into a single file called a "phar" (PHP Archive) for easy distribution and installation.'.
+							     ' In addition to providing this service, the phar extension also provides a file-format abstraction method for creating and manipulating tar and zip files through the PharData class.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP v5.3+.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -330,13 +376,13 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Phar Extension (PHP Archives)'),
 						'message' => sprintf(
 							$this->i18n(
-								'Phar stream (<code>phar://</code>) disabled by Suhosin security extension. %1$s needs the <a href="http://php.net/manual/en/book.phar.php" target="_blank" rel="xlink">Phar</a> extension for PHP.'.
-								' The Phar extension provides a way for developers to put large portions (or even entire PHP applications) into a single file called a "phar" (PHP Archive) for easy distribution and installation.'.
-								' In addition to providing this service, the phar extension also provides a file-format abstraction method for creating and manipulating tar and zip files through the PharData class.'.
-								' Your server appears to support the Phar extension, but you are missing this line in your <code>php.ini</code> file: <code>suhosin.executor.include.whitelist = phar</code>.'.
-								' Please read <a href="http://stackoverflow.com/questions/15049572/i-downloaded-aws-phar-but-cant-require-it/15052394#15052394" target="_blank" rel="xlink">this article</a> for further details.'.
-								' See also: <a href="http://www.hardened-php.net/suhosin/configuration.html#suhosin.executor.include.whitelist" target="_blank" rel="xlink">this documentation</a>.'.
-								' Please consult with your web hosting company about this message.'
+							     'Phar stream (<code>phar://</code>) disabled by Suhosin security extension. %1$s needs the <a href="http://php.net/manual/en/book.phar.php" target="_blank" rel="xlink">Phar</a> extension for PHP.'.
+							     ' The Phar extension provides a way for developers to put large portions (or even entire PHP applications) into a single file called a "phar" (PHP Archive) for easy distribution and installation.'.
+							     ' In addition to providing this service, the phar extension also provides a file-format abstraction method for creating and manipulating tar and zip files through the PharData class.'.
+							     ' Your server appears to support the Phar extension, but you are missing this line in your <code>php.ini</code> file: <code>suhosin.executor.include.whitelist = phar</code>.'.
+							     ' Please read <a href="http://stackoverflow.com/questions/15049572/i-downloaded-aws-phar-but-cant-require-it/15052394#15052394" target="_blank" rel="xlink">this article</a> for further details.'.
+							     ' See also: <a href="http://www.hardened-php.net/suhosin/configuration.html#suhosin.executor.include.whitelist" target="_blank" rel="xlink">this documentation</a>.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -347,8 +393,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Phar Extension (PHP Archives)'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.phar.php" target="_blank" rel="xlink">Phar</a> extension is installed.'.
-								' Comes with every installation of PHP 5.3+. Your server supports PHP archives.'
+							     'The <a href="http://php.net/manual/en/book.phar.php" target="_blank" rel="xlink">Phar</a> extension is installed.'.
+							     ' Comes with every installation of PHP 5.3+. Your server supports PHP archives.'
 							), NULL
 						)
 					);
@@ -361,9 +407,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('ZLib Extension (GZIP)'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing ZLib extension. %1$s needs the <a href="http://www.php.net/manual/en/book.zlib.php" target="_blank" rel="xlink">zlib</a> extension for PHP.'.
-								' This will add GZIP support to your installation of PHP, allowing your installation to read/write GZIP compressed files.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing ZLib extension. %1$s needs the <a href="http://www.php.net/manual/en/book.zlib.php" target="_blank" rel="xlink">zlib</a> extension for PHP.'.
+							     ' This will add GZIP support to your installation of PHP, allowing your installation to read/write GZIP compressed files.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -374,8 +420,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('ZLib Extension (GZIP)'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://www.php.net/manual/en/book.zlib.php" target="_blank" rel="xlink">zlib</a> extension is installed.'.
-								' Your server supports GZIP compression.'
+							     'The <a href="http://www.php.net/manual/en/book.zlib.php" target="_blank" rel="xlink">zlib</a> extension is installed.'.
+							     ' Your server supports GZIP compression.'
 							), NULL
 						)
 					);
@@ -388,9 +434,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Multibyte String Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing PHP extension. %1$s needs the <a href="http://www.php.net/manual/en/book.mbstring.php" target="_blank" rel="xlink">mbstring</a> extension for PHP.'.
-								' This will add multibyte support to your installation of PHP, allowing UTF-8 character conversion.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing PHP extension. %1$s needs the <a href="http://www.php.net/manual/en/book.mbstring.php" target="_blank" rel="xlink">mbstring</a> extension for PHP.'.
+							     ' This will add multibyte support to your installation of PHP, allowing UTF-8 character conversion.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -401,8 +447,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Multibyte String Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://www.php.net/manual/en/book.mbstring.php" target="_blank" rel="xlink">mbstring</a> extension is installed.'.
-								' Your server supports UTF-8 character conversion.'
+							     'The <a href="http://www.php.net/manual/en/book.mbstring.php" target="_blank" rel="xlink">mbstring</a> extension is installed.'.
+							     ' Your server supports UTF-8 character conversion.'
 							), NULL
 						)
 					);
@@ -415,10 +461,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Hash Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing Hash extension. %1$s needs the <a href="http://www.php.net/manual/en/book.hash.php" target="_blank" rel="xlink">Hash</a> extension for PHP.'.
-								' This will add message digest support to your installation of PHP, and allows for direct or incremental processing of arbitrary length messages using a variety of hashing algorithms.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing Hash extension. %1$s needs the <a href="http://www.php.net/manual/en/book.hash.php" target="_blank" rel="xlink">Hash</a> extension for PHP.'.
+							     ' This will add message digest support to your installation of PHP, and allows for direct or incremental processing of arbitrary length messages using a variety of hashing algorithms.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -429,8 +475,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Hash Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://www.php.net/manual/en/book.hash.php" target="_blank" rel="xlink">Hash</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server supports message digests.'
+							     'The <a href="http://www.php.net/manual/en/book.hash.php" target="_blank" rel="xlink">Hash</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server supports message digests.'
 							), NULL
 						)
 					);
@@ -443,10 +489,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default XML Parser Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing XML Parser extension. %1$s needs the <a href="http://www.php.net/manual/en/book.xml.php" target="_blank" rel="xlink">XML Parser</a> extension for PHP.'.
-								' This will add XML support to your installation of PHP, and allows for the creation of XML parsers/events.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing XML Parser extension. %1$s needs the <a href="http://www.php.net/manual/en/book.xml.php" target="_blank" rel="xlink">XML Parser</a> extension for PHP.'.
+							     ' This will add XML support to your installation of PHP, and allows for the creation of XML parsers/events.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -457,8 +503,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default XML Parser Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://www.php.net/manual/en/book.xml.php" target="_blank" rel="xlink">XML Parser</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server supports XML parsing.'
+							     'The <a href="http://www.php.net/manual/en/book.xml.php" target="_blank" rel="xlink">XML Parser</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server supports XML parsing.'
 							), NULL
 						)
 					);
@@ -471,10 +517,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default libXML Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing libXML extension. %1$s needs the <a href="http://php.net/manual/en/book.libxml.php" target="_blank" rel="xlink">libXML</a> extension for PHP.'.
-								' This will add XML support to your installation of PHP. This is a requirement for other extensions, such as SimpleXML and SOAP.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing libXML extension. %1$s needs the <a href="http://php.net/manual/en/book.libxml.php" target="_blank" rel="xlink">libXML</a> extension for PHP.'.
+							     ' This will add XML support to your installation of PHP. This is a requirement for other extensions, such as SimpleXML and SOAP.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -485,8 +531,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default libXML Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.libxml.php" target="_blank" rel="xlink">libXML</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server supports this important dependency.'
+							     'The <a href="http://php.net/manual/en/book.libxml.php" target="_blank" rel="xlink">libXML</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server supports this important dependency.'
 							), NULL
 						)
 					);
@@ -499,10 +545,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Simple XML Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing Simple XML extension. %1$s needs the <a href="http://www.php.net/manual/en/book.simplexml.php" target="_blank" rel="xlink">Simple XML</a> extension for PHP.'.
-								' This will add XML support to your installation of PHP, and allows for the conversion of XML documents to PHP objects.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing Simple XML extension. %1$s needs the <a href="http://www.php.net/manual/en/book.simplexml.php" target="_blank" rel="xlink">Simple XML</a> extension for PHP.'.
+							     ' This will add XML support to your installation of PHP, and allows for the conversion of XML documents to PHP objects.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -513,8 +559,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Simple XML Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://www.php.net/manual/en/book.simplexml.php" target="_blank" rel="xlink">Simple XML</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server can convert XML into PHP objects.'
+							     'The <a href="http://www.php.net/manual/en/book.simplexml.php" target="_blank" rel="xlink">Simple XML</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server can convert XML into PHP objects.'
 							), NULL
 						)
 					);
@@ -527,10 +573,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default XML Reader Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing XML Reader extension. %1$s needs the <a href="http://www.php.net/manual/en/book.xmlreader.php" target="_blank" rel="xlink">XML Reader</a> extension for PHP.'.
-								' This will add XML support to your installation of PHP, and allows for the reading of XML documents.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing XML Reader extension. %1$s needs the <a href="http://www.php.net/manual/en/book.xmlreader.php" target="_blank" rel="xlink">XML Reader</a> extension for PHP.'.
+							     ' This will add XML support to your installation of PHP, and allows for the reading of XML documents.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -541,8 +587,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default XML Reader Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://www.php.net/manual/en/book.xmlreader.php" target="_blank" rel="xlink">XML Reader</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server has the ability to read XML documents.'
+							     'The <a href="http://www.php.net/manual/en/book.xmlreader.php" target="_blank" rel="xlink">XML Reader</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server has the ability to read XML documents.'
 							), NULL
 						)
 					);
@@ -555,10 +601,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default XML Writer Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing XML Writer extension. %1$s needs the <a href="http://www.php.net/manual/en/book.xmlwriter.php" target="_blank" rel="xlink">XML Writer</a> extension for PHP.'.
-								' This will add XML support to your installation of PHP, and allows for the creation of XML documents.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing XML Writer extension. %1$s needs the <a href="http://www.php.net/manual/en/book.xmlwriter.php" target="_blank" rel="xlink">XML Writer</a> extension for PHP.'.
+							     ' This will add XML support to your installation of PHP, and allows for the creation of XML documents.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -569,8 +615,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default XML Writer Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://www.php.net/manual/en/book.xmlwriter.php" target="_blank" rel="xlink">XML Writer</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server has the ability to write XML documents.'
+							     'The <a href="http://www.php.net/manual/en/book.xmlwriter.php" target="_blank" rel="xlink">XML Writer</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server has the ability to write XML documents.'
 							), NULL
 						)
 					);
@@ -583,10 +629,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default DOM Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing DOM extension. %1$s needs the <a href="http://php.net/manual/en/book.dom.php" target="_blank" rel="xlink">DOM</a> extension for PHP.'.
-								' This will add Document Object Model support to your installation of PHP, allowing XML documents to be traversed easily.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing DOM extension. %1$s needs the <a href="http://php.net/manual/en/book.dom.php" target="_blank" rel="xlink">DOM</a> extension for PHP.'.
+							     ' This will add Document Object Model support to your installation of PHP, allowing XML documents to be traversed easily.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -597,8 +643,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default DOM Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.dom.php" target="_blank" rel="xlink">DOM</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server supports XML document traversal.'
+							     'The <a href="http://php.net/manual/en/book.dom.php" target="_blank" rel="xlink">DOM</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server supports XML document traversal.'
 							), NULL
 						)
 					);
@@ -611,10 +657,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Sessions Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing Sessions extension. %1$s needs the <a href="http://www.php.net/manual/en/book.session.php" target="_blank" rel="xlink">Sessions</a> extension for PHP.'.
-								' This will add sessioning support to your installation of PHP, allowing read/write access to session data.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing Sessions extension. %1$s needs the <a href="http://www.php.net/manual/en/book.session.php" target="_blank" rel="xlink">Sessions</a> extension for PHP.'.
+							     ' This will add sessioning support to your installation of PHP, allowing read/write access to session data.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -625,8 +671,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Sessions Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://www.php.net/manual/en/book.session.php" target="_blank" rel="xlink">Sessions</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server allows read/write access to session data.'
+							     'The <a href="http://www.php.net/manual/en/book.session.php" target="_blank" rel="xlink">Sessions</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server allows read/write access to session data.'
 							), NULL
 						)
 					);
@@ -639,9 +685,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('MySQL Database Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing MySQL extension. %1$s needs the <a href="http://php.net/manual/en/book.mysql.php" target="_blank" rel="xlink">MySQL</a> extension for PHP.'.
-								' This will add MySQL support to your installation of PHP, allowing MySQL database communication.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing MySQL extension. %1$s needs the <a href="http://php.net/manual/en/book.mysql.php" target="_blank" rel="xlink">MySQL</a> extension for PHP.'.
+							     ' This will add MySQL support to your installation of PHP, allowing MySQL database communication.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -652,8 +698,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('MySQL Database Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.mysql.php" target="_blank" rel="xlink">MySQL</a> extension is installed.'.
-								' Your server supports MySQL database communication.'
+							     'The <a href="http://php.net/manual/en/book.mysql.php" target="_blank" rel="xlink">MySQL</a> extension is installed.'.
+							     ' Your server supports MySQL database communication.'
 							), NULL
 						)
 					);
@@ -666,9 +712,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Mcrypt/Encryption Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing Mcrypt extension. %1$s needs the <a href="http://php.net/manual/en/book.mcrypt.php" target="_blank" rel="xlink">Mcrypt</a> extension for PHP.'.
-								' This will add encryption support to your installation of PHP, with a variety of block algorithms; such as DES, TripleDES, and Blowfish.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing Mcrypt extension. %1$s needs the <a href="http://php.net/manual/en/book.mcrypt.php" target="_blank" rel="xlink">Mcrypt</a> extension for PHP.'.
+							     ' This will add encryption support to your installation of PHP, with a variety of block algorithms; such as DES, TripleDES, and Blowfish.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -679,8 +725,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Mcrypt/Encryption Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.mcrypt.php" target="_blank" rel="xlink">Mcrypt</a> extension is installed.'.
-								' Your server supports advanced data encryption.'
+							     'The <a href="http://php.net/manual/en/book.mcrypt.php" target="_blank" rel="xlink">Mcrypt</a> extension is installed.'.
+							     ' Your server supports advanced data encryption.'
 							), NULL
 						)
 					);
@@ -693,10 +739,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default JSON Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing JSON extension. %1$s needs the <a href="http://php.net/manual/en/book.json.php" target="_blank" rel="xlink">JSON</a> extension for PHP.'.
-								' This will add JSON support to your installation of PHP, a standard JavaScript Object Notation (JSON) data-interchange format.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing JSON extension. %1$s needs the <a href="http://php.net/manual/en/book.json.php" target="_blank" rel="xlink">JSON</a> extension for PHP.'.
+							     ' This will add JSON support to your installation of PHP, a standard JavaScript Object Notation (JSON) data-interchange format.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -707,8 +753,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default JSON Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.json.php" target="_blank" rel="xlink">JSON</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server supports JavaScript object notation.'
+							     'The <a href="http://php.net/manual/en/book.json.php" target="_blank" rel="xlink">JSON</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server supports JavaScript object notation.'
 							), NULL
 						)
 					);
@@ -721,9 +767,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('GD Image Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing GD Image extension. %1$s needs the <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension for PHP.'.
-								' This will add image creation support to your installation of PHP, so that images can be generated dynamically.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing GD Image extension. %1$s needs the <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension for PHP.'.
+							     ' This will add image creation support to your installation of PHP, so that images can be generated dynamically.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -734,9 +780,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('GD Image Extension (FreeType Support)'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing FreeType library for GD Image extension. %1$s needs the <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension for PHP, with the FreeType library also.'.
-								' This will add image creation support to your installation of PHP, so that images can be generated dynamically. FreeType makes it possible for fonts to be used in image generation.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing FreeType library for GD Image extension. %1$s needs the <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension for PHP, with the FreeType library also.'.
+							     ' This will add image creation support to your installation of PHP, so that images can be generated dynamically. FreeType makes it possible for fonts to be used in image generation.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -747,9 +793,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('GD Image Extension (JPEG Support)'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing JPEG support for GD Image extension. %1$s needs the <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension for PHP, with JPEG support enabled.'.
-								' This will add JPEG image creation support to your installation of PHP, so that JPEG images can be generated dynamically.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing JPEG support for GD Image extension. %1$s needs the <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension for PHP, with JPEG support enabled.'.
+							     ' This will add JPEG image creation support to your installation of PHP, so that JPEG images can be generated dynamically.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -760,9 +806,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('GD Image Extension (PNG Support)'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing PNG support for GD Image extension. %1$s needs the <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension for PHP, with PNG support enabled.'.
-								' This will add PNG image creation support to your installation of PHP, so that PNG images can be generated dynamically.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing PNG support for GD Image extension. %1$s needs the <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension for PHP, with PNG support enabled.'.
+							     ' This will add PNG image creation support to your installation of PHP, so that PNG images can be generated dynamically.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -773,8 +819,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('GD Image Extension (JPEG/PNG/FreeType)'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension is installed.'.
-								' Your server supports dynamic image creation.'
+							     'The <a href="http://php.net/manual/en/book.image.php" target="_blank" rel="xlink">GD Image</a> extension is installed.'.
+							     ' Your server supports dynamic image creation.'
 							), NULL
 						)
 					);
@@ -789,10 +835,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Ctype Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing Ctype extension. %1$s needs the <a href="http://php.net/manual/en/book.ctype.php" target="_blank" rel="xlink">CType</a> extension for PHP.'.
-								' This will add character class support to your installation of PHP, allowing detection of certain types of characters, based on locale.'.
-								' Note, this extension should have been enabled with just a default installation of PHP.'.
-								' Please consult with your web hosting company about this message.'
+							     'Missing Ctype extension. %1$s needs the <a href="http://php.net/manual/en/book.ctype.php" target="_blank" rel="xlink">CType</a> extension for PHP.'.
+							     ' This will add character class support to your installation of PHP, allowing detection of certain types of characters, based on locale.'.
+							     ' Note, this extension should have been enabled with just a default installation of PHP.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -803,8 +849,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Default Ctype Extension'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.ctype.php" target="_blank" rel="xlink">Ctype</a> extension is installed.'.
-								' Comes with every installation of PHP. Your server supports character class detection.'
+							     'The <a href="http://php.net/manual/en/book.ctype.php" target="_blank" rel="xlink">Ctype</a> extension is installed.'.
+							     ' Comes with every installation of PHP. Your server supports character class detection.'
 							), NULL
 						)
 					);
@@ -817,8 +863,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('OpenSSL Extension With <code>openssl_sign()</code>'),
 						'message' => sprintf(
 							$this->i18n(
-								'PHP not compiled with OpenSSL. Missing PHP function <a href="http://php.net/manual/en/function.openssl-sign.php" target="_blank" rel="xlink">openssl_sign()</a>. In order to run %1$s, your installation of PHP needs the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension</a>.'.
-								' Please consult with your web hosting company about this message.'
+							     'PHP not compiled with OpenSSL. Missing PHP function <a href="http://php.net/manual/en/function.openssl-sign.php" target="_blank" rel="xlink">openssl_sign()</a>. In order to run %1$s, your installation of PHP needs the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension</a>.'.
+							     ' Please consult with your web hosting company about this message.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -829,7 +875,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('OpenSSL Extension With <code>openssl_sign()</code>'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension</a> is installed, and PHP function <a href="http://php.net/manual/en/function.openssl-sign.php" target="_blank" rel="xlink">openssl_sign()</a> is available.'
+							     'The <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension</a> is installed, and PHP function <a href="http://php.net/manual/en/function.openssl-sign.php" target="_blank" rel="xlink">openssl_sign()</a> is available.'
 							), NULL
 						)
 					);
@@ -842,11 +888,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('PHP <code>eval()</code> Function'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing PHP function. %1$s needs the PHP <a href="http://php.net/manual/en/function.eval.php" target="_blank" rel="xlink">eval()</a> function.'.
-								' Please check with your hosting provider to resolve this issue and have PHP <code>eval()</code> enabled.'.
-								' Note... the use of <code>eval()</code>, is limited to areas where it is absolutely necessary to achieve a desired functionality.'.
-								' For instance, where PHP code is supplied by a site owner (or by their developer) to achieve advanced customization through a UI panel. This can be evaluated at runtime to allow for the inclusion of PHP conditionals or dynamic values.'.
-								' In cases such as these, the PHP <code>eval()</code> function serves a valid purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (e.g. the code can be trusted in this case).'
+							     'Missing PHP function. %1$s needs the PHP <a href="http://php.net/manual/en/function.eval.php" target="_blank" rel="xlink">eval()</a> function.'.
+							     ' Please check with your hosting provider to resolve this issue and have PHP <code>eval()</code> enabled.'.
+							     ' Note... the use of <code>eval()</code>, is limited to areas where it is absolutely necessary to achieve a desired functionality.'.
+							     ' For instance, where PHP code is supplied by a site owner (or by their developer) to achieve advanced customization through a UI panel. This can be evaluated at runtime to allow for the inclusion of PHP conditionals or dynamic values.'.
+							     ' In cases such as these, the PHP <code>eval()</code> function serves a valid purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (e.g. the code can be trusted in this case).'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -857,7 +903,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('PHP <code>eval()</code> Function'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/function.eval.php" target="_blank" rel="xlink">eval()</a> function is available.'
+							     'The <a href="http://php.net/manual/en/function.eval.php" target="_blank" rel="xlink">eval()</a> function is available.'
 							), NULL
 						)
 					);
@@ -870,8 +916,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('PHP <code>glob()</code> Function'),
 						'message' => sprintf(
 							$this->i18n(
-								'Missing PHP function. %1$s needs the PHP <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">glob()</a> function.'.
-								' Please check with your hosting provider to resolve this issue and have PHP <code>glob()</code> enabled.'
+							     'Missing PHP function. %1$s needs the PHP <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">glob()</a> function.'.
+							     ' Please check with your hosting provider to resolve this issue and have PHP <code>glob()</code> enabled.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -882,7 +928,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('PHP <code>glob()</code> Function'),
 						'message' => sprintf(
 							$this->i18n(
-								'The <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">glob()</a> function is available.'
+							     'The <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">glob()</a> function is available.'
 							), NULL
 						)
 					);
@@ -895,9 +941,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('PHP <code>GLOB_BRACE</code> Flag'),
 						'message' => sprintf(
 							$this->i18n(
-								'This installation of PHP <code>v%1$s</code> does NOT support the <code>GLOB_BRACE</code> flag for the <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">glob()</a> function in PHP.'.
-								' Please check <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">this article</a> for further details.'.
-								' Or, consult with your web hosting company about this message. This is likely an underlying server compatibility issue.'
+							     'This installation of PHP <code>v%1$s</code> does NOT support the <code>GLOB_BRACE</code> flag for the <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">glob()</a> function in PHP.'.
+							     ' Please check <a href="http://php.net/manual/en/function.glob.php" target="_blank" rel="xlink">this article</a> for further details.'.
+							     ' Or, consult with your web hosting company about this message. This is likely an underlying server compatibility issue.'
 							), htmlspecialchars($php_version)
 						)
 					);
@@ -908,7 +954,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('PHP <code>GLOB_BRACE</code> Flag'),
 						'message' => sprintf(
 							$this->i18n(
-								'You are currently running PHP <code>v%1$s</code> w/ support for the <code>GLOB_BRACE</code> flag.'
+							     'You are currently running PHP <code>v%1$s</code> w/ support for the <code>GLOB_BRACE</code> flag.'
 							), htmlspecialchars($php_version)
 						)
 					);
@@ -935,10 +981,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						{
 							curl_setopt_array(
 								$_curl_test_resource, array(
-								                           CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_TIMEOUT => 5,
-								                           CURLOPT_URL            => $_curl_fopen_ssl_test_url, CURLOPT_RETURNTRANSFER => TRUE,
-								                           CURLOPT_FAILONERROR    => TRUE, CURLOPT_FORBID_REUSE => TRUE, CURLOPT_SSL_VERIFYPEER => FALSE
-								                      )
+									                    CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_TIMEOUT => 5,
+									                    CURLOPT_URL            => $_curl_fopen_ssl_test_url, CURLOPT_RETURNTRANSFER => TRUE,
+									                    CURLOPT_FAILONERROR    => TRUE, CURLOPT_FORBID_REUSE => TRUE, CURLOPT_SSL_VERIFYPEER => FALSE
+								                    )
 							);
 							if(stripos((string)curl_exec($_curl_test_resource), $_curl_fopen_ssl_test_url_return_string_frag) !== FALSE)
 								$_curl_over_ssl_test_success = TRUE;
@@ -957,10 +1003,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						{
 							curl_setopt_array(
 								$_curl_test_resource, array(
-								                           CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_TIMEOUT => 5,
-								                           CURLOPT_URL            => $_curl_fopen_localhost_test_url, CURLOPT_RETURNTRANSFER => TRUE,
-								                           CURLOPT_FAILONERROR    => TRUE, CURLOPT_FORBID_REUSE => TRUE, CURLOPT_SSL_VERIFYPEER => FALSE
-								                      )
+									                    CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_TIMEOUT => 5,
+									                    CURLOPT_URL            => $_curl_fopen_localhost_test_url, CURLOPT_RETURNTRANSFER => TRUE,
+									                    CURLOPT_FAILONERROR    => TRUE, CURLOPT_FORBID_REUSE => TRUE, CURLOPT_SSL_VERIFYPEER => FALSE
+								                    )
 							);
 							if(stripos((string)curl_exec($_curl_test_resource), $_curl_fopen_localhost_test_url_return_string_frag) !== FALSE)
 								$_curl_localhost_test_success = TRUE;
@@ -997,10 +1043,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('cURL Extension / Or <code>fopen()</code> URL'),
 						'message' => sprintf(
 							$this->i18n(
-								'In order to run %1$s, your installation of PHP needs one of the following...<br />'.
-								'&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
-								'&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
-								'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
+							     'In order to run %1$s, your installation of PHP needs one of the following...<br />'.
+							     '&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
+							     '&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
+							     'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -1011,10 +1057,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('cURL Extension / Or <code>fopen()</code> URL'),
 						'message' => sprintf(
 							$this->i18n(
-								'PHP not compiled with OpenSSL. In order to run %1$s, your installation of PHP needs one of the following...<br />'.
-								'&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
-								'&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
-								'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
+							     'PHP not compiled with OpenSSL. In order to run %1$s, your installation of PHP needs one of the following...<br />'.
+							     '&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
+							     '&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
+							     'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
 							), htmlspecialchars($plugin_name)
 						)
 					);
@@ -1025,13 +1071,13 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('cURL Extension / Or <code>fopen()</code> URL'),
 						'message' => sprintf(
 							$this->i18n(
-								'One or more HTTPS connection tests failed when connecting to:<br />'.
-								'<code>%1$s</code><br /><br />'.
+							     'One or more HTTPS connection tests failed when connecting to:<br />'.
+							     '<code>%1$s</code><br /><br />'.
 
-								'In order to run %2$s, your installation of PHP needs one of the following...<br />'.
-								'&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
-								'&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
-								'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
+							     'In order to run %2$s, your installation of PHP needs one of the following...<br />'.
+							     '&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
+							     '&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
+							     'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
 							), htmlspecialchars($_curl_fopen_ssl_test_url), htmlspecialchars($plugin_name)
 						)
 					);
@@ -1042,14 +1088,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('cURL Extension / Or <code>fopen()</code> URL'),
 						'message' => sprintf(
 							$this->i18n(
-								'One or more HTTP connection tests failed against localhost.<br />'.
-								'Cannot connect to self over HTTP — possible DNS resolution issue.<br />'.
-								'Can\'t connect to: <code>%1$s</code><br /><br />'.
+							     'One or more HTTP connection tests failed against localhost.<br />'.
+							     'Cannot connect to self over HTTP — possible DNS resolution issue.<br />'.
+							     'Can\'t connect to: <code>%1$s</code><br /><br />'.
 
-								'In order to run %2$s, your installation of PHP needs one of the following...<br />'.
-								'&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
-								'&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
-								'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
+							     'In order to run %2$s, your installation of PHP needs one of the following...<br />'.
+							     '&bull; Either the <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP (plus the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
+							     '&bull; Or, set: <code>allow_url_fopen = on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and enable the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a>).<br />'.
+							     'Please consult with your web hosting company about this message. See also: <a href="http://wordpress.org/hosting/" target="_blank" rel="xlink">WordPress recommended hosting platforms</a>.'
 							), htmlspecialchars($_curl_fopen_localhost_test_url), htmlspecialchars($plugin_name)
 						)
 					);
@@ -1062,7 +1108,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'   => $this->i18n('cURL Extension w/ SSL Support'),
 								'message' => sprintf(
 									$this->i18n(
-										'The <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP is available (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled).'
+									     'The <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP is available (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled).'
 									), NULL
 								)
 							);
@@ -1071,7 +1117,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									'title'   => $this->i18n('cURL Extension w/ SSL Support (connection test)'),
 									'message' => sprintf(
 										$this->i18n(
-											'The <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP is available (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTPS connection to: <code>%1$s</code> succeeded.'
+										     'The <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP is available (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTPS connection to: <code>%1$s</code> succeeded.'
 										), htmlspecialchars($_curl_fopen_ssl_test_url)
 									)
 								);
@@ -1080,7 +1126,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									'title'   => $this->i18n('cURL Extension (localhost connection test)'),
 									'message' => sprintf(
 										$this->i18n(
-											'The <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP is available (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTP connection to localhost: <code>%1$s</code> succeeded.'
+										     'The <a href="http://php.net/manual/en/book.curl.php" target="_blank" rel="xlink">cURL extension</a> for remote communication via PHP is available (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTP connection to localhost: <code>%1$s</code> succeeded.'
 										), htmlspecialchars($_curl_fopen_localhost_test_url)
 									)
 								);
@@ -1091,7 +1137,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'   => $this->i18n('INI <code>fopen()</code> URL w/ SSL Support'),
 								'message' => sprintf(
 									$this->i18n(
-										'The setting <code>allow_url_fopen</code> is <code>on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled).'
+									     'The setting <code>allow_url_fopen</code> is <code>on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled).'
 									), NULL
 								)
 							);
@@ -1100,7 +1146,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									'title'   => $this->i18n('INI <code>fopen()</code> URL w/ SSL Support (connection test)'),
 									'message' => sprintf(
 										$this->i18n(
-											'The setting <code>allow_url_fopen</code> is <code>on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTPS connection to: <code>%1$s</code> succeeded.'
+										     'The setting <code>allow_url_fopen</code> is <code>on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTPS connection to: <code>%1$s</code> succeeded.'
 										), htmlspecialchars($_curl_fopen_ssl_test_url)
 									)
 								);
@@ -1109,7 +1155,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									'title'   => $this->i18n('INI <code>fopen()</code> URL (localhost connection test)'),
 									'message' => sprintf(
 										$this->i18n(
-											'The setting <code>allow_url_fopen</code> is <code>on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTP connection to localhost: <code>%1$s</code> succeeded.'
+										     'The setting <code>allow_url_fopen</code> is <code>on</code> in your <a href="http://php.net/manual/en/filesystem.configuration.php" target="_blank" rel="xlink">php.ini</a> file (and the <a href="http://php.net/manual/en/book.openssl.php" target="_blank" rel="xlink">OpenSSL extension for PHP</a> is enabled). Test HTTP connection to localhost: <code>%1$s</code> succeeded.'
 										), htmlspecialchars($_curl_fopen_localhost_test_url)
 									)
 								);
@@ -1136,9 +1182,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Temporary Files Directory'),
 						'message' => sprintf(
 							$this->i18n(
-								'Unable to find a readable/writable temporary files directory. The system\'s default temp directory is either non-existent, NOT yet configured, or is NOT readable/writable by PHP.'.
-								' Please review this article covering PHP\'s <a href="http://php.net/manual/en/function.sys-get-temp-dir.php" target="_blank" rel="xlink">sys_get_temp_dir()</a> function, or configure your PHP installation with a secure <code>upload_tmp_dir</code>. See <a href="http://www.php.net/manual/en/ini.core.php#ini.upload-tmp-dir" target="_blank" rel="xlink">this article</a> for further details.'.
-								' In some cases, you might need to consult with your web hosting company about this message.'
+							     'Unable to find a readable/writable temporary files directory. The system\'s default temp directory is either non-existent, NOT yet configured, or is NOT readable/writable by PHP.'.
+							     ' Please review this article covering PHP\'s <a href="http://php.net/manual/en/function.sys-get-temp-dir.php" target="_blank" rel="xlink">sys_get_temp_dir()</a> function, or configure your PHP installation with a secure <code>upload_tmp_dir</code>. See <a href="http://www.php.net/manual/en/ini.core.php#ini.upload-tmp-dir" target="_blank" rel="xlink">this article</a> for further details.'.
+							     ' In some cases, you might need to consult with your web hosting company about this message.'
 							), NULL
 						)
 					);
@@ -1149,7 +1195,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'title'   => $this->i18n('Temporary Files Directory'),
 						'message' => sprintf(
 							$this->i18n(
-								'A readable/writable temporary files directory was found here: <code>%1$s</code>'
+							     'A readable/writable temporary files directory was found here: <code>%1$s</code>'
 							), htmlspecialchars($_temp_dir)
 						)
 					);
@@ -1165,9 +1211,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('Missing <code>$_SERVER[\'DOCUMENT_ROOT\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'DOCUMENT_ROOT\']</code> environment variable.'.
-									' This is the document root directory under which the current script is executing. It should be defined in the server\'s configuration file.'.
-									' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+								     'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'DOCUMENT_ROOT\']</code> environment variable.'.
+								     ' This is the document root directory under which the current script is executing. It should be defined in the server\'s configuration file.'.
+								     ' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
 								), NULL
 							)
 						);
@@ -1178,7 +1224,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('<code>$_SERVER[\'DOCUMENT_ROOT\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your server reports this value: <code>%1$s</code>'
+								     'Your server reports this value: <code>%1$s</code>'
 								), htmlspecialchars($_SERVER['DOCUMENT_ROOT'])
 							)
 						);
@@ -1192,9 +1238,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('Missing <code>$_SERVER[\'HTTP_HOST\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'HTTP_HOST\']</code> environment variable.'.
-									' This is the host domain name used to access any given page of your web site (available for each page). It should be defined by your server dynamically.'.
-									' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+								     'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'HTTP_HOST\']</code> environment variable.'.
+								     ' This is the host domain name used to access any given page of your web site (available for each page). It should be defined by your server dynamically.'.
+								     ' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
 								), NULL
 							)
 						);
@@ -1205,7 +1251,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('<code>$_SERVER[\'HTTP_HOST\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your server reports this value: <code>%1$s</code>'
+								     'Your server reports this value: <code>%1$s</code>'
 								), htmlspecialchars($_SERVER['HTTP_HOST'])
 							)
 						);
@@ -1219,9 +1265,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('Missing <code>$_SERVER[\'REQUEST_URI\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'REQUEST_URI\']</code> environment variable.'.
-									' This is the URI used to access any given page of your web site (available for each page). It should be defined by your server dynamically.'.
-									' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+								     'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'REQUEST_URI\']</code> environment variable.'.
+								     ' This is the URI used to access any given page of your web site (available for each page). It should be defined by your server dynamically.'.
+								     ' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
 								), NULL
 							)
 						);
@@ -1232,7 +1278,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('<code>$_SERVER[\'REQUEST_URI\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your server reports this value: <code>%1$s</code>'
+								     'Your server reports this value: <code>%1$s</code>'
 								), htmlspecialchars($_SERVER['REQUEST_URI'])
 							)
 						);
@@ -1246,9 +1292,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('Missing <code>$_SERVER[\'REMOTE_ADDR\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'REMOTE_ADDR\']</code> environment variable.'.
-									' This is the IP address from which the user is viewing the current page. It should be defined by your server dynamically.'.
-									' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+								     'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'REMOTE_ADDR\']</code> environment variable.'.
+								     ' This is the IP address from which the user is viewing the current page. It should be defined by your server dynamically.'.
+								     ' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
 								), NULL
 							)
 						);
@@ -1259,12 +1305,12 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('Invalid <code>$_SERVER[\'REMOTE_ADDR\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your installation of PHP is misconfigured, with an invalid value for it\'s <code>$_SERVER[\'REMOTE_ADDR\']</code> environment variable.'.
-									' This is the IP address from which the user is viewing the current page. It should be defined by your server dynamically (for the current user).'.
-									' The problem is... your server reports the current user as having the same IP address as the server itself? Something is wrong here.'.
-									' Your server reports its own IP as: <code>%1$s</code>, and the current user\'s IP as: <code>%2$s</code>.'.
-									' Please contact your hosting provider about this issue. See also: <a href="http://stackoverflow.com/questions/4262081/serverremote-addr-gives-server-ip-rather-than-visitor-ip" target="_blank" rel="xlink">this helpful article</a>.'.
-									' <strong>Developers:</strong> If the server itself is currently in a localhost environment (this explains it, and that\'s fine). Please add this to your <code>/wp-config.php</code> file, so you can avoid this message while development is underway: <code>define(\'LOCALHOST\', TRUE);</code>'
+								     'Your installation of PHP is misconfigured, with an invalid value for it\'s <code>$_SERVER[\'REMOTE_ADDR\']</code> environment variable.'.
+								     ' This is the IP address from which the user is viewing the current page. It should be defined by your server dynamically (for the current user).'.
+								     ' The problem is... your server reports the current user as having the same IP address as the server itself? Something is wrong here.'.
+								     ' Your server reports its own IP as: <code>%1$s</code>, and the current user\'s IP as: <code>%2$s</code>.'.
+								     ' Please contact your hosting provider about this issue. See also: <a href="http://stackoverflow.com/questions/4262081/serverremote-addr-gives-server-ip-rather-than-visitor-ip" target="_blank" rel="xlink">this helpful article</a>.'.
+								     ' <strong>Developers:</strong> If the server itself is currently in a localhost environment (this explains it, and that\'s fine). Please add this to your <code>/wp-config.php</code> file, so you can avoid this message while development is underway: <code>define(\'LOCALHOST\', TRUE);</code>'
 								), htmlspecialchars($_SERVER['SERVER_ADDR']), htmlspecialchars($_SERVER['REMOTE_ADDR'])
 							)
 						);
@@ -1275,7 +1321,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('<code>$_SERVER[\'REMOTE_ADDR\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your server reports this value: <code>%1$s</code>'
+								     'Your server reports this value: <code>%1$s</code>'
 								), htmlspecialchars($_SERVER['REMOTE_ADDR'])
 							)
 						);
@@ -1289,9 +1335,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('Missing <code>$_SERVER[\'HTTP_USER_AGENT\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'HTTP_USER_AGENT\']</code> environment variable.'.
-									' This is the browser and operating system the current user is viewing the current page with. It should be defined by your server dynamically.'.
-									' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+								     'Your installation of PHP is NOT currently configured with a <code>$_SERVER[\'HTTP_USER_AGENT\']</code> environment variable.'.
+								     ' This is the browser and operating system the current user is viewing the current page with. It should be defined by your server dynamically.'.
+								     ' Please contact your hosting provider about this issue. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
 								), NULL
 							)
 						);
@@ -1302,7 +1348,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							'title'   => $this->i18n('<code>$_SERVER[\'HTTP_USER_AGENT\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-									'Your server reports this value: <code>%1$s</code>'
+								     'Your server reports this value: <code>%1$s</code>'
 								), htmlspecialchars($_SERVER['HTTP_USER_AGENT'])
 							)
 						);
@@ -1324,9 +1370,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									'title'   => $this->i18n('Missing <code>$_SERVER[\'SERVER_ADDR\']</code>'),
 									'message' => sprintf(
 										$this->i18n(
-											'Although NOT required, %1$s recommends that your installation of PHP be configured with a <code>$_SERVER[\'SERVER_ADDR\']</code> environment variable.'.
-											' This is the IP address of the server, under which the current script is executing. It should be defined by your server dynamically.'.
-											' Please contact your hosting provider about this message. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
+										     'Although NOT required, %1$s recommends that your installation of PHP be configured with a <code>$_SERVER[\'SERVER_ADDR\']</code> environment variable.'.
+										     ' This is the IP address of the server, under which the current script is executing. It should be defined by your server dynamically.'.
+										     ' Please contact your hosting provider about this message. See also: <a href="http://php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">this PHP article</a>.'
 										), htmlspecialchars($plugin_name)
 									)
 								);
@@ -1337,7 +1383,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									'title'   => $this->i18n('<code>$_SERVER[\'SERVER_ADDR\']</code>'),
 									'message' => sprintf(
 										$this->i18n(
-											'Your server reports this value: <code>%1$s</code>'
+										     'Your server reports this value: <code>%1$s</code>'
 										), htmlspecialchars($_SERVER['SERVER_ADDR'])
 									)
 								);
@@ -1381,13 +1427,13 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 														                     htmlspecialchars(basename($_plugin_checksum_dir))),
 														'message' => sprintf(
 															$this->i18n(
-																'Although NOT required, %1$s recommends that you reinstall the following plugin directory: <code>%2$s</code>.'.
-																' The checksum for this plugin directory (<code>%3$s</code>), does NOT match up with the official release of this plugin (<code>%4$s</code>).'.
-																' An invalid checksum can be caused by an incomplete set of files. Or, by files that should NOT appear in this directory. Or, by corrupted files in this directory.'.
-																' Reinstalling the official release of this plugin should correct this issue.<br /><br />'.
+															     'Although NOT required, %1$s recommends that you reinstall the following plugin directory: <code>%2$s</code>.'.
+															     ' The checksum for this plugin directory (<code>%3$s</code>), does NOT match up with the official release of this plugin (<code>%4$s</code>).'.
+															     ' An invalid checksum can be caused by an incomplete set of files. Or, by files that should NOT appear in this directory. Or, by corrupted files in this directory.'.
+															     ' Reinstalling the official release of this plugin should correct this issue.<br /><br />'.
 
-																' If all else fails, please check your method of upload. We recommend FTP via <a href="http://filezilla-project.org/" target="_blank" rel="xlink">FileZilla™</a>.'.
-																' Also, please be sure the following file extensions are uploaded in <code>ASCII</code> mode (<code>php, html, xml, txt, css, js, ini, pot, po, sql, svg</code>). All other files should be uploaded in <code>BINARY</code> mode. Some FTP applications (like FileZilla™), can be configured to automatically recognize file extensions that should be uploaded in <code>ASCII</code> mode, while all others will be uploaded in <code>BINARY</code> mode by default. With this type of configuration, use upload mode <code>AUTO</code>.'
+															     ' If all else fails, please check your method of upload. We recommend FTP via <a href="http://filezilla-project.org/" target="_blank" rel="xlink">FileZilla™</a>.'.
+															     ' Also, please be sure the following file extensions are uploaded in <code>ASCII</code> mode (<code>php, html, xml, txt, css, js, ini, pot, po, sql, svg</code>). All other files should be uploaded in <code>BINARY</code> mode. Some FTP applications (like FileZilla™), can be configured to automatically recognize file extensions that should be uploaded in <code>ASCII</code> mode, while all others will be uploaded in <code>BINARY</code> mode by default. With this type of configuration, use upload mode <code>AUTO</code>.'
 															), htmlspecialchars($plugin_name), htmlspecialchars($_plugin_checksum_dir), htmlspecialchars($_checksum), htmlspecialchars($_release_checksum)
 														)
 													);
@@ -1399,8 +1445,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 														                     htmlspecialchars(basename($_plugin_checksum_dir))),
 														'message' => sprintf(
 															$this->i18n(
-																'Scanned all directories and files in the following plugin directory: <code>%1$s</code>.'.
-																' The checksum for this plugin directory (<code>%2$s</code>), matches up with the official release of this plugin (<code>%3$s</code>).'
+															     'Scanned all directories and files in the following plugin directory: <code>%1$s</code>.'.
+															     ' The checksum for this plugin directory (<code>%2$s</code>), matches up with the official release of this plugin (<code>%3$s</code>).'
 															), htmlspecialchars($_plugin_checksum_dir), htmlspecialchars($_checksum), htmlspecialchars($_release_checksum)
 														)
 													);
@@ -1432,14 +1478,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 									$_mailer->Subject = sprintf($this->i18n('Test Email (Server Scan by: %1$s)'), $plugin_name);
 
 									$_mailer->MsgHTML(
-										sprintf(
-											$this->i18n(
-												'<p><strong>%1$s</strong></p>'.
-												'<p>This message was sent as a test.</p>'.
-												'<p>It\'s part of a server scan processed by: %2$s.</p>'.
-												'<p>A plugin for WordPress®.</p>'
-											), htmlspecialchars($_mailer->Subject), htmlspecialchars($plugin_name)
-										)
+									        sprintf(
+										        $this->i18n(
+										             '<p><strong>%1$s</strong></p>'.
+										             '<p>This message was sent as a test.</p>'.
+										             '<p>It\'s part of a server scan processed by: %2$s.</p>'.
+										             '<p>A plugin for WordPress®.</p>'
+										        ), htmlspecialchars($_mailer->Subject), htmlspecialchars($plugin_name)
+									        )
 									);
 									$_mailer->Send();
 								}
@@ -1460,12 +1506,12 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								                  'title'   => $this->i18n('<span class="hilite">PHPMailer Class (Test Email Msg.)</span>'),
 								                  'message' => sprintf(
 									                  $this->i18n(
-										                  'Unable to send a test email message, because your installation of WordPress® is NOT yet configured with an administrative email address.'.
-										                  ' Please see <a href="http://codex.wordpress.org/Settings_General_Screen" target="_blank" rel="xlink">this article</a> for a quick review of general options for WordPress®.'.
-										                  ' Please configure your installation of WordPress®, with an administrative email address.'
+									                       'Unable to send a test email message, because your installation of WordPress® is NOT yet configured with an administrative email address.'.
+									                       ' Please see <a href="http://codex.wordpress.org/Settings_General_Screen" target="_blank" rel="xlink">this article</a> for a quick review of general options for WordPress®.'.
+									                       ' Please configure your installation of WordPress®, with an administrative email address.'
 									                  ), NULL
 								                  )
-								           )
+								         )
 							);
 						}
 					else if($is_wp_loaded && $is_test_email && isset($_mail_exception))
@@ -1475,16 +1521,16 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								                  'title'   => $this->i18n('<span class="hilite">PHPMailer Class (Test Email Msg.)</span>'),
 								                  'message' => sprintf(
 									                  $this->i18n(
-										                  'We sent a test email message to <code>&lt;%1$s&gt;</code>. Unfortunately, the PHPMailer class threw the following exception: <code>possible email delivery failure</code>.'.
-										                  ' Please see <a href="http://www.w3schools.com/php/php_ref_mail.asp" target="_blank" rel="xlink">this article</a> for possible solutions.'.
-										                  ' Or consult with your web hosting company about this message.'.
-										                  ' Note... this test email was processed by the PHPMailer class (which ships with WordPress®), and it uses PHP\'s built-in <code>mail()</code> function.'.
-										                  ' On some servers (particularly Windows® servers), you might need to adjust your <a href="http://www.w3schools.com/php/php_ref_mail.asp" target="_blank" rel="xlink">php.ini file</a>, or configure an SMTP server.'.
-										                  '<p style="font-size:110%; margin-left:5px; margin-bottom:0;"><strong>Additional Details (Message From PHP Exception):</strong></p>'.
-										                  '<pre style="margin:0 0 0 15px; max-width:100%; max-height:300px; overflow:auto;">%2$s</pre>'
+									                       'We sent a test email message to <code>&lt;%1$s&gt;</code>. Unfortunately, the PHPMailer class threw the following exception: <code>possible email delivery failure</code>.'.
+									                       ' Please see <a href="http://www.w3schools.com/php/php_ref_mail.asp" target="_blank" rel="xlink">this article</a> for possible solutions.'.
+									                       ' Or consult with your web hosting company about this message.'.
+									                       ' Note... this test email was processed by the PHPMailer class (which ships with WordPress®), and it uses PHP\'s built-in <code>mail()</code> function.'.
+									                       ' On some servers (particularly Windows® servers), you might need to adjust your <a href="http://www.w3schools.com/php/php_ref_mail.asp" target="_blank" rel="xlink">php.ini file</a>, or configure an SMTP server.'.
+									                       '<p style="font-size:110%; margin-left:5px; margin-bottom:0;"><strong>Additional Details (Message From PHP Exception):</strong></p>'.
+									                       '<pre style="margin:0 0 0 15px; max-width:100%; max-height:300px; overflow:auto;">%2$s</pre>'
 									                  ), htmlspecialchars(get_bloginfo('admin_email')), htmlspecialchars($_mail_exception)
 								                  )
-								           )
+								         )
 							);
 						}
 					else if($is_wp_loaded && $is_test_email) // Pass.
@@ -1494,11 +1540,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								                'title'   => $this->i18n('<span class="hilite">PHPMailer Class (Test Email Msg.)</span>'),
 								                'message' => sprintf(
 									                $this->i18n(
-										                'We sent a test email message to <code>&lt;%1$s&gt;</code>.'.
-										                ' No errors/exceptions were thrown, leading us to believe the message went through successfully. Please check your email to confirm.'
+									                     'We sent a test email message to <code>&lt;%1$s&gt;</code>.'.
+									                     ' No errors/exceptions were thrown, leading us to believe the message went through successfully. Please check your email to confirm.'
 									                ), htmlspecialchars(get_bloginfo('admin_email'))
 								                )
-								         )
+								       )
 							);
 						}
 					unset($_mail_exception); // Housekeeping.
@@ -1516,9 +1562,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® Memory Limit'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that you raise your WordPress® memory limit (please set: <code>WP_MEMORY_LIMIT</code> in <code>/wp-config.php</code>), to at least <code>64M</code> (i.e. 64 megabytes).'.
-										' Please see: <a href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP" target="_blank" rel="xlink">this how-to article</a>.'.
-										' Or consult with your web hosting company about this message. Your current memory limit is NOT yet defined.'
+									     'Although NOT required, %1$s recommends that you raise your WordPress® memory limit (please set: <code>WP_MEMORY_LIMIT</code> in <code>/wp-config.php</code>), to at least <code>64M</code> (i.e. 64 megabytes).'.
+									     ' Please see: <a href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP" target="_blank" rel="xlink">this how-to article</a>.'.
+									     ' Or consult with your web hosting company about this message. Your current memory limit is NOT yet defined.'
 									), htmlspecialchars($plugin_name)
 								)
 							);
@@ -1530,9 +1576,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® Memory Limit'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that you raise your WordPress® memory limit (please set: <code>WP_MEMORY_LIMIT</code> in <code>/wp-config.php</code>), to at least <code>64M</code> (i.e. 64 megabytes).'.
-										' Please see: <a href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP" target="_blank" rel="xlink">this how-to article</a>.'.
-										' Or consult with your web hosting company about this message. Your current memory limit allows only: <code>%2$s</code>'
+									     'Although NOT required, %1$s recommends that you raise your WordPress® memory limit (please set: <code>WP_MEMORY_LIMIT</code> in <code>/wp-config.php</code>), to at least <code>64M</code> (i.e. 64 megabytes).'.
+									     ' Please see: <a href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP" target="_blank" rel="xlink">this how-to article</a>.'.
+									     ' Or consult with your web hosting company about this message. Your current memory limit allows only: <code>%2$s</code>'
 									), htmlspecialchars($plugin_name), htmlspecialchars(WP_MEMORY_LIMIT)
 								)
 							);
@@ -1543,7 +1589,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'   => $this->i18n('WordPress® Memory Limit'),
 								'message' => sprintf(
 									$this->i18n(
-										'Your WordPress® memory limit (<code>WP_MEMORY_LIMIT</code> in <code>/wp-config.php</code>, or by default), is set to: <code>%1$s</code>'
+									     'Your WordPress® memory limit (<code>WP_MEMORY_LIMIT</code> in <code>/wp-config.php</code>, or by default), is set to: <code>%1$s</code>'
 									), htmlspecialchars(WP_MEMORY_LIMIT)
 								)
 							);
@@ -1557,9 +1603,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® MAX Memory Limit'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that you raise your WordPress® MAX memory limit (please set: <code>WP_MAX_MEMORY_LIMIT</code> in <code>/wp-config.php</code>), to at least <code>256M</code> (i.e. 256 megabytes).'.
-										' Please see: <a href="http://wordpress.org/support/topic/how-to-set-wp_max_memory_limit" target="_blank" rel="xlink">this how-to article</a>.'.
-										' Or consult with your web hosting company about this message. Your current MAX memory limit is NOT yet defined.'
+									     'Although NOT required, %1$s recommends that you raise your WordPress® MAX memory limit (please set: <code>WP_MAX_MEMORY_LIMIT</code> in <code>/wp-config.php</code>), to at least <code>256M</code> (i.e. 256 megabytes).'.
+									     ' Please see: <a href="http://wordpress.org/support/topic/how-to-set-wp_max_memory_limit" target="_blank" rel="xlink">this how-to article</a>.'.
+									     ' Or consult with your web hosting company about this message. Your current MAX memory limit is NOT yet defined.'
 									), htmlspecialchars($plugin_name)
 								)
 							);
@@ -1571,9 +1617,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® MAX Memory Limit'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that you raise your WordPress® MAX memory limit (please set: <code>WP_MAX_MEMORY_LIMIT</code> in <code>/wp-config.php</code>), to at least <code>256M</code> (i.e. 256 megabytes).'.
-										' Please see: <a href="http://wordpress.org/support/topic/how-to-set-wp_max_memory_limit" target="_blank" rel="xlink">this how-to article</a>.'.
-										' Or consult with your web hosting company about this message. Your current MAX memory limit allows only: <code>%2$s</code>'
+									     'Although NOT required, %1$s recommends that you raise your WordPress® MAX memory limit (please set: <code>WP_MAX_MEMORY_LIMIT</code> in <code>/wp-config.php</code>), to at least <code>256M</code> (i.e. 256 megabytes).'.
+									     ' Please see: <a href="http://wordpress.org/support/topic/how-to-set-wp_max_memory_limit" target="_blank" rel="xlink">this how-to article</a>.'.
+									     ' Or consult with your web hosting company about this message. Your current MAX memory limit allows only: <code>%2$s</code>'
 									), htmlspecialchars($plugin_name), htmlspecialchars(WP_MAX_MEMORY_LIMIT)
 								)
 							);
@@ -1584,7 +1630,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'   => $this->i18n('WordPress® MAX Memory Limit'),
 								'message' => sprintf(
 									$this->i18n(
-										'Your WordPress® MAX memory limit (<code>WP_MAX_MEMORY_LIMIT</code> in <code>/wp-config.php</code>, or by default), is set to: <code>%1$s</code>'
+									     'Your WordPress® MAX memory limit (<code>WP_MAX_MEMORY_LIMIT</code> in <code>/wp-config.php</code>, or by default), is set to: <code>%1$s</code>'
 									), htmlspecialchars(WP_MAX_MEMORY_LIMIT)
 								)
 							);
@@ -1598,9 +1644,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® External HTTP Requests'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that you allow all external HTTP requests (please set: <code>WP_HTTP_BLOCK_EXTERNAL</code> in <code>/wp-config.php</code>), to: <code>FALSE</code>.'.
-										' Please see: <a href="http://kovshenin.com/2012/how-to-disable-http-calls-in-wordpress/" target="_blank" rel="xlink">this how-to article</a>.'.
-										' Or consult with your web hosting company about this message. Your are currently blocking all external HTTP requests.'
+									     'Although NOT required, %1$s recommends that you allow all external HTTP requests (please set: <code>WP_HTTP_BLOCK_EXTERNAL</code> in <code>/wp-config.php</code>), to: <code>FALSE</code>.'.
+									     ' Please see: <a href="http://kovshenin.com/2012/how-to-disable-http-calls-in-wordpress/" target="_blank" rel="xlink">this how-to article</a>.'.
+									     ' Or consult with your web hosting company about this message. Your are currently blocking all external HTTP requests.'
 									), htmlspecialchars($plugin_name)
 								)
 							);
@@ -1611,7 +1657,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'   => $this->i18n('WordPress® External HTTP Requests'),
 								'message' => sprintf(
 									$this->i18n(
-										'Your WordPress® External HTTP Requests (<code>WP_HTTP_BLOCK_EXTERNAL</code> in <code>/wp-config.php</code>, or by default), is set to: <code>FALSE</code>'
+									     'Your WordPress® External HTTP Requests (<code>WP_HTTP_BLOCK_EXTERNAL</code> in <code>/wp-config.php</code>, or by default), is set to: <code>FALSE</code>'
 									), NULL
 								)
 							);
@@ -1625,9 +1671,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® DB Charset'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with a <code>UTF-8</code> database charset (please set: <code>DB_CHARSET</code> in <code>/wp-config.php</code>).'.
-										' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Database_character_set" target="_blank" rel="xlink">this article</a> for further details.'.
-										' Or consult with your web hosting company about this message. Your current DB charset is NOT yet defined.'
+									     'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with a <code>UTF-8</code> database charset (please set: <code>DB_CHARSET</code> in <code>/wp-config.php</code>).'.
+									     ' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Database_character_set" target="_blank" rel="xlink">this article</a> for further details.'.
+									     ' Or consult with your web hosting company about this message. Your current DB charset is NOT yet defined.'
 									), htmlspecialchars($plugin_name)
 								)
 							);
@@ -1639,9 +1685,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® DB Charset'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with a <code>UTF-8</code> database charset (please set: <code>DB_CHARSET</code> in <code>/wp-config.php</code>).'.
-										' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Database_character_set" target="_blank" rel="xlink">this article</a> for further details.'.
-										' Or consult with your web hosting company about this message. Your current DB charset is set to: <code>%2$s</code>'
+									     'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with a <code>UTF-8</code> database charset (please set: <code>DB_CHARSET</code> in <code>/wp-config.php</code>).'.
+									     ' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Database_character_set" target="_blank" rel="xlink">this article</a> for further details.'.
+									     ' Or consult with your web hosting company about this message. Your current DB charset is set to: <code>%2$s</code>'
 									), htmlspecialchars($plugin_name), htmlspecialchars(DB_CHARSET)
 								)
 							);
@@ -1652,7 +1698,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'   => $this->i18n('WordPress® DB Charset'),
 								'message' => sprintf(
 									$this->i18n(
-										'Your WordPress® database charset (<code>DB_CHARSET</code> in <code>/wp-config.php</code>, or by default), is set to: <code>%1$s</code>'
+									     'Your WordPress® database charset (<code>DB_CHARSET</code> in <code>/wp-config.php</code>, or by default), is set to: <code>%1$s</code>'
 									), htmlspecialchars(DB_CHARSET)
 								)
 							);
@@ -1666,9 +1712,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® DB Collation'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with a <code>UTF-8</code> database collation (please set: <code>DB_COLLATE</code> in <code>/wp-config.php</code>, to an empty string; or set it as: <code>utf8_general_ci</code>).'.
-										' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Database_collation" target="_blank" rel="xlink">this article</a> for further details.'.
-										' Or consult with your web hosting company about this message. Your current DB collation is NOT yet defined.'
+									     'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with a <code>UTF-8</code> database collation (please set: <code>DB_COLLATE</code> in <code>/wp-config.php</code>, to an empty string; or set it as: <code>utf8_general_ci</code>).'.
+									     ' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Database_collation" target="_blank" rel="xlink">this article</a> for further details.'.
+									     ' Or consult with your web hosting company about this message. Your current DB collation is NOT yet defined.'
 									), htmlspecialchars($plugin_name)
 								)
 							);
@@ -1680,9 +1726,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® DB Collation'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with a <code>UTF-8</code> database collation (please set: <code>DB_COLLATE</code> in <code>/wp-config.php</code>, to an empty string; or set it as: <code>utf8_general_ci</code>).'.
-										' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Database_collation" target="_blank" rel="xlink">this article</a> for further details.'.
-										' Or consult with your web hosting company about this message. Your current DB collation is set to: <code>%2$s</code>'
+									     'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with a <code>UTF-8</code> database collation (please set: <code>DB_COLLATE</code> in <code>/wp-config.php</code>, to an empty string; or set it as: <code>utf8_general_ci</code>).'.
+									     ' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Database_collation" target="_blank" rel="xlink">this article</a> for further details.'.
+									     ' Or consult with your web hosting company about this message. Your current DB collation is set to: <code>%2$s</code>'
 									), htmlspecialchars($plugin_name), htmlspecialchars(DB_COLLATE)
 								)
 							);
@@ -1693,7 +1739,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'   => $this->i18n('WordPress® DB Collation'),
 								'message' => sprintf(
 									$this->i18n(
-										'Your WordPress® database collation (<code>DB_COLLATE</code> in <code>/wp-config.php</code>, or by default), is set to: %1$s'
+									     'Your WordPress® database collation (<code>DB_COLLATE</code> in <code>/wp-config.php</code>, or by default), is set to: %1$s'
 									), ((!DB_COLLATE) ? $this->i18n('<code>an empty string</code>') : '<code>'.htmlspecialchars(DB_COLLATE).'</code>')
 								)
 							);
@@ -1709,10 +1755,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® Character Encoding'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with <code>UTF-8</code> encoding.'.
-										' This can be changed in the Dashboard, under: <code>WordPress -› Settings -› Reading -› Encoding</code>.'.
-										' See also: <a href="http://codex.wordpress.org/Glossary#Unicode" target="_blank" rel="xlink">this article</a> about UTF-8.'.
-										' Your current encoding configuration is NOT yet defined.'
+									     'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with <code>UTF-8</code> encoding.'.
+									     ' This can be changed in the Dashboard, under: <code>WordPress -› Settings -› Reading -› Encoding</code>.'.
+									     ' See also: <a href="http://codex.wordpress.org/Glossary#Unicode" target="_blank" rel="xlink">this article</a> about UTF-8.'.
+									     ' Your current encoding configuration is NOT yet defined.'
 									), htmlspecialchars($plugin_name)
 								)
 							);
@@ -1724,10 +1770,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® Character Encoding'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with <code>UTF-8</code> encoding.'.
-										' This can be changed in the Dashboard, under: <code>WordPress -› Settings -› Reading -› Encoding</code>.'.
-										' See also: <a href="http://codex.wordpress.org/Glossary#Unicode" target="_blank" rel="xlink">this article</a> about UTF-8.'.
-										' Your current encoding configuration is set to: <code>%2$s</code>'
+									     'Although NOT required, %1$s recommends that your WordPress® installation be configured to operate with <code>UTF-8</code> encoding.'.
+									     ' This can be changed in the Dashboard, under: <code>WordPress -› Settings -› Reading -› Encoding</code>.'.
+									     ' See also: <a href="http://codex.wordpress.org/Glossary#Unicode" target="_blank" rel="xlink">this article</a> about UTF-8.'.
+									     ' Your current encoding configuration is set to: <code>%2$s</code>'
 									), htmlspecialchars($plugin_name), htmlspecialchars($_blog_charset_encoding)
 								)
 							);
@@ -1738,7 +1784,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'   => $this->i18n('WordPress® Character Encoding'),
 								'message' => sprintf(
 									$this->i18n(
-										'Your WordPress® installation is operating with <code>%1$s</code> encoding, under: <code>WordPress -› Settings -› Reading -› Encoding</code>.'
+									     'Your WordPress® installation is operating with <code>%1$s</code> encoding, under: <code>WordPress -› Settings -› Reading -› Encoding</code>.'
 									), htmlspecialchars($_blog_charset_encoding)
 								)
 							);
@@ -1761,9 +1807,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 										'title'   => $this->i18n('WordPress® Home/Site URLs'),
 										'message' => sprintf(
 											$this->i18n(
-												'Although NOT required, %1$s recommends that your WordPress® installation be configured with a matching HOST name.'.
-												' This can be changed in the Dashboard, under: <code>WordPress -> Settings -> General -> WordPress/Site URLs</code>.'.
-												' Your current configuration does NOT match: <code>%2$s</code>'
+											     'Although NOT required, %1$s recommends that your WordPress® installation be configured with a matching HOST name.'.
+											     ' This can be changed in the Dashboard, under: <code>WordPress -> Settings -> General -> WordPress/Site URLs</code>.'.
+											     ' Your current configuration does NOT match: <code>%2$s</code>'
 											), htmlspecialchars($plugin_name), htmlspecialchars($_current_host_name)
 										)
 									);
@@ -1776,7 +1822,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 												'title'   => $this->i18n('WordPress® Home URL'),
 												'message' => sprintf(
 													$this->i18n(
-														'Your WordPress® home URL is configured to run on: <code>%1$s</code>, and that matches the current host name: <code>%2$s</code>'
+													     'Your WordPress® home URL is configured to run on: <code>%1$s</code>, and that matches the current host name: <code>%2$s</code>'
 													), htmlspecialchars($_configured_home_host_name), htmlspecialchars($_current_host_name)
 												)
 											);
@@ -1787,7 +1833,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 												'title'   => $this->i18n('WordPress Site URL'),
 												'message' => sprintf(
 													$this->i18n(
-														'Your WordPress® site URL is configured to run on: <code>%1$s</code>, and that matches the current host name: <code>%2$s</code>'
+													     'Your WordPress® site URL is configured to run on: <code>%1$s</code>, and that matches the current host name: <code>%2$s</code>'
 													), htmlspecialchars($_configured_site_host_name), htmlspecialchars($_current_host_name)
 												)
 											);
@@ -1804,12 +1850,12 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'    => $this->i18n('WordPress® Debugging Mode'),
 								'message'  => sprintf(
 									$this->i18n(
-										'Although NOT required, %1$s recommends that your WordPress® installation be configured NOT to run in debugging mode (please set: <code>WP_DEBUG</code> to <code>FALSE</code> in <code>/wp-config.php</code>).'.
-										' <strong>If you decide to leave <code>WP_DEBUG</code> enabled, please take note...</strong>'.
-										' In <code>WP_DEBUG</code> mode, WordPress® will log debug messages into this file: <code>/wp-content/debug.log</code>.'.
-										' Please make ABSOLUTELY sure this file is NOT publicly accessible, as it may contain sensitive server details (in some cases).'.
-										' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug" target="_blank" rel="xlink">this article</a> for further details.'.
-										' Or consult with your web hosting company about this message.'
+									     'Although NOT required, %1$s recommends that your WordPress® installation be configured NOT to run in debugging mode (please set: <code>WP_DEBUG</code> to <code>FALSE</code> in <code>/wp-config.php</code>).'.
+									     ' <strong>If you decide to leave <code>WP_DEBUG</code> enabled, please take note...</strong>'.
+									     ' In <code>WP_DEBUG</code> mode, WordPress® will log debug messages into this file: <code>/wp-content/debug.log</code>.'.
+									     ' Please make ABSOLUTELY sure this file is NOT publicly accessible, as it may contain sensitive server details (in some cases).'.
+									     ' Please see <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug" target="_blank" rel="xlink">this article</a> for further details.'.
+									     ' Or consult with your web hosting company about this message.'
 									), htmlspecialchars($plugin_name)
 								)
 							);
@@ -1820,7 +1866,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 								'title'   => $this->i18n('WordPress® Debugging Mode'),
 								'message' => sprintf(
 									$this->i18n(
-										'Your WordPress® installation is NOT running in debugging mode (<code>WP_DEBUG</code> in <code>/wp-config.php</code>, or by default), is NOT set to <code>TRUE</code>.'
+									     'Your WordPress® installation is NOT running in debugging mode (<code>WP_DEBUG</code> in <code>/wp-config.php</code>, or by default), is NOT set to <code>TRUE</code>.'
 									), NULL
 								)
 							);
@@ -1891,11 +1937,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 											$issues[$_key]['data']['message'] .= // Append a successful response.
 												sprintf(
 													$this->i18n(
-														'<p class="auto-fix-success">'.
-														'<strong>AUTO-FIX (success):</strong>'.
-														' This issue has been resolved automatically.'.
-														' <a href="%1$s">%2$s</a>.'.
-														'</p>'
+													     '<p class="auto-fix-success">'.
+													     '<strong>AUTO-FIX (success):</strong>'.
+													     ' This issue has been resolved automatically.'.
+													     ' <a href="%1$s">%2$s</a>.'.
+													     '</p>'
 													),
 													esc_attr($_retry),
 													(($is_stand_alone)
@@ -1905,7 +1951,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 										}
 									else $issues[$_key]['data']['message'] .= // Append error response.
 										sprintf($this->i18n(
-											        '<p class="auto-fix-error"><strong>AUTO-FIX (error):</strong> %1$s</p>'
+										             '<p class="auto-fix-error"><strong>AUTO-FIX (error):</strong> %1$s</p>'
 										        ), $_auto_fix_response
 										);
 								}
@@ -1953,22 +1999,22 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				{
 					update_option(
 						'websharks_core__deps__last_ok', array(
-						                                      'websharks_core_v000000_dev' => TRUE,
-						                                      'php_version'                => $php_version,
-						                                      'wp_version'                 => $wp_version,
-						                                      'time'                       => time()
-						                                 )
+							                               'websharks_core_v000000_dev' => TRUE,
+							                               'php_version'                => $php_version,
+							                               'wp_version'                 => $wp_version,
+							                               'time'                       => time()
+						                               )
 					);
 				}
 			else if($is_wp_loaded && ($issues || !get_option('websharks_core__deps__last_ok')))
 				{
 					update_option(
 						'websharks_core__deps__last_ok', array(
-						                                      'websharks_core_v000000_dev' => FALSE,
-						                                      'php_version'                => '',
-						                                      'wp_version'                 => '',
-						                                      'time'                       => 0
-						                                 )
+							                               'websharks_core_v000000_dev' => FALSE,
+							                               'php_version'                => '',
+							                               'wp_version'                 => '',
+							                               'time'                       => 0
+						                               )
 					);
 				}
 			# --------------------------------------------------------------------------------------------------------------------------------
@@ -2093,17 +2139,17 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			if(!defined('WPINC'))
 				return $this->i18n(
-					'WordPress® NOT loaded up.'
+				            'WordPress® NOT loaded up.'
 				);
 			else if(!did_action('init'))
 				return $this->i18n(
-					'WordPress® `init` action hook has NOT fired yet.'.
-					' Unable to check permissions.'
+				            'WordPress® `init` action hook has NOT fired yet.'.
+				            ' Unable to check permissions.'
 				);
 			else if(!is_super_admin())
 				return $this->i18n(
-					'Current user is NOT logged into WordPress®,'.
-					' or is NOT a WordPress® Super Admin.'
+				            'Current user is NOT logged into WordPress®,'.
+				            ' or is NOT a WordPress® Super Admin.'
 				);
 
 			switch(strtolower($fixable_issue)) // Attempt auto-fix.
@@ -2131,8 +2177,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 				default: // Default case handler.
 					return $this->i18n(
-						'Sorry, an auto-fix routine has NOT been implemented for this yet.'.
-						' This particular issue MUST be fixed manually.'
+					            'Sorry, an auto-fix routine has NOT been implemented for this yet.'.
+					            ' This particular issue MUST be fixed manually.'
 					);
 			}
 		}
@@ -2162,22 +2208,22 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			if(!defined('WPINC'))
 				return $this->i18n(
-					'WordPress® NOT loaded up.'
+				            'WordPress® NOT loaded up.'
 				);
 			else if(!did_action('init'))
 				return $this->i18n(
-					'WordPress® `init` action hook has NOT fired yet.'.
-					' Unable to check permissions.'
+				            'WordPress® `init` action hook has NOT fired yet.'.
+				            ' Unable to check permissions.'
 				);
 			else if(!is_super_admin())
 				return $this->i18n(
-					'Current user is NOT logged into WordPress®;'.
-					' or is NOT a WordPress® Super Admin.'
+				            'Current user is NOT logged into WordPress®;'.
+				            ' or is NOT a WordPress® Super Admin.'
 				);
 			else if(defined('DISALLOW_FILE_MODS') && DISALLOW_FILE_MODS)
 				return $this->i18n(
-					'Your current WordPress® configuration disallows file modifications explicitly.'.
-					' Cannot modify files (thus, cannot auto-fix this issue).'
+				            'Your current WordPress® configuration disallows file modifications explicitly.'.
+				            ' Cannot modify files (thus, cannot auto-fix this issue).'
 				);
 
 			$wp_config_file['path']                 = ABSPATH.'wp-config.php';
@@ -2186,8 +2232,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			);
 			if(!$wp_config_file['is_readable_writable'] || !($wp_config_file['contents'] = file_get_contents($wp_config_file['path'])))
 				return $this->i18n(
-					'WordPress® config file (<code>/wp-config.php</code>) is NOT readable/writable.'.
-					' Please set permissions on this file to <code>777</code> and try again.'
+				            'WordPress® config file (<code>/wp-config.php</code>) is NOT readable/writable.'.
+				            ' Please set permissions on this file to <code>777</code> and try again.'
 				);
 
 			$_new_config_value       = "define('".str_replace("'", "\\'", $constant)."', ".$new_value." /* WebSharks™ Core auto-fix. */);";
@@ -2330,21 +2376,21 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							     (($this->check['has_notices'] || $this->check['has_warnings'])
 								     ? ((defined('WPINC') && is_super_admin())
 									     ? $this->i18n(
-										     '<p class="tip">'.
-										     '<span>'.
-										     '<strong>Tip:</strong>'.
-										     ' Notices/warnings can be dismissed (if you MUST); please read carefully.'.
-										     '</span>'.
-										     '</p>'
+									            '<p class="tip">'.
+									            '<span>'.
+									            '<strong>Tip:</strong>'.
+									            ' Notices/warnings can be dismissed (if you MUST); please read carefully.'.
+									            '</span>'.
+									            '</p>'
 									     )
 									     : $this->i18n(
-										     '<p class="tip">'.
-										     '<span>'.
-										     '<strong>Tip:</strong>'.
-										     ' For additional functionality, please log into WordPress® as a Super Administrator, then come back and re-run this scan.'.
-										     ' Additional functionality includes the ability to dismiss and/or AUTO-FIX some issues.'.
-										     '</span>'.
-										     '</p>'
+									            '<p class="tip">'.
+									            '<span>'.
+									            '<strong>Tip:</strong>'.
+									            ' For additional functionality, please log into WordPress® as a Super Administrator, then come back and re-run this scan.'.
+									            ' Additional functionality includes the ability to dismiss and/or AUTO-FIX some issues.'.
+									            '</span>'.
+									            '</p>'
 									     ))
 								     : '').
 							     '</h2>';
@@ -2522,21 +2568,21 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			     (($this->check['has_notices'] || $this->check['has_warnings'])
 				     ? ((is_super_admin())
 					     ? $this->i18n(
-						     '<p class="tip">'.
-						     '<span>'.
-						     '<strong>Tip:</strong>'.
-						     ' Notices/warnings can be dismissed (if you MUST); please read carefully.'.
-						     '</span>'.
-						     '</p>'
+					            '<p class="tip">'.
+					            '<span>'.
+					            '<strong>Tip:</strong>'.
+					            ' Notices/warnings can be dismissed (if you MUST); please read carefully.'.
+					            '</span>'.
+					            '</p>'
 					     )
 					     : $this->i18n(
-						     '<p class="tip">'.
-						     '<span>'.
-						     '<strong>Tip:</strong>'.
-						     ' For additional functionality, please log into WordPress® as a Super Administrator.'.
-						     ' Additional functionality includes the ability to dismiss and/or AUTO-FIX some issues.'.
-						     '</span>'.
-						     '</p>'
+					            '<p class="tip">'.
+					            '<span>'.
+					            '<strong>Tip:</strong>'.
+					            ' For additional functionality, please log into WordPress® as a Super Administrator.'.
+					            ' Additional functionality includes the ability to dismiss and/or AUTO-FIX some issues.'.
+					            '</span>'.
+					            '</p>'
 					     ))
 				     : '').
 			     '</h3>';
@@ -3119,19 +3165,16 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 }
 
 # -----------------------------------------------------------------------------------------------------------------------------------------
-# Class aliases (if running in PHP v5.3+). Easier access for those who DON'T CARE about the version.
+# Static initializer routine. This define a few static vars; also creates class aliases.
 # -----------------------------------------------------------------------------------------------------------------------------------------
 
-if(!${__FILE__}['is_in_stand_alone_mode'] && class_exists('deps_x_websharks_core_v000000_dev') && !class_exists('websharks_core__deps_x') && function_exists('class_alias'))
-	class_alias('deps_x_websharks_core_v000000_dev', 'websharks_core__deps_x');
-
-if(${__FILE__}['is_in_stand_alone_mode'] && class_exists('deps_x_stand_alone_websharks_core_v000000_dev') && !class_exists('websharks_core__deps_x_stand_alone') && function_exists('class_alias'))
-	class_alias('deps_x_stand_alone_websharks_core_v000000_dev', 'websharks_core__deps_x_stand_alone');
+if(${__FILE__}['is_in_stand_alone_mode']) // Running in Stand-Alone mode?
+	deps_x_stand_alone_websharks_core_v000000_dev::initialize();
+else deps_x_websharks_core_v000000_dev::initialize();
 
 # -----------------------------------------------------------------------------------------------------------------------------------------
 # Inline/automatic stand-alone handlers (if applicable).
 # -----------------------------------------------------------------------------------------------------------------------------------------
-
 /*
  * Running in Stand-Alone mode?
  *

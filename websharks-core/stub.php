@@ -75,7 +75,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @note For internal/development use only.
 			 */
-			public static $local_wp_dev_dir = '/home/jaswsinc/Apache/wordpress.loc';
+			public static $local_wp_dev_dir = '%%$_SERVER[HOME]%%/Apache/wordpress.loc';
 
 			/**
 			 * Local WebSharks™ Core repo directory.
@@ -84,7 +84,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @note For internal/development use only.
 			 */
-			public static $local_core_repo_dir = '/home/jaswsinc/WebSharks/core';
+			public static $local_core_repo_dir = '%%$_SERVER[HOME]%%/WebSharks/core';
 
 			/**
 			 * WebSharks™ Core stub.
@@ -183,7 +183,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
 			 *
-			 * @throws exception If attempt to run the WebSharks™ Core from a root directory.
+			 * @throws exception If attempting to run the WebSharks™ Core from a root directory.
 			 */
 			public static function initialize()
 				{
@@ -198,8 +198,12 @@ if(!class_exists('websharks_core_v000000_dev'))
 					/*
 					 * Handle some dynamic regex replacement codes in class properties (as follows).
 					 */
+					$_server_home_dir                              = (!empty($_SERVER['HOME'])) ? (string)$_SERVER['HOME'] : '';
+					self::$local_wp_dev_dir                        = str_replace('%%$_SERVER[HOME]%%', $_server_home_dir, self::$local_wp_dev_dir);
+					self::$local_core_repo_dir                     = str_replace('%%$_SERVER[HOME]%%', $_server_home_dir, self::$local_core_repo_dir);
 					self::$regex_valid_core_ns_version             = str_replace('%%self::$core_ns_stub_v%%', preg_quote(self::$core_ns_stub_v, '/'), self::$regex_valid_core_ns_version);
 					self::$regex_valid_core_ns_version_with_dashes = str_replace('%%self::$core_ns_stub_v_with_dashes%%', preg_quote(self::$core_ns_stub_v_with_dashes, '/'), self::$regex_valid_core_ns_version_with_dashes);
+
 					/*
 					 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
 					 */
@@ -948,7 +952,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			/**
 			 * Gets a directory/file extension (lowercase).
 			 *
-			 * @param string  $dir_file A directory/file path.
+			 * @param string $dir_file A directory/file path.
 			 *
 			 * @return string Directory/file extension (lowercase).
 			 *
@@ -966,9 +970,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 			/**
 			 * Determines a file's MIME type.
 			 *
-			 * @param string  $file A file path.
+			 * @param string $file A file path.
 			 *
-			 * @param string  $default_mime_type Defaults to `application/octet-stream`.
+			 * @param string $default_mime_type Defaults to `application/octet-stream`.
 			 *    This can be passed as an empty string to make it easier to test for a failure here.
 			 *
 			 * @return string File's MIME type; else ``$default_mime_type`` value.
