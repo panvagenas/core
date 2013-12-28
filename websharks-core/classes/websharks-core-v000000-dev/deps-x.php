@@ -87,7 +87,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *
 	 * @note For internal/development use only.
 	 */
-	protected static $local_wp_dev_dir = '%%$_SERVER[HOME]%%/Apache/wordpress.loc';
+	protected static $local_wp_dev_dir = '%%$_SERVER[WEBSHARK_HOME]%%/Apache/wordpress.loc';
 
 	/**
 	 * Initialized yet?
@@ -127,8 +127,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			/*
 			 * Handle some dynamic regex replacement codes in class properties (as follows).
 			 */
-			$_server_home_dir       = (!empty($_SERVER['HOME'])) ? (string)$_SERVER['HOME'] : '';
-			self::$local_wp_dev_dir = str_replace('%%$_SERVER[HOME]%%', $_server_home_dir, self::$local_wp_dev_dir);
+			$_webshark_home_dir     = (!empty($_SERVER['WEBSHARK_HOME'])) ? (string)$_SERVER['WEBSHARK_HOME'] : '';
+			self::$local_wp_dev_dir = str_replace('%%$_SERVER[WEBSHARK_HOME]%%', $_webshark_home_dir, self::$local_wp_dev_dir);
 
 			/*
 			 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).

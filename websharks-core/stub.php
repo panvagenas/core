@@ -75,7 +75,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @note For internal/development use only.
 			 */
-			public static $local_wp_dev_dir = '%%$_SERVER[HOME]%%/Apache/wordpress.loc';
+			public static $local_wp_dev_dir = '%%$_SERVER[WEBSHARK_HOME]%%/Apache/wordpress.loc';
 
 			/**
 			 * Local WebSharks™ Core repo directory.
@@ -84,7 +84,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @note For internal/development use only.
 			 */
-			public static $local_core_repo_dir = '%%$_SERVER[HOME]%%/WebSharks/core';
+			public static $local_core_repo_dir = '%%$_SERVER[WEBSHARK_HOME]%%/WebSharks/core';
 
 			/**
 			 * WebSharks™ Core stub.
@@ -198,9 +198,9 @@ if(!class_exists('websharks_core_v000000_dev'))
 					/*
 					 * Handle some dynamic regex replacement codes in class properties (as follows).
 					 */
-					$_server_home_dir                              = (!empty($_SERVER['HOME'])) ? (string)$_SERVER['HOME'] : '';
-					self::$local_wp_dev_dir                        = str_replace('%%$_SERVER[HOME]%%', $_server_home_dir, self::$local_wp_dev_dir);
-					self::$local_core_repo_dir                     = str_replace('%%$_SERVER[HOME]%%', $_server_home_dir, self::$local_core_repo_dir);
+					$_webshark_home_dir                            = (!empty($_SERVER['WEBSHARK_HOME'])) ? (string)$_SERVER['WEBSHARK_HOME'] : '';
+					self::$local_wp_dev_dir                        = str_replace('%%$_SERVER[WEBSHARK_HOME]%%', $_webshark_home_dir, self::$local_wp_dev_dir);
+					self::$local_core_repo_dir                     = str_replace('%%$_SERVER[WEBSHARK_HOME]%%', $_webshark_home_dir, self::$local_core_repo_dir);
 					self::$regex_valid_core_ns_version             = str_replace('%%self::$core_ns_stub_v%%', preg_quote(self::$core_ns_stub_v, '/'), self::$regex_valid_core_ns_version);
 					self::$regex_valid_core_ns_version_with_dashes = str_replace('%%self::$core_ns_stub_v_with_dashes%%', preg_quote(self::$core_ns_stub_v_with_dashes, '/'), self::$regex_valid_core_ns_version_with_dashes);
 
@@ -1019,15 +1019,19 @@ if(!class_exists('websharks_core_v000000_dev'))
 						if(($server_temp_dir = realpath($server_temp_dir)) && is_readable($server_temp_dir) && is_writable($server_temp_dir))
 							return self::n_dir_seps($server_temp_dir);
 
+					if(!empty($_SERVER['TMPDIR']) && ($server_tmpdir_dir = $_SERVER['TMPDIR']) && is_string($server_tmpdir_dir))
+						if(($server_tmpdir_dir = realpath($server_tmpdir_dir)) && is_readable($server_tmpdir_dir) && is_writable($server_tmpdir_dir))
+							return self::n_dir_seps($server_tmpdir_dir);
+
 					if(!empty($_SERVER['TMP']) && ($server_tmp_dir = $_SERVER['TMP']) && is_string($server_tmp_dir))
 						if(($server_tmp_dir = realpath($server_tmp_dir)) && is_readable($server_tmp_dir) && is_writable($server_tmp_dir))
 							return self::n_dir_seps($server_tmp_dir);
 
-					if(stripos(PHP_OS, 'win') === 0 && (is_dir('C:/Temp') || @mkdir('C:/Temp', 0775)))
+					if(stripos(PHP_OS, 'win') === 0 && (is_dir('C:/Temp') || @mkdir('C:/Temp', 0777)))
 						if(is_readable('C:/Temp') && is_writable('C:/Temp'))
 							return self::n_dir_seps('C:/Temp');
 
-					if(stripos(PHP_OS, 'win') !== 0 && (is_dir('/tmp') || @mkdir('/tmp', 0775)))
+					if(stripos(PHP_OS, 'win') !== 0 && (is_dir('/tmp') || @mkdir('/tmp', 0777)))
 						if(is_readable('/tmp') && is_writable('/tmp'))
 							return self::n_dir_seps('/tmp');
 
