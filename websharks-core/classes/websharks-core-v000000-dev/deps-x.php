@@ -2071,9 +2071,12 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	/**
 	 * Calculates the MD5 checksum for an entire directory recursively.
 	 *
-	 * @param string $dir The directory we should begin with.
+	 * @param string  $dir The directory we should begin with.
 	 *
-	 * @param string $___root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
+	 * @param boolean $ignore_vcs_dirs Optional. Defaults to a TRUE value.
+	 *    By default, we ignore VCS directories (e.g. `.git` and `.svn`).
+	 *
+	 * @param string  $___root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
 	 *    Recursive calls to this method will automatically pass this value, indicating the main root directory value.
 	 *
 	 * @return string An MD5 checksum established collectively, based on all directories/files.
@@ -2082,28 +2085,32 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *
 	 * @see websharks_core_v000000_dev\dirs::checksum()
 	 */
-	public function dir_checksum($dir, $___root_dir = '')
+	public function dir_checksum($dir, $ignore_vcs_dirs = TRUE, $___root_dir = '')
 		{
 			if(!is_string($dir) || !$dir || !is_string($___root_dir))
 				throw new exception( // Fail here; detected invalid arguments.
 					sprintf($this->i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
-			$checksums                = array(); // Initialize array.
-			$dir                      = $this->n_dir_seps((string)realpath($dir));
-			$___root_dir              = (!$___root_dir) ? $dir : $___root_dir;
-			$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
-			$checksums[$relative_dir] = md5($relative_dir); // Establish relative directory checksum.
+			$checksums   = array(); // Initialize array.
+			$dir         = $this->n_dir_seps((string)realpath($dir));
+			$___root_dir = (!$___root_dir) ? $dir : $___root_dir;
 
 			if(!$dir || !is_dir($dir) || !is_readable($dir) || !($handle = opendir($dir)))
 				throw new exception(
 					sprintf($this->i18n('Unable to read directory: `%1$s`'), $dir)
 				);
+			if($ignore_vcs_dirs && in_array(basename($dir), array('.git', '.svn'), TRUE))
+				return $checksums; // Ignore this VCS directory.
+
+			$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
+			$checksums[$relative_dir] = md5($relative_dir); // Establish relative directory checksum.
+
 			while(($entry = readdir($handle)) !== FALSE)
 				if($entry !== '.' && $entry !== '..') // Ignore single/double dots.
 					if($entry !== 'checksum.txt' || $dir !== $___root_dir) // Skip in root directory.
 						{
 							if(is_dir($dir.'/'.$entry))
-								$checksums[$relative_dir.'/'.$entry] = $this->dir_checksum($dir.'/'.$entry, $___root_dir);
+								$checksums[$relative_dir.'/'.$entry] = $this->dir_checksum($dir.'/'.$entry, $ignore_vcs_dirs, $___root_dir);
 							else $checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
 						}
 			closedir($handle); // Close directory handle now.
