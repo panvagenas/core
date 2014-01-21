@@ -284,7 +284,7 @@ namespace websharks_core_v000000_dev
 						           $this->method(__FUNCTION__).'#cannot_read_dir', NULL,
 						           sprintf($this->i18n('Unable to read directory: `%1$s`'), $dir)
 						);
-					if($ignore_vcs_dirs && in_array(basename($dir), array('.git', '.svn'), TRUE))
+					if($ignore_vcs_dirs && in_array(basename($dir), array('.git', '.svn', '.bzr'), TRUE))
 						return $checksums; // Ignore this VCS directory.
 
 					$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
