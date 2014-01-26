@@ -10,7 +10,7 @@ Tested up to PHP version: 5.4.12
 
 Copyright: © 2012 WebSharks, Inc.
 License: GNU General Public License
-Contributors: WebSharks
+Contributors: WebSharks, JasWSInc
 
 Author: WebSharks, Inc.
 Author URI: http://www.websharks-inc.com
