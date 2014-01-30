@@ -211,8 +211,8 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->can_build)
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#cannot_build', get_defined_vars(),
-							$this->i18n('Security check. Unable to build (not allowed here).')
+						           $this->method(__FUNCTION__).'#cannot_build', get_defined_vars(),
+						           $this->i18n('Security check. Unable to build (not allowed here).')
 						);
 					// Construct object properties.
 
@@ -239,87 +239,87 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->core_repo_dir || !is_dir($this->core_repo_dir))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#nonexistent_core_repo_dir', get_defined_vars(),
-							sprintf($this->i18n('Nonexistent core repo directory: `%1$s`.'), $this->core_repo_dir)
+						           $this->method(__FUNCTION__).'#nonexistent_core_repo_dir', get_defined_vars(),
+						           sprintf($this->i18n('Nonexistent core repo directory: `%1$s`.'), $this->core_repo_dir)
 						);
 					if(!is_readable($this->core_repo_dir) || !is_writable($this->core_repo_dir))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#core_repo_dir_permissions', get_defined_vars(),
-							sprintf($this->i18n('Permission issues with core repo directory: `%1$s`.'), $this->core_dir)
+						           $this->method(__FUNCTION__).'#core_repo_dir_permissions', get_defined_vars(),
+						           sprintf($this->i18n('Permission issues with core repo directory: `%1$s`.'), $this->core_dir)
 						);
 					if(!is_file($this->core_repo_dir.'/.gitignore'))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#core_repo_dir_gitignore', get_defined_vars(),
-							sprintf($this->i18n('Core repo directory is missing this file: `%1$s`.'), $this->core_repo_dir.'/.gitignore')
+						           $this->method(__FUNCTION__).'#core_repo_dir_gitignore', get_defined_vars(),
+						           sprintf($this->i18n('Core repo directory is missing this file: `%1$s`.'), $this->core_repo_dir.'/.gitignore')
 						);
 
 					if(!$this->core_dir || !is_dir($this->core_dir))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#nonexistent_core_dir', get_defined_vars(),
-							sprintf($this->i18n('Nonexistent core directory: `%1$s`.'), $this->core_dir)
+						           $this->method(__FUNCTION__).'#nonexistent_core_dir', get_defined_vars(),
+						           sprintf($this->i18n('Nonexistent core directory: `%1$s`.'), $this->core_dir)
 						);
 					if(!is_readable($this->core_dir) || !is_writable($this->core_dir))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#core_dir_permissions', get_defined_vars(),
-							sprintf($this->i18n('Permission issues with core directory: `%1$s`.'), $this->core_dir)
+						           $this->method(__FUNCTION__).'#core_dir_permissions', get_defined_vars(),
+						           sprintf($this->i18n('Permission issues with core directory: `%1$s`.'), $this->core_dir)
 						);
 
-					if($this->plugin_dir) // Plugin validation. Also look for possible `-pro` add-on (and/or `-extras`).
+					if($this->plugin_dir) // Also look for possible `-pro` add-on (and/or `-extras`).
 						{
 							if(!is_dir($this->plugin_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_plugin_dir', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent plugin directory: `%1$s`.'), $this->plugin_dir)
+								           $this->method(__FUNCTION__).'#nonexistent_plugin_dir', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent plugin directory: `%1$s`.'), $this->plugin_dir)
 								);
 							if(!is_readable($this->plugin_dir) || !is_writable($this->plugin_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#plugin_dir_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with plugin directory: `%1$s`.'), $this->plugin_dir)
+								           $this->method(__FUNCTION__).'#plugin_dir_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with plugin directory: `%1$s`.'), $this->plugin_dir)
 								);
 							if(!$this->plugin_repo_dir || !is_dir($this->plugin_repo_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_plugin_repo_dir', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent plugin repo directory: `%1$s`.'), $this->plugin_repo_dir)
+								           $this->method(__FUNCTION__).'#nonexistent_plugin_repo_dir', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent plugin repo directory: `%1$s`.'), $this->plugin_repo_dir)
 								);
 							if(!is_readable($this->plugin_repo_dir) || !is_writable($this->plugin_repo_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#plugin_repo_dir_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with plugin repo directory: `%1$s`.'), $this->plugin_repo_dir)
+								           $this->method(__FUNCTION__).'#plugin_repo_dir_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with plugin repo directory: `%1$s`.'), $this->plugin_repo_dir)
 								);
 							if(!is_file($this->plugin_repo_dir.'/.gitignore'))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#plugin_repo_dir_gitignore', get_defined_vars(),
-									sprintf($this->i18n('Plugin repo directory is missing this file: `%1$s`.'), $this->plugin_repo_dir.'/.gitignore')
+								           $this->method(__FUNCTION__).'#plugin_repo_dir_gitignore', get_defined_vars(),
+								           sprintf($this->i18n('Plugin repo directory is missing this file: `%1$s`.'), $this->plugin_repo_dir.'/.gitignore')
 								);
 							if(!$this->plugin_name)
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#missing_plugin_name', get_defined_vars(),
-									sprintf($this->i18n('Missing plugin name for: `%1$s`.'), $this->plugin_dir)
+								           $this->method(__FUNCTION__).'#missing_plugin_name', get_defined_vars(),
+								           sprintf($this->i18n('Missing plugin name for: `%1$s`.'), $this->plugin_dir)
 								);
 							if(!$this->plugin_root_ns)
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#missing_plugin_root_ns', get_defined_vars(),
-									sprintf($this->i18n('Missing plugin root namespace for: `%1$s`.'), $this->plugin_dir)
+								           $this->method(__FUNCTION__).'#missing_plugin_root_ns', get_defined_vars(),
+								           sprintf($this->i18n('Missing plugin root namespace for: `%1$s`.'), $this->plugin_dir)
 								);
 							if(!$this->distros_dir || !is_dir($this->distros_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_distros_dir', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent distros directory: `%1$s`.'), $this->distros_dir)
+								           $this->method(__FUNCTION__).'#nonexistent_distros_dir', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent distros directory: `%1$s`.'), $this->distros_dir)
 								);
 							if(!is_readable($this->distros_dir) || !is_writable($this->distros_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#distros_dir_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with distros directory: `%1$s`.'), $this->distros_dir)
+								           $this->method(__FUNCTION__).'#distros_dir_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with distros directory: `%1$s`.'), $this->distros_dir)
 								);
 							if(!$this->downloads_dir || !is_dir($this->downloads_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_downloads_dir', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent downloads directory: `%1$s`.'), $this->downloads_dir)
+								           $this->method(__FUNCTION__).'#nonexistent_downloads_dir', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent downloads directory: `%1$s`.'), $this->downloads_dir)
 								);
 							if(!is_readable($this->downloads_dir) || !is_writable($this->downloads_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#downloads_dir_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with downloads directory: `%1$s`.'), $this->downloads_dir)
+								           $this->method(__FUNCTION__).'#downloads_dir_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with downloads directory: `%1$s`.'), $this->downloads_dir)
 								);
 
 							$_plugins_dir           = $this->©dir->n_seps_up($this->plugin_dir, 2);
@@ -328,13 +328,13 @@ namespace websharks_core_v000000_dev
 
 							if(basename($_plugins_dir) !== 'plugins')
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#missing_plugins_dir', get_defined_vars(),
-									sprintf($this->i18n('Missing `plugins` directory here: `%1$s`.'), $_plugins_dir)
+								           $this->method(__FUNCTION__).'#missing_plugins_dir', get_defined_vars(),
+								           sprintf($this->i18n('Missing `plugins` directory here: `%1$s`.'), $_plugins_dir)
 								);
 							if(is_dir($_possible_pro_repo_dir) && !is_dir($_possible_pro_dir))
 								throw $this->©exception( // Should exist in this case.
-									$this->method(__FUNCTION__).'#missing_plugin_pro_dir', get_defined_vars(),
-									sprintf($this->i18n('Missing plugin pro directory here: `%1$s`.'), $_possible_pro_dir)
+								           $this->method(__FUNCTION__).'#missing_plugin_pro_dir', get_defined_vars(),
+								           sprintf($this->i18n('Missing plugin pro directory here: `%1$s`.'), $_possible_pro_dir)
 								);
 							if(is_dir($_possible_pro_dir))
 								{
@@ -347,18 +347,18 @@ namespace websharks_core_v000000_dev
 								{
 									if(!is_readable($this->plugin_pro_dir) || !is_writable($this->plugin_pro_dir))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_pro_dir_permissions', get_defined_vars(),
-											sprintf($this->i18n('Permission issues with plugin pro directory: `%1$s`.'), $this->plugin_pro_dir)
+										           $this->method(__FUNCTION__).'#plugin_pro_dir_permissions', get_defined_vars(),
+										           sprintf($this->i18n('Permission issues with plugin pro directory: `%1$s`.'), $this->plugin_pro_dir)
 										);
 									if(!is_readable($this->plugin_pro_repo_dir) || !is_writable($this->plugin_pro_repo_dir))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_pro_repo_dir_permissions', get_defined_vars(),
-											sprintf($this->i18n('Permission issues with plugin pro repo directory: `%1$s`.'), $this->plugin_pro_repo_dir)
+										           $this->method(__FUNCTION__).'#plugin_pro_repo_dir_permissions', get_defined_vars(),
+										           sprintf($this->i18n('Permission issues with plugin pro repo directory: `%1$s`.'), $this->plugin_pro_repo_dir)
 										);
 									if(!is_file($this->plugin_pro_repo_dir.'/.gitignore'))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_pro_repo_dir_gitignore', get_defined_vars(),
-											sprintf($this->i18n('Plugin pro directory is missing this file: `%1$s`.'), $this->plugin_pro_repo_dir.'/.gitignore')
+										           $this->method(__FUNCTION__).'#plugin_pro_repo_dir_gitignore', get_defined_vars(),
+										           sprintf($this->i18n('Plugin pro directory is missing this file: `%1$s`.'), $this->plugin_pro_repo_dir.'/.gitignore')
 										);
 								}
 							if(is_dir($this->plugin_dir.'-extras'))
@@ -368,8 +368,8 @@ namespace websharks_core_v000000_dev
 								{
 									if(!is_readable($this->plugin_extras_dir) || !is_writable($this->plugin_extras_dir))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_extras_dir_permissions', get_defined_vars(),
-											sprintf($this->i18n('Permission issues with plugin extras directory: `%1$s`.'), $this->plugin_extras_dir)
+										           $this->method(__FUNCTION__).'#plugin_extras_dir_permissions', get_defined_vars(),
+										           sprintf($this->i18n('Permission issues with plugin extras directory: `%1$s`.'), $this->plugin_extras_dir)
 										);
 								}
 						}
@@ -377,43 +377,43 @@ namespace websharks_core_v000000_dev
 
 					if(!$this->©string->is_plugin_version($this->version))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#invalid_version', get_defined_vars(),
-							sprintf($this->i18n('Invalid version string: `%1$s`.'), $this->version)
+						           $this->method(__FUNCTION__).'#invalid_version', get_defined_vars(),
+						           sprintf($this->i18n('Invalid version string: `%1$s`.'), $this->version)
 						);
 					if(!$this->©string->is_version($this->requires_at_least_php_version))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#invalid_requires_at_least_php_version', get_defined_vars(),
-							sprintf($this->i18n('Invalid `Requires at least` PHP version string: `%1$s`.'), $this->requires_at_least_php_version)
+						           $this->method(__FUNCTION__).'#invalid_requires_at_least_php_version', get_defined_vars(),
+						           sprintf($this->i18n('Invalid `Requires at least` PHP version string: `%1$s`.'), $this->requires_at_least_php_version)
 						);
 					if(!$this->©string->is_version($this->tested_up_to_php_version))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#invalid_tested_up_to_php_version', get_defined_vars(),
-							sprintf($this->i18n('Invalid `Tested up to` PHP version string: `%1$s`.'), $this->tested_up_to_php_version)
+						           $this->method(__FUNCTION__).'#invalid_tested_up_to_php_version', get_defined_vars(),
+						           sprintf($this->i18n('Invalid `Tested up to` PHP version string: `%1$s`.'), $this->tested_up_to_php_version)
 						);
 					if(!$this->©string->is_version($this->requires_at_least_wp_version))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#invalid_requires_at_least_wp_version', get_defined_vars(),
-							sprintf($this->i18n('Invalid `Requires at least` WP version string: `%1$s`.'), $this->requires_at_least_wp_version)
+						           $this->method(__FUNCTION__).'#invalid_requires_at_least_wp_version', get_defined_vars(),
+						           sprintf($this->i18n('Invalid `Requires at least` WP version string: `%1$s`.'), $this->requires_at_least_wp_version)
 						);
 					if(!$this->©string->is_version($this->tested_up_to_wp_version))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#invalid_tested_up_to_wp_version', get_defined_vars(),
-							sprintf($this->i18n('Invalid `Tested up to` WP version string: `%1$s`.'), $this->tested_up_to_wp_version)
+						           $this->method(__FUNCTION__).'#invalid_tested_up_to_wp_version', get_defined_vars(),
+						           sprintf($this->i18n('Invalid `Tested up to` WP version string: `%1$s`.'), $this->tested_up_to_wp_version)
 						);
 					// Validate core type.
 
 					if(!in_array($this->use_core_type, array('directory', 'phar', 'stub'), TRUE))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#invalid_core_type', get_defined_vars(),
-							sprintf($this->i18n('Invalid core type: `%1$s`.'), $this->use_core_type)
+						           $this->method(__FUNCTION__).'#invalid_core_type', get_defined_vars(),
+						           sprintf($this->i18n('Invalid core type: `%1$s`.'), $this->use_core_type)
 						);
 					// Validate core version that we're supposed to be building from.
 
 					if($this->build_from_core_version !== $this->___instance_config->core_version)
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#invalid_build_from_core_version', get_defined_vars(),
-							sprintf($this->i18n('Building from incorrect core version: `%1$s`.'), $this->build_from_core_version).
-							sprintf($this->i18n(' This is version `%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name)
+						           $this->method(__FUNCTION__).'#invalid_build_from_core_version', get_defined_vars(),
+						           sprintf($this->i18n('Building from incorrect core version: `%1$s`.'), $this->build_from_core_version).
+						           sprintf($this->i18n(' This is version `%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name)
 						);
 					// Determine starting GIT branches; also check for uncommitted changes and/or untracked files.
 
@@ -421,9 +421,9 @@ namespace websharks_core_v000000_dev
 
 					if($this->©command->git_changes_exist($this->core_repo_dir))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#git_changes_exist_in_core_repo_dir', get_defined_vars(),
-							sprintf($this->i18n('GIT changes exist on core branch/version: `%1$s`.'), $this->starting_git_branches['core']).
-							$this->i18n(' Please commit changes and/or resolve untracked files on the starting branch/version before building.')
+						           $this->method(__FUNCTION__).'#git_changes_exist_in_core_repo_dir', get_defined_vars(),
+						           sprintf($this->i18n('GIT changes exist on core branch/version: `%1$s`.'), $this->starting_git_branches['core']).
+						           $this->i18n(' Please commit changes and/or resolve untracked files on the starting branch/version before building.')
 						);
 					if($this->plugin_dir) // For plugin directory repo (if building a plugin).
 						{
@@ -431,9 +431,9 @@ namespace websharks_core_v000000_dev
 
 							if($this->©command->git_changes_exist($this->plugin_repo_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#git_changes_exist_in_plugin_repo_dir', get_defined_vars(),
-									sprintf($this->i18n('GIT changes exist on plugin branch/version: `%1$s`.'), $this->starting_git_branches['plugin']).
-									$this->i18n(' Please commit changes and/or resolve untracked files on the starting branch/version before building.')
+								           $this->method(__FUNCTION__).'#git_changes_exist_in_plugin_repo_dir', get_defined_vars(),
+								           sprintf($this->i18n('GIT changes exist on plugin branch/version: `%1$s`.'), $this->starting_git_branches['plugin']).
+								           $this->i18n(' Please commit changes and/or resolve untracked files on the starting branch/version before building.')
 								);
 						}
 					if($this->plugin_dir && $this->plugin_pro_dir) // Pro plugin's pro add-on repo (if building a plugin).
@@ -442,9 +442,9 @@ namespace websharks_core_v000000_dev
 
 							if($this->©command->git_changes_exist($this->plugin_pro_repo_dir))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#git_changes_exist_in_plugin_repo_dir', get_defined_vars(),
-									sprintf($this->i18n('GIT changes exist on plugin pro branch/version: `%1$s`.'), $this->starting_git_branches['plugin_pro']).
-									$this->i18n(' Please commit changes and/or resolve untracked files on the starting branch/version before building.')
+								           $this->method(__FUNCTION__).'#git_changes_exist_in_plugin_repo_dir', get_defined_vars(),
+								           sprintf($this->i18n('GIT changes exist on plugin pro branch/version: `%1$s`.'), $this->starting_git_branches['plugin_pro']).
+								           $this->i18n(' Please commit changes and/or resolve untracked files on the starting branch/version before building.')
 								);
 						}
 					// Object construction & initial validation complete.
@@ -463,8 +463,8 @@ namespace websharks_core_v000000_dev
 			protected function build()
 				{
 					$successes = $this->©successes(
-						$this->method(__FUNCTION__).'#start_time', get_defined_vars(),
-						sprintf($this->i18n('Start time: %1$s.'), $this->©env->time_details())
+					                  $this->method(__FUNCTION__).'#start_time', get_defined_vars(),
+					                  sprintf($this->i18n('Start time: %1$s.'), $this->©env->time_details())
 					);
 					$successes->add($this->method(__FUNCTION__).'#starting_branch_core', get_defined_vars(),
 					                sprintf($this->i18n('Building from %1$s GIT branch: `%2$s` (version: `%3$s`) w/ class file: `%4$s`.'),
@@ -547,9 +547,9 @@ namespace websharks_core_v000000_dev
 									   || !is_readable($_plugin_dir_htaccess_file)
 									   || FALSE === strpos(file_get_contents($_plugin_dir_htaccess_file), 'AcceptPathInfo')
 									) throw $this->©exception(
-										$this->method(__FUNCTION__).'#unable_to_find_valid_htaccess_file_in_plugin_dir', get_defined_vars(),
-										sprintf($this->i18n('Unable to find a valid `.htaccess` file here: `%1$s`.'), $_plugin_dir_htaccess_file).
-										$this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
+									             $this->method(__FUNCTION__).'#unable_to_find_valid_htaccess_file_in_plugin_dir', get_defined_vars(),
+									             sprintf($this->i18n('Unable to find a valid `.htaccess` file here: `%1$s`.'), $_plugin_dir_htaccess_file).
+									             $this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 									);
 
 									$this->©file->copy_to($_core_phar, $_new_core_phar);
@@ -569,35 +569,35 @@ namespace websharks_core_v000000_dev
 
 							if(!is_file($_plugin_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_plugin_file', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent plugin file: `%1$s`.'), $_plugin_file)
+								           $this->method(__FUNCTION__).'#nonexistent_plugin_file', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent plugin file: `%1$s`.'), $_plugin_file)
 								);
 							if(!is_readable($_plugin_file) || !is_writable($_plugin_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#plugin_file_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with plugin file: `%1$s`.'), $_plugin_file)
+								           $this->method(__FUNCTION__).'#plugin_file_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with plugin file: `%1$s`.'), $_plugin_file)
 								);
 
 							if(!is_file($_plugin_readme_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_plugin_readme_file', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent plugin `readme.txt` file: `%1$s`.'), $_plugin_readme_file)
+								           $this->method(__FUNCTION__).'#nonexistent_plugin_readme_file', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent plugin `readme.txt` file: `%1$s`.'), $_plugin_readme_file)
 								);
 							if(!is_readable($_plugin_readme_file) || !is_writable($_plugin_readme_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#plugin_readme_file_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with plugin `readme.txt` file: `%1$s`.'), $_plugin_readme_file)
+								           $this->method(__FUNCTION__).'#plugin_readme_file_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with plugin `readme.txt` file: `%1$s`.'), $_plugin_readme_file)
 								);
 
 							if(!is_file($_plugin_framework_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_plugin_framework_file', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent plugin `framework.php` file: `%1$s`.'), $_plugin_framework_file)
+								           $this->method(__FUNCTION__).'#nonexistent_plugin_framework_file', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent plugin `framework.php` file: `%1$s`.'), $_plugin_framework_file)
 								);
 							if(!is_readable($_plugin_framework_file) || !is_writable($_plugin_framework_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#plugin_framework_file_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with plugin `framework.php` file: `%1$s`.'), $_plugin_framework_file)
+								           $this->method(__FUNCTION__).'#plugin_framework_file_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with plugin `framework.php` file: `%1$s`.'), $_plugin_framework_file)
 								);
 
 							$_plugin_file_contents           = file_get_contents($_plugin_file);
@@ -622,18 +622,18 @@ namespace websharks_core_v000000_dev
 
 							if(!file_put_contents($_plugin_file, $_plugin_file_contents))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#plugin_file_write_error', get_defined_vars(),
-									$this->i18n('Unable to write (update) the plugin file.')
+								           $this->method(__FUNCTION__).'#plugin_file_write_error', get_defined_vars(),
+								           $this->i18n('Unable to write (update) the plugin file.')
 								);
 							if(!file_put_contents($_plugin_readme_file, $_plugin_readme_file_contents))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#plugin_readme_file_write_error', get_defined_vars(),
-									$this->i18n('Unable to write (update) the plugin `readme.txt` file.')
+								           $this->method(__FUNCTION__).'#plugin_readme_file_write_error', get_defined_vars(),
+								           $this->i18n('Unable to write (update) the plugin `readme.txt` file.')
 								);
 							if(!file_put_contents($_plugin_framework_file, $_plugin_framework_file_contents))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#plugin_framework_file_write_error', get_defined_vars(),
-									$this->i18n('Unable to write (update) the plugin `framework.php` file.')
+								           $this->method(__FUNCTION__).'#plugin_framework_file_write_error', get_defined_vars(),
+								           $this->i18n('Unable to write (update) the plugin `framework.php` file.')
 								);
 
 							$successes->add($this->method(__FUNCTION__).'#plugin_file_updates', get_defined_vars(),
@@ -756,35 +756,35 @@ namespace websharks_core_v000000_dev
 
 									if(!is_file($_plugin_pro_file))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#nonexistent_plugin_pro_file', get_defined_vars(),
-											sprintf($this->i18n('Nonexistent plugin pro file: `%1$s`.'), $_plugin_pro_file)
+										           $this->method(__FUNCTION__).'#nonexistent_plugin_pro_file', get_defined_vars(),
+										           sprintf($this->i18n('Nonexistent plugin pro file: `%1$s`.'), $_plugin_pro_file)
 										);
 									if(!is_readable($_plugin_pro_file) || !is_writable($_plugin_pro_file))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_pro_file_permissions', get_defined_vars(),
-											sprintf($this->i18n('Permission issues with plugin pro file: `%1$s`.'), $_plugin_pro_file)
+										           $this->method(__FUNCTION__).'#plugin_pro_file_permissions', get_defined_vars(),
+										           sprintf($this->i18n('Permission issues with plugin pro file: `%1$s`.'), $_plugin_pro_file)
 										);
 
 									if(!is_file($_plugin_pro_readme_file))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#nonexistent_plugin_pro_readme_file', get_defined_vars(),
-											sprintf($this->i18n('Nonexistent plugin pro `readme.txt` file: `%1$s`.'), $_plugin_pro_readme_file)
+										           $this->method(__FUNCTION__).'#nonexistent_plugin_pro_readme_file', get_defined_vars(),
+										           sprintf($this->i18n('Nonexistent plugin pro `readme.txt` file: `%1$s`.'), $_plugin_pro_readme_file)
 										);
 									if(!is_readable($_plugin_pro_readme_file) || !is_writable($_plugin_pro_readme_file))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_pro_readme_file_permissions', get_defined_vars(),
-											sprintf($this->i18n('Permission issues with plugin pro `readme.txt` file: `%1$s`.'), $_plugin_pro_readme_file)
+										           $this->method(__FUNCTION__).'#plugin_pro_readme_file_permissions', get_defined_vars(),
+										           sprintf($this->i18n('Permission issues with plugin pro `readme.txt` file: `%1$s`.'), $_plugin_pro_readme_file)
 										);
 
 									if(!is_file($_plugin_pro_class_file))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#nonexistent_plugin_pro_class_file', get_defined_vars(),
-											sprintf($this->i18n('Nonexistent plugin `pro.php` class file: `%1$s`.'), $_plugin_pro_class_file)
+										           $this->method(__FUNCTION__).'#nonexistent_plugin_pro_class_file', get_defined_vars(),
+										           sprintf($this->i18n('Nonexistent plugin `pro.php` class file: `%1$s`.'), $_plugin_pro_class_file)
 										);
 									if(!is_readable($_plugin_pro_class_file) || !is_writable($_plugin_pro_class_file))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_pro_class_file_permissions', get_defined_vars(),
-											sprintf($this->i18n('Permission issues with plugin `pro.php` class file: `%1$s`.'), $_plugin_pro_class_file)
+										           $this->method(__FUNCTION__).'#plugin_pro_class_file_permissions', get_defined_vars(),
+										           sprintf($this->i18n('Permission issues with plugin `pro.php` class file: `%1$s`.'), $_plugin_pro_class_file)
 										);
 
 									$_plugin_pro_file_contents        = file_get_contents($_plugin_pro_file);
@@ -809,18 +809,18 @@ namespace websharks_core_v000000_dev
 
 									if(!file_put_contents($_plugin_pro_file, $_plugin_pro_file_contents))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_pro_file_write_error', get_defined_vars(),
-											$this->i18n('Unable to write (update) the plugin pro file.')
+										           $this->method(__FUNCTION__).'#plugin_pro_file_write_error', get_defined_vars(),
+										           $this->i18n('Unable to write (update) the plugin pro file.')
 										);
 									if(!file_put_contents($_plugin_pro_readme_file, $_plugin_pro_readme_file_contents))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_pro_readme_file_write_error', get_defined_vars(),
-											$this->i18n('Unable to write (update) the plugin pro `readme.txt` file.')
+										           $this->method(__FUNCTION__).'#plugin_pro_readme_file_write_error', get_defined_vars(),
+										           $this->i18n('Unable to write (update) the plugin pro `readme.txt` file.')
 										);
 									if(!file_put_contents($_plugin_pro_class_file, $_plugin_pro_class_file_contents))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#plugin_pro_class_file_write_error', get_defined_vars(),
-											$this->i18n('Unable to write (update) the plugin `pro.php` class file.')
+										           $this->method(__FUNCTION__).'#plugin_pro_class_file_write_error', get_defined_vars(),
+										           $this->i18n('Unable to write (update) the plugin `pro.php` class file.')
 										);
 
 									$successes->add($this->method(__FUNCTION__).'#plugin_pro_file_updates', get_defined_vars(),
@@ -915,13 +915,13 @@ namespace websharks_core_v000000_dev
 
 									if(!is_file($_core_deps_x_file))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#nonexistent_core_deps_x_file', get_defined_vars(),
-											sprintf($this->i18n('Nonexistent core `deps-x.php` file: `%1$s`.'), $_core_deps_x_file)
+										           $this->method(__FUNCTION__).'#nonexistent_core_deps_x_file', get_defined_vars(),
+										           sprintf($this->i18n('Nonexistent core `deps-x.php` file: `%1$s`.'), $_core_deps_x_file)
 										);
 									if(!is_readable($_core_deps_x_file))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#core_deps_x_file_permissions', get_defined_vars(),
-											sprintf($this->i18n('Permission issues with core `deps-x.php` file: `%1$s`.'), $_core_deps_x_file)
+										           $this->method(__FUNCTION__).'#core_deps_x_file_permissions', get_defined_vars(),
+										           sprintf($this->i18n('Permission issues with core `deps-x.php` file: `%1$s`.'), $_core_deps_x_file)
 										);
 
 									$_new_server_scanner_file_contents = file_get_contents($_core_deps_x_file);
@@ -934,8 +934,8 @@ namespace websharks_core_v000000_dev
 
 									if(!file_put_contents($_new_server_scanner_file, $_new_server_scanner_file_contents))
 										throw $this->©exception(
-											$this->method(__FUNCTION__).'#new_server_scanner_file_write_error', get_defined_vars(),
-											$this->i18n('Unable to write the new plugin server scanner file.')
+										           $this->method(__FUNCTION__).'#new_server_scanner_file_write_error', get_defined_vars(),
+										           $this->i18n('Unable to write the new plugin server scanner file.')
 										);
 									$this->©command->git('add --intent-to-add '.escapeshellarg($_new_server_scanner_file.'/'), $this->plugin_repo_dir);
 
@@ -1048,46 +1048,46 @@ namespace websharks_core_v000000_dev
 
 							if(!is_file($_this_core_stub_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_'.$new_slug.'core_stub_file', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent %1$score `stub.php` file: `%2$s`.'), $new_space, $_this_core_stub_file)
+								           $this->method(__FUNCTION__).'#nonexistent_'.$new_slug.'core_stub_file', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent %1$score `stub.php` file: `%2$s`.'), $new_space, $_this_core_stub_file)
 								);
 							if(!is_readable($_this_core_stub_file) || !is_writable($_this_core_stub_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#'.$new_slug.'core_stub_file_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with %1$score `stub.php` file: `%2$s`.'), $new_space, $_this_core_stub_file)
+								           $this->method(__FUNCTION__).'#'.$new_slug.'core_stub_file_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with %1$score `stub.php` file: `%2$s`.'), $new_space, $_this_core_stub_file)
 								);
 
 							if(!is_file($_this_core_plugin_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_'.$new_slug.'core_plugin_file', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent %1$score `plugin.php` file: `%2$s`.'), $new_space, $_this_core_plugin_file)
+								           $this->method(__FUNCTION__).'#nonexistent_'.$new_slug.'core_plugin_file', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent %1$score `plugin.php` file: `%2$s`.'), $new_space, $_this_core_plugin_file)
 								);
 							if(!is_readable($_this_core_plugin_file) || !is_writable($_this_core_plugin_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#'.$new_slug.'core_plugin_file_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with %1$score `plugin.php` file: `%2$s`.'), $new_space, $_this_core_plugin_file)
+								           $this->method(__FUNCTION__).'#'.$new_slug.'core_plugin_file_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with %1$score `plugin.php` file: `%2$s`.'), $new_space, $_this_core_plugin_file)
 								);
 
 							if(!is_file($_this_core_readme_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_'.$new_slug.'core_readme_file', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent %1$score `readme.txt` file: `%2$s`.'), $new_space, $_this_core_readme_file)
+								           $this->method(__FUNCTION__).'#nonexistent_'.$new_slug.'core_readme_file', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent %1$score `readme.txt` file: `%2$s`.'), $new_space, $_this_core_readme_file)
 								);
 							if(!is_readable($_this_core_readme_file) || !is_writable($_this_core_readme_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#'.$new_slug.'core_readme_file_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with %1$score `readme.txt` file: `%2$s`.'), $new_space, $_this_core_readme_file)
+								           $this->method(__FUNCTION__).'#'.$new_slug.'core_readme_file_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with %1$score `readme.txt` file: `%2$s`.'), $new_space, $_this_core_readme_file)
 								);
 
 							if(!is_file($_this_core_deps_x_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#nonexistent_'.$new_slug.'core_deps_x_file', get_defined_vars(),
-									sprintf($this->i18n('Nonexistent %1$score `deps-x.php` file: `%2$s`.'), $new_space, $_this_core_deps_x_file)
+								           $this->method(__FUNCTION__).'#nonexistent_'.$new_slug.'core_deps_x_file', get_defined_vars(),
+								           sprintf($this->i18n('Nonexistent %1$score `deps-x.php` file: `%2$s`.'), $new_space, $_this_core_deps_x_file)
 								);
 							if(!is_readable($_this_core_deps_x_file) || !is_writable($_this_core_deps_x_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#'.$new_slug.'core_deps_x_file_permissions', get_defined_vars(),
-									sprintf($this->i18n('Permission issues with %1$score `deps-x.php` file: `%2$s`.'), $new_space, $_this_core_deps_x_file)
+								           $this->method(__FUNCTION__).'#'.$new_slug.'core_deps_x_file_permissions', get_defined_vars(),
+								           sprintf($this->i18n('Permission issues with %1$score `deps-x.php` file: `%2$s`.'), $new_space, $_this_core_deps_x_file)
 								);
 
 							$_this_core_stub_file_contents   = file_get_contents($_this_core_stub_file);
@@ -1119,23 +1119,23 @@ namespace websharks_core_v000000_dev
 
 							if(!file_put_contents($_this_core_stub_file, $_this_core_stub_file_contents))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#'.$new_slug.'core_stub_file_write_error', get_defined_vars(),
-									sprintf($this->i18n('Unable to write (update) the %1$score `stub.php` file.'), $new_space)
+								           $this->method(__FUNCTION__).'#'.$new_slug.'core_stub_file_write_error', get_defined_vars(),
+								           sprintf($this->i18n('Unable to write (update) the %1$score `stub.php` file.'), $new_space)
 								);
 							if(!file_put_contents($_this_core_plugin_file, $_this_core_plugin_file_contents))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#'.$new_slug.'core_plugin_file_write_error', get_defined_vars(),
-									sprintf($this->i18n('Unable to write (update) the %1$score `plugin.php` file.'), $new_space)
+								           $this->method(__FUNCTION__).'#'.$new_slug.'core_plugin_file_write_error', get_defined_vars(),
+								           sprintf($this->i18n('Unable to write (update) the %1$score `plugin.php` file.'), $new_space)
 								);
 							if(!file_put_contents($_this_core_readme_file, $_this_core_readme_file_contents))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#'.$new_slug.'core_readme_file_write_error', get_defined_vars(),
-									sprintf($this->i18n('Unable to write (update) the %1$score `readme.txt` file.'), $new_space)
+								           $this->method(__FUNCTION__).'#'.$new_slug.'core_readme_file_write_error', get_defined_vars(),
+								           sprintf($this->i18n('Unable to write (update) the %1$score `readme.txt` file.'), $new_space)
 								);
 							if(!file_put_contents($_this_core_deps_x_file, $_this_core_deps_x_file_contents))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#'.$new_slug.'core_deps_x_file_write_error', get_defined_vars(),
-									sprintf($this->i18n('Unable to write (update) the %1$score `deps-x.php` file.'), $new_space)
+								           $this->method(__FUNCTION__).'#'.$new_slug.'core_deps_x_file_write_error', get_defined_vars(),
+								           sprintf($this->i18n('Unable to write (update) the %1$score `deps-x.php` file.'), $new_space)
 								);
 
 							$successes->add($this->method(__FUNCTION__).'#'.$new_slug.'core_file_updates', get_defined_vars(),
@@ -1164,9 +1164,9 @@ namespace websharks_core_v000000_dev
 							   || !is_readable($_this_core_distro_temp_dir_htaccess)
 							   || FALSE === strpos(file_get_contents($_this_core_distro_temp_dir_htaccess), 'AcceptPathInfo')
 							) throw $this->©exception(
-								$this->method(__FUNCTION__).'#unable_to_find_valid_htaccess_file_in_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
-								sprintf($this->i18n('Unable to find a valid `.htaccess` file here: `%1$s`.'), $_this_core_distro_temp_dir_htaccess).
-								$this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
+							             $this->method(__FUNCTION__).'#unable_to_find_valid_htaccess_file_in_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
+							             sprintf($this->i18n('Unable to find a valid `.htaccess` file here: `%1$s`.'), $_this_core_distro_temp_dir_htaccess).
+							             $this->i18n(' This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 							);
 
 							$this->©file->delete($_this_core_phar); // In case it already exists.
@@ -1304,16 +1304,16 @@ namespace websharks_core_v000000_dev
 
 						default: // What?
 							throw $this->©exception(
-								$this->method(__FUNCTION__).'#regex_replacement_failure_unexpected_pattern_name', get_defined_vars(),
-								sprintf($this->i18n('Unexpected regex pattern name: `%1$s`.'), $pattern_name)
+							           $this->method(__FUNCTION__).'#regex_replacement_failure_unexpected_pattern_name', get_defined_vars(),
+							           sprintf($this->i18n('Unexpected regex pattern name: `%1$s`.'), $pattern_name)
 							);
 					}
 					unset($_this); // Just a little housekeeping.
 
 					if(!$string || empty($replacements))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#regex_replacement_failure', get_defined_vars(),
-							sprintf($this->i18n('Failure to match the following pattern name: `%1$s`.'), $pattern_name)
+						           $this->method(__FUNCTION__).'#regex_replacement_failure', get_defined_vars(),
+						           sprintf($this->i18n('Failure to match the following pattern name: `%1$s`.'), $pattern_name)
 						);
 					return $string; // With replacements.
 				}
@@ -1352,8 +1352,8 @@ namespace websharks_core_v000000_dev
 					);
 					if(empty($patterns[$matching]))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#unknown_pattern', get_defined_vars(),
-							sprintf($this->i18n('No regex pattern matching: `%1$s`.'), $matching)
+						           $this->method(__FUNCTION__).'#unknown_pattern', get_defined_vars(),
+						           sprintf($this->i18n('No regex pattern matching: `%1$s`.'), $matching)
 						);
 					return $patterns[$matching];
 				}
