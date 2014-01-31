@@ -1212,7 +1212,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					{
 						array_unshift( // Push to top of the stack.
 							$errors, array(
-							'title'   => $this->i18n('HTTPS Proxy; Missing <code>$_SERVER[\'HTTPS\']</code>'),
+							'title'   => $this->i18n('<span class="hilite">HTTPS Proxy; Missing <code>$_SERVER[\'HTTPS\']</code></span>'),
 							'message' => sprintf(
 								$this->i18n(
 								     'Possible load balancer w/ HTTPS port forwarding. Load balancers are great, but your PHP environment is missing the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> variable. This is needed by WordPress® in order to determine the current protocol in use. See also: <a href="http://codex.wordpress.org/Function_Reference/is_ssl" target="_blank" rel="xlink">is_ssl()</a> for further details.'.
@@ -1225,7 +1225,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					{
 						array_unshift( // Push to top of the stack.
 							$passes, array(
-							'title'   => $this->i18n('HTTPS Proxy; <code>$_SERVER[\'HTTPS\'] = on</code>'),
+							'title'   => $this->i18n('<span class="hilite">HTTPS Proxy; <code>$_SERVER[\'HTTPS\'] = on</code></span>'),
 							'message' => sprintf(
 								$this->i18n(
 								     'Possible load balancer w/ HTTPS port forwarding; and your PHP environment includes the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> and/or <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'SERVER_PORT\'] = 443</a> variables. So you\'re good here.'
@@ -1237,7 +1237,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					{
 						array_unshift( // Push to top of the stack.
 							$errors, array(
-							'title'   => $this->i18n('<code>$_SERVER[\'HTTPS\'] = on</code>'),
+							'title'   => $this->i18n('<span class="hilite"><code>$_SERVER[\'HTTPS\'] = on</code></span>'),
 							'message' => sprintf(
 								$this->i18n(
 								     'Your PHP environment is missing the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> and/or <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'SERVER_PORT\'] = 443</a> variables.'.
@@ -1250,7 +1250,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					{
 						array_unshift( // Push to top of the stack.
 							$passes, array(
-							'title'   => $this->i18n('<code>$_SERVER[\'HTTPS\'] = on</code>'),
+							'title'   => $this->i18n('<span class="hilite"><code>$_SERVER[\'HTTPS\'] = on</code></span>'),
 							'message' => sprintf(
 								$this->i18n(
 								     'Your PHP environment includes the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> and/or <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'SERVER_PORT\'] = 443</a> variables. So you\'re good here.'
