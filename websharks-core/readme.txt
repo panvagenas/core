@@ -2,11 +2,11 @@
 
 Version: 000000-dev
 Stable tag: 000000-dev
-Tested up to: 3.5.1
+Tested up to: 3.8.1
 Requires at least: 3.5.1
 
 Requires at least PHP version: 5.3.1
-Tested up to PHP version: 5.4.12
+Tested up to PHP version: 5.5.3-1ubuntu2.1
 
 Copyright: © 2012 WebSharks, Inc.
 License: GNU General Public License
