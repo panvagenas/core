@@ -2427,7 +2427,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				{
 					$_test_https = array(
 						'websharks_core__deps' => array(
-							'test_email' => 'test_https',
+							'test_https' => 'test_https',
 							'checksum'   => $this->generate_checksum('test_https')
 						)
 					);
