@@ -2390,9 +2390,15 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						"onclick=\"return confirm('".$this->i18n("PLEASE CONFIRM\\nSend a test email message now?")."');\"";
 
 					echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_test_email), (string)$_SERVER['REQUEST_URI'])).'" '.$_test_email_confirmation.'>'.
-					     $this->i18n('Test Email Functionality?').
+					     $this->i18n('Test Email?').
 					     '</a>';
 					unset($_test_email, $_test_email_confirmation);
+				}
+			if((defined('WPINC') && !is_ssl()) || (!defined('WPINC') && (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on')))
+				{
+					echo '<a href="'.htmlspecialchars('https://'.(string)$_SERVER['HTTP_HOST'].(string)$_SERVER['REQUEST_URI']).'">'.
+					     $this->i18n('Test HTTPS?').
+					     '</a>';
 				}
 			echo '</div>';
 			echo '</h1>';
