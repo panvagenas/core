@@ -207,7 +207,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 					/*
 					 * Easier access for those who DON'T CARE about the version (PHP v5.3+ only).
 					 */
-					if(!class_exists(self::$core_ns_stub.'__stub') && function_exists('class_alias') /* PHP v5.3+ only. */)
+					if(!class_exists(self::$core_ns_stub.'__stub') && function_exists('class_alias'))
 						class_alias(__CLASS__, self::$core_ns_stub.'__stub');
 
 					return (self::$initialized = TRUE);
