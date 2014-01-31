@@ -113,6 +113,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
 	 *
 	 * @throws exception If attempting to run this from a root directory.
+	 *
+	 * @TODO Update static function calls in the method below; these are invalid.
 	 */
 	public static function initialize()
 		{
@@ -207,6 +209,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			$is_auto_fix    = ($is_wp_loaded && !empty($_g['auto_fix']) && is_string($_g['auto_fix']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['auto_fix'], $_g['checksum']));
 			$is_dismissal   = ($is_wp_loaded && !empty($_g['dismiss']) && is_string($_g['dismiss']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['dismiss'], $_g['checksum']));
 			$is_test_email  = ($is_wp_loaded && !empty($_g['test_email']) && is_string($_g['test_email']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['test_email'], $_g['checksum']));
+			$is_test_https  = ($is_wp_loaded && !empty($_g['test_https']) && is_string($_g['test_https']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['test_https'], $_g['checksum']));
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 
@@ -1207,27 +1210,53 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			if(!$this->is_cli())
 				if(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https' && (empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) !== 'on') && (empty($_SERVER['SERVER_PORT']) || (integer)$_SERVER['SERVER_PORT'] !== 443))
 					{
-						$errors[] = array(
+						array_unshift( // Push to top of the stack.
+							$errors, array(
 							'title'   => $this->i18n('HTTPS Proxy; Missing <code>$_SERVER[\'HTTPS\']</code>'),
 							'message' => sprintf(
 								$this->i18n(
-								     'Possible load balancer w/ HTTPS port forwarding. Load balancers are great, but your PHP environment is missing the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> variable.'.
-								     ' This is needed by WordPress® in order to determine the current protocol in use. See also: <a href="http://codex.wordpress.org/Function_Reference/is_ssl" target="_blank" rel="xlink">is_ssl()</a> for further details.'.
+								     'Possible load balancer w/ HTTPS port forwarding. Load balancers are great, but your PHP environment is missing the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> variable. This is needed by WordPress® in order to determine the current protocol in use. See also: <a href="http://codex.wordpress.org/Function_Reference/is_ssl" target="_blank" rel="xlink">is_ssl()</a> for further details.'.
 								     ' Please consult with your web hosting company about this message.'
-								), NULL
+								), htmlspecialchars($plugin_name)
 							)
-						);
+						));
 					}
 				else if(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
 					{
-						$passes[] = array(
+						array_unshift( // Push to top of the stack.
+							$passes, array(
+							'title'   => $this->i18n('HTTPS Proxy; <code>$_SERVER[\'HTTPS\'] = on</code>'),
+							'message' => sprintf(
+								$this->i18n(
+								     'Possible load balancer w/ HTTPS port forwarding; and your PHP environment includes the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> and/or <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'SERVER_PORT\'] = 443</a> variables. So you\'re good here.'
+								), NULL
+							)
+						));
+					}
+				else if($is_test_https && ((empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) !== 'on') && (empty($_SERVER['SERVER_PORT']) || (integer)$_SERVER['SERVER_PORT'] !== 443)))
+					{
+						array_unshift( // Push to top of the stack.
+							$errors, array(
 							'title'   => $this->i18n('<code>$_SERVER[\'HTTPS\'] = on</code>'),
 							'message' => sprintf(
 								$this->i18n(
-								     'Possible load balancer w/ HTTPS port forwarding; and your PHP environment includes the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> variable. So you\'re good here.'
+								     'Your PHP environment is missing the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> and/or <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'SERVER_PORT\'] = 443</a> variables.'.
+								     ' Please consult with your web hosting company about this message.'
 								), NULL
 							)
-						);
+						));
+					}
+				else if($is_test_https) // Pass on this check.
+					{
+						array_unshift( // Push to top of the stack.
+							$passes, array(
+							'title'   => $this->i18n('<code>$_SERVER[\'HTTPS\'] = on</code>'),
+							'message' => sprintf(
+								$this->i18n(
+								     'Your PHP environment includes the <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'HTTPS\'] = on</a> and/or <a href="http://www.php.net/manual/en/reserved.variables.server.php" target="_blank" rel="xlink">$_SERVER[\'SERVER_PORT\'] = 443</a> variables. So you\'re good here.'
+								), NULL
+							)
+						));
 					}
 			# --------------------------------------------------------------------------------------------------------------------------------
 
@@ -2394,11 +2423,19 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					     '</a>';
 					unset($_test_email, $_test_email_confirmation);
 				}
-			if((defined('WPINC') && !is_ssl()) || (!defined('WPINC') && (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on')))
+			if((defined('WPINC') && !is_ssl()))
 				{
-					echo '<a href="'.htmlspecialchars('https://'.(string)$_SERVER['HTTP_HOST'].(string)$_SERVER['REQUEST_URI']).'">'.
+					$_test_https = array(
+						'websharks_core__deps' => array(
+							'test_email' => 'test_https',
+							'checksum'   => $this->generate_checksum('test_https')
+						)
+					);
+					echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_test_https), 'https://'.(string)$_SERVER['HTTP_HOST'].(string)$_SERVER['REQUEST_URI'])).'">'.
 					     $this->i18n('Test HTTPS?').
 					     '</a>';
+
+					unset($_test_https);
 				}
 			echo '</div>';
 			echo '</h1>';
