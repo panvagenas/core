@@ -1294,7 +1294,6 @@ namespace websharks_core_v000000_dev
 						case 'php_code__quoted_string_with_version_with_dashes_marker':
 						case 'php_code__quoted_string_with_php_version_required_marker':
 						case 'php_code__quoted_string_with_wp_version_required_marker':
-							$replacements = 1; break;
 								$string = preg_replace_callback($pattern, function ($m) use ($_this, $value)
 									{
 										return $m['open_sq'].$_this->©string->esc_sq($value).$m['close_sq'].
