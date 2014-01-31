@@ -113,19 +113,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
 	 *
 	 * @throws exception If attempting to run this from a root directory.
-	 *
-	 * @TODO Update static function calls in the method below; these are invalid.
 	 */
 	public static function initialize()
 		{
 			if(self::$initialized)
 				return TRUE; // Initialized already.
-			/*
-			 * Do NOT run this file from a root directory.
-			 */
-			if(substr(self::n_dir_seps_up(__FILE__, 1, TRUE), -1) === '/')
-				throw new exception( // Fail here; do NOT access this file from a root directory.
-					sprintf(self::i18n('This file should NOT be accessed from a root directory: `%1$s`'), __FILE__));
 			/*
 			 * Handle some dynamic regex replacement codes in class properties (as follows).
 			 */
