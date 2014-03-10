@@ -1294,13 +1294,12 @@ namespace websharks_core_v000000_dev
 						case 'php_code__quoted_string_with_version_with_dashes_marker':
 						case 'php_code__quoted_string_with_php_version_required_marker':
 						case 'php_code__quoted_string_with_wp_version_required_marker':
-								$string = preg_replace_callback('/zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz/', function ($m) use ($_this, $value)
+								$string = preg_replace_callback($pattern, function ($m) use ($_this, $value)
 									{
 										return $m['open_sq'].$_this->©string->esc_sq($value).$m['close_sq'].
 										       $m['possible_semicolon_or_comma'].$m['marker']; // New value.
 
 									}, $string, -1, $replacements);
-								$replacements = 1;
 								break; // Stop here.
 
 						default: // What?

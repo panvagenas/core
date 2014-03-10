@@ -3039,7 +3039,7 @@ namespace websharks_core_v000000_dev
 						                   ' PHP does not provide a way to ascertain which extension caused the file upload to stop.'.
 						                   ' Examining the list of loaded extensions with `phpinfo()` may help.');
 
-					return $this->i18n('Unknown file upload error code.');
+					return sprintf($this->i18n('Unknown file upload error code: `%1$s`.'), (string)$error_code);
 				}
 
 			/**
