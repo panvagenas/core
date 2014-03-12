@@ -326,11 +326,6 @@ namespace websharks_core_v000000_dev
 							$_possible_pro_repo_dir = $_plugins_dir.'/'.basename($this->plugin_dir).'-pro';
 							$_possible_pro_dir      = $_possible_pro_repo_dir.'/'.basename($this->plugin_dir).'-pro';
 
-							if(basename($_plugins_dir) !== 'plugins')
-								throw $this->©exception(
-								           $this->method(__FUNCTION__).'#missing_plugins_dir', get_defined_vars(),
-								           sprintf($this->i18n('Missing `plugins` directory here: `%1$s`.'), $_plugins_dir)
-								);
 							if(is_dir($_possible_pro_repo_dir) && !is_dir($_possible_pro_dir))
 								throw $this->©exception( // Should exist in this case.
 								           $this->method(__FUNCTION__).'#missing_plugin_pro_dir', get_defined_vars(),
