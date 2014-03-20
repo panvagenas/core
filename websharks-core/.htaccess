@@ -5,7 +5,9 @@ AddDefaultCharset UTF-8
 # Configuration of directory indexes.
 # For added security (set these explicitly).
 Options -Indexes
-DirectoryIndex index.php
+<IfModule dir_module>
+	DirectoryIndex index.php
+</IfModule>
 
 # WebSharks™ Core (support for PHAR files; i.e. PHP Archives).
 # Specifically; this adds support for the WebSharks™ Core webPhar implementation.
@@ -27,5 +29,5 @@ AcceptPathInfo default
 # We also assume the standard PHP MIME type IS in use (application/x-httpd-php).
 # Could also try: application/x-httpd-php5, application/x-httpd-php53, application/x-httpd-php54
 <IfModule litespeed>
-	AddType application/x-httpd-php .phar
+	AddType application/x-httpd-php phar
 </IfModule>
