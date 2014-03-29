@@ -257,7 +257,10 @@ namespace websharks_core_v000000_dev
 			 *    If the `checksum.txt` file does NOT exist yet, this routine will attempt to create it.
 			 *
 			 * @param boolean     $ignore_vcs_dirs Optional. Defaults to a TRUE value.
-			 *    By default, we ignore VCS directories (e.g. `.git` and `.svn`).
+			 *    By default, we ignore VCS directories (e.g. `.git`, `.svn` and `.bzr`).
+			 *
+			 * @param boolean     $ignore_readme_files Optional. Defaults to a TRUE value.
+			 *    By default, we ignore README files (e.g. `readme.txt` and `readme.md`).
 			 *
 			 * @param null|string $___root_dir Do NOT pass this. For internal use only.
 			 *
@@ -270,7 +273,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @see deps_x_websharks_core_v000000_dev::dir_checksum()
 			 */
-			public function checksum($dir, $update_checksum_file = FALSE, $ignore_vcs_dirs = TRUE, $___root_dir = NULL)
+			public function checksum($dir, $update_checksum_file = FALSE, $ignore_vcs_dirs = TRUE, $ignore_readme_files = TRUE, $___root_dir = NULL)
 				{
 					if(!isset($___root_dir)) // Only for the initial caller.
 						$this->check_arg_types('string:!empty', 'boolean', array('null', 'string'), func_get_args());
@@ -293,11 +296,12 @@ namespace websharks_core_v000000_dev
 					while(($entry = readdir($handle)) !== FALSE)
 						if($entry !== '.' && $entry !== '..') // Ignore single/double dots.
 							if($entry !== 'checksum.txt' || $dir !== $___root_dir) // Skip in root directory.
-								{
-									if(is_dir($dir.'/'.$entry))
-										$checksums[$relative_dir.'/'.$entry] = $this->checksum($dir.'/'.$entry, FALSE, $ignore_vcs_dirs, $___root_dir);
-									else $checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
-								}
+								if(!$ignore_readme_files || !in_array(strtolower($entry), array('readme.txt', 'readme.md'), TRUE))
+									{
+										if(is_dir($dir.'/'.$entry))
+											$checksums[$relative_dir.'/'.$entry] = $this->checksum($dir.'/'.$entry, FALSE, $ignore_vcs_dirs, $ignore_readme_files, $___root_dir);
+										else $checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
+									}
 					closedir($handle); // Close directory handle now.
 
 					ksort($checksums, SORT_STRING); // In case order changes from one server to another.
