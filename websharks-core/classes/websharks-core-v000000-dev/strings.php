@@ -3128,7 +3128,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @var string Regular expression fragment (dot matches newline inside quotes).
 			 */
-			public $regex_frag_sq_value = '(?P<open_sq>(?<!\\\\)\')(?P<sq_value>(?s:\\\\.|(?!\\\\|\').)*)(?P<close_sq>(?P=open_sq))';
+			public $regex_frag_sq_value = '(?P<open_sq>(?<!\\\\)\')(?P<sq_value>(?s:\\\\.|[^\\\\\']+)*)(?P<close_sq>(?P=open_sq))';
 
 			/**
 			 * Finds a single or double quoted value.
