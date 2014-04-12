@@ -1308,12 +1308,12 @@ namespace websharks_core_v000000_dev
 					if(!$string) // No string; something awry.
 						throw $this->©exception( // Try to be as specific as possible.
 						           $this->method(__FUNCTION__).'#regex_es_replacement_failure', get_defined_vars(),
-						           sprintf($this->i18n('Failure to match the following pattern name: `%1$s`. %2$s.'), $pattern_name, $this->©string->preg_last_error())
+						           sprintf($this->i18n('Failure to match the following pattern name: `%1$s`. %2$s'), $pattern_name, $this->©string->preg_last_error())
 						);
 					if(empty($replacements)) // No replacements.
 						throw $this->©exception( // Try to be as specific as possible.
 						           $this->method(__FUNCTION__).'#regex_nr_replacement_failure', get_defined_vars(),
-						           sprintf($this->i18n('Failure to match the following pattern name: `%1$s`. %2$s.'), $pattern_name, $this->©string->preg_last_error())
+						           sprintf($this->i18n('Failure to match the following pattern name: `%1$s`. %2$s'), $pattern_name, $this->©string->preg_last_error())
 						);
 					return $string; // With replacements.
 				}
