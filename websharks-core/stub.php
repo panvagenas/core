@@ -84,7 +84,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 *
 			 * @note For internal/development use only.
 			 */
-			public static $local_core_repo_dir = '%%$_SERVER[WEBSHARK_HOME]%%/WebSharks/core';
+			public static $local_core_repo_dir = '%%$_SERVER[WEBSHARK_HOME]%%/WebSharks/websharks-core';
 
 			/**
 			 * WebSharks™ Core stub.
