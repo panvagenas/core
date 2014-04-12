@@ -1305,9 +1305,14 @@ namespace websharks_core_v000000_dev
 					}
 					unset($_this); // Just a little housekeeping.
 
-					if(!$string || empty($replacements))
+					if(!$string)
 						throw $this->©exception(
-						           $this->method(__FUNCTION__).'#regex_replacement_failure', get_defined_vars(),
+						           $this->method(__FUNCTION__).'#regex_es_replacement_failure', get_defined_vars(),
+						           sprintf($this->i18n('Failure to match the following pattern name: `%1$s`.'), $pattern_name)
+						);
+					if(empty($replacements))
+						throw $this->©exception(
+						           $this->method(__FUNCTION__).'#regex_nr_replacement_failure', get_defined_vars(),
 						           sprintf($this->i18n('Failure to match the following pattern name: `%1$s`.'), $pattern_name)
 						);
 					return $string; // With replacements.
