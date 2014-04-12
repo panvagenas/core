@@ -1513,7 +1513,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @see http://php.net/manual/en/function.version-compare.php
 			 * @see http://semver.org
 			 */
-			public static $regex_valid_version = '/^(?:[0-9](?:[0-9]|\.(?!\.))*[0-9]|[0-9])(?:\-(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?(?:\+(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?$/';
+			public static $regex_valid_version = '/^(?:[0-9](?:[0-9]|\.(?!\.))*[0-9]|[0-9])(?:\-?(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?(?:\+(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?$/';
 
 			/**
 			 * @var string PHP dev version string validation pattern.
@@ -1528,7 +1528,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 * @see http://php.net/manual/en/function.version-compare.php
 			 * @see http://semver.org
 			 */
-			public static $regex_valid_dev_version = '/^(?:[0-9](?:[0-9]|\.(?!\.))*[0-9]|[0-9])(?:\-(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))(?:\+(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?$/';
+			public static $regex_valid_dev_version = '/^(?:[0-9](?:[0-9]|\.(?!\.))*[0-9]|[0-9])(?:\-?(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))(?:\+(?:[a-zA-Z0-9](?:[a-zA-Z0-9]|[.\-](?![.\-]))*[a-zA-Z0-9]|[a-zA-Z0-9]))?$/';
 
 			/**
 			 * @var string PHP stable version string validation pattern.
