@@ -1305,7 +1305,7 @@ namespace websharks_core_v000000_dev
 					}
 					unset($_this); // Just a little housekeeping.
 
-					if(!$string) // No string; something awry.
+					if(!$string) // Empty string; something awry.
 						throw $this->©exception( // Try to be as specific as possible.
 						           $this->method(__FUNCTION__).'#regex_es_replacement_failure', get_defined_vars(),
 						           sprintf($this->i18n('Failure to match the following pattern name: `%1$s`. %2$s'), $pattern_name, $this->©string->preg_last_error())
