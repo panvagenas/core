@@ -1135,6 +1135,7 @@ namespace websharks_core_v000000_dev
 					unset($_temp_dir_iterator, $_dir_file, $_path, $_phar_path, $_extension);
 					if(isset($_temp_dir)) // A little more housekeeping now.
 						$this->delete($_temp_dir);
+					unset($_temp_dir);
 
 					return $to; // It's a good day in Eureka!
 				}
