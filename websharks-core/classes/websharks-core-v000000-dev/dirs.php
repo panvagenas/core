@@ -1114,7 +1114,8 @@ namespace websharks_core_v000000_dev
 										file_put_contents($_path, php_strip_whitespace($_path));
 								}
 							$_phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
-							if($compress && $_phar->count()) // Compressing files?
+							echo 1;
+					if($compress && $_phar->count()) // Compressing files?
 								$_phar->compressFiles(\Phar::GZ);
 
 							foreach($_temp_dir_iterator as $_dir_file) // Everything else.
@@ -1131,7 +1132,6 @@ namespace websharks_core_v000000_dev
 						}
 					$_phar->stopBuffering(); // Write to disk now.
 
-					echo 1;
 					unset($_phar, $_stub_file_is_phar_var, $_stub_file_contents, $_strippable_extensions, $_regex_compressable_extensions);
 					unset($_temp_dir_iterator, $_dir_file, $_path, $_phar_path, $_extension);
 					if(isset($_temp_dir)) // A little more housekeeping now.
