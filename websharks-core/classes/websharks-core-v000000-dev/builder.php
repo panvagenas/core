@@ -1167,10 +1167,11 @@ namespace websharks_core_v000000_dev
 							$this->©file->delete($_this_core_phar); // In case it already exists.
 							$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
+							echo 1;
 							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar,
 							                     $_this_core_distro_temp_dir_stub, TRUE, TRUE, array_keys($this->©files->compressable_mime_types()),
 							                     $this->___instance_config->core_ns_stub_v.$this->©string->with_underscores($this->version));
-							echo 1;
+							echo 2;
 							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
 							$this->©dir->delete($_this_core_distro_temp_dir); // Remove temp directory now.
