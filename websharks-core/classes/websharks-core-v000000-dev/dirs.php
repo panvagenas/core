@@ -1100,10 +1100,10 @@ namespace websharks_core_v000000_dev
 							$_temp_dir                      = $this->temp().'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
-							echo 1;
-					$_temp_dir_iterator = $this->iterate($_temp_dir);
+							$_temp_dir_iterator = $this->iterate($_temp_dir);
 
-							if($strip_ws) foreach($_temp_dir_iterator as $_dir_file)
+							echo 1;
+					if($strip_ws) foreach($_temp_dir_iterator as $_dir_file)
 								{
 									if(!$_dir_file->isFile()) continue;
 
