@@ -1087,8 +1087,8 @@ namespace websharks_core_v000000_dev
 					$_stub_file_contents    = preg_replace('/\W__HALT_COMPILER\s*\(\s*\)\s*;/i', '', $_stub_file_contents, 1).' __HALT_COMPILER();';
 
 					$_phar = new \Phar($to, $this->iteration_flags());
-					echo 1;
 					$_phar->startBuffering(); // Don't create file yet (wait until we're done here).
+					echo 1;
 					$_phar->setStub($_stub_file_contents); // Defines the stub for this PHAR file.
 
 					if(!$strip_ws && !$compress) $_phar->buildFromDirectory($dir); // Simple.
