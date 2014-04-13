@@ -1110,10 +1110,8 @@ namespace websharks_core_v000000_dev
 									$_phar_path = $_dir_file->getSubPathName();
 									$_extension = $this->©file->extension($_path);
 
-									if(in_array($_extension, $_strippable_extensions, TRUE) && filesize($_path))
-										{
-											file_put_contents($_path, file_get_contents($_path));
-										}
+									if(in_array($_extension, $_strippable_extensions, TRUE))
+										file_put_contents($_path, $this->©file->strip_php_whitespace($_path));
 								}
 							$_phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
 							if($compress && $_phar->count()) // Compressing files?

@@ -185,8 +185,8 @@ namespace websharks_core_v000000_dev
 
 						default: // Throw exception (invalid type).
 							throw $this->©exception(
-								$this->method(__FUNCTION__).'#unknown_type', get_defined_vars(),
-								sprintf($this->i18n('Unknown extension type: `%1$s`.'), $type)
+							           $this->method(__FUNCTION__).'#unknown_type', get_defined_vars(),
+							           sprintf($this->i18n('Unknown extension type: `%1$s`.'), $type)
 							);
 					}
 				}
@@ -209,14 +209,14 @@ namespace websharks_core_v000000_dev
 
 					if(!is_file($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#nonexistent_file', get_defined_vars(),
-							sprintf($this->i18n('Nonexistent file: `%1$s`.'), $file)
+						           $this->method(__FUNCTION__).'#nonexistent_file', get_defined_vars(),
+						           sprintf($this->i18n('Nonexistent file: `%1$s`.'), $file)
 						);
 					if(!is_readable($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#read_issues', get_defined_vars(),
-							$this->i18n('Expecting a readable file (permission issues).').
-							sprintf($this->i18n(' Got: `%1$s`.'), $file)
+						           $this->method(__FUNCTION__).'#read_issues', get_defined_vars(),
+						           $this->i18n('Expecting a readable file (permission issues).').
+						           sprintf($this->i18n(' Got: `%1$s`.'), $file)
 						);
 					return $this->bytes_abbr((float)filesize($file));
 				}
@@ -341,9 +341,9 @@ namespace websharks_core_v000000_dev
 
 					if(!is_readable($file) || !is_writable($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-							$this->i18n('Expecting a readable/writable file (permission issues).').
-							sprintf($this->i18n(' Got: `%1$s`.'), $file)
+						           $this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
+						           $this->i18n('Expecting a readable/writable file (permission issues).').
+						           sprintf($this->i18n(' Got: `%1$s`.'), $file)
 						);
 					if(filesize($file) < $max_size) return $file;
 
@@ -384,40 +384,40 @@ namespace websharks_core_v000000_dev
 
 					if(!is_file($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
-							sprintf($this->i18n('Unable to copy. Nonexistent source: `%1$s`.'), $file)
+						           $this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
+						           sprintf($this->i18n('Unable to copy. Nonexistent source: `%1$s`.'), $file)
 						);
 					if(!is_readable($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#read_issues', get_defined_vars(),
-							sprintf($this->i18n('Unable to copy this file: `%1$s`.'), $file).
-							$this->i18n(' Possible permission issues. This file is not readable.')
+						           $this->method(__FUNCTION__).'#read_issues', get_defined_vars(),
+						           sprintf($this->i18n('Unable to copy this file: `%1$s`.'), $file).
+						           $this->i18n(' Possible permission issues. This file is not readable.')
 						);
 
 					if(file_exists($to))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#destination_exists', get_defined_vars(),
-							$this->i18n('Destination exists; it MUST first be deleted please.').
-							sprintf($this->i18n(' Please check this file: `%1$s`.'), $to)
+						           $this->method(__FUNCTION__).'#destination_exists', get_defined_vars(),
+						           $this->i18n('Destination exists; it MUST first be deleted please.').
+						           sprintf($this->i18n(' Please check this file: `%1$s`.'), $to)
 						);
 					if(!is_dir($to_dir))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#destination_dir_missing', get_defined_vars(),
-							$this->i18n('Destination\'s parent directory does NOT exist yet.').
-							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
+						           $this->method(__FUNCTION__).'#destination_dir_missing', get_defined_vars(),
+						           $this->i18n('Destination\'s parent directory does NOT exist yet.').
+						           sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
 					if(!is_writable($to_dir))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#destination_dir_permissions', get_defined_vars(),
-							$this->i18n('Destination\'s directory is not writable.').
-							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
+						           $this->method(__FUNCTION__).'#destination_dir_permissions', get_defined_vars(),
+						           $this->i18n('Destination\'s directory is not writable.').
+						           sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
 
 					if(!copy($file, $to))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-							sprintf($this->i18n('Unable to copy this file: `%1$s`; to `%2$s`.'), $file, $to).
-							$this->i18n(' Possible permission issues. Please copy this file manually.')
+						           $this->method(__FUNCTION__).'#failure', get_defined_vars(),
+						           sprintf($this->i18n('Unable to copy this file: `%1$s`; to `%2$s`.'), $file, $to).
+						           $this->i18n(' Possible permission issues. Please copy this file manually.')
 						);
 					clearstatcache(); // Make other routines aware.
 
@@ -453,45 +453,45 @@ namespace websharks_core_v000000_dev
 
 					if(!is_file($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
-							sprintf($this->i18n('Unable to rename. Nonexistent source: `%1$s`.'), $file)
+						           $this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
+						           sprintf($this->i18n('Unable to rename. Nonexistent source: `%1$s`.'), $file)
 						);
 					if(!is_readable($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#read_issues', get_defined_vars(),
-							sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
-							$this->i18n(' Possible permission issues. This file is not readable.')
+						           $this->method(__FUNCTION__).'#read_issues', get_defined_vars(),
+						           sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
+						           $this->i18n(' Possible permission issues. This file is not readable.')
 						);
 					if(!is_writable($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-							sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
-							$this->i18n(' Possible permission issues. This file is not writable.')
+						           $this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
+						           sprintf($this->i18n('Unable to rename this file: `%1$s`.'), $file).
+						           $this->i18n(' Possible permission issues. This file is not writable.')
 						);
 
 					if(file_exists($to))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#destination_exists', get_defined_vars(),
-							$this->i18n('Destination exists; it MUST first be deleted please.').
-							sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
+						           $this->method(__FUNCTION__).'#destination_exists', get_defined_vars(),
+						           $this->i18n('Destination exists; it MUST first be deleted please.').
+						           sprintf($this->i18n(' Please check this file or directory: `%1$s`.'), $to)
 						);
 					if(!is_dir($to_dir))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#destination_dir_missing', get_defined_vars(),
-							$this->i18n('Destination\'s parent directory does NOT exist yet.').
-							sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
+						           $this->method(__FUNCTION__).'#destination_dir_missing', get_defined_vars(),
+						           $this->i18n('Destination\'s parent directory does NOT exist yet.').
+						           sprintf($this->i18n(' Please check this directory: `%1$s`.'), $to_dir)
 						);
 					if(!is_writable($to_dir))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#destination_dir_permissions', get_defined_vars(),
-							$this->i18n('Destination\'s directory is not writable.').
-							sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
+						           $this->method(__FUNCTION__).'#destination_dir_permissions', get_defined_vars(),
+						           $this->i18n('Destination\'s directory is not writable.').
+						           sprintf($this->i18n(' Please check permissions on this directory: `%1$s`.'), $to_dir)
 						);
 
 					if(!rename($file, $to))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#rename_failure', get_defined_vars(),
-							sprintf($this->i18n('Rename failure. Could NOT rename: `%1$s`; to: `%2$s`.'), $file, $to)
+						           $this->method(__FUNCTION__).'#rename_failure', get_defined_vars(),
+						           sprintf($this->i18n('Rename failure. Could NOT rename: `%1$s`; to: `%2$s`.'), $file, $to)
 						);
 					clearstatcache(); // Make other routines aware.
 
@@ -534,22 +534,22 @@ namespace websharks_core_v000000_dev
 						{
 							if(!$this->©string->is_not_empty($_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#invalid_file', get_defined_vars(),
-									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $this->©var->dump($_file)).
-									$this->i18n(' Each file MUST be represented by a (string) that is NOT empty.')
+								           $this->method(__FUNCTION__).'#invalid_file', get_defined_vars(),
+								           sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $this->©var->dump($_file)).
+								           $this->i18n(' Each file MUST be represented by a (string) that is NOT empty.')
 								);
 							if(!file_exists($_file)) continue; // It's already gone.
 
 							if(!is_file($_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#invalid_file', get_defined_vars(),
-									sprintf($this->i18n('Unable to delete this file path. NOT a file: `%1$s`.'), $_file)
+								           $this->method(__FUNCTION__).'#invalid_file', get_defined_vars(),
+								           sprintf($this->i18n('Unable to delete this file path. NOT a file: `%1$s`.'), $_file)
 								);
 							if(!is_writable($_file) || !unlink($_file))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-									sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $_file).
-									$this->i18n(' Possible permission issues. Please delete this file manually.')
+								           $this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
+								           sprintf($this->i18n('Unable to delete this file: `%1$s`.'), $_file).
+								           $this->i18n(' Possible permission issues. Please delete this file manually.')
 								);
 						}
 					unset($_file); // Housekeeping.
@@ -604,32 +604,32 @@ namespace websharks_core_v000000_dev
 
 					if(!is_file($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
-							sprintf($this->i18n('Unable to search/replace: `%1$s`.'), $file).
-							$this->i18n(' This is NOT an existing file.')
+						           $this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
+						           sprintf($this->i18n('Unable to search/replace: `%1$s`.'), $file).
+						           $this->i18n(' This is NOT an existing file.')
 						);
 					if(!is_readable($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-							sprintf($this->i18n('Unable to search/replace in this file: `%1$s`.'), $file).
-							$this->i18n(' Possible permission issues. This file is not readable.')
+						           $this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
+						           sprintf($this->i18n('Unable to search/replace in this file: `%1$s`.'), $file).
+						           $this->i18n(' Possible permission issues. This file is not readable.')
 						);
 					if(!is_writable($file))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-							sprintf($this->i18n('Unable to search/replace in this file: `%1$s`.'), $file).
-							$this->i18n(' Possible permission issues. This file is not writable.')
+						           $this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
+						           sprintf($this->i18n('Unable to search/replace in this file: `%1$s`.'), $file).
+						           $this->i18n(' Possible permission issues. This file is not writable.')
 						);
 
 					if(!is_resource($_file_resource = fopen($file, 'rb')))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#file_resource', get_defined_vars(),
-							sprintf($this->i18n('Unable to open file resource: `%1$s`.'), $file)
+						           $this->method(__FUNCTION__).'#file_resource', get_defined_vars(),
+						           sprintf($this->i18n('Unable to open file resource: `%1$s`.'), $file)
 						);
 					if(!is_resource($_temp_file_resource = fopen($temp_file, 'ab')))
 						throw $this->©exception(
-							$this->method(__FUNCTION__).'#temp_file_resource', get_defined_vars(),
-							sprintf($this->i18n('Unable to open temp file resource: `%1$s`.'), $temp_file)
+						           $this->method(__FUNCTION__).'#temp_file_resource', get_defined_vars(),
+						           sprintf($this->i18n('Unable to open temp file resource: `%1$s`.'), $temp_file)
 						);
 
 					$replacements = 0; // Initialize counter.
@@ -642,8 +642,8 @@ namespace websharks_core_v000000_dev
 
 							if(!fwrite($_temp_file_resource, $_line))
 								throw $this->©exception(
-									$this->method(__FUNCTION__).'#temp_write_failure', get_defined_vars(),
-									sprintf($this->i18n('Failed to write a chunk of bytes to: `%1$s`.'), $temp_file)
+								           $this->method(__FUNCTION__).'#temp_write_failure', get_defined_vars(),
+								           sprintf($this->i18n('Failed to write a chunk of bytes to: `%1$s`.'), $temp_file)
 								);
 						}
 					fclose($_file_resource);
@@ -656,6 +656,71 @@ namespace websharks_core_v000000_dev
 					$this->rename_to($file.'-tmp', $file); // Temp file takes its place.
 
 					return $replacements; // Total replacements.
+				}
+
+			/**
+			 * Strip whitespace from a PHP source file.
+			 *
+			 * @note This is here because PHP's `php_strip_whitespace()` suffers from a memory leak
+			 *    in PHP v5.6.0beta1. The PHP variation also depends upon output buffering. This is better.
+			 *
+			 * @param string $file The file to strip whitespace in.
+			 *
+			 * @return string PHP source code. No comments; minimum whitespace.
+			 *
+			 * @throws exception If invalid types are passed through arguments list.
+			 * @throws exception If ``$file`` is NOT actually a file.
+			 * @throws exception If ``$file`` does NOT have a PHP extension.
+			 */
+			public function strip_php_whitespace($file)
+				{
+					$this->check_arg_types('string:!empty', func_get_args());
+
+					$stripped = ''; // Initialize.
+					$file     = $this->©dir->n_seps($file);
+
+					if(!is_file($file))
+						throw $this->©exception(
+						           $this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
+						           sprintf($this->i18n('Unable to strip whitespace in: `%1$s`.'), $file).
+						           $this->i18n(' This is NOT an existing file.')
+						);
+					if(!is_readable($file))
+						throw $this->©exception(
+						           $this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
+						           sprintf($this->i18n('Unable to strip whitespace in this file: `%1$s`.'), $file).
+						           $this->i18n(' Possible permission issues. This file is not readable.')
+						);
+					if($this->extension($file) !== 'php')
+						throw $this->©exception(
+						           $this->method(__FUNCTION__).'#extension_not_php', get_defined_vars(),
+						           sprintf($this->i18n('Unable to strip whitespace in: `%1$s`.'), $file).
+						           $this->i18n(' This is NOT a PHP file; i.e. it does not have a `.php` extension.')
+						);
+
+					foreach(token_get_all(file_get_contents($file)) as $_token)
+						{
+							switch(($_is_array = is_array($_token)) ? $_token[0] : NULL)
+							{
+								case T_COMMENT:
+								case T_DOC_COMMENT:
+										break;
+
+								case T_WHITESPACE:
+										if(empty($_whitespace))
+											$stripped .= ' ';
+										$_whitespace = TRUE;
+										break;
+
+								default: // Everything else.
+									$_whitespace = FALSE;
+									$stripped .= $_is_array ? $_token[1] : $_token;
+									break;
+							}
+						}
+					unset($_token, $_is_array, $_whitespace); // Housekeeping.
+
+					return $stripped; // No comments; minimunm whitespace.
 				}
 		}
 	}
