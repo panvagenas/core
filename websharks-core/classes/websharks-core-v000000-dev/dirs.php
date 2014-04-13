@@ -1110,10 +1110,10 @@ namespace websharks_core_v000000_dev
 									$_phar_path = $_dir_file->getSubPathName();
 									$_extension = $this->©file->extension($_path);
 
-									if(in_array($_extension, $_strippable_extensions, TRUE))
+									if(in_array($_extension, $_strippable_extensions, TRUE) && filesize($_path))
 										if(file_put_contents($_path, php_strip_whitespace($_path)) === FALSE)
 											throw $this->©exception(
-											           $this->method(__FUNCTION__).'#fpc_strip_whitespace_failure', get_defined_vars(),
+											           $this->method(__FUNCTION__).'#file_put_contents_strip_whitespace_failure', get_defined_vars(),
 											           $this->i18n('Unable to strip whitespace from a PHP file; `file_put_contents()` returns FALSE.')
 											);
 								}
