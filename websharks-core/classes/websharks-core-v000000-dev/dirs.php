@@ -1112,8 +1112,7 @@ namespace websharks_core_v000000_dev
 
 									if(in_array($_extension, $_strippable_extensions, TRUE) && filesize($_path))
 										{
-											echo $_path."\n";
-											file_put_contents($_path, php_strip_whitespace($_path), LOCK_EX);
+											file_put_contents($_path, file_get_contents($_path));
 										}
 								}
 							$_phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
