@@ -3121,20 +3121,20 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @var string Regular expression fragment (dot matches newline inside quotes).
 			 */
-			public $regex_frag_dq_value = '(?P<open_dq>(?<!\\\\)")(?P<dq_value>(?s:\\\\.|(?!\\\\|(?P=open_dq)).)*)(?P<close_dq>(?P=open_dq))';
+			public $regex_frag_dq_value = '(?P<open_dq>(?<!\\\\)")(?P<dq_value>(?s:\\\\.|[^\\\\"])*?)(?P<close_dq>")';
 
 			/**
 			 * Finds a single quoted value.
 			 *
 			 * @var string Regular expression fragment (dot matches newline inside quotes).
 			 */
-			public $regex_frag_sq_value = '(?P<open_sq>(?<!\\\\)\')(?P<sq_value>(?s:\\\\.|[^\\\\\']+)*)(?P<close_sq>\')';
+			public $regex_frag_sq_value = '(?P<open_sq>(?<!\\\\)\')(?P<sq_value>(?s:\\\\.|[^\\\\\'])*?)(?P<close_sq>\')';
 
 			/**
 			 * Finds a single or double quoted value.
 			 *
 			 * @var string Regular expression fragment (dot matches newline inside quotes).
 			 */
-			public $regex_frag_dsq_value = '(?P<open_dsq>(?<!\\\\)["\'])(?P<dsq_value>(?s:\\\\.|(?!\\\\|(?P=open_dsq)).)*)(?P<close_dsq>(?P=open_dsq))';
+			public $regex_frag_dsq_value = '(?P<open_dsq>(?<!\\\\)["\'])(?P<dsq_value>(?s:\\\\.|(?!\\\\|(?P=open_dsq)).)*?)(?P<close_dsq>(?P=open_dsq))';
 		}
 	}
