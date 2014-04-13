@@ -1102,8 +1102,7 @@ namespace websharks_core_v000000_dev
 							$this->copy_to($dir, $_temp_dir);
 							$_temp_dir_iterator = $this->iterate($_temp_dir);
 
-							echo 1;
-					if($strip_ws) foreach($_temp_dir_iterator as $_dir_file)
+							if($strip_ws) foreach($_temp_dir_iterator as $_dir_file)
 								{
 									if(!$_dir_file->isFile()) continue;
 
@@ -1111,8 +1110,8 @@ namespace websharks_core_v000000_dev
 									$_phar_path = $_dir_file->getSubPathName();
 									$_extension = $this->©file->extension($_path);
 
-									if(in_array($_extension, $_strippable_extensions, TRUE))
-										file_put_contents($_path, php_strip_whitespace($_path));
+									//if(in_array($_extension, $_strippable_extensions, TRUE))
+									//	file_put_contents($_path, php_strip_whitespace($_path));
 								}
 							$_phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
 							if($compress && $_phar->count()) // Compressing files?
