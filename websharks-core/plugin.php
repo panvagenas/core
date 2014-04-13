@@ -33,7 +33,7 @@ Tested up to: 3.8.1
 Requires at least: 3.5.1
 
 Requires at least PHP version: 5.3.1
-Tested up to PHP version: 5.6.0alpha2
+Tested up to PHP version: 5.6.0beta1
 
 Copyright: © 2012 WebSharks, Inc.
 License: GNU General Public License
