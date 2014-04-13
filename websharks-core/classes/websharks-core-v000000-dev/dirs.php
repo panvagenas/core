@@ -1131,7 +1131,7 @@ namespace websharks_core_v000000_dev
 						}
 					$_phar->stopBuffering(); // Write to disk now.
 
-					unset($_phar, $_stub_file_is_phar_var, $_stub_file_contents, $_strippable_extensions, $_regex_compressable_extensions);
+					unset($_stub_file_is_phar_var, $_stub_file_contents, $_strippable_extensions, $_regex_compressable_extensions);
 					unset($_temp_dir_iterator, $_dir_file, $_path, $_phar_path, $_extension);
 					if(isset($_temp_dir)) // A little more housekeeping now.
 						$this->delete($_temp_dir);
