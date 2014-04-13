@@ -1078,7 +1078,7 @@ namespace websharks_core_v000000_dev
 						           $this->i18n('Unable to PHAR a directory; permission issues with stub file.').
 						           sprintf($this->i18n(' Need this file to be writable please: `%1$s`.'), $stub_file)
 						);
-					// Phar classes throw exceptions on failure.
+					// Phar class throws exceptions on failure.
 
 					$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$this->©string->esc_sq($is_phar_var_suffix).'\'] = \'phar://\'.__FILE__;';
 					$_stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
