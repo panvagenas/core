@@ -1170,6 +1170,7 @@ namespace websharks_core_v000000_dev
 							$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar,
 							                     $_this_core_distro_temp_dir_stub, TRUE, TRUE, array_keys($this->©files->compressable_mime_types()),
 							                     $this->___instance_config->core_ns_stub_v.$this->©string->with_underscores($this->version));
+							echo 1;
 							$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
 							$this->©dir->delete($_this_core_distro_temp_dir); // Remove temp directory now.
@@ -1186,7 +1187,7 @@ namespace websharks_core_v000000_dev
 							if($is_new) // We MUST do this last to avoid autoload issues.
 								// Everything that occurs after this point; MUST use classes already loaded up.
 								{ // Be sure all of these classes are loaded up into memory (to avoid autoload issues).
-									$_autoload = array($this->©dirs, $this->©commands, $this->©successes, $this->©exception);
+									array($this->©dirs, $this->©commands, $this->©successes, $this->©exception);
 
 									$this->©dir->delete($this->core_dir);
 									$this->©command->git('rm -r --cached '.escapeshellarg($this->core_dir.'/'), $this->core_repo_dir);
