@@ -1100,7 +1100,8 @@ namespace websharks_core_v000000_dev
 							$_temp_dir                      = $this->temp().'/'.$this->©string->unique_id().'-'.basename($dir);
 
 							$this->copy_to($dir, $_temp_dir);
-							$_temp_dir_iterator = $this->iterate($_temp_dir);
+							echo 1;
+					$_temp_dir_iterator = $this->iterate($_temp_dir);
 
 							if($strip_ws) foreach($_temp_dir_iterator as $_dir_file)
 								{
@@ -1113,8 +1114,7 @@ namespace websharks_core_v000000_dev
 									if(in_array($_extension, $_strippable_extensions, TRUE))
 										file_put_contents($_path, php_strip_whitespace($_path));
 								}
-							echo 1;
-					$_phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
+							$_phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
 							if($compress && $_phar->count()) // Compressing files?
 								$_phar->compressFiles(\Phar::GZ);
 
