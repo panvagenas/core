@@ -1175,7 +1175,7 @@ namespace websharks_core_v000000_dev
 			 *    ($array) === array(3 => 1)
 			 *
 			 * @assert $array = array('0', 0, NULL, array(1, '', NULL));
-			 *    ($array) === array(3 => array(0 => 1, 1 => ''))
+			 *    ($array) === array(3 => array(0 => 1))
 			 */
 			public function remove_empty_values_deep($array, $___recursion = FALSE)
 				{
