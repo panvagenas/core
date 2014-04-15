@@ -2016,58 +2016,59 @@ namespace websharks_core_v000000_dev
 
 							return $value; // Array or object.
 						}
-					else // Otherwise, we handle the find/replace routine now.
+					$value = (string)$value; // Force string value.
+
+					if($case_insensitive) // Case insensitive scenario?
+						$strpos = 'stripos'; // Use ``stripos()``.
+					else $strpos = 'strpos'; // Default.
+
+					if(is_array($needle)) // Array of needles?
 						{
-							$value = (string)$value; // Force string value.
-
-							if($case_insensitive) // Case insensitive scenario?
-								$strpos = 'stripos'; // Use ``stripos()``.
-							else $strpos = 'strpos'; // Default.
-
-							if(is_array($needle)) // Array of needles?
+							if(is_array($replace)) // Optimized for ``$replace`` array.
 								{
-									if(is_array($replace)) // Optimized for ``$replace`` array.
-										{
-											foreach($needle as $_key => $_needle)
-												if(($_strpos = $strpos($value, ($_needle = (string)$_needle))) !== FALSE)
-													{
-														$_length  = strlen($_needle);
-														$_replace = (isset($replace[$_key])) ? (string)$replace[$_key] : '';
-														$value    = substr_replace($value, $_replace, $_strpos, $_length);
-													}
-											unset($_key, $_needle, $_strpos, $_length, $_replace);
+									foreach($needle as $_key => $_needle)
+										if(($_strpos = $strpos($value, ($_needle = (string)$_needle))) !== FALSE)
+											{
+												$_length  = strlen($_needle);
+												$_replace = (isset($replace[$_key])) ? (string)$replace[$_key] : '';
+												$value    = substr_replace($value, $_replace, $_strpos, $_length);
+											}
+									unset($_key, $_needle, $_strpos, $_length, $_replace);
 
-											return $value; // Return string value.
-										}
-									else // Optimized for ``$replace`` string.
-										{
-											$_replace = $replace; // String.
-
-											foreach($needle as $_needle)
-												if(($_strpos = $strpos($value, ($_needle = (string)$_needle))) !== FALSE)
-													{
-														$_length = strlen($_needle);
-														$value   = substr_replace($value, $_replace, $_strpos, $_length);
-													}
-											unset($_needle, $_strpos, $_length, $_replace);
-
-											return $value; // Return string value.
-										}
+									return $value; // String value.
 								}
-							else // Otherwise, just a simple case here.
+							else // Optimized for ``$replace`` string.
 								{
-									if(($_strpos = $strpos($value, $needle)) !== FALSE)
-										{
-											$_length = strlen($needle);
+									$replace = (string)$replace;
 
-											if(is_array($replace)) // Use 1st element, else empty string.
-												$_replace = (isset($replace[0])) ? (string)$replace[0] : '';
-											else $_replace = $replace; // Use string value.
+									foreach($needle as $_needle)
+										if(($_strpos = $strpos($value, ($_needle = (string)$_needle))) !== FALSE)
+											{
+												$_length = strlen($_needle);
+												$value   = substr_replace($value, $replace, $_strpos, $_length);
+											}
+									unset($_needle, $_strpos, $_length);
 
-											$value = substr_replace($value, $_replace, $_strpos, $_length);
-										}
-									return $value; // Return string value.
+									return $value; // String value.
 								}
+						}
+					else // Otherwise, just a simple case here.
+						{
+							$needle = (string)$needle;
+
+							if(($_strpos = $strpos($value, $needle)) !== FALSE)
+								{
+									$_length = strlen($needle);
+
+									if(is_array($replace)) // Use 1st element, else empty string.
+										$_replace = (isset($replace[0])) ? (string)$replace[0] : '';
+									else $_replace = (string)$replace; // Use string value.
+
+									$value = substr_replace($value, $_replace, $_strpos, $_length);
+								}
+							unset($_strpos, $_length, $_replace);
+
+							return $value; // String value.
 						}
 				}
 
