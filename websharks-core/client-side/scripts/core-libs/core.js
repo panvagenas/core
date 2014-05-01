@@ -384,12 +384,13 @@
 			{
 				var $$ = this, $ = jQuery;
 
-				var undefined_var;
+				var undefined_var; // Undefined value.
 
 				for(var _i = 0; _i < arguments.length; _i++)
-					if(arguments[_i] === undefined_var || arguments[_i] === null)
-						return false;
-
+					{ // noinspection JSUnusedAssignment
+						if(arguments[_i] === undefined_var || arguments[_i] === null)
+							return false;
+					}
 				return true;
 			};
 
@@ -643,7 +644,7 @@
 								autofill.intervals++; // Increments counter.
 
 								if((!('fields' in autofill) || !autofill.fields.length)
-									&& (autofill.fields = $(ui_form + ' input:-webkit-autofill')).length)
+								   && (autofill.fields = $(ui_form + ' input:-webkit-autofill')).length)
 									{
 										clearInterval(autofill.interval);
 										autofill.fields.each(function() // Replace.
@@ -751,7 +752,7 @@
 							            });
 						      if($('ul:empty', $response_errors).length) // Don't leave completely empty.
 							      $('ul', $response_errors).append('<li><span class="ui-icon ui-icon-alert"></span>'
-								                                       + $$.get___i18n('validate_ui_form__check_issues_below') + '</li>');
+							                                       + $$.get___i18n('validate_ui_form__check_issues_below') + '</li>');
 					      });
 				$(ui_form).attr({'novalidate': 'novalidate'})// Disables HTML 5 validation via browser.
 					.submit(function() // This uses our own form field validation handler instead of the browser's.
@@ -1380,16 +1381,16 @@
 							$.scrollTo($id, {offset: {top: -50, left: 0}, duration: 500});
 
 						$id.closest('.ui-form-field-container').after(
-								'<div class="responses validation-errors ui-widget ui-corner-bottom ui-state-error">' +
-								'<ul>' + // Includes an error icon prefix, for each list item we display.
+							'<div class="responses validation-errors ui-widget ui-corner-bottom ui-state-error">' +
+							'<ul>' + // Includes an error icon prefix, for each list item we display.
 
-								'<li><span class="ui-icon ui-icon-alert"></span>' +
-								errors[id].join('</li><li><span class="ui-icon ui-icon-alert"></span>') +
-								'</li>' +
+							'<li><span class="ui-icon ui-icon-alert"></span>' +
+							errors[id].join('</li><li><span class="ui-icon ui-icon-alert"></span>') +
+							'</li>' +
 
-								'</ul>' +
-								'</div>'
-							) // If it's inside an accordion, let's make sure the accordion is open.
+							'</ul>' +
+							'</div>'
+						) // If it's inside an accordion, let's make sure the accordion is open.
 							.closest('.ui-accordion-content').prev('.ui-accordion-header.ui-state-default').click();
 					}
 				if(errors_exist) return false; // Prevents form from being submitted w/ errors.
@@ -1694,7 +1695,6 @@
 				var required_args = Number(_arg_type_hints__args__required_args.pop());
 				var args = $.makeArray(_arg_type_hints__args__required_args.pop());
 
-				// noinspection UnnecessaryLocalVariableJS
 				var arg_type_hints = _arg_type_hints__args__required_args;
 
 				var total_args = args.length;
@@ -1717,13 +1717,13 @@
 
 					for(_arg_position = 0; _arg_position < arg_type_hints.length; _arg_position++)
 						{
-							_arg_type_hints = arg_type_hints[_arg_position];
+							_arg_type_hints = arg_type_hints[_arg_position]; // Possible `string|array`.
 							_arg_types = !$$.is_array(_arg_type_hints) ? [_arg_type_hints] : _arg_type_hints;
 
 							if(_arg_position > total_arg_positions) // Argument not even passed in?
 								continue; // Argument was not even passed in (we don't need to check this value).
 
-							_last_arg_type_key = null; // Unset before iterating (we'll define below, if necessary).
+							_last_arg_type_key = -1; // Reset before iterating (we'll define below, if necessary).
 
 							types_loop: // Marker for types loop (iterating each of the ``_arg_types`` here).
 
@@ -1740,12 +1740,12 @@
 												case '': // Anything goes (there are NO requirements).
 													break types_loop; // We have a valid type/value here.
 
-											/****************************************************************************/
+												/****************************************************************************/
 
 												case ':!empty': // Anything goes. But check if it's empty.
 													if($$.empty(args[_arg_position])) // Is empty?
 														{
-															if(_last_arg_type_key === null)
+															if(_last_arg_type_key === -1)
 																_last_arg_type_key = _arg_types.length - 1;
 
 															if(_arg_type_key === _last_arg_type_key)
@@ -1764,7 +1764,7 @@
 
 													break switch_handler; // Default break; and continue type checking.
 
-											/****************************************************************************/
+												/****************************************************************************/
 
 												case 'string': // All of these fall under ``!is_...()`` checks.
 												case 'boolean':
@@ -1784,7 +1784,7 @@
 
 													if(!is_(args[_arg_position])) // Not this type?
 														{
-															if(_last_arg_type_key === null)
+															if(_last_arg_type_key === -1)
 																_last_arg_type_key = _arg_types.length - 1;
 
 															if(_arg_type_key === _last_arg_type_key)
@@ -1803,7 +1803,7 @@
 
 													break switch_handler; // Default break; and continue type checking.
 
-											/****************************************************************************/
+												/****************************************************************************/
 
 												case '!string': // All of these fall under ``is_...()`` checks.
 												case '!boolean':
@@ -1823,7 +1823,7 @@
 
 													if(is_(args[_arg_position])) // Is this type?
 														{
-															if(_last_arg_type_key === null)
+															if(_last_arg_type_key === -1)
 																_last_arg_type_key = _arg_types.length - 1;
 
 															if(_arg_type_key === _last_arg_type_key)
@@ -1842,7 +1842,7 @@
 
 													break switch_handler; // Default break; and continue type checking.
 
-											/****************************************************************************/
+												/****************************************************************************/
 
 												case 'string:!empty': // These are ``!is_...()`` || ``empty()`` checks.
 												case 'boolean:!empty':
@@ -1863,7 +1863,7 @@
 													if(!is_(args[_arg_position]) || $$.empty(args[_arg_position]))
 													// Now, have we exhausted the list of possible types?
 														{
-															if(_last_arg_type_key === null)
+															if(_last_arg_type_key === -1)
 																_last_arg_type_key = _arg_types.length - 1;
 
 															if(_arg_type_key === _last_arg_type_key)
@@ -1882,7 +1882,7 @@
 
 													break switch_handler; // Default break; and continue type checking.
 
-											/****************************************************************************/
+												/****************************************************************************/
 
 												default: // Assume object `instanceof` in this default case handler.
 													// For practicality & performance reasons, we do NOT check `!` or `:!empty` here.
@@ -1892,7 +1892,7 @@
 
 													if(!$$.is_function(_arg_type) || !(args[_arg_position] instanceof _arg_type))
 														{
-															if(_last_arg_type_key === null)
+															if(_last_arg_type_key === -1)
 																_last_arg_type_key = _arg_types.length - 1;
 
 															if(_arg_type_key === _last_arg_type_key)

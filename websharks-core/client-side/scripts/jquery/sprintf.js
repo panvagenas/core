@@ -5,8 +5,9 @@
  *
  * @package WebSharks\Core
  * @since 120318
+ *
+ * @noinspection ALL
  */
-
 (function($) {
 	$.sprintf = function () {
 		// http://kevin.vanzonneveld.net

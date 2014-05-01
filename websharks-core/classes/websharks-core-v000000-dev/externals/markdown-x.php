@@ -1,14 +1,16 @@
 <?php
 /**
-* PHP Markdown Extra class by WebSharks™.
-*
-* Original PHP Markdown copyright: {@link https://github.com/michelf/php-markdown/ Michel Fortin}.
-* Original Markdown copyright: {@link http://daringfireball.net/projects/markdown/ John Gruber}.
-* Modified by: {@link http://www.websharks-inc.com WebSharks™}.
-*
-* @package WebSharks\Core\Externals
-* @since 111223
-*/
+ * PHP Markdown Extra class by WebSharks™.
+ *
+ * Original PHP Markdown copyright: {@link https://github.com/michelf/php-markdown/ Michel Fortin}.
+ * Original Markdown copyright: {@link http://daringfireball.net/projects/markdown/ John Gruber}.
+ * Modified by: {@link http://www.websharks-inc.com WebSharks™}.
+ *
+ * @package WebSharks\Core\Externals
+ * @since 111223
+ *
+ * @noinspection ALL
+ */
 namespace websharks_core_v000000_dev\externals;
 
 if(!defined('WPINC')) // MUST have WordPress.

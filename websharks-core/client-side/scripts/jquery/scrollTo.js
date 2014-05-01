@@ -5,8 +5,9 @@
  *
  * @package WebSharks\Core
  * @since 120318
+ *
+ * @noinspection ALL
  */
-
 /**
  * jQuery.ScrollTo
  * Copyright (c) 2007-2009 Ariel Flesler - aflesler(at)gmail(dot)com | http://flesler.blogspot.com

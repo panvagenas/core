@@ -84,7 +84,7 @@ namespace websharks_core_v000000_dev
 
 							if((in_array($function, $this->constructs, TRUE) || is_callable($function) || function_exists($function))
 							   && !in_array($function, $this->disabled(), TRUE) // And it is NOT disabled in some way.
-							) $this->static[__FUNCTION__][$function] = TRUE;
+							) $this->static[__FUNCTION__][(string)$function] = TRUE;
 						}
 					return $this->static[__FUNCTION__][$function];
 				}

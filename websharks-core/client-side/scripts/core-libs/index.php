@@ -20,10 +20,8 @@ header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 header('Cache-Control: max-age=604800');
 header('Pragma: public');
 
-echo file_get_contents(dirname(dirname(__FILE__)).'/jquery/cookie.min.js');
 echo file_get_contents(dirname(dirname(__FILE__)).'/jquery/sprintf.min.js');
 echo file_get_contents(dirname(dirname(__FILE__)).'/jquery/scrollTo.min.js');
-
 echo file_get_contents(dirname(dirname(__FILE__)).'/jquery-ui/toggles.min.js');
 
 echo file_get_contents(dirname(__FILE__).'/core.min.js');

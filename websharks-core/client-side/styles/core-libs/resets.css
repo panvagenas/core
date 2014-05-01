@@ -8,6 +8,8 @@
  * @package WebSharks\Core
  * @since 120318
  *
+ * @noinspection ALL
+ *
  * @note CSS in this file has lower precedence than jQuery™ themes.
  *    Theme styles take precedence over everything here.
  */
@@ -156,10 +158,10 @@
 	white-space     : inherit;
 	word-spacing    : inherit;
 	letter-spacing  : inherit;
-
-	/* Inherit `auto` does not work in some places.
-	cursor          : inherit; */
-
+	/*
+	Inherit `auto` does not work in some places.
+	cursor          : inherit;
+	*/
 	clip            : auto;
 	float           : none;
 	clear           : none;
