@@ -288,6 +288,7 @@ class js_minifier {
                 return $get;
             }
         }
+	    return '';
     }
 
     /**
@@ -320,6 +321,7 @@ class js_minifier {
             }
             $comment .= $get;
         }
+	    return '';
     }
 
     /**

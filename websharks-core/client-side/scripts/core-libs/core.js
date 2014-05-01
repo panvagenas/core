@@ -1639,7 +1639,7 @@
 				ajax.data[plugin_var_ns + '[a][t]'] = type;
 				ajax.data[plugin_var_ns + '[a][v]'] = $$.get_call_verifier(call, type);
 
-				if(!$$.empty(args)) ajax.data[plugin_var_ns + '[a][a]'] = $.toJSON(args);
+				if(!$$.empty(args)) ajax.data[plugin_var_ns + '[a][a]'] = JSON.stringify(args);
 
 				$.ajax(ajax);
 			};
