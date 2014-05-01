@@ -47,7 +47,6 @@ namespace websharks_core_v000000_dev
 						&& $this->©db_utils->activation_install(TRUE)
 						&& $this->©db_cache->activation_install(TRUE)
 						&& $this->©db_tables->activation_install(TRUE)
-						&& $this->©compressor->activation_install(TRUE)
 						&& $this->©notices->activation_install(TRUE)
 						&& $this->©crons->activation_install(TRUE)
 						&& $this->additional_activations()
@@ -123,7 +122,6 @@ namespace websharks_core_v000000_dev
 					$this->additional_deactivations();
 					$this->©crons->deactivation_uninstall(TRUE);
 					$this->©notices->deactivation_uninstall(TRUE);
-					$this->©compressor->deactivation_uninstall(TRUE);
 					$this->©db_tables->deactivation_uninstall(TRUE);
 					$this->©db_cache->deactivation_uninstall(TRUE);
 					$this->©db_utils->deactivation_uninstall(TRUE);

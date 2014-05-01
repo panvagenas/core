@@ -113,9 +113,6 @@ namespace websharks_core_v000000_dev
 				 * @method \websharks_core_v000000_dev\commands ©commands()
 				 * @method \websharks_core_v000000_dev\commands ©command()
 				 *
-				 * @property \websharks_core_v000000_dev\compressor                     $©compressor
-				 * @method \websharks_core_v000000_dev\compressor ©compressor()
-				 *
 				 * @property \websharks_core_v000000_dev\cookies                        $©cookies
 				 * @property \websharks_core_v000000_dev\cookies                        $©cookie
 				 * @method \websharks_core_v000000_dev\cookies ©cookies()

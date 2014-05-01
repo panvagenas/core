@@ -49,8 +49,7 @@ namespace websharks_core_v000000_dev
 						'challenge'  => $challenge,
 						'response'   => $response
 					);
-
-					$response = trim($this->©url->remote('http://www.google.com/recaptcha/api/verify', $post_vars));
+					$response  = trim($this->©url->remote('http://www.google.com/recaptcha/api/verify', $post_vars));
 
 					return (preg_match('/^true/i', $response)) ? TRUE : FALSE;
 				}

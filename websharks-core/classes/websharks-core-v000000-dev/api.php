@@ -71,9 +71,6 @@ namespace websharks_core_v000000_dev
 		 * @method static \websharks_core_v000000_dev\commands commands()
 		 * @method static \websharks_core_v000000_dev\commands command()
 		 *
-		 * @property \websharks_core_v000000_dev\compressor              $compressor
-		 * @method static \websharks_core_v000000_dev\compressor compressor()
-		 *
 		 * @property \websharks_core_v000000_dev\cookies                 $cookies
 		 * @property \websharks_core_v000000_dev\cookies                 $cookie
 		 * @method static \websharks_core_v000000_dev\cookies cookies()

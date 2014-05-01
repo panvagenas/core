@@ -58,12 +58,6 @@ namespace websharks_core_v000000_dev
 					add_action('wp_loaded', array($this, '©crons.wp_loaded'), PHP_INT_MAX - 1);
 					add_action('wp_loaded', array($this, '©db_utils.wp_loaded'), PHP_INT_MAX);
 
-					// For plugins that enable this option (only ONE plugin may add this hook).
-					if($this->©options->get('compressor.enable') && !isset($this->static[__FUNCTION__]['compressor']))
-						{
-							add_action('wp_loaded', array($this, '©compressor.wp_loaded'), PHP_INT_MAX);
-							$this->static[__FUNCTION__]['compressor'] = TRUE;
-						}
 					// For plugins that need to authenticate users.
 					if($this->©options->get('users.attach_wp_authentication_filter'))
 						add_filter('wp_authenticate_user', array($this, '©user_utils.wp_authenticate_user'), PHP_INT_MAX);

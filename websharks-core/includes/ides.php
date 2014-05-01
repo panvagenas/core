@@ -56,7 +56,6 @@ namespace # Global namespace.
 		class websharks_core__captchas extends \websharks_core_v000000_dev\captchas{}
 		class websharks_core__classes extends \websharks_core_v000000_dev\classes{}
 		class websharks_core__commands extends \websharks_core_v000000_dev\commands{}
-		class websharks_core__compressor extends \websharks_core_v000000_dev\compressor{}
 		class websharks_core__cookies extends \websharks_core_v000000_dev\cookies{}
 		class websharks_core__crons extends \websharks_core_v000000_dev\crons{}
 		class websharks_core__css_minifier extends \websharks_core_v000000_dev\css_minifier{}

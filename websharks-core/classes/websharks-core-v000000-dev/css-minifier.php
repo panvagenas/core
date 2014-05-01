@@ -57,7 +57,7 @@ namespace websharks_core_v000000_dev
 							                           'unnecessary_;s'  => '/;\}/'
 							);
 							$static['with']    = array('', '', ' ', '$1', '}');
-							$static['colors']  = '/(?P<context>\:#| #)(?P<hex>[a-z0-9]{6})/i';
+							$static['colors']  = '/(?P<context>[:,\h]+#)(?P<hex>[a-z0-9]{6})/i';
 						}
 					$css = preg_replace($static['replace'], $static['with'], $css);
 					$css = preg_replace_callback($static['colors'], array($this, '_maybe_compress_css_color'), $css);

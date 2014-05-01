@@ -95,29 +95,6 @@ namespace websharks_core_v000000_dev
 						'php.evaluate'                                       => '0',
 						'php.post_types'                                     => array('page'),
 
-						'compressor.enable'                                  => '0',
-						'compressor.compress_if_logged_in'                   => '1',
-						'compressor.compress_admin'                          => '1',
-						'compressor.admin_regex_static_css_js'               => '/\.(?:css|js)[\?"\']/i',
-						'compressor.compress_combine_head_body_css'          => '1',
-						'compressor.compress_combine_head_js'                => '1',
-						'compressor.compress_css_code'                       => '1',
-						'compressor.compress_js_code'                        => '1',
-						'compressor.compress_html_code'                      => '1',
-						'compressor.compress_html_code_if_logged_in'         => '1',
-						'compressor.compress_html_js_code'                   => '1',
-						'compressor.cache_expiration'                        => '14 days',
-						'compressor.css_exclusion_words'                     => array(),
-						'compressor.js_exclusion_words'                      => array(
-							'core__js_image_nonce_var' => 'imageNonce =',
-							'core__user_settings_var'  => 'var userSettings'
-						),
-						'compressor.try_yui_compressor'                      => '0',
-						'compressor.benchmark'                               => '1',
-						'compressor.debug'                                   => '1',
-						'compressor.vendor_css_prefixes'                     => array('moz', 'webkit', 'khtml', 'ms', 'o'),
-						'compressor.wp_hook_priority'                        => '2',
-
 						'installer.deactivation.uninstalls'                  => '0',
 
 						'templates.stand_alone.styles'                       => '<style type="text/css">'."\n\n".'</style>',
@@ -186,26 +163,6 @@ namespace websharks_core_v000000_dev
 
 						'php.evaluate'                                       => array('string:numeric >=' => 0),
 						'php.post_types'                                     => array('array:!empty'),
-
-						'compressor.enable'                                  => array('string:numeric >=' => 0),
-						'compressor.compress_if_logged_in'                   => array('string:numeric >=' => 0),
-						'compressor.compress_admin'                          => array('string:numeric >=' => 0),
-						'compressor.admin_regex_static_css_js'               => array('string:!empty'),
-						'compressor.compress_combine_head_body_css'          => array('string:numeric >=' => 0),
-						'compressor.compress_combine_head_js'                => array('string:numeric >=' => 0),
-						'compressor.compress_css_code'                       => array('string:numeric >=' => 0),
-						'compressor.compress_js_code'                        => array('string:numeric >=' => 0),
-						'compressor.compress_html_code'                      => array('string:numeric >=' => 0),
-						'compressor.compress_html_code_if_logged_in'         => array('string:numeric >=' => 0),
-						'compressor.compress_html_js_code'                   => array('string:numeric >=' => 0),
-						'compressor.cache_expiration'                        => array('string:!empty'),
-						'compressor.css_exclusion_words'                     => array('array'),
-						'compressor.js_exclusion_words'                      => array('array'),
-						'compressor.try_yui_compressor'                      => array('string:numeric >=' => 0),
-						'compressor.benchmark'                               => array('string:numeric >=' => 0),
-						'compressor.debug'                                   => array('string:numeric >=' => 0),
-						'compressor.vendor_css_prefixes'                     => array('array:!empty'),
-						'compressor.wp_hook_priority'                        => array('string:numeric >=' => 1),
 
 						'installer.deactivation.uninstalls'                  => array('string:numeric >=' => 0),
 
