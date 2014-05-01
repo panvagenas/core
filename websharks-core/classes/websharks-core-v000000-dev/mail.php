@@ -101,7 +101,7 @@ namespace websharks_core_v000000_dev
 							throw $this->©exception(
 								$this->method(__FUNCTION__).'#header_missing', get_defined_vars(),
 								$this->i18n('Email failure. Missing and/or invalid `header`.').
-								sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_header))
+								' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_header))
 							);
 					unset($_header); // Just a little housekeeping.
 
@@ -120,14 +120,14 @@ namespace websharks_core_v000000_dev
 								throw $this->©exception(
 									$this->method(__FUNCTION__).'#attachment_path_missing', get_defined_vars(),
 									$this->i18n('Email failure. Missing and/or invalid attachment `path` value.').
-									sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
+									' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_attachment))
 								);
 							if(!is_file($_attachment['path'])) // Perhaps relative?
 								if(!is_file(ABSPATH.$_attachment['path']))
 									throw $this->©exception(
 										$this->method(__FUNCTION__).'#nonexistent_attachment_path', get_defined_vars(),
 										$this->i18n('Email failure. Nonexistent attachment `path` value.').
-										sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_attachment))
+										' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_attachment))
 									);
 								else $_attachment['path'] = ABSPATH.$_attachment['path'];
 
@@ -145,7 +145,7 @@ namespace websharks_core_v000000_dev
 					try // PHPMailer (catch exceptions).
 						{
 							$mailer = new \PHPMailer(TRUE);
-							
+
 							$mailer->IsMail();
 							$mailer->SingleTo = TRUE;
 							$mailer->CharSet  = 'UTF-8';
@@ -173,7 +173,7 @@ namespace websharks_core_v000000_dev
 							if($this->©option->get('mail.smtp')) // Use SMTP server?
 								{
 									$mailer->IsSMTP(); // Flag for SMTP use in this case.
-									
+
 									$mailer->SMTPSecure = $this->©option->get('mail.smtp.secure');
 									$mailer->Host       = $this->©option->get('mail.smtp.host');
 									$mailer->Port       = (integer)$this->©option->get('mail.smtp.port');

@@ -253,7 +253,7 @@ namespace websharks_core_v000000_dev
 						{
 							$this->©error($this->method(__FUNCTION__), array_merge(get_defined_vars(), array('user' => $this)), // For diagnostics.
 							              sprintf($this->i18n('User ID: `%1$s` is missing vital components.'), $this->ID).
-							              $this->i18n(' Possible database corruption.'));
+							              ' '.$this->i18n('Possible database corruption.'));
 							$this->wp = NULL;
 							$this->ID = 0;
 						}
@@ -580,7 +580,7 @@ namespace websharks_core_v000000_dev
 									if(!$this->©string->is_not_empty($_component_or_value))
 										throw $this->©exception($this->method(__FUNCTION__).'#invalid_component_or_value', array_merge(get_defined_vars(), array('user' => $this)),
 										                        $this->i18n('Invalid component. Expecting string NOT empty.').
-										                        sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_component_or_value))
+										                        ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_component_or_value))
 										);
 									unset($this->cache[$_component_or_value], $this->data[$_component_or_value]); // Refresh (if exists).
 
@@ -593,14 +593,14 @@ namespace websharks_core_v000000_dev
 									if(!$this->©string->is_not_empty($_component_or_key))
 										throw $this->©exception($this->method(__FUNCTION__).'#invalid_component_or_key', array_merge(get_defined_vars(), array('user' => $this)),
 										                        $this->i18n('Invalid component. Expecting string NOT empty.').
-										                        sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_component_or_key))
+										                        ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_component_or_key))
 										);
 									if(property_exists($this, $_component_or_key))
 										{
 											if(gettype($this->$_component_or_key) !== gettype($_component_or_value))
 												throw $this->©exception($this->method(__FUNCTION__).'#invalid_component_or_value_type', array_merge(get_defined_vars(), array('user' => $this)),
 												                        sprintf($this->i18n('Invalid component value type. Expecting: `%1$s`.'), gettype($this->$_component_or_key)).
-												                        sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($_component_or_value)));
+												                        ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_component_or_value)));
 
 											$this->$_component_or_key = $_component_or_value; // Refresh property value.
 										}
@@ -629,7 +629,7 @@ namespace websharks_core_v000000_dev
 					if(headers_sent())
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#headers_sent_already', array_merge(get_defined_vars(), array('user' => $this)),
-							$this->i18n(' Doing it wrong! Headers have already been sent.')
+							$this->i18n('Doing it wrong! Headers have already been sent.')
 						);
 					if($this->is_current()) $this->session_end();
 					if($this->is_current() && $this->has_id()) wp_logout();
@@ -931,7 +931,7 @@ namespace websharks_core_v000000_dev
 			 * @note This is NOT handled by the core. It requires a class extender to override this.
 			 *    By default, this method simply returns a TRUE value at all times.
 			 *
-			 * @param array  $profile_field_values An associative array of profile fields (by code).
+			 * @param array $profile_field_values An associative array of profile fields (by code).
 			 *
 			 * @return boolean|errors TRUE on success; else an errors object on failure.
 			 *

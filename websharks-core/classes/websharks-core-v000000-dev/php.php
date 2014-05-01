@@ -131,10 +131,10 @@ namespace websharks_core_v000000_dev
 						$this->i18n( // Let's do a little explaining here. Why do we NEED ``eval()``?
 							'The PHP `eval()` function (an application requirement) has been disabled on this server.'.
 							' Please check with your hosting provider to resolve this issue and have the PHP `eval()` function enabled.').
-						$this->i18n(' The use of `eval()` in this software is limited to areas where it is absolutely necessary to achieve a desired functionality.'.
-						            ' For instance, where PHP code is supplied by a site owner (or by their developer) to achieve advanced customization through a UI panel. This can be evaluated at runtime to allow for the inclusion of PHP conditionals or dynamic values.'.
-						            ' In cases such as these, the PHP `eval()` function serves a valid/useful purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (e.g. the PHP code can be trusted in this case).'.
-						            ' This software may also use `eval()` to generate dynamic classes and/or API functions for developers; where the use of `eval()` again serves a valid/useful purpose; and where the underlying code was packaged by the software vendor (e.g. the PHP code can be trusted).'
+						' '.$this->i18n('The use of `eval()` in this software is limited to areas where it is absolutely necessary to achieve a desired functionality.'.
+						                ' For instance, where PHP code is supplied by a site owner (or by their developer) to achieve advanced customization through a UI panel. This can be evaluated at runtime to allow for the inclusion of PHP conditionals or dynamic values.'.
+						                ' In cases such as these, the PHP `eval()` function serves a valid/useful purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (e.g. the PHP code can be trusted in this case).'.
+						                ' This software may also use `eval()` to generate dynamic classes and/or API functions for developers; where the use of `eval()` again serves a valid/useful purpose; and where the underlying code was packaged by the software vendor (e.g. the PHP code can be trusted).'
 						)
 					);
 				}

@@ -1647,7 +1647,7 @@ namespace websharks_core_v000000_dev
 					return $this->©error( // Assume connectivity issue.
 					            $this->method(__FUNCTION__).'#plugin_site_connectivity_issue', get_defined_vars(),
 					            $this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
-					            $this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
+					            ' '.$this->i18n('Possible connectivity issue. Please try again in 15 minutes.')
 					);
 				}
 
@@ -1702,7 +1702,7 @@ namespace websharks_core_v000000_dev
 					return $this->©error( // Assume connectivity issue.
 					            $this->method(__FUNCTION__).'#plugin_site_connectivity_issue', get_defined_vars(),
 					            $this->i18n('Unable to communicate with plugin site (i.e. could NOT obtain ZIP package).').
-					            $this->i18n(' Possible connectivity issue. Please try again in 15 minutes.')
+					           ' '. $this->i18n('Possible connectivity issue. Please try again in 15 minutes.')
 					);
 				}
 

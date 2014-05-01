@@ -447,7 +447,7 @@ namespace websharks_core_v000000_dev
 							         '>'.
 
 							         (($field['label'] && $field['required'])
-								         ? $field['label'].$this->translate(' *', 'form-field-required-marker')
+								         ? $field['label'].' '.$this->translate('*', 'form-field-required-marker')
 								         : $field['label']).
 
 							         '</label>';
@@ -783,9 +783,9 @@ namespace websharks_core_v000000_dev
 					$user = $this->©user_utils->which($user);
 
 					$default_args = array( // Defaults.
-						'enforce_required_fields'  => TRUE,
-						'validate_readonly_fields' => TRUE,
-						'validate_disabled_fields' => FALSE
+					                       'enforce_required_fields'  => TRUE,
+					                       'validate_readonly_fields' => TRUE,
+					                       'validate_disabled_fields' => FALSE
 					); // All of these arguments are optional at all times.
 					$args         = $this->check_extension_arg_types('boolean', 'boolean', 'boolean', $default_args, $args);
 					$md5          = md5(serialize($field_values).serialize($fields).serialize($user).serialize($args));
@@ -1336,7 +1336,7 @@ namespace websharks_core_v000000_dev
 												{
 													$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
 													             $this->translate('Unable to handle file upload(s). Unable to move uploaded file(s).').
-													             sprintf($this->translate(' Move-to directory NOT writable: `%1$s`.'), $_field['move_to_dir']));
+													             ' '.sprintf($this->translate('Move-to directory NOT writable: `%1$s`.'), $_field['move_to_dir']));
 													continue; // We CANNOT validate this any further.
 												}
 										} // If we get here, the directory exists.
@@ -1451,8 +1451,8 @@ namespace websharks_core_v000000_dev
 							throw $this->©exception( // There's a problem with this key.
 								$this->method(__FUNCTION__).'#invalid_key', get_defined_vars(),
 								sprintf($this->i18n('Form field. Invalid key: `%1$s`.'), $_key).
-								sprintf($this->i18n(' Invalid field configuration: `%1$s`.'), $this->©var->dump($field)).
-								sprintf($this->i18n(' Defaults: `%1$s`.'), $this->©var->dump($this->defaults))
+								' '.sprintf($this->i18n('Invalid field configuration: `%1$s`.'), $this->©var->dump($field)).
+								' '.sprintf($this->i18n('Defaults: `%1$s`.'), $this->©var->dump($this->defaults))
 							);
 					unset($_key, $_default); // Just a little housekeeping.
 
@@ -1481,13 +1481,13 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#missing_name', get_defined_vars(),
 							$this->i18n('Form field. Invalid configuration (missing `name`).').
-							sprintf($this->i18n(' Got: `%1$s`.'), $field['name'])
+							' '.sprintf($this->i18n('Got: `%1$s`.'), $field['name'])
 						);
 					if(!preg_match('/^(?:[a-z][a-z0-9_]*?[a-z0-9]|[a-z])(?:\[(?:[a-z][a-z0-9_]*?[a-z0-9]|[1-9][0-9]+|[0-9]|[a-z])\])*$/i', $field['name_prefix'].$field['name']))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_name_prefix_name', get_defined_vars(),
 							$this->i18n('Form field. Invalid configuration (invalid `name_prefix`.`name`).').
-							sprintf($this->i18n(' Got: `%1$s`.'), $field['name_prefix'].$field['name'])
+							' '.sprintf($this->i18n('Got: `%1$s`.'), $field['name_prefix'].$field['name'])
 						);
 					// Handle field end name/code.
 
@@ -1500,13 +1500,13 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#missing_code', get_defined_vars(),
 							$this->i18n('Form field. Invalid configuration (missing `code`).').
-							sprintf($this->i18n(' Got: `%1$s`.'), $field['code'])
+							' '.sprintf($this->i18n('Got: `%1$s`.'), $field['code'])
 						);
 					if(!preg_match('/^(?:[a-z][a-z0-9_]*?[a-z0-9]|[1-9][0-9]+|[0-9]|[a-z])$/i', $field['code']))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_code', get_defined_vars(),
 							$this->i18n('Form field. Invalid configuration (invalid `code`).').
-							sprintf($this->i18n(' Got: `%1$s`.'), $field['code'])
+							' '.sprintf($this->i18n('Got: `%1$s`.'), $field['code'])
 						);
 					// Handle field ID values.
 
@@ -1517,13 +1517,13 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#missing_id', get_defined_vars(),
 							$this->i18n('Form field. Invalid configuration (missing `id`).').
-							sprintf($this->i18n(' Got: `%1$s`.'), $field['id'])
+							' '.sprintf($this->i18n('Got: `%1$s`.'), $field['id'])
 						);
 					if(!preg_match('/^(?:[a-z][a-z0-9\-]*?[a-z0-9]|[a-z])$/i', $field['id_prefix'].$field['id']))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_id_prefix_id', get_defined_vars(),
 							$this->i18n('Form field. Invalid configuration (invalid `id_prefix`.`id`).').
-							sprintf($this->i18n(' Got: `%1$s`.'), $field['id_prefix'].$field['id'])
+							' '.sprintf($this->i18n('Got: `%1$s`.'), $field['id_prefix'].$field['id'])
 						);
 					// Handle field icons.
 
@@ -1562,7 +1562,7 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#missing_unique_callback_php', get_defined_vars(),
 							$this->i18n('Form field. Invalid configuration (missing and/or invalid `unique_callback_php`).').
-							sprintf($this->i18n(' Expecting callable. Got: `%1$s`.'), $this->©var->dump($field['unique_callback_php']))
+							' '.sprintf($this->i18n('Expecting callable. Got: `%1$s`.'), $this->©var->dump($field['unique_callback_php']))
 						);
 					// Handle validation patterns.
 

@@ -151,13 +151,13 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_into_dir', get_defined_vars(),
 							sprintf($this->i18n('Invalid directory: `%1$s`.'), $this->into_dir).
-							$this->i18n(' This is NOT an existing directory that we can replicate into.')
+							' '.$this->i18n('This is NOT an existing directory that we can replicate into.')
 						);
 					if($this->update_dir !== $this->new_core_dir && !is_dir($this->update_dir))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_update_dir', get_defined_vars(),
 							sprintf($this->i18n('Invalid directory: `%1$s`.'), $this->into_dir).
-							$this->i18n(' This is NOT an existing directory that we can update files in.')
+							' '.$this->i18n('This is NOT an existing directory that we can update files in.')
 						);
 					if(!$this->©string->is_plugin_version($this->version))
 						throw $this->©exception(
@@ -187,7 +187,7 @@ namespace websharks_core_v000000_dev
 								throw $this->©exception(
 									$this->method(__FUNCTION__).'#new_core_dir_exists', get_defined_vars(),
 									$this->i18n('The new core directory already exists; and removal is NOT possible.').
-									sprintf($this->i18n(' Cannot replicate into self: `%1$s`.'), $this->new_core_dir)
+									' '.sprintf($this->i18n('Cannot replicate into self: `%1$s`.'), $this->new_core_dir)
 								);
 							$this->©dir->delete($this->new_core_dir);
 						}
@@ -200,7 +200,7 @@ namespace websharks_core_v000000_dev
 
 					return $this->©success($this->method(__FUNCTION__).'#complete', get_defined_vars(),
 					                       $this->i18n('Replication completed successfully.').
-					                       sprintf($this->i18n(' Replicated into: `%1$s`.'), $this->new_core_dir)
+					                       ' '.sprintf($this->i18n('Replicated into: `%1$s`.'), $this->new_core_dir)
 					);
 				}
 
@@ -288,13 +288,13 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#unreadable_dir', get_defined_vars(),
 							$this->i18n('Unable to search a directory; not readable due to permission issues.').
-							sprintf($this->i18n(' Need this directory to be readable please: `%1$s`.'), $dir)
+							' '.sprintf($this->i18n('Need this directory to be readable please: `%1$s`.'), $dir)
 						);
 					if(!($_open_dir = opendir($dir)))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#opendir_failure', get_defined_vars(),
 							$this->i18n('Unable to search a directory; cannot open for some unknown reason.').
-							sprintf($this->i18n(' Make this directory readable please: `%1$s`.'), $dir)
+							' '.sprintf($this->i18n('Make this directory readable please: `%1$s`.'), $dir)
 						);
 					while(($_dir_file = readdir($_open_dir)) !== FALSE) // Recursive search/replace.
 						{
@@ -344,7 +344,7 @@ namespace websharks_core_v000000_dev
 								throw $this->©exception(
 									$this->method(__FUNCTION__).'#read_write_file_issue', get_defined_vars(),
 									$this->i18n('Unable to search a file; cannot read/write due to permission issues.').
-									sprintf($this->i18n(' Make this file readable/writable please: `%1$s`.'), $_dir_file)
+									' '.sprintf($this->i18n('Make this file readable/writable please: `%1$s`.'), $_dir_file)
 								);
 							// Get the contents of this file (and check if empty).
 
@@ -352,7 +352,7 @@ namespace websharks_core_v000000_dev
 								throw $this->©exception(
 									$this->method(__FUNCTION__).'#read_file_contents_issue', get_defined_vars(),
 									$this->i18n('Unable to search a file; cannot read file contents for some unknown reason.').
-									sprintf($this->i18n(' Make this file readable/writable please: `%1$s`.'), $_dir_file)
+									' '.sprintf($this->i18n('Make this file readable/writable please: `%1$s`.'), $_dir_file)
 								);
 							if(!$_file) continue; // The file is empty. We're done here.
 
@@ -389,7 +389,7 @@ namespace websharks_core_v000000_dev
 								throw $this->©exception(
 									$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
 									$this->i18n('Unable to properly search/replace file due to permission issues.').
-									sprintf($this->i18n(' Make this file readable/writable please: `%1$s`.'), $_dir_file)
+									' '.sprintf($this->i18n('Make this file readable/writable please: `%1$s`.'), $_dir_file)
 								);
 						}
 					closedir($_open_dir); // Close directory; final housekeeping.

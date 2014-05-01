@@ -35,7 +35,7 @@ namespace websharks_core_v000000_dev
 					if(headers_sent())
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
+							$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 						);
 					if(isset($this->static[__FUNCTION__]))
 						return; // Sent already.
@@ -74,7 +74,7 @@ namespace websharks_core_v000000_dev
 					if(headers_sent())
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
+							$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 						);
 					$content_type = 'Content-Type: '.$type.(($is_utf8) ? '; charset=UTF-8' : '');
 
@@ -99,7 +99,7 @@ namespace websharks_core_v000000_dev
 					if(headers_sent())
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-							$this->i18n(' Doing it wrong! Headers have already been sent. Please check hook priorities.')
+							$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 						);
 					header('Content-Encoding:'.((strlen($encoding)) ? ' '.$encoding : ''));
 				}

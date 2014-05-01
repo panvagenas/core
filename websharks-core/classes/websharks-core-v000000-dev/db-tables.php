@@ -258,7 +258,7 @@ namespace websharks_core_v000000_dev
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#unknown_db_table', get_defined_vars(),
 						sprintf($this->i18n('Unknown plugin DB table: `%1$s`.'), $table).
-						sprintf($this->i18n(' Current plugin tables include: `%1$s`.'), $this->©var->dump($this->tables))
+						' '.sprintf($this->i18n('Current plugin tables include: `%1$s`.'), $this->©var->dump($this->tables))
 					);
 				}
 

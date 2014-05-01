@@ -419,7 +419,7 @@ namespace websharks_core_v000000_dev
 					throw core()->©exception(
 						get_class($this).'::'.__FUNCTION__.'#read_only_magic_property_error_via____set()', get_defined_vars(),
 						sprintf(core()->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-						sprintf(core()->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+						' '.sprintf(core()->i18n('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 					);
 				}
 
@@ -444,7 +444,7 @@ namespace websharks_core_v000000_dev
 					throw core()->©exception(
 						get_class($this).'::'.__FUNCTION__.'#read_only_magic_property_error_via____unset()', get_defined_vars(),
 						sprintf(core()->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-						sprintf(core()->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+						' '.sprintf(core()->i18n('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 					);
 				}
 

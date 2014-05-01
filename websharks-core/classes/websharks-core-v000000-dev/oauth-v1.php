@@ -275,7 +275,7 @@ namespace websharks_core_v000000_dev
 						return $this->©error(
 							$this->method(__FUNCTION__), get_defined_vars(),
 							sprintf($this->i18n('OAuth API call: `%1$s » %2$s`).'), $method, $url).
-							$this->i18n(' Connection failure.')
+							' '.$this->i18n('Connection failure.')
 						);
 					$oauth = array(); // Initialize OAuth response array.
 
@@ -315,15 +315,15 @@ namespace websharks_core_v000000_dev
 									return $this->©error(
 										$this->method(__FUNCTION__), get_defined_vars(),
 										sprintf($this->i18n('OAuth API call: `%1$s » %2$s`).'), $method, $url).
-										sprintf($this->i18n(' Error code: `%1$s`.'), $error_code).
-										sprintf($this->i18n(' Message: `%1$s`.'), $error_message)
+										' '.sprintf($this->i18n('Error code: `%1$s`.'), $error_code).
+										' '.sprintf($this->i18n('Message: `%1$s`.'), $error_message)
 									);
 								}
 						}
 					$this->©success(
 						$this->method(__FUNCTION__), get_defined_vars(),
 						sprintf($this->i18n('OAuth API call: `%1$s » %2$s`).'), $method, $url).
-						$this->i18n(' Status: `success`.')
+						' '.$this->i18n('Status: `success`.')
 					);
 					if(empty($oauth))
 						return TRUE; // Assume success.

@@ -54,7 +54,7 @@ namespace websharks_core_v000000_dev
 			 *    like `O` or `T`, are always represented with the blog's timezone (even when ``$utc`` is TRUE).
 			 *    This is wrong, because ``$utc`` being TRUE should be indicated with a UTC timezone.
 			 *
-			 *    We fix this issue here, by removing timezone chars from ``$format``, when ``$utc`` is TRUE.
+			 *    We fix this issue here by removing timezone chars from ``$format``, when ``$utc`` is TRUE.
 			 *    Once the translation is completed, we add ` UTC` onto the end as a quick fix.
 			 *    TODO Review again upon release of WP 3.9. Hoping for a better solution.
 			 *

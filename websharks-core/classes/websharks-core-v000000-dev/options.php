@@ -222,7 +222,7 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception( // This helps us catch mistakes.
 							$this->method(__FUNCTION__).'#options_mismatch_to_validators', get_defined_vars(),
 							$this->i18n('Options mismatch. If you add a new default option, please add a validator for it also.').
-							sprintf($this->i18n(' Got `%1$s` default options, `%2$s` validators. These should match up.'), count($default_options), count($validators))
+							' '.sprintf($this->i18n('Got `%1$s` default options, `%2$s` validators. These should match up.'), count($default_options), count($validators))
 						);
 					if(!is_array($this->options = get_option($this->___instance_config->plugin_root_ns_stub.'__options')))
 						update_option($this->___instance_config->plugin_root_ns_stub.'__options', ($this->options = array()));

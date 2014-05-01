@@ -163,7 +163,7 @@ namespace websharks_core_v000000_dev
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#invalid_or_expired_call_action_verifier', get_defined_vars(),
 						$this->i18n('Invalid or expired `call` action verifier. Unable to process.').
-						sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($action))
+						' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($action))
 					);
 				}
 
@@ -200,7 +200,7 @@ namespace websharks_core_v000000_dev
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#invalid_or_expired_ajax_action_verifier', get_defined_vars(),
 						$this->i18n('Invalid or expired `ajax` action verifier. Unable to process.').
-						sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($action))
+						' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($action))
 					);
 				}
 
@@ -584,7 +584,7 @@ namespace websharks_core_v000000_dev
 					throw $this->©exception( // Should NOT happen!
 						$this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
 						$this->i18n('Invalid `$type`. Expecting `$this::public_type|$this::protected_type|$this::private_type`.').
-						sprintf($this->i18n(' Got: `%1$s`.'), $type)
+						' '.sprintf($this->i18n('Got: `%1$s`.'), $type)
 					);
 				}
 

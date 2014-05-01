@@ -1023,7 +1023,7 @@ namespace websharks_core_v000000_dev
 							throw new exception( // Do NOT allow this.
 								$this, $this->method(__FUNCTION__).'#read_only_magic_property_error_via____set()', get_defined_vars(),
 								sprintf($this->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-								sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+								' '.sprintf($this->i18n('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 							);
 						}
 
@@ -1052,7 +1052,7 @@ namespace websharks_core_v000000_dev
 							throw new exception( // Do NOT allow this.
 								$this, $this->method(__FUNCTION__).'#read_only_magic_property_error_via____unset()', get_defined_vars(),
 								sprintf($this->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-								sprintf($this->i18n(' This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+								' '.sprintf($this->i18n('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 							);
 						}
 
@@ -1187,7 +1187,7 @@ namespace websharks_core_v000000_dev
 								throw new exception( // Detailed error; this is HARD to figure out when it happens.
 									$this, $this->method(__FUNCTION__).'#undefined_magic_property_error_via__get()', get_defined_vars(),
 									sprintf($this->i18n('Undefined property: `%1$s`. Possible issue with encoding.'), $property).
-									$this->i18n(' Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
+									' '.$this->i18n('Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
 								);
 							throw new exception($this, $this->method(__FUNCTION__).'#undefined_magic_property_error_via__get()', get_defined_vars(),
 							                    sprintf($this->i18n('Undefined property: `%1$s`.'), $property));
@@ -1343,7 +1343,7 @@ namespace websharks_core_v000000_dev
 								throw new exception( // Detailed error; this is HARD to figure out when it happens.
 									$this, $this->method(__FUNCTION__).'#undefined_magic_method_error_via__call()', get_defined_vars(),
 									sprintf($this->i18n('Undefined method: `%1$s`. Possible issue with encoding.'), $method).
-									$this->i18n(' Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
+									' '.$this->i18n('Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
 								);
 							throw new exception($this, $this->method(__FUNCTION__).'#undefined_magic_method_error_via__call()', get_defined_vars(),
 							                    sprintf($this->i18n('Undefined method: `%1$s`.'), $method));
@@ -1455,7 +1455,7 @@ namespace websharks_core_v000000_dev
 								           $this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
 								           sprintf($this->i18n('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
 								                   $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $required_args, $total_args).
-								           sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
+								           ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($args)));
 
 							if($total_args === 0) return TRUE; // Stop here (no arguments to check).
 
@@ -1662,7 +1662,7 @@ namespace websharks_core_v000000_dev
 									           $this->method(__FUNCTION__).'#invalid_args', get_defined_vars(),
 									           sprintf($this->i18n('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
 									                   $position, $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $types, $empty, $type_given).
-									           sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
+									           ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($args)));
 								}
 							return TRUE; // Default return value (no problem).
 						}
@@ -1733,7 +1733,7 @@ namespace websharks_core_v000000_dev
 										           $this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
 										           sprintf($this->i18n('`%1$s` requires missing argument key `%2$s`.'),
 										                   $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $_default_arg_key).
-										           sprintf($this->i18n(' Got: `%1$s`.'), $this->©var->dump($args)));
+										           ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($args)));
 								}
 							// Commenting for performance. NOT absolutely necessary.
 							# unset($_default_arg_key_position, $_default_arg_key); // Housekeeping.
@@ -1801,7 +1801,7 @@ namespace websharks_core_v000000_dev
 										throw $this->©exception( // Invalid property type.
 										           $this->method(__FUNCTION__).'#invalid_property_type', get_defined_vars(),
 										           sprintf($this->i18n('Property type mismatch for property name: `%1$s`.'), $_property).
-										           sprintf($this->i18n(' Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
+										           ' '.sprintf($this->i18n('Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
 										);
 									$this->$_property = $_value; // Sets/updates existing property value.
 								}

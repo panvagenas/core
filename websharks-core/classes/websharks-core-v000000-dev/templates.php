@@ -713,8 +713,8 @@ namespace websharks_core_v000000_dev
 										throw $this->©exception(
 											$this->method(__FUNCTION__).'#unparsable_xml_config', get_defined_vars(),
 											sprintf($this->i18n('Unparsable XML `<template-config>` in `%1$s`.'), $this->file).
-											$this->i18n(' Please be sure to encode XML entities (i.e. special chars).').
-											sprintf($this->i18n(' Got: `%1$s`.'), $_template_config)
+											' '.$this->i18n('Please be sure to encode XML entities (i.e. special chars).').
+											' '.sprintf($this->i18n('Got: `%1$s`.'), $_template_config)
 										);
 									if($this->©xml->attribute($_xml_obj, 'file') !== $this->file)
 										continue; // It's NOT for this template file.

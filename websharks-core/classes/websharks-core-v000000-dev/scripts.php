@@ -336,7 +336,7 @@ namespace websharks_core_v000000_dev
 								throw $this->©exception(
 									$this->method(__FUNCTION__).'#url_missing', get_defined_vars(),
 									$this->i18n('Invalid script configuration. Missing and/or invalid `url`.').
-									sprintf($this->i18n(' Problematic script handle: `%1$s`.'), $_handle)
+									' '.sprintf($this->i18n('Problematic script handle: `%1$s`.'), $_handle)
 								);
 
 							// Additional configurations (all optional).

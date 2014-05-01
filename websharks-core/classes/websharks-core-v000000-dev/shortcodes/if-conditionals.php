@@ -75,15 +75,15 @@ namespace websharks_core_v000000_dev\shortcodes
 						throw $this->©exception( // Has one but NOT the other.
 							$this->method(__FUNCTION__).'#missing_content_if_tag', get_defined_vars(),
 							sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
-							sprintf($this->i18n(' Missing {%1$s}{/%1$s} tag. You MUST provide BOTH {%1$s}{/%1$s} and {%2$s}{/%2$s} tags.'),
-							        $content_if_tag, $content_else_tag)
+							' '.sprintf($this->i18n('Missing {%1$s}{/%1$s} tag. You MUST provide BOTH {%1$s}{/%1$s} and {%2$s}{/%2$s} tags.'),
+							            $content_if_tag, $content_else_tag)
 						);
 					else if($has_content_if_tag && !$has_content_else_tag)
 						throw $this->©exception( // Has one but NOT the other.
 							$this->method(__FUNCTION__).'#missing_content_else_tag', get_defined_vars(),
 							sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
-							sprintf($this->i18n(' Missing {%2$s}{/%2$s} tag. You MUST provide BOTH {%1$s}{/%1$s} and {%2$s}{/%2$s} tags.'),
-							        $content_if_tag, $content_else_tag)
+							' '.sprintf($this->i18n('Missing {%2$s}{/%2$s} tag. You MUST provide BOTH {%1$s}{/%1$s} and {%2$s}{/%2$s} tags.'),
+							            $content_if_tag, $content_else_tag)
 						);
 					unset($_content_if, $_content_else); // Housekeeping.
 
@@ -100,9 +100,9 @@ namespace websharks_core_v000000_dev\shortcodes
 									throw $this->©exception( // Unsupported operator.
 										$this->method(__FUNCTION__).'#unsupported_operator', get_defined_vars(),
 										sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
-										$this->i18n(' Simple conditionals CANNOT process operators like (`==` `!=` `<>`). Please use `AND` / `OR` logic only.'.
-										            ' Or, you could use advanced PHP conditionals instead of shortcodes.'
-										));
+										' '.$this->i18n('Simple conditionals CANNOT process operators like (`==` `!=` `<>`). Please use `AND` / `OR` logic only.').
+										' '.$this->i18n('Or, you could use PHP conditionals instead of shortcodes.')
+									);
 							}
 					unset($_attr_key, $_attr_value); // Housekeeping.
 
@@ -112,10 +112,10 @@ namespace websharks_core_v000000_dev\shortcodes
 						throw $this->©exception( // More than ONE operator!
 							$this->method(__FUNCTION__).'#unsupported_operator_mix', get_defined_vars(),
 							sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
-							$this->i18n(' It\'s NOT possible to mix logic using an AND/OR combination. Please stick to one type of logic or another.'.
-							            ' If both types of logic are needed, you MUST use two different shortcode expressions.'.
-							            ' Or, you could use advanced PHP conditionals instead of shortcodes.'
-							));
+							' '.$this->i18n('It\'s NOT possible to mix logic using an AND/OR combination. Please stick to one type of logic or another.').
+							' '.$this->i18n('If both types of logic are needed, you MUST use two different shortcode expressions.').
+							' '.$this->i18n('Or, you could use PHP conditionals instead of shortcodes.')
+						);
 					// Determine the type of logic applied by this shortcode.
 
 					$logic = $this::all_logic; // This is the default logic type (MUST satisfy all expressions).
@@ -131,9 +131,9 @@ namespace websharks_core_v000000_dev\shortcodes
 								throw $this->©exception(
 									$this->method(__FUNCTION__).'#invalid_expression', get_defined_vars(),
 									sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
-									sprintf($this->i18n(' The following is an invalid expression: `%1$s`.'), $_attr_expression_value).
-									$this->i18n(' Please be sure to remove ALL spaces from your expression (for instance, remove spaces between arguments).').
-									sprintf($this->i18n(' Please use one or more of these conditional functions: `%1$s`.'), $this->©var->dump($functions_allowed))
+									' '.sprintf($this->i18n('The following is an invalid expression: `%1$s`.'), $_attr_expression_value).
+									' '.$this->i18n('Please be sure to remove ALL spaces from your expression (for instance, remove spaces between arguments).').
+									' '.sprintf($this->i18n('Please use one or more of these conditional functions: `%1$s`.'), $this->©var->dump($functions_allowed))
 								);
 							// Define all expression components.
 
@@ -147,8 +147,8 @@ namespace websharks_core_v000000_dev\shortcodes
 								throw $this->©exception(
 									$this->method(__FUNCTION__).'#function_not_allowed', get_defined_vars(),
 									sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
-									sprintf($this->i18n(' The following function is NOT allowed in a shortcode (for security purposes): `%1$s`.'), $_function).
-									sprintf($this->i18n(' Functions allowed in shortcodes, are limited to: `%1$s`.'), $this->©var->dump($functions_allowed))
+									' '.sprintf($this->i18n('The following function is NOT allowed in a shortcode (for security purposes): `%1$s`.'), $_function).
+									' '.sprintf($this->i18n('Functions allowed in shortcodes, are limited to: `%1$s`.'), $this->©var->dump($functions_allowed))
 								);
 							// Argument parsing (supports arrays, supports typecasting).
 
@@ -195,8 +195,8 @@ namespace websharks_core_v000000_dev\shortcodes
 								throw $this->©exception(
 									$this->method(__FUNCTION__).'#argument_not_allowed', get_defined_vars(),
 									sprintf($this->i18n('Regarding the `%1$s` shortcode.'), $shortcode).
-									$this->i18n(' One of the following snippets appear in at least one function argument value: `$`, `(`, `)`, `new `.').
-									sprintf($this->i18n(' Please do NOT use a variable or expression as an argument value: `%1$s`.'), $this->©var->dump($_args))
+									' '.$this->i18n('One of the following snippets appear in at least one function argument value: `$`, `(`, `)`, `new `.').
+									' '.sprintf($this->i18n('Please do NOT use a variable or expression as an argument value: `%1$s`.'), $this->©var->dump($_args))
 								);
 							// Process shortcode conditional.
 

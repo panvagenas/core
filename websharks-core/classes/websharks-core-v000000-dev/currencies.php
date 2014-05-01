@@ -54,13 +54,13 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_from_currency', get_defined_vars(),
 							$this->i18n('Argument `$from` MUST be 3 characters in length.').
-							sprintf($this->i18n(' Got: `%1$s`.'), $from)
+							' '.sprintf($this->i18n('Got: `%1$s`.'), $from)
 						);
 					if(strlen($to) !== 3)
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_to_currency', get_defined_vars(),
 							$this->i18n('Argument `$to` MUST be 3 characters in length.').
-							sprintf($this->i18n(' Got: `%1$s`.'), $to)
+							' '.sprintf($this->i18n('Got: `%1$s`.'), $to)
 						);
 					// Attempt to convert the currency via Google's calculator.
 
@@ -90,7 +90,7 @@ namespace websharks_core_v000000_dev
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#currency_conversion_failure', get_defined_vars(),
 						sprintf($this->i18n('Currency conversion failed with error: `%1$s`.'), $error_msg).
-						sprintf($this->i18n(' JSON response data: `%1$s`'), $this->©var->dump($json))
+						' '.sprintf($this->i18n('JSON response data: `%1$s`'), $this->©var->dump($json))
 					);
 				}
 
@@ -145,13 +145,13 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_currency', get_defined_vars(),
 							$this->i18n('Argument `$currency` MUST be 3 characters in length.').
-							sprintf($this->i18n(' Instead got: `%1$s`.'), $currency)
+							' '.sprintf($this->i18n('Instead got: `%1$s`.'), $currency)
 						);
 					if($currency && !isset($currencies[$currency]))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#unsupported_currency', get_defined_vars(),
 							$this->i18n('The `$currency` code is NOT currently supported by this software.').
-							sprintf($this->i18n(' Unsupported currency code: `%1$s`.'), $currency)
+							' '.sprintf($this->i18n('Unsupported currency code: `%1$s`.'), $currency)
 						);
 					$format = number_format($amount, 2, '.', '');
 					$format = ($currency && $prefix) ? $this->get($currency, 'symbol').$format : $format;
@@ -326,19 +326,19 @@ namespace websharks_core_v000000_dev
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_currency', get_defined_vars(),
 							$this->i18n('Argument `$currency` MUST be 3 characters in length.').
-							sprintf($this->i18n(' Instead got: `%1$s`.'), $currency)
+							' '.sprintf($this->i18n('Instead got: `%1$s`.'), $currency)
 						);
 					if(($component = strtolower($component)) && !in_array($component, array('symbol', 'singular_name', 'plural_name'), TRUE))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#invalid_component', get_defined_vars(),
 							$this->i18n('Argument `$component` MUST be one of: `symbol`, `singular_name`, `plural_name`.').
-							sprintf($this->i18n(' Instead got: `%1$s`.'), $component)
+							' '.sprintf($this->i18n('Instead got: `%1$s`.'), $component)
 						);
 					if($currency && !isset($this->cache[__FUNCTION__][$currency]))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#unsupported_currency', get_defined_vars(),
 							$this->i18n('The `$currency` code is NOT currently supported by this software.').
-							sprintf($this->i18n(' Unsupported currency code: `%1$s`.'), $currency)
+							' '.sprintf($this->i18n('Unsupported currency code: `%1$s`.'), $currency)
 						);
 					// Everything looks good. Return now.
 
