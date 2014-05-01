@@ -42,22 +42,6 @@ namespace websharks_core_v000000_dev
 			public $java = 'java -Xms2M -Xmx32M';
 
 			/**
-			 * Path to 7-Zip application. Exit status `0` on success.
-			 * See also: {@link http://sevenzip.sourceforge.jp/chm/cmdline/exit_codes.htm}
-			 *
-			 * @var string Path to `7z` command line tool.
-			 */
-			public $_7z = '7z';
-
-			/**
-			 * Path to `robocopy` in Windows®. Exit status `1` on success.
-			 * See also: {@link http://ss64.com/nt/robocopy-exit.html}
-			 *
-			 * @var string Path to `robocopy` command line tool.
-			 */
-			public $robocopy = 'robocopy';
-
-			/**
 			 * Path to `rmdir` in Windows®. Exit status `0` on success.
 			 * However, unable to find any official docs on exit status codes.
 			 *
@@ -74,21 +58,6 @@ namespace websharks_core_v000000_dev
 			 * @var string Path to `mklink` command line tool.
 			 */
 			public $mklink = 'mklink';
-
-			/**
-			 * Constructor.
-			 *
-			 * @param object|array $___instance_config Required at all times.
-			 *    A parent object instance, which contains the parent's ``$___instance_config``,
-			 *    or a new ``$___instance_config`` array.
-			 */
-			public function __construct($___instance_config)
-				{
-					parent::__construct($___instance_config);
-					// Here we might eventually modify certain properties based on operating system.
-					// It might also be helpful to check multiple locations for some command line tools.
-					// For instance, Java™ or 7-Zip might exist in one several different locations.
-				}
 
 			/**
 			 * Are command line operations possible?

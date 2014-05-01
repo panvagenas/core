@@ -483,6 +483,9 @@ namespace websharks_core_v000000_dev
 
 			/**
 			 * Cleans any existing output buffers.
+			 *
+			 * @note It is not possible to clean a locked buffer.
+			 *    This will trigger an `E_NOTICE` if a buffer is not cleanable.
 			 */
 			public function ob_end_clean()
 				{
