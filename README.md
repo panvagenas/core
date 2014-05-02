@@ -393,3 +393,8 @@ In this case, there could be multiple instances of the WebSharks™ Core running
 #### Where Is The Formal Documentation for the WebSharks™ Core?
 
 We appreciate your interest in the WebSharks™ Core. However, it's STILL in development at this point. While the product HAS reached the beta phase and IS already being used to construct some amazing new plugins for WordPress; we do NOT have the final documentation ready just yet. Please stay tuned for further details. We will update this page and construct a Codex for the WebSharks™ Core very soon. Until then, you are free to browse the source code on your own. Most of the formal documentation that is forthcoming; will be taken directly from the extremely well-documented source code that already exists :-)
+
+
+#### UPDATE ... the Codex is now available online, but remains in a beta state.
+
+See <http://websharks.github.io/Core/codex/index.html>
