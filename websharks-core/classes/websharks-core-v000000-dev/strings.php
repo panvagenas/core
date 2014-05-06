@@ -1392,7 +1392,7 @@ namespace websharks_core_v000000_dev
 					if(is_null($value) && $convert_nulls_no_esc)
 						return 'NULL'; // String `NULL` in this case.
 
-					return $this->©db->_real_escape((string)$value);
+					return esc_sql((string)$value);
 				}
 
 			/**
@@ -2535,8 +2535,8 @@ namespace websharks_core_v000000_dev
 
 					if(!is_string($base64_url_safe = base64_encode($string)))
 						throw $this->©exception(
-						           $this->method(__FUNCTION__).'#failure', get_defined_vars(),
-						           $this->i18n('Base64 encoding failed (`$base64_url_safe` is NOT a string).')
+							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
+							$this->i18n('Base64 encoding failed (`$base64_url_safe` is NOT a string).')
 						);
 					$base64_url_safe = str_replace($url_unsafe_chars, $url_safe_chars, $base64_url_safe);
 					$base64_url_safe = (strlen($trim_padding_chars)) ? rtrim($base64_url_safe, $trim_padding_chars) : $base64_url_safe;
