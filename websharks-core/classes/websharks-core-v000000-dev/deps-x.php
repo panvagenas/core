@@ -239,11 +239,13 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			// Define some other important variables.
 
-			$php_version = PHP_VERSION; // Installed PHP version.
+			$apache_version = $this->apache_version();
+			$php_version    = PHP_VERSION; // Installed PHP version.
 			global $wp_version; // Global made available by WordPress®.
 
-			$php_version_required = '5.3.1'; #!php-version-required!# Required PHP version.
-			$wp_version_required  = '3.5.1'; #!wp-version-required!# Required WordPress® version.
+			$apache_version_required = '2.1'; #!apache-version-required!#
+			$php_version_required    = '5.3.1'; #!php-version-required!#
+			$wp_version_required     = '3.5.1'; #!wp-version-required!#
 
 			# --------------------------------------------------------------------------------------------------------------------------------
 
@@ -295,6 +297,32 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					else $plugin_dir_names = $this->default_plugin_dir_names;
 
 					unset($_file); // A little housekeeping.
+				}
+			# --------------------------------------------------------------------------------------------------------------------------------
+
+			if($apache_version && version_compare($apache_version, $apache_version_required, '<'))
+				{
+					$errors[] = array(
+						'title'   => $this->i18n('Apache Version'),
+						'message' => sprintf(
+							$this->i18n(
+								'Apache v%1$s (or higher) is required to run %2$s.'.
+								' You are currently running Apache <code>v%3$s</code>. Please upgrade.'
+							), htmlspecialchars($apache_version_required), htmlspecialchars($plugin_name), htmlspecialchars($apache_version)
+						)
+					);
+				}
+			else if($apache_version) // Pass on this check.
+				{
+					$passes[] = array(
+						'title'   => $this->i18n('Apache Version'),
+						'message' => sprintf(
+							$this->i18n(
+								'You are currently running Apache <code>%1$s</code> (which is fine).'.
+								' Minimum required version is: <code>%2$s</code>.'
+							), htmlspecialchars($apache_version), htmlspecialchars($apache_version_required)
+						)
+					);
 				}
 			# --------------------------------------------------------------------------------------------------------------------------------
 
@@ -2750,6 +2778,46 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	# --------------------------------------------------------------------------------------------------------------------------------------
 
 	/**
+	 * Acquires the currently installed version of Apache.
+	 *
+	 * @return string {@inheritdoc}
+	 *
+	 * @see websharks_core_v000000_dev\env::apache_version()
+	 * @inheritdoc websharks_core_v000000_dev\env::apache_version()
+	 */
+	public function apache_version()
+		{
+			if(isset(self::$static[__FUNCTION__]))
+				return self::$static[__FUNCTION__];
+
+			$regex = '/Apache\/(?P<version>[1-9][^\s]*)/i';
+
+			if(!empty($_SERVER['SERVER_SOFTWARE']) && is_string($_SERVER['SERVER_SOFTWARE']))
+				if(preg_match($regex, $_SERVER['SERVER_SOFTWARE'], $apache))
+					return (self::$static[__FUNCTION__] = $apache['version']);
+
+			if(!$this->is_function_possible('shell_exec') || ini_get('open_basedir'))
+				return (self::$static[__FUNCTION__] = ''); // Not possible.
+
+			if(!($httpd_v = shell_exec('/usr/bin/env httpd -v')))
+				{
+					$_possible_httpd_locations = array(
+						'/usr/sbin/httpd', '/usr/bin/httpd',
+						'/usr/local/sbin/httpd', '/usr/local/bin/httpd',
+						'/usr/local/apache/sbin/httpd', '/usr/local/apache/bin/httpd'
+					);
+					foreach($_possible_httpd_locations as $_httpd_location) if(is_file($_httpd_location))
+						if(($httpd_v = shell_exec(escapeshellarg($_httpd_location).' -v')))
+							break; // All done here.
+					unset($_possible_httpd_locations, $_httpd_location);
+				}
+			if($httpd_v && preg_match($regex, $httpd_v, $apache))
+				return (self::$static[__FUNCTION__] = $apache['version']);
+
+			return (self::$static[__FUNCTION__] = ''); // Unable to determine.
+		}
+
+	/**
 	 * Is a particular function, static method, or PHP language construct possible?
 	 *
 	 * @return boolean {@inheritdoc}
@@ -2765,15 +2833,15 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				);
 			$function = ltrim(strtolower($function), '\\'); // Clean this up before checking.
 
-			if(!isset(self::$static['is_function_possible'][$function]))
+			if(!isset(self::$static[__FUNCTION__][$function]))
 				{
-					self::$static['is_function_possible'][$function] = FALSE;
+					self::$static[__FUNCTION__][$function] = FALSE;
 
 					if((in_array($function, $this->constructs, TRUE) || is_callable($function) || function_exists($function))
 					   && !in_array($function, $this->disabled_functions(), TRUE) // And it is NOT disabled in some way.
-					) self::$static['is_function_possible'][(string)$function] = TRUE;
+					) self::$static[__FUNCTION__][(string)$function] = TRUE;
 				}
-			return self::$static['is_function_possible'][$function];
+			return self::$static[__FUNCTION__][$function];
 		}
 
 	/**
@@ -2786,26 +2854,26 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 */
 	public function disabled_functions()
 		{
-			if(isset(self::$static['disabled_functions']))
-				return self::$static['disabled_functions'];
+			if(isset(self::$static[__FUNCTION__]))
+				return self::$static[__FUNCTION__];
 
-			self::$static['disabled_functions'] = array();
+			self::$static[__FUNCTION__] = array();
 
 			if(!function_exists('ini_get'))
-				return self::$static['disabled_functions'];
+				return self::$static[__FUNCTION__];
 
 			if(($_ini_val = trim(strtolower(ini_get('disable_functions')))))
-				self::$static['disabled_functions'] = array_merge(self::$static['disabled_functions'], preg_split('/[\s;,]+/', $_ini_val, NULL, PREG_SPLIT_NO_EMPTY));
+				self::$static[__FUNCTION__] = array_merge(self::$static[__FUNCTION__], preg_split('/[\s;,]+/', $_ini_val, NULL, PREG_SPLIT_NO_EMPTY));
 			unset($_ini_val); // Housekeeping.
 
 			if(($_ini_val = trim(strtolower(ini_get('suhosin.executor.func.blacklist')))))
-				self::$static['disabled_functions'] = array_merge(self::$static['disabled_functions'], preg_split('/[\s;,]+/', $_ini_val, NULL, PREG_SPLIT_NO_EMPTY));
+				self::$static[__FUNCTION__] = array_merge(self::$static[__FUNCTION__], preg_split('/[\s;,]+/', $_ini_val, NULL, PREG_SPLIT_NO_EMPTY));
 			unset($_ini_val); // Housekeeping.
 
 			if(filter_var(ini_get('suhosin.executor.disable_eval'), FILTER_VALIDATE_BOOLEAN))
-				self::$static['disabled_functions'] = array_merge(self::$static['disabled_functions'], array('eval'));
+				self::$static[__FUNCTION__] = array_merge(self::$static[__FUNCTION__], array('eval'));
 
-			return self::$static['disabled_functions']; // All disabled functions.
+			return self::$static[__FUNCTION__]; // All disabled functions.
 		}
 
 	/**
@@ -2868,17 +2936,17 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 			if(strpos($dir_file, '://' !== FALSE)) // Quick check here for optimization.
 				{
-					if(!isset(self::$static['n_dir_seps__regex_stream_wrapper']))
-						self::$static['n_dir_seps__regex_stream_wrapper'] = substr($this->regex_valid_dir_file_stream_wrapper, 0, -2).'/';
-					if(preg_match(self::$static['n_dir_seps__regex_stream_wrapper'], $dir_file, $stream_wrapper)) // A stream wrapper?
-						$dir_file = preg_replace(self::$static['n_dir_seps__regex_stream_wrapper'], '', $dir_file);
+					if(!isset(self::$static[__FUNCTION__.'__regex_stream_wrapper']))
+						self::$static[__FUNCTION__.'__regex_stream_wrapper'] = substr($this->regex_valid_dir_file_stream_wrapper, 0, -2).'/';
+					if(preg_match(self::$static[__FUNCTION__.'__regex_stream_wrapper'], $dir_file, $stream_wrapper)) // A stream wrapper?
+						$dir_file = preg_replace(self::$static[__FUNCTION__.'__regex_stream_wrapper'], '', $dir_file);
 				}
 			if(strpos($dir_file, ':' !== FALSE)) // Quick drive letter check here for optimization.
 				{
-					if(!isset(self::$static['n_dir_seps__regex_win_drive_letter']))
-						self::$static['n_dir_seps__regex_win_drive_letter'] = substr($this->regex_valid_win_drive_letter, 0, -2).'/';
-					if(preg_match(self::$static['n_dir_seps__regex_win_drive_letter'], $dir_file)) // It has a Windows® drive letter?
-						$dir_file = preg_replace_callback(self::$static['n_dir_seps__regex_win_drive_letter'], create_function('$m', 'return strtoupper($m[0]);'), $dir_file);
+					if(!isset(self::$static[__FUNCTION__.'__regex_win_drive_letter']))
+						self::$static[__FUNCTION__.'__regex_win_drive_letter'] = substr($this->regex_valid_win_drive_letter, 0, -2).'/';
+					if(preg_match(self::$static[__FUNCTION__.'__regex_win_drive_letter'], $dir_file)) // It has a Windows® drive letter?
+						$dir_file = preg_replace_callback(self::$static[__FUNCTION__.'__regex_win_drive_letter'], create_function('$m', 'return strtoupper($m[0]);'), $dir_file);
 				}
 			$dir_file = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $dir_file));
 			$dir_file = ($allow_trailing_slash) ? $dir_file : rtrim($dir_file, '/'); // Strip trailing slashes.
@@ -2930,14 +2998,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				throw new exception( // Fail here; detected invalid arguments.
 					sprintf($this->i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
-			if($get_last_value && isset(self::$static['wp_load']))
-				return self::$static['wp_load'];
+			if($get_last_value && isset(self::$static[__FUNCTION__]))
+				return self::$static[__FUNCTION__];
 
 			if($check_abspath && defined('ABSPATH') && is_file($_wp_load = ABSPATH.'wp-load.php'))
-				return (self::$static['wp_load'] = $this->n_dir_seps($_wp_load));
+				return (self::$static[__FUNCTION__] = $this->n_dir_seps($_wp_load));
 
 			if(($_wp_load = $this->locate('/wp-load.php')))
-				return (self::$static['wp_load'] = $_wp_load);
+				return (self::$static[__FUNCTION__] = $_wp_load);
 
 			if(!isset($fallback)) // Auto-detection.
 				$fallback = defined('___DEV_KEY_OK');
@@ -2949,11 +3017,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					else $dev_dir = $this->n_dir_seps(self::$local_wp_dev_dir);
 
 					if(is_file($_wp_load = $dev_dir.'/wp-load.php'))
-						return (self::$static['wp_load'] = $_wp_load);
+						return (self::$static[__FUNCTION__] = $_wp_load);
 				}
 			unset($_wp_load); // Housekeeping.
 
-			return (self::$static['wp_load'] = ''); // Failure.
+			return (self::$static[__FUNCTION__] = ''); // Failure.
 		}
 
 	/**
@@ -3070,17 +3138,17 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 */
 	public function is_localhost()
 		{
-			if(!isset(self::$static['is_localhost']))
+			if(!isset(self::$static[__FUNCTION__]))
 				{
-					self::$static['is_localhost'] = FALSE;
+					self::$static[__FUNCTION__] = FALSE;
 
 					if(defined('LOCALHOST') && LOCALHOST)
-						self::$static['is_localhost'] = TRUE;
+						self::$static[__FUNCTION__] = TRUE;
 
 					else if(preg_match('/(?:localhost|127\.0\.0\.1|\.loc$)/i', $_SERVER['HTTP_HOST']))
-						self::$static['is_localhost'] = TRUE;
+						self::$static[__FUNCTION__] = TRUE;
 				}
-			return self::$static['is_localhost'];
+			return self::$static[__FUNCTION__];
 		}
 
 	/**
@@ -3093,14 +3161,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 */
 	public function is_cli()
 		{
-			if(!isset(self::$static['is_cli']))
+			if(!isset(self::$static[__FUNCTION__]))
 				{
-					self::$static['is_cli'] = FALSE;
+					self::$static[__FUNCTION__] = FALSE;
 
 					if(PHP_SAPI === 'cli')
-						self::$static['is_cli'] = TRUE;
+						self::$static[__FUNCTION__] = TRUE;
 				}
-			return self::$static['is_cli'];
+			return self::$static[__FUNCTION__];
 		}
 
 	# --------------------------------------------------------------------------------------------------------------------------------------

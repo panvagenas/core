@@ -178,6 +178,46 @@ namespace websharks_core_v000000_dev
 				}
 
 			/**
+			 * Acquires the currently installed version of Apache.
+			 *
+			 * @return string Current Apache version (if running Apache); and if it's possible to detect the version.
+			 *    Otherwise, if not running Apache (or we're unable to detect the version) an empty string.
+			 *
+			 * @see \deps_x_websharks_core_v000000_dev::apache_version()
+			 */
+			public function apache_version()
+				{
+					if(isset($this->static[__FUNCTION__]))
+						return $this->static[__FUNCTION__];
+
+					$regex = '/Apache\/(?P<version>[1-9][^\s]*)/i';
+
+					if(!empty($_SERVER['SERVER_SOFTWARE']) && is_string($_SERVER['SERVER_SOFTWARE']))
+						if(preg_match($regex, $_SERVER['SERVER_SOFTWARE'], $apache))
+							return ($this->static[__FUNCTION__] = $apache['version']);
+
+					if(!$this->©function->is_possible('shell_exec') || ini_get('open_basedir'))
+						return ($this->static[__FUNCTION__] = ''); // Not possible.
+
+					if(!($httpd_v = shell_exec('/usr/bin/env httpd -v')))
+						{
+							$_possible_httpd_locations = array(
+								'/usr/sbin/httpd', '/usr/bin/httpd',
+								'/usr/local/sbin/httpd', '/usr/local/bin/httpd',
+								'/usr/local/apache/sbin/httpd', '/usr/local/apache/bin/httpd'
+							);
+							foreach($_possible_httpd_locations as $_httpd_location) if(is_file($_httpd_location))
+								if(($httpd_v = shell_exec(escapeshellarg($_httpd_location).' -v')))
+									break; // All done here.
+							unset($_possible_httpd_locations, $_httpd_location);
+						}
+					if($httpd_v && preg_match($regex, $httpd_v, $apache))
+						return ($this->static[__FUNCTION__] = $apache['version']);
+
+					return ($this->static[__FUNCTION__] = ''); // Unable to determine.
+				}
+
+			/**
 			 * Checks to see if we're running under a command line interface.
 			 *
 			 * @return boolean TRUE if we're running under a command line interface, else FALSE.

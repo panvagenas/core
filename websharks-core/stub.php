@@ -259,16 +259,16 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function can_phar()
 				{
-					if(isset(self::$static['can_phar']))
-						return self::$static['can_phar'];
+					if(isset(self::$static[__FUNCTION__]))
+						return self::$static[__FUNCTION__];
 
-					self::$static['can_phar'] = extension_loaded('phar');
+					self::$static[__FUNCTION__] = extension_loaded('phar');
 
-					if(self::$static['can_phar'] && extension_loaded('suhosin'))
+					if(self::$static[__FUNCTION__] && extension_loaded('suhosin'))
 						if(stripos(ini_get('suhosin.executor.include.whitelist'), 'phar') === FALSE)
-							self::$static['can_phar'] = FALSE;
+							self::$static[__FUNCTION__] = FALSE;
 
-					return self::$static['can_phar'];
+					return self::$static[__FUNCTION__];
 				}
 
 			/**
@@ -345,14 +345,14 @@ if(!class_exists('websharks_core_v000000_dev'))
 						throw new exception( // Fail here; detected invalid arguments.
 							sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 						);
-					if($get_last_value && isset(self::$static['wp_load']))
-						return self::$static['wp_load'];
+					if($get_last_value && isset(self::$static[__FUNCTION__]))
+						return self::$static[__FUNCTION__];
 
 					if($check_abspath && defined('ABSPATH') && is_file($_wp_load = ABSPATH.'wp-load.php'))
-						return (self::$static['wp_load'] = self::n_dir_seps($_wp_load));
+						return (self::$static[__FUNCTION__] = self::n_dir_seps($_wp_load));
 
 					if(($_wp_load = self::locate('/wp-load.php')))
-						return (self::$static['wp_load'] = $_wp_load);
+						return (self::$static[__FUNCTION__] = $_wp_load);
 
 					if(!isset($fallback)) // Auto-detection.
 						$fallback = defined('___DEV_KEY_OK');
@@ -364,11 +364,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 							else $dev_dir = self::n_dir_seps(self::$local_wp_dev_dir);
 
 							if(is_file($_wp_load = $dev_dir.'/wp-load.php'))
-								return (self::$static['wp_load'] = $_wp_load);
+								return (self::$static[__FUNCTION__] = $_wp_load);
 						}
 					unset($_wp_load); // Housekeeping.
 
-					return (self::$static['wp_load'] = ''); // Failure.
+					return (self::$static[__FUNCTION__] = ''); // Failure.
 				}
 
 			# --------------------------------------------------------------------------------------------------------------------------------
@@ -637,8 +637,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function web_phar_mime_types()
 				{
-					if(isset(self::$static['web_phar_mime_types']))
-						return self::$static['web_phar_mime_types'];
+					if(isset(self::$static[__FUNCTION__]))
+						return self::$static[__FUNCTION__];
 
 					if(!self::can_phar()) // Not possible.
 						throw new exception(self::cant_phar_msg());
@@ -651,7 +651,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					$mime_types['phps'] = Phar::PHPS; // Source file.
 
-					return (self::$static['web_phar_mime_types'] = $mime_types);
+					return (self::$static[__FUNCTION__] = $mime_types);
 				}
 
 			# --------------------------------------------------------------------------------------------------------------------------------
@@ -669,8 +669,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function textual_mime_types()
 				{
-					if(isset(self::$static['textual_mime_types']))
-						return self::$static['textual_mime_types'];
+					if(isset(self::$static[__FUNCTION__]))
+						return self::$static[__FUNCTION__];
 
 					$other_textual_extensions = array('svg', 'bat', 'sh');
 
@@ -682,7 +682,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 						else unset($mime_types[$_extension]);
 					unset($_extension, $_type);
 
-					return (self::$static['textual_mime_types'] = $mime_types);
+					return (self::$static[__FUNCTION__] = $mime_types);
 				}
 
 			/**
@@ -694,12 +694,12 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function compressable_mime_types()
 				{
-					if(isset(self::$static['compressable_mime_types']))
-						return self::$static['compressable_mime_types'];
+					if(isset(self::$static[__FUNCTION__]))
+						return self::$static[__FUNCTION__];
 
 					$mime_types = self::textual_mime_types();
 
-					return (self::$static['compressable_mime_types'] = $mime_types);
+					return (self::$static[__FUNCTION__] = $mime_types);
 				}
 
 			/**
@@ -711,14 +711,14 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function binary_mime_types()
 				{
-					if(isset(self::$static['binary_mime_types']))
-						return self::$static['binary_mime_types'];
+					if(isset(self::$static[__FUNCTION__]))
+						return self::$static[__FUNCTION__];
 
 					$mime_types         = self::mime_types();
 					$textual_mime_types = self::textual_mime_types();
 					$mime_types         = array_diff_assoc($mime_types, $textual_mime_types);
 
-					return (self::$static['binary_mime_types'] = $mime_types);
+					return (self::$static[__FUNCTION__] = $mime_types);
 				}
 
 			/**
@@ -730,8 +730,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function cacheable_mime_types()
 				{
-					if(isset(self::$static['cacheable_mime_types']))
-						return self::$static['cacheable_mime_types'];
+					if(isset(self::$static[__FUNCTION__]))
+						return self::$static[__FUNCTION__];
 
 					$mime_types = self::mime_types();
 					$m          =& $mime_types; // Shorter reference.
@@ -741,7 +741,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 					unset($m['asp'], $m['aspx']);
 					unset($m['cgi'], $m['pl']);
 
-					return (self::$static['cacheable_mime_types'] = $mime_types);
+					return (self::$static[__FUNCTION__] = $mime_types);
 				}
 
 			/**
@@ -758,10 +758,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 				{
 					$utf8 = '; charset=UTF-8';
 
-					if(isset(self::$static['mime_types']))
-						return self::$static['mime_types'];
+					if(isset(self::$static[__FUNCTION__]))
+						return self::$static[__FUNCTION__];
 
-					return (self::$static['mime_types'] = array(
+					return (self::$static[__FUNCTION__] = array(
 
 						// Text files.
 						'md'              => 'text/plain'.$utf8,
@@ -1060,17 +1060,17 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 					if(strpos($dir_file, '://' !== FALSE)) // Quick check here for optimization.
 						{
-							if(!isset(self::$static['n_dir_seps__regex_stream_wrapper']))
-								self::$static['n_dir_seps__regex_stream_wrapper'] = substr(self::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
-							if(preg_match(self::$static['n_dir_seps__regex_stream_wrapper'], $dir_file, $stream_wrapper)) // A stream wrapper?
-								$dir_file = preg_replace(self::$static['n_dir_seps__regex_stream_wrapper'], '', $dir_file);
+							if(!isset(self::$static[__FUNCTION__.'__regex_stream_wrapper']))
+								self::$static[__FUNCTION__.'__regex_stream_wrapper'] = substr(self::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
+							if(preg_match(self::$static[__FUNCTION__.'__regex_stream_wrapper'], $dir_file, $stream_wrapper)) // A stream wrapper?
+								$dir_file = preg_replace(self::$static[__FUNCTION__.'__regex_stream_wrapper'], '', $dir_file);
 						}
 					if(strpos($dir_file, ':' !== FALSE)) // Quick drive letter check here for optimization.
 						{
-							if(!isset(self::$static['n_dir_seps__regex_win_drive_letter']))
-								self::$static['n_dir_seps__regex_win_drive_letter'] = substr(self::$regex_valid_win_drive_letter, 0, -2).'/';
-							if(preg_match(self::$static['n_dir_seps__regex_win_drive_letter'], $dir_file)) // It has a Windows® drive letter?
-								$dir_file = preg_replace_callback(self::$static['n_dir_seps__regex_win_drive_letter'], create_function('$m', 'return strtoupper($m[0]);'), $dir_file);
+							if(!isset(self::$static[__FUNCTION__.'__regex_win_drive_letter']))
+								self::$static[__FUNCTION__.'__regex_win_drive_letter'] = substr(self::$regex_valid_win_drive_letter, 0, -2).'/';
+							if(preg_match(self::$static[__FUNCTION__.'__regex_win_drive_letter'], $dir_file)) // It has a Windows® drive letter?
+								$dir_file = preg_replace_callback(self::$static[__FUNCTION__.'__regex_win_drive_letter'], create_function('$m', 'return strtoupper($m[0]);'), $dir_file);
 						}
 					$dir_file = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $dir_file));
 					$dir_file = ($allow_trailing_slash) ? $dir_file : rtrim($dir_file, '/'); // Strip trailing slashes.
@@ -1179,17 +1179,17 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			public static function is_browser()
 				{
-					if(!isset(self::$static['is_browser']))
+					if(!isset(self::$static[__FUNCTION__]))
 						{
-							self::$static['is_browser'] = FALSE;
+							self::$static[__FUNCTION__] = FALSE;
 
 							$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/\s]+[0-9]/i';
 
 							if(!empty($_SERVER['HTTP_USER_AGENT']) && is_string($_SERVER['HTTP_USER_AGENT']))
 								if(preg_match($regex, $_SERVER['HTTP_USER_AGENT']))
-									self::$static['is_browser'] = TRUE;
+									self::$static[__FUNCTION__] = TRUE;
 						}
-					return self::$static['is_browser'];
+					return self::$static[__FUNCTION__];
 				}
 
 			# --------------------------------------------------------------------------------------------------------------------------------
