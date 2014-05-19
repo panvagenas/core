@@ -117,5 +117,4 @@ namespace # Global namespace.
 	class websharks_core__menu_pages__menu_page extends \websharks_core_v000000_dev\menu_pages\menu_page{}
 	class websharks_core__menu_pages__panels__panel extends \websharks_core_v000000_dev\menu_pages\panels\panel{}
 	class websharks_core__shortcodes__shortcode extends \websharks_core_v000000_dev\shortcodes\shortcode{}
-	class websharks_core__shortcodes__if_conditionals extends \websharks_core_v000000_dev\shortcodes\if_conditionals{}
 }

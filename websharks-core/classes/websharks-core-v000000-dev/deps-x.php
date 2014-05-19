@@ -121,7 +121,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		/*
 		 * Handle some dynamic regex replacement codes in class properties (as follows).
 		 */
-		$webshark_home_dir      = (!empty($_SERVER['WEBSHARK_HOME'])) ? (string)$_SERVER['WEBSHARK_HOME'] : '';
+		$webshark_home_dir      = (!empty($_SERVER['WEBSHARK_HOME'])) ? (string)$_SERVER['WEBSHARK_HOME'] : '/webshark/home';
 		self::$local_wp_dev_dir = str_replace('%%$_SERVER[WEBSHARK_HOME]%%', $webshark_home_dir, self::$local_wp_dev_dir);
 
 		/*

@@ -47,7 +47,7 @@ namespace websharks_core_v000000_dev
 
 			// For plugins that enable this option (only ONE plugin may add this hook).
 			if($this->©options->get('php.evaluate') && !isset($this->static[__FUNCTION__]['php.evaluate']))
-			{
+			{ // @TODO Remove this.
 				add_action('init', array($this, '©php.init'), -1);
 				$this->static[__FUNCTION__]['php.evaluate'] = TRUE;
 			}
@@ -85,14 +85,6 @@ namespace websharks_core_v000000_dev
 			{
 				add_filter('widget_text', 'do_shortcode');
 				$this->static[__FUNCTION__]['widgets.enable_shortcodes'] = TRUE;
-			}
-			// Add `[if]` shortcodes (only ONE plugin may add these shortcodes).
-			if($this->©options->get('shortcodes.if_conditionals.enable') && !isset($this->static[__FUNCTION__]['shortcodes.if_conditionals']))
-			{
-				for($_i = 0; $_i <= 3; $_i++) // Allows nested shortcodes with `_`, `__`, `___` prefixes.
-					add_shortcode(str_repeat('_', $_i).'if', array($this, '©shortcodes__if_conditionals.do_shortcode'));
-				$this->static[__FUNCTION__]['shortcodes.if_conditionals'] = TRUE;
-				unset($_i); // Housekeeping.
 			}
 			// Handles `update_plugins` array (for pro upgrades).
 			add_filter('pre_site_transient_update_plugins', array($this, '©plugins.pre_site_transient_update_plugins'), PHP_INT_MAX);

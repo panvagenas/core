@@ -101,7 +101,7 @@ namespace websharks_core_v000000_dev
 					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
 					$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 				);
-			header('Content-Encoding:'.((strlen($encoding)) ? ' '.$encoding : ''));
+			header('Content-Encoding:'.((isset($encoding[0])) ? ' '.$encoding : ''));
 		}
 	}
 }

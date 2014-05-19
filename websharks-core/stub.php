@@ -198,7 +198,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			/*
 			 * Handle some dynamic regex replacement codes in class properties (as follows).
 			 */
-			$webshark_home_dir                             = (!empty($_SERVER['WEBSHARK_HOME'])) ? (string)$_SERVER['WEBSHARK_HOME'] : '';
+			$webshark_home_dir                             = (!empty($_SERVER['WEBSHARK_HOME'])) ? (string)$_SERVER['WEBSHARK_HOME'] : '/webshark/home';
 			self::$local_wp_dev_dir                        = str_replace('%%$_SERVER[WEBSHARK_HOME]%%', $webshark_home_dir, self::$local_wp_dev_dir);
 			self::$local_core_repo_dir                     = str_replace('%%$_SERVER[WEBSHARK_HOME]%%', $webshark_home_dir, self::$local_core_repo_dir);
 			self::$regex_valid_core_ns_version             = str_replace('%%self::$core_ns_stub_v%%', preg_quote(self::$core_ns_stub_v, '/'), self::$regex_valid_core_ns_version);

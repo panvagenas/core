@@ -38,25 +38,6 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Is BuddyPress™ installed?
-		 *
-		 * @return boolean TRUE if BuddyPress™ is installed, else FALSE.
-		 *
-		 * @assert () === FALSE
-		 */
-		public function is_bp_installed()
-		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
-
-				if(defined('BP_VERSION') && did_action('bp_core_loaded'))
-					$this->static[__FUNCTION__] = TRUE;
-			}
-			return $this->static[__FUNCTION__];
-		}
-
-		/**
 		 * Checks to see if we're in a localhost environment.
 		 *
 		 * @return boolean TRUE if we're in a localhost environment, else FALSE.
@@ -364,6 +345,25 @@ namespace websharks_core_v000000_dev
 			if(!isset($this->static[__FUNCTION__]))
 				$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY);
 
+			return $this->static[__FUNCTION__];
+		}
+
+		/**
+		 * Is BuddyPress™ installed?
+		 *
+		 * @return boolean TRUE if BuddyPress™ is installed, else FALSE.
+		 *
+		 * @assert () === FALSE
+		 */
+		public function is_bp_installed()
+		{
+			if(!isset($this->static[__FUNCTION__]))
+			{
+				$this->static[__FUNCTION__] = FALSE;
+
+				if(defined('BP_VERSION') && did_action('bp_core_loaded'))
+					$this->static[__FUNCTION__] = TRUE;
+			}
 			return $this->static[__FUNCTION__];
 		}
 

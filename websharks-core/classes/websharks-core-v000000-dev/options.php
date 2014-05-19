@@ -75,10 +75,6 @@ namespace websharks_core_v000000_dev
 
 				'crons.config'                                       => array(),
 
-				'shortcodes.if_conditionals.enable'                  => '0',
-				'shortcodes.if_conditionals.restrict_functions'      => '1',
-				'shortcodes.if_conditionals.other_functions_allowed' => array(),
-
 				'menu_pages.theme'                                   => 'jquery-ui-theme-default',
 				'menu_pages.panels.order'                            => array(),
 				'menu_pages.panels.state'                            => array(),
@@ -143,10 +139,6 @@ namespace websharks_core_v000000_dev
 				'scripts.admin_side.load_jquery_via_google'          => array('string:numeric >=' => 0),
 
 				'crons.config'                                       => array('array:!empty'),
-
-				'shortcodes.if_conditionals.enable'                  => array('string:numeric >=' => 0),
-				'shortcodes.if_conditionals.restrict_functions'      => array('string:numeric >=' => 0),
-				'shortcodes.if_conditionals.other_functions_allowed' => array('array'),
 
 				'menu_pages.theme'                                   => array('string:!empty'),
 				'menu_pages.panels.order'                            => array('array:!empty'),
