@@ -38,13 +38,14 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			if(strlen($key)) return $key;
+			if(isset($key[0]))
+				return $key;
 
 			$key = $this->©options->get('encryption.key');
-			$key = (!strlen($key)) ? wp_salt() : $key;
-			$key = (!strlen($key)) ? md5($this->©url->current_host()) : $key;
+			$key = (!isset($key[0])) ? wp_salt() : $key;
+			$key = (!isset($key[0])) ? md5($this->©url->current_host()) : $key;
 
-			if(!strlen($key))
+			if(!isset($key[0]))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#key_missing', get_defined_vars(),
 					$this->i18n('No encryption key.')
@@ -110,14 +111,14 @@ namespace websharks_core_v000000_dev
 			   && in_array('cbc', mcrypt_list_modes(), TRUE)
 			) // RIJNDAEL 256 encryption is possible?
 			{
-				if(!strlen($string)) // Nothing to encrypt?
+				if(!isset($string[0])) // Nothing to encrypt?
 					return ''; // Return now. Nothing more to do here.
 
 				$string = '~r2|'.$string;
 				$key    = (string)substr($this->key($key), 0, mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC));
 				$iv     = $this->©string->random(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC), FALSE);
 
-				if(!is_string($e = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $iv)) || !strlen($e))
+				if(!is_string($e = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $iv)) || !isset($e[0]))
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 						$this->i18n('String encryption failed (`$e` is NOT string; or it has no length).')
@@ -165,9 +166,9 @@ namespace websharks_core_v000000_dev
 			{
 				$key = (string)substr($this->key($key), 0, mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC));
 
-				if(strlen($iv_md5_e['e']) && (empty($iv_md5_e['md5']) || $iv_md5_e['md5'] === md5($iv_md5_e['e'])))
+				if(isset($iv_md5_e['e'][0]) && (empty($iv_md5_e['md5']) || $iv_md5_e['md5'] === md5($iv_md5_e['e'])))
 				{
-					if(!is_string($string = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $iv_md5_e['e'], MCRYPT_MODE_CBC, $iv_md5_e['iv'])) || !strlen($string))
+					if(!is_string($string = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $iv_md5_e['e'], MCRYPT_MODE_CBC, $iv_md5_e['iv'])) || !isset($string[0]))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							$this->i18n('String decryption failed (`$string` is NOT a string; or it has no length).')
@@ -205,7 +206,7 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', 'string', 'boolean', func_get_args());
 
-			if(!strlen($string)) // Nothing to encrypt?
+			if(!isset($string[0])) // Nothing to encrypt?
 				return ''; // Return now. Nothing more to do here.
 
 			for($key = $this->key($key), $string = '~xe|'.$string, $_i = 1, $e = ''; $_i <= strlen($string); $_i++)
@@ -216,7 +217,7 @@ namespace websharks_core_v000000_dev
 			}
 			unset($_i, $_char, $_key_char);
 
-			if(!strlen($e))
+			if(!isset($e[0]))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 					$this->i18n('String encryption failed (`$e` has no length).')
@@ -255,7 +256,7 @@ namespace websharks_core_v000000_dev
 			   && preg_match('/^~xe(?:\:(?P<md5>[a-zA-Z0-9]+))?\|(?P<e>.*?)$/s', $e, $md5_e)
 			) // This IS an XOR encrypted string?
 			{
-				if(strlen($md5_e['e']) && (empty($md5_e['md5']) || $md5_e['md5'] === md5($md5_e['e'])))
+				if(isset($md5_e['e'][0]) && (empty($md5_e['md5']) || $md5_e['md5'] === md5($md5_e['e'])))
 				{
 					for($key = $this->key($key), $_i = 1, $string = ''; $_i <= strlen($md5_e['e']); $_i++)
 					{
@@ -265,7 +266,7 @@ namespace websharks_core_v000000_dev
 					}
 					unset($_i, $_char, $_key_char); // Housekeeping.
 
-					if(!strlen($string))
+					if(!isset($string[0]))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
 							$this->i18n('String decryption failed (`$string` has no length).')
