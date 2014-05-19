@@ -10,19 +10,19 @@
  * @since 120318
  */
 namespace websharks_core_v000000_dev
-	{
-		if(!defined('WPINC'))
-			exit('Do NOT access this file directly: '.basename(__FILE__));
+{
+	if(!defined('WPINC'))
+		exit('Do NOT access this file directly: '.basename(__FILE__));
 
-		/**
-		 * Forms.
-		 *
-		 * @package WebSharks\Core
-		 * @since 120318
-		 *
-		 * @assert ($GLOBALS[__NAMESPACE__])
-		 */
-		class forms extends framework
-		{
-		}
+	/**
+	 * Forms.
+	 *
+	 * @package WebSharks\Core
+	 * @since 120318
+	 *
+	 * @assert ($GLOBALS[__NAMESPACE__])
+	 */
+	class forms extends framework
+	{
 	}
+}
