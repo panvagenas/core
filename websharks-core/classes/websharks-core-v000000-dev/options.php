@@ -57,133 +57,127 @@ namespace websharks_core_v000000_dev
 			parent::__construct($___instance_config);
 
 			$default_options = array(
-				'encryption.key'                                     => '',
+				'encryption.key'                            => '',
 
-				'support.url'                                        => 'mailto:'.get_bloginfo('admin_email'),
+				'support.url'                               => 'mailto:'.get_bloginfo('admin_email'),
 
-				'no_cache.headers.always'                            => '0',
+				'no_cache.headers.always'                   => '0',
 
-				'styles.front_side.load'                             => '0',
-				'styles.front_side.load_by_default'                  => '0',
-				'styles.front_side.load_themes'                      => array('jquery-ui-theme-default'),
-				'styles.front_side.theme'                            => 'jquery-ui-theme-default',
+				'styles.front_side.load'                    => '0',
+				'styles.front_side.load_by_default'         => '0',
+				'styles.front_side.load_themes'             => array('jquery-ui-theme-default'),
+				'styles.front_side.theme'                   => 'jquery-ui-theme-default',
 
-				'scripts.front_side.load'                            => '0',
-				'scripts.front_side.load_by_default'                 => '0',
-				'scripts.front_side.load_jquery_via_google'          => '0',
-				'scripts.admin_side.load_jquery_via_google'          => '0',
+				'scripts.front_side.load'                   => '0',
+				'scripts.front_side.load_by_default'        => '0',
+				'scripts.front_side.load_jquery_via_google' => '0',
+				'scripts.admin_side.load_jquery_via_google' => '0',
 
-				'crons.config'                                       => array(),
+				'crons.config'                              => array(),
 
-				'menu_pages.theme'                                   => 'jquery-ui-theme-default',
-				'menu_pages.panels.order'                            => array(),
-				'menu_pages.panels.state'                            => array(),
+				'menu_pages.theme'                          => 'jquery-ui-theme-default',
+				'menu_pages.panels.order'                   => array(),
+				'menu_pages.panels.state'                   => array(),
 
-				'ips.prioritize_remote_addr'                         => '0',
+				'ips.prioritize_remote_addr'                => '0',
 
-				'captchas.google.public_key'                         => '6LeCANsSAAAAAIIrlB3FrXe42mr0OSSZpT0pkpFK',
-				'captchas.google.private_key'                        => '6LeCANsSAAAAAGBXMIKAirv6G4PmaGa-ORxdD-oZ',
+				'captchas.google.public_key'                => '6LeCANsSAAAAAIIrlB3FrXe42mr0OSSZpT0pkpFK',
+				'captchas.google.private_key'               => '6LeCANsSAAAAAGBXMIKAirv6G4PmaGa-ORxdD-oZ',
 
-				'url_shortener.default_built_in_api'                 => 'goo_gl',
-				'url_shortener.custom_url_api'                       => '',
-				'url_shortener.api_keys.goo_gl'                      => '',
+				'url_shortener.default_built_in_api'        => 'goo_gl',
+				'url_shortener.custom_url_api'              => '',
+				'url_shortener.api_keys.goo_gl'             => '',
 
-				'php.evaluate'                                       => '0',
-				'php.post_types'                                     => array('page'),
+				'installer.deactivation.uninstalls'         => '0',
 
-				'installer.deactivation.uninstalls'                  => '0',
+				'templates.stand_alone.styles'              => '<style type="text/css">'."\n\n".'</style>',
+				'templates.stand_alone.scripts'             => '<script type="text/javascript">'."\n\n".'</script>',
+				'templates.stand_alone.bg_style'            => 'background: #FFFFFF;',
+				'templates.stand_alone.header'              => '',
+				'templates.stand_alone.footer'              => '',
+				'templates.email.header'                    => '',
+				'templates.email.footer'                    => '',
 
-				'templates.stand_alone.styles'                       => '<style type="text/css">'."\n\n".'</style>',
-				'templates.stand_alone.scripts'                      => '<script type="text/javascript">'."\n\n".'</script>',
-				'templates.stand_alone.bg_style'                     => 'background: #FFFFFF;',
-				'templates.stand_alone.header'                       => '',
-				'templates.stand_alone.footer'                       => '',
-				'templates.email.header'                             => '',
-				'templates.email.footer'                             => '',
+				'users.attach_init_hook'                    => '0',
+				'users.registration.display_name_format'    => 'first_name',
+				'users.attach_wp_authentication_filter'     => '0',
 
-				'users.attach_init_hook'                             => '0',
-				'users.registration.display_name_format'             => 'first_name',
-				'users.attach_wp_authentication_filter'              => '0',
+				'widgets.enable_shortcodes'                 => '0',
 
-				'widgets.enable_shortcodes'                          => '0',
+				'mail.smtp'                                 => '0',
+				'mail.smtp.force_from'                      => '0',
+				'mail.smtp.from_name'                       => get_bloginfo('name'),
+				'mail.smtp.from_addr'                       => get_bloginfo('admin_email'),
+				'mail.smtp.host'                            => '',
+				'mail.smtp.port'                            => '0',
+				'mail.smtp.secure'                          => '', // tls or ssl
+				'mail.smtp.username'                        => '',
+				'mail.smtp.password'                        => '',
 
-				'mail.smtp'                                          => '0',
-				'mail.smtp.force_from'                               => '0',
-				'mail.smtp.from_name'                                => get_bloginfo('name'),
-				'mail.smtp.from_addr'                                => get_bloginfo('admin_email'),
-				'mail.smtp.host'                                     => '',
-				'mail.smtp.port'                                     => '0',
-				'mail.smtp.secure'                                   => '', // tls or ssl
-				'mail.smtp.username'                                 => '',
-				'mail.smtp.password'                                 => '',
-
-				'plugin_site.username'                               => '',
-				'plugin_site.password'                               => ''
+				'plugin_site.username'                      => '',
+				'plugin_site.password'                      => ''
 
 			);
 			$validators      = array(
-				'encryption.key'                                     => array('string:!empty'),
+				'encryption.key'                            => array('string:!empty'),
 
-				'support.url'                                        => array('string:!empty'),
+				'support.url'                               => array('string:!empty'),
 
-				'no_cache.headers.always'                            => array('string:numeric >=' => 0),
+				'no_cache.headers.always'                   => array('string:numeric >=' => 0),
 
-				'styles.front_side.load'                             => array('string:numeric >=' => 0),
-				'styles.front_side.load_by_default'                  => array('string:numeric >=' => 0),
-				'styles.front_side.load_themes'                      => array('array'),
-				'styles.front_side.theme'                            => array('string:!empty'),
+				'styles.front_side.load'                    => array('string:numeric >=' => 0),
+				'styles.front_side.load_by_default'         => array('string:numeric >=' => 0),
+				'styles.front_side.load_themes'             => array('array'),
+				'styles.front_side.theme'                   => array('string:!empty'),
 
-				'scripts.front_side.load'                            => array('string:numeric >=' => 0),
-				'scripts.front_side.load_by_default'                 => array('string:numeric >=' => 0),
-				'scripts.front_side.load_jquery_via_google'          => array('string:numeric >=' => 0),
-				'scripts.admin_side.load_jquery_via_google'          => array('string:numeric >=' => 0),
+				'scripts.front_side.load'                   => array('string:numeric >=' => 0),
+				'scripts.front_side.load_by_default'        => array('string:numeric >=' => 0),
+				'scripts.front_side.load_jquery_via_google' => array('string:numeric >=' => 0),
+				'scripts.admin_side.load_jquery_via_google' => array('string:numeric >=' => 0),
 
-				'crons.config'                                       => array('array:!empty'),
+				'crons.config'                              => array('array:!empty'),
 
-				'menu_pages.theme'                                   => array('string:!empty'),
-				'menu_pages.panels.order'                            => array('array:!empty'),
-				'menu_pages.panels.state'                            => array('array:!empty'),
+				'menu_pages.theme'                          => array('string:!empty'),
+				'menu_pages.panels.order'                   => array('array:!empty'),
+				'menu_pages.panels.state'                   => array('array:!empty'),
 
-				'ips.prioritize_remote_addr'                         => array('string:numeric >=' => 0),
+				'ips.prioritize_remote_addr'                => array('string:numeric >=' => 0),
 
-				'captchas.google.public_key'                         => array('string:!empty'),
-				'captchas.google.private_key'                        => array('string:!empty'),
+				'captchas.google.public_key'                => array('string:!empty'),
+				'captchas.google.private_key'               => array('string:!empty'),
 
-				'url_shortener.default_built_in_api'                 => array('string:in_array' => array('tiny_url', 'goo_gl')),
-				'url_shortener.custom_url_api'                       => array('string:preg_match' => '/^https?\:/i'),
-				'url_shortener.api_keys.goo_gl'                      => array('string:!empty'),
+				'url_shortener.default_built_in_api'        => array('string:in_array' => array('tiny_url', 'goo_gl')),
+				'url_shortener.custom_url_api'              => array('string:preg_match' => '/^https?\:/i'),
+				'url_shortener.api_keys.goo_gl'             => array('string:!empty'),
 
-				'php.evaluate'                                       => array('string:numeric >=' => 0),
-				'php.post_types'                                     => array('array:!empty'),
+				'installer.deactivation.uninstalls'         => array('string:numeric >=' => 0),
 
-				'installer.deactivation.uninstalls'                  => array('string:numeric >=' => 0),
+				'templates.stand_alone.styles'              => array('string:!empty'),
+				'templates.stand_alone.scripts'             => array('string:!empty'),
+				'templates.stand_alone.bg_style'            => array('string'),
+				'templates.stand_alone.header'              => array('string:!empty'),
+				'templates.stand_alone.footer'              => array('string:!empty'),
+				'templates.email.header'                    => array('string:!empty'),
+				'templates.email.footer'                    => array('string:!empty'),
 
-				'templates.stand_alone.styles'                       => array('string:!empty'),
-				'templates.stand_alone.scripts'                      => array('string:!empty'),
-				'templates.stand_alone.bg_style'                     => array('string'),
-				'templates.stand_alone.header'                       => array('string:!empty'),
-				'templates.stand_alone.footer'                       => array('string:!empty'),
-				'templates.email.header'                             => array('string:!empty'),
-				'templates.email.footer'                             => array('string:!empty'),
+				'users.attach_init_hook'                    => array('string:numeric >=' => 0),
+				'users.registration.display_name_format'    => array('string:!empty'),
+				'users.attach_wp_authentication_filter'     => array('string:numeric >=' => 0),
 
-				'users.attach_init_hook'                             => array('string:numeric >=' => 0),
-				'users.registration.display_name_format'             => array('string:!empty'),
-				'users.attach_wp_authentication_filter'              => array('string:numeric >=' => 0),
+				'widgets.enable_shortcodes'                 => array('string:numeric >=' => 0),
 
-				'widgets.enable_shortcodes'                          => array('string:numeric >=' => 0),
+				'mail.smtp'                                 => array('string:numeric >=' => 0),
+				'mail.smtp.force_from'                      => array('string:numeric >=' => 0),
+				'mail.smtp.from_name'                       => array('string:!empty'),
+				'mail.smtp.from_addr'                       => array('string:!empty'),
+				'mail.smtp.host'                            => array('string:!empty'),
+				'mail.smtp.port'                            => array('string:numeric >=' => 1),
+				'mail.smtp.secure'                          => array('string:in_array' => array('ssl', 'tls')),
+				'mail.smtp.username'                        => array('string:!empty'),
+				'mail.smtp.password'                        => array('string:!empty'),
 
-				'mail.smtp'                                          => array('string:numeric >=' => 0),
-				'mail.smtp.force_from'                               => array('string:numeric >=' => 0),
-				'mail.smtp.from_name'                                => array('string:!empty'),
-				'mail.smtp.from_addr'                                => array('string:!empty'),
-				'mail.smtp.host'                                     => array('string:!empty'),
-				'mail.smtp.port'                                     => array('string:numeric >=' => 1),
-				'mail.smtp.secure'                                   => array('string:in_array' => array('ssl', 'tls')),
-				'mail.smtp.username'                                 => array('string:!empty'),
-				'mail.smtp.password'                                 => array('string:!empty'),
-
-				'plugin_site.username'                               => array('string:!empty'),
-				'plugin_site.password'                               => array('string:!empty')
+				'plugin_site.username'                      => array('string:!empty'),
+				'plugin_site.password'                      => array('string:!empty')
 			);
 			$this->setup($default_options, $validators);
 		}

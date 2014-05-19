@@ -25,54 +25,6 @@ namespace websharks_core_v000000_dev
 	class php extends framework
 	{
 		/**
-		 * Initializer.
-		 *
-		 * @attaches-to WordPress® `init` action hook.
-		 * @hook-priority `-1` Before most everything else.
-		 *
-		 * @return null Nothing.
-		 *
-		 * @assert () === NULL
-		 */
-		public function init()
-		{
-			if(isset($this->static[__FUNCTION__]))
-				return; // Already initialized.
-
-			$this->static[__FUNCTION__] = TRUE;
-
-			add_filter('the_content', array($this, 'filter'), 1);
-			add_filter('get_the_excerpt', array($this, 'filter'), 1);
-			add_filter('widget_text', array($this, 'evaluate'), 1);
-		}
-
-		/**
-		 * Evaluates PHP conditionally.
-		 *
-		 * @param string $string Any input string (e.g. content).
-		 *
-		 * @return string Output string (after possible PHP evaluation).
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert ("<?php echo 'hello'; ?>") === "<?php echo 'hello'; ?>"
-		 *
-		 * @assert $GLOBALS['post'] = (object)array('post_type' => 'page');
-		 *    ("<?php echo 'hello'; ?>") === 'hello'
-		 */
-		public function filter($string)
-		{
-			$this->check_arg_types('string', func_get_args());
-
-			if($string && isset($GLOBALS['post']->post_type))
-			{
-				if(in_array($GLOBALS['post']->post_type, $this->©options->get('php.post_types'), TRUE))
-					$string = $this->evaluate($string);
-			}
-			return $string; // Default return value.
-		}
-
-		/**
 		 * Evaluates PHP code.
 		 *
 		 * @return string {@inheritdoc}

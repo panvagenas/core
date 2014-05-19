@@ -57,30 +57,22 @@ namespace websharks_core_v000000_dev
 					$this->___instance_config->plugin_root_ns_stub.'__version',
 					$this->___instance_config->plugin_version
 				);
-
 				$this->©plugin->is_active_at_current_version($this::reconsider);
 
 				$this->©notice->enqueue(
 					'<p>'.
-					sprintf(
-						$this->i18n(
-							'%1$s was a complete success<em>!</em>'.
-							' Current version: <strong>%2$s</strong>.'
-						), (($reactivating) ? $this->i18n('Reactivation') : $this->i18n('Activation')),
-						$this->___instance_config->plugin_version
-					).'</p>'
+					sprintf($this->i18n('%1$s was a complete success<em>!</em> Current version: <strong>%2$s</strong>.'),
+						(($reactivating) ? $this->i18n('Reactivation') : $this->i18n('Activation')), $this->___instance_config->plugin_version).
+					'</p>'
 				);
 			}
 			else // The activation failed for some reason.
 			{
 				$this->©notice->enqueue(
 					'<p>'.
-					sprintf(
-						$this->i18n(
-							'%1$s failed (please try again).'.
-							' Or contact support if you need assistance.'
-						), (($reactivating) ? $this->i18n('Reactivation') : $this->i18n('Activation'))
-					).'</p>'
+					sprintf($this->i18n('%1$s failed (please try again). Or contact support if you need assistance.'),
+						(($reactivating) ? $this->i18n('Reactivation') : $this->i18n('Activation'))).
+					'</p>'
 				);
 			}
 		}

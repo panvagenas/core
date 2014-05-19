@@ -45,12 +45,6 @@ namespace websharks_core_v000000_dev
 			// Keeps the DB cache fresh while site owners' work.
 			add_action('admin_init', array($this, '©db_cache.admin_init'), -1);
 
-			// For plugins that enable this option (only ONE plugin may add this hook).
-			if($this->©options->get('php.evaluate') && !isset($this->static[__FUNCTION__]['php.evaluate']))
-			{ // @TODO Remove this.
-				add_action('init', array($this, '©php.init'), -1);
-				$this->static[__FUNCTION__]['php.evaluate'] = TRUE;
-			}
 			// Handles plugin actions.
 			add_action('init', array($this, '©actions.init'), 2);
 
