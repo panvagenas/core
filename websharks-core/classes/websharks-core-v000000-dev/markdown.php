@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class markdown extends framework
 	{
-
 		/**
 		 * Markdown parser object instance (a singleton).
 		 *

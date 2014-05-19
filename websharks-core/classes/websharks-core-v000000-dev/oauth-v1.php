@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class oauth_v1 extends framework
 	{
-
 		/**
 		 * @var string URL, where we can request a new access token.
 		 *    An API that has implemented an OAuth client, should always provide this.

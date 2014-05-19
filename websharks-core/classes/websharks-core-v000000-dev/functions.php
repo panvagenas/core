@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class functions extends framework
 	{
-
 		/**
 		 * PHP's language constructs.
 		 *

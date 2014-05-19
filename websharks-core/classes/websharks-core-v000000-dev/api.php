@@ -326,7 +326,6 @@ namespace websharks_core_v000000_dev
 	 */
 	abstract class api implements fw_constants
 	{
-
 		/**
 		 * Framework for current plugin instance.
 		 *

@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class gmp extends framework
 	{
-
 		/**
 		 * @var resource GMP number resource.
 		 * @by-constructor Set dynamically by constructor.

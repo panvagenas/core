@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class actions extends framework
 	{
-
 		/**
 		 * @var array The current action.
 		 * @by-constructor Set dynamically by class constructor.

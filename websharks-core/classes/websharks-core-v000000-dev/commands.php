@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class commands extends framework
 	{
-
 		/**
 		 * Path to GIT application.
 		 * Normally exit status `0` indicates success.

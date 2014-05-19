@@ -22,7 +22,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class objects_os // Keep this out of scope.
 	{
-
 		/**
 		 * Plugin/framework instance.
 		 *

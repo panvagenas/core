@@ -26,7 +26,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class db extends framework
 	{
-
 		/**
 		 * WordPress® database object instance.
 		 *

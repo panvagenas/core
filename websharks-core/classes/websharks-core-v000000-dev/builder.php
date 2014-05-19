@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	final class builder extends framework
 	{
-
 		/**
 		 * @var successes A successes object instance.
 		 * @by-constructor Set dynamically by class constructor.

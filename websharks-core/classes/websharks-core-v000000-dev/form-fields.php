@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class form_fields extends framework
 	{
-
 		/**
 		 * @var string Defaults to `ui-`, for jQuery™ UI themes.
 		 *

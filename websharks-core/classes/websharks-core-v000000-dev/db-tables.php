@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class db_tables extends framework
 	{
-
 		/**
 		 * @var string Plugin DB table prefix.
 		 * @by-constructor Set dynamically by the class constructor.

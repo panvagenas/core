@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class scripts extends framework
 	{
-
 		/**
 		 * @var array Handles for all front-side components.
 		 *

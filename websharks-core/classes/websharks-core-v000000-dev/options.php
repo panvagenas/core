@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class options extends framework
 	{
-
 		/**
 		 * Array of options.
 		 *

@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class js_minifier extends framework
 	{
-
 		/**
 		 * JS Minifier object instance (a singleton).
 		 *

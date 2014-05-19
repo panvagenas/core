@@ -24,7 +24,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class db_cache extends framework
 	{
-
 		/**
 		 * @var string WordPress® autoload option.
 		 * @by-constructor Set dynamically by class constructor.

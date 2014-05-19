@@ -22,7 +22,6 @@ namespace websharks_core_v000000_dev
 	 */
 	class exception extends \exception // Allow extenders.
 	{
-
 		/**
 		 * @var boolean Enable debug file logging?
 		 * @extenders Can be overridden by class extenders.
