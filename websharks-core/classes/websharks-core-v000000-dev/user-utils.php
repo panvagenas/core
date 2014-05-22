@@ -301,11 +301,8 @@ namespace websharks_core_v000000_dev
 					if($this->©string->is_not_empty($data->username)) return $data->username;
 					if($this->©string->is_not_empty($data->last_name)) return $data->last_name;
 					if($this->©string->is_not_empty($data->email)) return $data->email;
-
-					break; // Break switch handler (use last resort — below).
 			}
-			return $this->apply_filters('default_display_name', // Anonymous.
-			                            $this->_x('Anonymous', 'default-display-name'));
+			return $this->apply_filters('default_display_name', $this->_x('Anonymous', 'default-display-name'));
 		}
 
 		/**
@@ -353,8 +350,7 @@ namespace websharks_core_v000000_dev
 						$this->method(__FUNCTION__).'#multisite_email_exists', get_defined_vars(),
 						sprintf($this->_x('Email address: `%1$s`, is already in use.'), $email)
 					);
-				if(is_array($limited_email_domains = get_site_option('limited_email_domains'))
-				   && !empty($limited_email_domains)
+				if($this->©array->¤is_not_empty($limited_email_domains = get_site_option('limited_email_domains'))
 				   && !in_array(strtolower($domain), $limited_email_domains, TRUE)
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#unapproved_multisite_email', get_defined_vars(),
@@ -464,8 +460,7 @@ namespace websharks_core_v000000_dev
 						$this->method(__FUNCTION__).'#multisite_email_exists', get_defined_vars(),
 						sprintf($this->_x('Email address: `%1$s`, is already in use.'), $email)
 					);
-				if(is_array($limited_email_domains = get_site_option('limited_email_domains'))
-				   && !empty($limited_email_domains)
+				if($this->©array->¤is_not_empty($limited_email_domains = get_site_option('limited_email_domains'))
 				   && !in_array(strtolower($domain), $limited_email_domains, TRUE)
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#unapproved_multisite_email', get_defined_vars(),
@@ -766,14 +761,6 @@ namespace websharks_core_v000000_dev
 		 *
 		 *  • (string)`url` Optional. A URL associated with this user (e.g. their website URL).
 		 *
-		 *  • (boolean)`must_activate` Optional. Defaults to a TRUE value.
-		 *       When this is TRUE, the user account is created; but the account will require email activation.
-		 *       This creates a user option: `must_activate` = `TRUE`, which MUST be deleted before access.
-		 *
-		 *  • (boolean)`send_welcome` Optional. Defaults to a TRUE value.
-		 *       When this is TRUE, the user will receive a welcome email, as configured by the site owner.
-		 *       If the user `must_activate`, the welcome email is sent upon activation.
-		 *
 		 *  • (array)`options` Optional associative array. Any additional user option values.
 		 *       These are stored via ``update_user_option()`` (e.g. blog-specific meta values).
 		 *
@@ -790,6 +777,10 @@ namespace websharks_core_v000000_dev
 		 *  • (array)`profile_field_validation_args` Optional associative array w/ additional profile field validation args.
 		 *       See {@link validate_profile_fields()} for further details (implemented by class extenders).
 		 *       See also {@link users::update_profile_fields()} for further details.
+		 *
+		 *  • (boolean)`must_activate` Optional. Defaults to a TRUE value.
+		 *       When this is TRUE, the user account is created; but the account will require email activation.
+		 *       This creates a user option: `must_activate` = `TRUE`, which MUST be deleted before access.
 		 *
 		 *  • (null|integer|\WP_User|users)`creator` The user (creator) that we MAY validate against here.
 		 *       For instance, this MIGHT be used in some validations against profile field submissions.
@@ -819,9 +810,6 @@ namespace websharks_core_v000000_dev
 				'last_name'                     => '',
 				'url'                           => '',
 
-				'must_activate'                 => TRUE,
-				'send_welcome'                  => TRUE,
-
 				'options'                       => array(),
 				'meta'                          => array(),
 				'data'                          => array(),
@@ -829,15 +817,15 @@ namespace websharks_core_v000000_dev
 				'profile_fields'                => array(),
 				'profile_field_validation_args' => array(),
 
+				'must_activate'                 => TRUE,
 				'creator'                       => -1
 			);
 			$args         = $this->check_extension_arg_types(
 				'string', 'string', 'string', 'string:!empty', // `ip`, `email`, `username`, `role`.
 				'string', 'string', 'string', 'string', // `password`, `first_name`, `last_name`, `url`.
-				'boolean', 'boolean', // `must_activate`, `send_welcome`.
 				'array', 'array', 'array', // `options`, `meta`, `data`.
 				'array', 'array', // `profile_fields`, `profile_field_validation_args`.
-				$this->which_types(), // `creator` (used in some validations).
+				'boolean', $this->which_types(), // `must_activate`, `creator` (used in some validations).
 				$default_args, $args, ((is_multisite()) ? 3 : 2)
 			);
 			// Handle some default values (when/if possible) & minor adjustments.
@@ -972,45 +960,16 @@ namespace websharks_core_v000000_dev
 					$this->__('Unexpected errors while updating profile fields.'));
 
 			// Handle emails and/or activation.
+			$activation_key = ''; // Initialize activation key.
 			if($args['must_activate']) // Requires email activation?
-				$this->send_activation_email($user->ID, $args['password'], $args['send_welcome']);
-			else if($args['send_welcome']) $this->send_welcome_email($user->ID, $args['password']);
-
+			{
+				$user->update_option('must_activate', TRUE);
+				$activation_key = $this->©encryption->encrypt($user->ID.'::'.$args['password']);
+				$user->update_activation_key((string)substr($activation_key, 0, 60));
+			}
 			$this->do_action('creation', $user->ID, get_defined_vars());
 
-			return array('ID' => $user->ID, 'user' => $user, 'password' => $args['password']);
-		}
-
-		/**
-		 * Additional user authentications.
-		 *
-		 * @attaches-to WordPress® filter `wp_authenticate_user`.
-		 * @filter-priority `PHP_INT_MAX` After most everything else.
-		 *
-		 * @param \WP_User|\WP_Error $authentication A `WP_User` object on success, else a `WP_Error` object failure.
-		 *
-		 * @return \WP_User|\WP_Error A `WP_Error` on failure, else pass ``$authentication`` through.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 */
-		public function wp_authenticate_user($authentication)
-		{
-			$this->check_arg_types(array('\\WP_User', '\\WP_Error'), func_get_args());
-
-			if(!($authentication instanceof \WP_User)) return $authentication;
-
-			$user = $this->which($authentication->ID); // Get user object (by ID).
-			if(!$user->has_id()) return $authentication; // Sanity check.
-
-			if($user->get_option('must_activate'))
-				return new \WP_Error( // Activation is required in this case.
-					'must_activate', $this->_x('This account has NOT been activated yet. Please check your email for the activation link.')
-				);
-			if(is_multisite() && !$user->is_super_admin() && !in_array(get_current_blog_id(), array_keys(get_blogs_of_user($user->ID)), TRUE))
-				return new \WP_Error( // They do NOT belong on this child blog.
-					'invalid_username', $this->_x('Invalid username for this site.')
-				);
-			return $authentication; // Default return value.
+			return array('ID' => $user->ID, 'user' => $user, 'password' => $args['password'], 'activation_key' => $activation_key);
 		}
 
 		/**
@@ -1053,530 +1012,45 @@ namespace websharks_core_v000000_dev
 					sprintf($this->_x('User ID: `%1$s`. This account is already active.'), $user->ID).
 					' '.sprintf($this->_x('Please <a href="%1$s">log in</a>.'), esc_attr($this->©url->to_wp_login()))
 				);
-			if($user->get_option('on_activation_send_welcome')) // Has flag?
-				$this->send_welcome_email($user, $password); // Send welcome email :-)
-
 			$user->delete_activation_key();
-			$user->delete_option('on_activation_send_welcome');
 			$user->delete_option('must_activate');
 
-			do_action('wpmu_activate_user', $user->ID, $password, array()); // Compatibility.
+			do_action('wpmu_activate_user', $user->ID, $password, array());
 			$this->do_action('activation', $user->ID, get_defined_vars());
 
 			return array('ID' => $user->ID, 'user' => $user, 'password' => $password);
 		}
 
 		/**
-		 * Handles activate action.
+		 * Additional user authentications.
 		 *
-		 * @param string $activation_key An encrypted activation key, as produced by ``$this->send_activation_email()``.
+		 * @attaches-to WordPress® filter `wp_authenticate_user`.
+		 * @filter-priority `PHP_INT_MAX` After most everything else.
 		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If headers have already been sent, before calling this routine.
-		 */
-		public function ®activate($activation_key)
-		{
-			$this->check_arg_types('string', func_get_args());
-
-			if(headers_sent())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->__('Unable to activate (headers have already been sent).').
-					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
-				);
-			if($this->©errors->exist_in($response = $this->activate($activation_key)))
-				$errors = $response; // Define ``$errors`` for template use.
-
-			else // We have success. The user needs to log in now.
-			{
-				extract($response); // Extracts response vars.
-
-				$successes = $this->©success(
-					$this->method(__FUNCTION__).'#success', get_defined_vars(),
-					$this->_x('Account activated successfully.').
-					' '.sprintf($this->_x('Please [CLICK HERE](%1$s) to log in.'), $this->©url->to_wp_login())
-				);
-			}
-			$this->©headers->clean_status_type(200, 'text/html', TRUE);
-			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
-			exit($this->©template('activation.php', get_defined_vars())->content);
-		}
-
-		/**
-		 * Sends user activation email message.
+		 * @param \WP_User|\WP_Error $authentication A `WP_User` object on success, else a `WP_Error` object failure.
 		 *
-		 * @param null|integer|\WP_User|users $user User we're sending this email to.
-		 *
-		 * @param string                      $password Plain text password (required).
-		 *
-		 * @param boolean                     $send_welcome Optional. Defaults to TRUE. By default, a welcome message is sent upon activation.
-		 *    If this is FALSE, no welcome email will be sent upon activation of the account for this user.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$password`` is empty.
-		 * @throws exception If ``$user`` does NOT have an ID.
-		 */
-		public function send_activation_email($user, $password, $send_welcome = TRUE)
-		{
-			$this->check_arg_types($this->which_types(), 'string:!empty', 'boolean', func_get_args());
-
-			$user = $this->which($user);
-
-			if(!$user->has_id())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
-					$this->__('The `$user` has no ID (cannot send activation email message).')
-				);
-			$activation_key       = $this->©encryption->encrypt($user->ID.'::'.$password);
-			$activation_url       = $this->©action->url_for_call('©user_utils.®activate', $this::protected_type, array($activation_key));
-			$activation_short_url = $this->©url->shorten($activation_url);
-
-			$template = $this->©template('emails/activation.php', get_defined_vars());
-
-			if($this->©strings->are_not_empty(
-				$template->config->from_name, $template->config->from_addr,
-				$template->config->subject, $template->config->recipients, $template->content)
-			) // OK. We've got everything we need to send this email message.
-			{
-				$user->update_option('must_activate', TRUE);
-				$user->update_activation_key((string)substr($activation_key, 0, 60));
-
-				if($send_welcome)
-					$user->update_option('on_activation_send_welcome', TRUE);
-				else $user->delete_option('on_activation_send_welcome');
-
-				$this->©mail->send( // Send activation email message (based on template).
-					array('from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
-					      'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
-					      'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->_x('Activation Required (For: %1$s)'), get_bloginfo('name'))),
-					      'recipients' => $template->config->recipients,
-					      'message'    => $template->content));
-			}
-		}
-
-		/**
-		 * Sends user welcome email message.
-		 *
-		 * @param null|integer|\WP_User|users $user User we're sending this email to.
-		 *
-		 * @param string                      $password Plain text password (required).
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$password`` is empty.
-		 * @throws exception If ``$user`` does NOT have an ID.
-		 */
-		public function send_welcome_email($user, $password)
-		{
-			$this->check_arg_types($this->which_types(), 'string:!empty', func_get_args());
-
-			$user = $this->which($user);
-
-			if(!$user->has_id())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
-					$this->__('The `$user` has no ID (cannot send welcome email message).')
-				);
-			$template = $this->©template('emails/welcome.php', get_defined_vars());
-
-			if($this->©strings->are_not_empty(
-				$template->config->from_name, $template->config->from_addr,
-				$template->config->subject, $template->config->recipients, $template->content)
-			) // OK. We've got everything we need to send this email message.
-			{
-				$this->©mail->send( // Send welcome email message (based on template).
-					array('from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
-					      'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
-					      'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->_x('Login Details (Welcome To: %1$s)'), get_bloginfo('name'))),
-					      'recipients' => $template->config->recipients,
-					      'message'    => $template->content));
-			}
-		}
-
-		/**
-		 * Logs a user into their account.
-		 *
-		 * @param string  $username Username.
-		 * @param string  $password Password.
-		 *
-		 * @param boolean $remember Optional. Defaults to a TRUE value.
-		 *    If FALSE, the login session will end after browser is closed (one session only).
-		 *
-		 * @param boolean $test_cookies Optional. Defaults to a FALSE value.
-		 *    If TRUE, we'll check for the existence of a test cookie.
-		 *
-		 * @return array|errors This will return an array on success; else an errors object on failure.
-		 *    An array on success, includes: (integer)`ID`, (object)`user`, (string)`password`.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If headers have already been sent, before calling this routine.
-		 * @throws exception If unable to acquire user object instance after login.
-		 */
-		public function login($username, $password, $remember = TRUE, $test_cookies = FALSE)
-		{
-			$this->check_arg_types('string', 'string', 'boolean', 'boolean', func_get_args());
-
-			if(headers_sent())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->__('Unable to log user in (headers have already been sent).').
-					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
-				);
-			if($test_cookies && !$this->©cookie->get(TEST_COOKIE))
-				return $this->©error(
-					$this->method(__FUNCTION__).'#cookie_failure', get_defined_vars(),
-					$this->_x('Cookies are blocked (perhaps); or NOT supported by your browser.')
-				);
-			if($username && !force_ssl_admin()
-			   && ($ID = $this->get_id_by('username', $username)) && get_user_option('use_ssl', $ID)
-			) // If the user wants SSL, force SSL administrative URLs.
-				force_ssl_admin(TRUE);
-
-			$secure_cookie = (force_ssl_admin() && is_ssl()) ? TRUE : FALSE; // Only if forcing SSL administration (and this is an SSL login).
-
-			if(is_wp_error($wp_signon = wp_signon(array('user_login' => $username, 'user_password' => $password, 'remember' => $remember), $secure_cookie)))
-			{
-				$this->do_action('login_denied', $username, get_defined_vars());
-
-				if(!$wp_signon->get_error_code() || !$wp_signon->get_error_message())
-					return $this->©error(
-						$this->method(__FUNCTION__).'#unknown_wp_error', get_defined_vars(),
-						$this->_x('Missing data (please try again).')
-					);
-				return $this->©error(
-					$this->method(__FUNCTION__).'#wp_error_'.$wp_signon->get_error_code(), get_defined_vars(),
-					$wp_signon->get_error_message() // Message from ``wp_signon()``.
-				);
-			}
-			if(!($user = $this->get_by('id', $wp_signon->ID)))
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#unable_to_acquire_user', get_defined_vars(),
-					sprintf($this->__('Unable to acquire user ID: `%1$s`.'), $wp_signon->ID)
-				);
-			$this->do_action('login_allowed', $user->ID, get_defined_vars());
-
-			return array('ID' => $user->ID, 'user' => $user, 'password' => $password);
-		}
-
-		/**
-		 * Handles login action.
-		 *
-		 * @param string         $username Username.
-		 * @param string         $password Password.
-		 *
-		 * @param string|boolean $remember Optional. Defaults to a TRUE value.
-		 *    If FALSE, the login session will end after browser is closed (one session only).
-		 *
-		 * @param string|boolean $test_cookies Optional. Defaults to a FALSE value.
-		 *    If TRUE, we'll check for the existence of a test cookie.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If headers have already been sent, before calling this routine.
-		 */
-		public function ®login($username, $password, $remember = TRUE, $test_cookies = FALSE)
-		{
-			$this->check_arg_types('string', 'string', array('string', 'boolean'), array('string', 'boolean'), func_get_args());
-			$remember     = (boolean)$remember; // So this arg can be passed via `call` actions.
-			$test_cookies = (boolean)$test_cookies; // So it can be passed via `call` actions.
-
-			if(headers_sent())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->__('Unable to log user in (headers have already been sent).').
-					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
-				);
-			if((force_ssl_login() || force_ssl_admin()) && !is_ssl())
-				wp_redirect($this->©url->current('https')).exit();
-
-			$this->©cookie->set(TEST_COOKIE, '1', 0);
-
-			if($this->©errors->exist_in($response = $this->login($username, $password, $remember, $test_cookies)))
-			{
-				$errors = $response; // Set `errors` for template.
-
-				$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
-
-				if((string)$this->©vars->_REQUEST('via_shortcode'))
-					return; // Allow shortcode to handle.
-
-				$this->©headers->clean_status_type(200, 'text/html', TRUE);
-				exit($this->©template('login.php', get_defined_vars())->content);
-			}
-			else // Handle this with an automatic redirection after having logged-in.
-			{
-				extract($response); // Extracts all response vars for use below.
-				/** @var $user users A `users` object instance (via ``$response`` vars). */
-
-				if(!($redirect_to = $_r_redirect_to = (string)$this->©vars->_REQUEST('redirect_to')))
-					$redirect_to = $this->©url->to_wp_admin_uri();
-
-				$redirect_to = apply_filters('login_redirect', $redirect_to, $_r_redirect_to, $user->wp, $user);
-
-				if(!$redirect_to || rtrim($redirect_to, '/') === 'wp-admin' || preg_match('/\/wp-admin[\/?#]*$/', $redirect_to))
-				{
-					if(is_multisite() && !get_active_blog_for_user($user->ID) && !$user->is_super_admin())
-						$redirect_to = $this->©url->to_wp_user_admin_uri();
-
-					else if(is_multisite() && !$user->wp->has_cap('read'))
-						$redirect_to = $this->©url->to_wp_user_dashboard_uri($user->ID);
-
-					else if(!$user->wp->has_cap('edit_posts'))
-						$redirect_to = $this->©url->to_wp_admin_uri('/profile.php');
-				}
-				if(!$redirect_to) // Absolute default value (if all else fails somehow).
-					$redirect_to = $this->©url->to_wp_home_uri(); // Redirect user to the home page.
-
-				if(force_ssl_admin() && $this->©url->is_in_wp_admin($redirect_to))
-					$redirect_to = $this->©url->set_scheme($redirect_to, 'https');
-
-				$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
-
-				wp_safe_redirect($redirect_to).exit();
-			}
-		}
-
-		/**
-		 * Handles logout action.
-		 *
-		 * @throws exception If headers have already been sent, before calling this routine.
-		 */
-		public function ®logout()
-		{
-			if(headers_sent())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->__('Unable to log user out (headers have already been sent).').
-					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
-				);
-			if((force_ssl_login() || force_ssl_admin()) && !is_ssl())
-				wp_redirect($this->©url->current('https')).exit();
-
-			$this->©user->logout(); // Logs current user out of WordPress®.
-
-			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
-
-			if(($redirect_to = (string)$this->©vars->_REQUEST('redirect_to')))
-				wp_safe_redirect($redirect_to).exit();
-
-			else // Else handle this w/ template display (e.g. a logged-out message).
-			{
-				$messages = $this->©message( // For template.
-					$this->method(__FUNCTION__).'#logged-out', get_defined_vars(),
-					$this->_x('You are now logged-out.')
-				);
-				$this->©headers->clean_status_type(200, 'text/html', TRUE);
-				exit($this->©template('login.php', get_defined_vars())->content);
-			}
-		}
-
-		/**
-		 * Handles lost passwords (sends password reset email).
-		 *
-		 * @param string $username_or_email A username or email address.
-		 *
-		 * @return array|errors This will return an array on success; else an errors object on failure.
-		 *    An array on success, includes: (integer)`ID`, (object)`user`, (string)`activation_key`.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If we're unable to establish an activation key for the associated user.
-		 */
-		public function lost_password($username_or_email)
-		{
-			$this->check_arg_types('string', func_get_args());
-
-			if($username_or_email // Can we find this user?
-			   && (($ID = $this->get_id_by('username', $username_or_email))
-			       || ($ID = $this->get_id_by('email', $username_or_email)))
-			   && ($user = $this->get_by('id', $ID))
-			) // OK. We found the account ID for this user.
-			{
-				// We support this WordPress® filter.
-				if(!apply_filters('allow_password_reset', TRUE, $user->ID))
-					return $this->©error(
-						$this->method(__FUNCTION__).'#password_reset_disabled', get_defined_vars(),
-						$this->_x('Password reset is NOT allowed for this user.')
-					);
-				if(!$user->activation_key)
-					$user->update_activation_key($this->©encryption->keygen(60));
-
-				if(!$user->activation_key)
-					throw $this->©exception(
-						$this->method(__FUNCTION__).'#missing_activation_key', get_defined_vars(),
-						sprintf($this->__('No activation key for user ID: `%1$s`.'), $user->ID)
-					);
-				$this->send_password_reset_email($user);
-
-				return array('ID' => $user->ID, 'user' => $user, 'activation_key' => $user->activation_key);
-			}
-			return $this->©error(
-				$this->method(__FUNCTION__).'#username_email_not_found', get_defined_vars(),
-				$this->_x('Username (or email address) is NOT associated with a user of this site.')
-			);
-		}
-
-		/**
-		 * Handles lost passwords action.
-		 *
-		 * @param string $username_or_email A username or email address.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If headers have already been sent, before calling this routine.
-		 */
-		public function ®lost_password($username_or_email)
-		{
-			$this->check_arg_types('string', func_get_args());
-
-			if(headers_sent())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->__('Unable to retrieve lost password (headers have already been sent).').
-					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
-				);
-			if((force_ssl_login() || force_ssl_admin()) && !is_ssl())
-				wp_redirect($this->©url->current('https')).exit();
-
-			if($this->©errors->exist_in($response = $this->lost_password($username_or_email)))
-				$errors = $response; // Define ``$errors`` for template use.
-
-			else // We have success. They user needs to check their email now.
-			{
-				extract($response); // Extracts response vars.
-
-				$successes = $this->©success(
-					$this->method(__FUNCTION__).'#success', get_defined_vars(),
-					$this->_x('Please check your email for a password reset link.')
-				);
-			}
-			$this->©headers->clean_status_type(200, 'text/html', TRUE);
-			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
-			exit($this->©template('lost-password.php', get_defined_vars())->content);
-		}
-
-		/**
-		 * Sends user a password reset email message.
-		 *
-		 * @param null|integer|\WP_User|users $user User we're sending this email to.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$user`` does NOT have an ID, or has NO activation key.
-		 */
-		public function send_password_reset_email($user)
-		{
-			$this->check_arg_types($this->which_types(), func_get_args());
-
-			$user = $this->which($user);
-
-			if(!$user->has_id())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
-					$this->__('The `$user` has no ID (cannot send password reset email message).')
-				);
-			if(!$user->activation_key)
-				$user->update_activation_key($this->©encryption->keygen(60));
-
-			if(!$user->activation_key) // Does this user have an activation key?
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#activation_key_missing', get_defined_vars(),
-					$this->__('The `$user` has no activation key (cannot send password reset email message).')
-				);
-			$activation_key           = $user->activation_key;
-			$password_reset_url       = $this->©action->url_for_call('©user_utils.®reset_password', $this::protected_type, array($activation_key));
-			$password_reset_short_url = $this->©url->shorten($password_reset_url);
-
-			$template = $this->©template('emails/password-reset.php', get_defined_vars());
-
-			if($this->©strings->are_not_empty(
-				$template->config->from_name, $template->config->from_addr,
-				$template->config->subject, $template->config->recipients, $template->content)
-			) // OK. We've got everything we need to send this email message.
-			{
-				$this->©mail->send( // Send password reset email message (based on template).
-					array('from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
-					      'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
-					      'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->_x('Password Reset (%1$s)'), get_bloginfo('name'))),
-					      'recipients' => $template->config->recipients,
-					      'message'    => $template->content));
-			}
-		}
-
-		/**
-		 * Handles password reset for a user.
-		 *
-		 * @param string $activation_key A valid password reset activation key.
-		 * @param string $password A new password for this user.
-		 *
-		 * @return array|errors This will return an array on success; else an errors object on failure.
-		 *    An array on success, includes: (integer)`ID`, (object)`user`, (string)`activation_key`, (string)`password`.
+		 * @return \WP_User|\WP_Error A `WP_Error` on failure, else pass ``$authentication`` through.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function reset_password($activation_key, $password)
+		public function wp_authenticate_user($authentication)
 		{
-			$this->check_arg_types('string', 'string', func_get_args());
+			$this->check_arg_types(array('\\WP_User', '\\WP_Error'), func_get_args());
 
-			if($activation_key // Can we find this user w/ activation key?
-			   && ($user = $this->get_by('activation_key', $activation_key))
-			) // OK. We found the account ID for this user.
-			{
-				// We support this WordPress® filter.
-				if(!apply_filters('allow_password_reset', TRUE, $user->ID))
-					return $this->©error(
-						$this->method(__FUNCTION__).'#password_reset_disabled', get_defined_vars(),
-						$this->_x('Password reset is NOT allowed for this user.')
-					);
-				if($this->©errors->exist_in($validate_password = $this->validate_password($password)))
-					return $validate_password; // Password issue(s).
+			if(!($authentication instanceof \WP_User)) return $authentication;
 
-				$user->update_password($password); // Looks good (update password now).
+			$user = $this->which($authentication->ID); // Get user object (by ID).
+			if(!$user->has_id()) return $authentication; // Sanity check.
 
-				return array('ID' => $user->ID, 'user' => $user, 'activation_key' => $activation_key, 'password' => $password);
-			}
-			return $this->©error(
-				$this->method(__FUNCTION__).'#invalid_activation_key', get_defined_vars(),
-				$this->_x('Password reset failure. Invalid (or expired) activation key.').
-				' '.sprintf($this->_x('Got: `%1$s`.'), $activation_key)
-			);
-		}
-
-		/**
-		 * Handles password reset action.
-		 *
-		 * @param string $activation_key A valid password reset activation key.
-		 * @param string $password A new password for this user.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If headers have already been sent, before calling this routine.
-		 */
-		public function ®reset_password($activation_key, $password = '')
-		{
-			$this->check_arg_types('string', 'string', func_get_args());
-
-			if(headers_sent())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->__('Unable to reset password (headers have already been sent).').
-					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
+			if($user->get_option('must_activate'))
+				return new \WP_Error( // Activation is required in this case.
+					'must_activate', $this->_x('This account has NOT been activated yet. Please check your email for the activation link.')
 				);
-			if((force_ssl_login() || force_ssl_admin()) && !is_ssl())
-				wp_redirect($this->©url->current('https')).exit();
-
-			if($password) // Only if a password has been submitted (else do nothing).
-			{
-				if($this->©errors->exist_in($response = $this->reset_password($activation_key, $password)))
-					$errors = $response; // Define ``$errors`` for template use.
-
-				else // We have success. The user may now log in.
-				{
-					extract($response); // Extracts response vars.
-
-					$successes = $this->©success( // For template.
-						$this->method(__FUNCTION__).'#success', get_defined_vars(),
-						sprintf($this->_x('Password reset. Please [log in](%1$s).'), $this->©url->to_wp_login())
-					);
-				}
-			}
-			$this->©headers->clean_status_type(200, 'text/html', TRUE);
-			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
-			exit($this->©template('reset-password.php', get_defined_vars())->content);
+			if(is_multisite() && !$user->is_super_admin() && !in_array(get_current_blog_id(), array_keys(get_blogs_of_user($user->ID)), TRUE))
+				return new \WP_Error( // They do NOT belong on this child blog.
+					'invalid_username', $this->_x('Invalid username for this site.')
+				);
+			return $authentication; // Default return value.
 		}
 	}
 }

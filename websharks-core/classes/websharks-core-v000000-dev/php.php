@@ -29,15 +29,15 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return string {@inheritdoc}
 		 *
-		 * @note This variation defaults ``$pure_php`` to a TRUE value.
-		 * @see evaluate() Defaults ``$pure_php`` to a FALSE value.
+		 * @note This variation defaults `$no_tags` to a TRUE value.
+		 * @see evaluate() Defaults `$no_tags` to a FALSE value.
 		 * @inheritdoc evaluate()
 		 *
 		 * @assert ("echo 'hello';") === 'hello'
 		 */
-		public function ¤eval($string, $vars = array(), $pure_php = TRUE)
+		public function ¤eval($string, $vars = array(), $no_tags = TRUE)
 		{
-			return $this->evaluate($string, $vars, $pure_php);
+			return $this->evaluate($string, $vars, $no_tags);
 		}
 
 		/**
@@ -49,7 +49,7 @@ namespace websharks_core_v000000_dev
 		 * @param array   $vars An array of variables to bring into the scope of evaluation.
 		 *    This is optional. It defaults to an empty array.
 		 *
-		 * @param boolean $pure_php Defaults to a FALSE value.
+		 * @param boolean $no_tags Defaults to a FALSE value.
 		 *    If this is TRUE, the input ``$string`` should NOT include PHP tags.
 		 *
 		 * @return string Output string after having been evaluated by PHP.
@@ -58,11 +58,11 @@ namespace websharks_core_v000000_dev
 		 * @throws exception If unable to evaluate, according to ``can_evaluate()``.
 		 *
 		 * @note This variation defaults ``$pure_php`` to a FALSE value.
-		 * @see ¤eval() Which defaults ``$pure_php`` to a TRUE value.
+		 * @see exec() Which defaults ``$pure_php`` to a TRUE value.
 		 *
 		 * @assert ("<?php echo 'hello'; ?>") === 'hello'
 		 */
-		public function evaluate($string, $vars = array(), $pure_php = FALSE)
+		public function evaluate($string, $vars = array(), $no_tags = FALSE)
 		{
 			$this->check_arg_types('string', 'array', 'boolean', func_get_args());
 
@@ -71,7 +71,7 @@ namespace websharks_core_v000000_dev
 			if($this->©function->is_possible('eval'))
 			{
 				ob_start();
-				if($pure_php) eval($string);
+				if($no_tags) eval($string);
 				else // Mixed content in this case.
 					eval('?>'.$string.'<?php ');
 				return ob_get_clean();
@@ -84,9 +84,9 @@ namespace websharks_core_v000000_dev
 					'The PHP `eval()` function (an application requirement) has been disabled on this server.'.
 					' Please check with your hosting provider to resolve this issue and have the PHP `eval()` function enabled.').
 				' '.$this->__('The use of `eval()` in this software is limited to areas where it is absolutely necessary to achieve a desired functionality.'.
-				                ' For instance, where PHP code is supplied by a site owner (or by their developer) to achieve advanced customization through a UI panel. This can be evaluated at runtime to allow for the inclusion of PHP conditionals or dynamic values.'.
-				                ' In cases such as these, the PHP `eval()` function serves a valid/useful purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (e.g. the PHP code can be trusted in this case).'.
-				                ' This software may also use `eval()` to generate dynamic classes and/or API functions for developers; where the use of `eval()` again serves a valid/useful purpose; and where the underlying code was packaged by the software vendor (e.g. the PHP code can be trusted).'
+				              ' For instance, where PHP code is supplied by a site owner (or by their developer) to achieve advanced customization through a UI panel. This can be evaluated at runtime to allow for the inclusion of PHP conditionals or dynamic values.'.
+				              ' In cases such as these, the PHP `eval()` function serves a valid/useful purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (e.g. the PHP code can be trusted in this case).'.
+				              ' This software may also use `eval()` to generate dynamic classes and/or API functions for developers; where the use of `eval()` again serves a valid/useful purpose; and where the underlying code was packaged by the software vendor (e.g. the PHP code can be trusted).'
 				)
 			);
 		}

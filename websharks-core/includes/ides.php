@@ -58,7 +58,6 @@ namespace # Global namespace.
 	class websharks_core__commands extends \websharks_core_v000000_dev\commands{}
 	class websharks_core__cookies extends \websharks_core_v000000_dev\cookies{}
 	class websharks_core__crons extends \websharks_core_v000000_dev\crons{}
-	class websharks_core__css_minifier extends \websharks_core_v000000_dev\css_minifier{}
 	class websharks_core__currencies extends \websharks_core_v000000_dev\currencies{}
 	class websharks_core__dates extends \websharks_core_v000000_dev\dates{}
 	class websharks_core__db extends \websharks_core_v000000_dev\db{}
@@ -82,12 +81,10 @@ namespace # Global namespace.
 	class websharks_core__functions extends \websharks_core_v000000_dev\functions{}
 	class websharks_core__gmp extends \websharks_core_v000000_dev\gmp{}
 	class websharks_core__headers extends \websharks_core_v000000_dev\headers{}
-	class websharks_core__html_minifier extends \websharks_core_v000000_dev\html_minifier{}
 	class websharks_core__initializer extends \websharks_core_v000000_dev\initializer{}
 	class websharks_core__installer extends \websharks_core_v000000_dev\installer{}
 	class websharks_core__integers extends \websharks_core_v000000_dev\integers{}
 	class websharks_core__ips extends \websharks_core_v000000_dev\ips{}
-	class websharks_core__js_minifier extends \websharks_core_v000000_dev\js_minifier{}
 	class websharks_core__mail extends \websharks_core_v000000_dev\mail{}
 	class websharks_core__markdown extends \websharks_core_v000000_dev\markdown{}
 	class websharks_core__menu_pages extends \websharks_core_v000000_dev\menu_pages{}

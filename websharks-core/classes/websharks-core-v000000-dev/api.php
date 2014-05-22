@@ -76,9 +76,6 @@ namespace websharks_core_v000000_dev
 	 * @method static \websharks_core_v000000_dev\cookies cookies()
 	 * @method static \websharks_core_v000000_dev\cookies cookie()
 	 *
-	 * @property \websharks_core_v000000_dev\css_minifier            $css_minifier
-	 * @method static \websharks_core_v000000_dev\css_minifier css_minifier()
-	 *
 	 * @property \websharks_core_v000000_dev\crons                   $crons
 	 * @property \websharks_core_v000000_dev\crons                   $cron
 	 * @method static \websharks_core_v000000_dev\crons crons()
@@ -181,9 +178,6 @@ namespace websharks_core_v000000_dev
 	 * @method static \websharks_core_v000000_dev\headers headers()
 	 * @method static \websharks_core_v000000_dev\headers header()
 	 *
-	 * @property \websharks_core_v000000_dev\html_minifier           $html_minifier
-	 * @method static \websharks_core_v000000_dev\html_minifier html_minifier()
-	 *
 	 * @property \websharks_core_v000000_dev\initializer             $initializer
 	 * @method static \websharks_core_v000000_dev\initializer initializer()
 	 *
@@ -199,9 +193,6 @@ namespace websharks_core_v000000_dev
 	 * @property \websharks_core_v000000_dev\ips                     $ip
 	 * @method static \websharks_core_v000000_dev\ips ips()
 	 * @method static \websharks_core_v000000_dev\ips ip()
-	 *
-	 * @property \websharks_core_v000000_dev\js_minifier             $js_minifier
-	 * @method static \websharks_core_v000000_dev\js_minifier js_minifier()
 	 *
 	 * @property \websharks_core_v000000_dev\mail                    $mail
 	 * @method static \websharks_core_v000000_dev\mail mail()
