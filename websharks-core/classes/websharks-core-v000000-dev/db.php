@@ -55,7 +55,7 @@ namespace websharks_core_v000000_dev
 
 			if(!isset($GLOBALS['wpdb']) || !($GLOBALS['wpdb'] instanceof \wpdb))
 				throw $this->©exception($this->method(__FUNCTION__).'#wpdb_missing', get_defined_vars(),
-				                        $this->i18n('Missing WordPress® database class instance.'));
+				                        $this->__('Missing WordPress® database class instance.'));
 
 			$this->wpdb = $GLOBALS['wpdb'];
 		}

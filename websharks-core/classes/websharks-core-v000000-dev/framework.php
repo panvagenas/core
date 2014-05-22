@@ -802,7 +802,7 @@ namespace websharks_core_v000000_dev
 					}
 					$this->___instance_config = (object)$___instance_config;
 				}
-				else throw new \exception(sprintf(stub::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
+				else throw new \exception(sprintf(stub::__('Invalid `$___instance_config` to constructor: `%1$s`'),
 				                                  print_r($___instance_config, TRUE))); // Definitely wrong!
 
 				// Mostly from core stub. These properties will NOT change from one class instance to another.
@@ -837,12 +837,12 @@ namespace websharks_core_v000000_dev
 
 					// Check core `namespace` for validation issues.
 					if(!preg_match(stub::$regex_valid_core_ns_version, $this->___instance_config->core_ns))
-						throw new \exception(sprintf(stub::i18n('Invalid core namespace: `%1$s`.'),
+						throw new \exception(sprintf(stub::__('Invalid core namespace: `%1$s`.'),
 						                             $this->___instance_config->core_ns));
 				}
 				// Check `namespace\sub_namespace\class` for validation issues.
 				if(!preg_match(stub::$regex_valid_plugin_ns_class, ($this->___instance_config->ns_class = $ns_class)))
-					throw new \exception(sprintf(stub::i18n('Namespace\\class contains invalid chars: `%1$s`.'),
+					throw new \exception(sprintf(stub::__('Namespace\\class contains invalid chars: `%1$s`.'),
 					                             $this->___instance_config->ns_class));
 
 				// The `namespace\sub_namespace\class` for ``$this`` class.
@@ -1022,8 +1022,8 @@ namespace websharks_core_v000000_dev
 
 				throw new exception( // Do NOT allow this.
 					$this, $this->method(__FUNCTION__).'#read_only_magic_property_error_via____set()', get_defined_vars(),
-					sprintf($this->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-					' '.sprintf($this->i18n('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+					sprintf($this->__('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
+					' '.sprintf($this->__('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 				);
 			}
 
@@ -1051,8 +1051,8 @@ namespace websharks_core_v000000_dev
 
 				throw new exception( // Do NOT allow this.
 					$this, $this->method(__FUNCTION__).'#read_only_magic_property_error_via____unset()', get_defined_vars(),
-					sprintf($this->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-					' '.sprintf($this->i18n('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+					sprintf($this->__('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
+					' '.sprintf($this->__('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 				);
 			}
 
@@ -1186,11 +1186,11 @@ namespace websharks_core_v000000_dev
 				if($©strpos === FALSE && strpos($property, "\xa9") !== FALSE) // 1-byte `©` symbol?
 					throw new exception( // Detailed error; this is HARD to figure out when it happens.
 						$this, $this->method(__FUNCTION__).'#undefined_magic_property_error_via__get()', get_defined_vars(),
-						sprintf($this->i18n('Undefined property: `%1$s`. Possible issue with encoding.'), $property).
-						' '.$this->i18n('Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
+						sprintf($this->__('Undefined property: `%1$s`. Possible issue with encoding.'), $property).
+						' '.$this->__('Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
 					);
 				throw new exception($this, $this->method(__FUNCTION__).'#undefined_magic_property_error_via__get()', get_defined_vars(),
-				                    sprintf($this->i18n('Undefined property: `%1$s`.'), $property));
+				                    sprintf($this->__('Undefined property: `%1$s`.'), $property));
 			}
 
 			/**
@@ -1342,11 +1342,11 @@ namespace websharks_core_v000000_dev
 				if($©strpos === FALSE && strpos($method, "\xa9") !== FALSE) // 1 byte `©` symbol?
 					throw new exception( // Detailed error; this is HARD to figure out when it happens.
 						$this, $this->method(__FUNCTION__).'#undefined_magic_method_error_via__call()', get_defined_vars(),
-						sprintf($this->i18n('Undefined method: `%1$s`. Possible issue with encoding.'), $method).
-						' '.$this->i18n('Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
+						sprintf($this->__('Undefined method: `%1$s`. Possible issue with encoding.'), $method).
+						' '.$this->__('Please make sure your `©` symbol is a valid UTF-8 sequence: `\\xc2\\xa9`.')
 					);
 				throw new exception($this, $this->method(__FUNCTION__).'#undefined_magic_method_error_via__call()', get_defined_vars(),
-				                    sprintf($this->i18n('Undefined method: `%1$s`.'), $method));
+				                    sprintf($this->__('Undefined method: `%1$s`.'), $method));
 			}
 
 			# --------------------------------------------------------------------------------------------------------------------------
@@ -1453,9 +1453,9 @@ namespace websharks_core_v000000_dev
 				if($total_args < $required_args) // Enforcing minimum args?
 					throw $this->©exception( // Need to be VERY descriptive here.
 						$this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
-						sprintf($this->i18n('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
+						sprintf($this->__('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
 						        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $required_args, $total_args).
-						' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($args)));
+						' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($args)));
 
 				if($total_args === 0) return TRUE; // Stop here (no arguments to check).
 
@@ -1655,14 +1655,14 @@ namespace websharks_core_v000000_dev
 				{
 					$position   = $problem['position'] + 1;
 					$types      = implode('|', $problem['types']);
-					$empty      = ($problem['empty']) ? $this->i18n('empty').' ' : '';
+					$empty      = ($problem['empty']) ? $this->__('empty').' ' : '';
 					$type_given = (is_object($problem['value'])) ? get_class($problem['value']) : gettype($problem['value']);
 
 					throw $this->©exception( // Need to be VERY descriptive here.
 						$this->method(__FUNCTION__).'#invalid_args', get_defined_vars(),
-						sprintf($this->i18n('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
+						sprintf($this->__('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
 						        $position, $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $types, $empty, $type_given).
-						' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($args)));
+						' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($args)));
 				}
 				return TRUE; // Default return value (no problem).
 			}
@@ -1731,9 +1731,9 @@ namespace websharks_core_v000000_dev
 					if($_default_arg_key_position < $required_args && !array_key_exists($_default_arg_key, $args))
 						throw $this->©exception( // Missing required arg! We're VERY descriptive here.
 							$this->method(__FUNCTION__).'#args_missing', get_defined_vars(),
-							sprintf($this->i18n('`%1$s` requires missing argument key `%2$s`.'),
+							sprintf($this->__('`%1$s` requires missing argument key `%2$s`.'),
 							        $this->©method->get_backtrace_callers(debug_backtrace(), 'last'), $_default_arg_key).
-							' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($args)));
+							' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($args)));
 				}
 				// Commenting for performance. NOT absolutely necessary.
 				# unset($_default_arg_key_position, $_default_arg_key); // Housekeeping.
@@ -1790,18 +1790,18 @@ namespace websharks_core_v000000_dev
 					if(strpos($_property, '___') === 0)
 						throw $this->©exception( // Do NOT allow special properties here.
 							$this->method(__FUNCTION__).'#special_property', get_defined_vars(),
-							sprintf($this->i18n('Attempting to set special property: `%1$s`.'), $_property)
+							sprintf($this->__('Attempting to set special property: `%1$s`.'), $_property)
 						);
 					if(!property_exists($this, $_property))
 						throw $this->©exception( // NOT already defined.
 							$this->method(__FUNCTION__).'#nonexistent_property', get_defined_vars(),
-							sprintf($this->i18n('Attempting to set nonexistent property: `%1$s`.'), $_property)
+							sprintf($this->__('Attempting to set nonexistent property: `%1$s`.'), $_property)
 						);
 					if(!is_null($this->$_property) && gettype($_value) !== gettype($this->$_property))
 						throw $this->©exception( // Invalid property type.
 							$this->method(__FUNCTION__).'#invalid_property_type', get_defined_vars(),
-							sprintf($this->i18n('Property type mismatch for property name: `%1$s`.'), $_property).
-							' '.sprintf($this->i18n('Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
+							sprintf($this->__('Property type mismatch for property name: `%1$s`.'), $_property).
+							' '.sprintf($this->__('Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
 						);
 					$this->$_property = $_value; // Sets/updates existing property value.
 				}
@@ -1941,7 +1941,7 @@ namespace websharks_core_v000000_dev
 			 * Contextual translation wrapper (context: `admin-side`).
 			 *
 			 * Automatically prefixes contextual slugs with the calling `namespace-stub--sub-namespace--`.
-			 * This allows for translations to be performed with a simple call to ``$this->i18n()``, while still being
+			 * This allows for translations to be performed with a simple call to ``$this->__()``, while still being
 			 * given a consistently unique `namespace-stub--sub-namespace--` prefix.
 			 *
 			 * The `namespace-stub--sub-namespace--` slug will always start with the plugin's root namespace-stub,
@@ -1958,35 +1958,23 @@ namespace websharks_core_v000000_dev
 			 * the contextual slug prefix is again: ``$this->___instance_config->plugin_stub_as_root_ns_with_dashes``.
 			 * Which would result in this contextual slug: `plugin-root-ns-stub--sub-namespace--(front|admin)-side`.
 			 *
-			 * This dynamic behavior, when used for contextual slug prefixes, might make it easier for translators.
-			 * For instance, in some cases, sub-namespaces might contain code which wraps up a particular set of features,
-			 * which may or may NOT be used by all site owners. If you want to make it easier/simpler for plugin translators,
-			 * place any code for extra/optional features into its own sub-namespace. This way translators can optionally bypass
-			 * certain contextual slugs (perhaps saving them a tremendous amount of time).
-			 *
 			 * @param string $string String to translate.
-			 *
-			 * @param string $other_contextuals Optional. Other contextual slugs relevant to this translation.
-			 *    Contextual slugs normally follow the standard of being written with dashes.
 			 *
 			 * @return string Translated string.
 			 *
 			 * @final This method may NOT be overridden by extenders.
 			 * @public Available for public usage.
 			 *
-			 * @see i18n_p()
-			 * @see translate()
-			 * @see translate_p()
+			 * @see _n()
+			 * @see _x()
+			 * @see _nx()
 			 *
 			 * @assert ('hello world') === 'hello world'
-			 * @assert ('hello world', 'foo') === 'hello world'
-			 * @assert ('hello world', 'foo') === 'hello world'
 			 */
-			final public function i18n($string, $other_contextuals = '')
+			final public function __($string)
 			{
-				$string            = (string)$string;
-				$other_contextuals = (string)$other_contextuals;
-				$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
+				$string  = (string)$string; // Context is always ...`--admin-side`.
+				$context = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--admin-side';
 
 				return _x($string, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
 			}
@@ -1998,29 +1986,25 @@ namespace websharks_core_v000000_dev
 			 * @param string         $string_plural String to translate (in plural format).
 			 * @param string|integer $numeric_value Value to translate (always a numeric value).
 			 *
-			 * @param string         $other_contextuals Optional. Other contextual slugs relevant to this translation.
-			 *    Contextual slugs normally follow the standard of being written with dashes.
-			 *
 			 * @return string Translated string.
 			 *
 			 * @final This method may NOT be overridden by extenders.
 			 * @public Available for public usage.
 			 *
-			 * @see i18n()
-			 * @see translate()
-			 * @see translate_p()
+			 * @see __()
+			 * @see _x()
+			 * @see _nx()
 			 *
 			 * @assert ('hello world', 'hello worlds', 2) === 'hello worlds'
 			 * @assert ('hello world', 'hello worlds', 0) === 'hello worlds'
 			 * @assert ('hello world', 'hello worlds', 1) === 'hello world'
 			 */
-			final public function i18n_p($string_singular, $string_plural, $numeric_value, $other_contextuals = '')
+			final public function _n($string_singular, $string_plural, $numeric_value)
 			{
-				$string_singular   = (string)$string_singular;
-				$string_plural     = (string)$string_plural;
-				$numeric_value     = (string)$numeric_value;
-				$other_contextuals = (string)$other_contextuals;
-				$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
+				$string_singular = (string)$string_singular;
+				$string_plural   = (string)$string_plural;
+				$numeric_value   = (string)$numeric_value;
+				$context         = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--admin-side';
 
 				return _nx($string_singular, $string_plural, $numeric_value, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
 			}
@@ -2038,19 +2022,20 @@ namespace websharks_core_v000000_dev
 			 * @final This method may NOT be overridden by extenders.
 			 * @public Available for public usage.
 			 *
-			 * @see i18n()
-			 * @see i18n_p()
-			 * @see translate_p()
+			 * @see __()
+			 * @see _n()
+			 * @see _nx()
 			 *
 			 * @assert ('hello world') === 'hello world'
 			 * @assert ('hello world', 'foo') === 'hello world'
 			 * @assert ('hello world', 'foo') === 'hello world'
 			 */
-			final public function translate($string, $other_contextuals = '')
+			final public function _x($string, $other_contextuals = '')
 			{
 				$string            = (string)$string;
 				$other_contextuals = (string)$other_contextuals;
-				$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--front-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
+				$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--front-side'
+				                     .(($other_contextuals) ? ' '.$other_contextuals : '');
 
 				return _x($string, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
 			}
@@ -2070,21 +2055,22 @@ namespace websharks_core_v000000_dev
 			 * @final This method may NOT be overridden by extenders.
 			 * @public Available for public usage.
 			 *
-			 * @see i18n()
-			 * @see i18n_p()
-			 * @see translate()
+			 * @see __()
+			 * @see _n()
+			 * @see _x()
 			 *
 			 * @assert ('hello world', 'hello worlds', 2) === 'hello worlds'
 			 * @assert ('hello world', 'hello worlds', 0) === 'hello worlds'
 			 * @assert ('hello world', 'hello worlds', 1) === 'hello world'
 			 */
-			final public function translate_p($string_singular, $string_plural, $numeric_value, $other_contextuals = '')
+			final public function _nx($string_singular, $string_plural, $numeric_value, $other_contextuals = '')
 			{
 				$string_singular   = (string)$string_singular;
 				$string_plural     = (string)$string_plural;
 				$numeric_value     = (string)$numeric_value;
 				$other_contextuals = (string)$other_contextuals;
-				$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--front-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
+				$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--front-side'.
+				                     (($other_contextuals) ? ' '.$other_contextuals : '');
 
 				return _nx($string_singular, $string_plural, $numeric_value, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
 			}

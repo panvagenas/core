@@ -377,7 +377,7 @@ namespace websharks_core_v000000_dev
 			$date = $this->©date->i18n_utc('D M jS, Y');
 			$time = $this->©date->i18n_utc('g:i:s a e');
 
-			$details = $date.' '.$this->translate('@ precisely').' '.$time;
+			$details = $date.' '.$this->_x('@ precisely').' '.$time;
 
 			return $details; // Return all details.
 		}
@@ -596,7 +596,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->is_cron_job())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#not_cron_job', get_defined_vars(),
-					$this->i18n('NOT a CRON job.')
+					$this->__('NOT a CRON job.')
 				);
 			$this->ignore_user_abort();
 			$this->maximize_time_memory_limits();
@@ -611,7 +611,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->is_cli())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#not_cli', get_defined_vars(),
-					$this->i18n('NOT a command-line interface.')
+					$this->__('NOT a command-line interface.')
 				);
 			$this->enable_all_error_reporting();
 

@@ -58,7 +58,7 @@ namespace websharks_core_v000000_dev
 			if(!extension_loaded('gmp'))
 				throw $this->©exception( // Should NOT happen.
 					$this->method(__FUNCTION__), get_defined_vars(),
-					$this->i18n('GMP extension NOT loaded or unavailable.')
+					$this->__('GMP extension NOT loaded or unavailable.')
 				);
 			$this->_0 = $this->resource($this->_0); // Converts to resource.
 			$this->_1 = $this->resource($this->_1); // Converts to resource.

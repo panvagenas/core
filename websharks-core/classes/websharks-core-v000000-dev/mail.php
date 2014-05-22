@@ -88,7 +88,7 @@ namespace websharks_core_v000000_dev
 			if(!($mail['recipients'] = $this->parse_emails_deep($mail['recipients'])))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#recipients_missing', get_defined_vars(),
-					$this->i18n('Email failure. Missing and/or invalid `recipients` value.')
+					$this->__('Email failure. Missing and/or invalid `recipients` value.')
 				);
 			// Possible header(s).
 			if($this->©string->is_not_empty($mail['headers']))
@@ -100,8 +100,8 @@ namespace websharks_core_v000000_dev
 				if(!$this->©string->is_not_empty($_header))
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#header_missing', get_defined_vars(),
-						$this->i18n('Email failure. Missing and/or invalid `header`.').
-						' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_header))
+						$this->__('Email failure. Missing and/or invalid `header`.').
+						' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($_header))
 					);
 			unset($_header); // Just a little housekeeping.
 
@@ -119,15 +119,15 @@ namespace websharks_core_v000000_dev
 				if(!$this->©string->is_not_empty($_attachment['path']))
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#attachment_path_missing', get_defined_vars(),
-						$this->i18n('Email failure. Missing and/or invalid attachment `path` value.').
-						' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_attachment))
+						$this->__('Email failure. Missing and/or invalid attachment `path` value.').
+						' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($_attachment))
 					);
 				if(!is_file($_attachment['path'])) // Perhaps relative?
 					if(!is_file(ABSPATH.$_attachment['path']))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#nonexistent_attachment_path', get_defined_vars(),
-							$this->i18n('Email failure. Nonexistent attachment `path` value.').
-							' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_attachment))
+							$this->__('Email failure. Nonexistent attachment `path` value.').
+							' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($_attachment))
 						);
 					else $_attachment['path'] = ABSPATH.$_attachment['path'];
 

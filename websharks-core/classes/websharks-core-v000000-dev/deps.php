@@ -92,7 +92,7 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 		{
 			if(!is_string($plugin_name) || !is_string($plugin_dir_names) || !is_bool($report_notices)
 			   || !is_bool($report_warnings) || !is_bool($check_last_ok) || !is_bool($maybe_display_wp_admin_notices)
-			) throw new exception(sprintf(websharks_core_v000000_dev::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE)));
+			) throw new exception(sprintf(websharks_core_v000000_dev::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE)));
 
 			if(apply_filters('websharks_core__deps__check_disable', FALSE))
 				return TRUE; // Return now (DISABLED by a filter).
@@ -134,7 +134,7 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 		{
 			if(!is_bool($confirmation))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(websharks_core_v000000_dev::i18n('Invalid arguments: `%1$s`'),
+					sprintf(websharks_core_v000000_dev::__('Invalid arguments: `%1$s`'),
 					        print_r(func_get_args(), TRUE))
 				);
 			if(!$confirmation)

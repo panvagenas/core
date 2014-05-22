@@ -41,14 +41,14 @@
 	 *
 	 * @return {String|Array|Object|Number|Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.get___instance_config = function(key)
+	$w.$$websharks_core.$.prototype.instance_config = function(key)
 	{
 		var $$ = this, $ = jQuery;
 
 		if(!$$.empty(typeof $$.___instance_config[key]))
 			return $$.___instance_config[key];
 
-		throw $.sprintf($$.get___i18n('get___instance_config__failure'), key);
+		throw $.sprintf($$.__('instance_config__failure'), key);
 	};
 
 	/**
@@ -63,14 +63,14 @@
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.get___verifier = function(key)
+	$w.$$websharks_core.$.prototype.verifier = function(key)
 	{
 		var $$ = this, $ = jQuery;
 
 		if(typeof $$.___verifiers[key] === 'string')
 			return $$.___verifiers[key];
 
-		throw $.sprintf($$.get___i18n('get___verifier__failure'), key);
+		throw $.sprintf($$.__('verifier__failure'), key);
 	};
 
 	/**
@@ -85,14 +85,14 @@
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.get___i18n = function(key)
+	$w.$$websharks_core.$.prototype.__ = function(key)
 	{
 		var $$ = this, $ = jQuery;
 
 		if(typeof $$.___i18n[key] === 'string')
 			return $$.___i18n[key];
 
-		throw $.sprintf($$.___i18n['get___i18n__failure'], key);
+		throw $.sprintf($$.___i18n['____failure'], key);
 	};
 
 	/**
@@ -494,7 +494,7 @@
 	{
 		var $$ = this, $ = jQuery;
 
-		return $$.get___instance_config('core_ns_stub_with_dashes');
+		return $$.instance_config('core_ns_stub_with_dashes');
 	};
 
 	/**
@@ -506,7 +506,7 @@
 	{
 		var $$ = this, $ = jQuery;
 
-		return $$.get___instance_config('plugin_root_ns_stub_with_dashes');
+		return $$.instance_config('plugin_root_ns_stub_with_dashes');
 	};
 
 	/**
@@ -706,7 +706,7 @@
 					             {
 						             var strength_mismatch_status = password_strength_mismatch_status($.trim(String($password1.val())), $.trim(String($password2.val())));
 						             $strength_mismatch_indicator.attr('class', strength_mismatch_indicator_classes.join(' ') + ' ' + strength_mismatch_status)
-							             .html($$.get___i18n('password_strength_mismatch_status__' + strength_mismatch_status));
+							             .html($$.__('password_strength_mismatch_status__' + strength_mismatch_status));
 					             }).trigger('keyup');
 			      });
 		// Form field validation.
@@ -752,7 +752,7 @@
 					            });
 				      if($('ul:empty', $response_errors).length) // Don't leave completely empty.
 					      $('ul', $response_errors).append('<li><span class="ui-icon ui-icon-alert"></span>'
-					                                       + $$.get___i18n('validate_ui_form__check_issues_below') + '</li>');
+					                                       + $$.__('validate_ui_form__check_issues_below') + '</li>');
 			      });
 		$(ui_form).attr({'novalidate': 'novalidate'})// Disables HTML 5 validation via browser.
 			.submit(function() // This uses our own form field validation handler instead of the browser's.
@@ -832,7 +832,7 @@
 				      if($$.is_string(field2_value)) field2_value = $.trim(field2_value); // Trim string value.
 
 				      if(field1_value !== field2_value) // Values are a mismatch?
-					      confirmation_errors[id].push($$.get___i18n('validate_ui_form__mismatch_fields'));
+					      confirmation_errors[id].push($$.__('validate_ui_form__mismatch_fields'));
 			      });
 		$(':input[data-unique]', context)// Validation routine (for fields that MUST be unique).
 			.each(function() // Checks form fields that require unique values (this relies upon callbacks).
@@ -880,7 +880,7 @@
 				      if($$.is_string(value)) value = $.trim(value); // Trim string value.
 
 				      if(!$$.empty(value) && $$.is_string(value) && !$w[callback](value))
-					      unique_value_errors[id].push($$.get___i18n('validate_ui_form__unique_field'));
+					      unique_value_errors[id].push($$.__('validate_ui_form__unique_field'));
 			      });
 		$(':input[data-required]', context)// Validation routine (for required fields).
 			.each(function() // Checks each `data-required` form field (some tag names are handled differently).
@@ -946,13 +946,13 @@
 											      validation_abs_minimum = validation_minimum;
 								      }
 								      if($$.isset(validation_abs_minimum) && (!$$.is_array(value) || value.length < validation_abs_minimum))
-									      required_minimum_errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_select_at_least'), validation_abs_minimum));
+									      required_minimum_errors[id].push($.sprintf($$.__('validate_ui_form__required_select_at_least'), validation_abs_minimum));
 							      }
 							      if($$.empty(required_minimum_errors[id]) && (!$$.is_array(value) || value.length < 1))
-								      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_select_at_least_one'));
+								      required_minimum_errors[id].push($$.__('validate_ui_form__required_select_at_least_one'));
 						      }
 						      else if(!$$.is_string(value) || value.length < 1)
-							      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_field'));
+							      required_minimum_errors[id].push($$.__('validate_ui_form__required_field'));
 
 						      break; // Break switch handler.
 
@@ -979,13 +979,13 @@
 													      validation_abs_minimum = validation_minimum;
 										      }
 										      if($$.isset(validation_abs_minimum) && (!(files instanceof FileList) || files.length < validation_abs_minimum))
-											      required_minimum_errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_file_at_least'), validation_abs_minimum));
+											      required_minimum_errors[id].push($.sprintf($$.__('validate_ui_form__required_file_at_least'), validation_abs_minimum));
 									      }
 									      if($$.empty(required_minimum_errors[id]) && (!(files instanceof FileList) || files.length < 1))
-										      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_file_at_least_one'));
+										      required_minimum_errors[id].push($$.__('validate_ui_form__required_file_at_least_one'));
 								      }
 								      else if(!$$.is_string(value) || value.length < 1)
-									      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_file'));
+									      required_minimum_errors[id].push($$.__('validate_ui_form__required_file'));
 
 								      break; // Break switch handler.
 
@@ -996,8 +996,8 @@
 								      if(checked < 1) // MUST have at least one checked radio.
 								      {
 									      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-										      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_radio'));
-									      rc_required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_radio'));
+										      required_minimum_errors[id].push($$.__('validate_ui_form__required_radio'));
+									      rc_required_minimum_errors[id].push($$.__('validate_ui_form__required_radio'));
 								      }
 								      break; // Break switch handler.
 
@@ -1022,26 +1022,26 @@
 										      if($$.isset(validation_abs_minimum) && checked < validation_abs_minimum)
 										      {
 											      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-												      required_minimum_errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_check_at_least'), validation_abs_minimum));
-											      rc_required_minimum_errors[id].push($.sprintf($$.get___i18n('validate_ui_form__required_check_at_least'), validation_abs_minimum));
+												      required_minimum_errors[id].push($.sprintf($$.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
+											      rc_required_minimum_errors[id].push($.sprintf($$.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
 										      }
 									      }
 									      if($$.empty(required_minimum_errors[id]) && checked < 1)
 									      {
 										      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-											      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_check_at_least_one'));
-										      rc_required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_check_at_least_one'));
+											      required_minimum_errors[id].push($$.__('validate_ui_form__required_check_at_least_one'));
+										      rc_required_minimum_errors[id].push($$.__('validate_ui_form__required_check_at_least_one'));
 									      }
 								      }
 								      else if(checked < 1) // A single checkbox.
-									      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_checkbox'));
+									      required_minimum_errors[id].push($$.__('validate_ui_form__required_checkbox'));
 
 								      break; // Break switch handler.
 
 							      default: // All other input types (default handler).
 
 								      if(!$$.is_string(value) || value.length < 1)
-									      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_field'));
+									      required_minimum_errors[id].push($$.__('validate_ui_form__required_field'));
 
 								      break; // Break switch handler.
 						      }
@@ -1050,7 +1050,7 @@
 					      default: // Everything else (including textarea fields).
 
 						      if(!$$.is_string(value) || value.length < 1)
-							      required_minimum_errors[id].push($$.get___i18n('validate_ui_form__required_field'));
+							      required_minimum_errors[id].push($$.__('validate_ui_form__required_field'));
 
 						      break; // Break switch handler.
 				      }
@@ -1100,7 +1100,7 @@
 					      if(!$$.isset($this.attr('data-required'))) return; // Empty (but NOT required).
 					      else // This value is required and it is NOT defined. We need to stop here.
 					      {
-						      validation_errors[id].push($$.get___i18n('validate_ui_form__required_field'));
+						      validation_errors[id].push($$.__('validate_ui_form__required_field'));
 						      return; // We CANNOT validate this any further.
 					      }
 				      var validation_description_prefix, validation_name, validation_regex;
@@ -1112,8 +1112,8 @@
 				      for(id_validation_errors = [], rc_id_validation_errors = [], _i = 0; _i <= 24; _i++)
 				      {
 					      if(!$$.empty(id_validation_errors))
-						      validation_description_prefix = $$.get___i18n('validate_ui_form__or_validation_description_prefix');
-					      else validation_description_prefix = $$.get___i18n('validate_ui_form__validation_description_prefix');
+						      validation_description_prefix = $$.__('validate_ui_form__or_validation_description_prefix');
+					      else validation_description_prefix = $$.__('validate_ui_form__validation_description_prefix');
 
 					      validation_name = $this.attr('data-validation-name-' + _i);
 					      if($$.empty(validation_name) || !$$.is_string(validation_name))
@@ -1453,11 +1453,11 @@
 		$$.check_arg_types(['string', 'array'], arguments, 0);
 
 		var current_page, _matches, _page_slug;
-		var regex = new RegExp('^' + $$.preg_quote($$.get___instance_config('plugin_root_ns_stub')) + '(?:__(.+))?$');
+		var regex = new RegExp('^' + $$.preg_quote($$.instance_config('plugin_root_ns_stub')) + '(?:__(.+))?$');
 
 		if($$.is_admin() && !$$.empty(current_page = $$.get_query_var('page')) && (_matches = regex.exec(current_page)).length)
 		{
-			_page_slug = (_matches.length >= 2 && !$$.empty(_matches[1])) ? _matches[1] : $$.get___instance_config('plugin_root_ns_stub');
+			_page_slug = (_matches.length >= 2 && !$$.empty(_matches[1])) ? _matches[1] : $$.instance_config('plugin_root_ns_stub');
 
 			if($$.empty(slug_s)) return _page_slug;
 			if($$.is_string(slug_s) && _page_slug === slug_s) return _page_slug;
@@ -1518,7 +1518,7 @@
 			source.write('<html>');
 
 			source.write('<head>');
-			source.write('<title>' + $$.get___i18n('view_source__doc_title') + '</title>');
+			source.write('<title>' + $$.__('view_source__doc_title') + '</title>');
 			source.write('<style type="text/css" media="screen,print">' + css + '</style>');
 			source.write('</head>');
 
@@ -1550,7 +1550,7 @@
 		var win, params = 'scrollbars=yes,resizable=yes,centerscreen=yes,modal=yes,width=' + width + ',height=' + height + ',top=' + ((screen.height - height) / 2) + ',screenY=' + ((screen.height - height) / 2) + ',left=' + ((screen.width - width) / 2) + ',screenX=' + ((screen.width - width) / 2);
 
 		if(!(win = $w.open(url, name, params)))
-			alert($$.get___i18n('win_open__turn_off_popup_blockers'));
+			alert($$.__('win_open__turn_off_popup_blockers'));
 		else win.focus();
 
 		return win; // Window handle.
@@ -1611,7 +1611,7 @@
 
 		$$.check_arg_types('string:!empty', 'string:!empty', arguments, 2);
 
-		return $$.get___verifier(type + '::' + call);
+		return $$.verifier(type + '::' + call);
 	};
 
 	/**
@@ -1629,8 +1629,8 @@
 
 		$$.check_arg_types('string:!empty', 'string:!empty', 'string:!empty', 'array', 'object', arguments, 3);
 
-		var url = $$.get___instance_config('wp_load_url');
-		var plugin_var_ns = $$.get___instance_config('plugin_var_ns');
+		var url = $$.instance_config('wp_load_url');
+		var plugin_var_ns = $$.instance_config('plugin_var_ns');
 
 		ajax = (!$$.empty(ajax)) ? ajax : {};
 		ajax.type = method, ajax.url = url, ajax.data = {};
@@ -1706,9 +1706,9 @@
 
 		if(total_args < required_args)
 		{
-			caller = $$.get___i18n('check_arg_types__caller'); // Generic.
+			caller = $$.__('check_arg_types__caller'); // Generic.
 			// caller = arguments.callee.caller.name; not possible in strict mode.
-			throw $.sprintf($$.get___i18n('check_arg_types__missing_args'), caller, required_args, total_args);
+			throw $.sprintf($$.__('check_arg_types__missing_args'), caller, required_args, total_args);
 		}
 		else if(total_args === 0) // No arguments (no problem).
 			return true; // We can stop right here in this case.
@@ -1919,16 +1919,16 @@
 			position = problem.position + 1;
 
 			type_given = $.type(problem.value);
-			empty = (problem.empty) ? $$.get___i18n('check_arg_types__empty') + ' ' : '';
+			empty = (problem.empty) ? $$.__('check_arg_types__empty') + ' ' : '';
 
 			if(problem.types.length && $$.is_string(problem.types[0]))
 				types = problem.types.join('|');
 			// Else we say `[a different object type]`.
-			else types = $$.get___i18n('check_arg_types__diff_object_type');
+			else types = $$.__('check_arg_types__diff_object_type');
 
-			caller = $$.get___i18n('check_arg_types__caller'); // Generic.
+			caller = $$.__('check_arg_types__caller'); // Generic.
 			// caller = arguments.callee.caller.name; not possible in strict mode.
-			throw $.sprintf($$.get___i18n('check_arg_types__invalid_arg'), position, caller, types, empty, type_given);
+			throw $.sprintf($$.__('check_arg_types__invalid_arg'), position, caller, types, empty, type_given);
 		}
 		return true; // Default return value (no problem).
 	};

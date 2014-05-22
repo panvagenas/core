@@ -57,15 +57,15 @@ namespace websharks_core_v000000_dev
 			(
 			                       'every5m'  => array(
 				                       'interval' => 300,
-				                       'display'  => $this->i18n('Every 5 Minutes')
+				                       'display'  => $this->__('Every 5 Minutes')
 			                       ),
 			                       'every15m' => array(
 				                       'interval' => 900,
-				                       'display'  => $this->i18n('Every 15 Minutes')
+				                       'display'  => $this->__('Every 15 Minutes')
 			                       ),
 			                       'every30m' => array(
 				                       'interval' => 1800,
-				                       'display'  => $this->i18n('Every 30 Minutes')
+				                       'display'  => $this->__('Every 30 Minutes')
 			                       )
 			);
 			return array_merge($schedules, $new_schedules);
@@ -97,8 +97,8 @@ namespace websharks_core_v000000_dev
 					|| substr_count($_cron_job['©class.method'], '©') !== 1 || substr_count($_cron_job['©class.method'], '.') !== 1
 					|| !$this->©string->is_not_empty($_cron_job['schedule']) || !in_array($_cron_job['schedule'], $schedules, TRUE)
 				) throw $this->©exception($this->method(__FUNCTION__).'#invalid_cron_job', get_defined_vars(),
-				                          $this->i18n('Invalid CRON job (missing and/or invalid array keys).').
-				                          ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_cron_job))
+				                          $this->__('Invalid CRON job (missing and/or invalid array keys).').
+				                          ' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($_cron_job))
 				);
 				$_key = $_cron_job['©class.method']; // Using this as: ``$config[$_key]``.
 				list($_cron_job['©class'], $_cron_job['method']) = explode('.', $_cron_job['©class.method'], 2);

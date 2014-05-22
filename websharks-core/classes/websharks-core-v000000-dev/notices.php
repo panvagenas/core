@@ -110,8 +110,8 @@ namespace websharks_core_v000000_dev
 					        '</span>';
 
 				if(stripos($notice['notice'], '<p>') === 0)
-					$notice['notice'] = $this->©string->ireplace_once('<p>', '<p>'.$icon.'<strong>['.$this->___instance_config->plugin_name.' '.$this->i18n('says...').']</strong> ', $notice['notice']);
-				else $notice['notice'] = '<p>'.$icon.'<strong>['.$this->___instance_config->plugin_name.' '.$this->i18n('says...').']</strong></p>'.$notice['notice'];
+					$notice['notice'] = $this->©string->ireplace_once('<p>', '<p>'.$icon.'<strong>['.$this->___instance_config->plugin_name.' '.$this->__('says...').']</strong> ', $notice['notice']);
+				else $notice['notice'] = '<p>'.$icon.'<strong>['.$this->___instance_config->plugin_name.' '.$this->__('says...').']</strong></p>'.$notice['notice'];
 			}
 			if($notice['allow_dismissals']) // Allowing dismissals?
 			{
@@ -124,7 +124,7 @@ namespace websharks_core_v000000_dev
 				$dismiss = array($this->___instance_config->plugin_root_ns_stub.'__notice__dismiss' => $notice['checksum']);
 				$dismiss = add_query_arg(urlencode_deep($dismiss), $this->©url->current_uri());
 
-				$notice['notice'] .= ' [ <a href="'.$dismiss.'">'.$this->i18n('dismiss this message').'</a> ]';
+				$notice['notice'] .= ' [ <a href="'.$dismiss.'">'.$this->__('dismiss this message').'</a> ]';
 			}
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;

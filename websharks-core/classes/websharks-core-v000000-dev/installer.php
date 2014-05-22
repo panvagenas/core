@@ -61,8 +61,8 @@ namespace websharks_core_v000000_dev
 
 				$this->©notice->enqueue(
 					'<p>'.
-					sprintf($this->i18n('%1$s was a complete success<em>!</em> Current version: <strong>%2$s</strong>.'),
-						(($reactivating) ? $this->i18n('Reactivation') : $this->i18n('Activation')), $this->___instance_config->plugin_version).
+					sprintf($this->__('%1$s was a complete success<em>!</em> Current version: <strong>%2$s</strong>.'),
+						(($reactivating) ? $this->__('Reactivation') : $this->__('Activation')), $this->___instance_config->plugin_version).
 					'</p>'
 				);
 			}
@@ -70,8 +70,8 @@ namespace websharks_core_v000000_dev
 			{
 				$this->©notice->enqueue(
 					'<p>'.
-					sprintf($this->i18n('%1$s failed (please try again). Or contact support if you need assistance.'),
-						(($reactivating) ? $this->i18n('Reactivation') : $this->i18n('Activation'))).
+					sprintf($this->__('%1$s failed (please try again). Or contact support if you need assistance.'),
+						(($reactivating) ? $this->__('Reactivation') : $this->__('Activation'))).
 					'</p>'
 				);
 			}

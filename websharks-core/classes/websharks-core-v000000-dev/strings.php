@@ -2536,7 +2536,7 @@ namespace websharks_core_v000000_dev
 			if(!is_string($base64_url_safe = base64_encode($string)))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-					$this->i18n('Base64 encoding failed (`$base64_url_safe` is NOT a string).')
+					$this->__('Base64 encoding failed (`$base64_url_safe` is NOT a string).')
 				);
 			$base64_url_safe = str_replace($url_unsafe_chars, $url_safe_chars, $base64_url_safe);
 			$base64_url_safe = (strlen($trim_padding_chars)) ? rtrim($base64_url_safe, $trim_padding_chars) : $base64_url_safe;
@@ -2982,24 +2982,24 @@ namespace websharks_core_v000000_dev
 			$error_code = preg_last_error();
 
 			if($error_code == PREG_NO_ERROR)
-				return $this->i18n('No error: `PREG_NO_ERROR`.');
+				return $this->__('No error: `PREG_NO_ERROR`.');
 
 			if($error_code == PREG_INTERNAL_ERROR)
-				return $this->i18n('Internal: `PREG_INTERNAL_ERROR`.');
+				return $this->__('Internal: `PREG_INTERNAL_ERROR`.');
 
 			if($error_code == PREG_BACKTRACK_LIMIT_ERROR)
-				return $this->i18n('Backtrack limit exhausted: `PREG_BACKTRACK_LIMIT_ERROR`.');
+				return $this->__('Backtrack limit exhausted: `PREG_BACKTRACK_LIMIT_ERROR`.');
 
 			if($error_code == PREG_RECURSION_LIMIT_ERROR)
-				return $this->i18n('Recursion limit exhausted: `PREG_RECURSION_LIMIT_ERROR`.');
+				return $this->__('Recursion limit exhausted: `PREG_RECURSION_LIMIT_ERROR`.');
 
 			if($error_code == PREG_BAD_UTF8_ERROR)
-				return $this->i18n('Bad UTF8: `PREG_BAD_UTF8_ERROR`.');
+				return $this->__('Bad UTF8: `PREG_BAD_UTF8_ERROR`.');
 
 			if($error_code == PREG_BAD_UTF8_OFFSET_ERROR)
-				return $this->i18n('Bad UTF8 offset: `PREG_BAD_UTF8_OFFSET_ERROR`.');
+				return $this->__('Bad UTF8 offset: `PREG_BAD_UTF8_OFFSET_ERROR`.');
 
-			return $this->i18n('Unknown PREG error code.');
+			return $this->__('Unknown PREG error code.');
 		}
 
 		/**
@@ -3012,35 +3012,35 @@ namespace websharks_core_v000000_dev
 		public function file_upload_error($error_code)
 		{
 			if($error_code == UPLOAD_ERR_OK)
-				return $this->i18n('No error: `UPLOAD_ERR_OK`.');
+				return $this->__('No error: `UPLOAD_ERR_OK`.');
 
 			if($error_code == UPLOAD_ERR_INI_SIZE)
-				return $this->i18n('Too large: `UPLOAD_ERR_INI_SIZE`.'.
+				return $this->__('Too large: `UPLOAD_ERR_INI_SIZE`.'.
 				                   ' The uploaded file exceeds the `upload_max_filesize` directive in `php.ini`.');
 
 			if($error_code == UPLOAD_ERR_FORM_SIZE)
-				return $this->i18n('Too large: `UPLOAD_ERR_FORM_SIZE`.'.
+				return $this->__('Too large: `UPLOAD_ERR_FORM_SIZE`.'.
 				                   ' The uploaded file exceeds the `MAX_FILE_SIZE` directive that was specified in the HTML form.');
 
 			if($error_code == UPLOAD_ERR_PARTIAL)
-				return $this->i18n('Did not get entire file: `UPLOAD_ERR_PARTIAL`. The uploaded file was only partially uploaded.');
+				return $this->__('Did not get entire file: `UPLOAD_ERR_PARTIAL`. The uploaded file was only partially uploaded.');
 
 			if($error_code == UPLOAD_ERR_NO_FILE)
-				return $this->i18n('Missing: `UPLOAD_ERR_NO_FILE`. No file was uploaded.');
+				return $this->__('Missing: `UPLOAD_ERR_NO_FILE`. No file was uploaded.');
 
 			if($error_code == UPLOAD_ERR_NO_TMP_DIR)
-				return $this->i18n('Missing temp directory on server: `UPLOAD_ERR_NO_TMP_DIR`.');
+				return $this->__('Missing temp directory on server: `UPLOAD_ERR_NO_TMP_DIR`.');
 
 			if($error_code == UPLOAD_ERR_CANT_WRITE)
-				return $this->i18n('Failed to write file to disk: `UPLOAD_ERR_CANT_WRITE`.');
+				return $this->__('Failed to write file to disk: `UPLOAD_ERR_CANT_WRITE`.');
 
 			if($error_code == UPLOAD_ERR_EXTENSION)
-				return $this->i18n('Exension failure: `UPLOAD_ERR_EXTENSION`.'.
+				return $this->__('Exension failure: `UPLOAD_ERR_EXTENSION`.'.
 				                   ' A PHP extension stopped the file upload (this is an unusual error code).'.
 				                   ' PHP does not provide a way to ascertain which extension caused the file upload to stop.'.
 				                   ' Examining the list of loaded extensions with `phpinfo()` may help.');
 
-			return sprintf($this->i18n('Unknown file upload error code: `%1$s`.'), (string)$error_code);
+			return sprintf($this->__('Unknown file upload error code: `%1$s`.'), (string)$error_code);
 		}
 
 		/**

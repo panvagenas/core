@@ -124,7 +124,7 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', '', 'string', 'string:!empty', func_get_args());
 
-			$message = ($message) ? $message : sprintf($this->i18n('Diagnostic code: `%1$s`.'), $code);
+			$message = ($message) ? $message : sprintf($this->__('Diagnostic code: `%1$s`.'), $code);
 
 			$this->diagnostics[$code][] = $message;
 
@@ -178,16 +178,16 @@ namespace websharks_core_v000000_dev
 			$log_file = $this->©file->maybe_archive($log_dir.'/debug.log');
 
 			file_put_contents( // Log this diagnostic!
-				$log_file, $this->i18n('— DIAGNOSTIC —')."\n".
-				           $this->i18n('Diagnostic Type').': '.$this->type."\n".
-				           $this->i18n('Diagnostic Code').': '.$code."\n".
-				           $this->i18n('Diagnostic Time').': '.$this->©env->time_details()."\n".
-				           $this->i18n('Memory Details').': '.$this->©env->memory_details()."\n".
-				           $this->i18n('Version Details').': '.$this->©env->version_details()."\n".
-				           $this->i18n('Current User ID').': '.$this->©user->ID."\n".
-				           $this->i18n('Current User Email').': '.$this->©user->email."\n".
-				           $this->i18n('Diagnostic Message').': '.$message."\n".
-				           $this->i18n('Diagnostic Data (if applicable)').': '.$this->©var->dump($data)."\n\n",
+				$log_file, $this->__('— DIAGNOSTIC —')."\n".
+				           $this->__('Diagnostic Type').': '.$this->type."\n".
+				           $this->__('Diagnostic Code').': '.$code."\n".
+				           $this->__('Diagnostic Time').': '.$this->©env->time_details()."\n".
+				           $this->__('Memory Details').': '.$this->©env->memory_details()."\n".
+				           $this->__('Version Details').': '.$this->©env->version_details()."\n".
+				           $this->__('Current User ID').': '.$this->©user->ID."\n".
+				           $this->__('Current User Email').': '.$this->©user->email."\n".
+				           $this->__('Diagnostic Message').': '.$message."\n".
+				           $this->__('Diagnostic Data (if applicable)').': '.$this->©var->dump($data)."\n\n",
 				FILE_APPEND
 			);
 		}

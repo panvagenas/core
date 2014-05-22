@@ -146,7 +146,7 @@ namespace websharks_core_v000000_dev
 				}
 				else throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_menu_page_config', get_defined_vars(),
-					sprintf($this->i18n('Invalid menu page configuration: %1$s'), $this->©var->dump($_menu_page))
+					sprintf($this->__('Invalid menu page configuration: %1$s'), $this->©var->dump($_menu_page))
 				);
 			}
 			unset($_slug, $_menu_page); // A little housekeeping.
@@ -231,7 +231,7 @@ namespace websharks_core_v000000_dev
 			$this->©options->update($new_options, TRUE);
 
 			$this->©notice->enqueue( // Displays in plugin pages only.
-				array('notice'   => $this->i18n('<p>Options saved successfully.</p>'),
+				array('notice'   => $this->__('<p>Options saved successfully.</p>'),
 				      'on_pages' => array($this->___instance_config->plugin_root_ns_stub.'*')));
 
 			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());

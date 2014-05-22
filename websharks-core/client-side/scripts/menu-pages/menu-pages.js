@@ -87,7 +87,7 @@
 					             {
 						             var $this = $(this);
 
-						             $this.before('<a class="docs-toggle" href="#">' + $$.get___i18n('ready__docs__button_label') + '</a>').prev('a.docs-toggle')
+						             $this.before('<a class="docs-toggle" href="#">' + $$.__('ready__docs__button_label') + '</a>').prev('a.docs-toggle')
 							             .button({icons: {primary: 'ui-icon-info'}})
 							             .click(function()
 							                    {
@@ -95,7 +95,7 @@
 								                    return false;
 							                    });
 						             $this.dialog({
-							                          title      : $$.get___i18n('ready__docs__dialog_title'),
+							                          title      : $$.__('ready__docs__dialog_title'),
 							                          dialogClass: $$.ui_dialogue_classes_for($this),
 							                          width      : 853,
 							                          autoOpen   : false,
@@ -110,7 +110,7 @@
 					             {
 						             var $this = $(this);
 
-						             $this.before('<a class="video-toggle" href="#">' + $$.get___i18n('ready__video__button_label') + '</a>').prev('a.video-toggle')
+						             $this.before('<a class="video-toggle" href="#">' + $$.__('ready__video__button_label') + '</a>').prev('a.video-toggle')
 							             .button({icons: {primary: 'ui-icon-video'}})
 							             .click(function()
 							                    {
@@ -118,7 +118,7 @@
 								                    return false;
 							                    });
 						             $this.dialog({
-							                          title      : $$.get___i18n('ready__video__dialog_title'),
+							                          title      : $$.__('ready__video__dialog_title'),
 							                          dialogClass: $$.ui_dialogue_classes_for($this),
 							                          width      : 853,
 							                          height     : 480,

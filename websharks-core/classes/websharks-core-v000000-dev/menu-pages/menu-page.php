@@ -175,12 +175,12 @@ namespace websharks_core_v000000_dev\menu_pages
 			if(empty($panel->slug))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#slug_missing', get_defined_vars(),
-					$this->i18n('Panel `slug` is empty. Check panel configuration.')
+					$this->__('Panel `slug` is empty. Check panel configuration.')
 				);
 			if(empty($panel->heading_title))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#heading_title_missing', get_defined_vars(),
-					$this->i18n('Panel has no `heading_title`. Check panel configuration.')
+					$this->__('Panel has no `heading_title`. Check panel configuration.')
 				);
 			// Exclusion?
 			if($this->apply_filters('exclude_panel_by_slug', FALSE, $panel->slug))
@@ -350,11 +350,11 @@ namespace websharks_core_v000000_dev\menu_pages
 		public function display_header_controls()
 		{
 			echo '<button class="controls toggle-all-content-panels">'.
-			     $this->i18n('Toggle All Control Panels').
+			     $this->__('Toggle All Control Panels').
 			     '</button>';
 
 			echo '<button class="controls choose-theme">'.
-			     $this->i18n('Choose Admin Theme').
+			     $this->__('Choose Admin Theme').
 			     '</button>';
 
 			echo '<form method="POST" class="controls update-theme">';
@@ -554,7 +554,7 @@ namespace websharks_core_v000000_dev\menu_pages
 				$form_fields = $this->option_fields;
 
 				echo $form_fields->construct_field_markup(
-					$form_fields->¤value($this->i18n('Save All Options')),
+					$form_fields->¤value($this->__('Save All Options')),
 					array(
 						'type'                => 'submit',
 						'name'                => 'update_options',

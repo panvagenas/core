@@ -220,8 +220,8 @@ namespace websharks_core_v000000_dev
 
 			if(!$this->possible() || !is_resource($_process = proc_open($cmd_args, $specs, $_pipes, $cwd, $env, $other)))
 			{
-				$error = (!$this->possible()) ? $this->i18n('Commands are NOT possible on this server.')
-					: $this->i18n('Unable to acquire a `proc_open()` resource.');
+				$error = (!$this->possible()) ? $this->__('Commands are NOT possible on this server.')
+					: $this->__('Unable to acquire a `proc_open()` resource.');
 
 				$errors->add($this->method(__FUNCTION__), get_defined_vars(), $error);
 
@@ -307,7 +307,7 @@ namespace websharks_core_v000000_dev
 			if($git_status !== 0)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#non_zero_status', get_defined_vars(),
-					sprintf($this->i18n('The command: `%1$s`, returned a non-zero status: `%2$s`. GIT said: `%3$s`'),
+					sprintf($this->__('The command: `%1$s`, returned a non-zero status: `%2$s`. GIT said: `%3$s`'),
 					        $git_args, $git_status, $git_errors->get_message())
 				);
 			return $git['output'];
@@ -331,7 +331,7 @@ namespace websharks_core_v000000_dev
 			if(!($current_branch = trim($this->git('rev-parse --abbrev-ref HEAD', $cwd_repo_dir))))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#unable_to_determine', get_defined_vars(),
-					sprintf($this->i18n('Unable to determine current GIT branch in: `%1$s`.'), $cwd_repo_dir)
+					sprintf($this->__('Unable to determine current GIT branch in: `%1$s`.'), $cwd_repo_dir)
 				);
 			return $current_branch;
 		}
@@ -365,7 +365,7 @@ namespace websharks_core_v000000_dev
 			if(!$branches)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#no_branches', get_defined_vars(),
-					sprintf($this->i18n('No GIT branches in: `%1$s`.'), $cwd_repo_dir)
+					sprintf($this->__('No GIT branches in: `%1$s`.'), $cwd_repo_dir)
 				);
 			return $branches;
 		}
@@ -395,7 +395,7 @@ namespace websharks_core_v000000_dev
 			if(empty($version_branches))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#no_version_branches', get_defined_vars(),
-					sprintf($this->i18n('No GIT version branches in: `%1$s`.'), $cwd_repo_dir)
+					sprintf($this->__('No GIT version branches in: `%1$s`.'), $cwd_repo_dir)
 				);
 			return $version_branches;
 		}
@@ -425,7 +425,7 @@ namespace websharks_core_v000000_dev
 			if(empty($plugin_version_branches)) // No plugin version branches?
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#no_plugin_version_branches', get_defined_vars(),
-					sprintf($this->i18n('No GIT plugin version branches in: `%1$s`.'), $cwd_repo_dir)
+					sprintf($this->__('No GIT plugin version branches in: `%1$s`.'), $cwd_repo_dir)
 				);
 			return $plugin_version_branches;
 		}
@@ -500,7 +500,7 @@ namespace websharks_core_v000000_dev
 			if(empty($dev_version_branches))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#no_dev_version_branches', get_defined_vars(),
-					sprintf($this->i18n('No GIT dev version branches in: `%1$s`.'), $cwd_repo_dir)
+					sprintf($this->__('No GIT dev version branches in: `%1$s`.'), $cwd_repo_dir)
 				);
 			usort($dev_version_branches, 'version_compare');
 
@@ -533,7 +533,7 @@ namespace websharks_core_v000000_dev
 			if(empty($plugin_dev_version_branches))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#no_plugin_dev_version_branches', get_defined_vars(),
-					sprintf($this->i18n('No GIT plugin dev version branches in: `%1$s`.'), $cwd_repo_dir)
+					sprintf($this->__('No GIT plugin dev version branches in: `%1$s`.'), $cwd_repo_dir)
 				);
 			usort($plugin_dev_version_branches, 'version_compare');
 
@@ -566,7 +566,7 @@ namespace websharks_core_v000000_dev
 			if(empty($stable_version_branches))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#no_stable_version_branches', get_defined_vars(),
-					sprintf($this->i18n('No GIT stable version branches in: `%1$s`.'), $cwd_repo_dir)
+					sprintf($this->__('No GIT stable version branches in: `%1$s`.'), $cwd_repo_dir)
 				);
 			usort($stable_version_branches, 'version_compare');
 
@@ -599,7 +599,7 @@ namespace websharks_core_v000000_dev
 			if(empty($plugin_stable_version_branches))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#no_plugin_stable_version_branches', get_defined_vars(),
-					sprintf($this->i18n('No GIT plugin stable version branches in: `%1$s`.'), $cwd_repo_dir)
+					sprintf($this->__('No GIT plugin stable version branches in: `%1$s`.'), $cwd_repo_dir)
 				);
 			usort($plugin_stable_version_branches, 'version_compare');
 

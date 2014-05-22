@@ -447,7 +447,7 @@ namespace websharks_core_v000000_dev
 				         '>'.
 
 				         (($field['label'] && $field['required'])
-					         ? $field['label'].' '.$this->translate('*', 'form-field-required-marker')
+					         ? $field['label'].' '.$this->_x('*', 'form-field-required-marker')
 					         : $field['label']).
 
 				         '</label>';
@@ -707,7 +707,7 @@ namespace websharks_core_v000000_dev
 					         : '');
 			}
 			else throw $this->©exception($this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
-			                             sprintf($this->i18n('Invalid form field type: `%1$s`.'), $field['type']));
+			                             sprintf($this->__('Invalid form field type: `%1$s`.'), $field['type']));
 
 			if($field['type'] !== 'hidden') // Close container?
 				$html .= '</div>'; // Closes container dive tag now.
@@ -825,17 +825,17 @@ namespace websharks_core_v000000_dev
 							}
 							if(isset($_validation_abs_minimum) && (!is_array($_value) || count($_value) < $_validation_abs_minimum))
 								$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-								             sprintf($this->translate('Please select at least %1$s options.'), $_validation_abs_minimum));
+								             sprintf($this->_x('Please select at least %1$s options.'), $_validation_abs_minimum));
 
 							else if(!is_array($_value) || count($_value) < 1)
 								$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-								             $this->translate('Please select at least 1 option.'));
+								             $this->_x('Please select at least 1 option.'));
 
 							unset($_validation_pattern, $_validation_abs_minimum); // A bit of housekeeping here.
 						}
 						else if(!is_string($_value) || !strlen($_value))
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('This is a required field.'));
+							             $this->_x('This is a required field.'));
 
 						break; // Break switch handler.
 
@@ -852,17 +852,17 @@ namespace websharks_core_v000000_dev
 							}
 							if(isset($_validation_abs_minimum) && (!is_array($_value) || count($_value) < $_validation_abs_minimum))
 								$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-								             sprintf($this->translate('Please select at least %1$s files.'), $_validation_abs_minimum));
+								             sprintf($this->_x('Please select at least %1$s files.'), $_validation_abs_minimum));
 
 							else if(!is_array($_value) || count($_value) < 1)
 								$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-								             $this->translate('Please select at least one file.'));
+								             $this->_x('Please select at least one file.'));
 
 							unset($_validation_pattern, $_validation_abs_minimum); // A bit of housekeeping here.
 						}
 						else if(!is_string($_value) || !strlen($_value))
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('A file MUST be selected please.'));
+							             $this->_x('A file MUST be selected please.'));
 
 						break; // Break switch handler.
 
@@ -871,7 +871,7 @@ namespace websharks_core_v000000_dev
 
 						if(!is_string($_value) || !strlen($_value))
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('Please choose one of the available options.'));
+							             $this->_x('Please choose one of the available options.'));
 
 						break; // Break switch handler.
 
@@ -879,7 +879,7 @@ namespace websharks_core_v000000_dev
 
 						if(!is_string($_value) || !strlen($_value))
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('This box MUST be checked please.'));
+							             $this->_x('This box MUST be checked please.'));
 
 						break; // Break switch handler.
 
@@ -894,11 +894,11 @@ namespace websharks_core_v000000_dev
 						}
 						if(isset($_validation_abs_minimum) && (!is_array($_value) || count($_value) < $_validation_abs_minimum))
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             sprintf($this->translate('Please check at least %1$s boxes.'), $_validation_abs_minimum));
+							             sprintf($this->_x('Please check at least %1$s boxes.'), $_validation_abs_minimum));
 
 						else if(!is_array($_value) || count($_value) < 1)
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('Please check at least one box.'));
+							             $this->_x('Please check at least one box.'));
 
 						unset($_validation_pattern, $_validation_abs_minimum); // A bit of housekeeping here.
 
@@ -908,7 +908,7 @@ namespace websharks_core_v000000_dev
 
 						if(!is_string($_value) || !strlen($_value))
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('This is a required field.'));
+							             $this->_x('This is a required field.'));
 
 						break; // Break switch handler.
 				}
@@ -939,13 +939,13 @@ namespace websharks_core_v000000_dev
 				if(isset($_value) && ($_field['multiple'] || $_field['type'] === 'checkboxes') && !is_array($_value))
 				{
 					$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-					             $this->translate('Invalid data type. Expecting an array.'));
+					             $this->_x('Invalid data type. Expecting an array.'));
 					continue; // We CANNOT validate this any further.
 				}
 				if(isset($_value) && !$_field['multiple'] && $_field['type'] !== 'checkboxes' && !is_string($_value))
 				{
 					$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-					             $this->translate('Invalid data type. Expecting a string.'));
+					             $this->_x('Invalid data type. Expecting a string.'));
 					continue; // We CANNOT validate this any further.
 				}
 				// Catch readonly/disabled fields.
@@ -956,7 +956,7 @@ namespace websharks_core_v000000_dev
 				if(isset($_value) && $_field['disabled']) // This should NOT happen (but just in case).
 				{
 					$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-					             $this->translate('Invalid data. Disabled fields should NOT be submitted w/ a value.'));
+					             $this->_x('Invalid data. Disabled fields should NOT be submitted w/ a value.'));
 					continue; // We CANNOT validate this any further.
 				}
 				// Catch field types that we NEVER validate any further.
@@ -974,7 +974,7 @@ namespace websharks_core_v000000_dev
 				{
 					if(!$errors->get_code($this->method(__FUNCTION__).'#'.$_field['code'])) // Avoid duplicate errors.
 						$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-						             $this->translate('This is a required field.'));
+						             $this->_x('This is a required field.'));
 					continue; // We CANNOT validate this any further.
 				}
 				// Handle validation patterns now. This is an extremely complex routine.
@@ -982,8 +982,8 @@ namespace websharks_core_v000000_dev
 				foreach($_field['validation_patterns'] as $_validation_pattern) // Check all validation patterns.
 				{
 					if($errors->get_code($this->method(__FUNCTION__).'#vp_'.$_field['code']))
-						$_validation_description_prefix = $this->translate('<strong>OR:</strong>');
-					else $_validation_description_prefix = $this->translate('<strong>REQUIRES:</strong>');
+						$_validation_description_prefix = $this->_x('<strong>OR:</strong>');
+					else $_validation_description_prefix = $this->_x('<strong>REQUIRES:</strong>');
 
 					if(!is_array($_error_data = $errors->get_data($this->method(__FUNCTION__).'#vp_'.$_field['code'])) || $_error_data['validation_pattern_name'] !== $_validation_pattern['name'])
 						switch($_field['type']) // Based on field type.
@@ -1189,13 +1189,13 @@ namespace websharks_core_v000000_dev
 								if(!is_string($_value)) // Invalid data type?
 								{
 									$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-									             $this->translate('Invalid data type. Expecting a string.'));
+									             $this->_x('Invalid data type. Expecting a string.'));
 									continue 2; // We CANNOT validate this any further.
 								}
 								else if(strlen($_value) > $_field['maxlength'])
 								{
 									$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-									             sprintf($this->translate('Too long. Max string length: `%1$s` characters.'), $_field['maxlength']));
+									             sprintf($this->_x('Too long. Max string length: `%1$s` characters.'), $_field['maxlength']));
 									continue 2; // We CANNOT validate this any further.
 								}
 							}
@@ -1211,19 +1211,19 @@ namespace websharks_core_v000000_dev
 								if(!is_string($_value)) // Invalid data type?
 								{
 									$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-									             $this->translate('Invalid data type. Expecting a string.'));
+									             $this->_x('Invalid data type. Expecting a string.'));
 									continue 2; // We CANNOT validate this any further.
 								}
 								else if(!$_field['unique_callback_php'] || !is_callable($_field['unique_callback_php']))
 								{
 									$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-									             $this->translate('Unable to validate. Invalid unique callback.'));
+									             $this->_x('Unable to validate. Invalid unique callback.'));
 									continue 2; // We CANNOT validate this any further.
 								}
 								else if(!$_field['unique_callback_php']($_value, $user))
 								{
 									$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-									             $this->translate('Please try again (this value MUST be unique please).'));
+									             $this->_x('Please try again (this value MUST be unique please).'));
 									continue 2; // We CANNOT validate this any further.
 								}
 							}
@@ -1238,14 +1238,14 @@ namespace websharks_core_v000000_dev
 						if(!is_array($_value)) // Invalid data type?
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('Invalid data type. Expecting an array.'));
+							             $this->_x('Invalid data type. Expecting an array.'));
 							continue; // We CANNOT validate this any further.
 						}
 						else foreach($_value as $__key => $__value)
 							if(!is_string($__value) || !isset($_file_info[$__key]) || $_file_info[$__key]['error'] !== UPLOAD_ERR_OK)
 							{
 								$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-								             $this->translate('File upload failure.').' '.$this->©string->file_upload_error($_file_info[$__key]['error']));
+								             $this->_x('File upload failure.').' '.$this->©string->file_upload_error($_file_info[$__key]['error']));
 								continue 2; // We CANNOT validate this any further.
 							}
 						unset($__key, $__value); // Housekeeping.
@@ -1255,13 +1255,13 @@ namespace websharks_core_v000000_dev
 						if(!is_string($_value)) // Invalid data type?
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('Invalid data type. Expecting a string.'));
+							             $this->_x('Invalid data type. Expecting a string.'));
 							continue; // We CANNOT validate this any further.
 						}
 						else if($_file_info['error'] !== UPLOAD_ERR_OK)
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('File upload failure.').' '.$this->©string->file_upload_error($_file_info['error']));
+							             $this->_x('File upload failure.').' '.$this->©string->file_upload_error($_file_info['error']));
 							continue; // We CANNOT validate this any further.
 						}
 					}
@@ -1278,7 +1278,7 @@ namespace websharks_core_v000000_dev
 						if(!is_array($_value)) // Invalid data type?
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('Invalid data type. Expecting an array.'));
+							             $this->_x('Invalid data type. Expecting an array.'));
 							continue; // We CANNOT validate this any further.
 						}
 						else foreach($_value as $__key => $__value)
@@ -1289,7 +1289,7 @@ namespace websharks_core_v000000_dev
 							) // Check MIME type from browser; and also MIME type as determined by the file extension.
 							{
 								$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-								             sprintf($this->translate('Invalid MIME type. Expecting: `%1$s`.'), $_field['accept']));
+								             sprintf($this->_x('Invalid MIME type. Expecting: `%1$s`.'), $_field['accept']));
 								continue 2; // We CANNOT validate this any further.
 							}
 						unset($__key, $__value, $__extension); // Housekeeping.
@@ -1299,7 +1299,7 @@ namespace websharks_core_v000000_dev
 						if(!is_string($_value)) // Invalid data type?
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('Invalid data type. Expecting a string.'));
+							             $this->_x('Invalid data type. Expecting a string.'));
 							continue; // We CANNOT validate this any further.
 						}
 						else if(!$this->©string->in_wildcard_patterns($_file_info['type'], $_wildcard_patterns, TRUE)
@@ -1308,7 +1308,7 @@ namespace websharks_core_v000000_dev
 						) // Check MIME type from browser; and also MIME type as determined by the file extension.
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             sprintf($this->translate('Invalid MIME type. Expecting: `%1$s`.'), $_field['accept']));
+							             sprintf($this->_x('Invalid MIME type. Expecting: `%1$s`.'), $_field['accept']));
 							continue; // We CANNOT validate this any further.
 						}
 						unset($__extension); // Housekeeping.
@@ -1335,8 +1335,8 @@ namespace websharks_core_v000000_dev
 						if(!is_dir($_field['move_to_dir']) || !is_writable($_field['move_to_dir']))
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('Unable to handle file upload(s). Unable to move uploaded file(s).').
-							             ' '.sprintf($this->translate('Move-to directory NOT writable: `%1$s`.'), $_field['move_to_dir']));
+							             $this->_x('Unable to handle file upload(s). Unable to move uploaded file(s).').
+							             ' '.sprintf($this->_x('Move-to directory NOT writable: `%1$s`.'), $_field['move_to_dir']));
 							continue; // We CANNOT validate this any further.
 						}
 					} // If we get here, the directory exists.
@@ -1346,7 +1346,7 @@ namespace websharks_core_v000000_dev
 						if(!is_array($_value)) // Invalid data type?
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('Invalid data type. Expecting an array.'));
+							             $this->_x('Invalid data type. Expecting an array.'));
 							continue; // We CANNOT validate this any further.
 						}
 						else foreach($_value as $__key => $__value)
@@ -1357,7 +1357,7 @@ namespace websharks_core_v000000_dev
 							) // File `name` value is always unique. See {@link vars::_merge_FILES_deeply_into()}.
 							{
 								$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-								             sprintf($this->translate('Unable to handle file upload. Unable to move to: `%1$s`.'), $_field['move_to_dir']));
+								             sprintf($this->_x('Unable to handle file upload. Unable to move to: `%1$s`.'), $_field['move_to_dir']));
 								continue 2; // We CANNOT validate this any further.
 							}
 							else $this->static[__FUNCTION__.'_moved_tmp_name_to'][$_file_info[$__key]['tmp_name']] = $_field['move_to_dir'];
@@ -1369,7 +1369,7 @@ namespace websharks_core_v000000_dev
 						if(!is_string($_value)) // Invalid data type?
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             $this->translate('Invalid data type. Expecting a string.'));
+							             $this->_x('Invalid data type. Expecting a string.'));
 							continue; // We CANNOT validate this any further.
 						}
 						else if(!$_file_info['tmp_name'] || !$_file_info['name']
@@ -1378,7 +1378,7 @@ namespace websharks_core_v000000_dev
 						) // File `name` value is always unique. See {@link vars::_merge_FILES_deeply_into()}.
 						{
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
-							             sprintf($this->translate('Unable to handle file upload. Unable to move to: `%1$s`.'), $_field['move_to_dir']));
+							             sprintf($this->_x('Unable to handle file upload. Unable to move to: `%1$s`.'), $_field['move_to_dir']));
 							continue; // We CANNOT validate this any further.
 						}
 						else $this->static[__FUNCTION__.'_moved_tmp_name_to'][$_file_info['tmp_name']] = $_field['move_to_dir'];
@@ -1450,9 +1450,9 @@ namespace websharks_core_v000000_dev
 				if(array_key_exists($_key, $field) && !is_null($_default) && gettype($field[$_key]) !== gettype($_default))
 					throw $this->©exception( // There's a problem with this key.
 						$this->method(__FUNCTION__).'#invalid_key', get_defined_vars(),
-						sprintf($this->i18n('Form field. Invalid key: `%1$s`.'), $_key).
-						' '.sprintf($this->i18n('Invalid field configuration: `%1$s`.'), $this->©var->dump($field)).
-						' '.sprintf($this->i18n('Defaults: `%1$s`.'), $this->©var->dump($this->defaults))
+						sprintf($this->__('Form field. Invalid key: `%1$s`.'), $_key).
+						' '.sprintf($this->__('Invalid field configuration: `%1$s`.'), $this->©var->dump($field)).
+						' '.sprintf($this->__('Defaults: `%1$s`.'), $this->©var->dump($this->defaults))
 					);
 			unset($_key, $_default); // Just a little housekeeping.
 
@@ -1463,31 +1463,31 @@ namespace websharks_core_v000000_dev
 			if(!$field['type'])
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#type_missing', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (missing `type`).')
+					$this->__('Form field. Invalid configuration (missing `type`).')
 				);
 			if(!in_array($field['type'], $this->types, TRUE))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (invalid `type`).')
+					$this->__('Form field. Invalid configuration (invalid `type`).')
 				);
 			if($field['confirm'] && !in_array($field['type'], $this->confirmable_types, TRUE))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (NOT a confirmable `type`).')
+					$this->__('Form field. Invalid configuration (NOT a confirmable `type`).')
 				);
 			// Handle field names (and we consider a name prefix here too).
 
 			if(!$field['name'])
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#missing_name', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (missing `name`).').
-					' '.sprintf($this->i18n('Got: `%1$s`.'), $field['name'])
+					$this->__('Form field. Invalid configuration (missing `name`).').
+					' '.sprintf($this->__('Got: `%1$s`.'), $field['name'])
 				);
 			if(!preg_match('/^(?:[a-z][a-z0-9_]*?[a-z0-9]|[a-z])(?:\[(?:[a-z][a-z0-9_]*?[a-z0-9]|[1-9][0-9]+|[0-9]|[a-z])\])*$/i', $field['name_prefix'].$field['name']))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_name_prefix_name', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (invalid `name_prefix`.`name`).').
-					' '.sprintf($this->i18n('Got: `%1$s`.'), $field['name_prefix'].$field['name'])
+					$this->__('Form field. Invalid configuration (invalid `name_prefix`.`name`).').
+					' '.sprintf($this->__('Got: `%1$s`.'), $field['name_prefix'].$field['name'])
 				);
 			// Handle field end name/code.
 
@@ -1499,14 +1499,14 @@ namespace websharks_core_v000000_dev
 			if(!$field['code'])
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#missing_code', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (missing `code`).').
-					' '.sprintf($this->i18n('Got: `%1$s`.'), $field['code'])
+					$this->__('Form field. Invalid configuration (missing `code`).').
+					' '.sprintf($this->__('Got: `%1$s`.'), $field['code'])
 				);
 			if(!preg_match('/^(?:[a-z][a-z0-9_]*?[a-z0-9]|[1-9][0-9]+|[0-9]|[a-z])$/i', $field['code']))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_code', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (invalid `code`).').
-					' '.sprintf($this->i18n('Got: `%1$s`.'), $field['code'])
+					$this->__('Form field. Invalid configuration (invalid `code`).').
+					' '.sprintf($this->__('Got: `%1$s`.'), $field['code'])
 				);
 			// Handle field ID values.
 
@@ -1516,14 +1516,14 @@ namespace websharks_core_v000000_dev
 			if(!$field['id'])
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#missing_id', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (missing `id`).').
-					' '.sprintf($this->i18n('Got: `%1$s`.'), $field['id'])
+					$this->__('Form field. Invalid configuration (missing `id`).').
+					' '.sprintf($this->__('Got: `%1$s`.'), $field['id'])
 				);
 			if(!preg_match('/^(?:[a-z][a-z0-9\-]*?[a-z0-9]|[a-z])$/i', $field['id_prefix'].$field['id']))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_id_prefix_id', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (invalid `id_prefix`.`id`).').
-					' '.sprintf($this->i18n('Got: `%1$s`.'), $field['id_prefix'].$field['id'])
+					$this->__('Form field. Invalid configuration (invalid `id_prefix`.`id`).').
+					' '.sprintf($this->__('Got: `%1$s`.'), $field['id_prefix'].$field['id'])
 				);
 			// Handle field icons.
 
@@ -1532,7 +1532,7 @@ namespace websharks_core_v000000_dev
 					$field['icon'] = $this->default_icons_by_type[$field['type']];
 				else throw $this->©exception(
 					$this->method(__FUNCTION__).'#icon_missing', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (missing `icon`).')
+					$this->__('Form field. Invalid configuration (missing `icon`).')
 				);
 			// Handle field options.
 
@@ -1546,7 +1546,7 @@ namespace websharks_core_v000000_dev
 				if(!$this->©strings->are_set($_option['label'], $_option['value']) || !is_bool($_option['is_default']))
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#invalid_options', get_defined_vars(),
-						$this->i18n('Form field. Invalid configuration (invalid `options`).')
+						$this->__('Form field. Invalid configuration (invalid `options`).')
 					);
 			}
 			unset($_option_defaults, $_option); // Housekeeping.
@@ -1554,15 +1554,15 @@ namespace websharks_core_v000000_dev
 			if(in_array($field['type'], $this->types_with_options, TRUE) && !$field['options'])
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#options_missing', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (missing `options`).')
+					$this->__('Form field. Invalid configuration (missing `options`).')
 				);
 			// Handle unique fields (validate PHP callback).
 
 			if($field['unique'] && !is_callable($field['unique_callback_php']))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#missing_unique_callback_php', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (missing and/or invalid `unique_callback_php`).').
-					' '.sprintf($this->i18n('Expecting callable. Got: `%1$s`.'), $this->©var->dump($field['unique_callback_php']))
+					$this->__('Form field. Invalid configuration (missing and/or invalid `unique_callback_php`).').
+					' '.sprintf($this->__('Expecting callable. Got: `%1$s`.'), $this->©var->dump($field['unique_callback_php']))
 				);
 			// Handle validation patterns.
 
@@ -1581,7 +1581,7 @@ namespace websharks_core_v000000_dev
 				   || (!is_null($_validation_pattern['min_max_type']) && !$this->©string->is_not_empty($_validation_pattern['min_max_type']))
 				) throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_validation_patterns', get_defined_vars(),
-					$this->i18n('Form field. Invalid configuration (invalid `validation_patterns`).')
+					$this->__('Form field. Invalid configuration (invalid `validation_patterns`).')
 				);
 			}
 			unset($_validation_pattern_defaults, $_validation_pattern); // Housekeeping.

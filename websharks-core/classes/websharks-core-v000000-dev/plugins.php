@@ -144,8 +144,8 @@ namespace websharks_core_v000000_dev
 			if(class_exists($this->___instance_config->plugin_root_ns_prefix.'\\menu_pages\\update_sync'))
 			{
 				$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
-					'<p>'.$this->i18n('Your pro add-on MUST be updated now.').
-					' '.sprintf($this->i18n('Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
+					'<p>'.$this->__('Your pro add-on MUST be updated now.').
+					' '.sprintf($this->__('Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
 					'</p>'
 				);
 			}

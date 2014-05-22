@@ -188,12 +188,12 @@ namespace websharks_core_v000000_dev
 			if($install === FALSE)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#install_failure', get_defined_vars(),
-					$this->i18n('Unable to install DB tables (install failure).')
+					$this->__('Unable to install DB tables (install failure).')
 				);
 			if($upgrade === FALSE)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#upgrade_failure', get_defined_vars(),
-					$this->i18n('Unable to upgrade DB tables (upgrade failure).')
+					$this->__('Unable to upgrade DB tables (upgrade failure).')
 				);
 			return TRUE;
 		}
@@ -233,7 +233,7 @@ namespace websharks_core_v000000_dev
 			if($uninstall === FALSE)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#uninstall_failure', get_defined_vars(),
-					$this->i18n('Unable to uninstall DB tables (uninstall failure).')
+					$this->__('Unable to uninstall DB tables (uninstall failure).')
 				);
 			return TRUE;
 		}
@@ -257,8 +257,8 @@ namespace websharks_core_v000000_dev
 
 			throw $this->©exception(
 				$this->method(__FUNCTION__).'#unknown_db_table', get_defined_vars(),
-				sprintf($this->i18n('Unknown plugin DB table: `%1$s`.'), $table).
-				' '.sprintf($this->i18n('Current plugin tables include: `%1$s`.'), $this->©var->dump($this->tables))
+				sprintf($this->__('Unknown plugin DB table: `%1$s`.'), $table).
+				' '.sprintf($this->__('Current plugin tables include: `%1$s`.'), $this->©var->dump($this->tables))
 			);
 		}
 
@@ -283,7 +283,7 @@ namespace websharks_core_v000000_dev
 
 			throw $this->©exception(
 				$this->method(__FUNCTION__).'#unknown_wp_db_table', get_defined_vars(),
-				sprintf($this->i18n('Unknown WordPress® DB table: `%1$s`.'), $table)
+				sprintf($this->__('Unknown WordPress® DB table: `%1$s`.'), $table)
 			);
 		}
 

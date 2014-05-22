@@ -53,14 +53,14 @@ namespace websharks_core_v000000_dev
 			if(strlen($from) !== 3)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_from_currency', get_defined_vars(),
-					$this->i18n('Argument `$from` MUST be 3 characters in length.').
-					' '.sprintf($this->i18n('Got: `%1$s`.'), $from)
+					$this->__('Argument `$from` MUST be 3 characters in length.').
+					' '.sprintf($this->__('Got: `%1$s`.'), $from)
 				);
 			if(strlen($to) !== 3)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_to_currency', get_defined_vars(),
-					$this->i18n('Argument `$to` MUST be 3 characters in length.').
-					' '.sprintf($this->i18n('Got: `%1$s`.'), $to)
+					$this->__('Argument `$to` MUST be 3 characters in length.').
+					' '.sprintf($this->__('Got: `%1$s`.'), $to)
 				);
 			// Attempt to convert the currency via Google's calculator.
 
@@ -83,14 +83,14 @@ namespace websharks_core_v000000_dev
 				return $converted_currency_amount;
 
 			// Throw exception when currency conversion fails.
-			$error_msg = $this->i18n('unknown error');
+			$error_msg = $this->__('unknown error');
 			if(!empty($json['error']) && is_string($json['error']))
 				$error_msg = $json['error'];
 
 			throw $this->©exception(
 				$this->method(__FUNCTION__).'#currency_conversion_failure', get_defined_vars(),
-				sprintf($this->i18n('Currency conversion failed with error: `%1$s`.'), $error_msg).
-				' '.sprintf($this->i18n('JSON response data: `%1$s`'), $this->©var->dump($json))
+				sprintf($this->__('Currency conversion failed with error: `%1$s`.'), $error_msg).
+				' '.sprintf($this->__('JSON response data: `%1$s`'), $this->©var->dump($json))
 			);
 		}
 
@@ -144,14 +144,14 @@ namespace websharks_core_v000000_dev
 			if(($currency = strtoupper($currency)) && strlen($currency) !== 3)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_currency', get_defined_vars(),
-					$this->i18n('Argument `$currency` MUST be 3 characters in length.').
-					' '.sprintf($this->i18n('Instead got: `%1$s`.'), $currency)
+					$this->__('Argument `$currency` MUST be 3 characters in length.').
+					' '.sprintf($this->__('Instead got: `%1$s`.'), $currency)
 				);
 			if($currency && !isset($currencies[$currency]))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#unsupported_currency', get_defined_vars(),
-					$this->i18n('The `$currency` code is NOT currently supported by this software.').
-					' '.sprintf($this->i18n('Unsupported currency code: `%1$s`.'), $currency)
+					$this->__('The `$currency` code is NOT currently supported by this software.').
+					' '.sprintf($this->__('Unsupported currency code: `%1$s`.'), $currency)
 				);
 			$format = number_format($amount, 2, '.', '');
 			$format = ($currency && $prefix) ? $this->get($currency, 'symbol').$format : $format;
@@ -206,118 +206,118 @@ namespace websharks_core_v000000_dev
 				(
 					'AUD' => array(
 						'symbol'        => '$',
-						'singular_name' => $this->translate('Australian Dollar'),
-						'plural_name'   => $this->translate('Australian Dollars')
+						'singular_name' => $this->_x('Australian Dollar'),
+						'plural_name'   => $this->_x('Australian Dollars')
 					),
 					'BRL' => array(
 						'symbol'        => 'R$',
-						'singular_name' => $this->translate('Brazilian Real'),
-						'plural_name'   => $this->translate('Brazilian Reais')
+						'singular_name' => $this->_x('Brazilian Real'),
+						'plural_name'   => $this->_x('Brazilian Reais')
 					),
 					'CAD' => array(
 						'symbol'        => '$',
-						'singular_name' => $this->translate('Canadian Dollar'),
-						'plural_name'   => $this->translate('Canadian Dollars')
+						'singular_name' => $this->_x('Canadian Dollar'),
+						'plural_name'   => $this->_x('Canadian Dollars')
 					),
 					'CZK' => array(
 						'symbol'        => 'Kč',
-						'singular_name' => $this->translate('Czech Koruna'),
-						'plural_name'   => $this->translate('Czech Koruny')
+						'singular_name' => $this->_x('Czech Koruna'),
+						'plural_name'   => $this->_x('Czech Koruny')
 					),
 					'DKK' => array(
 						'symbol'        => 'kr',
-						'singular_name' => $this->translate('Danish Krone'),
-						'plural_name'   => $this->translate('Danish Kroner')
+						'singular_name' => $this->_x('Danish Krone'),
+						'plural_name'   => $this->_x('Danish Kroner')
 					),
 					'EUR' => array(
 						'symbol'        => '€',
-						'singular_name' => $this->translate('Euro'),
-						'plural_name'   => $this->translate('Euros')
+						'singular_name' => $this->_x('Euro'),
+						'plural_name'   => $this->_x('Euros')
 					),
 					'HKD' => array(
 						'symbol'        => '$',
-						'singular_name' => $this->translate('Hong Kong Dollar'),
-						'plural_name'   => $this->translate('Hong Kong Dollars')
+						'singular_name' => $this->_x('Hong Kong Dollar'),
+						'plural_name'   => $this->_x('Hong Kong Dollars')
 					),
 					'HUF' => array(
 						'symbol'        => 'Ft',
-						'singular_name' => $this->translate('Hungarian Forint'),
-						'plural_name'   => $this->translate('Hungarian Forintok')
+						'singular_name' => $this->_x('Hungarian Forint'),
+						'plural_name'   => $this->_x('Hungarian Forintok')
 					),
 					'ILS' => array(
 						'symbol'        => '₪',
-						'singular_name' => $this->translate('Israeli New Sheqel'),
-						'plural_name'   => $this->translate('Israeli New Shekalim')
+						'singular_name' => $this->_x('Israeli New Sheqel'),
+						'plural_name'   => $this->_x('Israeli New Shekalim')
 					),
 					'JPY' => array(
 						'symbol'        => '¥',
-						'singular_name' => $this->translate('Japanese Yen'),
-						'plural_name'   => $this->translate('Japanese Yen')
+						'singular_name' => $this->_x('Japanese Yen'),
+						'plural_name'   => $this->_x('Japanese Yen')
 					),
 					'MYR' => array(
 						'symbol'        => 'RM',
-						'singular_name' => $this->translate('Malaysian Ringgit'),
-						'plural_name'   => $this->translate('Malaysian Ringgit')
+						'singular_name' => $this->_x('Malaysian Ringgit'),
+						'plural_name'   => $this->_x('Malaysian Ringgit')
 					),
 					'MXN' => array(
 						'symbol'        => '$',
-						'singular_name' => $this->translate('Mexican Peso'),
-						'plural_name'   => $this->translate('Mexican Pesos')
+						'singular_name' => $this->_x('Mexican Peso'),
+						'plural_name'   => $this->_x('Mexican Pesos')
 					),
 					'NOK' => array(
 						'symbol'        => 'kr',
-						'singular_name' => $this->translate('Norwegian Krone'),
-						'plural_name'   => $this->translate('Norwegian Kroner')
+						'singular_name' => $this->_x('Norwegian Krone'),
+						'plural_name'   => $this->_x('Norwegian Kroner')
 					),
 					'NZD' => array(
 						'symbol'        => '$',
-						'singular_name' => $this->translate('New Zealand Dollar'),
-						'plural_name'   => $this->translate('New Zealand Dollars')
+						'singular_name' => $this->_x('New Zealand Dollar'),
+						'plural_name'   => $this->_x('New Zealand Dollars')
 					),
 					'PHP' => array(
 						'symbol'        => 'Php',
-						'singular_name' => $this->translate('Philippine Peso'),
-						'plural_name'   => $this->translate('Philippine Pesos')
+						'singular_name' => $this->_x('Philippine Peso'),
+						'plural_name'   => $this->_x('Philippine Pesos')
 					),
 					'PLN' => array(
 						'symbol'        => 'zł',
-						'singular_name' => $this->translate('Polish Zloty'),
-						'plural_name'   => $this->translate('Polish Zlotys')
+						'singular_name' => $this->_x('Polish Zloty'),
+						'plural_name'   => $this->_x('Polish Zlotys')
 					),
 					'GBP' => array(
 						'symbol'        => '£',
-						'singular_name' => $this->translate('Pound Sterling'),
-						'plural_name'   => $this->translate('Pounds Sterling')
+						'singular_name' => $this->_x('Pound Sterling'),
+						'plural_name'   => $this->_x('Pounds Sterling')
 					),
 					'SGD' => array(
 						'symbol'        => '$',
-						'singular_name' => $this->translate('Singapore Dollar'),
-						'plural_name'   => $this->translate('Singapore Dollars')
+						'singular_name' => $this->_x('Singapore Dollar'),
+						'plural_name'   => $this->_x('Singapore Dollars')
 					),
 					'SEK' => array(
 						'symbol'        => 'kr',
-						'singular_name' => $this->translate('Swedish Krona'),
-						'plural_name'   => $this->translate('Swedish Kronor')
+						'singular_name' => $this->_x('Swedish Krona'),
+						'plural_name'   => $this->_x('Swedish Kronor')
 					),
 					'CHF' => array(
 						'symbol'        => 'CHF',
-						'singular_name' => $this->translate('Swiss Franc'),
-						'plural_name'   => $this->translate('Swiss Francs')
+						'singular_name' => $this->_x('Swiss Franc'),
+						'plural_name'   => $this->_x('Swiss Francs')
 					),
 					'TWD' => array(
 						'symbol'        => 'NT$',
-						'singular_name' => $this->translate('Taiwan New Dollar'),
-						'plural_name'   => $this->translate('Taiwan New Dollars')
+						'singular_name' => $this->_x('Taiwan New Dollar'),
+						'plural_name'   => $this->_x('Taiwan New Dollars')
 					),
 					'THB' => array(
 						'symbol'        => '฿',
-						'singular_name' => $this->translate('Thai Baht'),
-						'plural_name'   => $this->translate('Thai Bahts')
+						'singular_name' => $this->_x('Thai Baht'),
+						'plural_name'   => $this->_x('Thai Bahts')
 					),
 					'USD' => array(
 						'symbol'        => '$',
-						'singular_name' => $this->translate('U.S. Dollar'),
-						'plural_name'   => $this->translate('U.S. Dollars')
+						'singular_name' => $this->_x('U.S. Dollar'),
+						'plural_name'   => $this->_x('U.S. Dollars')
 					)
 				);
 			// Further validate arguments.
@@ -325,20 +325,20 @@ namespace websharks_core_v000000_dev
 			if(($currency = strtoupper($currency)) && strlen($currency) !== 3)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_currency', get_defined_vars(),
-					$this->i18n('Argument `$currency` MUST be 3 characters in length.').
-					' '.sprintf($this->i18n('Instead got: `%1$s`.'), $currency)
+					$this->__('Argument `$currency` MUST be 3 characters in length.').
+					' '.sprintf($this->__('Instead got: `%1$s`.'), $currency)
 				);
 			if(($component = strtolower($component)) && !in_array($component, array('symbol', 'singular_name', 'plural_name'), TRUE))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_component', get_defined_vars(),
-					$this->i18n('Argument `$component` MUST be one of: `symbol`, `singular_name`, `plural_name`.').
-					' '.sprintf($this->i18n('Instead got: `%1$s`.'), $component)
+					$this->__('Argument `$component` MUST be one of: `symbol`, `singular_name`, `plural_name`.').
+					' '.sprintf($this->__('Instead got: `%1$s`.'), $component)
 				);
 			if($currency && !isset($this->cache[__FUNCTION__][$currency]))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#unsupported_currency', get_defined_vars(),
-					$this->i18n('The `$currency` code is NOT currently supported by this software.').
-					' '.sprintf($this->i18n('Unsupported currency code: `%1$s`.'), $currency)
+					$this->__('The `$currency` code is NOT currently supported by this software.').
+					' '.sprintf($this->__('Unsupported currency code: `%1$s`.'), $currency)
 				);
 			// Everything looks good. Return now.
 
@@ -359,7 +359,7 @@ namespace websharks_core_v000000_dev
 
 			throw $this->©exception(
 				$this->method(__FUNCTION__).'#unknown_component', get_defined_vars(),
-				sprintf($this->i18n('Unknown currency component: `%1$s`.'), $component)
+				sprintf($this->__('Unknown currency component: `%1$s`.'), $component)
 			);
 		}
 	}

@@ -178,8 +178,8 @@ namespace websharks_core_v000000_dev
 				catch(\exception $_exception) // Rethrow a standard exception class.
 				{
 					throw new \exception(
-						sprintf(stub::i18n('Failed to handle exception code: `%1$s` with message: `%2$s`.'), $exception->getCode(), $exception->getMessage()).
-						' '.sprintf(stub::i18n('Failure caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
+						sprintf(stub::__('Failed to handle exception code: `%1$s` with message: `%2$s`.'), $exception->getCode(), $exception->getMessage()).
+						' '.sprintf(stub::__('Failure caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
 					);
 				}
 			}
@@ -216,10 +216,10 @@ namespace websharks_core_v000000_dev
 				// This MAY also get fired if headers have already been sent, and for some reason we were unable
 				// to parse a content body section from the template file; see the routine above to understand this.
 
-				echo sprintf(static::$plugin->translate('Exception Code: %1$s'), static::$exception->getCode());
+				echo sprintf(static::$plugin->_x('Exception Code: %1$s'), static::$exception->getCode());
 
 				if(static::$plugin->©env->is_in_wp_debug_display_mode() || is_super_admin())
-					echo "\n".sprintf(static::$plugin->translate('Exception Message: %1$s'), static::$exception->getMessage());
+					echo "\n".sprintf(static::$plugin->_x('Exception Message: %1$s'), static::$exception->getMessage());
 
 				if(static::$plugin->©env->is_in_wp_debug_display_mode() || is_super_admin())
 					echo "\n".static::$exception->getTraceAsString();

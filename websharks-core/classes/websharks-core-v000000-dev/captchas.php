@@ -83,7 +83,7 @@ namespace websharks_core_v000000_dev
 
 			$recaptcha_options .= "var RecaptchaOptions = RecaptchaOptions || {";
 			$recaptcha_options .= "theme:'".$this->©string->esc_js_sq($theme)."',";
-			$recaptcha_options .= "lang:'".$this->©string->esc_js_sq($this->translate('en', 'google-recaptcha-lang-code'))."',";
+			$recaptcha_options .= "lang:'".$this->©string->esc_js_sq($this->_x('en', 'google-recaptcha-lang-code'))."',";
 			$recaptcha_options .= "tabindex:".$tabindex.",";
 			$recaptcha_options = rtrim($recaptcha_options, ',').'};';
 

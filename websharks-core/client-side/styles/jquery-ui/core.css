@@ -204,7 +204,7 @@
 .websharks-core.ui .ui-progressbar { height:2em; text-align: left; overflow: hidden; }
 .websharks-core.ui .ui-progressbar .ui-progressbar-value {margin: -1px; height:100%; }
 .websharks-core.ui .ui-resizable { position: relative;}
-.websharks-core.ui .ui-resizable-handle { position: absolute;font-size: 0.1px; display: block; }
+.websharks-core.ui .ui-resizable-handle { position: absolute;font-size: 1px; display: block; }
 .websharks-core.ui .ui-resizable-disabled .ui-resizable-handle, .websharks-core.ui .ui-resizable-autohide .ui-resizable-handle { display: none; }
 .websharks-core.ui .ui-resizable-n { cursor: n-resize; height: 7px; width: 100%; top: -5px; left: 0; }
 .websharks-core.ui .ui-resizable-s { cursor: s-resize; height: 7px; width: 100%; bottom: -5px; left: 0; }

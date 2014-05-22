@@ -194,7 +194,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			 */
 			if(substr(self::n_dir_seps_up(__FILE__, 1, TRUE), -1) === '/')
 				throw new exception( // Fail here; do NOT access this file from a root directory.
-					sprintf(self::i18n('This file should NOT be accessed from a root directory: `%1$s`'), __FILE__));
+					sprintf(self::__('This file should NOT be accessed from a root directory: `%1$s`'), __FILE__));
 			/*
 			 * Handle some dynamic regex replacement codes in class properties (as follows).
 			 */
@@ -343,7 +343,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_bool($get_last_value) || !is_bool($check_abspath) || !(is_null($fallback) || is_bool($fallback) || is_string($fallback)))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			if($get_last_value && isset(self::$static[__FUNCTION__]))
 				return self::$static[__FUNCTION__];
@@ -396,7 +396,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_bool($enable_display_errors))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			try // Any exceptions will be re-thrown below.
 			{
@@ -444,7 +444,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_string($class_file_basename) || !($class_file_basename = trim(self::n_dir_seps($class_file_basename), '/')))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			$this_dir                     = self::n_dir_seps_up(__FILE__);
 			$local_core_repo_dir_basename = basename(self::$local_core_repo_dir);
@@ -485,7 +485,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			if($has_phar && !self::can_phar())
 				throw new exception(self::cant_phar_msg());
 
-			throw new exception(sprintf(self::i18n('Unable to locate: `%1$s`.'), $locate_core_dir.'/'.$relative_class_path));
+			throw new exception(sprintf(self::__('Unable to locate: `%1$s`.'), $locate_core_dir.'/'.$relative_class_path));
 		}
 
 		# --------------------------------------------------------------------------------------------------------------------------------
@@ -516,7 +516,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			$phar_dir = self::n_dir_seps_up($phar);
 
 			if(!$is_phar) // A couple of quick sanity checks.
-				throw new exception(self::i18n('This is NOT a PHAR file.'));
+				throw new exception(self::__('This is NOT a PHAR file.'));
 			if(!self::can_phar()) throw new exception(self::cant_phar_msg());
 
 			// Determine path info.
@@ -923,7 +923,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_string($string))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			$string = str_replace('\\', '--', $string);
 			return preg_replace('/[^a-z0-9]/i', '-', $string);
@@ -943,7 +943,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_string($string))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			$string = str_replace('\\', '__', $string);
 			return preg_replace('/[^a-z0-9]/i', '_', $string);
@@ -962,7 +962,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_string($dir_file) || !$dir_file)
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			return strtolower(ltrim((string)strrchr(basename($dir_file), '.'), '.'));
 		}
@@ -983,7 +983,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_string($file) || !$file || !is_string($default_mime_type))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			$mime_types = self::mime_types();
 			$extension  = self::extension($file);
@@ -1035,7 +1035,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 				if(is_readable('/tmp') && is_writable('/tmp'))
 					return self::n_dir_seps('/tmp');
 
-			throw new exception(self::i18n('Unable to find a readable/writable temp directory.'));
+			throw new exception(self::__('Unable to find a readable/writable temp directory.'));
 		}
 
 		/**
@@ -1054,7 +1054,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_string($dir_file) || !is_bool($allow_trailing_slash))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			if(!strlen($dir_file)) return ''; // Catch empty string.
 
@@ -1100,7 +1100,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_string($dir_file) || !is_integer($up) || !is_bool($allow_trailing_slash))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			if(!strlen($dir_file)) return ''; // Catch empty string.
 
@@ -1142,7 +1142,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_string($dir_file) || !$dir_file || !is_string($starting_dir) || !$starting_dir)
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			$dir_file = ltrim(self::n_dir_seps($dir_file), '/'); // Relative.
 
@@ -1211,10 +1211,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_bool($markdown))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
-			$msg = sprintf(self::i18n('Unable to load the %1$s. WordPress® (a core dependency) is NOT loaded up yet.'.
-			                          ' Please include WordPress® in your scripts using: `require_once \'wp-load.php\';`.'), self::$core_name);
+			$msg = sprintf(self::__('Unable to load the %1$s. WordPress® (a core dependency) is NOT loaded up yet.'.
+			                        ' Please include WordPress® in your scripts using: `require_once \'wp-load.php\';`.'), self::$core_name);
 
 			if($markdown) $msg = nl2br(preg_replace('/`(.*?)`/', '<code>'.'${1}'.'</code>', $msg), TRUE);
 
@@ -1240,15 +1240,15 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!is_bool($markdown))
 				throw new exception( // Fail here; detected invalid arguments.
-					sprintf(self::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
 			if(self::can_phar())
 				throw new exception( // Fail here; we should NOT have called this.
-					sprintf(self::i18n('Inappropriate call to: `%1$s`'), __METHOD__)
+					sprintf(self::__('Inappropriate call to: `%1$s`'), __METHOD__)
 				);
-			$msg = sprintf(self::i18n('Unable to load the %1$s. This installation of PHP is missing the `Phar` extension.'.
-			                          ' The %1$s (and WordPress® plugins powered by it); requires PHP v5.3+ — which has `Phar` built-in.'.
-			                          ' Please upgrade to PHP v5.3 (or higher) to get rid of this message.'), self::$core_name);
+			$msg = sprintf(self::__('Unable to load the %1$s. This installation of PHP is missing the `Phar` extension.'.
+			                        ' The %1$s (and WordPress® plugins powered by it); requires PHP v5.3+ — which has `Phar` built-in.'.
+			                        ' Please upgrade to PHP v5.3 (or higher) to get rid of this message.'), self::$core_name);
 
 			$can_phar              = extension_loaded('phar');
 			$suhosin_running       = extension_loaded('suhosin');
@@ -1256,10 +1256,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 
 			if($suhosin_running && $suhosin_blocking_phar) // Be verbose.
 			{
-				$verbose = ($can_phar) ? self::i18n('THE PROBLEM') : self::i18n('ALSO');
-				$msg .= "\n\n".sprintf(self::i18n('%1$s: On your installation the `Phar` extension needs to be ENABLED by adding'.
-				                                  ' the following line to your `php.ini` file: `suhosin.executor.include.whitelist = phar`.'.
-				                                  ' If you need assistance, please contact your hosting company about this message.'), $verbose);
+				$verbose = ($can_phar) ? self::__('THE PROBLEM') : self::__('ALSO');
+				$msg .= "\n\n".sprintf(self::__('%1$s: On your installation the `Phar` extension needs to be ENABLED by adding'.
+				                                ' the following line to your `php.ini` file: `suhosin.executor.include.whitelist = phar`.'.
+				                                ' If you need assistance, please contact your hosting company about this message.'), $verbose);
 			}
 			if($markdown) $msg = nl2br(preg_replace('/`(.*?)`/', '<code>'.'${1}'.'</code>', $msg), TRUE);
 
@@ -1284,7 +1284,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			if(!defined('WPINC') || self::can_phar())
 				throw new exception( // Fail here; we should NOT have called this.
-					sprintf(self::i18n('Inappropriate call to: `%1$s`'), __METHOD__)
+					sprintf(self::__('Inappropriate call to: `%1$s`'), __METHOD__)
 				);
 			$temp_deps          = self::get_temp_dir().'/wp-temp-deps.tmp';
 			$temp_deps_contents = base64_decode(self::$wp_temp_deps); // This uses version `000000_dev`.
@@ -1307,16 +1307,12 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 *
 		 * @param string $string String to translate.
 		 *
-		 * @param string $other_contextuals Optional. Other contextual slugs relevant to this translation.
-		 *    Contextual slugs normally follow the standard of being written with dashes.
-		 *
 		 * @return string Translated string.
 		 */
-		public static function i18n($string, $other_contextuals = '')
+		public static function __($string)
 		{
-			$string            = (string)$string; // Typecasting this to a string value.
-			$other_contextuals = (string)$other_contextuals; // Typecasting this to a string value.
-			$context           = self::$core_ns_stub_with_dashes.'--admin-side'.(($other_contextuals) ? ' '.$other_contextuals : '');
+			$string  = (string)$string; // Typecasting this to a string value.
+			$context = self::$core_ns_stub_with_dashes.'--admin-side'; // Admin side.
 
 			return (defined('WPINC')) ? _x($string, $context, self::$core_ns_stub_with_dashes) : $string;
 		}
@@ -1331,7 +1327,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 *
 		 * @return string Translated string.
 		 */
-		public static function translate($string, $other_contextuals = '')
+		public static function _x($string, $other_contextuals = '')
 		{
 			$string            = (string)$string; // Typecasting this to a string value.
 			$other_contextuals = (string)$other_contextuals; // Typecasting this to a string value.

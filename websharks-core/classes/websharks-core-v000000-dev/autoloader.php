@@ -146,7 +146,7 @@ namespace websharks_core_v000000_dev
 			{
 				if(!is_string($ns_class) || !$ns_class)
 					throw new \exception( // Fail here; detected invalid arguments.
-						sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						sprintf(stub::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 					);
 				# Special classes (always check this map first).
 
@@ -203,11 +203,11 @@ namespace websharks_core_v000000_dev
 			{
 				if(!is_string($ns_class) || !($ns_class = trim($ns_class, '\\')) || !is_string($ns_class_file) || !$ns_class_file)
 					throw new \exception( // Fail here; detected invalid arguments.
-						sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						sprintf(stub::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 					);
 				if(isset(static::$special_classes_map[$ns_class]))
 					throw new \exception( // Fail here; detected existing special class.
-						sprintf(stub::i18n('Special namespace\\class already exists in map: `%1$s`'), $ns_class)
+						sprintf(stub::__('Special namespace\\class already exists in map: `%1$s`'), $ns_class)
 					);
 				static::$special_classes_map[$ns_class] = stub::n_dir_seps($ns_class_file);
 			}
@@ -244,12 +244,12 @@ namespace websharks_core_v000000_dev
 			{
 				if(!is_string($classes_dir) || !$classes_dir || !is_dir($classes_dir))
 					throw new \exception( // Fail here; detected invalid arguments.
-						sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						sprintf(stub::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 					);
 				if(basename($classes_dir) !== 'classes')
 					throw new \exception( // Fail here; detected invalid `classes` directory.
-						sprintf(stub::i18n('Invalid `classes` directory basename: `%1$s`.'), basename($classes_dir)).
-						' '.stub::i18n('A `classes` directory MUST have basename: `classes`.')
+						sprintf(stub::__('Invalid `classes` directory basename: `%1$s`.'), basename($classes_dir)).
+						' '.stub::__('A `classes` directory MUST have basename: `classes`.')
 					);
 				$classes_dir = stub::n_dir_seps($classes_dir); // Normalize for comparison.
 
@@ -280,7 +280,7 @@ namespace websharks_core_v000000_dev
 			{
 				if(!is_string($ns_or_ns_class) || !($ns_or_ns_class = trim($ns_or_ns_class, '\\')) || !is_string($class_file))
 					throw new \exception( // Fail here; detected invalid arguments.
-						sprintf(stub::i18n('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+						sprintf(stub::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 					);
 				if($class_file) // Interpret ``$ns_or_ns_class`` as a namespace only.
 					$ns_class = $ns_or_ns_class.'\\'.stub::with_underscores(basename($class_file, '.php'));
@@ -288,15 +288,15 @@ namespace websharks_core_v000000_dev
 
 				if(!preg_match(stub::$regex_valid_plugin_ns_class, $ns_class))
 					throw new \exception( // Fail here; detected invalid arguments.
-						sprintf(stub::i18n('Namespace\\class contains invalid chars: `%1$s`.'), $ns_class)
+						sprintf(stub::__('Namespace\\class contains invalid chars: `%1$s`.'), $ns_class)
 					);
 				if(strpos($ns_class, stub::$core_ns.'\\') !== 0)
 					throw new \exception( // Fail here; detected invalid arguments.
-						sprintf(stub::i18n('Namespace\\class is NOT from this core: `%1$s`.'), $ns_class)
+						sprintf(stub::__('Namespace\\class is NOT from this core: `%1$s`.'), $ns_class)
 					);
 				if(!class_exists('\\'.$ns_class, FALSE) && !interface_exists('\\'.$ns_class, FALSE) && (!function_exists('trait_exists') || !trait_exists('\\'.$ns_class, FALSE)))
 					throw new \exception( // Fail here; detected invalid arguments.
-						sprintf(stub::i18n('Namespace\\class does NOT exist yet: `%1$s`.'), $ns_class)
+						sprintf(stub::__('Namespace\\class does NOT exist yet: `%1$s`.'), $ns_class)
 					);
 				$alias = str_replace(array(stub::$core_ns.'\\', '\\'), array(stub::$core_ns_stub.'\\', '__'), $ns_class);
 

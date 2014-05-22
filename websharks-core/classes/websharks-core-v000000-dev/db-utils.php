@@ -222,8 +222,8 @@ namespace websharks_core_v000000_dev
 				if(!$this->©string->is_not_empty($_name))
 					throw $this->©exception( // Should NOT happen.
 						$this->method(__FUNCTION__).'#invalid_name', get_defined_vars(),
-						$this->i18n('Expecting a non-empty string `$_name` value.').
-						' '.sprintf($this->i18n('Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
+						$this->__('Expecting a non-empty string `$_name` value.').
+						' '.sprintf($this->__('Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->__('empty').' ' : ''), gettype($_name))
 					);
 				if(!isset($cache[$_name])) // We have NO value for this name yet?
 				{
@@ -281,8 +281,8 @@ namespace websharks_core_v000000_dev
 				if(!$this->©string->is_not_empty($_name))
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#invalid_name', get_defined_vars(),
-						$this->i18n('Expecting a non-empty string `$_name` value.').
-						' '.sprintf($this->i18n('Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
+						$this->__('Expecting a non-empty string `$_name` value.').
+						' '.sprintf($this->__('Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->__('empty').' ' : ''), gettype($_name))
 					);
 				$this->purge_meta_values_cache($table, $rel_id_column, $rel_id, $_name);
 			}
@@ -315,8 +315,8 @@ namespace websharks_core_v000000_dev
 				if(!$this->©string->is_not_empty($_name))
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#invalid_name', get_defined_vars(),
-						$this->i18n('Expecting a non-empty string key `$_name` value.').
-						' '.sprintf($this->i18n('Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
+						$this->__('Expecting a non-empty string key `$_name` value.').
+						' '.sprintf($this->__('Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->__('empty').' ' : ''), gettype($_name))
 					);
 				$this->purge_meta_values_cache($table, $rel_id_column, $rel_id, $_name);
 			}
@@ -371,8 +371,8 @@ namespace websharks_core_v000000_dev
 				if(!$this->©string->is_not_empty($_name))
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#invalid_name', get_defined_vars(),
-						$this->i18n('Expecting a non-empty string `$_name` value.').
-						' '.sprintf($this->i18n('Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->i18n('empty').' ' : ''), gettype($_name))
+						$this->__('Expecting a non-empty string `$_name` value.').
+						' '.sprintf($this->__('Got: %1$s`%2$s`.'), ((empty($_name)) ? $this->__('empty').' ' : ''), gettype($_name))
 					);
 				$this->purge_meta_values_cache($table, $rel_id_column, $rel_id, $_name);
 			}
@@ -487,22 +487,22 @@ namespace websharks_core_v000000_dev
 			if(!is_file($sql_file))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#nonexistent_sql_file', get_defined_vars(),
-					sprintf($this->i18n('Nonexistent SQL file: `%1$s`.'), $sql_file)
+					sprintf($this->__('Nonexistent SQL file: `%1$s`.'), $sql_file)
 				);
 			if($this->©file->extension($sql_file) !== 'sql')
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_sql_file_extension', get_defined_vars(),
-					sprintf($this->i18n('Invalid SQL file extension: `%1$s`.'), $sql_file)
+					sprintf($this->__('Invalid SQL file extension: `%1$s`.'), $sql_file)
 				);
 			if(!is_string($query = file_get_contents($sql_file)))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-					sprintf($this->i18n('Unable to read SQL file: `%1$s`.'), $sql_file)
+					sprintf($this->__('Unable to read SQL file: `%1$s`.'), $sql_file)
 				);
 			if(!is_string($query = preg_replace($replace, $with, $query)))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#preparation_failure', get_defined_vars(),
-					sprintf($this->i18n('Unable to prepare queries from SQL file: `%1$s`.'), $sql_file)
+					sprintf($this->__('Unable to prepare queries from SQL file: `%1$s`.'), $sql_file)
 				);
 			$queries = preg_split('/;$/m', $query, NULL, PREG_SPLIT_NO_EMPTY);
 			$queries = $this->©strings->trim_deep($queries);
@@ -583,8 +583,8 @@ namespace websharks_core_v000000_dev
 			if(!preg_match('/^SELECT\s+/i', $query))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_query', get_defined_vars(),
-					$this->i18n('Cannot get `FOUND_ROWS()` (missing `SELECT` statement).').
-					' '.sprintf($this->i18n('This `$query` is NOT a `SELECT` statement: `%1$s`.'), $query)
+					$this->__('Cannot get `FOUND_ROWS()` (missing `SELECT` statement).').
+					' '.sprintf($this->__('This `$query` is NOT a `SELECT` statement: `%1$s`.'), $query)
 				);
 			$query = preg_replace('/^SELECT\s+/i', 'SELECT SQL_CALC_FOUND_ROWS ', $query);
 			$query = preg_replace('/\s+LIMIT\s+[0-9\s,]*$/i', '', $query).' LIMIT 1';

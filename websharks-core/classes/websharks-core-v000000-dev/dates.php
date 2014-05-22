@@ -60,7 +60,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function i18n_($format = '', $time = 0, $utc = FALSE)
+		public function i18n($format = '', $time = 0, $utc = FALSE)
 		{
 			$this->check_arg_types('string', 'integer', 'boolean', func_get_args());
 
@@ -80,7 +80,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Date translations (in UTC time). See: {@link i18n_()}.
+		 * Date translations (in UTC time). See: {@link i18n()}.
 		 *
 		 * @param string  $format Date format. Same formats allowed by PHP's ``date()`` function.
 		 *    This is optional. Defaults to: ``get_option('date_format').' '.get_option('time_format')``.
@@ -92,11 +92,11 @@ namespace websharks_core_v000000_dev
 		 *    This defaults to the current time if NOT passed in explicitly.
 		 *    WARNING: Please make sure ``$time`` is based on UTC.
 		 *
-		 * @return string See: {@link i18n_()}.
+		 * @return string See: {@link i18n()}.
 		 */
 		public function i18n_utc($format = '', $time = 0)
 		{
-			return $this->i18n_($format, $time, TRUE);
+			return $this->i18n($format, $time, TRUE);
 		}
 
 		/**
@@ -119,42 +119,42 @@ namespace websharks_core_v000000_dev
 			{
 				$minutes = (integer)round($difference / 60);
 
-				$since = sprintf($this->translate_p('%1$s minute', '%1$s minutes', $minutes), $minutes);
-				$since = ($minutes < 1) ? $this->translate('less than a minute') : $since;
-				$since = ($minutes >= 60) ? $this->translate('about 1 hour') : $since;
+				$since = sprintf($this->_nx('%1$s minute', '%1$s minutes', $minutes), $minutes);
+				$since = ($minutes < 1) ? $this->_x('less than a minute') : $since;
+				$since = ($minutes >= 60) ? $this->_x('about 1 hour') : $since;
 			}
 			else if($difference >= 3600 && $difference < 86400)
 			{
 				$hours = (integer)round($difference / 3600);
 
-				$since = sprintf($this->translate_p('%1$s hour', '%1$s hours', $hours), $hours);
-				$since = ($hours >= 24) ? $this->translate('about 1 day') : $since;
+				$since = sprintf($this->_nx('%1$s hour', '%1$s hours', $hours), $hours);
+				$since = ($hours >= 24) ? $this->_x('about 1 day') : $since;
 			}
 			else if($difference >= 86400 && $difference < 604800)
 			{
 				$days = (integer)round($difference / 86400);
 
-				$since = sprintf($this->translate_p('%1$s day', '%1$s days', $days), $days);
-				$since = ($days >= 7) ? $this->translate('about 1 week') : $since;
+				$since = sprintf($this->_nx('%1$s day', '%1$s days', $days), $days);
+				$since = ($days >= 7) ? $this->_x('about 1 week') : $since;
 			}
 			else if($difference >= 604800 && $difference < 2592000)
 			{
 				$weeks = (integer)round($difference / 604800);
 
-				$since = sprintf($this->translate_p('%1$s week', '%1$s weeks', $weeks), $weeks);
-				$since = ($weeks >= 4) ? $this->translate('about 1 month') : $since;
+				$since = sprintf($this->_nx('%1$s week', '%1$s weeks', $weeks), $weeks);
+				$since = ($weeks >= 4) ? $this->_x('about 1 month') : $since;
 			}
 			else if($difference >= 2592000 && $difference < 31556926)
 			{
 				$months = (integer)round($difference / 2592000);
 
-				$since = sprintf($this->translate_p('%1$s month', '%1$s months', $months), $months);
-				$since = ($months >= 12) ? $this->translate('about 1 year') : $since;
+				$since = sprintf($this->_nx('%1$s month', '%1$s months', $months), $months);
+				$since = ($months >= 12) ? $this->_x('about 1 year') : $since;
 			}
 			else // We use years here (default case handler).
 			{
 				$years = (integer)round($difference / 31556926);
-				$since = sprintf($this->translate_p('%1$s year', '%1$s years', $years), $years);
+				$since = sprintf($this->_nx('%1$s year', '%1$s years', $years), $years);
 			}
 			return $since; // Human readable time difference calculation.
 		}

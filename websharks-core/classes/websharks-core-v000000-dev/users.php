@@ -198,7 +198,7 @@ namespace websharks_core_v000000_dev
 			if(!did_action('init'))
 				throw $this->©exception( // Should NOT happen.
 					$this->method(__FUNCTION__).'#user_init_hook', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('Doing it wrong (the `init` hook has NOT been fired yet).')
+					$this->__('Doing it wrong (the `init` hook has NOT been fired yet).')
 				);
 			if($user_id && $user_id < 0) $by = $value = NULL; // Nullify.
 			$this->args = array('user_id'            => $user_id, 'by' => $by, 'value' => $value,
@@ -252,8 +252,8 @@ namespace websharks_core_v000000_dev
 			if($this->ID && (!$this->wp || !$this->wp->user_email || !$this->wp->user_login || !$this->wp->user_nicename))
 			{
 				$this->©error($this->method(__FUNCTION__), array_merge(get_defined_vars(), array('user' => $this)), // For diagnostics.
-				              sprintf($this->i18n('User ID: `%1$s` is missing vital components.'), $this->ID).
-				              ' '.$this->i18n('Possible database corruption.'));
+				              sprintf($this->__('User ID: `%1$s` is missing vital components.'), $this->ID).
+				              ' '.$this->__('Possible database corruption.'));
 				$this->wp = NULL;
 				$this->ID = 0;
 			}
@@ -579,8 +579,8 @@ namespace websharks_core_v000000_dev
 
 						if(!$this->©string->is_not_empty($_component_or_value))
 							throw $this->©exception($this->method(__FUNCTION__).'#invalid_component_or_value', array_merge(get_defined_vars(), array('user' => $this)),
-							                        $this->i18n('Invalid component. Expecting string NOT empty.').
-							                        ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_component_or_value))
+							                        $this->__('Invalid component. Expecting string NOT empty.').
+							                        ' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($_component_or_value))
 							);
 						unset($this->cache[$_component_or_value], $this->data[$_component_or_value]); // Refresh (if exists).
 
@@ -592,15 +592,15 @@ namespace websharks_core_v000000_dev
 
 						if(!$this->©string->is_not_empty($_component_or_key))
 							throw $this->©exception($this->method(__FUNCTION__).'#invalid_component_or_key', array_merge(get_defined_vars(), array('user' => $this)),
-							                        $this->i18n('Invalid component. Expecting string NOT empty.').
-							                        ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_component_or_key))
+							                        $this->__('Invalid component. Expecting string NOT empty.').
+							                        ' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($_component_or_key))
 							);
 						if(property_exists($this, $_component_or_key))
 						{
 							if(gettype($this->$_component_or_key) !== gettype($_component_or_value))
 								throw $this->©exception($this->method(__FUNCTION__).'#invalid_component_or_value_type', array_merge(get_defined_vars(), array('user' => $this)),
-								                        sprintf($this->i18n('Invalid component value type. Expecting: `%1$s`.'), gettype($this->$_component_or_key)).
-								                        ' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($_component_or_value)));
+								                        sprintf($this->__('Invalid component value type. Expecting: `%1$s`.'), gettype($this->$_component_or_key)).
+								                        ' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($_component_or_value)));
 
 							$this->$_component_or_key = $_component_or_value; // Refresh property value.
 						}
@@ -629,7 +629,7 @@ namespace websharks_core_v000000_dev
 			if(headers_sent())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#headers_sent_already', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('Doing it wrong! Headers have already been sent.')
+					$this->__('Doing it wrong! Headers have already been sent.')
 				);
 			if($this->is_current()) $this->session_end();
 			if($this->is_current() && $this->has_id()) wp_logout();
@@ -658,17 +658,17 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot delete).')
+					$this->__('User has no ID (cannot delete).')
 				);
 			if($this->is_super_admin())
 				return $this->©error(
 					$this->method(__FUNCTION__).'#super_admin', array_merge(get_defined_vars(), array('user' => $this)),
-					sprintf($this->i18n('Cannot delete super administrator: `%1$s`.'), $this->username)
+					sprintf($this->__('Cannot delete super administrator: `%1$s`.'), $this->username)
 				);
 			if(!wp_delete_user($this->ID, $reassign_posts_to_user_id))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#failure', array_merge(get_defined_vars(), array('user' => $this)),
-					sprintf($this->i18n('Failed to delete user ID: `%1$s`.'), $this->ID)
+					sprintf($this->__('Failed to delete user ID: `%1$s`.'), $this->ID)
 				);
 			$this->do_action('delete', $this, array_merge(get_defined_vars(), array('user' => $this)));
 
@@ -756,7 +756,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot update).')
+					$this->__('User has no ID (cannot update).')
 				);
 			// Formulate & validate incoming args.
 
@@ -825,51 +825,51 @@ namespace websharks_core_v000000_dev
 			if(isset($args['first_name']) && !$args['first_name'] && in_array('first_name', $optional_requirements, TRUE))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#first_name_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'first_name')),
-					$this->translate('Required field. Missing first name.')
+					$this->_x('Required field. Missing first name.')
 				);
 			if(isset($args['last_name']) && !$args['last_name'] && in_array('last_name', $optional_requirements, TRUE))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#last_name_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'last_name')),
-					$this->translate('Required field. Missing last name.')
+					$this->_x('Required field. Missing last name.')
 				);
 			if(isset($args['display_name']) && !$args['display_name'] && in_array('display_name', $optional_requirements, TRUE))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#display_name_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'display_name')),
-					$this->translate('Required field. Missing display name.')
+					$this->_x('Required field. Missing display name.')
 				);
 			// Validate a possible change in online contact info (only if required in this scenario).
 
 			if(isset($args['url']) && !$args['url'] && in_array('url', $optional_requirements, TRUE))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#url_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'url')),
-					$this->translate('Required field. Missing URL.')
+					$this->_x('Required field. Missing URL.')
 				);
 			if(isset($args['url']) && strlen($args['url']) && !preg_match($this->©url->regex_valid_url, $args['url']))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#invalid_url', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'url')),
-					$this->translate('Invalid URL. Must start with `http://` and be a valid URL please.')
+					$this->_x('Invalid URL. Must start with `http://` and be a valid URL please.')
 				);
 			if(isset($args['aim']) && !$args['aim'] && in_array('aim', $optional_requirements, TRUE))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#aim_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'aim')),
-					$this->translate('Required field. Missing AOL® screen name.')
+					$this->_x('Required field. Missing AOL® screen name.')
 				);
 			if(isset($args['yim']) && !$args['yim'] && in_array('yim', $optional_requirements, TRUE))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#yim_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'yim')),
-					$this->translate('Required field. Missing Yahoo® ID.')
+					$this->_x('Required field. Missing Yahoo® ID.')
 				);
 			if(isset($args['jabber']) && !$args['jabber'] && in_array('jabber', $optional_requirements, TRUE))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#jabber_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'jabber')),
-					$this->translate('Required field. Missing Jabber™ (or Google® Talk) username.')
+					$this->_x('Required field. Missing Jabber™ (or Google® Talk) username.')
 				);
 			// Validate a possible change in personal bio (i.e. user description).
 
 			if(isset($args['description']) && !$args['description'] && in_array('description', $optional_requirements, TRUE))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#description_missing', array_merge(get_defined_vars(), array('user' => $this, 'form_field_code' => 'description')),
-					$this->translate('Required field. Missing personal description.')
+					$this->_x('Required field. Missing personal description.')
 				);
 			if(isset($args['ip'])) // Update IP address.
 				$this->update_meta('ip', $args['ip']);
@@ -911,7 +911,7 @@ namespace websharks_core_v000000_dev
 				if(!$wp_update_user->get_error_code() || !$wp_update_user->get_error_message())
 					return $this->©error(
 						$this->method(__FUNCTION__).'#unknown_wp_error', array_merge(get_defined_vars(), array('user' => $this)),
-						$this->translate('Unknown error (please try again).')
+						$this->_x('Unknown error (please try again).')
 					);
 				return $this->©error(
 					$this->method(__FUNCTION__).'#wp_error_'.$wp_update_user->get_error_code(), array_merge(get_defined_vars(), array('user' => $this)),
@@ -966,12 +966,12 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot update).')
+					$this->__('User has no ID (cannot update).')
 				);
 			if(isset($args['ip']) || isset($args['role']) || isset($args['activation_key']) || isset($args['options']) || isset($args['meta']) || isset($args['data']))
 				throw $this->©exception( // NOT allowed during basic profile updates. See {@link ®update()}.
 					$this->method(__FUNCTION__).'#security_issue', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('Security issue. Some data is NOT allowed during basic profile updates.')
+					$this->__('Security issue. Some data is NOT allowed during basic profile updates.')
 				);
 			extract($args); // Extract for call data.
 
@@ -986,7 +986,7 @@ namespace websharks_core_v000000_dev
 
 			else $successes = $this->©success( // We have success. Profile now up-to-date :-)
 				$this->method(__FUNCTION__).'#success', array_merge(get_defined_vars(), array('user' => $this)),
-				$this->translate('Profile updated successfully.'));
+				$this->_x('Profile updated successfully.'));
 
 			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), array_merge(get_defined_vars(), array('user' => $this)));
 		}
@@ -1011,7 +1011,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot update).')
+					$this->__('User has no ID (cannot update).')
 				);
 			extract($args); // Extract for call data.
 
@@ -1026,7 +1026,7 @@ namespace websharks_core_v000000_dev
 
 			else $successes = $this->©success( // We have success. The user's profile has been updated :-)
 				$this->method(__FUNCTION__).'#success', array_merge(get_defined_vars(), array('user' => $this)),
-				$this->i18n('User updated successfully.'));
+				$this->__('User updated successfully.'));
 
 			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), array_merge(get_defined_vars(), array('user' => $this)));
 		}
@@ -1048,7 +1048,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot get option).')
+					$this->__('User has no ID (cannot get option).')
 				);
 			return get_user_option($key, $this->ID);
 		}
@@ -1070,7 +1070,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot update option).')
+					$this->__('User has no ID (cannot update option).')
 				);
 			if(is_null($value))
 				delete_user_option($this->ID, $key);
@@ -1107,7 +1107,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot get meta).')
+					$this->__('User has no ID (cannot get meta).')
 				);
 			return get_user_meta($this->ID, $key, TRUE);
 		}
@@ -1129,7 +1129,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot update meta).')
+					$this->__('User has no ID (cannot update meta).')
 				);
 			if(is_null($value))
 				delete_user_meta($this->ID, $key);
@@ -1176,7 +1176,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot update activation key).')
+					$this->__('User has no ID (cannot update activation key).')
 				);
 			$activation_key = (string)$activation_key;
 			$activation_key = (string)substr($activation_key, 0, 60);
@@ -1214,7 +1214,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot update password).')
+					$this->__('User has no ID (cannot update password).')
 				);
 			wp_set_password($password, $this->ID);
 			$this->delete_activation_key();
@@ -1235,7 +1235,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->i18n('User has no ID (cannot get WP role).')
+					$this->__('User has no ID (cannot get WP role).')
 				);
 			if(isset($this->wp->roles[0]) && is_string($this->wp->roles[0]))
 				return $this->wp->roles[0];

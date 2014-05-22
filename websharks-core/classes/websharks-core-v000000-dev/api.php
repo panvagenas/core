@@ -362,7 +362,7 @@ namespace websharks_core_v000000_dev
 				if(!isset($GLOBALS[$core_ns]) || !($GLOBALS[$core_ns] instanceof framework))
 					throw core()->©exception(
 						$class.'::'.__FUNCTION__.'#missing_framework_instance', get_defined_vars(),
-						sprintf(core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $core_ns)
+						sprintf(core()->__('Missing $GLOBALS[\'%1$s\'] framework instance.'), $core_ns)
 					);
 				$this->___framework = $GLOBALS[$core_ns];
 				return; // Stop (special case).
@@ -370,7 +370,7 @@ namespace websharks_core_v000000_dev
 			if(!isset($GLOBALS[$class]->___instance_config->$core_ns_stub))
 				throw core()->©exception(
 					$class.'::'.__FUNCTION__.'#missing_framework_instance', get_defined_vars(),
-					sprintf(core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
+					sprintf(core()->__('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
 				);
 			$this->___framework = $GLOBALS[$class];
 		}
@@ -418,8 +418,8 @@ namespace websharks_core_v000000_dev
 
 			throw core()->©exception(
 				get_class($this).'::'.__FUNCTION__.'#read_only_magic_property_error_via____set()', get_defined_vars(),
-				sprintf(core()->i18n('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-				' '.sprintf(core()->i18n('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+				sprintf(core()->__('Attempting to set magic/overload property: `%1$s` (which is NOT allowed).'), $property).
+				' '.sprintf(core()->__('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 			);
 		}
 
@@ -443,8 +443,8 @@ namespace websharks_core_v000000_dev
 
 			throw core()->©exception(
 				get_class($this).'::'.__FUNCTION__.'#read_only_magic_property_error_via____unset()', get_defined_vars(),
-				sprintf(core()->i18n('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
-				' '.sprintf(core()->i18n('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
+				sprintf(core()->__('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
+				' '.sprintf(core()->__('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 			);
 		}
 
@@ -513,14 +513,14 @@ namespace websharks_core_v000000_dev
 				if(!isset($GLOBALS[$core_ns]) || !($GLOBALS[$core_ns] instanceof framework))
 					throw core()->©exception(
 						$class.'::'.__FUNCTION__.'#missing_framework_instance', get_defined_vars(),
-						sprintf(core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $core_ns)
+						sprintf(core()->__('Missing $GLOBALS[\'%1$s\'] framework instance.'), $core_ns)
 					);
 				return ($framework = $GLOBALS[$core_ns]); // Stop (special case; we're all done).
 			}
 			if(!isset($GLOBALS[$class]->___instance_config->{core()->___instance_config->core_ns_stub}))
 				throw core()->©exception(
 					$class.'::'.__FUNCTION__.'#missing_framework_instance', get_defined_vars(),
-					sprintf(core()->i18n('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
+					sprintf(core()->__('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
 				);
 			return ($framework = $GLOBALS[$class]);
 		}

@@ -96,8 +96,8 @@ namespace websharks_core_v000000_dev
 
 			throw $this->©exception(
 				$this->method(__FUNCTION__).'#unexpected_user', get_defined_vars(),
-				$this->i18n('Not sure which `$user` we\'re dealing with.').
-				' '.sprintf($this->i18n('Got: `%1$s`.'), $this->©var->dump($user))
+				$this->__('Not sure which `$user` we\'re dealing with.').
+				' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($user))
 			);
 		}
 
@@ -305,7 +305,7 @@ namespace websharks_core_v000000_dev
 					break; // Break switch handler (use last resort — below).
 			}
 			return $this->apply_filters('default_display_name', // Anonymous.
-			                            $this->translate('Anonymous', 'default-display-name'));
+			                            $this->_x('Anonymous', 'default-display-name'));
 		}
 
 		/**
@@ -336,7 +336,7 @@ namespace websharks_core_v000000_dev
 			if(!$email)
 				return $this->©error(
 					$this->method(__FUNCTION__).'#missing_email', get_defined_vars(),
-					$this->translate('Missing email address (empty).')
+					$this->_x('Missing email address (empty).')
 				);
 			if(is_multisite()) // A multisite network?
 			{
@@ -346,27 +346,27 @@ namespace websharks_core_v000000_dev
 				   || strlen($email) > 100
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#invalid_multisite_email', get_defined_vars(),
-					sprintf($this->translate('Invalid email address: `%1$s`.'), $email)
+					sprintf($this->_x('Invalid email address: `%1$s`.'), $email)
 				);
 				if(email_exists($email))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#multisite_email_exists', get_defined_vars(),
-						sprintf($this->translate('Email address: `%1$s`, is already in use.'), $email)
+						sprintf($this->_x('Email address: `%1$s`, is already in use.'), $email)
 					);
 				if(is_array($limited_email_domains = get_site_option('limited_email_domains'))
 				   && !empty($limited_email_domains)
 				   && !in_array(strtolower($domain), $limited_email_domains, TRUE)
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#unapproved_multisite_email', get_defined_vars(),
-					sprintf($this->translate('Unapproved email domain: `%1$s`.'), $domain).
-					' '.$this->translate('You cannot use an email address with this domain.')
+					sprintf($this->_x('Unapproved email domain: `%1$s`.'), $domain).
+					' '.$this->_x('You cannot use an email address with this domain.')
 				);
 				if(is_email_address_unsafe($email))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#restricted_multisite_email', get_defined_vars(),
-						sprintf($this->translate('Restricted email domain: `%1$s`.'), $domain).
-						' '.$this->translate('We are having problems with this domain blocking some of our email.').
-						' '.$this->translate('Please use another email service provider.')
+						sprintf($this->_x('Restricted email domain: `%1$s`.'), $domain).
+						' '.$this->_x('We are having problems with this domain blocking some of our email.').
+						' '.$this->_x('Please use another email service provider.')
 					);
 				// Check the WordPress® `signups` table too (in case it's awaiting activation).
 				$query = // Checks the WordPress® `signups` table.
@@ -386,16 +386,16 @@ namespace websharks_core_v000000_dev
 					if($signup->active)
 						return $this->©error(
 							$this->method(__FUNCTION__).'#multisite_email_exists', get_defined_vars(),
-							sprintf($this->translate('Email address: `%1$s`, is already in use.'), $email)
+							sprintf($this->_x('Email address: `%1$s`, is already in use.'), $email)
 						);
 					if(strtotime($signup->registered) < strtotime('-2 days'))
 						$this->©db->delete($this->©db_tables->get_wp('signups'), array('user_email' => $email));
 
 					else return $this->©error(
 						$this->method(__FUNCTION__).'#reserved_multisite_email', get_defined_vars(),
-						sprintf($this->translate('Reserved email address: `%1$s`.'), $email).
-						' '.$this->translate('This email address has already been used. Please check your inbox for an activation link.').
-						' '.$this->translate('If you do nothing, this email address will become available again — after two days.')
+						sprintf($this->_x('Reserved email address: `%1$s`.'), $email).
+						' '.$this->_x('This email address has already been used. Please check your inbox for an activation link.').
+						' '.$this->_x('If you do nothing, this email address will become available again — after two days.')
 					);
 				}
 			}
@@ -407,12 +407,12 @@ namespace websharks_core_v000000_dev
 				   || strlen($email) > 100
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#invalid_email', get_defined_vars(),
-					sprintf($this->translate('Invalid email address: `%1$s`.'), $email)
+					sprintf($this->_x('Invalid email address: `%1$s`.'), $email)
 				);
 				if(email_exists($email))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#email_exists', get_defined_vars(),
-						sprintf($this->translate('Email address: `%1$s`, is already in use.'), $email)
+						sprintf($this->_x('Email address: `%1$s`, is already in use.'), $email)
 					);
 			}
 			return TRUE; // Default return value.
@@ -447,7 +447,7 @@ namespace websharks_core_v000000_dev
 			if(!$email)
 				return $this->©error(
 					$this->method(__FUNCTION__).'#missing_email', get_defined_vars(),
-					$this->translate('Missing email address (empty).')
+					$this->_x('Missing email address (empty).')
 				);
 			if(is_multisite()) // A multisite network?
 			{
@@ -457,27 +457,27 @@ namespace websharks_core_v000000_dev
 				   || strlen($email) > 100
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#invalid_multisite_email', get_defined_vars(),
-					sprintf($this->translate('Invalid email address: `%1$s`.'), $email)
+					sprintf($this->_x('Invalid email address: `%1$s`.'), $email)
 				);
 				if(strcasecmp($email, $existing_email) !== 0 && email_exists($email))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#multisite_email_exists', get_defined_vars(),
-						sprintf($this->translate('Email address: `%1$s`, is already in use.'), $email)
+						sprintf($this->_x('Email address: `%1$s`, is already in use.'), $email)
 					);
 				if(is_array($limited_email_domains = get_site_option('limited_email_domains'))
 				   && !empty($limited_email_domains)
 				   && !in_array(strtolower($domain), $limited_email_domains, TRUE)
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#unapproved_multisite_email', get_defined_vars(),
-					sprintf($this->translate('Unapproved email domain: `%1$s`.'), $domain).
-					' '.$this->translate('You cannot use an email address with this domain.')
+					sprintf($this->_x('Unapproved email domain: `%1$s`.'), $domain).
+					' '.$this->_x('You cannot use an email address with this domain.')
 				);
 				if(is_email_address_unsafe($email))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#restricted_multisite_email', get_defined_vars(),
-						sprintf($this->translate('Restricted email domain: `%1$s`.'), $domain).
-						' '.$this->translate('We are having problems with this domain blocking some of our email.').
-						' '.$this->translate('Please use another email service provider.')
+						sprintf($this->_x('Restricted email domain: `%1$s`.'), $domain).
+						' '.$this->_x('We are having problems with this domain blocking some of our email.').
+						' '.$this->_x('Please use another email service provider.')
 					);
 				if(strcasecmp($email, $existing_email) !== 0) // Check the WordPress® `signups` table.
 				{
@@ -498,17 +498,17 @@ namespace websharks_core_v000000_dev
 						if($signup->active)
 							return $this->©error(
 								$this->method(__FUNCTION__).'#multisite_email_exists', get_defined_vars(),
-								sprintf($this->translate('Email address: `%1$s`, is already in use.'), $email)
+								sprintf($this->_x('Email address: `%1$s`, is already in use.'), $email)
 							);
 						if(strtotime($signup->registered) < strtotime('-2 days'))
 							$this->©db->delete($this->©db_tables->get_wp('signups'), array('user_email' => $email));
 
 						else return $this->©error(
 							$this->method(__FUNCTION__).'#reserved_multisite_email', get_defined_vars(),
-							sprintf($this->translate('Reserved email address: `%1$s`.'), $email).
-							' '.$this->translate('This email address is already associated with another account holder.').
-							' '.$this->translate('However, there\'s a chance it will become available again in a couple of days;').
-							' '.$this->translate('should the other account holder fail to complete activation for some reason.')
+							sprintf($this->_x('Reserved email address: `%1$s`.'), $email).
+							' '.$this->_x('This email address is already associated with another account holder.').
+							' '.$this->_x('However, there\'s a chance it will become available again in a couple of days;').
+							' '.$this->_x('should the other account holder fail to complete activation for some reason.')
 						);
 					}
 				}
@@ -521,12 +521,12 @@ namespace websharks_core_v000000_dev
 				   || strlen($email) > 100
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#invalid_email', get_defined_vars(),
-					sprintf($this->translate('Invalid email address: `%1$s`.'), $email)
+					sprintf($this->_x('Invalid email address: `%1$s`.'), $email)
 				);
 				if(strcasecmp($email, $existing_email) !== 0 && email_exists($email))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#email_exists', get_defined_vars(),
-						sprintf($this->translate('Email address: `%1$s`, is already in use.'), $email)
+						sprintf($this->_x('Email address: `%1$s`, is already in use.'), $email)
 					);
 			}
 			return TRUE; // Default return value.
@@ -558,7 +558,7 @@ namespace websharks_core_v000000_dev
 			if(!$username)
 				return $this->©error(
 					$this->method(__FUNCTION__).'#missing_username', get_defined_vars(),
-					$this->translate('Missing username (empty).')
+					$this->_x('Missing username (empty).')
 				);
 			if(is_multisite()) // A multisite network?
 			{
@@ -570,19 +570,19 @@ namespace websharks_core_v000000_dev
 				   || strlen($username) > 60
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#invalid_multisite_username', get_defined_vars(),
-					sprintf($this->translate('Invalid username: `%1$s`.'), $username).
-					' '.$this->translate('Please use `a-z0-9` only (lowercase, 4 character minimum).').
-					' '.$this->translate('Username MUST start with a letter.')
+					sprintf($this->_x('Invalid username: `%1$s`.'), $username).
+					' '.$this->_x('Please use `a-z0-9` only (lowercase, 4 character minimum).').
+					' '.$this->_x('Username MUST start with a letter.')
 				);
 				if(username_exists($username))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#multisite_username_exists', get_defined_vars(),
-						sprintf($this->translate('Username: `%1$s`, is already in use.'), $username)
+						sprintf($this->_x('Username: `%1$s`, is already in use.'), $username)
 					);
 				if(in_array(strtolower($username), $illegal_names, TRUE))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#illegal_multisite_username', get_defined_vars(),
-						sprintf($this->translate('Illegal/reserved username: `%1$s`.'), $username)
+						sprintf($this->_x('Illegal/reserved username: `%1$s`.'), $username)
 					);
 				// Check the WordPress® `signups` table too (in case it's awaiting activation).
 				$query = // Checks the WordPress® `signups` table.
@@ -602,15 +602,15 @@ namespace websharks_core_v000000_dev
 					if($signup->active)
 						return $this->©error(
 							$this->method(__FUNCTION__).'#multisite_username_exists', get_defined_vars(),
-							sprintf($this->translate('Username: `%1$s`, is already in use.'), $username)
+							sprintf($this->_x('Username: `%1$s`, is already in use.'), $username)
 						);
 					if(strtotime($signup->registered) < strtotime('-2 days'))
 						$this->©db->delete($this->©db_tables->get_wp('signups'), array('user_login' => $username));
 
 					else return $this->©error(
 						$this->method(__FUNCTION__).'#reserved_multisite_username', get_defined_vars(),
-						sprintf($this->translate('Reserved username: `%1$s`.'), $username).
-						' '.$this->translate('Username is currently reserved, but might become available in a couple of days.')
+						sprintf($this->_x('Reserved username: `%1$s`.'), $username).
+						' '.$this->_x('Username is currently reserved, but might become available in a couple of days.')
 					);
 				}
 			}
@@ -621,14 +621,14 @@ namespace websharks_core_v000000_dev
 				   || strlen($username) > 60
 				) return $this->©error(
 					$this->method(__FUNCTION__).'#invalid_username', get_defined_vars(),
-					sprintf($this->translate('Invalid username: `%1$s`.'), $username).
-					' '.$this->translate('Please use `A-Z a-z 0-9 _ . @ -` only (4 character minimum).').
-					' '.$this->translate('Username MUST start with a letter.')
+					sprintf($this->_x('Invalid username: `%1$s`.'), $username).
+					' '.$this->_x('Please use `A-Z a-z 0-9 _ . @ -` only (4 character minimum).').
+					' '.$this->_x('Username MUST start with a letter.')
 				);
 				if(username_exists($username))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#username_exists', get_defined_vars(),
-						sprintf($this->translate('Username: `%1$s`, is already in use.'), $username)
+						sprintf($this->_x('Username: `%1$s`, is already in use.'), $username)
 					);
 			}
 			return TRUE; // Default return value.
@@ -694,17 +694,17 @@ namespace websharks_core_v000000_dev
 			if(!$password) // Missing completely?
 				return $this->©error(
 					$this->method(__FUNCTION__).'#missing_password', get_defined_vars(),
-					$this->translate('Missing password (empty).')
+					$this->_x('Missing password (empty).')
 				);
 			if(strlen($password) < $this->apply_filters('min_password_length', 6))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#password_too_short', get_defined_vars(),
-					$this->translate('Password is too short (must be at least six characters).')
+					$this->_x('Password is too short (must be at least six characters).')
 				);
 			if(strlen($password) > $this->apply_filters('max_password_length', 100))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#password_too_long', get_defined_vars(),
-					$this->translate('Password is too long (100 characters max).')
+					$this->_x('Password is too long (100 characters max).')
 				);
 			return TRUE; // Default return value.
 		}
@@ -888,7 +888,7 @@ namespace websharks_core_v000000_dev
 					if(!$add_existing_user_to_blog->get_error_code() || !$add_existing_user_to_blog->get_error_message())
 						return $this->©error(
 							$this->method(__FUNCTION__).'#unknown_wp_error', get_defined_vars(),
-							$this->translate('Unknown error (please try again).')
+							$this->_x('Unknown error (please try again).')
 						);
 					return $this->©error(
 						$this->method(__FUNCTION__).'#wp_error_'.$add_existing_user_to_blog->get_error_code(), get_defined_vars(),
@@ -897,7 +897,7 @@ namespace websharks_core_v000000_dev
 				}
 				if(!($user = $this->get_by('id', $user_id))) // A VERY wrong scenario.
 					throw $this->©exception($this->method(__FUNCTION__).'#unable_to_acquire_user', get_defined_vars(),
-					                        sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $user_id));
+					                        sprintf($this->__('Unable to acquire user ID: `%1$s`.'), $user_id));
 
 				$user->update_password($args['password']); // Set password quietly (i.e. no hooks).
 				do_action('user_register', $user->ID); // Actually a registration (so fire this hook).
@@ -925,7 +925,7 @@ namespace websharks_core_v000000_dev
 					if(!$wp_insert_user->get_error_code() || !$wp_insert_user->get_error_message())
 						return $this->©error(
 							$this->method(__FUNCTION__).'#unknown_wp_error', get_defined_vars(),
-							$this->translate('Unknown error (please try again).')
+							$this->_x('Unknown error (please try again).')
 						);
 					return $this->©error(
 						$this->method(__FUNCTION__).'#wp_error_'.$wp_insert_user->get_error_code(), get_defined_vars(),
@@ -941,7 +941,7 @@ namespace websharks_core_v000000_dev
 						if(!$add_existing_user_to_blog->get_error_code() || !$add_existing_user_to_blog->get_error_message())
 							return $this->©error(
 								$this->method(__FUNCTION__).'#unknown_wp_error', get_defined_vars(),
-								$this->translate('Unknown error (please try again).')
+								$this->_x('Unknown error (please try again).')
 							);
 						return $this->©error(
 							$this->method(__FUNCTION__).'#wp_error_'.$add_existing_user_to_blog->get_error_code(), get_defined_vars(),
@@ -950,7 +950,7 @@ namespace websharks_core_v000000_dev
 					}
 				if(!($user = $this->get_by('id', $user_id))) // A VERY wrong scenario.
 					throw $this->©exception($this->method(__FUNCTION__).'#unable_to_acquire_user', get_defined_vars(),
-					                        sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $user_id));
+					                        sprintf($this->__('Unable to acquire user ID: `%1$s`.'), $user_id));
 			}
 			// Save IP address (as a meta value).
 			$user->update_meta('ip', $args['ip']);
@@ -969,7 +969,7 @@ namespace websharks_core_v000000_dev
 			if($args['profile_fields'] && $this->©errors->exist_in($user->update_profile_fields($args['profile_fields'])))
 				throw $this->©exception( // Should NOT happen (profile fields were already validated above).
 					$this->method(__FUNCTION__).'#unexpected_profile_field_validation_errors', get_defined_vars(),
-					$this->i18n('Unexpected errors while updating profile fields.'));
+					$this->__('Unexpected errors while updating profile fields.'));
 
 			// Handle emails and/or activation.
 			if($args['must_activate']) // Requires email activation?
@@ -1004,11 +1004,11 @@ namespace websharks_core_v000000_dev
 
 			if($user->get_option('must_activate'))
 				return new \WP_Error( // Activation is required in this case.
-					'must_activate', $this->translate('This account has NOT been activated yet. Please check your email for the activation link.')
+					'must_activate', $this->_x('This account has NOT been activated yet. Please check your email for the activation link.')
 				);
 			if(is_multisite() && !$user->is_super_admin() && !in_array(get_current_blog_id(), array_keys(get_blogs_of_user($user->ID)), TRUE))
 				return new \WP_Error( // They do NOT belong on this child blog.
-					'invalid_username', $this->translate('Invalid username for this site.')
+					'invalid_username', $this->_x('Invalid username for this site.')
 				);
 			return $authentication; // Default return value.
 		}
@@ -1033,8 +1033,8 @@ namespace websharks_core_v000000_dev
 			if(!$decrypted_activation_key || strpos($decrypted_activation_key, '::') === FALSE)
 				return $this->©error( // Unable to decrypt (or it's in the wrong format).
 					$this->method(__FUNCTION__).'#invalid_activation_key', get_defined_vars(),
-					$this->translate('Activation failure. Invalid activation key.').
-					' '.sprintf($this->translate('Got: `%1$s`.'), $activation_key)
+					$this->_x('Activation failure. Invalid activation key.').
+					' '.sprintf($this->_x('Got: `%1$s`.'), $activation_key)
 				);
 			list($ID, $password) = explode('::', $decrypted_activation_key, 2);
 			$ID = (integer)$ID; // Force integer ID here.
@@ -1044,14 +1044,14 @@ namespace websharks_core_v000000_dev
 			) // Something is wrong. This key does NOT match up in some way.
 				return $this->©error( // Should NOT happen (invalid key).
 					$this->method(__FUNCTION__).'#invalid_activation_key', get_defined_vars(),
-					$this->translate('Activation failure. Invalid activation key.').
-					' '.sprintf($this->translate('Got: `%1$s`.'), $activation_key)
+					$this->_x('Activation failure. Invalid activation key.').
+					' '.sprintf($this->_x('Got: `%1$s`.'), $activation_key)
 				);
 			if(!$user->get_option('must_activate'))
 				return $this->©error( // Account already active.
 					$this->method(__FUNCTION__).'#already_active', get_defined_vars(),
-					sprintf($this->translate('User ID: `%1$s`. This account is already active.'), $user->ID).
-					' '.sprintf($this->translate('Please <a href="%1$s">log in</a>.'), esc_attr($this->©url->to_wp_login()))
+					sprintf($this->_x('User ID: `%1$s`. This account is already active.'), $user->ID).
+					' '.sprintf($this->_x('Please <a href="%1$s">log in</a>.'), esc_attr($this->©url->to_wp_login()))
 				);
 			if($user->get_option('on_activation_send_welcome')) // Has flag?
 				$this->send_welcome_email($user, $password); // Send welcome email :-)
@@ -1081,8 +1081,8 @@ namespace websharks_core_v000000_dev
 			if(headers_sent())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->i18n('Unable to activate (headers have already been sent).').
-					' '.$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
+					$this->__('Unable to activate (headers have already been sent).').
+					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 				);
 			if($this->©errors->exist_in($response = $this->activate($activation_key)))
 				$errors = $response; // Define ``$errors`` for template use.
@@ -1093,8 +1093,8 @@ namespace websharks_core_v000000_dev
 
 				$successes = $this->©success(
 					$this->method(__FUNCTION__).'#success', get_defined_vars(),
-					$this->translate('Account activated successfully.').
-					' '.sprintf($this->translate('Please [CLICK HERE](%1$s) to log in.'), $this->©url->to_wp_login())
+					$this->_x('Account activated successfully.').
+					' '.sprintf($this->_x('Please [CLICK HERE](%1$s) to log in.'), $this->©url->to_wp_login())
 				);
 			}
 			$this->©headers->clean_status_type(200, 'text/html', TRUE);
@@ -1125,7 +1125,7 @@ namespace websharks_core_v000000_dev
 			if(!$user->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
-					$this->i18n('The `$user` has no ID (cannot send activation email message).')
+					$this->__('The `$user` has no ID (cannot send activation email message).')
 				);
 			$activation_key       = $this->©encryption->encrypt($user->ID.'::'.$password);
 			$activation_url       = $this->©action->url_for_call('©user_utils.®activate', $this::protected_type, array($activation_key));
@@ -1148,7 +1148,7 @@ namespace websharks_core_v000000_dev
 				$this->©mail->send( // Send activation email message (based on template).
 					array('from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
 					      'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
-					      'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->translate('Activation Required (For: %1$s)'), get_bloginfo('name'))),
+					      'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->_x('Activation Required (For: %1$s)'), get_bloginfo('name'))),
 					      'recipients' => $template->config->recipients,
 					      'message'    => $template->content));
 			}
@@ -1174,7 +1174,7 @@ namespace websharks_core_v000000_dev
 			if(!$user->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
-					$this->i18n('The `$user` has no ID (cannot send welcome email message).')
+					$this->__('The `$user` has no ID (cannot send welcome email message).')
 				);
 			$template = $this->©template('emails/welcome.php', get_defined_vars());
 
@@ -1186,7 +1186,7 @@ namespace websharks_core_v000000_dev
 				$this->©mail->send( // Send welcome email message (based on template).
 					array('from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
 					      'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
-					      'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->translate('Login Details (Welcome To: %1$s)'), get_bloginfo('name'))),
+					      'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->_x('Login Details (Welcome To: %1$s)'), get_bloginfo('name'))),
 					      'recipients' => $template->config->recipients,
 					      'message'    => $template->content));
 			}
@@ -1218,13 +1218,13 @@ namespace websharks_core_v000000_dev
 			if(headers_sent())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->i18n('Unable to log user in (headers have already been sent).').
-					' '.$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
+					$this->__('Unable to log user in (headers have already been sent).').
+					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 				);
 			if($test_cookies && !$this->©cookie->get(TEST_COOKIE))
 				return $this->©error(
 					$this->method(__FUNCTION__).'#cookie_failure', get_defined_vars(),
-					$this->translate('Cookies are blocked (perhaps); or NOT supported by your browser.')
+					$this->_x('Cookies are blocked (perhaps); or NOT supported by your browser.')
 				);
 			if($username && !force_ssl_admin()
 			   && ($ID = $this->get_id_by('username', $username)) && get_user_option('use_ssl', $ID)
@@ -1240,7 +1240,7 @@ namespace websharks_core_v000000_dev
 				if(!$wp_signon->get_error_code() || !$wp_signon->get_error_message())
 					return $this->©error(
 						$this->method(__FUNCTION__).'#unknown_wp_error', get_defined_vars(),
-						$this->translate('Missing data (please try again).')
+						$this->_x('Missing data (please try again).')
 					);
 				return $this->©error(
 					$this->method(__FUNCTION__).'#wp_error_'.$wp_signon->get_error_code(), get_defined_vars(),
@@ -1250,7 +1250,7 @@ namespace websharks_core_v000000_dev
 			if(!($user = $this->get_by('id', $wp_signon->ID)))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#unable_to_acquire_user', get_defined_vars(),
-					sprintf($this->i18n('Unable to acquire user ID: `%1$s`.'), $wp_signon->ID)
+					sprintf($this->__('Unable to acquire user ID: `%1$s`.'), $wp_signon->ID)
 				);
 			$this->do_action('login_allowed', $user->ID, get_defined_vars());
 
@@ -1281,8 +1281,8 @@ namespace websharks_core_v000000_dev
 			if(headers_sent())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->i18n('Unable to log user in (headers have already been sent).').
-					' '.$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
+					$this->__('Unable to log user in (headers have already been sent).').
+					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 				);
 			if((force_ssl_login() || force_ssl_admin()) && !is_ssl())
 				wp_redirect($this->©url->current('https')).exit();
@@ -1344,8 +1344,8 @@ namespace websharks_core_v000000_dev
 			if(headers_sent())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->i18n('Unable to log user out (headers have already been sent).').
-					' '.$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
+					$this->__('Unable to log user out (headers have already been sent).').
+					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 				);
 			if((force_ssl_login() || force_ssl_admin()) && !is_ssl())
 				wp_redirect($this->©url->current('https')).exit();
@@ -1361,7 +1361,7 @@ namespace websharks_core_v000000_dev
 			{
 				$messages = $this->©message( // For template.
 					$this->method(__FUNCTION__).'#logged-out', get_defined_vars(),
-					$this->translate('You are now logged-out.')
+					$this->_x('You are now logged-out.')
 				);
 				$this->©headers->clean_status_type(200, 'text/html', TRUE);
 				exit($this->©template('login.php', get_defined_vars())->content);
@@ -1393,7 +1393,7 @@ namespace websharks_core_v000000_dev
 				if(!apply_filters('allow_password_reset', TRUE, $user->ID))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#password_reset_disabled', get_defined_vars(),
-						$this->translate('Password reset is NOT allowed for this user.')
+						$this->_x('Password reset is NOT allowed for this user.')
 					);
 				if(!$user->activation_key)
 					$user->update_activation_key($this->©encryption->keygen(60));
@@ -1401,7 +1401,7 @@ namespace websharks_core_v000000_dev
 				if(!$user->activation_key)
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#missing_activation_key', get_defined_vars(),
-						sprintf($this->i18n('No activation key for user ID: `%1$s`.'), $user->ID)
+						sprintf($this->__('No activation key for user ID: `%1$s`.'), $user->ID)
 					);
 				$this->send_password_reset_email($user);
 
@@ -1409,7 +1409,7 @@ namespace websharks_core_v000000_dev
 			}
 			return $this->©error(
 				$this->method(__FUNCTION__).'#username_email_not_found', get_defined_vars(),
-				$this->translate('Username (or email address) is NOT associated with a user of this site.')
+				$this->_x('Username (or email address) is NOT associated with a user of this site.')
 			);
 		}
 
@@ -1428,8 +1428,8 @@ namespace websharks_core_v000000_dev
 			if(headers_sent())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->i18n('Unable to retrieve lost password (headers have already been sent).').
-					' '.$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
+					$this->__('Unable to retrieve lost password (headers have already been sent).').
+					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 				);
 			if((force_ssl_login() || force_ssl_admin()) && !is_ssl())
 				wp_redirect($this->©url->current('https')).exit();
@@ -1443,7 +1443,7 @@ namespace websharks_core_v000000_dev
 
 				$successes = $this->©success(
 					$this->method(__FUNCTION__).'#success', get_defined_vars(),
-					$this->translate('Please check your email for a password reset link.')
+					$this->_x('Please check your email for a password reset link.')
 				);
 			}
 			$this->©headers->clean_status_type(200, 'text/html', TRUE);
@@ -1468,7 +1468,7 @@ namespace websharks_core_v000000_dev
 			if(!$user->has_id())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#id_missing', get_defined_vars(),
-					$this->i18n('The `$user` has no ID (cannot send password reset email message).')
+					$this->__('The `$user` has no ID (cannot send password reset email message).')
 				);
 			if(!$user->activation_key)
 				$user->update_activation_key($this->©encryption->keygen(60));
@@ -1476,7 +1476,7 @@ namespace websharks_core_v000000_dev
 			if(!$user->activation_key) // Does this user have an activation key?
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#activation_key_missing', get_defined_vars(),
-					$this->i18n('The `$user` has no activation key (cannot send password reset email message).')
+					$this->__('The `$user` has no activation key (cannot send password reset email message).')
 				);
 			$activation_key           = $user->activation_key;
 			$password_reset_url       = $this->©action->url_for_call('©user_utils.®reset_password', $this::protected_type, array($activation_key));
@@ -1492,7 +1492,7 @@ namespace websharks_core_v000000_dev
 				$this->©mail->send( // Send password reset email message (based on template).
 					array('from_name'  => $this->©string->is_not_empty_or($template->config->from_name, get_bloginfo('name')),
 					      'from_addr'  => $this->©string->is_not_empty_or($template->config->from_addr, get_bloginfo('admin_email')),
-					      'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->translate('Password Reset (%1$s)'), get_bloginfo('name'))),
+					      'subject'    => $this->©string->is_not_empty_or($template->config->subject, sprintf($this->_x('Password Reset (%1$s)'), get_bloginfo('name'))),
 					      'recipients' => $template->config->recipients,
 					      'message'    => $template->content));
 			}
@@ -1521,7 +1521,7 @@ namespace websharks_core_v000000_dev
 				if(!apply_filters('allow_password_reset', TRUE, $user->ID))
 					return $this->©error(
 						$this->method(__FUNCTION__).'#password_reset_disabled', get_defined_vars(),
-						$this->translate('Password reset is NOT allowed for this user.')
+						$this->_x('Password reset is NOT allowed for this user.')
 					);
 				if($this->©errors->exist_in($validate_password = $this->validate_password($password)))
 					return $validate_password; // Password issue(s).
@@ -1532,8 +1532,8 @@ namespace websharks_core_v000000_dev
 			}
 			return $this->©error(
 				$this->method(__FUNCTION__).'#invalid_activation_key', get_defined_vars(),
-				$this->translate('Password reset failure. Invalid (or expired) activation key.').
-				' '.sprintf($this->translate('Got: `%1$s`.'), $activation_key)
+				$this->_x('Password reset failure. Invalid (or expired) activation key.').
+				' '.sprintf($this->_x('Got: `%1$s`.'), $activation_key)
 			);
 		}
 
@@ -1553,8 +1553,8 @@ namespace websharks_core_v000000_dev
 			if(headers_sent())
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
-					$this->i18n('Unable to reset password (headers have already been sent).').
-					' '.$this->i18n('Doing it wrong! Headers have already been sent. Please check hook priorities.')
+					$this->__('Unable to reset password (headers have already been sent).').
+					' '.$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
 				);
 			if((force_ssl_login() || force_ssl_admin()) && !is_ssl())
 				wp_redirect($this->©url->current('https')).exit();
@@ -1570,7 +1570,7 @@ namespace websharks_core_v000000_dev
 
 					$successes = $this->©success( // For template.
 						$this->method(__FUNCTION__).'#success', get_defined_vars(),
-						sprintf($this->translate('Password reset. Please [log in](%1$s).'), $this->©url->to_wp_login())
+						sprintf($this->_x('Password reset. Please [log in](%1$s).'), $this->©url->to_wp_login())
 					);
 				}
 			}

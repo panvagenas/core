@@ -61,7 +61,7 @@ namespace websharks_core_v000000_dev
 			if(!did_action('init'))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#init', NULL,
-					$this->i18n('Doing it wrong (`init` hook has NOT been fired yet).')
+					$this->__('Doing it wrong (`init` hook has NOT been fired yet).')
 				);
 			// Add components & register scripts (based on context).
 
@@ -83,49 +83,49 @@ namespace websharks_core_v000000_dev
 
 					'localize' => array( // Array of WebSharks™ Core JavaScript translations.
 
-					                     'get___instance_config__failure'                     => $this->i18n('Could NOT instance config value for key: `%1$s`.'),
-					                     'get___verifier__failure'                            => $this->i18n('Could NOT verifier for key: `%1$s`.'),
-					                     'get___i18n__failure'                                => $this->i18n('Could NOT get translation string for key: `%1$s`.'),
+					                     'instance_config__failure'                           => $this->__('Could NOT instance config value for key: `%1$s`.'),
+					                     'verifier__failure'                                  => $this->__('Could NOT verifier for key: `%1$s`.'),
+					                     '____failure'                                        => $this->__('Could NOT get translation string for key: `%1$s`.'),
 
-					                     'view_source__doc_title'                             => $this->translate('Source'),
-					                     'win_open__turn_off_popup_blockers'                  => $this->translate('Please turn off all popup blockers and try again.'),
-					                     'ajax__invalid_type'                                 => $this->i18n('Invalid `type`. Expecting `$$.___public_type|$$.___protected_type|$$.___private_type`.'),
+					                     'view_source__doc_title'                             => $this->_x('Source'),
+					                     'win_open__turn_off_popup_blockers'                  => $this->_x('Please turn off all popup blockers and try again.'),
+					                     'ajax__invalid_type'                                 => $this->__('Invalid `type`. Expecting `$$.___public_type|$$.___protected_type|$$.___private_type`.'),
 
-					                     'check_arg_types__empty'                             => $this->i18n('empty'),
-					                     'check_arg_types__caller'                            => $this->i18n('caller'),
+					                     'check_arg_types__empty'                             => $this->__('empty'),
+					                     'check_arg_types__caller'                            => $this->__('caller'),
 
-					                     'validate_ui_form__required_field'                   => $this->translate('This is a required field.'),
-					                     'validate_ui_form__mismatch_fields'                  => $this->translate('Mismatch (please check these fields).'),
-					                     'validate_ui_form__unique_field'                     => $this->translate('Please try again (this value MUST be unique please).'),
+					                     'validate_ui_form__required_field'                   => $this->_x('This is a required field.'),
+					                     'validate_ui_form__mismatch_fields'                  => $this->_x('Mismatch (please check these fields).'),
+					                     'validate_ui_form__unique_field'                     => $this->_x('Please try again (this value MUST be unique please).'),
 
-					                     'validate_ui_form__required_select_at_least_one'     => $this->translate('Please select at least 1 option.'),
-					                     'validate_ui_form__required_select_at_least'         => $this->translate('Please select at least %1$s options.'),
+					                     'validate_ui_form__required_select_at_least_one'     => $this->_x('Please select at least 1 option.'),
+					                     'validate_ui_form__required_select_at_least'         => $this->_x('Please select at least %1$s options.'),
 
-					                     'validate_ui_form__required_file'                    => $this->translate('A file MUST be selected please.'),
-					                     'validate_ui_form__required_file_at_least_one'       => $this->translate('Please select at least one file.'),
-					                     'validate_ui_form__required_file_at_least'           => $this->translate('Please select at least %1$s files.'),
+					                     'validate_ui_form__required_file'                    => $this->_x('A file MUST be selected please.'),
+					                     'validate_ui_form__required_file_at_least_one'       => $this->_x('Please select at least one file.'),
+					                     'validate_ui_form__required_file_at_least'           => $this->_x('Please select at least %1$s files.'),
 
-					                     'validate_ui_form__required_radio'                   => $this->translate('Please choose one of the available options.'),
+					                     'validate_ui_form__required_radio'                   => $this->_x('Please choose one of the available options.'),
 
-					                     'validate_ui_form__required_checkbox'                => $this->translate('This box MUST be checked please.'),
-					                     'validate_ui_form__required_check_at_least_one'      => $this->translate('Please check at least one box.'),
-					                     'validate_ui_form__required_check_at_least'          => $this->translate('Please check at least %1$s boxes.'),
+					                     'validate_ui_form__required_checkbox'                => $this->_x('This box MUST be checked please.'),
+					                     'validate_ui_form__required_check_at_least_one'      => $this->_x('Please check at least one box.'),
+					                     'validate_ui_form__required_check_at_least'          => $this->_x('Please check at least %1$s boxes.'),
 
-					                     'validate_ui_form__validation_description_prefix'    => $this->translate('<strong>REQUIRES:</strong>'),
-					                     'validate_ui_form__or_validation_description_prefix' => $this->translate('<strong>OR:</strong>'),
+					                     'validate_ui_form__validation_description_prefix'    => $this->_x('<strong>REQUIRES:</strong>'),
+					                     'validate_ui_form__or_validation_description_prefix' => $this->_x('<strong>OR:</strong>'),
 
-					                     'validate_ui_form__check_issues_below'               => $this->translate('<strong>ERROR:</strong> please check the issues below.'),
+					                     'validate_ui_form__check_issues_below'               => $this->_x('<strong>ERROR:</strong> please check the issues below.'),
 
-					                     'check_arg_types__diff_object_type'                  => $this->i18n('[a different object type]'),
-					                     'check_arg_types__missing_args'                      => $this->i18n('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
-					                     'check_arg_types__invalid_arg'                       => $this->i18n('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
+					                     'check_arg_types__diff_object_type'                  => $this->__('[a different object type]'),
+					                     'check_arg_types__missing_args'                      => $this->__('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
+					                     'check_arg_types__invalid_arg'                       => $this->__('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
 
-					                     'password_strength_mismatch_status__empty'           => $this->translate('password strength indicator'),
-					                     'password_strength_mismatch_status__short'           => $this->translate('too short (6 character minimum)'),
-					                     'password_strength_mismatch_status__weak'            => $this->translate('very weak (mix lowercase, uppercase, numbers & symbols)'),
-					                     'password_strength_mismatch_status__good'            => $this->translate('good (reasonably strong)'),
-					                     'password_strength_mismatch_status__strong'          => $this->translate('very strong'),
-					                     'password_strength_mismatch_status__mismatch'        => $this->translate('mismatch')
+					                     'password_strength_mismatch_status__empty'           => $this->_x('password strength indicator'),
+					                     'password_strength_mismatch_status__short'           => $this->_x('too short (6 character minimum)'),
+					                     'password_strength_mismatch_status__weak'            => $this->_x('very weak (mix lowercase, uppercase, numbers & symbols)'),
+					                     'password_strength_mismatch_status__good'            => $this->_x('good (reasonably strong)'),
+					                     'password_strength_mismatch_status__strong'          => $this->_x('very strong'),
+					                     'password_strength_mismatch_status__mismatch'        => $this->_x('mismatch')
 					)
 				);
 			if(is_admin() && $this->©menu_page->is_plugin_page()) // For plugin menu pages.
@@ -141,11 +141,11 @@ namespace websharks_core_v000000_dev
 
 						'localize' => array( // WebSharks™ Core translations.
 
-						                     'ready__docs__button_label'  => $this->i18n('Docs'),
-						                     'ready__docs__dialog_title'  => $this->i18n('Documentation'),
+						                     'ready__docs__button_label'  => $this->__('Docs'),
+						                     'ready__docs__dialog_title'  => $this->__('Documentation'),
 
-						                     'ready__video__button_label' => $this->i18n('Video'),
-						                     'ready__video__dialog_title' => $this->i18n('YouTube® Video Playlist'),
+						                     'ready__video__button_label' => $this->__('Video'),
+						                     'ready__video__dialog_title' => $this->__('YouTube® Video Playlist'),
 						)
 					);
 			}
@@ -335,8 +335,8 @@ namespace websharks_core_v000000_dev
 				) // This MUST be an array with a `url` string.
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#url_missing', get_defined_vars(),
-						$this->i18n('Invalid script configuration. Missing and/or invalid `url`.').
-						' '.sprintf($this->i18n('Problematic script handle: `%1$s`.'), $_handle)
+						$this->__('Invalid script configuration. Missing and/or invalid `url`.').
+						' '.sprintf($this->__('Problematic script handle: `%1$s`.'), $_handle)
 					);
 
 				// Additional configurations (all optional).

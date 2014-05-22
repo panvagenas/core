@@ -80,12 +80,12 @@ namespace websharks_core_v000000_dev
 					$plugin_root_ns = (string)$___instance_config['plugin_root_ns'];
 
 				if(empty($plugin_root_ns) || !isset($GLOBALS[$plugin_root_ns]) || !($GLOBALS[$plugin_root_ns] instanceof framework))
-					throw new \exception(sprintf(stub::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
+					throw new \exception(sprintf(stub::__('Invalid `$___instance_config` to constructor: `%1$s`'),
 					                             print_r($___instance_config, TRUE))
 					);
 				$this->plugin = $GLOBALS[$plugin_root_ns];
 				$code         = ((string)$code) ? (string)$code : 'exception';
-				$message      = ((string)$message) ? (string)$message : sprintf($this->plugin->i18n('Exception code: `%1$s`.'), $code);
+				$message      = ((string)$message) ? (string)$message : sprintf($this->plugin->__('Exception code: `%1$s`.'), $code);
 
 				parent::__construct($message, 0, $previous); // Call parent constructor.
 				$this->code = $code; // Set code for this instance. We always use string exception codes (no exceptions :-).
@@ -97,8 +97,8 @@ namespace websharks_core_v000000_dev
 			catch(\exception $_exception) // Rethrow a standard exception class.
 			{
 				throw new \exception( // Standard exceptions are also caught by our exception handler.
-					sprintf(stub::i18n('Could NOT instantiate exception code: `%1$s` with message: `%2$s`.'), $code, $message).
-					' '.sprintf(stub::i18n('Failure caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
+					sprintf(stub::__('Could NOT instantiate exception code: `%1$s` with message: `%2$s`.'), $code, $message).
+					' '.sprintf(stub::__('Failure caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
 				);
 			}
 		}
@@ -118,18 +118,18 @@ namespace websharks_core_v000000_dev
 			$log_file = $this->plugin->©file->maybe_archive($log_dir.'/debug.log');
 
 			file_put_contents( // Log this exception!
-				$log_file, $this->plugin->i18n('— EXCEPTION —')."\n".
-				           $this->plugin->i18n('Exception Code').': '.$this->getCode()."\n".
-				           $this->plugin->i18n('Exception Line #').': '.$this->getLine()."\n".
-				           $this->plugin->i18n('Exception File').': '.$this->getFile()."\n".
-				           $this->plugin->i18n('Exception Time').': '.$this->plugin->©env->time_details()."\n".
-				           $this->plugin->i18n('Memory Details').': '.$this->plugin->©env->memory_details()."\n".
-				           $this->plugin->i18n('Version Details').': '.$this->plugin->©env->version_details()."\n".
-				           $this->plugin->i18n('Current User ID').': '.$this->plugin->©user->ID."\n".
-				           $this->plugin->i18n('Current User Email').': '.$this->plugin->©user->email."\n".
-				           $this->plugin->i18n('Exception Message').': '.$this->getMessage()."\n\n".
-				           $this->plugin->i18n('Exception Stack Trace').': '.$this->getTraceAsString()."\n\n".
-				           $this->plugin->i18n('Exception Data (if applicable)').': '.$this->plugin->©var->dump($this->data)."\n\n",
+				$log_file, $this->plugin->__('— EXCEPTION —')."\n".
+				           $this->plugin->__('Exception Code').': '.$this->getCode()."\n".
+				           $this->plugin->__('Exception Line #').': '.$this->getLine()."\n".
+				           $this->plugin->__('Exception File').': '.$this->getFile()."\n".
+				           $this->plugin->__('Exception Time').': '.$this->plugin->©env->time_details()."\n".
+				           $this->plugin->__('Memory Details').': '.$this->plugin->©env->memory_details()."\n".
+				           $this->plugin->__('Version Details').': '.$this->plugin->©env->version_details()."\n".
+				           $this->plugin->__('Current User ID').': '.$this->plugin->©user->ID."\n".
+				           $this->plugin->__('Current User Email').': '.$this->plugin->©user->email."\n".
+				           $this->plugin->__('Exception Message').': '.$this->getMessage()."\n\n".
+				           $this->plugin->__('Exception Stack Trace').': '.$this->getTraceAsString()."\n\n".
+				           $this->plugin->__('Exception Data (if applicable)').': '.$this->plugin->©var->dump($this->data)."\n\n",
 				FILE_APPEND
 			);
 		}

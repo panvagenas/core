@@ -48,7 +48,7 @@ namespace websharks_core_v000000_dev
 			if(!isset($key[0]))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#key_missing', get_defined_vars(),
-					$this->i18n('No encryption key.')
+					$this->__('No encryption key.')
 				);
 			return $key; // It's a good day in Eureka!
 		}
@@ -121,7 +121,7 @@ namespace websharks_core_v000000_dev
 				if(!is_string($e = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $iv)) || !isset($e[0]))
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-						$this->i18n('String encryption failed (`$e` is NOT string; or it has no length).')
+						$this->__('String encryption failed (`$e` is NOT string; or it has no length).')
 					);
 				$e = '~r2:'.$iv.(($w_md5_cs) ? ':'.md5($e) : '').'|'.$e;
 
@@ -171,7 +171,7 @@ namespace websharks_core_v000000_dev
 					if(!is_string($string = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $iv_md5_e['e'], MCRYPT_MODE_CBC, $iv_md5_e['iv'])) || !isset($string[0]))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-							$this->i18n('String decryption failed (`$string` is NOT a string; or it has no length).')
+							$this->__('String decryption failed (`$string` is NOT a string; or it has no length).')
 						);
 					if(strlen($string = preg_replace('/^~r2\|/', '', $string, 1, $r2)) && $r2)
 						return ($string = rtrim($string, "\0\4" /* Right-trim NULLS and EOTs. */));
@@ -220,7 +220,7 @@ namespace websharks_core_v000000_dev
 			if(!isset($e[0]))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-					$this->i18n('String encryption failed (`$e` has no length).')
+					$this->__('String encryption failed (`$e` has no length).')
 				);
 			$e = '~xe'.(($w_md5_cs) ? ':'.md5($e) : '').'|'.$e;
 
@@ -269,7 +269,7 @@ namespace websharks_core_v000000_dev
 					if(!isset($string[0]))
 						throw $this->©exception(
 							$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-							$this->i18n('String decryption failed (`$string` has no length).')
+							$this->__('String decryption failed (`$string` has no length).')
 						);
 					if(strlen($string = preg_replace('/^~xe\|/', '', $string, 1, $xe)) && $xe)
 						return $string; // We can return the decrypted string now.
@@ -314,7 +314,7 @@ namespace websharks_core_v000000_dev
 					return $signature;
 			}
 			if($this->©commands->windows_possible() && $this->©env->is_localhost())
-				$windows_msg = $this->i18n(
+				$windows_msg = $this->__(
 					' NOTE: Regarding Windows® `localhost` servers.'.
 					' OpenSSL can be problematic on Windows® `localhost` servers, such as WAMP or EasyPHP.'.
 					' On Windows®, you might need to install this alternative. See: `http://slproweb.com/products/Win32OpenSSL.html`.'.
@@ -325,7 +325,7 @@ namespace websharks_core_v000000_dev
 
 			throw $this->©exception(
 				$this->method(__FUNCTION__).'#failure', get_defined_vars(),
-				$this->i18n( // Provide some detail here.
+				$this->__( // Provide some detail here.
 					'Unable to generate an RSA-SHA1 signature.'.
 					' Please make sure your installation of PHP is compiled with the OpenSSL extension.'.
 					' The PHP function `openssl_sign()` is required by this routine.'

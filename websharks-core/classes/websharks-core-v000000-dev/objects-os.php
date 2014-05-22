@@ -47,7 +47,7 @@ namespace websharks_core_v000000_dev
 				$plugin_root_ns = (string)$___instance_config['plugin_root_ns'];
 
 			if(empty($plugin_root_ns) || !isset($GLOBALS[$plugin_root_ns]) || !($GLOBALS[$plugin_root_ns] instanceof framework))
-				throw new \exception(sprintf(stub::i18n('Invalid `$___instance_config` to constructor: `%1$s`'),
+				throw new \exception(sprintf(stub::__('Invalid `$___instance_config` to constructor: `%1$s`'),
 				                             print_r($___instance_config, TRUE))
 				);
 			$this->plugin = $GLOBALS[$plugin_root_ns];
