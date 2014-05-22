@@ -484,16 +484,7 @@ namespace websharks_core_v000000_dev
 		public function is_super_admin()
 		{
 			if($this->has_id())
-			{
-				if(is_multisite())
-				{
-					if(is_array($super_admins = get_super_admins())
-					   && in_array($this->username, $super_admins, TRUE)
-					) return TRUE;
-				}
-				else if($this->wp->has_cap('delete_users'))
-					return TRUE;
-			}
+				return is_super_admin($this->ID);
 			return FALSE;
 		}
 
@@ -796,17 +787,17 @@ namespace websharks_core_v000000_dev
 
 			// Validate a possible change of email address (only if it has length).
 
-			if(isset($args['email']) && strlen($args['email']))
+			if(isset($args['email'][0])) // If the email has length.
 				if($this->©errors->exist_in($validate_email_change_of_address = $this->©user_utils->validate_email_change_of_address($args['email'], $this->email)))
 					return $validate_email_change_of_address; // An errors object instance.
 
 			// Validate a possible change of password (only if it has length).
 
-			if(isset($args['password']) && strlen($args['password']))
+			if(isset($args['password'][0])) // If the password has length.
 				if($this->©errors->exist_in($validate_password = $this->©user_utils->validate_password($args['password'])))
 					return $validate_password; // An errors object instance.
 
-			// Validate a possible change of name (only if name(s) are required in this scenario).
+			// Validate a possible change of name; only if name(s) are required in this scenario.
 
 			if(isset($args['first_name']) && !$args['first_name'] && in_array('first_name', $optional_requirements, TRUE))
 				return $this->©error(
@@ -964,7 +955,6 @@ namespace websharks_core_v000000_dev
 			if($optional_requirements && is_array($_optional_requirements = maybe_unserialize($this->©encryption->decrypt($optional_requirements))))
 				$optional_requirements = $_optional_requirements; // A specific set of optional fields to require.
 			else $optional_requirements = array(); // There are none.
-
 			unset($_optional_requirements); // Housekeeping.
 
 			if($this->©errors->exist_in($response = $this->update($args, $optional_requirements)))
@@ -1004,7 +994,6 @@ namespace websharks_core_v000000_dev
 			if($optional_requirements && is_array($_optional_requirements = maybe_unserialize($this->©encryption->decrypt($optional_requirements))))
 				$optional_requirements = $_optional_requirements; // A specific set of optional fields to require.
 			else $optional_requirements = array(); // There are none.
-
 			unset($_optional_requirements); // Housekeeping.
 
 			if($this->©errors->exist_in($response = $this->update($args, $optional_requirements)))
@@ -1150,14 +1139,14 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Updates a user's activation key.
 		 *
-		 * @param null|string $activation_key A new activation key, or NULL to delete.
+		 * @param string $activation_key A new activation key; or empty to delete.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If this user does NOT have an ID.
 		 */
 		public function update_activation_key($activation_key)
 		{
-			$this->check_arg_types(array('null', 'string'), func_get_args());
+			$this->check_arg_types('string', func_get_args());
 
 			if(!$this->has_id())
 				throw $this->©exception(
@@ -1182,7 +1171,7 @@ namespace websharks_core_v000000_dev
 		 */
 		public function delete_activation_key()
 		{
-			$this->update_activation_key(NULL);
+			$this->update_activation_key('');
 		}
 
 		/**
@@ -1204,29 +1193,6 @@ namespace websharks_core_v000000_dev
 				);
 			wp_set_password($password, $this->ID);
 			$this->delete_activation_key();
-		}
-
-		/**
-		 * Gets the WordPress® Role for this user.
-		 *
-		 * @note This method assumes there at most ONE role for each user (per blog).
-		 *    However, the WordPress® infrastructure appears to be making room for multiple roles to come in the future.
-		 *
-		 * @return string WordPress® Role for this user.
-		 *
-		 * @throws exception If this user does NOT have an ID.
-		 */
-		public function get_wp_role()
-		{
-			if(!$this->has_id())
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#id_missing', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->__('User has no ID (cannot get WP role).')
-				);
-			if(isset($this->wp->roles[0]) && is_string($this->wp->roles[0]))
-				return $this->wp->roles[0];
-
-			return ''; // Default return value (e.g. they have NO role).
 		}
 	}
 }
