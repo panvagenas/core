@@ -249,7 +249,7 @@ namespace websharks_core_v000000_dev
 				if(basename($classes_dir) !== 'classes')
 					throw new \exception( // Fail here; detected invalid `classes` directory.
 						sprintf(stub::i18n('Invalid `classes` directory basename: `%1$s`.'), basename($classes_dir)).
-						stub::i18n(' A `classes` directory MUST have basename: `classes`.')
+						' '.stub::i18n('A `classes` directory MUST have basename: `classes`.')
 					);
 				$classes_dir = stub::n_dir_seps($classes_dir); // Normalize for comparison.
 

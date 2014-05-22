@@ -179,7 +179,7 @@ namespace websharks_core_v000000_dev
 				{
 					throw new \exception(
 						sprintf(stub::i18n('Failed to handle exception code: `%1$s` with message: `%2$s`.'), $exception->getCode(), $exception->getMessage()).
-						sprintf(stub::i18n(' Failure caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
+						' '.sprintf(stub::i18n('Failure caused by exception code: `%1$s` with message: `%2$s`.'), $_exception->getCode(), $_exception->getMessage()), 20, $_exception
 					);
 				}
 			}
