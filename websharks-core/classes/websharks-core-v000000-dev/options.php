@@ -98,11 +98,7 @@ namespace websharks_core_v000000_dev
 				'templates.email.header'                    => '',
 				'templates.email.footer'                    => '',
 
-				'users.attach_init_hook'                    => '0',
 				'users.registration.display_name_format'    => 'first_name',
-				'users.attach_wp_authentication_filter'     => '0',
-
-				'widgets.enable_shortcodes'                 => '0',
 
 				'mail.smtp'                                 => '0',
 				'mail.smtp.force_from'                      => '0',
@@ -160,11 +156,7 @@ namespace websharks_core_v000000_dev
 				'templates.email.header'                    => array('string:!empty'),
 				'templates.email.footer'                    => array('string:!empty'),
 
-				'users.attach_init_hook'                    => array('string:numeric >=' => 0),
 				'users.registration.display_name_format'    => array('string:!empty'),
-				'users.attach_wp_authentication_filter'     => array('string:numeric >=' => 0),
-
-				'widgets.enable_shortcodes'                 => array('string:numeric >=' => 0),
 
 				'mail.smtp'                                 => array('string:numeric >=' => 0),
 				'mail.smtp.force_from'                      => array('string:numeric >=' => 0),

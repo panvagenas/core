@@ -94,7 +94,6 @@ namespace # Global namespace.
 	class websharks_core__messages extends \websharks_core_v000000_dev\messages{}
 	class websharks_core__no_cache extends \websharks_core_v000000_dev\no_cache{}
 	class websharks_core__notices extends \websharks_core_v000000_dev\notices{}
-	class websharks_core__oauth_v1 extends \websharks_core_v000000_dev\oauth_v1{}
 	class websharks_core__objects extends \websharks_core_v000000_dev\objects{}
 	class websharks_core__objects_os extends \websharks_core_v000000_dev\objects_os{}
 	class websharks_core__options extends \websharks_core_v000000_dev\options{}

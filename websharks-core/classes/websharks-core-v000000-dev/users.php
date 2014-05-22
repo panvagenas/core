@@ -273,20 +273,6 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Handles initialization routines.
-		 *
-		 * @extenders Can be overridden by class extenders.
-		 *
-		 * @attaches-to WordPress® `init` action hook.
-		 * @hook-priority `-2` Before EVERYTHING else.
-		 */
-		public function init()
-		{
-			if($this->is_current())
-				$this->session_start();
-		}
-
-		/**
 		 * Starts a session for this user (if they are the current user).
 		 *
 		 * @extenders Can be overridden by class extenders (when/if necessary).

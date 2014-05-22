@@ -256,5 +256,16 @@ namespace websharks_core_v000000_dev
 
 			return array_unique($emails);
 		}
+
+		/**
+		 * Email address regex pattern.
+		 *
+		 * @var string Email address regex pattern.
+		 *
+		 * @note Emails may NEVER exceed 100 chars (the max DB column size).
+		 * @note This is NOT 100% RFC compliant. This does NOT grok i18n domains.
+		 * @see http://en.wikipedia.org/wiki/Email_address
+		 */
+		public $regex_valid_email = '/^[a-zA-Z0-9_!#$%&*+=?`{}~|\/\^\'\-]+(?:\.?[a-zA-Z0-9_!#$%&*+=?`{}~|\/\^\'\-]+)*@[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*(?:\.[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9]+)*)*(?:\.[a-zA-Z][a-zA-Z0-9]+)?$/';
 	}
 }

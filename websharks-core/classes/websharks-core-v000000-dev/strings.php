@@ -3016,11 +3016,11 @@ namespace websharks_core_v000000_dev
 
 			if($error_code == UPLOAD_ERR_INI_SIZE)
 				return $this->__('Too large: `UPLOAD_ERR_INI_SIZE`.'.
-				                   ' The uploaded file exceeds the `upload_max_filesize` directive in `php.ini`.');
+				                 ' The uploaded file exceeds the `upload_max_filesize` directive in `php.ini`.');
 
 			if($error_code == UPLOAD_ERR_FORM_SIZE)
 				return $this->__('Too large: `UPLOAD_ERR_FORM_SIZE`.'.
-				                   ' The uploaded file exceeds the `MAX_FILE_SIZE` directive that was specified in the HTML form.');
+				                 ' The uploaded file exceeds the `MAX_FILE_SIZE` directive that was specified in the HTML form.');
 
 			if($error_code == UPLOAD_ERR_PARTIAL)
 				return $this->__('Did not get entire file: `UPLOAD_ERR_PARTIAL`. The uploaded file was only partially uploaded.');
@@ -3036,9 +3036,9 @@ namespace websharks_core_v000000_dev
 
 			if($error_code == UPLOAD_ERR_EXTENSION)
 				return $this->__('Exension failure: `UPLOAD_ERR_EXTENSION`.'.
-				                   ' A PHP extension stopped the file upload (this is an unusual error code).'.
-				                   ' PHP does not provide a way to ascertain which extension caused the file upload to stop.'.
-				                   ' Examining the list of loaded extensions with `phpinfo()` may help.');
+				                 ' A PHP extension stopped the file upload (this is an unusual error code).'.
+				                 ' PHP does not provide a way to ascertain which extension caused the file upload to stop.'.
+				                 ' Examining the list of loaded extensions with `phpinfo()` may help.');
 
 			return sprintf($this->__('Unknown file upload error code: `%1$s`.'), (string)$error_code);
 		}
@@ -3137,6 +3137,5 @@ namespace websharks_core_v000000_dev
 		 * @var string Regular expression fragment (dot matches newline inside quotes).
 		 */
 		public $regex_frag_dsq_value = '(?P<open_dsq>(?<!\\\\)["\'])(?P<dsq_value>(?s:\\\\.|(?!\\\\|(?P=open_dsq)).)*?)(?P<close_dsq>(?P=open_dsq))';
-
 	}
 }

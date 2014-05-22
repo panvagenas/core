@@ -35,10 +35,6 @@ namespace websharks_core_v000000_dev
 			if(!$this->©plugin->is_active_at_current_version())
 				return; // Do NOT go any further here.
 
-			// For plugins that need user initialization.
-			if($this->©options->get('users.attach_init_hook'))
-				add_action('init', array($this, '©user.init'), -2);
-
 			// Handles no-cache headers/constants.
 			add_action('init', array($this, '©no_cache.init'), -1);
 
@@ -51,10 +47,6 @@ namespace websharks_core_v000000_dev
 			// Other hooks on `wp_loaded` (misc routines).
 			add_action('wp_loaded', array($this, '©crons.wp_loaded'), PHP_INT_MAX - 1);
 			add_action('wp_loaded', array($this, '©db_utils.wp_loaded'), PHP_INT_MAX);
-
-			// For plugins that need to authenticate users.
-			if($this->©options->get('users.attach_wp_authentication_filter'))
-				add_filter('wp_authenticate_user', array($this, '©user_utils.wp_authenticate_user'), PHP_INT_MAX);
 
 			// Initializes front-side scripts/styles.
 			add_action('wp_print_scripts', array($this, '©scripts.wp_print_scripts'), 9);
@@ -73,12 +65,6 @@ namespace websharks_core_v000000_dev
 			{
 				add_action('http_api_debug', array($this, '©urls.http_api_debug'), PHP_INT_MAX, 5);
 				$this->static[__FUNCTION__]['http_api_debug'] = TRUE;
-			}
-			// For plugins that enable this option (only ONE plugin needs to add this filter).
-			if($this->©options->get('widgets.enable_shortcodes') && !isset($this->static[__FUNCTION__]['widgets.enable_shortcodes']))
-			{
-				add_filter('widget_text', 'do_shortcode');
-				$this->static[__FUNCTION__]['widgets.enable_shortcodes'] = TRUE;
 			}
 			// Handles `update_plugins` array (for pro upgrades).
 			add_filter('pre_site_transient_update_plugins', array($this, '©plugins.pre_site_transient_update_plugins'), PHP_INT_MAX);
