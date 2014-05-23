@@ -14,7 +14,7 @@ namespace websharks_core_v000000_dev;
  *    See: {@link http://codex.wordpress.org/Template_Tags}
  *    See: {@link http://codex.wordpress.org/Conditional_Tags}
  *
- * @note The current plugin instance is available through the special keyword: ``$this``.
+ * @note The current plugin instance is available through the special keyword: `$this`.
  * @var $this templates|framework Template instance (extends framework).
  * @var $exception exception Exception class instance.
  */
@@ -28,7 +28,7 @@ $exception = $this->data->exception;
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title><?php echo $this->translate('Uncaught Exception'); ?> | <?php echo esc_html(get_bloginfo('name')); ?></title>
+	<title><?php echo $this->_x('Uncaught Exception'); ?> | <?php echo esc_html(get_bloginfo('name')); ?></title>
 	<?php echo $this->stand_alone_styles().$this->stand_alone_scripts(); ?>
 </head>
 <body>
@@ -52,10 +52,10 @@ $exception = $this->data->exception;
 
 				<a name="exception" class="anchor"></a>
 
-				<h1><?php echo $this->translate('Uncaught Exception'); ?></h1>
+				<h1><?php echo $this->_x('Uncaught Exception'); ?></h1>
 
 				<h3 class="marginize-top-x2">
-					<?php echo $this->translate('Request failed w/ exception code:') ?>
+					<?php echo $this->_x('Request failed w/ exception code:') ?>
 				</h3>
 				<p style="margin:0;">
 					<code style="background:#FDFB76;"><?php echo esc_html($exception->getCode()); ?></code>
@@ -64,31 +64,31 @@ $exception = $this->data->exception;
 				<?php if($this->©env->is_in_wp_debug_display_mode() || is_super_admin()): ?>
 
 					<p>
-						<?php echo sprintf($this->i18n('Exception occurred at line # <code>%1$s</code> in: <code>%2$s</code>.'), esc_html($exception->getLine()), esc_html($exception->getFile())); ?>
+						<?php echo sprintf($this->__('Exception occurred at line # <code>%1$s</code> in: <code>%2$s</code>.'), esc_html($exception->getLine()), esc_html($exception->getFile())); ?>
 					</p>
 
 					<hr class="marginize-x2" />
 
 					<h3>
-						<?php echo $this->i18n('Exception Message (Please Read)'); ?>
+						<?php echo $this->__('Exception Message (Please Read)'); ?>
 					</h3>
-					<small><?php echo $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
+					<small><?php echo $this->__('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
 					<pre><?php echo esc_html($exception->getMessage()); ?></pre>
 
 					<hr class="marginize-x2" />
 
 					<h3>
-						<?php echo $this->i18n('Stack Trace (For Debugging Purposes)'); ?>
+						<?php echo $this->__('Stack Trace (For Debugging Purposes)'); ?>
 					</h3>
-					<small><?php echo $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
+					<small><?php echo $this->__('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
 					<pre><?php echo esc_html($exception->getTraceAsString()); ?></pre>
 
 					<?php if(isset($exception->data)): ?>
 						<hr class="marginize-x2" />
 						<h3>
-							<?php echo $this->i18n('Additional Data (For Debugging Purposes)'); ?>
+							<?php echo $this->__('Additional Data (For Debugging Purposes)'); ?>
 						</h3>
-						<small><?php echo $this->i18n('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
+						<small><?php echo $this->__('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
 						<pre><?php echo esc_html($this->©var->dump($exception->data)); ?></pre>
 					<?php endif; ?>
 
@@ -97,7 +97,7 @@ $exception = $this->data->exception;
 				<hr class="marginize-x2" />
 
 				<p class="float-half-left marginize">
-					<?php echo sprintf($this->translate('If problems persist, please <a href="%1$s">contact support</a> for assistance.'), $this->©options->get('support.url')) ?>
+					<?php echo sprintf($this->_x('If problems persist, please <a href="%1$s">contact support</a> for assistance.'), $this->©options->get('support.url')) ?>
 				</p>
 
 				<p class="float-half-right marginize">

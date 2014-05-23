@@ -10,33 +10,34 @@
  * @since 120318
  */
 namespace websharks_core_v000000_dev
+{
+	if(!defined('WPINC'))
+		exit('Do NOT access this file directly: '.basename(__FILE__));
+
+	/**
+	 * Messages.
+	 *
+	 * @package WebSharks\Core
+	 * @since 120318
+	 *
+	 * @assert ($GLOBALS[__NAMESPACE__])
+	 */
+	class messages extends diagnostics
 	{
-		if(!defined('WPINC'))
-			exit('Do NOT access this file directly: '.basename(__FILE__));
+		/**
+		 * @var string Diagnostic type.
+		 */
+		public $type = 'message';
 
 		/**
-		 * Messages.
-		 *
-		 * @package WebSharks\Core
-		 * @since 120318
-		 *
-		 * @assert ($GLOBALS[__NAMESPACE__])
+		 * @var boolean Log to a DEBUG file?
 		 */
-		class messages extends diagnostics
-		{
-			/**
-			 * @var string Diagnostic type.
-			 */
-			public $type = 'message';
+		public $wp_debug_log = FALSE;
 
-			/**
-			 * @var boolean Log to a DEBUG file?
-			 */
-			public $wp_debug_log = FALSE;
+		/**
+		 * @var boolean Log into a DB table?
+		 */
+		public $db_log = FALSE;
 
-			/**
-			 * @var boolean Log into a DB table?
-			 */
-			public $db_log = FALSE;
-		}
 	}
+}
