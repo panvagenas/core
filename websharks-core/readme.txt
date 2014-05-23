@@ -5,6 +5,9 @@ Stable tag: 000000-dev
 Tested up to: 3.8.1
 Requires at least: 3.5.1
 
+Requires at least Apache version: 2.1
+Tested up to Apache version: 2.4.7
+
 Requires at least PHP version: 5.3.1
 Tested up to PHP version: 5.5.11
 
