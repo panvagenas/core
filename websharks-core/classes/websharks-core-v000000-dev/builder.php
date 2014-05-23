@@ -917,7 +917,7 @@ namespace websharks_core_v000000_dev
 					$successes->add($this->method(__FUNCTION__).'#commit_after_building_plugin_pro', get_defined_vars(),
 					                sprintf($this->__('All files (new and/or changed) on branch: `%1$s`; have been added to the list of version controlled files in the plugin pro repo.'), $this->version).
 					                ' '.$this->__('Pro add-on finale. A commit has been processed for all changes to the new pro directory/file structure.').
-					                ' '.sprintf($this->__('Tagged stable release as: `$1%s`.'), $this->version)
+					                ' '.sprintf($this->__('Tagged stable release as: `%1$s`.'), $this->version)
 					);
 				}
 				// Handle a possible extras directory.
@@ -1026,7 +1026,7 @@ namespace websharks_core_v000000_dev
 				$successes->add($this->method(__FUNCTION__).'#commit_before_plugin_build_complete', get_defined_vars(),
 				                sprintf($this->__('All files (new and/or changed) on branch: `%1$s`; have been added to the list of version controlled files in the plugin repo directory: `%2$s`.'), $this->version, $this->plugin_repo_dir).
 				                ' '.$this->__('Plugin finale. A commit has been processed for all changes to the new file structure.').
-				                ' '.sprintf($this->__('Tagged stable release as: `$1%s`.'), $this->version)
+				                ' '.sprintf($this->__('Tagged stable release as: `%1$s`.'), $this->version)
 				);
 				$successes->add($this->method(__FUNCTION__).'#plugin_build_complete', get_defined_vars(), $this->__('Plugin build complete!'));
 			}
@@ -1269,7 +1269,7 @@ namespace websharks_core_v000000_dev
 				                sprintf($this->__('All files (new and/or changed) on %1$sbranch: `%2$s`; have been added to the list of version controlled files in the %3$s repo directory: `%4$s`.'), $new_space, $this->version, $this->___instance_config->core_name, $this->core_repo_dir).
 				                ' '.sprintf($this->__('Finale. A commit has been processed for all changes to the %1$sfile structure.'), $new_space).
 				                (($is_new && $this->©string->is_plugin_stable_version($this->version)) // A new stable release?
-					                ? ' '.sprintf($this->__('Tagged stable release as: `$1%s`.'), $this->version) : '')
+					                ? ' '.sprintf($this->__('Tagged stable release as: `%1$s`.'), $this->version) : '')
 				);
 				$successes->add($this->method(__FUNCTION__).'#'.$new_slug.'core_build_complete',
 				                get_defined_vars(), sprintf($this->__('%1$s %2$s complete!'), $ucfirst_core, $build));
