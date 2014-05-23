@@ -2087,7 +2087,7 @@ namespace websharks_core_v000000_dev
 		# Update WebSharks™ Core global stub w/ a reference to the latest available version at runtime.
 		# -----------------------------------------------------------------------------------------------------------------------------
 
-		if(!isset($GLOBALS[stub::$core_ns_stub]->___instance_config->{stub::$core_ns_stub})
+		if(!isset($GLOBALS[stub::$core_ns_stub]) || !($GLOBALS[stub::$core_ns_stub] instanceof framework)
 		   || version_compare($GLOBALS[stub::$core_ns_stub]->___instance_config->core_version,
 		                      $GLOBALS[stub::$core_ns]->___instance_config->core_version, '<')
 		) $GLOBALS[stub::$core_ns_stub] = $GLOBALS[stub::$core_ns];

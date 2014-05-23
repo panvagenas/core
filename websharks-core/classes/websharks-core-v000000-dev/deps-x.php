@@ -2937,7 +2937,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			throw new exception( // Fail here; detected invalid arguments.
 				sprintf($this->__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 			);
-		if(!strlen($dir_file)) return ''; // Catch empty string.
+		if(!isset($dir_file[0])) return ''; // Catch empty string.
 
 		if(strpos($dir_file, '://' !== FALSE)) // Quick check here for optimization.
 		{
@@ -2976,7 +2976,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			throw new exception( // Fail here; detected invalid arguments.
 				sprintf($this->__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 			);
-		if(!strlen($dir_file)) return ''; // Catch empty string.
+		if(!isset($dir_file[0])) return ''; // Catch empty string.
 
 		$had_trailing_slash = in_array(substr($dir_file, -1), array(DIRECTORY_SEPARATOR, '\\', '/'), TRUE);
 

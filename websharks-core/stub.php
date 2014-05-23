@@ -512,8 +512,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		{
 			// Current PHAR file w/stream prefix.
 
-			$is_phar  = $phar = self::n_dir_seps(self::is_phar());
-			$phar_dir = self::n_dir_seps_up($phar);
+			$is_phar = $phar = self::n_dir_seps(self::is_phar());
 
 			if(!$is_phar) // A couple of quick sanity checks.
 				throw new exception(self::__('This is NOT a PHAR file.'));
@@ -527,10 +526,8 @@ if(!class_exists('websharks_core_v000000_dev'))
 			else if(function_exists('apache_lookup_uri') && !empty($_SERVER['REQUEST_URI']))
 			{
 				$_apache_lookup = apache_lookup_uri((string)$_SERVER['REQUEST_URI']);
-
 				if(!empty($_apache_lookup->path_info))
 					$path_info = (string)$_apache_lookup->path_info;
-
 				unset($_apache_lookup); // Housekeeping.
 			}
 			$path_info = (!empty($path_info)) ? $path_info : '/'.basename(__FILE__);
@@ -557,7 +554,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 			if(substr($internal_uri_basename, -1) === '~')
 				return FALSE; // Do NOT serve backups; 403 (forbidden).
 
-			$_allow_from_all_htaccess_file = FALSE; // Initialize to a FALSE value.
+			$phar_dir = self::n_dir_seps_up($phar); // We'll need this below.
 
 			for($_i = 0, $_dir = self::n_dir_seps_up($phar.$internal_uri); $_i <= 100; $_i++)
 			{
@@ -570,8 +567,6 @@ if(!class_exists('websharks_core_v000000_dev'))
 				if(!$_dir || $_dir === '.' || substr($_dir, -1) === ':')
 					break; // Search complete now.
 
-				// Base directory scans.
-
 				$_dir_basename = basename($_dir);
 
 				if(strpos($_dir_basename, '.') === 0)
@@ -580,26 +575,30 @@ if(!class_exists('websharks_core_v000000_dev'))
 				if(substr($_dir_basename, -1) === '~')
 					return FALSE; // Backup dir; 403 (forbidden).
 
-				// Windows® IIS compatibility.
-
 				if(strcasecmp($_dir_basename, 'app_data') === 0)
 					return FALSE; // Private; 403 (forbidden).
 
-				if(!$_allow_from_all_htaccess_file && is_file($_dir.'/.htaccess'))
+				if(is_file($_dir.'/.htaccess')) // Options file exists here?
 				{
 					if(!is_readable($_dir.'/.htaccess'))
 						return FALSE; // Unreadable; 403 (forbidden).
 
+					if(stripos(file_get_contents($_dir.'/.htaccess'), 'require all denied') !== FALSE)
+						return FALSE; // Private; 403 (forbidden).
+
 					if(stripos(file_get_contents($_dir.'/.htaccess'), 'deny from all') !== FALSE)
 						return FALSE; // Private; 403 (forbidden).
 
+					if(stripos(file_get_contents($_dir.'/.htaccess'), 'require all granted') !== FALSE)
+						break; // Break; this directory explicitly allows access.
+
 					if(stripos(file_get_contents($_dir.'/.htaccess'), 'allow from all') !== FALSE)
-						$_allow_from_all_htaccess_file = TRUE;
+						break; // Break; this directory explicitly allows access.
 				}
 				if(substr($_dir, -1) === '/') // Root directory or scheme?
 					break; // Search complete (there is nothing more to search after this).
 			}
-			unset($_i, $_dir, $_dir_basename, $_allow_from_all_htaccess_file);
+			unset($_i, $_dir, $_dir_basename); // Housekeeping.
 
 			// Process MIME-type headers.
 
@@ -1056,7 +1055,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 				throw new exception( // Fail here; detected invalid arguments.
 					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
-			if(!strlen($dir_file)) return ''; // Catch empty string.
+			if(!isset($dir_file[0])) return ''; // Catch empty string.
 
 			if(strpos($dir_file, '://' !== FALSE)) // Quick check here for optimization.
 			{
@@ -1102,7 +1101,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 				throw new exception( // Fail here; detected invalid arguments.
 					sprintf(self::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 				);
-			if(!strlen($dir_file)) return ''; // Catch empty string.
+			if(!isset($dir_file[0])) return ''; // Catch empty string.
 
 			$had_trailing_slash = in_array(substr($dir_file, -1), array(DIRECTORY_SEPARATOR, '\\', '/'), TRUE);
 
@@ -1179,16 +1178,16 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 */
 		public static function is_browser()
 		{
-			if(!isset(self::$static[__FUNCTION__]))
-			{
-				self::$static[__FUNCTION__] = FALSE;
+			if(isset(self::$static[__FUNCTION__]))
+				return self::$static[__FUNCTION__];
 
-				$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/\s]+[0-9]/i';
+			self::$static[__FUNCTION__] = FALSE;
 
-				if(!empty($_SERVER['HTTP_USER_AGENT']) && is_string($_SERVER['HTTP_USER_AGENT']))
-					if(preg_match($regex, $_SERVER['HTTP_USER_AGENT']))
-						self::$static[__FUNCTION__] = TRUE;
-			}
+			$regex = '/(?:msie|trident|gecko|webkit|presto|konqueror|playstation)[\/\s]+[0-9]/i';
+			if(!empty($_SERVER['HTTP_USER_AGENT']) && is_string($_SERVER['HTTP_USER_AGENT']))
+				if(preg_match($regex, $_SERVER['HTTP_USER_AGENT']))
+					self::$static[__FUNCTION__] = TRUE;
+
 			return self::$static[__FUNCTION__];
 		}
 
@@ -1585,7 +1584,8 @@ if(websharks_core_v000000_dev::is_webphar())
 	if(!websharks_core_v000000_dev::can_phar())
 		throw new exception(websharks_core_v000000_dev::cant_phar_msg());
 
-	Phar::webPhar('websharks-core-v000000-dev', 'index.php', '', websharks_core_v000000_dev::web_phar_mime_types(),
+	Phar::webPhar('websharks-core-v000000-dev', 'index.php', '',
+	              websharks_core_v000000_dev::web_phar_mime_types(),
 	              'websharks_core_v000000_dev::web_phar_rewriter');
 
 	return; // We can stop here.

@@ -341,7 +341,7 @@ namespace websharks_core_v000000_dev
 		 */
 		final public function __construct()
 		{
-			$class        = get_class($this); // Class name.
+			$class        = get_class($this);
 			$core_ns      = core()->___instance_config->core_ns;
 			$core_ns_stub = core()->___instance_config->core_ns_stub;
 
@@ -355,7 +355,7 @@ namespace websharks_core_v000000_dev
 				$this->___framework = $GLOBALS[$core_ns];
 				return; // Stop (special case).
 			}
-			if(!isset($GLOBALS[$class]->___instance_config->$core_ns_stub))
+			if(!isset($GLOBALS[$class]) || !($GLOBALS[$class] instanceof framework))
 				throw core()->©exception(
 					$class.'::'.__FUNCTION__.'#missing_framework_instance', get_defined_vars(),
 					sprintf(core()->__('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
@@ -364,22 +364,22 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Checks magic/overload properties (dynamic classes).
+		 * Handles overload properties (dynamic classes).
 		 *
 		 * @param string $property A dynamic class object name (w/o the `©` prefix) — simplifying usage.
 		 *    The `©` prefix is optional however. We always add this prefix regardless.
 		 *
-		 * @return boolean TRUE if the magic/overload property (dynamic class) is set; else FALSE.
+		 * @return framework|object A singleton class instance.
 		 *
 		 * @final Cannot be overridden by class extenders.
 		 *
 		 * @public Magic/overload methods are always public.
 		 */
-		final public function __isset($property)
+		final public function __get($property)
 		{
 			$property = (string)$property;
 
-			return $this->___framework->__isset('©'.ltrim($property, '©'));
+			return $this->___framework->{'©'.ltrim($property, '©')};
 		}
 
 		/**
@@ -412,6 +412,25 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
+		 * Checks magic/overload properties (dynamic classes).
+		 *
+		 * @param string $property A dynamic class object name (w/o the `©` prefix) — simplifying usage.
+		 *    The `©` prefix is optional however. We always add this prefix regardless.
+		 *
+		 * @return boolean TRUE if the magic/overload property (dynamic class) is set; else FALSE.
+		 *
+		 * @final Cannot be overridden by class extenders.
+		 *
+		 * @public Magic/overload methods are always public.
+		 */
+		final public function __isset($property)
+		{
+			$property = (string)$property;
+
+			return $this->___framework->__isset('©'.ltrim($property, '©'));
+		}
+
+		/**
 		 * Unsets magic/overload properties (dynamic classes).
 		 *
 		 * @param string $property A dynamic class object name (w/o the `©` prefix) — simplifying usage.
@@ -434,25 +453,6 @@ namespace websharks_core_v000000_dev
 				sprintf(core()->__('Attempting to unset magic/overload property: `%1$s` (which is NOT allowed).'), $property).
 				' '.sprintf(core()->__('This property MUST be defined explicitly by: `%1$s`.'), get_class($this))
 			);
-		}
-
-		/**
-		 * Handles overload properties (dynamic classes).
-		 *
-		 * @param string $property A dynamic class object name (w/o the `©` prefix) — simplifying usage.
-		 *    The `©` prefix is optional however. We always add this prefix regardless.
-		 *
-		 * @return framework|object A singleton class instance.
-		 *
-		 * @final Cannot be overridden by class extenders.
-		 *
-		 * @public Magic/overload methods are always public.
-		 */
-		final public function __get($property)
-		{
-			$property = (string)$property;
-
-			return $this->___framework->{'©'.ltrim($property, '©')};
 		}
 
 		/**
@@ -492,11 +492,13 @@ namespace websharks_core_v000000_dev
 		{
 			static $framework; // A static cache.
 
-			if(isset($framework)) return $framework; // Cached?
+			if(isset($framework)) return $framework;
 
-			$class = get_called_class(); // With late static binding.
+			$class        = get_called_class();
+			$core_ns      = core()->___instance_config->core_ns;
+			$core_ns_stub = core()->___instance_config->core_ns_stub;
 
-			if($class === ($core_ns = core()->___instance_config->core_ns).'\\core')
+			if($class === $core_ns.'\\core') // WebSharks™ Core internal class?
 			{
 				if(!isset($GLOBALS[$core_ns]) || !($GLOBALS[$core_ns] instanceof framework))
 					throw core()->©exception(
@@ -505,7 +507,7 @@ namespace websharks_core_v000000_dev
 					);
 				return ($framework = $GLOBALS[$core_ns]); // Stop (special case; we're all done).
 			}
-			if(!isset($GLOBALS[$class]->___instance_config->{core()->___instance_config->core_ns_stub}))
+			if(!isset($GLOBALS[$class]) || !($GLOBALS[$class] instanceof framework))
 				throw core()->©exception(
 					$class.'::'.__FUNCTION__.'#missing_framework_instance', get_defined_vars(),
 					sprintf(core()->__('Missing $GLOBALS[\'%1$s\'] framework instance.'), $class)
