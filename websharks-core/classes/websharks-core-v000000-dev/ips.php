@@ -33,35 +33,36 @@ namespace websharks_core_v000000_dev
 		 */
 		public function get()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = 'unknown';
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				$_s = $this->©vars->_SERVER();
+			$this->static[__FUNCTION__] = 'unknown';
 
-				if($this->©options->get('ips.prioritize_remote_addr')
-				   && ($REMOTE_ADDR = $this->©ips->valid_public($_s['REMOTE_ADDR']))
-				) return ($this->static[__FUNCTION__] = $REMOTE_ADDR);
+			$_s = $this->©vars->_SERVER();
 
-				$sources = $this->apply_filters(
-					'sources', array(
-						'HTTP_CLIENT_IP',
-						'HTTP_X_FORWARDED_FOR',
-						'HTTP_X_FORWARDED',
-						'HTTP_X_CLUSTER_CLIENT_IP',
-						'HTTP_FORWARDED_FOR',
-						'HTTP_FORWARDED',
-						'HTTP_VIA',
-						'REMOTE_ADDR'
-					)
-				);
-				foreach($sources as $_source) // Try each of these; in this order.
-					if(!isset($$_source) && ($$_source = $this->©ips->valid_public($_s[$_source])))
-						return ($this->static[__FUNCTION__] = $$_source);
-				unset($_source); // Housekeeping.
+			if($this->©options->get('ips.prioritize_remote_addr')
+			   && ($REMOTE_ADDR = $this->©ips->valid_public($_s['REMOTE_ADDR']))
+			) return ($this->static[__FUNCTION__] = $REMOTE_ADDR);
 
-				$this->static[__FUNCTION__] = $this->©string->is_not_empty_or($_s['REMOTE_ADDR'], 'unknown');
-			}
+			$sources = $this->apply_filters(
+				'sources', array(
+					'HTTP_CLIENT_IP',
+					'HTTP_X_FORWARDED_FOR',
+					'HTTP_X_FORWARDED',
+					'HTTP_X_CLUSTER_CLIENT_IP',
+					'HTTP_FORWARDED_FOR',
+					'HTTP_FORWARDED',
+					'HTTP_VIA',
+					'REMOTE_ADDR'
+				)
+			);
+			foreach($sources as $_source) // Try each of these; in this order.
+				if(!isset($$_source) && ($$_source = $this->©ips->valid_public($_s[$_source])))
+					return ($this->static[__FUNCTION__] = $$_source);
+			unset($_source); // Housekeeping.
+
+			$this->static[__FUNCTION__] = $this->©string->is_not_empty_or($_s['REMOTE_ADDR'], 'unknown');
+
 			return $this->static[__FUNCTION__];
 		}
 

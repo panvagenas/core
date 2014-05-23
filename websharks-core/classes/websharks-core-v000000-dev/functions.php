@@ -78,14 +78,15 @@ namespace websharks_core_v000000_dev
 
 			$function = ltrim(strtolower($function), '\\'); // Clean this up before checking.
 
-			if(!isset($this->static[__FUNCTION__][$function]) || $reconsider === $this::reconsider)
-			{
-				$this->static[__FUNCTION__][$function] = FALSE;
+			if(isset($this->static[__FUNCTION__][$function]) && $reconsider !== $this::reconsider)
+				return $this->static[__FUNCTION__]; // Use the cache.
 
-				if((in_array($function, $this->constructs, TRUE) || is_callable($function) || function_exists($function))
-				   && !in_array($function, $this->disabled(), TRUE) // And it is NOT disabled in some way.
-				) $this->static[__FUNCTION__][(string)$function] = TRUE;
-			}
+			$this->static[__FUNCTION__][$function] = FALSE;
+
+			if((in_array($function, $this->constructs, TRUE) || is_callable($function) || function_exists($function))
+			   && !in_array($function, $this->disabled(), TRUE) // And it is NOT disabled in some way.
+			) $this->static[__FUNCTION__][(string)$function] = TRUE;
+
 			return $this->static[__FUNCTION__][$function];
 		}
 

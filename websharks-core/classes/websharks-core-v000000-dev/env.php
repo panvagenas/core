@@ -48,16 +48,17 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_localhost()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(defined('LOCALHOST') && LOCALHOST)
-					$this->static[__FUNCTION__] = TRUE;
+			$this->static[__FUNCTION__] = FALSE;
 
-				else if(preg_match('/(?:localhost|127\.0\.0\.1|\.loc$)/i', $this->©url->current_host()))
-					$this->static[__FUNCTION__] = TRUE;
-			}
+			if(defined('LOCALHOST') && LOCALHOST)
+				$this->static[__FUNCTION__] = TRUE;
+
+			else if(preg_match('/(?:localhost|127\.0\.0\.1|\.loc$)/i', $this->©url->current_host()))
+				$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -70,13 +71,14 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_unix()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(stripos(PHP_OS, 'win') !== 0)
-					$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(stripos(PHP_OS, 'win') !== 0)
+				$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -89,13 +91,14 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_windows()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(stripos(PHP_OS, 'win') === 0)
-					$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(stripos(PHP_OS, 'win') === 0)
+				$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -108,14 +111,15 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_apache()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(is_string($server_software = $this->©vars->_SERVER('SERVER_SOFTWARE')))
-					if(stripos($server_software, 'apache') !== FALSE)
-						$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(is_string($server_software = $this->©vars->_SERVER('SERVER_SOFTWARE')))
+				if(stripos($server_software, 'apache') !== FALSE)
+					$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -128,14 +132,15 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_litespeed()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(is_string($server_software = $this->©vars->_SERVER('SERVER_SOFTWARE')))
-					if(stripos($server_software, 'litespeed') !== FALSE)
-						$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(is_string($server_software = $this->©vars->_SERVER('SERVER_SOFTWARE')))
+				if(stripos($server_software, 'litespeed') !== FALSE)
+					$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -148,13 +153,14 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_apache_compatible()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if($this->is_apache() || $this->is_litespeed())
-					$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if($this->is_apache() || $this->is_litespeed())
+				$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -214,13 +220,14 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_cli()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(PHP_SAPI === 'cli')
-					$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(PHP_SAPI === 'cli')
+				$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -231,13 +238,14 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_cron_job()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(defined('DOING_CRON') && DOING_CRON)
-					$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(defined('DOING_CRON') && DOING_CRON)
+				$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -250,18 +258,19 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_systematic_routine()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if($this->is_cli()) $this->static[__FUNCTION__] = TRUE;
-				else if($this->is_wp_login()) $this->static[__FUNCTION__] = TRUE;
-				else if(defined('WP_INSTALLING') && WP_INSTALLING) $this->static[__FUNCTION__] = TRUE;
-				else if(defined('WP_REPAIRING') && WP_REPAIRING) $this->static[__FUNCTION__] = TRUE;
-				else if(defined('APP_REQUEST') && APP_REQUEST) $this->static[__FUNCTION__] = TRUE;
-				else if(defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) $this->static[__FUNCTION__] = TRUE;
-				else if(defined('DOING_CRON') && DOING_CRON) $this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if($this->is_cli()) $this->static[__FUNCTION__] = TRUE;
+			else if($this->is_wp_login()) $this->static[__FUNCTION__] = TRUE;
+			else if(defined('WP_INSTALLING') && WP_INSTALLING) $this->static[__FUNCTION__] = TRUE;
+			else if(defined('WP_REPAIRING') && WP_REPAIRING) $this->static[__FUNCTION__] = TRUE;
+			else if(defined('APP_REQUEST') && APP_REQUEST) $this->static[__FUNCTION__] = TRUE;
+			else if(defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) $this->static[__FUNCTION__] = TRUE;
+			else if(defined('DOING_CRON') && DOING_CRON) $this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -274,13 +283,14 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_wp_login()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(strpos($this->©url->current_uri(), '/wp-login.php') !== FALSE)
-					$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(strpos($this->©url->current_uri(), '/wp-login.php') !== FALSE)
+				$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -293,13 +303,14 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_multisite_farm()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(is_multisite() && defined('MULTISITE_FARM') && MULTISITE_FARM)
-					$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(is_multisite() && defined('MULTISITE_FARM') && MULTISITE_FARM)
+				$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -312,8 +323,10 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_in_wp_debug_mode()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-				$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG);
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
+
+			$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG);
 
 			return $this->static[__FUNCTION__];
 		}
@@ -327,8 +340,10 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_in_wp_debug_log_mode()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-				$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG);
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
+
+			$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG);
 
 			return $this->static[__FUNCTION__];
 		}
@@ -342,8 +357,10 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_in_wp_debug_display_mode()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-				$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY);
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
+
+			$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY);
 
 			return $this->static[__FUNCTION__];
 		}
@@ -357,13 +374,14 @@ namespace websharks_core_v000000_dev
 		 */
 		public function is_bp_installed()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = FALSE;
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(defined('BP_VERSION') && did_action('bp_core_loaded'))
-					$this->static[__FUNCTION__] = TRUE;
-			}
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(defined('BP_VERSION') && did_action('bp_core_loaded'))
+				$this->static[__FUNCTION__] = TRUE;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -428,25 +446,26 @@ namespace websharks_core_v000000_dev
 		 */
 		public function http_referer()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$this->static[__FUNCTION__] = '';
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				$current_url      = $this->©url->current();
-				$current_uri      = $this->©url->current_uri();
-				$_wp_http_referer = $this->©vars->_REQUEST('_wp_http_referer');
-				$http_referer     = $this->©vars->_SERVER('HTTP_REFERER');
+			$this->static[__FUNCTION__] = '';
 
-				if($this->©string->is_not_empty($_wp_http_referer)
-				   && $_wp_http_referer !== $current_url
-				   && $this->©url->parse_uri($_wp_http_referer) !== $current_uri
-				) $this->static[__FUNCTION__] = $_wp_http_referer;
+			$current_url      = $this->©url->current();
+			$current_uri      = $this->©url->current_uri();
+			$_wp_http_referer = $this->©vars->_REQUEST('_wp_http_referer');
+			$http_referer     = $this->©vars->_SERVER('HTTP_REFERER');
 
-				else if($this->©string->is_not_empty($http_referer)
-				        && $http_referer !== $current_url
-				        && $this->©url->parse_uri($http_referer) !== $current_uri
-				) $this->static[__FUNCTION__] = $http_referer;
-			}
+			if($this->©string->is_not_empty($_wp_http_referer)
+			   && $_wp_http_referer !== $current_url
+			   && $this->©url->parse_uri($_wp_http_referer) !== $current_uri
+			) $this->static[__FUNCTION__] = $_wp_http_referer;
+
+			else if($this->©string->is_not_empty($http_referer)
+			        && $http_referer !== $current_url
+			        && $this->©url->parse_uri($http_referer) !== $current_uri
+			) $this->static[__FUNCTION__] = $http_referer;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -457,22 +476,23 @@ namespace websharks_core_v000000_dev
 		 */
 		public function admin_area()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
+
+			$this->static[__FUNCTION__] = '';
+
+			if(!is_admin()) // NOT in admin area.
 				$this->static[__FUNCTION__] = '';
 
-				if(!is_admin()) // NOT in admin area.
-					$this->static[__FUNCTION__] = '';
+			else if(is_multisite() && is_network_admin())
+				$this->static[__FUNCTION__] = 'network-admin';
 
-				else if(is_multisite() && is_network_admin())
-					$this->static[__FUNCTION__] = 'network-admin';
+			else if(is_blog_admin())
+				$this->static[__FUNCTION__] = 'blog-admin';
 
-				else if(is_blog_admin())
-					$this->static[__FUNCTION__] = 'blog-admin';
+			else if(is_user_admin())
+				$this->static[__FUNCTION__] = 'user-admin';
 
-				else if(is_user_admin())
-					$this->static[__FUNCTION__] = 'user-admin';
-			}
 			return $this->static[__FUNCTION__];
 		}
 
@@ -483,16 +503,17 @@ namespace websharks_core_v000000_dev
 		 */
 		public function admin_page()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
+
+			$this->static[__FUNCTION__] = '';
+
+			if(!is_admin()) // NOT in admin area.
 				$this->static[__FUNCTION__] = '';
 
-				if(!is_admin()) // NOT in admin area.
-					$this->static[__FUNCTION__] = '';
+			else if(!$this->©string->¤is_not_empty($this->static[__FUNCTION__] = $this->©vars->_REQUEST('page')))
+				$this->static[__FUNCTION__] = $this->©string->is_not_empty_or($GLOBALS['pagenow'], '');
 
-				else if(!$this->©string->¤is_not_empty($this->static[__FUNCTION__] = $this->©vars->_REQUEST('page')))
-					$this->static[__FUNCTION__] = $this->©string->is_not_empty_or($GLOBALS['pagenow'], '');
-			}
 			return $this->static[__FUNCTION__];
 		}
 

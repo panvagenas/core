@@ -77,10 +77,13 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			if(!isset($this->static[__FUNCTION__]))
-				$this->static[__FUNCTION__] = $this->current_scheme().'://'.$this->current_host().$this->current_uri();
+			if(isset($this->static[__FUNCTION__][$scheme]))
+				return $this->static[__FUNCTION__][$scheme];
 
-			return ($scheme) ? $this->set_scheme($this->static[__FUNCTION__], $scheme) : $this->static[__FUNCTION__];
+			$this->static[__FUNCTION__][$scheme] = $this->current_scheme().'://'.$this->current_host().$this->current_uri();
+			if($scheme) $this->static[__FUNCTION__][$scheme] = $this->set_scheme($this->static[__FUNCTION__][$scheme], $scheme);
+
+			return $this->static[__FUNCTION__][$scheme];
 		}
 
 		/**
@@ -92,14 +95,15 @@ namespace websharks_core_v000000_dev
 		 */
 		public function current_scheme()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$scheme = $this->©vars->_SERVER('REQUEST_SCHEME');
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if($this->©string->is_not_empty($scheme))
-					$this->static[__FUNCTION__] = $this->n_scheme($scheme);
-				else $this->static[__FUNCTION__] = (is_ssl()) ? 'https' : 'http';
-			}
+			$scheme = $this->©vars->_SERVER('REQUEST_SCHEME');
+
+			if($this->©string->is_not_empty($scheme))
+				$this->static[__FUNCTION__] = $this->n_scheme($scheme);
+			else $this->static[__FUNCTION__] = (is_ssl()) ? 'https' : 'http';
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -112,17 +116,18 @@ namespace websharks_core_v000000_dev
 		 */
 		public function current_host()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$host = $this->©vars->_SERVER('HTTP_HOST');
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(!$this->©string->is_not_empty($host))
-					throw $this->©exception(
-						$this->method(__FUNCTION__).'#missing_server_http_host', get_defined_vars(),
-						$this->__('Missing required `$_SERVER[\'HTTP_HOST\']`.')
-					);
-				$this->static[__FUNCTION__] = $host;
-			}
+			$host = $this->©vars->_SERVER('HTTP_HOST');
+
+			if(!$this->©string->is_not_empty($host))
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#missing_server_http_host', get_defined_vars(),
+					$this->__('Missing required `$_SERVER[\'HTTP_HOST\']`.')
+				);
+			$this->static[__FUNCTION__] = $host;
+
 			return $this->static[__FUNCTION__];
 		}
 
@@ -135,18 +140,19 @@ namespace websharks_core_v000000_dev
 		 */
 		public function current_uri()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				if(is_string($uri = $this->©vars->_SERVER('REQUEST_URI')))
-					$uri = $this->parse_uri($uri);
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(!$this->©string->is_not_empty($uri))
-					throw $this->©exception(
-						$this->method(__FUNCTION__).'#missing_server_request_uri', get_defined_vars(),
-						$this->__('Missing required `$_SERVER[\'REQUEST_URI\']`.')
-					);
-				$this->static[__FUNCTION__] = $uri;
-			}
+			if(is_string($uri = $this->©vars->_SERVER('REQUEST_URI')))
+				$uri = $this->parse_uri($uri);
+
+			if(!$this->©string->is_not_empty($uri))
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#missing_server_request_uri', get_defined_vars(),
+					$this->__('Missing required `$_SERVER[\'REQUEST_URI\']`.')
+				);
+			$this->static[__FUNCTION__] = $uri;
+
 			return $this->static[__FUNCTION__];
 		}
 

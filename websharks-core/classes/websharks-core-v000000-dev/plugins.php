@@ -484,15 +484,15 @@ namespace websharks_core_v000000_dev
 		 */
 		public function active()
 		{
-			if(!isset($this->static[__FUNCTION__]))
-			{
-				$active = (is_array($active = get_option('active_plugins'))) ? $active : array();
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
 
-				if(is_multisite() && is_array($active_sitewide_plugins = get_site_option('active_sitewide_plugins')))
-					$active = array_unique(array_merge($active, $active_sitewide_plugins));
+			$active = (is_array($active = get_option('active_plugins'))) ? $active : array();
+			if(is_multisite() && is_array($active_sitewide_plugins = get_site_option('active_sitewide_plugins')))
+				$active = array_unique(array_merge($active, $active_sitewide_plugins));
 
-				$this->static[__FUNCTION__] = $active;
-			}
+			$this->static[__FUNCTION__] = $active;
+
 			return $this->static[__FUNCTION__];
 		}
 	}
