@@ -662,6 +662,8 @@ namespace websharks_core_v000000_dev
 				$successes->add($this->method(__FUNCTION__).'#plugin_file_updates', get_defined_vars(),
 				                $this->__('Plugin files updated with versions/requirements.').
 				                ' '.sprintf($this->__('Plugin version: `%1$s`.'), $this->version).
+				                ' '.sprintf($this->__('Plugin requires at least Apache version: `%1$s`.'), $this->requires_at_least_apache_version).
+				                ' '.sprintf($this->__('Tested up to Apache version: `%1$s`.'), $this->tested_up_to_apache_version).
 				                ' '.sprintf($this->__('Plugin requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_version).
 				                ' '.sprintf($this->__('Tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_version).
 				                ' '.sprintf($this->__('Uses %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
@@ -856,6 +858,8 @@ namespace websharks_core_v000000_dev
 					$successes->add($this->method(__FUNCTION__).'#plugin_pro_file_updates', get_defined_vars(),
 					                $this->__('Plugin pro files updated with versions/requirements.').
 					                ' '.sprintf($this->__('Plugin pro version: `%1$s`.'), $this->version).
+					                ' '.sprintf($this->__('Pro add-on requires at least Apache version: `%1$s`.'), $this->requires_at_least_apache_version).
+					                ' '.sprintf($this->__('Pro add-on tested up to Apache version: `%1$s`.'), $this->tested_up_to_apache_version).
 					                ' '.sprintf($this->__('Pro add-on requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_version).
 					                ' '.sprintf($this->__('Pro add-on tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_version).
 					                ' '.sprintf($this->__('Uses %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
@@ -1179,6 +1183,8 @@ namespace websharks_core_v000000_dev
 				                sprintf($this->__('%1$s files updated with versions/requirements.'), $ucfirst_core).
 				                ' '.sprintf($this->__('%1$s version: `v%2$s`.'), $ucfirst_core, $this->version).
 				                ' '.sprintf($this->__('%1$s directory: `%2$s`.'), $ucfirst_core, $_this_core_dir).
+				                ' '.sprintf($this->__('%1$s requires at least Apache version: `%2$s`.'), $ucfirst_core, $this->requires_at_least_apache_version).
+				                ' '.sprintf($this->__('%1$s tested up to Apache version: `%2$s`.'), $ucfirst_core, $this->tested_up_to_apache_version).
 				                ' '.sprintf($this->__('%1$s requires at least PHP version: `%2$s`.'), $ucfirst_core, $this->requires_at_least_php_version).
 				                ' '.sprintf($this->__('%1$s tested up to PHP version: `%2$s`.'), $ucfirst_core, $this->tested_up_to_php_version).
 				                ' '.sprintf($this->__('%1$s requires at least WordPress® version: `%2$s`.'), $ucfirst_core, $this->requires_at_least_wp_version).
