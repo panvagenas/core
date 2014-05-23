@@ -26,61 +26,56 @@ namespace websharks_core_v000000_dev
 	{
 		/**
 		 * @var successes A successes object instance.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $success; // Defaults to a NULL value.
 
 		/**
 		 * @var boolean Defaults to a value of FALSE, for security purposes.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $can_replicate = FALSE;
 
 		/**
+		 * @var string Core repo directory.
+		 */
+		public $core_repo_dir = '';
+
+		/**
 		 * @var string Core directory that we're replicating.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $core_dir = '';
 
 		/**
 		 * @var string Replicating into this main directory.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $into_dir = '';
 
 		/**
 		 * @var string Directory to update files in, after replication is complete.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $update_dir = '';
 
 		/**
 		 * @var string Version for replicated core.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $version = '';
 
 		/**
 		 * @var array An array of copy-to exclusions during replication.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $exclusions = array();
 
 		/**
 		 * @var string New core namespace w/version.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $new_core_ns_version = '';
 
 		/**
 		 * @var string New core namespace w/version (dashed variation).
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $new_core_ns_version_with_dashes = '';
 
 		/**
 		 * @var string Replicating into this new sub-directory of `$into_dir`.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $new_core_dir = '';
 
@@ -134,10 +129,11 @@ namespace websharks_core_v000000_dev
 				);
 			// Construct object properties.
 
-			$this->core_dir   = $this->___instance_config->core_dir;
-			$this->into_dir   = ($into_dir) ? $this->©dir->n_seps($into_dir) : $this->___instance_config->local_core_repo_dir;
-			$this->version    = ($version) ? $version : $this->___instance_config->core_version;
-			$this->exclusions = ($exclusions) ? $exclusions : array();
+			$this->core_dir      = $this->___instance_config->core_dir;
+			$this->core_repo_dir = $this->___instance_config->local_core_repo_dir;
+			$this->into_dir      = ($into_dir) ? $this->©dir->n_seps($into_dir) : $this->___instance_config->local_core_repo_dir;
+			$this->version       = ($version) ? $version : $this->___instance_config->core_version;
+			$this->exclusions    = ($exclusions) ? $exclusions : array();
 
 			$this->new_core_ns_version             = $this->___instance_config->core_ns_stub_v.$this->©string->with_underscores($this->version);
 			$this->new_core_ns_version_with_dashes = $this->©string->with_dashes($this->new_core_ns_version);
@@ -215,7 +211,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param null|string $___initial_dir This is for internal use only.
 		 *
-		 * @note This routine will NOT search/replaces directories/files which are ignored by the WebSharks™ Core.
+		 * @note This routine will NOT search/replace directories/files which are ignored by the WebSharks™ Core.
 		 *    See {@link dirs_files::ignore()} for further details on this behavior.
 		 *
 		 * @note This routine will NOT search/replace inside any past or present core directory.
@@ -261,9 +257,10 @@ namespace websharks_core_v000000_dev
 			if($this->©dir->ignore($dir, $___initial_dir_dir))
 				return; // Ignore this directory (it IS excluded).
 
-			if(preg_match('/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//', $dir.'/'))
-				if(stripos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
-					return; // Past or present WebSharks™ Core directory.
+			if($dir !== $this->core_repo_dir) // Don't bypass the core repo directory itself.
+				if(preg_match('/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//', $dir.'/'))
+					if(stripos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
+						return; // Past or present WebSharks™ Core directory.
 
 			if(preg_match('/\/'.substr(stub::$regex_valid_core_ns_version_with_dashes, 2, -2).'\//', $dir.'/'))
 				if(stripos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
@@ -274,11 +271,10 @@ namespace websharks_core_v000000_dev
 			{
 				$_o_dir       = $dir; // Original directory.
 				$dir          = $this->©dir->n_seps_up($dir).'/'.basename($this->new_core_dir);
-				$dir_basename = basename($dir);
-
+				$dir_basename = basename($dir); // Change to the new directory.
 				if($_o_dir === $___initial_dir) // Update both of these.
 				{
-					$___initial_dir     = $dir;
+					$___initial_dir     = $dir; // Change to the new directory.
 					$___initial_dir_dir = $this->©dir->n_seps_up($___initial_dir);
 				}
 				$this->©dir->rename_to($_o_dir, $dir);
