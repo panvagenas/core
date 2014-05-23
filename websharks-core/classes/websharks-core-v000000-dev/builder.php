@@ -911,7 +911,8 @@ namespace websharks_core_v000000_dev
 
 					if($this->©string->is_plugin_stable_version($this->version))
 						$this->©command->git('tag --message '. // Tag this commit (after building).
-						                     escapeshellarg(sprintf($this->__('%1$s (Pro) v%2$s.'), $this->plugin_name, $this->version)), $this->plugin_pro_repo_dir);
+						                     escapeshellarg(sprintf($this->__('%1$s (Pro) v%2$s.'), $this->plugin_name, $this->version)).
+						                     ' '.escapeshellarg($this->version), $this->plugin_pro_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#commit_after_building_plugin_pro', get_defined_vars(),
 					                sprintf($this->__('All files (new and/or changed) on branch: `%1$s`; have been added to the list of version controlled files in the plugin pro repo.'), $this->version).
@@ -1019,7 +1020,8 @@ namespace websharks_core_v000000_dev
 
 				if($this->©string->is_plugin_stable_version($this->version))
 					$this->©command->git('tag --message '. // Tag this commit (after building).
-					                     escapeshellarg(sprintf($this->__('%1$s v%2$s.'), $this->plugin_name, $this->version)), $this->plugin_repo_dir);
+					                     escapeshellarg(sprintf($this->__('%1$s v%2$s.'), $this->plugin_name, $this->version)).
+					                     ' '.escapeshellarg($this->version), $this->plugin_repo_dir);
 
 				$successes->add($this->method(__FUNCTION__).'#commit_before_plugin_build_complete', get_defined_vars(),
 				                sprintf($this->__('All files (new and/or changed) on branch: `%1$s`; have been added to the list of version controlled files in the plugin repo directory: `%2$s`.'), $this->version, $this->plugin_repo_dir).
@@ -1260,7 +1262,8 @@ namespace websharks_core_v000000_dev
 
 				if($is_new && $this->©string->is_plugin_stable_version($this->version))
 					$this->©command->git('tag --message '. // Tag this commit (after building).
-					                     escapeshellarg(sprintf($this->__('%1$s v%2$s.'), $this->___instance_config->core_name, $this->version)), $this->core_repo_dir);
+					                     escapeshellarg(sprintf($this->__('%1$s v%2$s.'), $this->___instance_config->core_name, $this->version)).
+					                     ' '.escapeshellarg($this->version), $this->core_repo_dir);
 
 				$successes->add($this->method(__FUNCTION__).'#commit_before_'.$new_slug.'core_build_complete', get_defined_vars(),
 				                sprintf($this->__('All files (new and/or changed) on %1$sbranch: `%2$s`; have been added to the list of version controlled files in the %3$s repo directory: `%4$s`.'), $new_space, $this->version, $this->___instance_config->core_name, $this->core_repo_dir).
