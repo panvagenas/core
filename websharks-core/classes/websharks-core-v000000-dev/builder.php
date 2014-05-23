@@ -163,10 +163,10 @@ namespace websharks_core_v000000_dev
 		public $build_from_core_version = '';
 
 		/**
-		 * @var boolean Current GIT branches (when we start).
+		 * @var boolean Current branches (when we start).
 		 * @by-constructor Set dynamically by class constructor.
 		 */
-		public $starting_git_branches = array('core' => '', 'plugin' => '', 'plugin_pro' => '');
+		public $starting_branches = array('core' => '', 'plugin' => '', 'plugin_pro' => '');
 
 		/**
 		 * Constructor (initiates build).
@@ -431,35 +431,35 @@ namespace websharks_core_v000000_dev
 					sprintf($this->__('Building from incorrect core version: `%1$s`.'), $this->build_from_core_version).
 					' '.sprintf($this->__('This is version `%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name)
 				);
-			// Determine starting GIT branches; also check for uncommitted changes and/or untracked files.
+			// Determine starting branches; also check for uncommitted changes and/or untracked files.
 
-			$this->starting_git_branches['core'] = $this->©command->git_current_branch($this->core_repo_dir);
+			$this->starting_branches['core'] = $this->©command->git_current_branch($this->core_repo_dir);
 
 			if($this->©command->git_changes_exist($this->core_repo_dir))
 				throw $this->©exception(
-					$this->method(__FUNCTION__).'#git_changes_exist_in_core_repo_dir', get_defined_vars(),
-					sprintf($this->__('GIT changes exist on core branch/version: `%1$s`.'), $this->starting_git_branches['core']).
+					$this->method(__FUNCTION__).'#changes_exist_in_core_repo_dir', get_defined_vars(),
+					sprintf($this->__('Changes exist on core branch/version: `%1$s`.'), $this->starting_branches['core']).
 					' '.$this->__('Please commit changes and/or resolve untracked files on the starting branch/version before building.')
 				);
 			if($this->plugin_dir) // For plugin directory repo (if building a plugin).
 			{
-				$this->starting_git_branches['plugin'] = $this->©command->git_current_branch($this->plugin_repo_dir);
+				$this->starting_branches['plugin'] = $this->©command->git_current_branch($this->plugin_repo_dir);
 
 				if($this->©command->git_changes_exist($this->plugin_repo_dir))
 					throw $this->©exception(
-						$this->method(__FUNCTION__).'#git_changes_exist_in_plugin_repo_dir', get_defined_vars(),
-						sprintf($this->__('GIT changes exist on plugin branch/version: `%1$s`.'), $this->starting_git_branches['plugin']).
+						$this->method(__FUNCTION__).'#changes_exist_in_plugin_repo_dir', get_defined_vars(),
+						sprintf($this->__('Changes exist on plugin branch/version: `%1$s`.'), $this->starting_branches['plugin']).
 						' '.$this->__('Please commit changes and/or resolve untracked files on the starting branch/version before building.')
 					);
 			}
 			if($this->plugin_dir && $this->plugin_pro_dir) // Pro plugin's pro add-on repo (if building a plugin).
 			{
-				$this->starting_git_branches['plugin_pro'] = $this->©command->git_current_branch($this->plugin_pro_repo_dir);
+				$this->starting_branches['plugin_pro'] = $this->©command->git_current_branch($this->plugin_pro_repo_dir);
 
 				if($this->©command->git_changes_exist($this->plugin_pro_repo_dir))
 					throw $this->©exception(
-						$this->method(__FUNCTION__).'#git_changes_exist_in_plugin_repo_dir', get_defined_vars(),
-						sprintf($this->__('GIT changes exist on plugin pro branch/version: `%1$s`.'), $this->starting_git_branches['plugin_pro']).
+						$this->method(__FUNCTION__).'#changes_exist_in_plugin_repo_dir', get_defined_vars(),
+						sprintf($this->__('Changes exist on plugin pro branch/version: `%1$s`.'), $this->starting_branches['plugin_pro']).
 						' '.$this->__('Please commit changes and/or resolve untracked files on the starting branch/version before building.')
 					);
 			}
@@ -483,8 +483,8 @@ namespace websharks_core_v000000_dev
 				sprintf($this->__('Start time: %1$s.'), $this->©env->time_details())
 			);
 			$successes->add($this->method(__FUNCTION__).'#starting_branch_core', get_defined_vars(),
-			                sprintf($this->__('Building from %1$s GIT branch: `%2$s` (version: `%3$s`) w/ class file: `%4$s`.'),
-			                        $this->___instance_config->core_name, $this->starting_git_branches['core'], $this->___instance_config->core_version, $this->©dir->n_seps(__FILE__))
+			                sprintf($this->__('Building from %1$s branch: `%2$s` (version: `%3$s`) w/ class file: `%4$s`.'),
+			                        $this->___instance_config->core_name, $this->starting_branches['core'], $this->___instance_config->core_version, $this->©dir->n_seps(__FILE__))
 			);
 			if($this->plugin_dir) // Building a plugin.
 			{
@@ -495,16 +495,16 @@ namespace websharks_core_v000000_dev
 				                     escapeshellarg($this->__('Auto-commit; before building plugin.')), $this->plugin_repo_dir);
 
 				$successes->add($this->method(__FUNCTION__).'#before_building_plugin', get_defined_vars(),
-				                sprintf($this->__('Restore point. All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in this plugin repo: `%2$s`.'), $this->starting_git_branches['plugin'], $this->plugin_repo_dir).
+				                sprintf($this->__('Restore point. All existing files (new and/or changed) on the starting branch: `%1$s`; have been added to the list of version controlled files in this plugin repo: `%2$s`.'), $this->starting_branches['plugin'], $this->plugin_repo_dir).
 				                ' '.$this->__('A commit has been processed for all changes to the existing file structure (before new branch creation).')
 				);
-				// Create a new GIT branch for this version (and switch to this new branch).
+				// Create a new branch for this version (and switch to this new branch).
 
 				$this->©command->git('checkout -b '.escapeshellarg($this->version), $this->plugin_repo_dir);
 
 				$successes->add($this->method(__FUNCTION__).'#new_branch_before_building_plugin', get_defined_vars(),
-				                sprintf($this->__('A new GIT branch has been created for plugin version: `%1$s`.'), $this->version).
-				                ' '.sprintf($this->__('Now working from this new GIT branch: `%1$s`.'), $this->version)
+				                sprintf($this->__('A new branch has been created for plugin version: `%1$s`.'), $this->version).
+				                ' '.sprintf($this->__('Now working from this new branch: `%1$s`.'), $this->version)
 				);
 				// WebSharks™ Core replication.
 
@@ -524,8 +524,8 @@ namespace websharks_core_v000000_dev
 				$successes->add($this->method(__FUNCTION__).'#new_core_dir_replication_into_plugin_dir', get_defined_vars(),
 				                sprintf($this->__('The %1$s has been temporarily replicated into this plugin directory location: `%2$s`.'), $this->___instance_config->core_name, $_new_core_dir).
 				                ' '.sprintf($this->__('Every file in the entire plugin repo directory has now been updated to use `v%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name).
-				                (($this->use_core_type === 'directory') ? ' '.sprintf($this->__('The temporary %1$s directory has been added to the list of GIT-tracked files in this plugin repo (but only temporarily; for distro creation momentarily).'), $this->___instance_config->core_name)
-					                : ' '.sprintf($this->__('The temporary %1$s directory has been deleted; and also removed from the list of GIT-tracked files in this repo. It will be excluded from the final distro.'), $this->___instance_config->core_name))
+				                (($this->use_core_type === 'directory') ? ' '.sprintf($this->__('The temporary %1$s directory has been added to the list of version controlled files in this plugin repo (but only temporarily; for distro creation momentarily).'), $this->___instance_config->core_name)
+					                : ' '.sprintf($this->__('The temporary %1$s directory has been deleted; and also removed from the list of version controlled files in this repo. It will be excluded from the final distro.'), $this->___instance_config->core_name))
 				);
 				if($this->use_core_type !== 'directory') unset($_new_core_dir); // Housekeeping.
 
@@ -542,7 +542,7 @@ namespace websharks_core_v000000_dev
 
 				$successes->add($this->method(__FUNCTION__).'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
 				                sprintf($this->__('The %1$s stub has been added to the plugin directory here: `%2$s`.'), $this->___instance_config->core_name, $_new_core_stub).
-				                ' '.sprintf($this->__('The %1$s stub has also been added to the list of GIT-tracked files in this plugin repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir).
+				                ' '.sprintf($this->__('The %1$s stub has also been added to the list of version controlled files in this plugin repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir).
 				                ' '.sprintf($this->__('The %1$s stub will remain in the plugin repo. This unifies the way in which plugins include the %1$s. Making it possible for a plugin to utilize different types of %1$s distributions — without modification.'), $this->___instance_config->core_name).
 				                ' '.sprintf($this->__('While a plugin\'s repo will NOT include the entire %1$s (that\'s what the distro is for); leaving the stub behind (in the repo) allows a plugin to function, so long as the %1$s is available somewhere on the site; in one form or another.'), $this->___instance_config->core_name)
 				);
@@ -573,7 +573,7 @@ namespace websharks_core_v000000_dev
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_phar_added_to_plugin_dir', get_defined_vars(),
 					                sprintf($this->__('The %1$s PHAR file for `v%2$s`; has been copied to: `%3$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version, $_new_core_phar).
-					                ' '.sprintf($this->__('This file (a compressed PHP Archive); has been added to the list of GIT-tracked files in this plugin repo: `%1$s` (but only temporarily; for distro creation momentarily).'), $this->plugin_repo_dir)
+					                ' '.sprintf($this->__('This file (a compressed PHP Archive); has been added to the list of version controlled files in this plugin repo: `%1$s` (but only temporarily; for distro creation momentarily).'), $this->plugin_repo_dir)
 					);
 					unset($_core_phar, $_plugin_dir_htaccess_file); // Housekeeping.
 				}
@@ -714,7 +714,7 @@ namespace websharks_core_v000000_dev
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_dir_deletion', get_defined_vars(),
 					                ' '.sprintf($this->__('The temporary %1$s directory: `%2$s`; has been deleted from the plugin directory.'), $this->___instance_config->core_name, $_new_core_dir).
-					                ' '.sprintf($this->__('The temporary %1$s directory was also removed from the list of GIT-tracked files in this repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir)
+					                ' '.sprintf($this->__('The temporary %1$s directory was also removed from the list of version controlled files in this repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir)
 					);
 					unset($_new_core_dir); // Housekeeping.
 				}
@@ -727,7 +727,7 @@ namespace websharks_core_v000000_dev
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_phar_deletion', get_defined_vars(),
 					                ' '.sprintf($this->__('The temporary %1$s PHAR file: `%2$s`; has been deleted from the plugin directory.'), $this->___instance_config->core_name, $_new_core_phar).
-					                ' '.sprintf($this->__('The temporary %1$s PHAR file was also removed from the list of GIT-tracked files in this repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir)
+					                ' '.sprintf($this->__('The temporary %1$s PHAR file was also removed from the list of version controlled files in this repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir)
 					);
 					unset($_new_core_phar); // Housekeeping.
 				}
@@ -742,16 +742,16 @@ namespace websharks_core_v000000_dev
 					                     escapeshellarg($this->__('Auto-commit; before building pro add-on.')), $this->plugin_pro_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#before_building_plugin_pro', get_defined_vars(),
-					                sprintf($this->__('Restore point. All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in this plugin\'s pro repo directory: `%2$s`.'), $this->starting_git_branches['plugin_pro'], $this->plugin_pro_repo_dir).
+					                sprintf($this->__('Restore point. All existing files (new and/or changed) on the starting branch: `%1$s`; have been added to the list of version controlled files in this plugin\'s pro repo directory: `%2$s`.'), $this->starting_branches['plugin_pro'], $this->plugin_pro_repo_dir).
 					                ' '.$this->__('A commit has been processed for all changes to the existing file structure (before new branch creation).')
 					);
-					// Create a new GIT branch for this version (and switch to this new branch).
+					// Create a new branch for this version (and switch to this new branch).
 
 					$this->©command->git('checkout -b '.escapeshellarg($this->version), $this->plugin_pro_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#new_branch_before_building_plugin_pro', get_defined_vars(),
-					                sprintf($this->__('A new GIT branch has been created for plugin pro version: `%1$s`.'), $this->version).
-					                ' '.sprintf($this->__('Now working from this new GIT branch: `%1$s`.'), $this->version)
+					                sprintf($this->__('A new branch has been created for plugin pro version: `%1$s`.'), $this->version).
+					                ' '.sprintf($this->__('Now working from this new branch: `%1$s`.'), $this->version)
 					);
 					// WebSharks™ Core replication.
 
@@ -910,7 +910,7 @@ namespace websharks_core_v000000_dev
 						                     escapeshellarg(sprintf($this->__('%1$s (Pro) v%2$s.'), $this->plugin_name, $this->version)), $this->plugin_pro_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#commit_after_building_plugin_pro', get_defined_vars(),
-					                sprintf($this->__('All files (new and/or changed) on GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the plugin pro repo.'), $this->version).
+					                sprintf($this->__('All files (new and/or changed) on branch: `%1$s`; have been added to the list of version controlled files in the plugin pro repo.'), $this->version).
 					                ' '.$this->__('Pro add-on finale. A commit has been processed for all changes to the new pro directory/file structure.').
 					                ' '.sprintf($this->__('Tagged stable release as: `$1%s`.'), $this->version)
 					);
@@ -977,7 +977,7 @@ namespace websharks_core_v000000_dev
 					                ' '.sprintf($this->__('Extras using %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
 					                ' '.sprintf($this->__('Extras require at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_version).
 					                ' '.sprintf($this->__('Extras tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_version).
-					                ' '.sprintf($this->__('New server scanner file (GIT-tracked in the plugin repo): `%1$s`.'), $_new_server_scanner_file)
+					                ' '.sprintf($this->__('New server scanner file (now under verion control in the plugin repo): `%1$s`.'), $_new_server_scanner_file)
 					);
 					unset($_core_deps_x_file, $_new_server_scanner_file, $_new_server_scanner_plugin_dirs, $_new_server_scanner_file_contents);
 
@@ -1018,7 +1018,7 @@ namespace websharks_core_v000000_dev
 					                     escapeshellarg(sprintf($this->__('%1$s v%2$s.'), $this->plugin_name, $this->version)), $this->plugin_repo_dir);
 
 				$successes->add($this->method(__FUNCTION__).'#commit_before_plugin_build_complete', get_defined_vars(),
-				                sprintf($this->__('All files (new and/or changed) on GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the plugin repo directory: `%2$s`.'), $this->version, $this->plugin_repo_dir).
+				                sprintf($this->__('All files (new and/or changed) on branch: `%1$s`; have been added to the list of version controlled files in the plugin repo directory: `%2$s`.'), $this->version, $this->plugin_repo_dir).
 				                ' '.$this->__('Plugin finale. A commit has been processed for all changes to the new file structure.').
 				                ' '.sprintf($this->__('Tagged stable release as: `$1%s`.'), $this->version)
 				);
@@ -1042,18 +1042,18 @@ namespace websharks_core_v000000_dev
 				                     escapeshellarg(sprintf($this->__('Auto-commit; before %1$s %2$score.'), $building, $new_space)), $this->core_repo_dir);
 
 				$successes->add($this->method(__FUNCTION__).'#before_building_'.$new_slug.'core', get_defined_vars(),
-				                sprintf($this->__('Restore point. All existing files (new and/or changed) on the starting GIT branch: `%1$s`; have been added to the list of GIT-tracked files in the %2$s repo directory: `%3$s`.'), $this->starting_git_branches['core'], $this->___instance_config->core_name, $this->core_repo_dir).
+				                sprintf($this->__('Restore point. All existing files (new and/or changed) on the starting branch: `%1$s`; have been added to the list of version controlled files in the %2$s repo directory: `%3$s`.'), $this->starting_branches['core'], $this->___instance_config->core_name, $this->core_repo_dir).
 				                ' '.sprintf($this->__('A commit has been processed for all changes to the existing file structure%1$s.'), (($is_new) ? ' '.$this->__('(before new branch creation occurs)') : ''))
 				);
-				// Create a new GIT branch for this version (and switch to this new branch).
+				// Create a new branch for this version (and switch to this new branch).
 
 				if($is_new) // Replicate WebSharks™ Core into a new directory.
 				{
 					$this->©command->git('checkout -b '.escapeshellarg($this->version), $this->core_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#branch_new_core_dir', get_defined_vars(),
-					                sprintf($this->__('A new GIT branch has been created for core version: `%1$s`.'), $this->version).
-					                ' '.sprintf($this->__('Now working from this new GIT branch: `%1$s`.'), $this->version)
+					                sprintf($this->__('A new branch has been created for core version: `%1$s`.'), $this->version).
+					                ' '.sprintf($this->__('Now working from this new branch: `%1$s`.'), $this->version)
 					);
 
 					$_this_core_dir = $this->©replicate($this->core_repo_dir, $this->core_repo_dir, $this->version)
@@ -1063,8 +1063,8 @@ namespace websharks_core_v000000_dev
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_dir_replication', get_defined_vars(),
 					                sprintf($this->__('The %1$s has been temporarily replicated into this directory: `%2$s`.'), $this->___instance_config->core_name, $_this_core_dir).
-					                ' '.sprintf($this->__('This directory has also been added to the list of GIT-tracked files in the %1$s repo (but only temporarily; for distro creation momentarily).'), $this->___instance_config->core_name).
-					                ' '.sprintf($this->__('This directory will be renamed later in this routine. It will override the existing %1$s on this new GIT branch once we\'re done here.'), $this->___instance_config->core_name)
+					                ' '.sprintf($this->__('This directory has also been added to the list of version controlled files in the %1$s repo (but only temporarily; for distro creation momentarily).'), $this->___instance_config->core_name).
+					                ' '.sprintf($this->__('This directory will be renamed later in this routine. It will override the existing %1$s on this new branch once we\'re done here.'), $this->___instance_config->core_name)
 					);
 				}
 				else $_this_core_dir = $this->core_dir; // Use directory as-is.
@@ -1219,7 +1219,7 @@ namespace websharks_core_v000000_dev
 
 				$successes->add($this->method(__FUNCTION__).'#'.$new_slug.'core_phar_built_for_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
 				                sprintf($this->__('A temporary distro copy of the %1$s has been compressed into a single PHP Archive file here: `%2$s`.'), $this->___instance_config->core_name, $_this_core_phar).
-				                ' '.sprintf($this->__('This PHP Archive file has been added to the list of GIT-tracked files in the %1$s repo.'), $this->___instance_config->core_name).
+				                ' '.sprintf($this->__('This PHP Archive file has been added to the list of version controlled files in the %1$s repo.'), $this->___instance_config->core_name).
 				                ' '.sprintf($this->__('The temporary distro copy of the %1$s was successfully deleted after processing.'), $this->___instance_config->core_name)
 				);
 				unset($_this_core_phar, $_this_core_distro_temp_dir, $_this_core_distro_temp_dir_stub, $_this_core_distro_temp_dir_htaccess);
@@ -1239,9 +1239,9 @@ namespace websharks_core_v000000_dev
 					$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_dir.'/'), $this->core_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#after_new_core_dir', get_defined_vars(),
-					                sprintf($this->__('The old core directory has been deleted from this new GIT branch: `%1$s`.'), $this->version).
+					                sprintf($this->__('The old core directory has been deleted from this new branch: `%1$s`.'), $this->version).
 					                ' '.sprintf($this->__('The new temporary core directory was renamed to take its place here: `%1$s`'), $_this_core_dir).
-					                ' '.sprintf($this->__('This new core directory has been added to the list of GIT-tracked files in the %1$s repo.'), $this->___instance_config->core_name)
+					                ' '.sprintf($this->__('This new core directory has been added to the list of version controlled files in the %1$s repo.'), $this->___instance_config->core_name)
 					);
 				}
 				unset($_this_core_dir); // Final housekeeping.
@@ -1257,7 +1257,7 @@ namespace websharks_core_v000000_dev
 					                     escapeshellarg(sprintf($this->__('%1$s v%2$s.'), $this->___instance_config->core_name, $this->version)), $this->core_repo_dir);
 
 				$successes->add($this->method(__FUNCTION__).'#commit_before_'.$new_slug.'core_build_complete', get_defined_vars(),
-				                sprintf($this->__('All files (new and/or changed) on %1$sGIT branch: `%2$s`; have been added to the list of GIT-tracked files in the %3$s repo directory: `%4$s`.'), $new_space, $this->version, $this->___instance_config->core_name, $this->core_repo_dir).
+				                sprintf($this->__('All files (new and/or changed) on %1$sbranch: `%2$s`; have been added to the list of version controlled files in the %3$s repo directory: `%4$s`.'), $new_space, $this->version, $this->___instance_config->core_name, $this->core_repo_dir).
 				                ' '.sprintf($this->__('Finale. A commit has been processed for all changes to the %1$sfile structure.'), $new_space).
 				                (($is_new && $this->©string->is_plugin_stable_version($this->version)) // A new stable release?
 					                ? ' '.sprintf($this->__('Tagged stable release as: `$1%s`.'), $this->version) : '')

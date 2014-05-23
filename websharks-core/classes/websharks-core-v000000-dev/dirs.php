@@ -768,10 +768,10 @@ namespace websharks_core_v000000_dev
 		 *
 		 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ `$exclusions_case_insensitive` or `$exclusion_x_flags`.
 		 *
-		 *    • Special case handler ({@link fw_constants::gitignore}) for `.gitignore` functionality when copying directories/files in GIT repos.
-		 *       If `basename($exclusions[fw_constants::gitignore])` === `.gitignore`; we will attempt to process GIT via command line.
+		 *    • Special case handler ({@link fw_constants::gitignore}) for `.gitignore` functionality when copying directories/files in Git repos.
+		 *       If `basename($exclusions[fw_constants::gitignore])` === `.gitignore`; we will attempt to process Git via command line.
 		 *       We use: `git ls-files --others --directory` to compile a complete list of exclusions automatically.
-		 *       This way the copied directory will reflect only the files under GIT version control.
+		 *       This way the copied directory will reflect only the files under Git version control.
 		 *       Your `.gitignore` file MUST exist in the parent of your initial `$dir`.
 		 *
 		 *       The `FNM_CASEFOLD` flag is off (by default). Enable w/ `$exclusions_case_insensitive` or `$exclusion_x_flags`.
@@ -938,9 +938,9 @@ namespace websharks_core_v000000_dev
 				if($_gitignore_files) // Do we have output (e.g. a list of ignored files)?
 				{
 					foreach(preg_split('/['."\r\n".']+/', $_gitignore_files, NULL, PREG_SPLIT_NO_EMPTY) as $_path)
-						// No need to normalize directory separators here; GIT already does that for us.
-						// Directories returned by GIT always include a trailing slash (so they're easy to identify).
-						// GIT does NOT include leading slashes though (we add those to achieve absolute relative paths).
+						// No need to normalize directory separators here; Git already does that for us.
+						// Directories returned by Git always include a trailing slash (so they're easy to identify).
+						// Git does NOT include leading slashes though (we add those to achieve absolute relative paths).
 						$exclusions[] = (substr($_path, -1) === '/') ? '/'.$_path.'*' : '/'.$_path;
 				}
 				unset($_gitignore_file, $_gitignore_dir, $_gitignore_files, $_path);

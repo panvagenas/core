@@ -25,7 +25,7 @@ namespace websharks_core_v000000_dev
 	class commands extends framework
 	{
 		/**
-		 * Path to GIT application.
+		 * Path to Git application.
 		 * Normally exit status `0` indicates success.
 		 *
 		 * @var string Path to `git` command line tool.
@@ -146,9 +146,9 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Are GIT command line operations possible?
+		 * Are Git command line operations possible?
 		 *
-		 * @return boolean TRUE if GIT command line operations are possible, else FALSE.
+		 * @return boolean TRUE if Git command line operations are possible, else FALSE.
 		 *
 		 * @assert // Test development server.
 		 *    () === FALSE
@@ -272,25 +272,25 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * A utility method for easier GIT interaction.
+		 * A utility method for easier Git interaction.
 		 *
 		 * @param string  $args Command and arguments; or only the arguments.
 		 *    It is NOT necessary to prefix this with `git`; this routine will handle this automatically.
 		 *    If you do pass `git`; it will be removed automatically and replaced with `$this->git`.
 		 *
 		 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
 		 * @param boolean $return_array Return full array? Defaults to FALSE. If TRUE, this method will return an array with all connection details.
 		 *    The default behavior of this function is to simply return a string that contains any output received from the command line routine.
 		 *
-		 * @return string|array The output from GIT; always a string. However, this will thrown an exception if GIT returns a non-zero status.
-		 *    If `$return_array` is TRUE, we simply return the full array of connection details, regardless of what GIT returns.
+		 * @return string|array The output from Git; always a string. However, this will thrown an exception if Git returns a non-zero status.
+		 *    If `$return_array` is TRUE, we simply return the full array of connection details, regardless of what Git returns.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception Only if `$return_array` is FALSE; and GIT returns a non-zero status.
-		 *    We ignore GIT error messages; because GIT writes its progress to STDERR.
-		 *    Thus, STDERR really should NOT be used to determine GIT status.
+		 * @throws exception Only if `$return_array` is FALSE; and Git returns a non-zero status.
+		 *    We ignore Git error messages; because Git writes its progress to STDERR.
+		 *    Thus, STDERR really should NOT be used to determine Git status.
 		 */
 		public function git($args, $cwd_repo_dir, $return_array = FALSE)
 		{
@@ -319,15 +319,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets current GIT branch for a given repo directory.
+		 * Gets current Git branch for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return string The current GIT branch; else an exception is thrown.
+		 * @return string The current Git branch; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to determine the current GIT branch.
+		 * @throws exception If unable to determine the current Git branch.
 		 */
 		public function git_current_branch($cwd_repo_dir)
 		{
@@ -342,15 +342,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets an array of all GIT branches for a given repo directory.
+		 * Gets an array of all Git branches for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return array An array of all GIT branches; else an exception is thrown.
+		 * @return array An array of all Git branches; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to acquire GIT branches.
+		 * @throws exception If unable to acquire Git branches.
 		 */
 		public function git_branches($cwd_repo_dir)
 		{
@@ -376,15 +376,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets an array of all GIT version branches for a given repo directory.
+		 * Gets an array of all Git version branches for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return array An array of all GIT version branches; else an exception is thrown.
+		 * @return array An array of all Git version branches; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to acquire GIT version branches.
+		 * @throws exception If unable to acquire Git version branches.
 		 */
 		public function git_version_branches($cwd_repo_dir)
 		{
@@ -406,15 +406,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets an array of all GIT plugin version branches for a given repo directory.
+		 * Gets an array of all Git plugin version branches for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return array An array of all GIT plugin version branches; else an exception is thrown.
+		 * @return array An array of all Git plugin version branches; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to acquire GIT plugin version branches.
+		 * @throws exception If unable to acquire Git plugin version branches.
 		 */
 		public function git_plugin_version_branches($cwd_repo_dir)
 		{
@@ -436,15 +436,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets latest GIT version branch for a given repo directory.
+		 * Gets latest Git version branch for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return string The latest GIT version branch; else an exception is thrown.
+		 * @return string The latest Git version branch; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to acquire GIT version branches.
+		 * @throws exception If unable to acquire Git version branches.
 		 */
 		public function git_latest_version_branch($cwd_repo_dir)
 		{
@@ -458,15 +458,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets latest GIT plugin version branch for a given repo directory.
+		 * Gets latest Git plugin version branch for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return string The latest GIT plugin version branch; else an exception is thrown.
+		 * @return string The latest Git plugin version branch; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to acquire GIT plugin version branches.
+		 * @throws exception If unable to acquire Git plugin version branches.
 		 */
 		public function git_latest_plugin_version_branch($cwd_repo_dir)
 		{
@@ -480,16 +480,16 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets latest GIT dev version branch for a given repo directory.
+		 * Gets latest Git dev version branch for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return string The latest GIT dev version branch.
+		 * @return string The latest Git dev version branch.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to acquire GIT version branches.
-		 * @throws exception If there are no GIT dev version branches available.
+		 * @throws exception If unable to acquire Git version branches.
+		 * @throws exception If there are no Git dev version branches available.
 		 */
 		public function git_latest_dev_version_branch($cwd_repo_dir)
 		{
@@ -513,16 +513,16 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets latest GIT plugin dev version branch for a given repo directory.
+		 * Gets latest Git plugin dev version branch for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return string The latest GIT plugin dev version branch.
+		 * @return string The latest Git plugin dev version branch.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to acquire GIT plugin version branches.
-		 * @throws exception If there are no GIT plugin dev version branches available.
+		 * @throws exception If unable to acquire Git plugin version branches.
+		 * @throws exception If there are no Git plugin dev version branches available.
 		 */
 		public function git_latest_plugin_dev_version_branch($cwd_repo_dir)
 		{
@@ -546,16 +546,16 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets latest GIT stable version branch for a given repo directory.
+		 * Gets latest Git stable version branch for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return string The latest GIT stable version branch.
+		 * @return string The latest Git stable version branch.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to acquire GIT version branches.
-		 * @throws exception If there are no GIT stable version branches available.
+		 * @throws exception If unable to acquire Git version branches.
+		 * @throws exception If there are no Git stable version branches available.
 		 */
 		public function git_latest_stable_version_branch($cwd_repo_dir)
 		{
@@ -579,16 +579,16 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets latest GIT plugin stable version branch for a given repo directory.
+		 * Gets latest Git plugin stable version branch for a given repo directory.
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
-		 * @return string The latest GIT plugin stable version branch.
+		 * @return string The latest Git plugin stable version branch.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to acquire GIT plugin version branches.
-		 * @throws exception If there are no GIT plugin stable version branches available.
+		 * @throws exception If unable to acquire Git plugin version branches.
+		 * @throws exception If there are no Git plugin stable version branches available.
 		 */
 		public function git_latest_plugin_stable_version_branch($cwd_repo_dir)
 		{
@@ -615,7 +615,7 @@ namespace websharks_core_v000000_dev
 		 * Any uncommitted changes (and/or untracked & unignored) files?
 		 *
 		 * @param string $cwd_repo_dir The repo directory. This must be an absolute directory path.
-		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
+		 *    This is the working directory from which Git will be called upon (i.e. the repo directory).
 		 *
 		 * @return boolean TRUE if there are any uncommitted changes (and/or untracked & unignored) files.
 		 *
