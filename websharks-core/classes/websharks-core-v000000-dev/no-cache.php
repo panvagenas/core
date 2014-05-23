@@ -52,8 +52,12 @@ namespace websharks_core_v000000_dev
 		 */
 		public function headers()
 		{
-			if(isset($this->static[__FUNCTION__]) || $this->©vars->_REQUEST('qcABC'))
-				return; // Already sent; or we're respecting Quick Cache.
+			if(isset($this->static[__FUNCTION__]))
+				return; // Already sent.
+
+			if(($qcABC = $this->©vars->_REQUEST('qcABC'))
+			   && $this->©string->is_true($qcABC)
+			) return; // Respect Quick Cache.
 
 			$this->©headers->no_cache();
 
@@ -65,8 +69,12 @@ namespace websharks_core_v000000_dev
 		 */
 		public function constants()
 		{
-			if(isset($this->static[__FUNCTION__]) || $this->©vars->_REQUEST('qcAC'))
-				return; // Already defined; or we're respecting Quick Cache.
+			if(isset($this->static[__FUNCTION__]))
+				return; // Already defined.
+
+			if(($qcAC = $this->©vars->_REQUEST('qcAC'))
+			   && $this->©string->is_true($qcAC)
+			) return; // Respect Quick Cache.
 
 			if(!defined('DONOTCACHEDB'))
 				/**

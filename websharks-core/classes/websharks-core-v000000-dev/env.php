@@ -116,9 +116,12 @@ namespace websharks_core_v000000_dev
 
 			$this->static[__FUNCTION__] = FALSE;
 
-			if(is_string($server_software = $this->©vars->_SERVER('SERVER_SOFTWARE')))
-				if(stripos($server_software, 'apache') !== FALSE)
-					$this->static[__FUNCTION__] = TRUE;
+			if(is_string($server_software = $this->©vars->_SERVER('SERVER_SOFTWARE'))
+			   && stripos($server_software, 'apache') !== FALSE
+			) $this->static[__FUNCTION__] = TRUE;
+
+			else if($this->©function->is_possible('apache_get_version'))
+				$this->static[__FUNCTION__] = TRUE;
 
 			return $this->static[__FUNCTION__];
 		}
@@ -326,7 +329,10 @@ namespace websharks_core_v000000_dev
 			if(isset($this->static[__FUNCTION__]))
 				return $this->static[__FUNCTION__];
 
-			$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG);
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(defined('WP_DEBUG') && WP_DEBUG)
+				$this->static[__FUNCTION__] = TRUE;
 
 			return $this->static[__FUNCTION__];
 		}
@@ -343,7 +349,10 @@ namespace websharks_core_v000000_dev
 			if(isset($this->static[__FUNCTION__]))
 				return $this->static[__FUNCTION__];
 
-			$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG);
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG)
+				$this->static[__FUNCTION__] = TRUE;
 
 			return $this->static[__FUNCTION__];
 		}
@@ -360,7 +369,10 @@ namespace websharks_core_v000000_dev
 			if(isset($this->static[__FUNCTION__]))
 				return $this->static[__FUNCTION__];
 
-			$this->static[__FUNCTION__] = (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY);
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY)
+				$this->static[__FUNCTION__] = TRUE;
 
 			return $this->static[__FUNCTION__];
 		}
@@ -587,7 +599,7 @@ namespace websharks_core_v000000_dev
 
 			if(isset($this->static[__FUNCTION__]))
 				if($this->static[__FUNCTION__] >= $timeout)
-					return;
+					return; // Did this already.
 
 			$this->static[__FUNCTION__] = $timeout;
 

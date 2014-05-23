@@ -126,9 +126,7 @@ namespace websharks_core_v000000_dev
 					$this->method(__FUNCTION__).'#missing_server_http_host', get_defined_vars(),
 					$this->__('Missing required `$_SERVER[\'HTTP_HOST\']`.')
 				);
-			$this->static[__FUNCTION__] = $host;
-
-			return $this->static[__FUNCTION__];
+			return ($this->static[__FUNCTION__] = $host);
 		}
 
 		/**
@@ -151,9 +149,7 @@ namespace websharks_core_v000000_dev
 					$this->method(__FUNCTION__).'#missing_server_request_uri', get_defined_vars(),
 					$this->__('Missing required `$_SERVER[\'REQUEST_URI\']`.')
 				);
-			$this->static[__FUNCTION__] = $uri;
-
-			return $this->static[__FUNCTION__];
+			return ($this->static[__FUNCTION__] = $uri);
 		}
 
 		/**
@@ -1873,13 +1869,13 @@ namespace websharks_core_v000000_dev
 		{
 			$last_http_debug_log = array(); // Initialize.
 
-			if(isset($this->static['last_http_debug_log']))
-				$last_http_debug_log =& $this->static['last_http_debug_log'];
+			if(isset($this->static[__FUNCTION__]))
+				$last_http_debug_log =& $this->static[__FUNCTION__];
 
 			else if(!$this->©env->is_in_wp_debug_mode())
 			{
 				$this->static['last_http_debug_log'] = array($this->__('`WP_DEBUG` mode is NOT currently enabled.'));
-				$last_http_debug_log                 =& $this->static['last_http_debug_log'];
+				$last_http_debug_log                 =& $this->static[__FUNCTION__];
 			}
 			return $last_http_debug_log; // Returns reference.
 		}
