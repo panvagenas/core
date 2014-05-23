@@ -84,6 +84,9 @@ namespace websharks_core_v000000_dev
 				'string:!empty', 'string:!empty', 'string:!empty', array('string:!empty', 'array:!empty'),
 				array('string', 'array'), array('string', 'array'), 'string', $default_mail_args, $mail, 4
 			);
+			$mail['from_addr'] = apply_filters('wp_mail_from', $mail['from_addr']);
+			$mail['from_name'] = apply_filters('wp_mail_from_name', $mail['from_name']);
+
 			// Recipients are always parsed into an array here.
 			if(!($mail['recipients'] = $this->parse_emails_deep($mail['recipients'])))
 				throw $this->©exception(
@@ -185,6 +188,8 @@ namespace websharks_core_v000000_dev
 					if($this->©option->get('mail.smtp.force_from') && $this->©option->get('mail.smtp.from_addr'))
 						$mailer->SetFrom($this->©option->get('mail.smtp.from_addr'), $this->©option->get('mail.smtp.from_name'));
 				}
+				do_action('phpmailer_init', $mailer); // WP Mail SMTP, and others like it need this.
+
 				$mailer->Send(); // Send this email message.
 			}
 			catch(\phpmailerException $exception)

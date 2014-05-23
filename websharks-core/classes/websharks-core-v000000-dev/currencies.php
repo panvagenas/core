@@ -64,7 +64,7 @@ namespace websharks_core_v000000_dev
 				);
 			// Attempt to convert the currency via Google's calculator.
 
-			$q        = $from.'-'.$to; // Also need this to test the return value.
+			$q        = strtoupper($from.'-'.$to); // Also need this to test the return value.
 			$endpoint = 'http://www.freecurrencyconverterapi.com/api/convert?q='.urlencode($q).'&compact=y';
 
 			if( // Test several conditions for success.
