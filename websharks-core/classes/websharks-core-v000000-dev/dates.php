@@ -48,15 +48,25 @@ namespace websharks_core_v000000_dev
 		 *    but we can force `$time` to resolve those problems completely here.
 		 *
 		 * @difference Unless `$utc` is TRUE, this method always adds the UTC offset to `$time`,
-		 *    which is something that WordPress® does NOT do by default. Making this a better alternative.
+		 *    which is something that WordPress® DOES NOT DO by default. Making this a better alternative.
+		 *    Passing `$utc` as TRUE here, means that we are passing a UTC time in; and we expect a UTC time out.
+		 *    NOTE: the `$time` parameter should ALWAYS be passed in UTC, no matter what this is set to.
 		 *
 		 * @WARNING WordPress® has a broken implementation of `$utc`. Dates with a `$format` that include a timezone char,
-		 *    like `O` or `T`, are always represented with the blog's timezone (even when `$utc` is TRUE).
+		 *    like `O` or `T` are always represented with the blog's timezone (even when `$utc` is TRUE).
 		 *    This is wrong, because `$utc` being TRUE should be indicated with a UTC timezone.
 		 *
-		 *    We fix this issue here by removing timezone chars from `$format`, when `$utc` is TRUE.
+		 *    We fix this issue here by removing timezone chars from `$format` when `$utc` is TRUE.
 		 *    Once the translation is completed, we add ` UTC` onto the end as a quick fix.
-		 *    TODO Review again upon release of WP 4. Hoping for a better solution.
+		 *
+		 *    UPDATE: upon further review, this is actually NOT a WordPress bug (not really).
+		 *    The WordPress `date_i18n()` function will always return what it thinks is a localized time.
+		 *    It doesn't actually do any time conversion on it's own. Therefore, this fix we apply is actually
+		 *    to make the `$utc` parameter that we use, behave as we expect it to.
+		 *
+		 *    In summary, set `$utc` to TRUE if you want a UTC time from this method; or FALSE (default) if you want
+		 *    a localized date/time returned by this function. Remember that your input `$time` parameter should always be in UTC time.
+		 *    This is the case anyway, since `date_default_timezone_set()` is forced to UTC by WordPress already.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -76,7 +86,7 @@ namespace websharks_core_v000000_dev
 
 				return date_i18n($format, $time, $utc).' UTC';
 			}
-			return date_i18n($format, $time, $utc); // Default return value.
+			return date_i18n($format, $time, $utc);
 		}
 
 		/**

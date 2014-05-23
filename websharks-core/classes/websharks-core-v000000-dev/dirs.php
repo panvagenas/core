@@ -1081,7 +1081,7 @@ namespace websharks_core_v000000_dev
 			// Phar class throws exceptions on failure.
 
 			$_stub_file_is_phar_var = '$GLOBALS[\'is_phar_'.$this->©string->esc_sq($is_phar_var_suffix).'\'] = \'phar://\'.__FILE__;';
-			$_stub_file_contents    = ($strip_ws) ? php_strip_whitespace($stub_file) : file_get_contents($stub_file);
+			$_stub_file_contents    = ($strip_ws) ? $this->©php->strip_whitespace($stub_file) : file_get_contents($stub_file);
 			$_stub_file_contents    = trim(preg_replace('/\W\?\>\s*$/', '', $_stub_file_contents, 1)); // No close tag & trim.
 			$_stub_file_contents    = preg_replace('/\<\?php|\<\?/i', '<?php '.$_stub_file_is_phar_var, $_stub_file_contents, 1);
 			$_stub_file_contents    = preg_replace('/\W__HALT_COMPILER\s*\(\s*\)\s*;/i', '', $_stub_file_contents, 1).' __HALT_COMPILER();';
@@ -1111,7 +1111,7 @@ namespace websharks_core_v000000_dev
 					$_extension = $this->©file->extension($_path);
 
 					if(in_array($_extension, $_strippable_extensions, TRUE))
-						file_put_contents($_path, $this->©file->strip_php_whitespace($_path));
+						file_put_contents($_path, $this->©php->strip_whitespace($_path, TRUE));
 				}
 				$_phar->buildFromDirectory($_temp_dir, $_regex_compressable_extensions);
 				if($compress && $_phar->count()) // Compressing files?

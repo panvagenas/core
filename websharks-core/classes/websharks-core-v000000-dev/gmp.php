@@ -125,7 +125,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function exp_2($integer)
+		public function exp_2($integer)
 		{
 			$this->check_arg_types(array('integer'), func_get_args());
 

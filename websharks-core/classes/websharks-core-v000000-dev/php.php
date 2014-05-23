@@ -135,5 +135,81 @@ namespace websharks_core_v000000_dev
 
 			return '<span style="color:#946201;">'.$m[0].'</span>';
 		}
+
+		/**
+		 * Strip whitespace from a PHP string or source file.
+		 *
+		 * @note This is here because PHP's `php_strip_whitespace()` suffers from a memory leak
+		 *    in PHP v5.6.0beta1. The PHP variation also depends upon output buffering. This is better.
+		 *
+		 * @param string  $input The input string/file to strip whitespace from.
+		 * @param boolean $input_file Optional. Defaults to a `FALSE` value.
+		 *    Set this to `TRUE` if `$input` is a file path.
+		 *
+		 * @return string PHP source code. No comments; minimum whitespace.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 * @throws exception If `$input_file` is TRUE; but `$input` is NOT actually a file.
+		 * @throws exception If `$input_file` is TRUE; but `$input` does NOT have a PHP extension.
+		 */
+		public function strip_whitespace($input, $input_file = FALSE)
+		{
+			$this->check_arg_types('string:!empty', 'boolean', func_get_args());
+
+			input_file: // Strip whitespace from file.
+
+			if(!$input_file) goto strip_whitespace;
+
+			$file = $input; // Treat as a file path.
+			$file = $this->©dir->n_seps($file);
+
+			if(!is_file($file))
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#nonexistent_source', get_defined_vars(),
+					sprintf($this->__('Unable to strip whitespace in: `%1$s`.'), $file).
+					' '.$this->__('This is NOT an existing file.')
+				);
+			if(!is_readable($file))
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
+					sprintf($this->__('Unable to strip whitespace in this file: `%1$s`.'), $file).
+					' '.$this->__('Possible permission issues. This file is not readable.')
+				);
+			if($this->©file->extension($file) !== 'php')
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#extension_not_php', get_defined_vars(),
+					sprintf($this->__('Unable to strip whitespace in: `%1$s`.'), $file).
+					' '.$this->__('This is NOT a PHP file; i.e. it does not have a `.php` extension.')
+				);
+			$input = file_get_contents($file);
+
+			strip_whitespace: // Strip whitespace now.
+
+			$stripped = ''; // Initialize stripped value.
+
+			foreach(token_get_all($input) as $_token)
+			{
+				switch(($_is_array = is_array($_token)) ? $_token[0] : NULL)
+				{
+					case T_COMMENT:
+					case T_DOC_COMMENT:
+						break;
+
+					case T_WHITESPACE:
+						if(empty($_whitespace))
+							$stripped .= ' ';
+						$_whitespace = TRUE;
+						break;
+
+					default: // Everything else.
+						$_whitespace = FALSE;
+						$stripped .= $_is_array ? $_token[1] : $_token;
+						break;
+				}
+			}
+			unset($_token, $_is_array, $_whitespace); // Housekeeping.
+
+			return $stripped; // No comments; minimunm whitespace.
+		}
 	}
 }
