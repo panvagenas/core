@@ -64,28 +64,17 @@ namespace websharks_core_v000000_dev
 				);
 			// Attempt to convert the currency via Google's calculator.
 
-			$q       = number_format($amount, 2, '.', '').$from.'=?'.$to;
-			$url_api = 'http://www.google.com/ig/calculator?hl=en&q='.urlencode($q);
+			$q        = $from.'-'.$to; // Also need this to test the return value.
+			$endpoint = 'http://www.freecurrencyconverterapi.com/api/convert?q='.urlencode($q).'&compact=y';
 
 			if( // Test several conditions for success.
-
-				($json = $this->©url->remote($url_api))
-
-				&& ($json = $this->©string->json_dq_property_names($json))
-				&& is_array($json = json_decode($json, TRUE))
-				&& empty($json['error']) && !empty($json['icc'])
-
-				&& ($converted_currency_amount = $this->©string->is_not_empty_or($json['rhs'], ''))
-				&& ($converted_currency_amount = (float)$converted_currency_amount)
-				&& ($converted_currency_amount = (float)$this->format($converted_currency_amount))
-
-			) // It's a good day in Eureka! Currency conversion success.
-				return $converted_currency_amount;
+				($json = $this->©url->remote($endpoint)) && is_object($json = json_decode($json))
+				&& isset($json->{$q}->val) && is_numeric($json->{$q}->val)
+				&& is_float($conversion = $amount * (float)$json->{$q}->val)
+			) return $conversion; // It's a good day in Eureka!
 
 			// Throw exception when currency conversion fails.
 			$error_msg = $this->__('unknown error');
-			if(!empty($json['error']) && is_string($json['error']))
-				$error_msg = $json['error'];
 
 			throw $this->©exception(
 				$this->method(__FUNCTION__).'#currency_conversion_failure', get_defined_vars(),
