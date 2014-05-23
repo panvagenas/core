@@ -651,7 +651,7 @@ namespace websharks_core_v000000_dev
 			unset($_file_resource, $_temp_file_resource, $_line, $_replacements);
 
 			$this->rename_to($temp_file, $file.'-tmp'); // Make sure this works.
-			// If this throws an exception; the original file remains intact (e.g. no data loss).
+			// If this throws an exception; the original file remains intact (no data loss).
 			$this->delete($file); // Delete the original file now (we will replace it here).
 			$this->rename_to($file.'-tmp', $file); // Temp file takes its place.
 

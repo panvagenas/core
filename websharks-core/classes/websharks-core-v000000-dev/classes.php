@@ -86,7 +86,7 @@ namespace websharks_core_v000000_dev
 			{
 				$ns_class[] = '\\'.$this->___instance_config->plugin_root_ns; // API class.
 
-				foreach($this->©dir->iterate($this->___instance_config->plugin_classes_dir) as $_dir_file)
+				foreach($this->©dir->iteration($this->___instance_config->plugin_classes_dir) as $_dir_file)
 					if($_dir_file->isFile()) // We're dealing only with class files here.
 					{
 						$_file_sub_path = $this->©dir->n_seps($_dir_file->getSubPathname());
@@ -102,7 +102,7 @@ namespace websharks_core_v000000_dev
 
 			$ns_class[] = '\\'.$this->___instance_config->core_ns_stub; // API class.
 
-			foreach($this->©dir->iterate($this->___instance_config->core_classes_dir) as $_dir_file)
+			foreach($this->©dir->iteration($this->___instance_config->core_classes_dir) as $_dir_file)
 				if($_dir_file->isFile()) // We're dealing only with class files here.
 				{
 					$_file_sub_path = $this->©dir->n_seps($_dir_file->getSubPathname());

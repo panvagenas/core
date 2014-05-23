@@ -1100,9 +1100,9 @@ namespace websharks_core_v000000_dev
 				$_temp_dir                      = $this->temp().'/'.$this->©string->unique_id().'-'.basename($dir);
 
 				$this->copy_to($dir, $_temp_dir);
-				$_temp_dir_iterator = $this->iterate($_temp_dir);
+				$_temp_dir_iteration = $this->iteration($_temp_dir);
 
-				if($strip_ws) foreach($_temp_dir_iterator as $_dir_file)
+				if($strip_ws) foreach($_temp_dir_iteration as $_dir_file)
 				{
 					if(!$_dir_file->isFile()) continue;
 
@@ -1117,7 +1117,7 @@ namespace websharks_core_v000000_dev
 				if($compress && $_phar->count()) // Compressing files?
 					$_phar->compressFiles(\Phar::GZ);
 
-				foreach($_temp_dir_iterator as $_dir_file) // Everything else.
+				foreach($_temp_dir_iteration as $_dir_file) // Everything else.
 				{
 					if(!$_dir_file->isFile()) continue;
 
@@ -1132,7 +1132,7 @@ namespace websharks_core_v000000_dev
 			$_phar->stopBuffering(); // Write to disk now.
 
 			unset($_phar, $_stub_file_is_phar_var, $_stub_file_contents, $_strippable_extensions, $_regex_compressable_extensions);
-			unset($_temp_dir_iterator, $_dir_file, $_path, $_phar_path, $_extension);
+			unset($_temp_dir_iteration, $_dir_file, $_path, $_phar_path, $_extension);
 			if(isset($_temp_dir)) // A little more housekeeping now.
 				$this->delete($_temp_dir);
 			unset($_temp_dir);
@@ -1336,11 +1336,12 @@ namespace websharks_core_v000000_dev
 		 *    whereas `$x_flags` will simply add additional flags to the existing defaults.
 		 *
 		 * @return \RecursiveIteratorIterator|\RecursiveDirectoryIterator[]|\SplFileInfo[]
+		 *    Navigable with {@link \foreach()}; where each item is a {@link \RecursiveDirectoryIterator} instance.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$dir` is NOT a directory.
 		 */
-		public function iterate($dir, $x_flags = NULL, $flags = NULL)
+		public function iteration($dir, $x_flags = NULL, $flags = NULL)
 		{
 			$this->check_arg_types('string:!empty', array('null', 'integer'), array('null', 'integer'), func_get_args());
 
@@ -1352,7 +1353,48 @@ namespace websharks_core_v000000_dev
 				);
 			$flags = $this->iteration_flags($x_flags, $flags);
 
-			return new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, $flags));
+			$recursive_dir_iterator      = new \RecursiveDirectoryIterator($dir, $flags);
+			$recursive_iterator_iterator = new \RecursiveIteratorIterator($recursive_dir_iterator, \RecursiveIteratorIterator::CHILD_FIRST);
+
+			return $recursive_iterator_iterator;
+		}
+
+		/**
+		 * Recursive directory iterator based on a regex pattern.
+		 *
+		 * @param string       $dir An absolute directory path.
+		 *
+		 * @param string       $regex A regex pattern; compares to each full file path.
+		 *
+		 * @param null|integer $x_flags The defaults are recommended; but extra flags can be passed in.
+		 *
+		 * @param null|integer $flags The defaults are recommended; but specific flags can be passed in if you prefer.
+		 *    The difference between `$x_flags` and `$flags`; is that `$flags` will override all defaults;
+		 *    whereas `$x_flags` will simply add additional flags to the existing defaults.
+		 *
+		 * @return \RegexIterator|\RecursiveIteratorIterator|\RecursiveDirectoryIterator[]|\SplFileInfo[]
+		 *    Navigable with {@link \foreach()}; where each item is a {@link \RecursiveDirectoryIterator} instance.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 * @throws exception If `$dir` is NOT a directory.
+		 */
+		public function regex_iteration($dir, $regex, $x_flags = NULL, $flags = NULL)
+		{
+			$this->check_arg_types('string:!empty', 'string:!empty', array('null', 'integer'), array('null', 'integer'), func_get_args());
+
+			if(!is_dir($dir = $this->n_seps($dir)))
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#source_dir_missing', get_defined_vars(),
+					$this->__('Unable to iterate a directory (source `dir` missing).').
+					' '.sprintf($this->__('Non-existent source directory: `%1$s`.'), $dir)
+				);
+			$flags = $this->iteration_flags($x_flags, $flags);
+
+			$recursive_dir_iterator      = new \RecursiveDirectoryIterator($dir, $flags);
+			$recursive_iterator_iterator = new \RecursiveIteratorIterator($recursive_dir_iterator, \RecursiveIteratorIterator::CHILD_FIRST);
+			$regex_iterator              = new \RegexIterator($recursive_iterator_iterator, $regex, \RegexIterator::MATCH, \RegexIterator::USE_KEY);
+
+			return $regex_iterator;
 		}
 
 		/**
