@@ -205,12 +205,12 @@ namespace websharks_core_v000000_dev
 		# --------------------------------------------------------------------------------------------------------------------------------
 
 		/**
-		 * @var string Represents ``preg_replace()`` type.
+		 * @var string Represents `preg_replace()` type.
 		 */
 		const preg_replace_type = '___preg_replace_type___';
 
 		/**
-		 * @var string Represents ``str_replace()`` type.
+		 * @var string Represents `str_replace()` type.
 		 */
 		const str_replace_type = '___str_replace_type___';
 

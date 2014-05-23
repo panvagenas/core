@@ -32,7 +32,7 @@ namespace websharks_core_v000000_dev
 		 *    Also with post type prefixes (ex: `/post/hello-world/`).
 		 *    Also with pagination (ex: `/post/hello-world/page/2`).
 		 *
-		 * @param array  $exclude_types Optional. Defaults to ``array('revision', 'nav_menu_item')``.
+		 * @param array  $exclude_types Optional. Defaults to `array('revision', 'nav_menu_item')`.
 		 *    We will NOT search for these post types. Pass an empty array to search all post types.
 		 *    Important to note... it is NOT possible to exclude the `attachment` type;
 		 *    because {@link \get_page_by_path()} always searches this type.

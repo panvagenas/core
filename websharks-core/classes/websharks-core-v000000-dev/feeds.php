@@ -30,7 +30,7 @@ namespace websharks_core_v000000_dev
 		 * @param string  $url A remote feed URL (to retrieve items from).
 		 *
 		 * @param integer $max_items Maximum items to return (when/if available).
-		 *    Note that ALL feed items are cached, but we only return up to ``$max_items`` (when/if available).
+		 *    Note that ALL feed items are cached, but we only return up to `$max_items` (when/if available).
 		 *
 		 * @param integer $cache_expiration We automatically cache ALL items, for faster access on repeat calls.
 		 *    Feed items are cached for 12 hours by default, but this can be overridden here.
@@ -38,7 +38,7 @@ namespace websharks_core_v000000_dev
 		 * @return array Array of feed items, else an empty array.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$url``, ``$max_items``, or ``$cache_expiration`` are empty.
+		 * @throws exception If `$url`, `$max_items`, or `$cache_expiration` are empty.
 		 */
 		public function items($url, $max_items = 3, $cache_expiration = 43200)
 		{
@@ -78,7 +78,7 @@ namespace websharks_core_v000000_dev
 				foreach($xml->entry as $_entry) // Iterates each feed `entry`.
 					if($this->©objects->are_not_ass_empty($_entry->link, $_entry->title, $_entry->updated)
 					   && ($_entry_link = $this->atom_link($_entry->link, 'alternate'))
-					) // Entry links are parsed via ``$this->atom_link()``.
+					) // Entry links are parsed via `$this->atom_link()`.
 					{
 						$feed_items[] = array(
 							'link'    => (string)$_entry_link,
@@ -104,7 +104,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string              $rel The link `rel` type attribute that we're looking for.
 		 *
-		 * @return string The first link `href` attribute value, matching ``$rel`` type.
+		 * @return string The first link `href` attribute value, matching `$rel` type.
 		 *    Else an empty string on any type of failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.

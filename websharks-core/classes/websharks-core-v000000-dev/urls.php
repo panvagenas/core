@@ -65,8 +65,8 @@ namespace websharks_core_v000000_dev
 		 * @param string $scheme Optional. A scheme to force. (i.e. `https`, `http`).
 		 *    Use `//` to force a cross-protocol compatible scheme.
 		 *
-		 * @note If ``$scheme`` is NOT passed in (or is empty), we detect the current scheme, and use that by default.
-		 *    For instance, if this ``is_ssl()``, an SSL scheme will be used; else `http`.
+		 * @note If `$scheme` is NOT passed in (or is empty), we detect the current scheme, and use that by default.
+		 *    For instance, if this `is_ssl()`, an SSL scheme will be used; else `http`.
 		 *
 		 * @return string The current URL, else an exception is thrown on failure.
 		 *
@@ -160,18 +160,18 @@ namespace websharks_core_v000000_dev
 		 *    This is bad `name=value` (interpreted as path). This is good `?name=value` (query string).
 		 *    This is bad `anchor` (interpreted as path). This is good `#fragment` (fragment).
 		 *
-		 * @param null|integer $component Same as PHP's ``parse_url()`` component.
-		 *    Defaults to NULL; which defaults to an internal value of `-1` before we pass to PHP's ``parse_url()``.
+		 * @param null|integer $component Same as PHP's `parse_url()` component.
+		 *    Defaults to NULL; which defaults to an internal value of `-1` before we pass to PHP's `parse_url()`.
 		 *
 		 * @param null|integer $normalize A bitmask. Defaults to NULL (indicating a default bitmask).
 		 *    Defaults include: {@link fw_constants::url_scheme}, {@link fw_constants::url_host}, {@link fw_constants::url_path}.
 		 *    However, we DO allow a trailing slash (even if path is being normalized by this parameter).
 		 *
-		 * @return array|string|integer|null If a component is requested, returns a string component (or an integer in the case of ``PHP_URL_PORT``).
+		 * @return array|string|integer|null If a component is requested, returns a string component (or an integer in the case of `PHP_URL_PORT`).
 		 *    If a specific component is NOT requested, this returns a full array, of all component values.
 		 *    Else, this returns NULL on any type of failure (even if a component was requested).
 		 *
-		 * @note Arrays returned by this method, will include a value for each component (a bit different from PHP's ``parse_url()`` function).
+		 * @note Arrays returned by this method, will include a value for each component (a bit different from PHP's `parse_url()` function).
 		 *    We start with an array of defaults (i.e. all empty strings, and `0` for the port number).
 		 *    Components found in the URL are then merged into these default values.
 		 *    The array is also sorted by key (e.g. alphabetized).
@@ -188,7 +188,7 @@ namespace websharks_core_v000000_dev
 			if(strpos($url_uri_query_fragment, '//') === 0 && preg_match($this->regex_valid_url, $url_uri_query_fragment))
 			{
 				$url_uri_query_fragment = $this->current_scheme().':'.$url_uri_query_fragment; // So URL is parsed properly.
-				// Works around a bug in ``parse_url()`` prior to PHP v5.4.7. See: <http://php.net/manual/en/function.parse-url.php>.
+				// Works around a bug in `parse_url()` prior to PHP v5.4.7. See: <http://php.net/manual/en/function.parse-url.php>.
 				$x_protocol_scheme = TRUE; // Flag this, so we can remove scheme below.
 			}
 			else $x_protocol_scheme = FALSE; // No scheme; or scheme is NOT cross-protocol compatible.
@@ -303,8 +303,8 @@ namespace websharks_core_v000000_dev
 		 *    Defaults include: {@link fw_constants::url_scheme}, {@link fw_constants::url_host}, {@link fw_constants::url_path}.
 		 *    However, we DO allow a trailing slash (even if path is being normalized by this parameter).
 		 *
-		 * @return string A full or partial URL, based on components provided in the ``$parsed`` array.
-		 *    It IS possible to receive an empty string, when/if ``$parsed`` does NOT contain any portion of a URL.
+		 * @return string A full or partial URL, based on components provided in the `$parsed` array.
+		 *    It IS possible to receive an empty string, when/if `$parsed` does NOT contain any portion of a URL.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -498,15 +498,15 @@ namespace websharks_core_v000000_dev
 		 * @return string A full URL; else an exception will be thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to parse ``$relative_url_uri_query_fragment``.
-		 * @throws exception If there is no ``$base``, and we're unable to detect current location.
-		 * @throws exception If unable to parse ``$base`` (or if ``$base`` has no host name).
+		 * @throws exception If unable to parse `$relative_url_uri_query_fragment`.
+		 * @throws exception If there is no `$base`, and we're unable to detect current location.
+		 * @throws exception If unable to parse `$base` (or if `$base` has no host name).
 		 */
 		public function resolve_relative($relative_url_uri_query_fragment, $base_url = '')
 		{
 			$this->check_arg_types('string', 'string', func_get_args());
 
-			if(!$base_url) // No base URL? The ``$base`` is optional (defaults to current URL).
+			if(!$base_url) // No base URL? The `$base` is optional (defaults to current URL).
 				$base_url = $this->current(); // Auto-detects current URL/location.
 
 			$relative_parts         = $this->must_parse($relative_url_uri_query_fragment, NULL, 0);
@@ -790,7 +790,7 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			if($this->©env->is_bp_installed())
+			if($this->©env->is_bp_installed() && function_exists('bp_get_signup_page'))
 				$url = bp_get_signup_page();
 			else $url = ''; // Not applicable.
 
@@ -810,7 +810,7 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			if($this->©env->is_bp_installed())
+			if($this->©env->is_bp_installed() && function_exists('bp_get_activation_page'))
 				$url = bp_get_activation_page();
 			else $url = ''; // Not applicable.
 
@@ -1287,7 +1287,7 @@ namespace websharks_core_v000000_dev
 		 *    or only a query string, or only a fragment. Any of these can be parsed here.
 		 *
 		 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
-		 *    Note: ``$this->___instance_config->plugin_site`` will always have an `http` scheme by default.
+		 *    Note: `$this->___instance_config->plugin_site` will always have an `http` scheme by default.
 		 *    This is a standard that is followed strictly by the WebSharks™ Core framework.
 		 *
 		 * @return string URL leading to a plugin site URI (directory/file).
@@ -1351,7 +1351,7 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', 'string', func_get_args());
 
-			// Normalize & get real ``$dir``/``$file`` locations also.
+			// Normalize & get real `$dir`/`$file` locations also.
 
 			$abs_dir_file = $this->©dir->n_seps($abs_dir_file);
 
@@ -1460,8 +1460,8 @@ namespace websharks_core_v000000_dev
 		 * @return string URL to a template directory/file (no trailing slash).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir_file`` is empty (it MUST be passed as a string, NOT empty).
-		 * @throws exception If ``$dir_file`` does NOT exist, or is NOT readable.
+		 * @throws exception If `$dir_file` is empty (it MUST be passed as a string, NOT empty).
+		 * @throws exception If `$dir_file` does NOT exist, or is NOT readable.
 		 */
 		public function to_template_dir_file($dir_file, $scheme = '')
 		{
@@ -1713,7 +1713,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param null|string|array $post_body Optional. Defaults to a NULL value (and defaults to a connection method type of `GET`).
 		 *    If a string|array is passed in (empty or otherwise), the connection `method` is set to `POST` (if NOT already set);
-		 *    and ``$post_body`` is POSTed to the remote location by this routine.
+		 *    and `$post_body` is POSTed to the remote location by this routine.
 		 *
 		 * @param array             $args An optional array of argument specifications (same as the `WP_Http` class).
 		 *    In addition, we accept some other array elements here: `return_xml_object`, `xml_object_flags`, `return_array`, and `return_errors`.
@@ -1722,15 +1722,15 @@ namespace websharks_core_v000000_dev
 		 * @param integer           $timeout Optional. Defaults to a value of `5` seconds.
 		 *    For important API communications, a value of `20` (or higher), is suggested for stability.
 		 *    In the cURL transport layer, this controls both the connection and stream timeout values.
-		 *    This can also be passed through ``$args['timeout']``, which produces more readable code.
+		 *    This can also be passed through `$args['timeout']`, which produces more readable code.
 		 *
 		 * @return string|array|\SimpleXMLElement|object|errors|null This function has MANY possible return values.
 		 *    By default, this method returns the string received from the remote request, else an empty string on ANY type of error (even connection errors). Very simple (default behavior).
-		 *    If an XML object is requested via ``$args['return_xml_object']`` (and ``$args['return_array']`` is FALSE, which it is by default), this method returns an instance of `SimpleXMLElement`; else NULL on any type of connection error.
-		 *    If an array is requested via ``$args['return_array']``, this method returns a full array of connection details (`code`, `message`, `headers`, `body`, `xml [populated only if $args['return_xml_object'] is TRUE]`); else NULL on any type of connection error.
-		 *    If errors are requested via ``$args['return_errors']``, this method will always return an `errors` object instance on any type of connection error.
+		 *    If an XML object is requested via `$args['return_xml_object']` (and `$args['return_array']` is FALSE, which it is by default), this method returns an instance of `SimpleXMLElement`; else NULL on any type of connection error.
+		 *    If an array is requested via `$args['return_array']`, this method returns a full array of connection details (`code`, `message`, `headers`, `body`, `xml [populated only if $args['return_xml_object'] is TRUE]`); else NULL on any type of connection error.
+		 *    If errors are requested via `$args['return_errors']`, this method will always return an `errors` object instance on any type of connection error.
 		 *
-		 * @note Please note that ``$args['return_array']`` takes precedence over ``$args['return_xml_object']``.
+		 * @note Please note that `$args['return_array']` takes precedence over `$args['return_xml_object']`.
 		 *    This way it is possible to get a return array, with an `xml` element containing the XML object.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
@@ -1745,15 +1745,15 @@ namespace websharks_core_v000000_dev
 			if(!empty($args['method']) && is_string($args['method']))
 				$args['method'] = strtoupper($args['method']);
 
-			if(isset($post_body)) // Have a ``$post_body``? (e.g. POST vars, or other data).
+			if(isset($post_body)) // Have a `$post_body`? (e.g. POST vars, or other data).
 			{
-				$args = array_merge( // Original ``$args`` ALWAYS take precedence here.
+				$args = array_merge( // Original `$args` ALWAYS take precedence here.
 					array('method' => 'POST', 'body' => $post_body), $args
 				);
 				if(!isset($args['headers']['Content-Type']))
 					$args['headers']['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 			}
-			if($timeout) // Do we have a ``$timeout`` value?
+			if($timeout) // Do we have a `$timeout` value?
 				$args = array_merge(array('timeout' => $timeout), $args);
 
 			// Set default return value options.
@@ -1771,10 +1771,10 @@ namespace websharks_core_v000000_dev
 			$url  = $this->apply_filters(__FUNCTION__.'__url', $url, get_defined_vars());
 			$args = $this->apply_filters(__FUNCTION__.'__args', $args, get_defined_vars());
 
-			// Now unset these ``$args``, so they don't get passed through WordPress® and cause problems.
+			// Now unset these `$args`, so they don't get passed through WordPress® and cause problems.
 			unset($args['return_array'], $args['return_errors'], $args['return_xml_object'], $args['xml_object_flags']);
 
-			$response = wp_remote_request($url, $args); // Process with ``wp_remote_request()``.
+			$response = wp_remote_request($url, $args); // Process with `wp_remote_request()`.
 
 			// Now let's handle return values provided by this routine.
 
@@ -1836,16 +1836,16 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Catches details sent through the WordPress® ``WP_Http`` class.
+		 * Catches details sent through the WordPress® `WP_Http` class.
 		 *
-		 * @attaches-to WordPress® `http_api_debug` hook (if ``WP_DEBUG`` mode is enabled).
-		 * @hook-priority `PHP_INT_MAX` After most everything else (if ``WP_DEBUG`` mode is enabled).
+		 * @attaches-to WordPress® `http_api_debug` hook (if `WP_DEBUG` mode is enabled).
+		 * @hook-priority `PHP_INT_MAX` After most everything else (if `WP_DEBUG` mode is enabled).
 		 *
-		 * @param array  $response ``WP_Http`` response array.
-		 * @param string $state ``WP_Http`` current state (i.e. `response`).
-		 * @param string $class ``WP_Http`` transport class name.
-		 * @param array  $args Input args to the ``WP_Http`` class.
-		 * @param string $url The ``WP_Http`` connection URL.
+		 * @param array  $response `WP_Http` response array.
+		 * @param string $state `WP_Http` current state (i.e. `response`).
+		 * @param string $class `WP_Http` transport class name.
+		 * @param array  $args Input args to the `WP_Http` class.
+		 * @param string $url The `WP_Http` connection URL.
 		 */
 		public function http_api_debug($response = NULL, $state = NULL, $class = NULL, $args = NULL, $url = NULL)
 		{
@@ -1972,7 +1972,7 @@ namespace websharks_core_v000000_dev
 		 *    Use `//` to use a cross-protocol compatible scheme.
 		 *    Defaults to the current scheme.
 		 *
-		 * @return string The full URL w/ ``$scheme``.
+		 * @return string The full URL w/ `$scheme`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -1998,7 +1998,7 @@ namespace websharks_core_v000000_dev
 		 *    or only a query string, or only a fragment. Any of these can be normalized here.
 		 *
 		 * @param boolean $allow_trailing_slash Defaults to a FALSE value.
-		 *    If TRUE, and ``$url_uri_query_fragment`` contains a trailing slash; we'll leave it there.
+		 *    If TRUE, and `$url_uri_query_fragment` contains a trailing slash; we'll leave it there.
 		 *
 		 * @return string Normalized URL (or a URI/query/fragment only).
 		 *
@@ -2034,7 +2034,7 @@ namespace websharks_core_v000000_dev
 		 *    Number of directories to move up.
 		 *
 		 * @param boolean $allow_trailing_slash Defaults to a FALSE value.
-		 *    If TRUE, and ``$url_uri_query_fragment`` contains a trailing slash; we'll leave it there.
+		 *    If TRUE, and `$url_uri_query_fragment` contains a trailing slash; we'll leave it there.
 		 *
 		 * @return string Normalized URL (up X directories) (or a URI/query/fragment only).
 		 *
@@ -2094,8 +2094,8 @@ namespace websharks_core_v000000_dev
 		 * @return string Full URL with appended hash/anchor query string.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$name`` is empty. The name of the variable we're adding.
-		 * @throws exception If ``$url_uri_query_fragment`` is malformed.
+		 * @throws exception If `$name` is empty. The name of the variable we're adding.
+		 * @throws exception If `$url_uri_query_fragment` is malformed.
 		 *
 		 * @assert ('name', 'value', '') === '#!name=value'
 		 * @assert ('name', 'value', '#!name=old-value&something=else&name=another-old-value') === '#!name=new-value&something=else'
@@ -2127,7 +2127,7 @@ namespace websharks_core_v000000_dev
 		 * @return string A URL (or a URI/query/fragment only); now with a signature too (e.g. a query string).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$sig_var`` is empty.
+		 * @throws exception If `$sig_var` is empty.
 		 *
 		 * @assert ('http://www.example.com/?this=that') matches '/^http\:\/\/www\.example\.com\/\?this\=that&_sig\=.+$/'
 		 * @assert ('http://www.example.com/?this=that', '_signature') matches '/^http\:\/\/www\.example\.com\/\?this\=that&_signature\=.+$/'
@@ -2159,10 +2159,10 @@ namespace websharks_core_v000000_dev
 		 *    or only a query string, or only a fragment. Any of these can be handled here.
 		 *
 		 * @param boolean $check_time Optional. Defaults to FALSE.
-		 *    If TRUE, also check if the signature has expired, based on ``$exp_secs``.
+		 *    If TRUE, also check if the signature has expired, based on `$exp_secs`.
 		 *
 		 * @param integer $exp_secs Optional. Defaults to `10`.
-		 *    If ``$check_time`` is TRUE, check if the signature has expired, based on ``$exp_secs``.
+		 *    If `$check_time` is TRUE, check if the signature has expired, based on `$exp_secs`.
 		 *
 		 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
 		 *
@@ -2225,7 +2225,7 @@ namespace websharks_core_v000000_dev
 		 * @return string A URL (or a URI/query/fragment only); without any signatures.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$sig_var`` is empty.
+		 * @throws exception If `$sig_var` is empty.
 		 *
 		 * @assert ('http://www.example.com/?this=that&_sig=hello') === 'http://www.example.com/?this=that'
 		 * @assert ('/?this=that&_sig=hello') === '/?this=that'
@@ -2251,7 +2251,7 @@ namespace websharks_core_v000000_dev
 		 * @param boolean $try_backups Defaults to TRUE. If a failure occurs with the first API,
 		 *    we'll try others until we have success. Also used internally by this routine.
 		 *
-		 * @return string The shortened URL on success, else the original ``$url`` on failure.
+		 * @return string The shortened URL on success, else the original `$url` on failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -2310,17 +2310,17 @@ namespace websharks_core_v000000_dev
 		 *    or only a query string, or only a fragment. Any of these can be tested here.
 		 *
 		 * @param string|array $type Defaults to {@link fw_constants::any_type}.
-		 *    By default, this method returns TRUE if ``$url_uri`` matches any WordPress® root URL.
-		 *    Set this to {@link fw_constants::home_type}, to test against the WordPress® ``home_url('/')``.
-		 *    Set this to {@link fw_constants::site_type}, to test against the WordPress® ``site_url('/')``.
-		 *    Set this to {@link fw_constants::network_home_type}, to test against the WordPress® ``network_home_url('/')``.
-		 *    Set this to {@link fw_constants::network_site_type}, to test against the WordPress® ``network_site_url('/')``.
+		 *    By default, this method returns TRUE if `$url_uri` matches any WordPress® root URL.
+		 *    Set this to {@link fw_constants::home_type}, to test against the WordPress® `home_url('/')`.
+		 *    Set this to {@link fw_constants::site_type}, to test against the WordPress® `site_url('/')`.
+		 *    Set this to {@link fw_constants::network_home_type}, to test against the WordPress® `network_home_url('/')`.
+		 *    Set this to {@link fw_constants::network_site_type}, to test against the WordPress® `network_site_url('/')`.
 		 *    This can also be set to an array to test for multiple/specific types.
 		 *
 		 * @return boolean TRUE if the URL or URI leads to a WordPress® root URL, else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$type`` is empty.
+		 * @throws exception If `$type` is empty.
 		 *
 		 * @assert ('/') === TRUE
 		 * @assert ('/?query') === TRUE
@@ -2386,7 +2386,7 @@ namespace websharks_core_v000000_dev
 		 * @param string $url_uri_query_fragment A full URL; or a partial URI;
 		 *    or only a query string, or only a fragment. Any of these can be tested here.
 		 *
-		 * @return boolean TRUE if ``$url_uri_query_fragment`` leads to a WordPress® administrative area.
+		 * @return boolean TRUE if `$url_uri_query_fragment` leads to a WordPress® administrative area.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *

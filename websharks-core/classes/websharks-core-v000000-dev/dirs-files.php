@@ -81,13 +81,13 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string  $to_dir_file A full directory/file path.
 		 *
-		 * @param boolean $try_realpaths Defaults to TRUE. When TRUE, try to acquire ``realpath()``;
-		 *    thereby resolving all relative paths and/or symlinks in `DOCUMENT_ROOT` and ``$to_dir_file``.
+		 * @param boolean $try_realpaths Defaults to TRUE. When TRUE, try to acquire `realpath()`;
+		 *    thereby resolving all relative paths and/or symlinks in `DOCUMENT_ROOT` and `$to_dir_file`.
 		 *
 		 * @param boolean $use_win_diff_drive_jctn Defaults to TRUE. When TRUE, we'll try to work around issues with different drives on Windows®,
 		 *    by attempting to create a directory junction between the two different drives; so a relative path can be formulated properly.
 		 *
-		 * @return string String with relative path to: ``$to_dir_file`` (from: `DOCUMENT_ROOT`); else an empty string on failure.
+		 * @return string String with relative path to: `$to_dir_file` (from: `DOCUMENT_ROOT`); else an empty string on failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `DOCUMENT_ROOT` is empty, or is NOT a string.
@@ -115,12 +115,12 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string  $dir_file_to The full directory/file path, which this routine will build a relative path to.
 		 *
-		 * @param boolean $try_realpaths Defaults to TRUE; try to acquire ``realpath()`` for both ``$dir_file_from`` and ``$dir_file_to``.
+		 * @param boolean $try_realpaths Defaults to TRUE; try to acquire `realpath()` for both `$dir_file_from` and `$dir_file_to`.
 		 *
 		 * @param boolean $use_win_diff_drive_jctn Defaults to TRUE. When TRUE, we'll try to work around issues with different drives on Windows®,
 		 *    by attempting to create a Directory Junction between the two different drives; so a relative path can be formulated properly.
 		 *
-		 * @return string String with relative path to: ``$dir_file_to`` (from: ``$dir_file_from``); else an empty string on failure.
+		 * @return string String with relative path to: `$dir_file_to` (from: `$dir_file_from`); else an empty string on failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If Windows® drive issues cannot be resolved in any way.
@@ -182,7 +182,7 @@ namespace websharks_core_v000000_dev
 						$_from_drive_jctn = $_from_drive.':/'.$_to_drive.'-Drive';
 						$_jctn            = (is_dir($_from_drive_jctn)) ? $_from_drive_jctn : '';
 
-						if(!$_jctn) // If unable to create a junction on the ``$_from_drive``; try temp directory.
+						if(!$_jctn) // If unable to create a junction on the `$_from_drive`; try temp directory.
 						{
 							$_temp_dir = $this->©dir->temp(); // Make sure temp directory has a drive letter.
 
@@ -194,7 +194,7 @@ namespace websharks_core_v000000_dev
 						}
 						if(!$_jctn) // A directory junction does NOT exist yet?
 						{
-							try // Try creating a directory junction on the ``$_from_drive``.
+							try // Try creating a directory junction on the `$_from_drive`.
 							{
 								$_jctn = $this->©dir->create_win_jctn($_from_drive_jctn, $_to_drive.':/');
 							}
@@ -229,7 +229,7 @@ namespace websharks_core_v000000_dev
 					);
 				unset($_m, $_from_drive, $_to_drive, $_from_drive_jctn, $_temp_dir, $_temp_dir_jctn, $_jctn, $_jctn_dir);
 			}
-			foreach(array_keys($from) as $_depth) // Loop through each ``$from`` directory ``$_depth``.
+			foreach(array_keys($from) as $_depth) // Loop through each `$from` directory `$_depth`.
 				if(isset($from[$_depth], $to[$_depth]) && $from[$_depth] === $to[$_depth])
 					unset($from[$_depth], $to[$_depth]);
 				else break; // MUST stop now.
@@ -248,7 +248,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $dir_file Directory/file path (i.e. a possible symlink).
 		 *
-		 * @return boolean TRUE if ``$dir_file`` is a link; else FALSE.
+		 * @return boolean TRUE if `$dir_file` is a link; else FALSE.
 		 */
 		public function is_link($dir_file)
 		{
@@ -270,8 +270,8 @@ namespace websharks_core_v000000_dev
 		 * @return string Absolute path to a template directory/file (w/ the highest precedence).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir_file`` is empty (it MUST be passed as a string, NOT empty).
-		 * @throws exception If ``$dir_file`` does NOT exist, or is NOT readable.
+		 * @throws exception If `$dir_file` is empty (it MUST be passed as a string, NOT empty).
+		 * @throws exception If `$dir_file` does NOT exist, or is NOT readable.
 		 */
 		public function template($dir_file)
 		{
@@ -320,7 +320,7 @@ namespace websharks_core_v000000_dev
 		 * @return string Absolute basename (w/o its directory/file extension).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir_file`` is empty.
+		 * @throws exception If `$dir_file` is empty.
 		 */
 		public function abs_basename($dir_file)
 		{
@@ -337,7 +337,7 @@ namespace websharks_core_v000000_dev
 		 * @return string Directory/file path w/o it's extension.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir_file`` is empty.
+		 * @throws exception If `$dir_file` is empty.
 		 */
 		public function no_extension($dir_file)
 		{
@@ -355,17 +355,17 @@ namespace websharks_core_v000000_dev
 		 * @param string $dir_file A directory/file path.
 		 *
 		 * @param string $type Optional. Defaults to {@link fw_constants::any_type}.
-		 *    Bypass w/ an empty string; in case of specific ``$extensions`` only.
+		 *    Bypass w/ an empty string; in case of specific `$extensions` only.
 		 *
 		 * @param array  $extensions Optional. An array of specific extensions.
 		 *    It's also possible to test for NO extension, by including an empty string in this array.
 		 *
-		 * @return boolean TRUE if ``$dir_file`` has an extension of ``$type``.
-		 *    Also TRUE if it has a specific extension in the optional ``$extensions`` array.
+		 * @return boolean TRUE if `$dir_file` has an extension of `$type`.
+		 *    Also TRUE if it has a specific extension in the optional `$extensions` array.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir_file`` is empty.
-		 * @throws exception If ``$type`` is NOT empty; and it's unknown (e.g. an invalid type).
+		 * @throws exception If `$dir_file` is empty.
+		 * @throws exception If `$type` is NOT empty; and it's unknown (e.g. an invalid type).
 		 */
 		public function has_extension($dir_file, $type = self::any_type, $extensions = array())
 		{
@@ -409,16 +409,16 @@ namespace websharks_core_v000000_dev
 		 * @param null|boolean $globs_case_insensitive Optional. This controls the `FNM_CASEFOLD` flag.
 		 *    This defaults to a value of NULL (but please read the following for full details on the behavior).
 		 *
-		 *    • If ``$globs`` are NOT specified, the default WebSharks™ Core exclusions will force this to a TRUE value (default behavior).
-		 *    • If specific ``$globs`` ARE passed in; this defaults to a FALSE value. It MUST be set explicitly if TRUE is the desired behavior.
+		 *    • If `$globs` are NOT specified, the default WebSharks™ Core exclusions will force this to a TRUE value (default behavior).
+		 *    • If specific `$globs` ARE passed in; this defaults to a FALSE value. It MUST be set explicitly if TRUE is the desired behavior.
 		 *
 		 * @param null|integer $glob_x_flags Optional. Defaults to a NULL value.
-		 *    Any additional flags supported by PHP's ``fnmatch()`` function are acceptable here.
+		 *    Any additional flags supported by PHP's `fnmatch()` function are acceptable here.
 		 *
 		 * @return boolean TRUE if the directory/file should be ignored; else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir_file`` is empty.
+		 * @throws exception If `$dir_file` is empty.
 		 *
 		 * @see `/.gitignore` file in the WebSharks™ Core repo directory.
 		 *    This file is where we maintain a master list of all glob exclusion patterns.
@@ -486,7 +486,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Enhances PHP's own ``glob()`` function.
+		 * Enhances PHP's own `glob()` function.
 		 *
 		 * @param string       $dir Glob directory.
 		 *
@@ -495,27 +495,27 @@ namespace websharks_core_v000000_dev
 		 * @param boolean      $case_insensitive Optional. This defaults to a FALSE value.
 		 *    If TRUE, this enables the {@link fw_constants::glob_casefold} flag (as described below).
 		 *
-		 *    • If TRUE, we force character classes on both ``$dir`` & ``$pattern`` (i.e. `[aA][bB]`) to test for caSe variations.
+		 *    • If TRUE, we force character classes on both `$dir` & `$pattern` (i.e. `[aA][bB]`) to test for caSe variations.
 		 *       See also: {@link strings::fnm_case()} for further details about how this works.
 		 *
 		 * @param null|integer $x_flags Optional. Defaults to a NULL value.
-		 *    The defaults are: {@link fw_constants::glob_period}, {@link fw_constants::glob_brace}; unless ``$flags`` are passed in explicitly.
+		 *    The defaults are: {@link fw_constants::glob_period}, {@link fw_constants::glob_brace}; unless `$flags` are passed in explicitly.
 		 *    Regardless, if you'd like to use additional flags, pass this parameter with a non-NULL value.
 		 *
 		 *    • You may NOT use the {@link fw_constants::glob_nocheck} flag with this method. It is NOT supported here.
 		 *       Attempts to use the {@link fw_constants::glob_nocheck} flag will result in an exception.
 		 *
 		 * @param null|integer $flags The defaults are recommended; but specific flags can be passed in if you prefer.
-		 *    The difference between ``$x_flags`` and ``$flags``; is that ``$flags`` will override all defaults;
-		 *    whereas ``$x_flags`` will simply add additional flags to the existing defaults.
+		 *    The difference between `$x_flags` and `$flags`; is that `$flags` will override all defaults;
+		 *    whereas `$x_flags` will simply add additional flags to the existing defaults.
 		 *
-		 *    • PHP's own ``glob()`` function will NOT (by default) find hidden dot `.` files using wildcards.
-		 *       However, WE use the {@link fw_constants::glob_period}, {@link fw_constants::glob_brace} flags as follows: ``glob('/{,.}*', GLOB_BRACE)``.
-		 *       This functionality is enabled automatically; when/if ``$flags`` includes {@link fw_constants::glob_period}, {@link fw_constants::glob_brace};
-		 *       and whenever your ``$pattern`` contains `/*` combinations. Instances of `/*` are converted into `/{,.}*` glob brace checks.
+		 *    • PHP's own `glob()` function will NOT (by default) find hidden dot `.` files using wildcards.
+		 *       However, WE use the {@link fw_constants::glob_period}, {@link fw_constants::glob_brace} flags as follows: `glob('/{,.}*', GLOB_BRACE)`.
+		 *       This functionality is enabled automatically; when/if `$flags` includes {@link fw_constants::glob_period}, {@link fw_constants::glob_brace};
+		 *       and whenever your `$pattern` contains `/*` combinations. Instances of `/*` are converted into `/{,.}*` glob brace checks.
 		 *
 		 *       In short, we find all hidden dot `.` files automatically (this is the default behavior).
-		 *       To disable this default behavior, pass ``$flags`` w/o the {@link fw_constants::glob_period} flag.
+		 *       To disable this default behavior, pass `$flags` w/o the {@link fw_constants::glob_period} flag.
 		 *
 		 *    • You may NOT use the {@link fw_constants::glob_nocheck} flag with this method. It is NOT supported here.
 		 *       Attempts to use the {@link fw_constants::glob_nocheck} flag will result in an exception.
@@ -525,13 +525,13 @@ namespace websharks_core_v000000_dev
 		 *    If you want to ONLY glob files, use: {@link fw_constants::file_type}.
 		 *
 		 * @return array An array of absolute file paths; else an empty array.
-		 *    Relative paths are removed for security purposes; in case ``glob()`` finds directory dots.
+		 *    Relative paths are removed for security purposes; in case `glob()` finds directory dots.
 		 *    All directory separators are normalized by this routine. See {@link n_seps()} for further details.
 		 *       If the {@link fw_constants::glob_mark} flag is used, we preserve trailing slashes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If the ``$dir`` or ``$pattern`` parameters are empty.
-		 * @throws exception If the ``glob()`` function is NOT possible on this PHP installation.
+		 * @throws exception If the `$dir` or `$pattern` parameters are empty.
+		 * @throws exception If the `glob()` function is NOT possible on this PHP installation.
 		 * @throws exception If `fw_constants::glob_brace` is NOT compatible with the underlying server for any reason.
 		 * @throws exception If you attempt to use the `fw_constants::glob_period` flag (w/o the `fw_constants::glob_brace` flag).
 		 * @throws exception If you attempt to use the `fw_constants::glob_nocheck` flag; we do NOT support this flag here.
@@ -639,7 +639,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Absolute directory/file paths.
 		 *    Any value parameter can be converted into a directory/file path string.

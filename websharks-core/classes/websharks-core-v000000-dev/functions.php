@@ -57,12 +57,12 @@ namespace websharks_core_v000000_dev
 		 *    You MUST use class constant {@link fw_constants::reconsider} for this argument value.
 		 *    If this is {@link fw_constants::reconsider}, we force a reconsideration.
 		 *
-		 * @return boolean TRUE if (in ``$this->constructs`` || ``is_callable()`` || ``function_exists()``),
-		 *    and it's NOT been disabled via ``ini_get('disable_functions')`` (or via Suhosin).
+		 * @return boolean TRUE if (in `$this->constructs` || `is_callable()` || `function_exists()`),
+		 *    and it's NOT been disabled via `ini_get('disable_functions')` (or via Suhosin).
 		 *    Else this returns FALSE by default.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$function`` is empty.
+		 * @throws exception If `$function` is empty.
 		 *
 		 * @see \deps_x_websharks_core_v000000_dev::is_function_possible()
 		 *
@@ -124,7 +124,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Array of all backtrace callers (or a specific backtrace caller).
 		 *
-		 * @param array               $debug_backtrace Array from ``debug_backtrace()``.
+		 * @param array               $debug_backtrace Array from `debug_backtrace()`.
 		 *
 		 * @param null|string|integer $position Default is NULL (all callers).
 		 *
@@ -135,7 +135,7 @@ namespace websharks_core_v000000_dev
 		 *    • Set to an integer value to specify an exact array index position.
 		 *
 		 * @return array|string Array of all backtrace callers (default behavior).
-		 *    Or, a string with a specific backtrace caller. See ``$position`` for details.
+		 *    Or, a string with a specific backtrace caller. See `$position` for details.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */

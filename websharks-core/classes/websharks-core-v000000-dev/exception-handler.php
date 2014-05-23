@@ -45,7 +45,7 @@ namespace websharks_core_v000000_dev
 		 *    ~ This class walks a FINE LINE on this point. It DOES use core classes (when/if possible).
 		 *
 		 * @note This WebSharks™ Core exception handler can be disabled with a WordPress® filter.
-		 *    ``add_filter('websharks_core__exception_handler__disable', '__return_true');``
+		 *    `add_filter('websharks_core__exception_handler__disable', '__return_true');`
 		 */
 		final class exception_handler // Static properties/methods only please.
 		{
@@ -100,7 +100,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Initializes properties.
 			 *
-			 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
+			 * @return boolean Returns the `$initialized` property w/ a TRUE value.
 			 *
 			 * @note Sets some class properties & registers exception handler.
 			 */

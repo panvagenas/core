@@ -112,7 +112,7 @@ namespace websharks_core_v000000_dev
 			'id'                  => '',
 
 			// This is for types: `input|textarea`,
-			// when ``$value`` is NULL (i.e. not yet defined).
+			// when `$value` is NULL (i.e. not yet defined).
 			'default_value'       => '',
 			// Does NOT work with radio buttons or checkboxes.
 			// Use: `checked_value`, `checked_by_default`.
@@ -369,8 +369,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @param array        $properties Optional array of properties to set upon construction.
 		 *
@@ -400,12 +400,12 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param null|string (or scalar)|array $field_value The current value(s) for this field.
 		 *    If there is NO current value, set this to NULL; so that default values are considered properly.
-		 *    That is, default values are only implemented, if ``$value`` is currently NULL.
+		 *    That is, default values are only implemented, if `$value` is currently NULL.
 		 *
-		 * @note The current ``$field_value`` will be piped through ``$this->value()`` and/or ``$this->values()``.
-		 *    In other words, we convert the ``$field_value`` into a NULL/string/array, depending upon the `type` of form field.
+		 * @note The current `$field_value` will be piped through `$this->value()` and/or `$this->values()`.
+		 *    In other words, we convert the `$field_value` into a NULL/string/array, depending upon the `type` of form field.
 		 *    The current `call` action will also considered, if this instance is associated with one.
-		 *    See: ``$this->value()`` and ``$this->values()`` for further details.
+		 *    See: `$this->value()` and `$this->values()` for further details.
 		 *
 		 * @param array                         $field Field configuration options.
 		 *
@@ -771,7 +771,7 @@ namespace websharks_core_v000000_dev
 		 *    Any routines that process form submissions should be sure NOT to process these.
 		 *
 		 * @note Given this complex/lengthy routine, the result of ANY call to this method is cached statically.
-		 *    An MD5 checksum is used to determine if we have ALREADY validated the ``$fields`` prior.
+		 *    An MD5 checksum is used to determine if we have ALREADY validated the `$fields` prior.
 		 *    If we have, there is NO need to validate them again.
 		 */
 		public function validate($field_values, $fields = NULL, $user = NULL, $args = array())
@@ -1423,10 +1423,10 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param null|string (or scalar)|array $field_value The current value(s) for this field.
 		 *    If there is NO current value, set this to NULL; so that default values are considered properly.
-		 *    That is, default values are only implemented, if ``$value`` is currently NULL.
+		 *    That is, default values are only implemented, if `$value` is currently NULL.
 		 *
-		 * @note The current ``$field_value`` will be piped through {@link value()} and/or {@link values()}.
-		 *    In other words, we convert the ``$field_value`` into a NULL/string/array, depending upon the `type` of form field.
+		 * @note The current `$field_value` will be piped through {@link value()} and/or {@link values()}.
+		 *    In other words, we convert the `$field_value` into a NULL/string/array, depending upon the `type` of form field.
 		 *    The current `call` action will also considered, if this instance is associated with one.
 		 *    See: {@link value()} and {@link values()} for further details.
 		 *
@@ -1622,7 +1622,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @note A boolean FALSE is converted into a `0` string representation.
 		 *
-		 * @return string|null A string if ``$value`` is scalar, or this is the current action.
+		 * @return string|null A string if `$value` is scalar, or this is the current action.
 		 *    Else this returns NULL by default, so that default form field values can be considered properly.
 		 */
 		public function value(&$value)
@@ -1656,7 +1656,7 @@ namespace websharks_core_v000000_dev
 		 * @param mixed $values A variable (always by reference).
 		 *    See {@link ¤values()}, to pass a variable and/or an expression.
 		 *
-		 * @return array|null An array if ``$values`` is an array, or this is the current action.
+		 * @return array|null An array if `$values` is an array, or this is the current action.
 		 *    Else this returns NULL by default, so that default form field values can be considered properly.
 		 */
 		public function values(&$values)

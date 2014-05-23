@@ -100,7 +100,7 @@ namespace websharks_core_v000000_dev
 				                          $this->__('Invalid CRON job (missing and/or invalid array keys).').
 				                          ' '.sprintf($this->__('Got: `%1$s`.'), $this->©var->dump($_cron_job))
 				);
-				$_key = $_cron_job['©class.method']; // Using this as: ``$config[$_key]``.
+				$_key = $_cron_job['©class.method']; // Using this as: `$config[$_key]`.
 				list($_cron_job['©class'], $_cron_job['method']) = explode('.', $_cron_job['©class.method'], 2);
 				$_cron_job['event_hook'] = '_cron__'.$this->___instance_config->plugin_root_ns_stub.'__'.trim($_cron_job['©class'], '©').'__'.$_cron_job['method'];
 
@@ -141,7 +141,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return integer The number of CRON jobs deleted by this routine.
 		 *    Returns `0` if nothing was deleted (e.g. no CRON jobs were configured).
-		 *    Also returns `0` if ``$confirmation`` was NOT a TRUE value.
+		 *    Also returns `0` if `$confirmation` was NOT a TRUE value.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -163,7 +163,7 @@ namespace websharks_core_v000000_dev
 					) // Delete (i.e. clear) the scheduled CRON job event hook.
 						wp_clear_scheduled_hook($_cron_job['event_hook']);
 
-					unset($config[$_key]); // Delete from ``$config``.
+					unset($config[$_key]); // Delete from `$config`.
 
 					$deletions++; // Increment.
 				}

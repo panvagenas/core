@@ -96,7 +96,7 @@
 	};
 
 	/**
-	 * @type {Object} All ``is...()`` type checks.
+	 * @type {Object} All `is...()` type checks.
 	 */
 	$w.$$websharks_core.$.prototype.___is_type_checks = {
 		'string'       : 'is_string',
@@ -182,7 +182,7 @@
 
 		$$.check_arg_types('string', 'string', arguments, 0);
 
-		// Set dynamic ``___i18n`` property.
+		// Set dynamic `___i18n` property.
 
 		$$.___i18n = $.extend({}, $w['$' + core_ns_stub + '___i18n'], $$.___i18n);
 
@@ -192,14 +192,14 @@
 		if(!$$.empty(plugin_root_ns_stub, extension) && typeof $w['$' + plugin_root_ns_stub + '__' + extension + '___i18n'] === 'object')
 			$.extend($$.___i18n, $w['$' + plugin_root_ns_stub + '__' + extension + '___i18n']);
 
-		// Set dynamic ``___instance_config`` property.
+		// Set dynamic `___instance_config` property.
 
 		$$.___instance_config = $w['$' + core_ns_stub + '__current_plugin___instance_config'];
 
 		if(!$$.empty(plugin_root_ns_stub) && typeof $w['$' + plugin_root_ns_stub + '___instance_config'] === 'object')
 			$$.___instance_config = $w['$' + plugin_root_ns_stub + '___instance_config'];
 
-		// Set dynamic ``___verifiers`` property.
+		// Set dynamic `___verifiers` property.
 
 		$$.___verifiers = $w['$' + core_ns_stub + '__current_plugin___verifiers'];
 
@@ -512,8 +512,8 @@
 	/**
 	 * Gets closest UI theme CSS class (for current plugin).
 	 *
-	 * @note The search begins with ``to`` (and may also end at ``to``, if it contains a theme CSS class).
-	 *    The search continues with jQuery™ ``parents()``; the search will fail if no parents have a UI theme class.
+	 * @note The search begins with `to` (and may also end at `to`, if it contains a theme CSS class).
+	 *    The search continues with jQuery™ `parents()`; the search will fail if no parents have a UI theme class.
 	 *
 	 * @return {String} CSS class name.
 	 */
@@ -557,7 +557,7 @@
 	 *    This is the intended behavior. If there is no UI theme, we exclude the `ui` class.
 	 *
 	 * @note The UI classes that we construct here, have a reaching impact on:
-	 *    ``$$.wrap_problematic_ui_theme_components()``.
+	 *    `$$.wrap_problematic_ui_theme_components()`.
 	 *
 	 * @return {String}
 	 */
@@ -586,7 +586,7 @@
 						      $$.plugin_css_class(),
 						      'ui', // WebSharks™ Core UI enabler.
 						      $$.closest_ui_theme_css_class_to($this),
-						      // ^ We get a UI theme class from ``$this``.
+						      // ^ We get a UI theme class from `$this`.
 						      $$.plugin_css_class() + '-ui-wrapper'
 					      ];
 				      var wrapper = '<div class="' + $$.esc_attr(wrapper_classes.join(' ')) + '"></div>';
@@ -739,7 +739,7 @@
 						            {
 							            $response_validation_errors = $(// Creates validation errors.
 								            '<div class="responses validation-errors ui-widget ui-corner-bottom ui-state-error">' +
-								            '<ul></ul>' + // Empty here (we'll append ``$this`` error below).
+								            '<ul></ul>' + // Empty here (we'll append `$this` error below).
 								            '</div>'
 							            );
 							            $this.clone().appendTo($('ul', $response_validation_errors));
@@ -1557,7 +1557,7 @@
 	};
 
 	/**
-	 * PHP equivalent of ``mt_rand()``.
+	 * PHP equivalent of `mt_rand()`.
 	 *
 	 * @param min
 	 * @param max
@@ -1713,7 +1713,7 @@
 		else if(total_args === 0) // No arguments (no problem).
 			return true; // We can stop right here in this case.
 
-		main_loop: // Marker for main loop (iterating each of the ``arg_type_hints``).
+		main_loop: // Marker for main loop (iterating each of the `arg_type_hints`).
 
 			for(_arg_position = 0; _arg_position < arg_type_hints.length; _arg_position++)
 			{
@@ -1725,7 +1725,7 @@
 
 				_last_arg_type_key = -1; // Reset before iterating (we'll define below, if necessary).
 
-				types_loop: // Marker for types loop (iterating each of the ``_arg_types`` here).
+				types_loop: // Marker for types loop (iterating each of the `_arg_types` here).
 
 					for(_arg_type_key = 0; _arg_type_key < _arg_types.length; _arg_type_key++)
 					{
@@ -1766,7 +1766,7 @@
 
 								/****************************************************************************/
 
-								case 'string': // All of these fall under ``!is_...()`` checks.
+								case 'string': // All of these fall under `!is_...()` checks.
 								case 'boolean':
 								case 'bool':
 								case 'integer':
@@ -1805,7 +1805,7 @@
 
 								/****************************************************************************/
 
-								case '!string': // All of these fall under ``is_...()`` checks.
+								case '!string': // All of these fall under `is_...()` checks.
 								case '!boolean':
 								case '!bool':
 								case '!integer':
@@ -1844,7 +1844,7 @@
 
 								/****************************************************************************/
 
-								case 'string:!empty': // These are ``!is_...()`` || ``empty()`` checks.
+								case 'string:!empty': // These are `!is_...()` || `empty()` checks.
 								case 'boolean:!empty':
 								case 'bool:!empty':
 								case 'integer:!empty':
@@ -1887,7 +1887,7 @@
 								default: // Assume object `instanceof` in this default case handler.
 									// For practicality & performance reasons, we do NOT check `!` or `:!empty` here.
 									// It's VERY rare that one would need to require something that's NOT a specific object instance.
-									// In fact, the ``_arg_type`` value should NOT be a string representation in this case.
+									// In fact, the `_arg_type` value should NOT be a string representation in this case.
 									// JavaScript ONLY handles `instanceof`, w/ comparison to an actual function value.
 
 									if(!$$.is_function(_arg_type) || !(args[_arg_position] instanceof _arg_type))

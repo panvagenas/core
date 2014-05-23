@@ -34,10 +34,10 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
-		 * @throws \exception If there is a missing and/or invalid ``$___instance_config``.
+		 * @throws \exception If there is a missing and/or invalid `$___instance_config`.
 		 */
 		public function __construct($___instance_config)
 		{
@@ -162,7 +162,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks if variable is an object, and is NOT ass empty.
 		 *
-		 * @note PHP does NOT consider any object ``empty()``, so we have an additional layer of functionality here.
+		 * @note PHP does NOT consider any object `empty()`, so we have an additional layer of functionality here.
 		 *    An object is ass empty (assumed empty), if it has NO public properties/methods (static or otherwise).
 		 *
 		 * @param mixed $var Any variable (by reference, no NOTICE).
@@ -194,11 +194,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->is_not_ass_empty()``, but this allows an expression.
+		 * Same as `$this->is_not_ass_empty()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @return boolean See ``$this->is_not_ass_empty()`` for further details.
+		 * @return boolean See `$this->is_not_ass_empty()` for further details.
 		 */
 		public function ¤is_not_ass_empty($var)
 		{

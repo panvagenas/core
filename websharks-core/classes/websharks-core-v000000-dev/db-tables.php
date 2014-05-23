@@ -105,7 +105,7 @@ namespace websharks_core_v000000_dev
 		 * @var array Array of regex patterns matching DB string columns.
 		 *
 		 * @note All columns are strings by default. This array serves to negate
-		 *    some columns which might otherwise be included in ``$regex_(integer|float)_columns``.
+		 *    some columns which might otherwise be included in `$regex_(integer|float)_columns`.
 		 *    In other words, this array contains only a few special circumstances.
 		 */
 		public $regex_string_columns = array(
@@ -117,8 +117,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @extenders Other properties should be set by class extenders.
 		 *
@@ -246,7 +246,7 @@ namespace websharks_core_v000000_dev
 		 * @return string Fully qualified (i.e. prefixed) plugin table name.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$table`` is empty, or does NOT exist.
+		 * @throws exception If `$table` is empty, or does NOT exist.
 		 */
 		public function get($table)
 		{
@@ -270,7 +270,7 @@ namespace websharks_core_v000000_dev
 		 * @return string Fully qualified (i.e. prefixed) WordPress® table name.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$table`` is empty, or does NOT exist.
+		 * @throws exception If `$table` is empty, or does NOT exist.
 		 *
 		 * @assert ('options') === 'wp_options'
 		 */

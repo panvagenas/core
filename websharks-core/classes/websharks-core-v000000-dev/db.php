@@ -44,8 +44,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -107,7 +107,7 @@ namespace websharks_core_v000000_dev
 		 *    Dynamic class instances are defined explicitly in the docBlock above.
 		 *    This way IDEs will jive with this dynamic behavior.
 		 *
-		 * @throws exception If ``$property`` CANNOT be defined in any way.
+		 * @throws exception If `$property` CANNOT be defined in any way.
 		 */
 		public function __get($property)
 		{
@@ -128,11 +128,11 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param array  $args An array of arguments to the overload method, or dynamic class object constructor.
 		 *    In the case of dynamic objects, it's fine to exclude the first argument, which is handled automatically by this routine.
-		 *    That is, the first argument to any extender is always the parent instance (i.e. ``$this``).
+		 *    That is, the first argument to any extender is always the parent instance (i.e. `$this`).
 		 *
 		 * @return mixed Dynamic return values, or a dynamic object instance; else an exception is thrown.
 		 *
-		 * @throws exception If ``$method`` CANNOT be defined in any way.
+		 * @throws exception If `$method` CANNOT be defined in any way.
 		 */
 		public function __call($method, $args)
 		{

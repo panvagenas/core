@@ -57,8 +57,8 @@ namespace websharks_core_v000000_dev
 		 * Generates a unique encryption key.
 		 *
 		 * @param integer $length Optional. A specific key length.
-		 *    Keys are signed with ``$this->hmac_sha256_sign()`` (so it's `64` characters in length, by default).
-		 *    If a specific ``$length`` is needed, we cut the key short, or add additional random chars.
+		 *    Keys are signed with `$this->hmac_sha256_sign()` (so it's `64` characters in length, by default).
+		 *    If a specific `$length` is needed, we cut the key short, or add additional random chars.
 		 *
 		 * @return string A keyed SHA256 hash of a unique access key.
 		 *    The return value is `64` characters in length (by default).
@@ -84,8 +84,8 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @note This falls back on XOR encryption/decryption when/if mcrypt is not possible.
 		 *
-		 * @note Usually, it's better to use these ``encrypt()`` / ``decrypt()`` functions instead of XOR encryption;
-		 *    because RIJNDAEL 256 offers MUCH better security. However, ``xencrypt()`` / ``xdecrypt()`` offer true consistency,
+		 * @note Usually, it's better to use these `encrypt()` / `decrypt()` functions instead of XOR encryption;
+		 *    because RIJNDAEL 256 offers MUCH better security. However, `xencrypt()` / `xdecrypt()` offer true consistency,
 		 *    making them a better choice in certain scenarios. That is, XOR encrypted strings always offer the same representation
 		 *    of the original string; whereas RIJNDAEL 256 changes randomly, making it difficult to use comparison algorithms.
 		 *
@@ -135,8 +135,8 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @note This falls back on XOR encryption/decryption when/if mcrypt is not possible.
 		 *
-		 * @note Usually, it's better to use these ``encrypt()`` / ``decrypt()`` functions instead of XOR encryption;
-		 *    because RIJNDAEL 256 offers MUCH better security. However, ``xencrypt()`` / ``xdecrypt()`` offer true consistency,
+		 * @note Usually, it's better to use these `encrypt()` / `decrypt()` functions instead of XOR encryption;
+		 *    because RIJNDAEL 256 offers MUCH better security. However, `xencrypt()` / `xdecrypt()` offer true consistency,
 		 *    making them a better choice in certain scenarios. That is, XOR encrypted strings always offer the same representation
 		 *    of the original string; whereas RIJNDAEL 256 changes randomly, making it difficult to use comparison algorithms.
 		 *
@@ -184,8 +184,8 @@ namespace websharks_core_v000000_dev
 		/**
 		 * XOR two-way encryption/decryption, with a base64 wrapper.
 		 *
-		 * @note Usually, it's better to use the ``encrypt()`` / ``decrypt()`` functions instead of XOR encryption;
-		 *    because RIJNDAEL 256 offers MUCH better security. However, ``xencrypt()`` / ``xdecrypt()`` offer true consistency,
+		 * @note Usually, it's better to use the `encrypt()` / `decrypt()` functions instead of XOR encryption;
+		 *    because RIJNDAEL 256 offers MUCH better security. However, `xencrypt()` / `xdecrypt()` offer true consistency,
 		 *    making them a better choice in certain scenarios. That is, XOR encrypted strings always offer the same representation
 		 *    of the original string; whereas RIJNDAEL 256 changes randomly, making it difficult to use comparison algorithms.
 		 *
@@ -230,8 +230,8 @@ namespace websharks_core_v000000_dev
 		/**
 		 * XOR two-way encryption/decryption, with a base64 wrapper.
 		 *
-		 * @note Usually, it's better to use the ``encrypt()`` / ``decrypt()`` functions instead of XOR encryption;
-		 *    because RIJNDAEL 256 offers MUCH better security. However, ``xencrypt()`` / ``xdecrypt()`` offer true consistency,
+		 * @note Usually, it's better to use the `encrypt()` / `decrypt()` functions instead of XOR encryption;
+		 *    because RIJNDAEL 256 offers MUCH better security. However, `xencrypt()` / `xdecrypt()` offer true consistency,
 		 *    making them a better choice in certain scenarios. That is, XOR encrypted strings always offer the same representation
 		 *    of the original string; whereas RIJNDAEL 256 changes randomly, making it difficult to use comparison algorithms.
 		 *
@@ -347,7 +347,7 @@ namespace websharks_core_v000000_dev
 		 * @return string An RSA-SHA1 signature string, else an empty string on failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$openssl`` is empty.
+		 * @throws exception If `$openssl` is empty.
 		 */
 		public function _rsa_sha1_shell_sign($string, $key = '', $openssl = 'openssl')
 		{

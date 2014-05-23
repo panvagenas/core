@@ -79,7 +79,7 @@ namespace websharks_core_v000000_dev
 		public $new_core_ns_version_with_dashes = '';
 
 		/**
-		 * @var string Replicating into this new sub-directory of ``$into_dir``.
+		 * @var string Replicating into this new sub-directory of `$into_dir`.
 		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $new_core_dir = '';
@@ -88,8 +88,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor (initiates replication).
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @param string       $into_dir Optional. Defaults to an empty string.
 		 *    If this is supplied, the core will be replicated into this specific directory.
@@ -97,7 +97,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string       $update_dir Optional. Defaults to an empty string.
 		 *    Please use with EXTREME caution; this performs a MASSIVE search/replace routine.
-		 *    If TRUE, all files inside ``$update_dir`` will be updated to match the version of the newly replicated core.
+		 *    If TRUE, all files inside `$update_dir` will be updated to match the version of the newly replicated core.
 		 *    If FALSE, we simply update files in the new core directory; nothing more.
 		 *
 		 * @param string       $version Optional. Defaults to an empty string.
@@ -108,12 +108,12 @@ namespace websharks_core_v000000_dev
 		 *    See: {@link dirs::copy_to()} for details about this parameter.
 		 *
 		 * @note Instantiation of this class will initiate the replication routine (please be VERY careful).
-		 *    Property ``$success`` will contain a message indicating the final result status of the replication procedure.
+		 *    Property `$success` will contain a message indicating the final result status of the replication procedure.
 		 *    If there is a failure, an exception is thrown by this class. We either succeed completely; or throw an exception.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to replicate according to ``$this->can_replicate``.
-		 * @throws exception See: ``replicate()`` method for further details.
+		 * @throws exception If unable to replicate according to `$this->can_replicate`.
+		 * @throws exception See: `replicate()` method for further details.
 		 */
 		public function __construct($___instance_config, $into_dir = '', $update_dir = '', $version = '', $exclusions = array())
 		{
@@ -196,7 +196,7 @@ namespace websharks_core_v000000_dev
 			$this->©dir->copy_to($this->core_dir, $this->new_core_dir, $this->exclusions, TRUE);
 			$this->update_files_in_dir($this->update_dir); // A deep search/replace.
 
-			// Return success; which becomes the value of ``$this->success``.
+			// Return success; which becomes the value of `$this->success`.
 
 			return $this->©success($this->method(__FUNCTION__).'#complete', get_defined_vars(),
 			                       $this->__('Replication completed successfully.').
@@ -228,8 +228,8 @@ namespace websharks_core_v000000_dev
 		 *    However, THIS is OK because plugin versions CANNOT end with a dash. Ex: `websharks_core_v000000_dev->`.
 		 *       See also: {@link stub::$regex_valid_core_ns_version} for further validation details.
 		 *
-		 * @throws exception If invalid types are passed through arguments list (e.g. if ``$dir`` is NOT a string; or is empty).
-		 * @throws exception If ``$dir`` (or any sub-directory) is NOT readable, or CANNOT be opened for any reason.
+		 * @throws exception If invalid types are passed through arguments list (e.g. if `$dir` is NOT a string; or is empty).
+		 * @throws exception If `$dir` (or any sub-directory) is NOT readable, or CANNOT be opened for any reason.
 		 * @throws exception If any file is NOT readable/writable, for any reason.
 		 * @throws exception If unable to write search/replace changes to a file.
 		 * @throws exception If any recursive failure occurs on a sub-directory.

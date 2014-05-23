@@ -172,17 +172,17 @@ namespace websharks_core_v000000_dev
 		 * Constructor (initiates build).
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @param string       $plugin_dir Optional. Defaults to an empty string.
 		 *    By default, we build the WebSharks™ Core. If supplied, we will build a specific plugin.
-		 * @param string       $plugin_name Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
-		 * @param string       $plugin_root_ns Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
-		 * @param string       $distros_dir Optional. Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
-		 * @param string       $downloads_dir Optional. Defaults to an empty string. Required only if ``$plugin_dir`` is passed also.
+		 * @param string       $plugin_name Defaults to an empty string. Required only if `$plugin_dir` is passed also.
+		 * @param string       $plugin_root_ns Defaults to an empty string. Required only if `$plugin_dir` is passed also.
+		 * @param string       $distros_dir Optional. Defaults to an empty string. Required only if `$plugin_dir` is passed also.
+		 * @param string       $downloads_dir Optional. Defaults to an empty string. Required only if `$plugin_dir` is passed also.
 		 *
-		 * @param string       $version Optional. Defaults to a value of ``$this->©date->i18n_utc('ymd')``.
+		 * @param string       $version Optional. Defaults to a value of `$this->©date->i18n_utc('ymd')`.
 		 *    Must be valid. See: {@link \websharks_core_v000000_dev::$regex_valid_plugin_version}
 		 *
 		 * @param string       $requires_at_least_apache_version Optional. Defaults to the oldest version tested by the WebSharks™ Core.
@@ -199,16 +199,16 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string       $build_from_core_version Optional. This is partially ignored here. It is handled mostly by `/._dev-utilities/builder.php`.
 		 *    However, what DO still use it here (if it's passed in); to some extent. If this is passed in, we will verify the current core version.
-		 *    If ``$build_from_core_version`` is passed in, but it does NOT match this version of the core; an exception will be thrown.
+		 *    If `$build_from_core_version` is passed in, but it does NOT match this version of the core; an exception will be thrown.
 		 *
 		 * @note Instantiation of this class will initiate the build routine (please be VERY careful).
-		 *    Property ``$successes`` will contain messages indicating the final result status of the build procedure.
+		 *    Property `$successes` will contain messages indicating the final result status of the build procedure.
 		 *    If there is a failure, an exception is thrown by this class. We either succeed completely; or throw an exception.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to build according to ``$this->can_build`` property value.
+		 * @throws exception If unable to build according to `$this->can_build` property value.
 		 * @throws exception If any parameter values are invalid; based on extensive validation in this class.
-		 * @throws exception If a build fails for any reason. See: ``build()`` method for further details.
+		 * @throws exception If a build fails for any reason. See: `build()` method for further details.
 		 */
 		public function __construct($___instance_config, $plugin_dir = '', $plugin_name = '', $plugin_root_ns = '', $distros_dir = '', $downloads_dir = '',
 		                            $version = '', $requires_at_least_apache_version = '', $tested_up_to_apache_version = '',
@@ -1280,12 +1280,12 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $string The input string to perform replacements on.
 		 *
-		 * @return string The ``$string`` value after replacements.
+		 * @return string The `$string` value after replacements.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If there is no matching pattern name for ``$pattern_name``.
-		 * @throws exception If ``$pattern_name`` or ``$string`` are empty. These MUST be NOT-empty strings.
-		 * @throws exception If there are NO replacements than can be performed; or the resulting ``$string`` is empty.
+		 * @throws exception If there is no matching pattern name for `$pattern_name`.
+		 * @throws exception If `$pattern_name` or `$string` are empty. These MUST be NOT-empty strings.
+		 * @throws exception If there are NO replacements than can be performed; or the resulting `$string` is empty.
 		 */
 		public function regex_replace($pattern_name, $value, $string)
 		{

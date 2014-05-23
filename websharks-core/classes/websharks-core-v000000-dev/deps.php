@@ -61,7 +61,7 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 		/**
 		 * Initializes WebSharks™ Core deps.
 		 *
-		 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
+		 * @return boolean Returns the `$initialized` property w/ a TRUE value.
 		 */
 		public static function initialize()
 		{

@@ -27,13 +27,13 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Details about all WebSharks™ Core (and plugin) classes/properties/methods.
 		 *
-		 * @param string|array $details Defaults to ``array('class_doc_blocks')``.
+		 * @param string|array $details Defaults to `array('class_doc_blocks')`.
 		 *
-		 *    Possible inclusions/exclusions (e.g. values passed in the ``$details`` array).
+		 *    Possible inclusions/exclusions (e.g. values passed in the `$details` array).
 		 *
 		 *       • `all` Include everything possible? This will also make it possible for you to use exclusions.
 		 *             If (and only if) `all` is passed in, specific details can be excluded by `!`negating details.
-		 *             Example: ``array('all', '!properties')`` ~ indicating `all` details EXCEPT `properties`.
+		 *             Example: `array('all', '!properties')` ~ indicating `all` details EXCEPT `properties`.
 		 *
 		 *       Or, if you want to be absolutely specific, you can pass these detail values individually.
 		 *          However, please NOTE that if new details are made possible (and you've requested only these specific details);
@@ -62,7 +62,7 @@ namespace websharks_core_v000000_dev
 			$details  = (array)$details; // Force array value.
 			$ns_class = $ns_class_details = array(); // Initialize arrays.
 
-			# Handle ``$details`` array (w/ `all` inclusions/exclusions).
+			# Handle `$details` array (w/ `all` inclusions/exclusions).
 
 			if(in_array('all', $details)) // Including all details?
 			{

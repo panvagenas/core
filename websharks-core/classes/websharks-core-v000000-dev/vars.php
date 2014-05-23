@@ -25,18 +25,18 @@ namespace websharks_core_v000000_dev
 	class vars extends framework
 	{
 		/**
-		 * Short version of ``if(isset()){} else{}``.
+		 * Short version of `if(isset()){} else{}`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed   $var A variable by reference (no NOTICE).
-		 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @param mixed   $or Optional. Defaults to a NULL value. This is the return value if ``$var`` is NOT set yet.
+		 * @param mixed   $or Optional. Defaults to a NULL value. This is the return value if `$var` is NOT set yet.
 		 *
-		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
+		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of `$var` will be set (via reference) to the return value.
 		 *
-		 * @return mixed Value of ``$var``, if ``isset()``. Else returns ``$or`` (which defaults to NULL).
+		 * @return mixed Value of `$var`, if `isset()`. Else returns `$or` (which defaults to NULL).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -76,15 +76,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->isset_or()``, but this allows an expression.
+		 * Same as `$this->isset_or()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @param mixed $or This is the return value if ``$var`` is NOT set.
+		 * @param mixed $or This is the return value if `$var` is NOT set.
 		 *
-		 * @note This does NOT support the ``$set_var`` parameter, because ``$var`` is NOT by reference here.
+		 * @note This does NOT support the `$set_var` parameter, because `$var` is NOT by reference here.
 		 *
-		 * @return mixed See ``$this->isset_or()`` for further details.
+		 * @return mixed See `$this->isset_or()` for further details.
 		 */
 		public function ¤isset_or($var, $or = NULL)
 		{
@@ -95,20 +95,20 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Short version of ``if(!empty()){} else{}``.
+		 * Short version of `if(!empty()){} else{}`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed   $var A variable by reference (no NOTICE).
-		 *    If ``$var`` was NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` was NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @param mixed   $or Optional. Defaults to a NULL value. This is the return value if ``$var`` IS empty.
+		 * @param mixed   $or Optional. Defaults to a NULL value. This is the return value if `$var` IS empty.
 		 *
-		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
+		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of `$var` will be set (via reference) to the return value.
 		 *
-		 * @return mixed Value of ``$var``, if ``!empty()``. Else returns ``$or`` (which defaults to NULL).
+		 * @return mixed Value of `$var`, if `!empty()`. Else returns `$or` (which defaults to NULL).
 		 *
-		 * @note Objects are never considered ``empty()`` by PHP.
+		 * @note Objects are never considered `empty()` by PHP.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -148,15 +148,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->is_not_empty_or()``, but this allows an expression.
+		 * Same as `$this->is_not_empty_or()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @param mixed $or This is the return value if ``$var`` IS empty.
+		 * @param mixed $or This is the return value if `$var` IS empty.
 		 *
-		 * @note This does NOT support the ``$set_var`` parameter, because ``$var`` is NOT by reference here.
+		 * @note This does NOT support the `$set_var` parameter, because `$var` is NOT by reference here.
 		 *
-		 * @return mixed See ``$this->is_not_empty_or()`` for further details.
+		 * @return mixed See `$this->is_not_empty_or()` for further details.
 		 */
 		public function ¤is_not_empty_or($var, $or = NULL)
 		{
@@ -169,7 +169,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check if values are set.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -233,11 +233,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->are_set()``, but this allows expressions.
+		 * Same as `$this->are_set()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->are_set()`` for further details.
+		 * @return boolean See `$this->are_set()` for further details.
 		 */
 		public function ¤are_set($a)
 		{
@@ -252,7 +252,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check if vars are NOT empty.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -288,7 +288,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return boolean TRUE if all arguments are NOT empty, else FALSE.
 		 *
-		 * @note Objects are never considered ``empty()`` by PHP.
+		 * @note Objects are never considered `empty()` by PHP.
 		 *
 		 * @assert $a = array('a'); $b = array('b');
 		 *    ($a, $b) === TRUE
@@ -316,11 +316,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->are_not_empty()``, but this allows expressions.
+		 * Same as `$this->are_not_empty()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->are_not_empty()`` for further details.
+		 * @return boolean See `$this->are_not_empty()` for further details.
 		 */
 		public function ¤are_not_empty($a)
 		{
@@ -335,12 +335,12 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check deeply if values are NOT empty.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -378,7 +378,7 @@ namespace websharks_core_v000000_dev
 		 *    Can have multidimensional arrays/objects (unlimited nesting).
 		 *    CANNOT have empty arrays; e.g. empty arrays are considered an empty value.
 		 *    CANNOT have empty objects; e.g. empty objects are considered empty values.
-		 *       However, note that PHP not consider any object to be ``empty()``.
+		 *       However, note that PHP not consider any object to be `empty()`.
 		 *    TRUE if no values scanned deeply are empty; else FALSE.
 		 *
 		 * @assert $a = array('a'); $b = array('b');
@@ -436,11 +436,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->are_not_empty_in()``, but this allows expressions.
+		 * Same as `$this->are_not_empty_in()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->are_not_empty_in()`` for further details.
+		 * @return boolean See `$this->are_not_empty_in()` for further details.
 		 */
 		public function ¤are_not_empty_in($a)
 		{
@@ -467,7 +467,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * NOT empty coalesce.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -503,7 +503,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return mixed The first argument that's NOT empty, else NULL.
 		 *
-		 * @note Objects are never considered ``empty()`` by PHP.
+		 * @note Objects are never considered `empty()` by PHP.
 		 *
 		 * @assert $a = 'a'; $b = 'b';
 		 *    ($a, $b) === 'a'
@@ -537,11 +537,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->not_empty_coalesce()``, but this allows expressions.
+		 * Same as `$this->not_empty_coalesce()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->not_empty_coalesce()`` for further details.
+		 * @return boolean See `$this->not_empty_coalesce()` for further details.
 		 */
 		public function ¤not_empty_coalesce($a)
 		{
@@ -556,7 +556,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Is set coalesce.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -624,11 +624,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->isset_coalesce()``, but this allows expressions.
+		 * Same as `$this->isset_coalesce()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->isset_coalesce()`` for further details.
+		 * @return boolean See `$this->isset_coalesce()` for further details.
 		 */
 		public function ¤isset_coalesce($a)
 		{
@@ -649,12 +649,12 @@ namespace websharks_core_v000000_dev
 		 *    If numeric indexes are used in the base array, and this parameter is passed through,
 		 *    it will be prepended to the numeric index for elements in the base array only.
 		 *
-		 * @param null|string $separator Optional. Defaults to `&`, which is NOT the same as PHP's ``http_build_query()``.
+		 * @param null|string $separator Optional. Defaults to `&`, which is NOT the same as PHP's `http_build_query()`.
 		 *    This default value is the one used most often by the WebSharks™ Core. If a different separator is needed, please pass it in.
-		 *    If this is set to a NULL value, the system's default value will be used (e.g. ``ini_get('arg_separator.output')``).
+		 *    If this is set to a NULL value, the system's default value will be used (e.g. `ini_get('arg_separator.output')`).
 		 *
-		 * @param null|string $enc_type Optional. Defaults to {@link fw_constants::rfc1738}, indicating ``urlencode()``.
-		 *    Or, this can also be set to {@link fw_constants::rfc3986}, indicating ``rawurlencode()``.
+		 * @param null|string $enc_type Optional. Defaults to {@link fw_constants::rfc1738}, indicating `urlencode()`.
+		 *    Or, this can also be set to {@link fw_constants::rfc3986}, indicating `rawurlencode()`.
 		 *    Or, if this is set to a NULL value, no URL-encoding will occur whatsoever.
 		 *    Should be specified with one of these constants:
 		 *       • {@link fw_constants::rfc1738}
@@ -664,11 +664,11 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return string A URL-encoded query string.
 		 *
-		 * @see The ``parse_query()`` method in this class, for the opposite.
+		 * @see The `parse_query()` method in this class, for the opposite.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$separator`` is passed as a string, and it's empty.
-		 * @throws exception If ``$enc_type`` is passed as a string, and it's empty.
+		 * @throws exception If `$separator` is passed as a string, and it's empty.
+		 * @throws exception If `$enc_type` is passed as a string, and it's empty.
 		 *
 		 * @assert $array = array(1, 2, 3);
 		 *    $query = http_build_query($array);
@@ -728,8 +728,8 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Generates a raw URL-encoded query string.
 		 *
-		 * @note This method is an alias for ``build_query()`` with ``$enc_type`` set to: {@link fw_constants::rfc3986}.
-		 *    Please check the ``build_query()`` method for further details.
+		 * @note This method is an alias for `build_query()` with `$enc_type` set to: {@link fw_constants::rfc3986}.
+		 *    Please check the `build_query()` method for further details.
 		 *
 		 * @param mixed       $value Usually an object/array.
 		 *
@@ -751,11 +751,11 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string      $string An input string of query vars.
 		 *
-		 * @param boolean     $convert_dots_spaces Optional. This defaults to a TRUE value (just like PHP's ``parse_str()`` function).
+		 * @param boolean     $convert_dots_spaces Optional. This defaults to a TRUE value (just like PHP's `parse_str()` function).
 		 *    Setting this to a FALSE value, makes it possible to preserve variables that actually SHOULD contain dots and/or spaces.
 		 *
-		 * @param null|string $dec_type Optional. Defaults to {@link fw_constants::rfc1738}, indicating ``urldecode()``.
-		 *    Or, this can also be set to {@link fw_constants::rfc3986}, indicating ``rawurldecode()``.
+		 * @param null|string $dec_type Optional. Defaults to {@link fw_constants::rfc1738}, indicating `urldecode()`.
+		 *    Or, this can also be set to {@link fw_constants::rfc3986}, indicating `rawurldecode()`.
 		 *    Or, if this is set to a NULL value, no URL-decoding will occur whatsoever.
 		 *    Should be specified with one of these constants:
 		 *       • {@link fw_constants::rfc1738}
@@ -763,12 +763,12 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param null|array  $___parent_array Internal use only; for recursion.
 		 *
-		 * @return array An array of data, based on the input ``$string`` value.
+		 * @return array An array of data, based on the input `$string` value.
 		 *
-		 * @see The ``build_query()`` method in this class, for the opposite.
+		 * @see The `build_query()` method in this class, for the opposite.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dec_type`` is passed as a string, and it's empty.
+		 * @throws exception If `$dec_type` is passed as a string, and it's empty.
 		 *
 		 * @assert $array = array('hel%5Dlo' => array('t%he#re' => array(0 => 'hi', 2  => 'hii', array(array()), array('hello' => 'hello', array(4,3,2)))));
 		 *    $string = http_build_query($array, '', '&');
@@ -853,14 +853,14 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Generates an array from a string of query vars.
 		 *
-		 * @note This method is an alias for ``parse_query()`` with ``$enc_type`` set to: {@link fw_constants::rfc3986}.
-		 *    Please check the ``parse_query()`` method for further details.
+		 * @note This method is an alias for `parse_query()` with `$enc_type` set to: {@link fw_constants::rfc3986}.
+		 *    Please check the `parse_query()` method for further details.
 		 *
 		 * @param string  $string An input string of query vars.
 		 *
 		 * @param boolean $convert_dots_spaces Optional. This defaults to a TRUE value.
 		 *
-		 * @return array An array of data, based on the input ``$string`` value.
+		 * @return array An array of data, based on the input `$string` value.
 		 *
 		 * @assert ('') === array()
 		 */
@@ -870,12 +870,12 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Returns a copy of all ``$_GET`` vars.
+		 * Returns a copy of all `$_GET` vars.
 		 *
 		 * @param string|integer $key Optional. Looking for a specific array key?
 		 *
-		 * @return array|mixed|null Copy of all ``$_GET`` vars (trimmed/stripped/cached), else an empty array.
-		 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
+		 * @return array|mixed|null Copy of all `$_GET` vars (trimmed/stripped/cached), else an empty array.
+		 *    If a specific `$key` is requested, the value of that `$key`; else NULL.
 		 *
 		 * @assert () is-type 'array'
 		 */
@@ -885,16 +885,16 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Returns a copy of all ``$_POST`` vars.
+		 * Returns a copy of all `$_POST` vars.
 		 *
 		 * @param string|integer $key Optional. Looking for a specific array key?
 		 *
 		 * @param boolean        $include_files Optional. Defaults to a FALSE value.
-		 *    If TRUE, we'll include ``$_FILES`` as part of the array — in a proprietary arrangement.
-		 *    NOTE: If a specific ``$key`` is requested, this parameter is ignored completely.
+		 *    If TRUE, we'll include `$_FILES` as part of the array — in a proprietary arrangement.
+		 *    NOTE: If a specific `$key` is requested, this parameter is ignored completely.
 		 *
-		 * @return array|mixed|null Copy of all ``$_POST`` vars (trimmed/stripped/cached), else an empty array.
-		 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
+		 * @return array|mixed|null Copy of all `$_POST` vars (trimmed/stripped/cached), else an empty array.
+		 *    If a specific `$key` is requested, the value of that `$key`; else NULL.
 		 *
 		 * @assert () is-type 'array'
 		 */
@@ -907,16 +907,16 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Returns a copy of all ``$_REQUEST`` vars.
+		 * Returns a copy of all `$_REQUEST` vars.
 		 *
 		 * @param string|integer $key Optional. Looking for a specific array key?
 		 *
 		 * @param boolean        $include_files Optional. Defaults to a FALSE value.
-		 *    If TRUE, we'll include ``$_FILES`` as part of the array — in a proprietary arrangement.
-		 *    NOTE: If a specific ``$key`` is requested, this parameter is ignored completely.
+		 *    If TRUE, we'll include `$_FILES` as part of the array — in a proprietary arrangement.
+		 *    NOTE: If a specific `$key` is requested, this parameter is ignored completely.
 		 *
-		 * @return array|mixed|null Copy of all ``$_REQUEST`` vars (trimmed/stripped/cached), else an empty array.
-		 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
+		 * @return array|mixed|null Copy of all `$_REQUEST` vars (trimmed/stripped/cached), else an empty array.
+		 *    If a specific `$key` is requested, the value of that `$key`; else NULL.
 		 *
 		 * @assert () is-type 'array'
 		 */
@@ -929,12 +929,12 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Returns a copy of all ``$_COOKIE`` vars.
+		 * Returns a copy of all `$_COOKIE` vars.
 		 *
 		 * @param string|integer $key Optional. Looking for a specific array key?
 		 *
-		 * @return array|mixed|null Copy of all ``$_COOKIE`` vars (trimmed/stripped/cached), else an empty array.
-		 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
+		 * @return array|mixed|null Copy of all `$_COOKIE` vars (trimmed/stripped/cached), else an empty array.
+		 *    If a specific `$key` is requested, the value of that `$key`; else NULL.
 		 *
 		 * @assert () is-type 'array'
 		 */
@@ -944,12 +944,12 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Returns a copy of all ``$_SESSION`` vars.
+		 * Returns a copy of all `$_SESSION` vars.
 		 *
 		 * @param string|integer $key Optional. Looking for a specific array key?
 		 *
-		 * @return array|mixed|null Copy of all ``$_SESSION`` vars by default, else an empty array.
-		 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
+		 * @return array|mixed|null Copy of all `$_SESSION` vars by default, else an empty array.
+		 *    If a specific `$key` is requested, the value of that `$key`; else NULL.
 		 *
 		 * @assert () is-type 'array'
 		 */
@@ -971,12 +971,12 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Returns a copy of all ``$_FILES``.
+		 * Returns a copy of all `$_FILES`.
 		 *
 		 * @param string|integer $key Optional. Looking for a specific array key?
 		 *
-		 * @return array|mixed|null Copy of all ``$_FILES`` by default, else an empty array.
-		 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
+		 * @return array|mixed|null Copy of all `$_FILES` by default, else an empty array.
+		 *    If a specific `$key` is requested, the value of that `$key`; else NULL.
 		 *
 		 * @assert () is-type 'array'
 		 */
@@ -998,15 +998,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Merges ``$_FILES`` deeply into another array.
+		 * Merges `$_FILES` deeply into another array.
 		 *
-		 * @param array $array The array to have ``$_FILES`` merged into.
+		 * @param array $array The array to have `$_FILES` merged into.
 		 *
-		 * @return array The original ``$array`` with ``$_FILES`` merged in also.
+		 * @return array The original `$array` with `$_FILES` merged in also.
 		 *    Files with `error` code `UPLOAD_ERR_NO_FILE`; will NOT be included in any way.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If the ``$_FILES`` array contains an unexpected data type.
+		 * @throws exception If the `$_FILES` array contains an unexpected data type.
 		 *
 		 * @note Files with `error` code `UPLOAD_ERR_NO_FILE`; will NOT be included in any way.
 		 * @note File `name` values are modified by this routine. We make sure each file name is unique.
@@ -1054,7 +1054,7 @@ namespace websharks_core_v000000_dev
 				if(!is_array($_value)) // This should NOT happen.
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#unexpected_data_type', get_defined_vars(),
-						$this->__('Unexpected data type in ``$_FILES`` array.')
+						$this->__('Unexpected data type in `$_FILES` array.')
 					);
 				foreach($_value as $_file_info_key => $_scalar_or_nested_array_value)
 					$files[$_file_info_key][$_key] = $_scalar_or_nested_array_value;
@@ -1065,13 +1065,13 @@ namespace websharks_core_v000000_dev
 				if(!empty($files[$_file_info_key])) $this->_merge_FILES_deeply_into($array, $_file_info_key, $files[$_file_info_key]);
 			unset($_file_info_key);
 
-			return $array; // With ``$_FILES`` merged in.
+			return $array; // With `$_FILES` merged in.
 		}
 
 		/**
-		 * Merges ``$_FILES`` deeply into another array (helper routine).
+		 * Merges `$_FILES` deeply into another array (helper routine).
 		 *
-		 * @param array   $array The array to have ``$_FILES`` merged into (passed by reference).
+		 * @param array   $array The array to have `$_FILES` merged into (passed by reference).
 		 *
 		 * @param string  $file_info_key A specific file info key (`name`, `tmp_name`, `type`, `size`, `error`).
 		 *
@@ -1081,10 +1081,10 @@ namespace websharks_core_v000000_dev
 		 * @param integer $___depth For internal use only. Do NOT pass these in.
 		 * @param boolean $___recursion For internal use only.
 		 *
-		 * @works-by-reference Modifies the original ``$array`` by reference.
+		 * @works-by-reference Modifies the original `$array` by reference.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$file_info_key`` is empty; or it is NOT an associative array key.
+		 * @throws exception If `$file_info_key` is empty; or it is NOT an associative array key.
 		 */
 		public function _merge_FILES_deeply_into(&$array, $file_info_key, $file_info_values, $___depth = 0, $___recursion = FALSE)
 		{
@@ -1130,12 +1130,12 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Returns a copy of all ``$_SERVER`` vars.
+		 * Returns a copy of all `$_SERVER` vars.
 		 *
 		 * @param string|integer $key Optional. Looking for a specific array key?
 		 *
-		 * @return array|mixed|null Copy of all ``$_SERVER`` vars by default, else an empty array.
-		 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
+		 * @return array|mixed|null Copy of all `$_SERVER` vars by default, else an empty array.
+		 *    If a specific `$key` is requested, the value of that `$key`; else NULL.
 		 *
 		 * @assert () is-type 'array'
 		 */
@@ -1168,7 +1168,7 @@ namespace websharks_core_v000000_dev
 		 *    Looking for a specific array key? If so, pass a string or integer in this parameter.
 		 *
 		 * @return array Copy of a specific super global (trimmed/stripped/cached), else an empty array.
-		 *    If a specific ``$key`` is requested, the value of that ``$key``; else NULL.
+		 *    If a specific `$key` is requested, the value of that `$key`; else NULL.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -1275,15 +1275,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * A better ``var_dump()``.
+		 * A better `var_dump()`.
 		 *
 		 * @note This provides better output, better indentation, and it returns a string.
-		 *    While this routine is NOT faster than ``var_dump()``, it IS faster than ``print_r()``.
+		 *    While this routine is NOT faster than `var_dump()`, it IS faster than `print_r()`.
 		 *
 		 * @param mixed          $var Any input variable to dump (or an expression is fine also).
 		 *
 		 * @param string|boolean $echo Optional. Defaults to an empty string.
-		 *    If this is {@link fw_constants::do_echo} or TRUE, data will be output via ``echo()`` as well as returned.
+		 *    If this is {@link fw_constants::do_echo} or TRUE, data will be output via `echo()` as well as returned.
 		 *
 		 * @param integer        $tab_size Optional. Defaults to a value of `1`, for tabbed indentation.
 		 *    This can be customized, to control the overall tab indentation size.
@@ -1292,12 +1292,12 @@ namespace websharks_core_v000000_dev
 		 *    If this is TRUE, all circular IDs for objects/arrays will be included in the dump.
 		 *    This can be helpful when trying to determine the origin of circular references.
 		 *
-		 * @return string A dump of the input ``$var``.
+		 * @return string A dump of the input `$var`.
 		 *
 		 * @note This method DOES have built-in protection against circular references.
 		 *
-		 * @performance This was benchmarked a few times against PHP's own ``var_dump()``, and also against ``print_r()``.
-		 *    This routine is NOT faster than ``var_dump()``, but it is MUCH faster than ``print_r()``.
+		 * @performance This was benchmarked a few times against PHP's own `var_dump()`, and also against `print_r()`.
+		 *    This routine is NOT faster than `var_dump()`, but it is MUCH faster than `print_r()`.
 		 *
 		 * @note This routine MUST be very careful that it does NOT write to any variables.
 		 *    Writing to a variable (or to a variable reference), could cause damage in other routines.
@@ -1316,13 +1316,13 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * A protected child routine; used by ``dump()``.
+		 * A protected child routine; used by `dump()`.
 		 *
 		 * @param mixed   $var Any input variable to dump.
 		 *    Passing this by reference conserves memory in extreme cases.
 		 *
 		 * @param string  $echo Optional. Defaults to an empty string.
-		 *    If this is {@link fw_constants::do_echo}, data will be output via ``echo()``, as well as returned.
+		 *    If this is {@link fw_constants::do_echo}, data will be output via `echo()`, as well as returned.
 		 *
 		 * @param integer $tab_size Optional. Defaults to a value of `1`, for tabbed indentation.
 		 *    This can be customized, to control the overall tab indentation size.
@@ -1337,12 +1337,12 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param boolean $___recursion Tracks recursion. For internal use only.
 		 *
-		 * @return string A dump of the input ``$var`` (always in string format).
+		 * @return string A dump of the input `$var` (always in string format).
 		 *
 		 * @note This method DOES have built-in protection against circular references.
 		 *
-		 * @performance This was benchmarked a few times against PHP's own ``var_dump()``, and also against ``print_r()``.
-		 *    This routine is NOT faster than ``var_dump()``, but it is MUCH faster than ``print_r()``.
+		 * @performance This was benchmarked a few times against PHP's own `var_dump()`, and also against `print_r()`.
+		 *    This routine is NOT faster than `var_dump()`, but it is MUCH faster than `print_r()`.
 		 *
 		 * @note This routine MUST be very careful that it does NOT write to any variables.
 		 *    Writing to a variable (or to a variable reference), could cause damage in other routines.
@@ -1383,7 +1383,7 @@ namespace websharks_core_v000000_dev
 					$var_dump = $real_type."\n".$dump_tabs.$opening_encap."\n";
 
 					foreach($var as $_nested_key_prop => $_nested_value /* NOT by reference. */)
-						// Do NOT use ``&``. Some iterators CANNOT be iterated by reference.
+						// Do NOT use `&`. Some iterators CANNOT be iterated by reference.
 					{
 						$_nested_type = gettype($_nested_value);
 
@@ -1519,7 +1519,7 @@ namespace websharks_core_v000000_dev
 			if($echo === $this::do_echo)
 				echo $var_dump."\n"; // With a trailing line break.
 
-			return $var_dump; // We ALWAYS return the value of ``$var_dump``.
+			return $var_dump; // We ALWAYS return the value of `$var_dump`.
 		}
 	}
 }

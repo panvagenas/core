@@ -72,8 +72,8 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @param \websharks_core_v000000_dev\menu_pages\menu_page
 		 *    $menu_page A menu page class instance.

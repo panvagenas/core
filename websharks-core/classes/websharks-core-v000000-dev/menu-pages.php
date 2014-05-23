@@ -60,16 +60,16 @@ namespace websharks_core_v000000_dev
 		 * Is this an administrative page for the current plugin?
 		 *
 		 * @param string|array $slug_s Optional. By default, we simply check to see if this is an administrative page for the current plugin.
-		 *    If this is a string (NOT empty), we'll also check if it's a specific page (for the current plugin), matching: ``$slug_s``.
-		 *    If this is an array, we'll check if it's any page (for the current plugin), in the array of: ``$slug_s``.
+		 *    If this is a string (NOT empty), we'll also check if it's a specific page (for the current plugin), matching: `$slug_s`.
+		 *    If this is an array, we'll check if it's any page (for the current plugin), in the array of: `$slug_s`.
 		 *    If this is an array, the array can also contain wildcard patterns (optional).
 		 *
-		 * @note The value of ``$slug_s``, whether it be a string or an array, should attempt to match ONLY the page slug itself, and NOT the full prefixed value.
-		 *    Each page name for the current plugin is dynamically prefixed with ``$this->___instance_config->plugin_root_ns_stub.'__[page_slug]``.
-		 *    The prefix should be excluded from ``$slug_s`` values. In other words, we're only testing for `[page_slug]` here.
+		 * @note The value of `$slug_s`, whether it be a string or an array, should attempt to match ONLY the page slug itself, and NOT the full prefixed value.
+		 *    Each page name for the current plugin is dynamically prefixed with `$this->___instance_config->plugin_root_ns_stub.'__[page_slug]`.
+		 *    The prefix should be excluded from `$slug_s` values. In other words, we're only testing for `[page_slug]` here.
 		 *
 		 * @return string|boolean A string with the `[page slug]` value, if this an administrative page for the current plugin;
-		 *    matching a possible ``$slug_s`` string|array value. Otherwise, this returns FALSE by default.
+		 *    matching a possible `$slug_s` string|array value. Otherwise, this returns FALSE by default.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -107,7 +107,7 @@ namespace websharks_core_v000000_dev
 		 * @return null Nothing. Simply adds each of the menu pages defined in the configuration array.
 		 *
 		 * @throws exception If invalid types are passed through the arguments list.
-		 * @throws exception If the array of ``$menu_pages`` is empty, or contains an invalid configuration set.
+		 * @throws exception If the array of `$menu_pages` is empty, or contains an invalid configuration set.
 		 *
 		 * @wp-admin-assert // This assertion is difficult to test, because it requires administrative privileges (and the admin files must also be loaded).
 		 * $menu_pages = array(array('doc_title' => 'Doc Page', 'menu_title' => 'Menu Title', 'cap_required' => 'install_plugins', 'icon' => 'about:blank', 'displayer' => array($this->object, '__return_false')));
@@ -132,7 +132,7 @@ namespace websharks_core_v000000_dev
 				{
 					if($this->©string->is_not_empty($_menu_page['is_under'])) // A sub-menu page?
 					{
-						// This looks for a preceding triple `___`, in the ``$_slug``.
+						// This looks for a preceding triple `___`, in the `$_slug`.
 						// We use this to indicate an identical slug/key, which should be used again, for a sub-menu page.
 						// This makes it possible to add a duplicate menu page, as a sub-item, which represents the main menu.
 						// If this is NOT done explicitly, WordPress® does it automatically, using the main menu title.

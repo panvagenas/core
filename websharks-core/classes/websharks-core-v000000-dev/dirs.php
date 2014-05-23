@@ -101,13 +101,13 @@ namespace websharks_core_v000000_dev
 		 * @param string $target Target directory that this Junction will connect to.
 		 *
 		 * @return string Location of the Junction; else an empty string on failure.
-		 *    If the Junction already exists as a link (and it already points to the ``$target``);
-		 *    we simply return ``$jctn`` without any change (e.g. there is nothing more to do in that scenario).
+		 *    If the Junction already exists as a link (and it already points to the `$target`);
+		 *    we simply return `$jctn` without any change (e.g. there is nothing more to do in that scenario).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$jctn`` exists already and it's an existing directory or file (i.e. NOT a link).
-		 * @throws exception If ``$jctn`` exists and it's NOT writable (or we are unable to remove it before recreating).
-		 * @throws exception If ``$target`` does NOT exist; or if it does exist, but it's NOT a directory.
+		 * @throws exception If `$jctn` exists already and it's an existing directory or file (i.e. NOT a link).
+		 * @throws exception If `$jctn` exists and it's NOT writable (or we are unable to remove it before recreating).
+		 * @throws exception If `$target` does NOT exist; or if it does exist, but it's NOT a directory.
 		 * @throws exception If the Junction needs to be created; but Windows® commands are NOT possible.
 		 * @throws exception If creation of a Directory Junction fails for any reason.
 		 */
@@ -181,8 +181,8 @@ namespace websharks_core_v000000_dev
 		 *    Else this will throw an exception. We either return TRUE; or we throw an exception.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$jctn`` exists already and it's an actual directory/file (i.e. NOT a link).
-		 * @throws exception If ``$jctn`` exists and it's NOT writable (or we are unable to remove it).
+		 * @throws exception If `$jctn` exists already and it's an actual directory/file (i.e. NOT a link).
+		 * @throws exception If `$jctn` exists and it's NOT writable (or we are unable to remove it).
 		 * @throws exception If deletion of a Directory Junction fails for any reason.
 		 */
 		public function delete_win_jctn($jctn)
@@ -267,8 +267,8 @@ namespace websharks_core_v000000_dev
 		 * @return string An MD5 checksum established collectively, based on all directories/files.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir`` is empty; is NOT a directory; or is not readable.
-		 * @throws exception If ``$update_checksum_file`` is TRUE, and permission issues (of any kind)
+		 * @throws exception If `$dir` is empty; is NOT a directory; or is not readable.
+		 * @throws exception If `$update_checksum_file` is TRUE, and permission issues (of any kind)
 		 *    prevent the update and/or creation of the `checksum.txt` file.
 		 *
 		 * @see deps_x_websharks_core_v000000_dev::dir_checksum()
@@ -337,8 +337,8 @@ namespace websharks_core_v000000_dev
 		 *    If the directory does NOT yet exist, it's created by this routine.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
-		 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
+		 * @throws exception If an invalid `$type` is passed in. Use class constants please.
+		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
 		 * @throws exception If the requested cache directory is NOT readable/writable, or CANNOT be created for any reason.
 		 *
 		 * @assert ('foo') throws exception
@@ -355,7 +355,7 @@ namespace websharks_core_v000000_dev
 					$this->__('Invalid cache type sub-directory. Expecting class contant for public or private type.').
 					' '.sprintf($this->__('Instead got: `%1$s`.'), $type)
 				);
-			// Creates a possible ``$sub_dir`` appendage.
+			// Creates a possible `$sub_dir` appendage.
 
 			if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
 			{
@@ -373,7 +373,7 @@ namespace websharks_core_v000000_dev
 			$app_data_sub_dir   = ($type === $this::private_type && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
 			$cache_type_sub_dir = $this->n_seps($cache_dir.'/'.(($type === $this::private_type) ? 'private' : 'public').$app_data_sub_dir.$sub_dir);
 
-			// Need to create the ``$cache_type_sub_dir``?
+			// Need to create the `$cache_type_sub_dir`?
 
 			if(!is_dir($cache_type_sub_dir))
 			{
@@ -391,7 +391,7 @@ namespace websharks_core_v000000_dev
 
 				return $cache_type_sub_dir; // Created successfully!
 			}
-			// Else it exists. Is ``$cache_type_sub_dir`` still readable/writable?
+			// Else it exists. Is `$cache_type_sub_dir` still readable/writable?
 
 			else if(!is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
 				throw $this->©exception(
@@ -415,8 +415,8 @@ namespace websharks_core_v000000_dev
 		 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
-		 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
+		 * @throws exception If an invalid `$type` is passed in. Use class constants please.
+		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
 		 *
 		 * @throws exception See: {@link cache()} for additional exceptions this may throw.
 		 * @throws exception See: {@link delete()} for additional exceptions this may throw.
@@ -444,8 +444,8 @@ namespace websharks_core_v000000_dev
 		 *    If the directory does NOT yet exist, it's created by this routine.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
-		 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
+		 * @throws exception If an invalid `$type` is passed in. Use class constants please.
+		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
 		 * @throws exception If the requested log directory is NOT readable/writable, or CANNOT be created for any reason.
 		 *
 		 * @assert ('foo') throws exception
@@ -462,7 +462,7 @@ namespace websharks_core_v000000_dev
 					$this->__('Invalid log type sub-directory. Expecting class contant for public or private type.').
 					' '.sprintf($this->__('Instead got: `%1$s`.'), $type)
 				);
-			// Creates a possible ``$sub_dir`` appendage.
+			// Creates a possible `$sub_dir` appendage.
 
 			if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
 			{
@@ -481,7 +481,7 @@ namespace websharks_core_v000000_dev
 			$app_data_sub_dir = ($type === $this::private_type && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
 			$log_type_sub_dir = $this->n_seps($logs_dir.'/'.(($type === $this::private_type) ? 'private' : 'public').$app_data_sub_dir.$sub_dir);
 
-			// Need to create the ``$log_type_sub_dir``?
+			// Need to create the `$log_type_sub_dir`?
 
 			if(!is_dir($log_type_sub_dir))
 			{
@@ -499,7 +499,7 @@ namespace websharks_core_v000000_dev
 
 				return $log_type_sub_dir; // Created successfully!
 			}
-			// Else it exists. Is ``$log_type_sub_dir`` still readable/writable?
+			// Else it exists. Is `$log_type_sub_dir` still readable/writable?
 
 			else if(!is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
 				throw $this->©exception(
@@ -523,8 +523,8 @@ namespace websharks_core_v000000_dev
 		 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If an invalid ``$type`` is passed in. Use class constants please.
-		 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
+		 * @throws exception If an invalid `$type` is passed in. Use class constants please.
+		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
 		 *
 		 * @throws exception See: {@link log()} for additional exceptions this may throw.
 		 * @throws exception See: {@link delete()} for additional exceptions this may throw.
@@ -549,14 +549,14 @@ namespace websharks_core_v000000_dev
 		 *    If the directory does NOT yet exist, it's created by this routine.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
+		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
 		 * @throws exception If the requested private media directory is NOT readable/writable, or CANNOT be created for any reason.
 		 */
 		public function private_media($sub_dir = '')
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			// Creates a possible ``$sub_dir`` appendage.
+			// Creates a possible `$sub_dir` appendage.
 
 			if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
 			{
@@ -575,7 +575,7 @@ namespace websharks_core_v000000_dev
 			$app_data_sub_dir = ($this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
 			$media_sub_dir    = $this->n_seps($media_dir.$app_data_sub_dir.$sub_dir);
 
-			// Need to create the ``$media_sub_dir``?
+			// Need to create the `$media_sub_dir`?
 
 			if(!is_dir($media_sub_dir))
 			{
@@ -593,7 +593,7 @@ namespace websharks_core_v000000_dev
 
 				return $media_sub_dir; // Created successfully!
 			}
-			// Else it exists. Is ``$media_sub_dir`` still readable/writable?
+			// Else it exists. Is `$media_sub_dir` still readable/writable?
 
 			else if(!is_readable($media_sub_dir) || !is_writable($media_sub_dir))
 				throw $this->©exception(
@@ -614,7 +614,7 @@ namespace websharks_core_v000000_dev
 		 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$sub_dir`` is a relative path (this is a NO-no, for security).
+		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
 		 *
 		 * @throws exception See: {@link private_media()} for additional exceptions this may throw.
 		 * @throws exception See: {@link delete()} for additional exceptions this may throw.
@@ -634,12 +634,12 @@ namespace websharks_core_v000000_dev
 		 * @param null|string $___initial_dir Do NOT pass this. Internal use only.
 		 *
 		 * @return boolean TRUE if the directory was successfully deleted, else an exception is thrown.
-		 *    Also returns TRUE if ``$dir`` is already non-existent (i.e. nothing to delete).
+		 *    Also returns TRUE if `$dir` is already non-existent (i.e. nothing to delete).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir`` is NOT a string; or it's an empty string.
-		 * @throws exception If the ``$dir`` given, is NOT readable/writable, or CANNOT be opened for any reason.
-		 * @throws exception If any sub-directory or file within ``$dir`` is NOT readable/writable, or CANNOT be opened for any reason.
+		 * @throws exception If `$dir` is NOT a string; or it's an empty string.
+		 * @throws exception If the `$dir` given, is NOT readable/writable, or CANNOT be opened for any reason.
+		 * @throws exception If any sub-directory or file within `$dir` is NOT readable/writable, or CANNOT be opened for any reason.
 		 * @throws exception If any failure occurs during processing (e.g. we only return TRUE on success).
 		 *
 		 * @assert ($this->object->___instance_config->plugin_data_dir) === TRUE
@@ -727,54 +727,54 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string       $dir A full directory path to copy.
 		 *
-		 * @param string       $to A new directory path, to copy ``$dir`` to.
+		 * @param string       $to A new directory path, to copy `$dir` to.
 		 *    This new directory must NOT already exist. If it does, an exception is thrown.
 		 *
 		 * @param array        $exclusions Optional. Defaults to an empty array.
 		 *
 		 *    • A list of files/directories to ignore (using `FNMATCH` wildcard patterns).
 		 *       The `FNM_PATHNAME` flag (by default) is NOT in use for any wildcard patterns you specify here.
-		 *       A wildcard `*` WILL match directory separators (by default). See: ``$exclusion_x_flags`` for further details.
-		 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ ``$exclusions_case_insensitive`` or ``$exclusion_x_flags``.
+		 *       A wildcard `*` WILL match directory separators (by default). See: `$exclusion_x_flags` for further details.
+		 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ `$exclusions_case_insensitive` or `$exclusion_x_flags`.
 		 *
 		 *    • Special case handler ({@link fw_constants::ignore_globs}) for ignoring shell glob patterns (i.e. directory/file masks).
-		 *       If ``$exclusions[fw_constants::ignore_globs]`` is an array/string; we will ignore the given shell glob patterns.
+		 *       If `$exclusions[fw_constants::ignore_globs]` is an array/string; we will ignore the given shell glob patterns.
 		 *       This triggers an underlying call to {@link dirs_files::ignore()} for each absolute directory/file path.
-		 *       Calls to {@link dirs_files::ignore()} start `from` the parent of your initial ``$dir``.
+		 *       Calls to {@link dirs_files::ignore()} start `from` the parent of your initial `$dir`.
 		 *
 		 *       If you specify an empty array/string (or {@link fw_constants::defaults}),
 		 *          you are using the default WebSharks™ Core glob exclusion patterns.
 		 *
 		 *       The `FNM_PATHNAME` flag (by default) is NOT in use for any shell glob patterns you specify here.
-		 *       A wildcard `*` WILL match directory separators (by default). See: ``$exclusion_x_flags`` for further details.
+		 *       A wildcard `*` WILL match directory separators (by default). See: `$exclusion_x_flags` for further details.
 		 *       However, it's IMPORTANT to note that shell glob patterns are tested against each component of the absolute directory/file path.
 		 *       Therefore, while `FNM_PATHNAME` is off (by default); turning it on does NOT accomplish much for shell glob patterns.
 		 *
-		 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ ``$exclusions_case_insensitive`` or ``$exclusion_x_flags``.
+		 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ `$exclusions_case_insensitive` or `$exclusion_x_flags`.
 		 *
 		 *    • Special case handler ({@link fw_constants::ignore_extra_globs}) for ignoring extra shell glob patterns (i.e. directory/file masks).
-		 *       If ``$exclusions[fw_constants::ignore_extra_globs]`` is an array/string; we will attempt to ignore extra shell glob patterns.
+		 *       If `$exclusions[fw_constants::ignore_extra_globs]` is an array/string; we will attempt to ignore extra shell glob patterns.
 		 *       This triggers an underlying call to {@link dirs_files::ignore()} for each absolute directory/file path.
-		 *       Calls to {@link dirs_files::ignore()} start `from` the parent of your initial ``$dir``.
+		 *       Calls to {@link dirs_files::ignore()} start `from` the parent of your initial `$dir`.
 		 *
 		 *       If you specify ONLY {@link fw_constants::ignore_extra_globs}; the default WebSharks™ Core glob exclusion patterns are in use.
 		 *       Extra glob patterns are handy in cases where you simply want to use the WebSharks™ Core default glob patterns; but
 		 *          you would like to add some additional glob patterns of your own (e.g. these are extra glob patterns).
 		 *
 		 *       The `FNM_PATHNAME` flag (by default) is NOT in use for any shell glob patterns you specify here.
-		 *       A wildcard `*` WILL match directory separators (by default). See: ``$exclusion_x_flags`` for further details.
+		 *       A wildcard `*` WILL match directory separators (by default). See: `$exclusion_x_flags` for further details.
 		 *       However, it's IMPORTANT to note that shell glob patterns are tested against each component of the absolute directory/file path.
 		 *       Therefore, while `FNM_PATHNAME` is off (by default); turning it on does NOT accomplish much for shell glob patterns.
 		 *
-		 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ ``$exclusions_case_insensitive`` or ``$exclusion_x_flags``.
+		 *       The `FNM_CASEFOLD` flag is also off (by default). Enable w/ `$exclusions_case_insensitive` or `$exclusion_x_flags`.
 		 *
 		 *    • Special case handler ({@link fw_constants::gitignore}) for `.gitignore` functionality when copying directories/files in GIT repos.
-		 *       If ``basename($exclusions[fw_constants::gitignore])`` === `.gitignore`; we will attempt to process GIT via command line.
+		 *       If `basename($exclusions[fw_constants::gitignore])` === `.gitignore`; we will attempt to process GIT via command line.
 		 *       We use: `git ls-files --others --directory` to compile a complete list of exclusions automatically.
 		 *       This way the copied directory will reflect only the files under GIT version control.
-		 *       Your `.gitignore` file MUST exist in the parent of your initial ``$dir``.
+		 *       Your `.gitignore` file MUST exist in the parent of your initial `$dir`.
 		 *
-		 *       The `FNM_CASEFOLD` flag is off (by default). Enable w/ ``$exclusions_case_insensitive`` or ``$exclusion_x_flags``.
+		 *       The `FNM_CASEFOLD` flag is off (by default). Enable w/ `$exclusions_case_insensitive` or `$exclusion_x_flags`.
 		 *       There is only ONE additional exclusion flag (`FNM_CASEFOLD`) that works together w/ {@link fw_constants::gitignore}.
 		 *       Attempting to use additional exclusions flags w/ {@link fw_constants::gitignore} will result in an exception.
 		 *
@@ -782,28 +782,28 @@ namespace websharks_core_v000000_dev
 		 *       Note: these rules do NOT apply to shell glob exclusion patterns; which are handled by {@link dirs_files::ignore()}.
 		 *
 		 *       • Files/directories will always include a leading slash `/` when checking exclusions.
-		 *          We use an absolute relative path; starting with the initial ``$dir`` that you're copying from.
-		 *          In other words, relative from the parent directory of your initial ``$dir``.
+		 *          We use an absolute relative path; starting with the initial `$dir` that you're copying from.
+		 *          In other words, relative from the parent directory of your initial `$dir`.
 		 *
-		 *          Assuming your initial value for ``$dir`` is `/path/to/dir`.
+		 *          Assuming your initial value for `$dir` is `/path/to/dir`.
 		 *          And, assuming this file exists that you want to exclude: `/path/to/dir/sub-dir/file.php`.
 		 *          You will need a pattern that matches this path: `/dir/sub-dir/file.php`.
 		 *
 		 *       • Directories will include a trailing slash when checking exclusions.
 		 *
-		 *          Assuming your initial value for ``$dir`` is `/path/to/dir`.
+		 *          Assuming your initial value for `$dir` is `/path/to/dir`.
 		 *          And, assuming this directory exists that you want to exclude: `/path/to/dir/sub-dir`.
 		 *          You will need a pattern that matches this path: `/dir/sub-dir/`.
 		 *
 		 *       • File/directory paths obtained through `git ls-files --others --directory` are converted into `FNMATCH` wildcard patterns
-		 *          automatically by this routine. A `.gitignore` file MUST exist in the parent of your initial ``$dir``.
+		 *          automatically by this routine. A `.gitignore` file MUST exist in the parent of your initial `$dir`.
 		 *
 		 * @param boolean      $exclusions_case_insensitive Defaults to a FALSE value.
 		 *    If TRUE, wildcard pattern matching is NOT case sensitive.
 		 *    The `FNM_CASEFOLD` flag is enabled if this is TRUE.
 		 *
 		 * @param null|integer $exclusion_x_flags Optional. Defaults to a NULL value.
-		 *    Any additional flags supported by PHP's ``fnmatch()`` function are acceptable here.
+		 *    Any additional flags supported by PHP's `fnmatch()` function are acceptable here.
 		 *
 		 * @param null|array   $___ignore Do NOT pass this. It's for internal use only.
 		 *
@@ -812,15 +812,15 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if the directory was successfully copied, else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If the ``$dir`` given, is NOT a readable directory, or CANNOT be opened for any reason.
-		 * @throws exception If any sub-directory or file within ``$dir`` is NOT readable, or CANNOT be opened for any reason.
-		 * @throws exception If the ``$to`` directory already exists, or CANNOT be created by this routine for any reason.
+		 * @throws exception If the `$dir` given, is NOT a readable directory, or CANNOT be opened for any reason.
+		 * @throws exception If any sub-directory or file within `$dir` is NOT readable, or CANNOT be opened for any reason.
+		 * @throws exception If the `$to` directory already exists, or CANNOT be created by this routine for any reason.
 		 *
-		 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but the `.gitignore` file does NOT exist.
-		 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but it's NOT in the initial parent ``$dir``.
-		 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but the `git` command is currently NOT possible.
-		 * @throws exception If a `.gitignore` file is used for ``$exclusions``; but `git` returns a non-zero status.
-		 * @throws exception If a `.gitignore` file is used for ``$exclusions``; together w/ additional exclusion flags.
+		 * @throws exception If a `.gitignore` file is used for `$exclusions`; but the `.gitignore` file does NOT exist.
+		 * @throws exception If a `.gitignore` file is used for `$exclusions`; but it's NOT in the initial parent `$dir`.
+		 * @throws exception If a `.gitignore` file is used for `$exclusions`; but the `git` command is currently NOT possible.
+		 * @throws exception If a `.gitignore` file is used for `$exclusions`; but `git` returns a non-zero status.
+		 * @throws exception If a `.gitignore` file is used for `$exclusions`; together w/ additional exclusion flags.
 		 *    The only additional exclusion flag supported together with `.gitignore` is the `FNM_CASEFOLD` flag.
 		 * @throws exception If a copy failure of any kind occurs (e.g. we are NOT successful for any reason).
 		 *
@@ -957,7 +957,7 @@ namespace websharks_core_v000000_dev
 
 					if((!isset($___ignore['globs']) && !isset($___ignore['extra_globs'])) || !$this->©dirs_files->ignore($_dir_file, $___initial_dir_dir, $this->©var->isset_or($___ignore['globs'], array()), $this->©var->isset_or($___ignore['extra_globs'], array()), $exclusions_case_insensitive, $exclusion_x_flags))
 						if(!$exclusions || !$this->©string->in_wildcard_patterns($_dir_file_arp, $exclusions, $exclusions_case_insensitive, FALSE, $exclusion_x_flags))
-						{ // Only if this directory/file has NOT been excluded via the ``$exclusions`` array.
+						{ // Only if this directory/file has NOT been excluded via the `$exclusions` array.
 
 							if($_dir_file_is_dir) // Recursive sub-directories.
 								$this->copy_to($_dir_file, $_dir_file_to, $exclusions, $exclusions_case_insensitive, $exclusion_x_flags, $___ignore, $___initial_dir);
@@ -982,31 +982,31 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string       $stub_file Stub file path. The contents of this stub file will be used as
 		 *    the stub for the resulting PHAR file. Required for all PHARs created by this routine.
-		 *    A final call to ``__HALT_COMPILER();`` is automatically appended by this routine.
+		 *    A final call to `__HALT_COMPILER();` is automatically appended by this routine.
 		 *
 		 * @param boolean      $strip_ws Optional. Defaults to a TRUE value (highly recommended).
 		 *    If this is TRUE; any PHP files in the archive will be further reduced in filesize by this routine.
-		 *    This is made possible by the ``php_strip_whitespace()`` function.
+		 *    This is made possible by the `php_strip_whitespace()` function.
 		 *
 		 * @param boolean      $compress Optional. Defaults to a TRUE value (highly recommended).
 		 *    If this is TRUE; any compressable files in the archive will be further reduced in filesize.
 		 *
 		 * @param string|array $compressable_extensions Optional. An array of GZIP-compressable extensions.
-		 *    This will default to only those which are 100% webPhar-compatible: ``array('php', 'phps')``.
+		 *    This will default to only those which are 100% webPhar-compatible: `array('php', 'phps')`.
 		 *    Or, you can provide your own array of compressable extensions.
 		 *
 		 * @param string       $is_phar_var_suffix Optional. Defaults to `stub`.
 		 *    A global variable at the top of your PHAR stub file will be declared as follows.
-		 *    ``$GLOBALS['is_phar_'.$is_phar_var_suffix] = 'phar://'.__FILE__;`` (just a helpful identifier).
+		 *    `$GLOBALS['is_phar_'.$is_phar_var_suffix] = 'phar://'.__FILE__;` (just a helpful identifier).
 		 *
 		 * @return string The new PHAR file path; else an exception is thrown on any type of failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir`` is empty, does NOT exist; or is NOT readable for any reason.
-		 * @throws exception If ``$to`` is empty, or is NOT specified with a `.phar` extension.
-		 * @throws exception If ``$to`` parent directory does NOT exist; or is not writable.
-		 * @throws exception If ``$stub_file`` is empty, does NOT exist; or is NOT readable for any reason.
-		 * @throws exception If ``$compressable_extensions`` or ``$is_phar_var_suffix`` is empty.
+		 * @throws exception If `$dir` is empty, does NOT exist; or is NOT readable for any reason.
+		 * @throws exception If `$to` is empty, or is NOT specified with a `.phar` extension.
+		 * @throws exception If `$to` parent directory does NOT exist; or is not writable.
+		 * @throws exception If `$stub_file` is empty, does NOT exist; or is NOT readable for any reason.
+		 * @throws exception If `$compressable_extensions` or `$is_phar_var_suffix` is empty.
 		 * @throws \exception If any Phar class failures occur. The Phar class may throw exceptions.
 		 * @throws exception On any type of failure (e.g. NOT successful).
 		 *
@@ -1145,17 +1145,17 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $dir A full directory path to ZIP.
 		 *
-		 * @param string $to A new ZIP file path — to ZIP ``$dir`` into.
+		 * @param string $to A new ZIP file path — to ZIP `$dir` into.
 		 *    The directory this lives in MUST already exist and be writable.
 		 *    If this file already exists, an exception will be thrown.
 		 *
 		 * @return string New ZIP file location; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If the ``$dir`` is NOT a readable directory, or CANNOT be zipped for any reason.
-		 * @throws exception If the ``$to`` ZIP already exists, or CANNOT be created by this routine for any reason.
-		 * @throws exception If the ``$to`` ZIP does NOT end with the proper `.zip` extension.
-		 * @throws exception If the ``$to`` ZIP parent directory does NOT exist or is not writable.
+		 * @throws exception If the `$dir` is NOT a readable directory, or CANNOT be zipped for any reason.
+		 * @throws exception If the `$to` ZIP already exists, or CANNOT be created by this routine for any reason.
+		 * @throws exception If the `$to` ZIP does NOT end with the proper `.zip` extension.
+		 * @throws exception If the `$to` ZIP parent directory does NOT exist or is not writable.
 		 * @throws \exception The PclZip class may throw exceptions of it's own here.
 		 */
 		public function zip_to($dir, $to)
@@ -1225,10 +1225,10 @@ namespace websharks_core_v000000_dev
 		 * @return string Path to new directory location; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If the ``$dir`` does NOT exist; or is NOT a readable/writable directory.
-		 * @throws exception If the ``$to`` directory already exists (either as a file or directory).
-		 * @throws exception If the ``$to`` parent directory does NOT exist or is NOT writable.
-		 * @throws exception If the underlying call to PHP's ``rename()`` function fails for any reason.
+		 * @throws exception If the `$dir` does NOT exist; or is NOT a readable/writable directory.
+		 * @throws exception If the `$to` directory already exists (either as a file or directory).
+		 * @throws exception If the `$to` parent directory does NOT exist or is NOT writable.
+		 * @throws exception If the underlying call to PHP's `rename()` function fails for any reason.
 		 */
 		public function rename_to($dir, $to)
 		{
@@ -1332,13 +1332,13 @@ namespace websharks_core_v000000_dev
 		 * @param null|integer $x_flags The defaults are recommended; but extra flags can be passed in.
 		 *
 		 * @param null|integer $flags The defaults are recommended; but specific flags can be passed in if you prefer.
-		 *    The difference between ``$x_flags`` and ``$flags``; is that ``$flags`` will override all defaults;
-		 *    whereas ``$x_flags`` will simply add additional flags to the existing defaults.
+		 *    The difference between `$x_flags` and `$flags`; is that `$flags` will override all defaults;
+		 *    whereas `$x_flags` will simply add additional flags to the existing defaults.
 		 *
 		 * @return \RecursiveIteratorIterator|\RecursiveDirectoryIterator[]|\SplFileInfo[]
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir`` is NOT a directory.
+		 * @throws exception If `$dir` is NOT a directory.
 		 */
 		public function iterate($dir, $x_flags = NULL, $flags = NULL)
 		{
@@ -1361,10 +1361,10 @@ namespace websharks_core_v000000_dev
 		 * @param null|integer $x_flags The defaults are recommended; but extra flags can be passed in.
 		 *
 		 * @param null|integer $flags The defaults are recommended; but specific flags can be passed in if you prefer.
-		 *    The difference between ``$x_flags`` and ``$flags``; is that ``$flags`` will override all defaults;
-		 *    whereas ``$x_flags`` will simply add additional flags to the existing defaults.
+		 *    The difference between `$x_flags` and `$flags`; is that `$flags` will override all defaults;
+		 *    whereas `$x_flags` will simply add additional flags to the existing defaults.
 		 *
-		 * @return integer Flags for ``\RecursiveDirectoryIterator``.
+		 * @return integer Flags for `\RecursiveDirectoryIterator`.
 		 */
 		public function iteration_flags($x_flags = NULL, $flags = NULL)
 		{

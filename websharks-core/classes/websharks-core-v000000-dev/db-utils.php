@@ -95,18 +95,18 @@ namespace websharks_core_v000000_dev
 		 * @param string  $rel_id Value for the related ID column.
 		 *
 		 * @param mixed   $data Any mixed data value is fine.
-		 *    This will be passed through ``metafy()``. Converts to an array of name/value pairs.
+		 *    This will be passed through `metafy()`. Converts to an array of name/value pairs.
 		 *
 		 * @param boolean $update_on_duplicate_key Optional. Defaults to a FALSE value.
 		 *    If this is TRUE, meta values/times are updated when/if a duplicate key is encountered during insertion.
-		 *    Meta tables should each have a UNIQUE index based on their ``$rel_id_column`` and `name` columns.
+		 *    Meta tables should each have a UNIQUE index based on their `$rel_id_column` and `name` columns.
 		 *
 		 * @return string A full MySQL query, with one or more meta table insertions (NEVER empty).
 		 *    The query returned by this routine, can be fired in a single shot (inserts/updates multiple rows).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$table``, ``$rel_id_column``, or ``$rel_id`` are empty.
-		 * @throws exception If ``$table`` is invalid (i.e. non-existent).
+		 * @throws exception If `$table`, `$rel_id_column`, or `$rel_id` are empty.
+		 * @throws exception If `$table` is invalid (i.e. non-existent).
 		 * @throws exception If unable to generate meta name/value pairs.
 		 */
 		public function prep_metafy_query($table, $rel_id_column, $rel_id, $data, $update_on_duplicate_key = FALSE)
@@ -142,7 +142,7 @@ namespace websharks_core_v000000_dev
 		 * @param string $name Optional. If purging ONLY a specific meta key name.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$table``, ``$rel_id_column``, or ``$rel_id`` are empty.
+		 * @throws exception If `$table`, `$rel_id_column`, or `$rel_id` are empty.
 		 */
 		public function purge_meta_values_cache($table, $rel_id_column, $rel_id, $name = '')
 		{
@@ -164,17 +164,17 @@ namespace websharks_core_v000000_dev
 		 *    Or this can also be set to {@fw_constants::all}; indicating ALL meta values (e.g. for all names automatically).
 		 *    This defaults to a value of {@fw_constants::all}; indicating an array of all meta name/value pairs.
 		 *
-		 * @return mixed If ``$names`` is a string, we simply return a meta value matching the meta key name.
-		 *    If an array of ``$names`` (or {@fw_constants::all}) are requested, we return an associative array with each meta name/value.
+		 * @return mixed If `$names` is a string, we simply return a meta value matching the meta key name.
+		 *    If an array of `$names` (or {@fw_constants::all}) are requested, we return an associative array with each meta name/value.
 		 *    Requested meta values that do NOT exist, are still included; but they default to a FALSE boolean value.
 		 *
 		 * @note See also: {@link refresh_meta_values_cache()}, {@link insert_meta_values()}, {@link update_meta_values()}, {@link delete_meta_values()}.
 		 *    ~ These methods automatically purge cache keys filled by this routine; which is VERY important to consider.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$table``, ``$rel_id_column``, or ``$rel_id`` are empty.
-		 * @throws exception If ``$table`` is invalid (i.e. non-existent).
-		 * @throws exception If ``$names`` is empty, or if it contains an empty or non-string value.
+		 * @throws exception If `$table`, `$rel_id_column`, or `$rel_id` are empty.
+		 * @throws exception If `$table` is invalid (i.e. non-existent).
+		 * @throws exception If `$names` is empty, or if it contains an empty or non-string value.
 		 *    Meta names are ALWAYS strings (and they should NEVER be empty).
 		 */
 		public function get_meta_values($table, $rel_id_column, $rel_id, $names = self::all)
@@ -268,9 +268,9 @@ namespace websharks_core_v000000_dev
 		 * @return integer Number of rows affected by this insertion/update.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$table``, ``$rel_id_column``, or ``$rel_id`` are empty.
-		 * @throws exception If ``$table`` is invalid (i.e. non-existent).
-		 * @throws exception If ``$values`` are empty.
+		 * @throws exception If `$table`, `$rel_id_column`, or `$rel_id` are empty.
+		 * @throws exception If `$table` is invalid (i.e. non-existent).
+		 * @throws exception If `$values` are empty.
 		 */
 		public function update_meta_values($table, $rel_id_column, $rel_id, $values)
 		{
@@ -302,9 +302,9 @@ namespace websharks_core_v000000_dev
 		 * @return integer Number of rows affected by this insertion.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$table``, ``$rel_id_column``, or ``$rel_id`` are empty.
-		 * @throws exception If ``$table`` is invalid (i.e. non-existent).
-		 * @throws exception If ``$values`` are empty.
+		 * @throws exception If `$table`, `$rel_id_column`, or `$rel_id` are empty.
+		 * @throws exception If `$table` is invalid (i.e. non-existent).
+		 * @throws exception If `$values` are empty.
 		 */
 		public function insert_meta_values($table, $rel_id_column, $rel_id, $values)
 		{
@@ -339,9 +339,9 @@ namespace websharks_core_v000000_dev
 		 * @return integer The number of rows affected by this deletion.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$table``, ``$rel_id_column``, or ``$rel_id`` are empty.
-		 * @throws exception If ``$table`` is invalid (i.e. non-existent).
-		 * @throws exception If ``$names`` is empty, or if it contains an empty or non-string value.
+		 * @throws exception If `$table`, `$rel_id_column`, or `$rel_id` are empty.
+		 * @throws exception If `$table` is invalid (i.e. non-existent).
+		 * @throws exception If `$names` is empty, or if it contains an empty or non-string value.
 		 *    Meta names are ALWAYS strings (and they should NEVER be empty).
 		 */
 		public function delete_meta_values($table, $rel_id_column, $rel_id, $names = self::all)
@@ -447,8 +447,8 @@ namespace websharks_core_v000000_dev
 		 *    It's possible for this to return an empty array.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$sql_file`` is empty or invalid (i.e. NOT an SQL file).
-		 * @throws exception If ``$sql_file`` does NOT have an `sql` file extension.
+		 * @throws exception If `$sql_file` is empty or invalid (i.e. NOT an SQL file).
+		 * @throws exception If `$sql_file` does NOT have an `sql` file extension.
 		 * @throws exception If we fail to prepare queries.
 		 */
 		public function prep_sql_file_queries($sql_file)
@@ -514,14 +514,14 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Forces integer/float values deeply (in DB result sets, if applicable).
 		 *
-		 * @see ``$this->©db_tables->regex_(integer|float)_columns``.
+		 * @see `$this->©db_tables->regex_(integer|float)_columns`.
 		 *
 		 * @param mixed               $value Any value. Typically an array of results, where each result is an object or array with string keys.
-		 *    Array/object keys MUST be strings, in order to match ``$this->©db_tables->regex_(integer|float)_columns``.
+		 *    Array/object keys MUST be strings, in order to match `$this->©db_tables->regex_(integer|float)_columns`.
 		 *    Integer keys are ignored completely.
 		 *
 		 * @param null|string|integer $___key Used during recursion (this is an internal argument value).
-		 *    If any string key matches a regex pattern in ``$this->©db_tables->regex_(integer|float)_columns``;
+		 *    If any string key matches a regex pattern in `$this->©db_tables->regex_(integer|float)_columns`;
 		 *    AND, the existing associative value is numeric, this routine forces an (integer or float).
 		 *
 		 * @param boolean             $___recursion Internal use only (tracks recursion).
@@ -570,7 +570,7 @@ namespace websharks_core_v000000_dev
 		 * @return integer Number of rows that would have been returned, had a LIMIT not been applied.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$query`` is NOT a `SELECT` statement.
+		 * @throws exception If `$query` is NOT a `SELECT` statement.
 		 *
 		 * @assert ('SELECT DISTINCT `umeta_id` FROM `wp_usermeta` WHERE 1=1') > 0
 		 */
@@ -611,7 +611,7 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if the transient value was set, else FALSE by default.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$key`` is empty (or if it's too long; producing a key which exceeds DB storage requirements).
+		 * @throws exception If `$key` is empty (or if it's too long; producing a key which exceeds DB storage requirements).
 		 */
 		public function set_transient($key, $value, $expires_after = -1)
 		{
@@ -654,7 +654,7 @@ namespace websharks_core_v000000_dev
 		 * @return mixed|boolean The transient value (if NOT expired yet), else FALSE by default.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$key`` is empty.
+		 * @throws exception If `$key` is empty.
 		 */
 		public function get_transient($key)
 		{
@@ -666,7 +666,7 @@ namespace websharks_core_v000000_dev
 			$transient         = $transient_prefix.md5($key);
 			$transient_timeout = $transient_timeout_prefix.md5($key);
 
-			if(!defined('WP_INSTALLING')) // WordPress® ``get_transient()`` does this.
+			if(!defined('WP_INSTALLING')) // WordPress® `get_transient()` does this.
 			{
 				$all_options = wp_load_alloptions(); // The `alloptions` cache.
 
@@ -693,7 +693,7 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if deletion was successful, else FALSE by default.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$key`` is empty.
+		 * @throws exception If `$key` is empty.
 		 */
 		public function delete_transient($key)
 		{
@@ -790,7 +790,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
-		 * @note Called upon by the ``deactivation_uninstall()`` method below.
+		 * @note Called upon by the `deactivation_uninstall()` method below.
 		 */
 		public function delete_cron_jobs($confirmation = FALSE)
 		{

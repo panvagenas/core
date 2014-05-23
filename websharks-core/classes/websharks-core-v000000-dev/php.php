@@ -44,21 +44,21 @@ namespace websharks_core_v000000_dev
 		 * Evaluates PHP code.
 		 *
 		 * @param string  $string String (possibly containing PHP tags).
-		 *    If ``$pure_php`` is TRUE; this should NOT have PHP tags.
+		 *    If `$pure_php` is TRUE; this should NOT have PHP tags.
 		 *
 		 * @param array   $vars An array of variables to bring into the scope of evaluation.
 		 *    This is optional. It defaults to an empty array.
 		 *
 		 * @param boolean $no_tags Defaults to a FALSE value.
-		 *    If this is TRUE, the input ``$string`` should NOT include PHP tags.
+		 *    If this is TRUE, the input `$string` should NOT include PHP tags.
 		 *
 		 * @return string Output string after having been evaluated by PHP.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If unable to evaluate, according to ``can_evaluate()``.
+		 * @throws exception If unable to evaluate, according to `can_evaluate()`.
 		 *
-		 * @note This variation defaults ``$pure_php`` to a FALSE value.
-		 * @see exec() Which defaults ``$pure_php`` to a TRUE value.
+		 * @note This variation defaults `$pure_php` to a FALSE value.
+		 * @see exec() Which defaults `$pure_php` to a TRUE value.
 		 *
 		 * @assert ("<?php echo 'hello'; ?>") === 'hello'
 		 */
@@ -80,7 +80,7 @@ namespace websharks_core_v000000_dev
 
 			throw $this->©exception(
 				$this->method(__FUNCTION__).'#eval_missing', get_defined_vars(),
-				$this->__( // Let's do a little explaining here. Why do we NEED ``eval()``?
+				$this->__( // Let's do a little explaining here. Why do we NEED `eval()`?
 					'The PHP `eval()` function (an application requirement) has been disabled on this server.'.
 					' Please check with your hosting provider to resolve this issue and have the PHP `eval()` function enabled.').
 				' '.$this->__('The use of `eval()` in this software is limited to areas where it is absolutely necessary to achieve a desired functionality.'.
@@ -130,7 +130,7 @@ namespace websharks_core_v000000_dev
 		public function _hilite_shortcodes($m)
 		{
 			// Commenting this out for performance.
-			// This is used as a callback for ``preg_replace()``, so it's NOT absolutely necessary.
+			// This is used as a callback for `preg_replace()`, so it's NOT absolutely necessary.
 			// $this->check_arg_types('array', func_get_args());
 
 			return '<span style="color:#946201;">'.$m[0].'</span>';

@@ -137,7 +137,7 @@ namespace websharks_core_v000000_dev
 		 * Enqueues pro update/sync notice.
 		 *
 		 * @note This does NOT perform any tests against the current framework and/or pro add-on.
-		 *    Tests should be performed BEFORE calling upon this method. See ``load_pro_include_file_if_active()``.
+		 *    Tests should be performed BEFORE calling upon this method. See `load_pro_include_file_if_active()`.
 		 */
 		public function enqueue_pro_update_sync_notice()
 		{
@@ -304,7 +304,7 @@ namespace websharks_core_v000000_dev
 		 * @param string  $password Optional. A new (i.e. recently submitted) password for the plugin site (plain text).
 		 *
 		 * @param boolean $update Optional. This defaults to a FALSE value.
-		 *    If this is TRUE, and ``$username`` or ``$password`` are passed in, we'll update the database with the new values.
+		 *    If this is TRUE, and `$username` or `$password` are passed in, we'll update the database with the new values.
 		 *
 		 * @return array Array containing two elements: `username`, `password` (plain text).
 		 */
@@ -344,7 +344,7 @@ namespace websharks_core_v000000_dev
 		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side styles.
 		 *
 		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
+		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on `$needs`).
 		 */
 		public function needs_front_side_styles($needs, $theme = '')
 		{
@@ -358,7 +358,7 @@ namespace websharks_core_v000000_dev
 			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__front_side', $filter);
 
 			$components = $this->©styles->front_side_components;
-			if($theme) // A specific theme will be enqueued or dequeued (depending on ``$needs``).
+			if($theme) // A specific theme will be enqueued or dequeued (depending on `$needs`).
 				$components[] = $theme; // Add to components.
 
 			if($needs) // Enqueue or dequeue.
@@ -373,7 +373,7 @@ namespace websharks_core_v000000_dev
 		 *    The internal default is FALSE. This MUST be set to TRUE, to enable stand-alone styles.
 		 *
 		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
+		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on `$needs`).
 		 */
 		public function needs_stand_alone_styles($needs, $theme = '')
 		{
@@ -387,7 +387,7 @@ namespace websharks_core_v000000_dev
 			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__stand_alone', $filter);
 
 			$components = $this->©styles->stand_alone_components;
-			if($theme) // A specific theme will be enqueued or dequeued (depending on ``$needs``).
+			if($theme) // A specific theme will be enqueued or dequeued (depending on `$needs`).
 				$components[] = $theme; // Add to components.
 
 			if($needs) // Enqueue or dequeue.
@@ -412,7 +412,7 @@ namespace websharks_core_v000000_dev
 			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side');
 			add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side', $filter);
 
-			if($needs) // Enqueue or dequeue (based on ``$needs``).
+			if($needs) // Enqueue or dequeue (based on `$needs`).
 				$this->©scripts->enqueue($this->©scripts->front_side_components);
 			else $this->©scripts->dequeue($this->©scripts->front_side_components);
 		}
@@ -434,7 +434,7 @@ namespace websharks_core_v000000_dev
 			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__stand_alone');
 			add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__stand_alone', $filter);
 
-			if($needs) // Enqueue or dequeue (based on ``$needs``).
+			if($needs) // Enqueue or dequeue (based on `$needs`).
 				$this->©scripts->enqueue($this->©scripts->stand_alone_components);
 			else $this->©scripts->dequeue($this->©scripts->stand_alone_components);
 		}
@@ -446,7 +446,7 @@ namespace websharks_core_v000000_dev
 		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side scripts/styles.
 		 *
 		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
+		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on `$needs`).
 		 */
 		public function needs_front_side_styles_scripts($needs, $theme = '')
 		{
@@ -463,7 +463,7 @@ namespace websharks_core_v000000_dev
 		 *    The internal default is FALSE. This MUST be set to TRUE, to enable stand-alone scripts/styles.
 		 *
 		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on ``$needs``).
+		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on `$needs`).
 		 */
 		public function needs_stand_alone_styles_scripts($needs, $theme = '')
 		{

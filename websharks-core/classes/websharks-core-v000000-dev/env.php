@@ -287,7 +287,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Determines whether or not this is a multisite farm.
 		 *
-		 * @return boolean TRUE if ``MULTISITE_FARM`` is TRUE inside `/wp-config.php`, else FALSE.
+		 * @return boolean TRUE if `MULTISITE_FARM` is TRUE inside `/wp-config.php`, else FALSE.
 		 *
 		 * @assert () === FALSE
 		 */

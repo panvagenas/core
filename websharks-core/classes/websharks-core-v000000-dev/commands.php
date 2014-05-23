@@ -193,7 +193,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return string|array|errors The default behavior of this function is to simply return a string that contains any output received from the command line routine.
 		 *    The return value of this function will depend very much on the command that was actually called upon.
-		 *    ~ And, of course, also based on the argument values: ``$return_array``, ``$return_errors``.
+		 *    ~ And, of course, also based on the argument values: `$return_array`, `$return_errors`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -205,7 +205,7 @@ namespace websharks_core_v000000_dev
 			$this->check_arg_types('string:!empty', 'string', 'boolean', 'boolean',
 			                       array('string', 'null'), array('array', 'null'), array('array', 'null'), func_get_args());
 
-			// Bypass each of these in the ``proc_open()`` call with NULL values (if they are empty).
+			// Bypass each of these in the `proc_open()` call with NULL values (if they are empty).
 
 			$cwd   = $this->©var->is_not_empty_or($cwd, NULL);
 			$env   = $this->©var->is_not_empty_or($env, NULL);
@@ -271,7 +271,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string  $args Command and arguments; or only the arguments.
 		 *    It is NOT necessary to prefix this with `git`; this routine will handle this automatically.
-		 *    If you do pass `git`; it will be removed automatically and replaced with ``$this->git``.
+		 *    If you do pass `git`; it will be removed automatically and replaced with `$this->git`.
 		 *
 		 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
 		 *    This is the working directory from which GIT will be called upon (i.e. the repo directory).
@@ -280,10 +280,10 @@ namespace websharks_core_v000000_dev
 		 *    The default behavior of this function is to simply return a string that contains any output received from the command line routine.
 		 *
 		 * @return string|array The output from GIT; always a string. However, this will thrown an exception if GIT returns a non-zero status.
-		 *    If ``$return_array`` is TRUE, we simply return the full array of connection details, regardless of what GIT returns.
+		 *    If `$return_array` is TRUE, we simply return the full array of connection details, regardless of what GIT returns.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception Only if ``$return_array`` is FALSE; and GIT returns a non-zero status.
+		 * @throws exception Only if `$return_array` is FALSE; and GIT returns a non-zero status.
 		 *    We ignore GIT error messages; because GIT writes its progress to STDERR.
 		 *    Thus, STDERR really should NOT be used to determine GIT status.
 		 */

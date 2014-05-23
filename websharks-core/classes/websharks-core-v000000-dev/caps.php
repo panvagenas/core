@@ -30,7 +30,7 @@ namespace websharks_core_v000000_dev
 		 * @param string $custom_cap Our own custom capability.
 		 *
 		 * @param string $context Optional context, which can be useful in some cases.
-		 *    A ``$context`` is particularly helpful when applying filters.
+		 *    A `$context` is particularly helpful when applying filters.
 		 *
 		 * @return string The WordPress® capability that we mapped to.
 		 *    Or a custom capability mapped by a custom filter.

@@ -166,11 +166,11 @@ namespace websharks_core_v000000_dev
 		 * User object constructor. Please read carefully.
 		 *
 		 * @param object|array              $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @param null|integer              $user_id Defaults to NULL. A specific user?
-		 *    If this and ``$by``, ``$value`` are all NULL, we construct an instance for the current user.
+		 *    If this and `$by`, `$value` are all NULL, we construct an instance for the current user.
 		 *
 		 * @param null|string               $by Search for a user, by a particular type of value?
 		 *    For further details, please see {@link user_utils::get_id_by()}.
@@ -184,8 +184,8 @@ namespace websharks_core_v000000_dev
 		 *    See also {@link $data}. It IS possible to define custom {@link $data} keys w/ this parameter.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$default_properties`` contains invalid data types.
-		 * @throws exception If ``$default_properties`` contains undefined property keys.
+		 * @throws exception If `$default_properties` contains invalid data types.
+		 * @throws exception If `$default_properties` contains undefined property keys.
 		 */
 		public function __construct($___instance_config, $user_id = NULL, $by = NULL, $value = NULL, $default_properties = array())
 		{
@@ -304,7 +304,7 @@ namespace websharks_core_v000000_dev
 		 * Populates user object properties.
 		 *
 		 * @extenders Can be overridden by class extenders.
-		 * @note Class extenders may wish to populate with ``$this->args['by']``, ``$this->args['value']`` in some cases.
+		 * @note Class extenders may wish to populate with `$this->args['by']`, `$this->args['value']` in some cases.
 		 *    The core does NOT handle this on its own however (an extender is required).
 		 *
 		 * @param array $default_properties Optional. Any default and/or custom properties.
@@ -355,7 +355,7 @@ namespace websharks_core_v000000_dev
 			}
 			else // Else, there is nothing more we can populate in this case.
 			{
-				// Class extenders may wish to populate with ``$this->args['by']``, ``$this->args['value']``.
+				// Class extenders may wish to populate with `$this->args['by']`, `$this->args['value']`.
 				// The core does NOT handle this on its own however (an extender is required).
 			}
 		}
@@ -385,7 +385,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return boolean TRUE if this user has an email address, else FALSE.
 		 *
-		 * @note This is really just for internal standards. It's called upon by ``is_populated()``.
+		 * @note This is really just for internal standards. It's called upon by `is_populated()`.
 		 *
 		 * @note Any user with an ID, will by definition,
 		 *    also have these non-empty properties:
@@ -463,9 +463,9 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Instantiated with ``$this->args['by']``, ``$this->args['value']``?
+		 * Instantiated with `$this->args['by']`, `$this->args['value']`?
 		 *
-		 * @return boolean TRUE if this was instantiated with ``$this->args['by']``, ``$this->args['value']``, else FALSE.
+		 * @return boolean TRUE if this was instantiated with `$this->args['by']`, `$this->args['value']`, else FALSE.
 		 *
 		 * @assert () === FALSE
 		 */
@@ -564,7 +564,7 @@ namespace websharks_core_v000000_dev
 						break; // Break switch handler.
 
 					case 'string': // Associative component/property key.
-						// The ``$_component_or_value`` is a newly refreshed property value.
+						// The `$_component_or_value` is a newly refreshed property value.
 						// The new value MUST have a data type matching the existing value data type.
 
 						if(!$this->©string->is_not_empty($_component_or_key))
@@ -703,12 +703,12 @@ namespace websharks_core_v000000_dev
 		 *  • (string)`description` Optional. About the user (i.e. biographical information).
 		 *
 		 *  • (array)`options` Optional associative array. Any additional user option values.
-		 *       These are stored via ``update_user_option()`` (e.g. blog-specific meta values).
+		 *       These are stored via `update_user_option()` (e.g. blog-specific meta values).
 		 *
 		 *  • (array)`meta` Optional associative array. Any additional user meta values.
-		 *       These are stored via ``update_user_meta()`` (e.g. site-wide meta values).
+		 *       These are stored via `update_user_meta()` (e.g. site-wide meta values).
 		 *
-		 *  • (array)`data` Optional associative array. Any additional data you'd like to pass through ``wp_update_user()``.
+		 *  • (array)`data` Optional associative array. Any additional data you'd like to pass through `wp_update_user()`.
 		 *       See: http://codex.wordpress.org/Function_Reference/wp_update_user
 		 *       See: http://codex.wordpress.org/Function_Reference/wp_insert_user
 		 *
@@ -766,9 +766,9 @@ namespace websharks_core_v000000_dev
 
 			$old_user_data = (object)(array)$this; // Copy of all object properties (for hooks).
 
-			// Build array of `data` for our call to ``wp_update_user()`` below.
+			// Build array of `data` for our call to `wp_update_user()` below.
 
-			$data = array_merge(array( // For ``wp_update_user()`` below.
+			$data = array_merge(array( // For `wp_update_user()` below.
 			                           'ID'           => $this->ID, // This user's ID.
 			                           'role'         => ((isset($args['role'])) ? $args['role'] : NULL),
 			                           'user_email'   => ((isset($args['email']) && strlen($args['email'])) ? (string)substr($args['email'], 0, 100) : NULL),
@@ -892,7 +892,7 @@ namespace websharks_core_v000000_dev
 					);
 				return $this->©error(
 					$this->method(__FUNCTION__).'#wp_error_'.$wp_update_user->get_error_code(), array_merge(get_defined_vars(), array('user' => $this)),
-					$wp_update_user->get_error_message() // Message from ``wp_update_user()``.
+					$wp_update_user->get_error_message() // Message from `wp_update_user()`.
 				);
 			}
 			$this->do_action('update', $this, array_merge(get_defined_vars(), array('user' => $this)));
@@ -925,13 +925,13 @@ namespace websharks_core_v000000_dev
 		 * Handles user profile updates.
 		 *
 		 * @param array  $args An array of argument values that need to be updated.
-		 *    See ``$this->update()`` for further details.
+		 *    See `$this->update()` for further details.
 		 *
 		 * @param string $optional_requirements An encrypted/serialized array of optional fields, which we've decided to require.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If the user has no ID (i.e. cannot update profile in this case).
-		 * @throws exception If ``$args`` contains data NOT allowed during basic profile updates.
+		 * @throws exception If `$args` contains data NOT allowed during basic profile updates.
 		 *    Keys NOT allowed: `ip`, `role`, `activation_key`, `options`, `meta`, `data`.
 		 */
 		public function ®profile_update($args, $optional_requirements = '')
@@ -958,7 +958,7 @@ namespace websharks_core_v000000_dev
 			unset($_optional_requirements); // Housekeeping.
 
 			if($this->©errors->exist_in($response = $this->update($args, $optional_requirements)))
-				$errors = $response; // Define ``$errors`` for template.
+				$errors = $response; // Define `$errors` for template.
 
 			else $successes = $this->©success( // We have success. Profile now up-to-date :-)
 				$this->method(__FUNCTION__).'#success', array_merge(get_defined_vars(), array('user' => $this)),
@@ -971,7 +971,7 @@ namespace websharks_core_v000000_dev
 		 * Handles user updates (for general/administrative purposes).
 		 *
 		 * @param array  $args An array of argument values that need to be updated.
-		 *    See ``$this->update()`` for further details.
+		 *    See `$this->update()` for further details.
 		 *
 		 * @param string $optional_requirements An encrypted/serialized array of optional fields, which we've decided to require.
 		 *
@@ -997,7 +997,7 @@ namespace websharks_core_v000000_dev
 			unset($_optional_requirements); // Housekeeping.
 
 			if($this->©errors->exist_in($response = $this->update($args, $optional_requirements)))
-				$errors = $response; // Define ``$errors`` for template use.
+				$errors = $response; // Define `$errors` for template use.
 
 			else $successes = $this->©success( // We have success. The user's profile has been updated :-)
 				$this->method(__FUNCTION__).'#success', array_merge(get_defined_vars(), array('user' => $this)),
@@ -1011,7 +1011,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $key An option key/name.
 		 *
-		 * @return mixed Data from call to ``get_user_option()``.
+		 * @return mixed Data from call to `get_user_option()`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If this user does NOT have an ID.
@@ -1033,7 +1033,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $key An option key/name.
 		 * @param mixed  $value An option value (mixed data types ok).
-		 *    If ``$value`` is NULL, the option ``$key`` is deleted completely.
+		 *    If `$value` is NULL, the option `$key` is deleted completely.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If this user does NOT have an ID.
@@ -1070,7 +1070,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $key A meta key/name.
 		 *
-		 * @return mixed Data from call to ``get_user_meta()``.
+		 * @return mixed Data from call to `get_user_meta()`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If this user does NOT have an ID.
@@ -1092,7 +1092,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $key A meta key/name.
 		 * @param mixed  $value A meta value (mixed data types ok).
-		 *    If ``$value`` is NULL, the meta ``$key`` is deleted completely.
+		 *    If `$value` is NULL, the meta `$key` is deleted completely.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If this user does NOT have an ID.

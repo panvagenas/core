@@ -21,7 +21,7 @@ namespace websharks_core_v000000_dev
 	 * @since 120318
 	 *
 	 * @note Dynamic properties/methods are defined explicitly here.
-	 *    This way IDEs jive with ``__get()``, ``__call()`` and ``__callStatic()``.
+	 *    This way IDEs jive with `__get()`, `__call()` and `__callStatic()`.
 	 *
 	 * @note Magic properties/methods should be declared with a FQN because PhpStorm™ seems to have trouble
 	 *    identifying them throughout the entire codebase w/o a FQN (for whatever reason — a possible bug).
@@ -390,7 +390,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param mixed  $value The new value for this magic/overload property.
 		 *
-		 * @return mixed The ``$value`` assigned to the magic/overload ``$property``.
+		 * @return mixed The `$value` assigned to the magic/overload `$property`.
 		 *
 		 * @throws exception If attempting to set magic/overload properties (this is NOT allowed).
 		 *    This magic/overload method is currently here ONLY to protect magic/overload property values.

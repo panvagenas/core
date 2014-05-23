@@ -54,8 +54,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array    $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @param string          $code Optional error code (string, NO integers please).
 		 *
@@ -66,7 +66,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param null|\exception $previous Optional previous exception (if re-thrown).
 		 *
-		 * @throws \exception If there is a missing and/or invalid ``$___instance_config``.
+		 * @throws \exception If there is a missing and/or invalid `$___instance_config`.
 		 * @throws \exception A standard exception class; if any additional issues occur during this type of exception.
 		 *    This prevents endless exceptions, which may occur when/if we make use of a plugin instance.
 		 */

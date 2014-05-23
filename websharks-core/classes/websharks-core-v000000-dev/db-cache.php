@@ -34,8 +34,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -86,7 +86,7 @@ namespace websharks_core_v000000_dev
 		 * @param string $group Name of a cache group for this entry.
 		 *    This is optional. Defaults to `default` group.
 		 *
-		 * @return mixed Reverberates input ``$value`` back to the caller.
+		 * @return mixed Reverberates input `$value` back to the caller.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */

@@ -46,8 +46,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @throws exception If GMP extension is not loaded up.
 		 */
@@ -116,12 +116,12 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Two, to the power of a number (e.g. 2^``$number``).
+		 * Two, to the power of a number (e.g. 2^`$number`).
 		 *
 		 * @param integer $integer Integer value indicating powers of 2.
-		 *    ~ ``gmp_pow()`` does NOT allow arbitrary precision; integer only.
+		 *    ~ `gmp_pow()` does NOT allow arbitrary precision; integer only.
 		 *
-		 * @return string Numeric string (e.g. 2^``$number``).
+		 * @return string Numeric string (e.g. 2^`$number`).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -219,7 +219,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string|resource $number Numeric string; or GMP resource.
 		 *
-		 * @return boolean TRUE if ``$number`` is a power of 2.
+		 * @return boolean TRUE if `$number` is a power of 2.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */

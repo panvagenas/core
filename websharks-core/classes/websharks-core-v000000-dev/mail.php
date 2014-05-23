@@ -51,7 +51,7 @@ namespace websharks_core_v000000_dev
 		 *       Or, this can also be an array of attachment configurations.
 		 *          Possible attachment configuration elements include.
 		 *             • `path` (absolute or relative server path to a file, NOT empty).
-		 *             • `name` (optional string name for this file, defaults to ``basename()``).
+		 *             • `name` (optional string name for this file, defaults to `basename()`).
 		 *             • `encoding` (optional string encoding type, defaults to `base64`).
 		 *             • `mime_type` (optional string MIME type, defaults to `application/octet-stream`).
 		 *
@@ -204,7 +204,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a string that may form an email address.
 		 *    Actually, objects can't, but this recurses into objects.

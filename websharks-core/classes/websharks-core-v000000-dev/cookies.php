@@ -32,7 +32,7 @@ namespace websharks_core_v000000_dev
 		 * @return string Cookie string value, else an empty string.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$name`` is empty.
+		 * @throws exception If `$name` is empty.
 		 */
 		public function get($name)
 		{
@@ -55,7 +55,7 @@ namespace websharks_core_v000000_dev
 		 *    If this is set to anything <= `0`, the cookie will expire automatically after the current browser session.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$name`` is empty.
+		 * @throws exception If `$name` is empty.
 		 */
 		public function set($name, $value, $expires_after = 31556926)
 		{
@@ -81,7 +81,7 @@ namespace websharks_core_v000000_dev
 		 * @param string $name Name of the cookie.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$name`` is empty.
+		 * @throws exception If `$name` is empty.
 		 */
 		public function delete($name)
 		{

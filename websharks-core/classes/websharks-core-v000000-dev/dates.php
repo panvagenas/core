@@ -27,34 +27,34 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Date translations (in local time, as configured by WordPress®).
 		 *
-		 * @param string  $format Date format. Same formats allowed by PHP's ``date()`` function.
-		 *    This is optional. Defaults to: ``get_option('date_format').' '.get_option('time_format')``.
+		 * @param string  $format Date format. Same formats allowed by PHP's `date()` function.
+		 *    This is optional. Defaults to: `get_option('date_format').' '.get_option('time_format')`.
 		 *
-		 * @note There are several PHP constants that can be used here, making ``$format`` easier to deal with.
+		 * @note There are several PHP constants that can be used here, making `$format` easier to deal with.
 		 *    Please see: {@link http://www.php.net/manual/en/class.datetime.php#datetime.constants.types}.
 		 *
 		 * @param integer $time Optional timestamp. A UNIX timestamp, based on UTC time.
 		 *    This defaults to the current time if NOT passed in explicitly.
-		 *    WARNING: Please make sure ``$time`` is based on UTC.
+		 *    WARNING: Please make sure `$time` is based on UTC.
 		 *
 		 * @param boolean $utc Defaults to FALSE (recommended).
 		 *    If this is TRUE the time will be returned in UTC time instead of local time.
 		 *
 		 * @return string Date translation (in local time, as configured by WordPress®).
-		 *    Or, if ``$utc`` is TRUE the time will be returned in UTC time, instead of local time.
+		 *    Or, if `$utc` is TRUE the time will be returned in UTC time, instead of local time.
 		 *
-		 * @note This uses ``date_i18n()`` from WordPress®. We supplement this built-in WordPress® function,
-		 *    by forcing the ``$time`` argument value at all times. WordPress® has some issues with its default for ``$time``,
-		 *    but we can force ``$time`` to resolve those problems completely here.
+		 * @note This uses `date_i18n()` from WordPress®. We supplement this built-in WordPress® function,
+		 *    by forcing the `$time` argument value at all times. WordPress® has some issues with its default for `$time`,
+		 *    but we can force `$time` to resolve those problems completely here.
 		 *
-		 * @difference Unless ``$utc`` is TRUE, this method always adds the UTC offset to ``$time``,
+		 * @difference Unless `$utc` is TRUE, this method always adds the UTC offset to `$time`,
 		 *    which is something that WordPress® does NOT do by default. Making this a better alternative.
 		 *
-		 * @WARNING WordPress® has a broken implementation of ``$utc``. Dates with a ``$format`` that include a timezone char,
-		 *    like `O` or `T`, are always represented with the blog's timezone (even when ``$utc`` is TRUE).
-		 *    This is wrong, because ``$utc`` being TRUE should be indicated with a UTC timezone.
+		 * @WARNING WordPress® has a broken implementation of `$utc`. Dates with a `$format` that include a timezone char,
+		 *    like `O` or `T`, are always represented with the blog's timezone (even when `$utc` is TRUE).
+		 *    This is wrong, because `$utc` being TRUE should be indicated with a UTC timezone.
 		 *
-		 *    We fix this issue here by removing timezone chars from ``$format``, when ``$utc`` is TRUE.
+		 *    We fix this issue here by removing timezone chars from `$format`, when `$utc` is TRUE.
 		 *    Once the translation is completed, we add ` UTC` onto the end as a quick fix.
 		 *    TODO Review again upon release of WP 4. Hoping for a better solution.
 		 *
@@ -82,15 +82,15 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Date translations (in UTC time). See: {@link i18n()}.
 		 *
-		 * @param string  $format Date format. Same formats allowed by PHP's ``date()`` function.
-		 *    This is optional. Defaults to: ``get_option('date_format').' '.get_option('time_format')``.
+		 * @param string  $format Date format. Same formats allowed by PHP's `date()` function.
+		 *    This is optional. Defaults to: `get_option('date_format').' '.get_option('time_format')`.
 		 *
-		 * @note There are several PHP constants that can be used here, making ``$format`` easier to deal with.
+		 * @note There are several PHP constants that can be used here, making `$format` easier to deal with.
 		 *    Please see: {@link http://www.php.net/manual/en/class.datetime.php#datetime.constants.types}.
 		 *
 		 * @param integer $time Optional timestamp. A UNIX timestamp, based on UTC time.
 		 *    This defaults to the current time if NOT passed in explicitly.
-		 *    WARNING: Please make sure ``$time`` is based on UTC.
+		 *    WARNING: Please make sure `$time` is based on UTC.
 		 *
 		 * @return string See: {@link i18n()}.
 		 */

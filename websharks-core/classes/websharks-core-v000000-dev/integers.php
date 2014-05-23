@@ -25,14 +25,14 @@ namespace websharks_core_v000000_dev
 	class integers extends framework
 	{
 		/**
-		 * Short version of ``(isset() && is_integer())``.
+		 * Short version of `(isset() && is_integer())`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed $var A variable by reference (no NOTICE).
-		 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @return boolean TRUE if the variable ``(isset() && is_integer())``, else FALSE.
+		 * @return boolean TRUE if the variable `(isset() && is_integer())`, else FALSE.
 		 *
 		 * @assert $string = '';
 		 *    ($string) === FALSE
@@ -54,11 +54,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->is()``, but this allows an expression.
+		 * Same as `$this->is()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @return boolean See ``$this->is()`` for further details.
+		 * @return boolean See `$this->is()` for further details.
 		 */
 		public function ¤is($var)
 		{
@@ -69,14 +69,14 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Short version of ``(!empty() && is_integer())``.
+		 * Short version of `(!empty() && is_integer())`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed $var A variable by reference (no NOTICE).
-		 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @return boolean TRUE if the variable is ``(!empty() && is_integer())``, else FALSE.
+		 * @return boolean TRUE if the variable is `(!empty() && is_integer())`, else FALSE.
 		 *
 		 * @assert $string = '';
 		 *    ($string) === FALSE
@@ -104,11 +104,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->is_not_empty()``, but this allows an expression.
+		 * Same as `$this->is_not_empty()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @return boolean See ``$this->is_not_empty()`` for further details.
+		 * @return boolean See `$this->is_not_empty()` for further details.
 		 */
 		public function ¤is_not_empty($var)
 		{
@@ -119,19 +119,19 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Short version of ``if(isset() && is_integer()){} else{}``.
+		 * Short version of `if(isset() && is_integer()){} else{}`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed   $var A variable by reference (no NOTICE).
-		 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @param mixed   $or Defaults to `0`. This is the return value if ``$var`` is NOT set, or is NOT an integer.
+		 * @param mixed   $or Defaults to `0`. This is the return value if `$var` is NOT set, or is NOT an integer.
 		 *
-		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
+		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of `$var` will be set (via reference) to the return value.
 		 *
-		 * @return integer|mixed Value of ``$var``, if ``(isset() && is_integer())``.
-		 *    Else returns ``$or`` (which could be any mixed data type — defaults to `0`).
+		 * @return integer|mixed Value of `$var`, if `(isset() && is_integer())`.
+		 *    Else returns `$or` (which could be any mixed data type — defaults to `0`).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -177,15 +177,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->isset_or()``, but this allows an expression.
+		 * Same as `$this->isset_or()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @param mixed $or This is the return value if ``$var`` is NOT set, or is NOT an integer.
+		 * @param mixed $or This is the return value if `$var` is NOT set, or is NOT an integer.
 		 *
-		 * @note This does NOT support the ``$set_var`` parameter, because ``$var`` is NOT by reference here.
+		 * @note This does NOT support the `$set_var` parameter, because `$var` is NOT by reference here.
 		 *
-		 * @return integer|mixed See ``$this->isset_or()`` for further details.
+		 * @return integer|mixed See `$this->isset_or()` for further details.
 		 */
 		public function ¤isset_or($var, $or = 0)
 		{
@@ -196,19 +196,19 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Short version of ``if(!empty() && is_integer()){} else{}``.
+		 * Short version of `if(!empty() && is_integer()){} else{}`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed   $var A variable by reference (no NOTICE).
-		 *    If ``$var`` was NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` was NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @param mixed   $or Defaults to `0`. This is the return value if ``$var`` IS empty, or is NOT an integer.
+		 * @param mixed   $or Defaults to `0`. This is the return value if `$var` IS empty, or is NOT an integer.
 		 *
-		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
+		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of `$var` will be set (via reference) to the return value.
 		 *
-		 * @return integer|mixed Value of ``$var``, if ``(!empty() && is_integer())``.
-		 *    Else returns ``$or`` (which could be any mixed data type — defaults to `0`).
+		 * @return integer|mixed Value of `$var`, if `(!empty() && is_integer())`.
+		 *    Else returns `$or` (which could be any mixed data type — defaults to `0`).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -254,15 +254,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->is_not_empty_or()``, but this allows an expression.
+		 * Same as `$this->is_not_empty_or()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @param mixed $or This is the return value if ``$var`` IS empty, or is NOT an integer.
+		 * @param mixed $or This is the return value if `$var` IS empty, or is NOT an integer.
 		 *
-		 * @note This does NOT support the ``$set_var`` parameter, because ``$var`` is NOT by reference here.
+		 * @note This does NOT support the `$set_var` parameter, because `$var` is NOT by reference here.
 		 *
-		 * @return integer|mixed See ``$this->is_not_empty_or()`` for further details.
+		 * @return integer|mixed See `$this->is_not_empty_or()` for further details.
 		 */
 		public function ¤is_not_empty_or($var, $or = 0)
 		{
@@ -275,7 +275,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check if integer values are set.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -339,11 +339,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->are_set()``, but this allows expressions.
+		 * Same as `$this->are_set()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->are_set()`` for further details.
+		 * @return boolean See `$this->are_set()` for further details.
 		 */
 		public function ¤are_set($a)
 		{
@@ -358,7 +358,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check if integer values are NOT empty.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -420,11 +420,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->are_not_empty()``, but this allows expressions.
+		 * Same as `$this->are_not_empty()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->are_not_empty()`` for further details.
+		 * @return boolean See `$this->are_not_empty()` for further details.
 		 */
 		public function ¤are_not_empty($a)
 		{
@@ -439,12 +439,12 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check if integer values are NOT empty in integers/arrays/objects.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -536,11 +536,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->are_not_empty_in()``, but this allows expressions.
+		 * Same as `$this->are_not_empty_in()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->are_not_empty_in()`` for further details.
+		 * @return boolean See `$this->are_not_empty_in()` for further details.
 		 */
 		public function ¤are_not_empty_in($a)
 		{
@@ -564,7 +564,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * NOT empty coalesce.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -628,11 +628,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->not_empty_coalesce()``, but this allows expressions.
+		 * Same as `$this->not_empty_coalesce()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->not_empty_coalesce()`` for further details.
+		 * @return boolean See `$this->not_empty_coalesce()` for further details.
 		 */
 		public function ¤not_empty_coalesce($a)
 		{
@@ -647,7 +647,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Is set coalesce.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -711,11 +711,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->isset_coalesce()``, but this allows expressions.
+		 * Same as `$this->isset_coalesce()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->isset_coalesce()`` for further details.
+		 * @return boolean See `$this->isset_coalesce()` for further details.
 		 */
 		public function ¤isset_coalesce($a)
 		{
@@ -751,7 +751,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed $value Any value can be converted to an integer.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -824,11 +824,11 @@ namespace websharks_core_v000000_dev
 		 * @param boolean       $format_string Optional. Defaults to a FALSE value.
 		 *    If this is TRUE, a string is returned; and it is formatted (e.g. `[percent]%`).
 		 *
-		 * @return integer|float Percentage. A float if ``$precision`` is passed; else an integer (default behavior).
-		 *    If ``$format_string`` is TRUE, the value is always converted to string format (e.g. `[percent]%`).
+		 * @return integer|float Percentage. A float if `$precision` is passed; else an integer (default behavior).
+		 *    If `$format_string` is TRUE, the value is always converted to string format (e.g. `[percent]%`).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$of`` is empty (e.g. NOT possible to calculate).
+		 * @throws exception If `$of` is empty (e.g. NOT possible to calculate).
 		 */
 		public function percent($value, $of = 100, $precision = 0, $format_string = FALSE)
 		{
@@ -855,8 +855,8 @@ namespace websharks_core_v000000_dev
 		 * @param boolean       $format_string Optional. Defaults to a FALSE value.
 		 *    If this is TRUE, a string is returned; and it is formatted (e.g. `+|-[percent]%`).
 		 *
-		 * @return integer|float|string Percentage. A float if ``$precision`` is passed; else an integer (default behavior).
-		 *    If ``$format_string`` is TRUE, the value is always converted to string format (e.g. `+|-[percent]%`).
+		 * @return integer|float|string Percentage. A float if `$precision` is passed; else an integer (default behavior).
+		 *    If `$format_string` is TRUE, the value is always converted to string format (e.g. `+|-[percent]%`).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */

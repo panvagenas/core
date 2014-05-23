@@ -29,14 +29,14 @@ namespace websharks_core_v000000_dev
 		 *
 		 * Uses the Google® currency conversion API.
 		 *
-		 * @param float  $amount The amount, in ``$from`` currency.
+		 * @param float  $amount The amount, in `$from` currency.
 		 * @param string $from A 3 character currency code.
 		 * @param string $to A 3 character currency code.
 		 *
-		 * @return float Amount in ``$to``, after having been converted.
+		 * @return float Amount in `$to`, after having been converted.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$from`` or ``$to`` are empty strings, or NOT 3 characters in length.
+		 * @throws exception If `$from` or `$to` are empty strings, or NOT 3 characters in length.
 		 * @throws exception If currency conversion fails for any reason.
 		 *
 		 * @see http://www.google.com/finance/converter
@@ -104,21 +104,21 @@ namespace websharks_core_v000000_dev
 		 *    the amount will be prefixed with a currency symbol,
 		 *    and suffixed with the currency code.
 		 *
-		 * @param boolean $prefix If ``$currency`` is passed in, should we add a prefix?
-		 *    This defaults to TRUE, when ``$currency`` is passed in.
+		 * @param boolean $prefix If `$currency` is passed in, should we add a prefix?
+		 *    This defaults to TRUE, when `$currency` is passed in.
 		 *    Setting this to FALSE will exclude the prefix.
 		 *
-		 * @param boolean $suffix If ``$currency`` is passed in, should we add a suffix?
-		 *    This defaults to TRUE, when ``$currency`` is passed in.
+		 * @param boolean $suffix If `$currency` is passed in, should we add a suffix?
+		 *    This defaults to TRUE, when `$currency` is passed in.
 		 *    Setting this to FALSE will exclude the suffix.
 		 *
 		 * @return string A numeric string representation, with two decimal places.
 		 *    The resulting amount is rounded up, to the nearest penny.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$currency`` is passed with a value that is NOT 3 characters in length.
-		 * @throws exception If ``$currency`` is passed with a value that is NOT a currently supported currency.
-		 * @throws exception See ``get()`` method for further details.
+		 * @throws exception If `$currency` is passed with a value that is NOT 3 characters in length.
+		 * @throws exception If `$currency` is passed with a value that is NOT a currently supported currency.
+		 * @throws exception See `get()` method for further details.
 		 *
 		 * @assert (1.0) === '1.00'
 		 * @assert (1.014) === '1.01'
@@ -174,9 +174,9 @@ namespace websharks_core_v000000_dev
 		 * @return string|array Currency component(s).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$currency`` is passed with a value that is NOT 3 characters in length.
-		 * @throws exception If ``$currency`` is passed with a value that is NOT a currently supported currency.
-		 * @throws exception If ``$component`` is passed with a value that is NOT one of:
+		 * @throws exception If `$currency` is passed with a value that is NOT 3 characters in length.
+		 * @throws exception If `$currency` is passed with a value that is NOT a currently supported currency.
+		 * @throws exception If `$component` is passed with a value that is NOT one of:
 		 *    `symbol`, `singular_name`, `plural_name`.
 		 *
 		 * @assert // If currency is omitted, returns full array.

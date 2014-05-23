@@ -49,14 +49,14 @@ namespace websharks_core_v000000_dev\menu_pages
 		/**
 		 * @var array Array of content panels for this menu page.
 		 *
-		 * @note Constructed dynamically, by adding panels via ``add_content_panel()``.
+		 * @note Constructed dynamically, by adding panels via `add_content_panel()`.
 		 */
 		public $content_panels = array();
 
 		/**
 		 * @var array Array of sidebar panels for this menu page.
 		 *
-		 * @note Constructed dynamically, by adding panels via ``add_sidebar_panel()``.
+		 * @note Constructed dynamically, by adding panels via `add_sidebar_panel()`.
 		 */
 		public $sidebar_panels = array();
 
@@ -77,7 +77,7 @@ namespace websharks_core_v000000_dev\menu_pages
 		/**
 		 * @var boolean Defaults to FALSE. Does this menu page update options?
 		 *    When TRUE, each menu page is wrapped with a form tag that calls `©menu_pages.®update_options`.
-		 *    In addition, ``$this->option_fields`` will be populated, for easy access to a `©form_fields` instance.
+		 *    In addition, `$this->option_fields` will be populated, for easy access to a `©form_fields` instance.
 		 *    In addition, each menu page will have a `Save All Options` button.
 		 *
 		 * @note This comes in handy, when a menu page is dedicated to updating options.
@@ -92,7 +92,7 @@ namespace websharks_core_v000000_dev\menu_pages
 		 * @var null|\websharks_core_v000000_dev\form_fields Instance of form fields class, for option updates.
 		 *
 		 * @by-constructor Set dynamically by the class constructor.
-		 *    Set only if ``$updates_options`` is TRUE.
+		 *    Set only if `$updates_options` is TRUE.
 		 */
 		public $option_fields; // Defaults to a NULL value.
 
@@ -100,8 +100,8 @@ namespace websharks_core_v000000_dev\menu_pages
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 */
 		public function __construct($___instance_config)
 		{
@@ -112,7 +112,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			$this->©db_cache->purge(); // Purge DB cache.
 			// A menu page indicates data may change in some way.
 
-			// Creates a ``©form_fields`` instance (for menu pages that update options).
+			// Creates a `©form_fields` instance (for menu pages that update options).
 			// A single class instance can be used by ALL panels loaded into the menu page.
 
 			if($this->updates_options) // Does this menu page update options?
@@ -162,10 +162,10 @@ namespace websharks_core_v000000_dev\menu_pages
 		 *
 		 * @param boolean      $active Defaults to FALSE. TRUE if this is an active panel (e.g. it should be open by default).
 		 *
-		 * @return null Nothing. Simply adds to the array of ``$this->(content|sidebar)_panels``.
+		 * @return null Nothing. Simply adds to the array of `$this->(content|sidebar)_panels`.
 		 *
 		 * @throws \websharks_core_v000000_dev\exception If invalid types are passed through arguments list.
-		 * @throws \websharks_core_v000000_dev\exception If ``$panel->slug`` or ``$panel->heading_title`` are empty.
+		 * @throws \websharks_core_v000000_dev\exception If `$panel->slug` or `$panel->heading_title` are empty.
 		 */
 		public function add_panel($panel, $sidebar = FALSE, $active = FALSE)
 		{
@@ -264,12 +264,12 @@ namespace websharks_core_v000000_dev\menu_pages
 		 *
 		 * @param boolean      $active Defaults to FALSE. TRUE if this is an active panel (e.g. it should be open by default).
 		 *
-		 * @return null Nothing. Simply adds to the array of ``$this->content_panels``.
+		 * @return null Nothing. Simply adds to the array of `$this->content_panels`.
 		 *
 		 * @throws \websharks_core_v000000_dev\exception If invalid types are passed through arguments list.
-		 * @throws \websharks_core_v000000_dev\exception If ``$panel_slug``, ``$panel_heading_title`` or ``$panel_content_body`` are empty.
+		 * @throws \websharks_core_v000000_dev\exception If `$panel_slug`, `$panel_heading_title` or `$panel_content_body` are empty.
 		 *
-		 * @alias See ``add_panel()`` for further details.
+		 * @alias See `add_panel()` for further details.
 		 */
 		public function add_content_panel($panel, $active = FALSE)
 		{
@@ -283,12 +283,12 @@ namespace websharks_core_v000000_dev\menu_pages
 		 *
 		 * @param boolean      $active Defaults to FALSE. TRUE if this is an active panel (e.g. it should be open by default).
 		 *
-		 * @return null Nothing. Simply adds to the array of ``$this->sidebar_panels``.
+		 * @return null Nothing. Simply adds to the array of `$this->sidebar_panels`.
 		 *
 		 * @throws \websharks_core_v000000_dev\exception If invalid types are passed through arguments list.
-		 * @throws \websharks_core_v000000_dev\exception If ``$panel_slug``, ``$panel_heading_title`` or ``$panel_content_body`` are empty.
+		 * @throws \websharks_core_v000000_dev\exception If `$panel_slug`, `$panel_heading_title` or `$panel_content_body` are empty.
 		 *
-		 * @alias See ``add_panel()`` for further details.
+		 * @alias See `add_panel()` for further details.
 		 */
 		public function add_sidebar_panel($panel, $active = FALSE)
 		{

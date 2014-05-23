@@ -77,28 +77,28 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @param string       $file Template file name (relative path).
 		 *
 		 * @param array|object $data Optional array (or object) containing custom data, specifically for this template.
 		 *    Or (if there is no data) an errors/successes/messages object instance can be passed directly through this argument value.
 		 *
-		 *    • Incoming ``$data`` will always be objectified by one dimension (e.g. we force object properties).
+		 *    • Incoming `$data` will always be objectified by one dimension (e.g. we force object properties).
 		 *
 		 *    • If we have data AND `errors|successes|messages`, the data (along with `errors|successes|messages`)
-		 *       can be passed into this constructor by adding the object instance(s) for `errors|successes|messages` to ``$data``,
+		 *       can be passed into this constructor by adding the object instance(s) for `errors|successes|messages` to `$data`,
 		 *       with array keys (or object property names) matching `errors`, `successes`, `messages` (when/if applicable).
 		 *
-		 *    • If a user object instance is passed through ``$data`` w/ the array key (or property name) `user`;
-		 *       the `user` value is parsed with ``$this->©user_utils->which()``; allowing variations supported by this utility.
+		 *    • If a user object instance is passed through `$data` w/ the array key (or property name) `user`;
+		 *       the `user` value is parsed with `$this->©user_utils->which()`; allowing variations supported by this utility.
 		 *
 		 * @param string       $theme Optional. Defaults to an empty string.
 		 *    If this is passed in, a specific UI theme will be forced into play.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$file`` is empty, or it CANNOT be located by ``$this->©file->template()``.
+		 * @throws exception If `$file` is empty, or it CANNOT be located by `$this->©file->template()`.
 		 */
 		public function __construct($___instance_config, $file, $data = array(), $theme = '')
 		{
@@ -191,7 +191,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for ``$this->front_side_wrapper_classes()``.
+		 * An alias for `$this->front_side_wrapper_classes()`.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -227,7 +227,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for ``$this->front_side_container_classes()``.
+		 * An alias for `$this->front_side_container_classes()`.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -263,7 +263,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for ``$this->stand_alone_wrapper_classes()``.
+		 * An alias for `$this->stand_alone_wrapper_classes()`.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -299,7 +299,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for ``$this->stand_alone_container_classes()``.
+		 * An alias for `$this->stand_alone_container_classes()`.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -335,7 +335,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for ``$this->email_wrapper_classes()``.
+		 * An alias for `$this->email_wrapper_classes()`.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -371,7 +371,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for ``$this->email_container_classes()``.
+		 * An alias for `$this->email_container_classes()`.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -483,7 +483,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for ``$this->ui_widget_classes()``.
+		 * An alias for `$this->ui_widget_classes()`.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -631,7 +631,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param array|object $data Incoming data (passed into object constructor).
 		 *
-		 * @return object The parsed data object (stored in ``$this->data``).
+		 * @return object The parsed data object (stored in `$this->data`).
 		 */
 		protected function parse_data($data)
 		{
@@ -676,7 +676,7 @@ namespace websharks_core_v000000_dev
 		 * Parses a template file (returns content).
 		 *
 		 * @return string The parsed template file content.
-		 *    Templates are included w/ PHP ``include()``. Output is buffered by this routine.
+		 *    Templates are included w/ PHP `include()`. Output is buffered by this routine.
 		 */
 		protected function parse_content()
 		{
@@ -689,7 +689,7 @@ namespace websharks_core_v000000_dev
 		 * Parses template configs (returns config array).
 		 *
 		 * @return object An object with all template configuration properties.
-		 *    Also removes `<template-config>` tags from ``$this->content``.
+		 *    Also removes `<template-config>` tags from `$this->content`.
 		 *
 		 * @throws exception If any `<template-config>` tag is corrupt.
 		 */

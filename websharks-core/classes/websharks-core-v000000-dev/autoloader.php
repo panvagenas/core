@@ -92,7 +92,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Initializes the WebSharks™ Core autoloader.
 			 *
-			 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
+			 * @return boolean Returns the `$initialized` property w/ a TRUE value.
 			 *
 			 * @note This also registers the WebSharks™ Core autoload handler.
 			 */
@@ -193,11 +193,11 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string $ns_class A namespace/class path (or a global class).
 			 *
-			 * @param string $ns_class_file Full absolute path to the file that loads ``$ns_class``.
+			 * @param string $ns_class_file Full absolute path to the file that loads `$ns_class`.
 			 *
 			 * @throws \exception If invalid types are passed through arguments list.
-			 * @throws \exception If ``$ns_class`` is empty, or is already in the special classes map.
-			 * @throws \exception If ``$ns_class_file`` is empty.
+			 * @throws \exception If `$ns_class` is empty, or is already in the special classes map.
+			 * @throws \exception If `$ns_class_file` is empty.
 			 */
 			public static function add_special_class($ns_class, $ns_class_file)
 			{
@@ -222,11 +222,11 @@ namespace websharks_core_v000000_dev
 			 *    Underscores in any namespace and/or class should be replaced with dashes in the file structure.
 			 *
 			 * @throws \exception If invalid types are passed through arguments list.
-			 * @throws \exception If ``$classes_dir`` is empty, or is NOT an existing directory.
-			 * @throws \exception If ``$classes_dir`` does NOT have a `classes` basename.
+			 * @throws \exception If `$classes_dir` is empty, or is NOT an existing directory.
+			 * @throws \exception If `$classes_dir` does NOT have a `classes` basename.
 			 *
 			 * @note Each classes directory is pushed to the top of the stack by this routine.
-			 *    This way ``load_ns_class()`` is looking for class files in the last directory first;
+			 *    This way `load_ns_class()` is looking for class files in the last directory first;
 			 *    and then searching up the stack until it finds a matching class file.
 			 *
 			 *    This makes it possible for pro add-ons and/or other plugins integrated with the core,
@@ -267,14 +267,14 @@ namespace websharks_core_v000000_dev
 			 * Adds a new core class alias.
 			 *
 			 * @param string $ns_or_ns_class A class path (including namespace); or ONLY the namespace.
-			 *    If this is ONLY the namespace; ``$class_file`` MUST be passed in also.
+			 *    If this is ONLY the namespace; `$class_file` MUST be passed in also.
 			 *
-			 * @param string $class_file Optional. If passed, ``$ns_or_ns_class`` is assumed to be the namespace only.
+			 * @param string $class_file Optional. If passed, `$ns_or_ns_class` is assumed to be the namespace only.
 			 *
 			 * @throws \exception If invalid types are passed through arguments list.
-			 * @throws \exception If the parsed ``$ns_class`` is empty, or is NOT a valid core class name.
-			 * @throws \exception If the parsed ``$ns_class`` is NOT from this version of the core.
-			 * @throws \exception If the parsed ``$ns_class`` is NOT already defined.
+			 * @throws \exception If the parsed `$ns_class` is empty, or is NOT a valid core class name.
+			 * @throws \exception If the parsed `$ns_class` is NOT from this version of the core.
+			 * @throws \exception If the parsed `$ns_class` is NOT already defined.
 			 */
 			public static function add_core_ns_class_alias($ns_or_ns_class, $class_file = '')
 			{
@@ -282,7 +282,7 @@ namespace websharks_core_v000000_dev
 					throw new \exception( // Fail here; detected invalid arguments.
 						sprintf(stub::__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
 					);
-				if($class_file) // Interpret ``$ns_or_ns_class`` as a namespace only.
+				if($class_file) // Interpret `$ns_or_ns_class` as a namespace only.
 					$ns_class = $ns_or_ns_class.'\\'.stub::with_underscores(basename($class_file, '.php'));
 				else $ns_class = $ns_or_ns_class; // Presume full class path.
 

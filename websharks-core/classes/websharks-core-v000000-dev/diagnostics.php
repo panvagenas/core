@@ -71,8 +71,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @param string       $code Optional diagnostic code (to construct with a new diagnostic).
 		 *
@@ -112,7 +112,7 @@ namespace websharks_core_v000000_dev
 		 *    By default, we enable logging on a per-diagnostic basis. However, even if this is {@link fw_constants::log_enable},
 		 *    logging only occurs if enabled overall (based on diagnostic type). Can also be set to {@link fw_constants::log_disable}.
 		 *
-		 * @return string The diagnostic ``$code``, else an empty string on failure.
+		 * @return string The diagnostic `$code`, else an empty string on failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -144,7 +144,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $code Required diagnostic code (must NOT be empty).
 		 *
-		 * @return string The diagnostic ``$code``, else an empty string on failure.
+		 * @return string The diagnostic `$code`, else an empty string on failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -588,7 +588,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check if diagnostics exist in this instance.
 		 *
-		 * @return diagnostics|null If diagnostics exist in ``$this`` instance, we return ``$this`` instance.
+		 * @return diagnostics|null If diagnostics exist in `$this` instance, we return `$this` instance.
 		 *    Diagnostics exist when this instance has at least one diagnostic code.
 		 *    Otherwise, this will return NULL by default.
 		 *
@@ -610,9 +610,9 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param diagnostics|mixed $diagnostics Any value to check for diagnostics.
 		 *
-		 * @return diagnostics|null If ``$diagnostics`` is an instance of this class, with the same diagnostic `type`.
-		 *    And, diagnostics exist in this instance (e.g. ``$diagnostics`` has at least one diagnostic code).
-		 *    If so, we return the ``$diagnostics`` instance. Otherwise, NULL by default.
+		 * @return diagnostics|null If `$diagnostics` is an instance of this class, with the same diagnostic `type`.
+		 *    And, diagnostics exist in this instance (e.g. `$diagnostics` has at least one diagnostic code).
+		 *    If so, we return the `$diagnostics` instance. Otherwise, NULL by default.
 		 *
 		 * @assert (NULL) === NULL
 		 *
@@ -642,7 +642,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param diagnostics|mixed $diagnostics Any value to check for a diagnostics instance.
 		 *
-		 * @return diagnostics|null If ``$diagnostics`` is an instance of this class, with the same diagnostic `type`.
+		 * @return diagnostics|null If `$diagnostics` is an instance of this class, with the same diagnostic `type`.
 		 *    Otherwise, this will return NULL by default.
 		 *
 		 * @assert (NULL) === NULL

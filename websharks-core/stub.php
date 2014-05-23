@@ -181,7 +181,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		/**
 		 * Initializes WebSharks™ Core stub.
 		 *
-		 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
+		 * @return boolean Returns the `$initialized` property w/ a TRUE value.
 		 *
 		 * @throws exception If attempting to run the WebSharks™ Core from a root directory.
 		 */
@@ -330,7 +330,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 *    • If TRUE, and WordPress® cannot be located anywhere else;
 		 *       automatically fallback on a local development copy.
 		 *
-		 *    • If NULL|TRUE, we'll look inside: ``self::$local_wp_dev_dir`` (a default WebSharks™ Core location).
+		 *    • If NULL|TRUE, we'll look inside: `self::$local_wp_dev_dir` (a default WebSharks™ Core location).
 		 *       If STRING, we'll look inside the directory path defined by the string value.
 		 *
 		 *    • If FALSE — we will NOT fallback under any circumstance.
@@ -431,11 +431,11 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 * @param string $class_file_basename Class file (basename only please).
 		 *    Ex: `class.php`; or `sub-namespace/class.php` is OK too.
 		 *
-		 * @return string Absolute path to the requested ``$class_file_basename``.
+		 * @return string Absolute path to the requested `$class_file_basename`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$class_file_basename`` is empty; or it is NOT a string value.
-		 * @throws exception If unable to locate the WebSharks™ Core ``$class_file_basename``.
+		 * @throws exception If `$class_file_basename` is empty; or it is NOT a string value.
+		 * @throws exception If unable to locate the WebSharks™ Core `$class_file_basename`.
 		 *
 		 * @note It's VERY important that we obtain class file paths for THIS version of the WebSharks™ Core.
 		 *    This is accomplished by looking for classes along a path which includes this WebSharks™ Core namespace.
@@ -496,10 +496,10 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 * WebSharks™ Core webPhar rewriter.
 		 *
 		 * @param string $uri_or_path_info Passed in by webPhar.
-		 *    The ``$uri`` is either ``$_SERVER['REQUEST_URI']`` or ``$_SERVER['PATH_INFO']``.
+		 *    The `$uri` is either `$_SERVER['REQUEST_URI']` or `$_SERVER['PATH_INFO']`.
 		 *    See: {@link http://docs.php.net/manual/en/phar.webphar.php}.
 		 *
-		 * @note We ignore ``$uri_or_path_info`` from webPhar.
+		 * @note We ignore `$uri_or_path_info` from webPhar.
 		 *    We determine this on our own; hopefully more effectively.
 		 *
 		 * @return string|boolean Boolean An internal URI; else FALSE if denying access.
@@ -975,7 +975,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 * @param string $default_mime_type Defaults to `application/octet-stream`.
 		 *    This can be passed as an empty string to make it easier to test for a failure here.
 		 *
-		 * @return string File's MIME type; else ``$default_mime_type`` value.
+		 * @return string File's MIME type; else `$default_mime_type` value.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -1044,7 +1044,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 * @param string  $dir_file Directory/file path.
 		 *
 		 * @param boolean $allow_trailing_slash Defaults to FALSE.
-		 *    If TRUE; and ``$dir_file`` contains a trailing slash; we'll leave it there.
+		 *    If TRUE; and `$dir_file` contains a trailing slash; we'll leave it there.
 		 *
 		 * @return string Normalized directory/file path.
 		 *
@@ -1090,7 +1090,7 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 *    Number of directories to move up.
 		 *
 		 * @param boolean $allow_trailing_slash Defaults to FALSE.
-		 *    If TRUE; and ``$dir_file`` contains a trailing slash; we'll leave it there.
+		 *    If TRUE; and `$dir_file` contains a trailing slash; we'll leave it there.
 		 *
 		 * @return string Up one directory (normalized directory/file separators).
 		 *
@@ -1126,17 +1126,17 @@ if(!class_exists('websharks_core_v000000_dev'))
 		 *    There are TWO special string values that are translated by this routine.
 		 *
 		 *    • The `__DIR__` constant is NOT PHP v5.2 compatible; so you can use a string value to achieve this.
-		 *       The string `'__DIR__'` translates to the directory of this file; e.g. ``dirname(__FILE__)``.
+		 *       The string `'__DIR__'` translates to the directory of this file; e.g. `dirname(__FILE__)`.
 		 *
 		 *    • Or, it is ALSO possible to specify `phar://` or `phar://__DIR__` in this parameter.
-		 *       The strings `phar://` and `phar://__DIR__` both translate to ``dirname(__FILE__)`` with a forced PHAR stream wrapper.
+		 *       The strings `phar://` and `phar://__DIR__` both translate to `dirname(__FILE__)` with a forced PHAR stream wrapper.
 		 *
 		 * @return string Directory/file path (if found); else an empty string.
 		 *    The search will continue until there are no more directories to search through.
 		 *    However, there is an upper limit of 100 directories maximum.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$dir_file`` or ``$starting_dir`` are empty.
+		 * @throws exception If `$dir_file` or `$starting_dir` are empty.
 		 */
 		public static function locate($dir_file, $starting_dir = '__DIR__' /* PHP v5.2 compatibility. */)
 		{

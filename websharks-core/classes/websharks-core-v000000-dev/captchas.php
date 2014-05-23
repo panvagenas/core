@@ -30,7 +30,7 @@ namespace websharks_core_v000000_dev
 		 * @param string $challenge The value of `recaptcha_challenge_field` during form submission.
 		 * @param string $response The value of `recaptcha_response_field` during form submission.
 		 *
-		 * @return boolean true if ``$response`` is valid, else FALSE.
+		 * @return boolean true if `$response` is valid, else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *

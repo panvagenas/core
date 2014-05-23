@@ -49,8 +49,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @throws exception If this class is instantiated before the `init` action hook.
 		 */
@@ -293,7 +293,7 @@ namespace websharks_core_v000000_dev
 		 *    Helpful if we're pulling all current components, along with something else.
 		 *
 		 * @return array Plugin components (selective components which apply in the current context).
-		 *    See also ``$this->©plugin->needs_*()``; where filters are implemented via easy-to-use methods.
+		 *    See also `$this->©plugin->needs_*()`; where filters are implemented via easy-to-use methods.
 		 */
 		public function contextual_components($others = array())
 		{
@@ -454,11 +454,11 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @note This method implements the ability to add additional inline data to specific scripts.
 		 *    As of v3.4, WordPress® is still lacking functions to interact w/ this feature.
-		 *    Therefore, we'll need to access ``$wp_scripts`` directly.
+		 *    Therefore, we'll need to access `$wp_scripts` directly.
 		 *
-		 * @param string|array $components A string, or an array of specific components that need ``$data`` (i.e. inline JavaScript code).
+		 * @param string|array $components A string, or an array of specific components that need `$data` (i.e. inline JavaScript code).
 		 *
-		 * @param string       $data The data (i.e. inline JavaScript code) that is needed by ``$components``.
+		 * @param string       $data The data (i.e. inline JavaScript code) that is needed by `$components`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */

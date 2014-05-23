@@ -47,7 +47,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	# --------------------------------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * Holds ``check()`` method return value.
+	 * Holds `check()` method return value.
 	 *
 	 * @var array|boolean|null Defaults to a NULL value.
 	 */
@@ -68,11 +68,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	public $default_plugin_dir_names = 'websharks-core-v000000-dev';
 
 	/**
-	 * Holds original arguments to ``check()``.
+	 * Holds original arguments to `check()`.
 	 *
 	 * @note This helps auto-fix routines, which need additional functionality.
 	 *
-	 * @var array Original arguments to ``check()``.
+	 * @var array Original arguments to `check()`.
 	 */
 	public $auto_fix_orig_check_args = array();
 
@@ -110,7 +110,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	/**
 	 * Static initializer; this runs ONE time only.
 	 *
-	 * @return boolean Returns the ``$initialized`` property w/ a TRUE value.
+	 * @return boolean Returns the `$initialized` property w/ a TRUE value.
 	 *
 	 * @throws exception If attempting to run this from a root directory.
 	 */
@@ -160,14 +160,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *    If FALSE, do NOT report warnings.
 	 *
 	 * @param boolean $check_last_ok TRUE by default. Avoids a re-scan if at all possible.
-	 *    If ``$check_last_ok`` is FALSE, it will always force a new full scan.
+	 *    If `$check_last_ok` is FALSE, it will always force a new full scan.
 	 *    Automatically disabled when running in any stand-alone file
-	 *    as class: ``deps_x_stand_alone_websharks_core_v000000_dev``.
+	 *    as class: `deps_x_stand_alone_websharks_core_v000000_dev`.
 	 *
 	 * @param boolean $maybe_display_wp_admin_notices TRUE by default. Applies only when running within WordPress.
 	 *    If there are issues, we'll automatically enqueue administrative notices to alert the site owner.
 	 *    Automatically disabled when running in any stand-alone file
-	 *    as class: ``deps_x_stand_alone_websharks_core_v000000_dev``.
+	 *    as class: `deps_x_stand_alone_websharks_core_v000000_dev`.
 	 *
 	 * @return boolean|array TRUE if no `issues`.
 	 *    If there ARE `issues`, this returns a multidimensional array (which is NEVER empty).
@@ -180,7 +180,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *    This allows auto-fix routines to check permissions and perform other important tasks; with the use of all WordPress® functionality.
 	 *
 	 * @note The return value of this function depends heavily on the parameters used to call upon it.
-	 *    If it's called with ``$check_last_ok = TRUE`` (the default), there's a good chance it will simply return TRUE.
+	 *    If it's called with `$check_last_ok = TRUE` (the default), there's a good chance it will simply return TRUE.
 	 *    That is, if we check a last OK time, and it's valid — a re-scan will NOT be processed; and there are no `issues` to report.
 	 *
 	 * @note This routine also deals with administrative notices in WordPress®.
@@ -2098,7 +2098,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		}
 		# --------------------------------------------------------------------------------------------------------------------------------
 
-		// Now let's create a final ``$this->check`` value.
+		// Now let's create a final `$this->check` value.
 		// We also make use of some additional sub-routines here, which display reports and/or WordPress® notices.
 
 		if($issues || $is_stand_alone)
@@ -2155,7 +2155,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 * @param boolean $ignore_vcs_dirs Optional. Defaults to a TRUE value.
 	 *    By default, we ignore VCS directories (e.g. `.git` and `.svn`).
 	 *
-	 * @param string  $___root_dir Internal parameter. Defaults to an empty string, indicating the current ``$dir``.
+	 * @param string  $___root_dir Internal parameter. Defaults to an empty string, indicating the current `$dir`.
 	 *    Recursive calls to this method will automatically pass this value, indicating the main root directory value.
 	 *
 	 * @return string An MD5 checksum established collectively, based on all directories/files.
@@ -2274,9 +2274,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *
 	 * @param string $constant The name of a WordPress® config file constant.
 	 *
-	 * @param string $new_value The new value that should defined for the ``$constant``.
+	 * @param string $new_value The new value that should defined for the `$constant`.
 	 *    Note, this is always passed as a string, but the value is defined explicitly.
-	 *    That is, a ``$new_value`` string `1`, is actually defined as an integer.
+	 *    That is, a `$new_value` string `1`, is actually defined as an integer.
 	 *    String values should be wrapped explicitly with single quotes.
 	 *
 	 * @return boolean|string TRUE if the constant was changed (i.e. fixed automatically).
@@ -2346,7 +2346,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 	/**
 	 * Displays a report for the stand-alone version running as class:
-	 *    ``deps_x_stand_alone_websharks_core_v000000_dev``.
+	 *    `deps_x_stand_alone_websharks_core_v000000_dev`.
 	 *
 	 * @return null Nothing. Simply displays the report, and then exits script execution.
 	 *
@@ -2369,7 +2369,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		echo '<!DOCTYPE html>'.
 		     '<html>';
 
-		// Configure ``<head>`` section.
+		// Configure `<head>` section.
 
 		echo '<head>';
 
@@ -3075,7 +3075,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *
 	 * @param string $value Any string value.
 	 *
-	 * @return string Checksum (based on ``$this->security_salt().$value``).
+	 * @return string Checksum (based on `$this->security_salt().$value`).
 	 *
 	 * @throws exception If invalid types are passed through arguments list.
 	 */

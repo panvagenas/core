@@ -70,7 +70,7 @@ namespace websharks_core_v000000_dev
 		 * @assert ($GLOBALS[__NAMESPACE__])
 		 *
 		 * @note Dynamic properties/methods are defined explicitly here.
-		 *    This way IDEs jive with ``__get()`` and ``__call()``.
+		 *    This way IDEs jive with `__get()` and `__call()`.
 		 *
 		 * @note Magic properties/methods should be declared with a FQN because PhpStorm™ seems to have trouble
 		 *    identifying them throughout the entire codebase w/o a FQN (for whatever reason — a possible bug).
@@ -363,7 +363,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Current instance configuration.
 			 *
-			 * @var object Current instance config for ``$this``.
+			 * @var object Current instance config for `$this`.
 			 *    Defaults to NULL. Set by constructor.
 			 *
 			 * @by-constructor Set by class constructor.
@@ -399,7 +399,7 @@ namespace websharks_core_v000000_dev
 			 * A global/static cache for dynamic singleton object references.
 			 *
 			 * @var array A global/static cache for dynamic singleton object references.
-			 *    Defaults to an empty array. Set by ``__get()`` method.
+			 *    Defaults to an empty array. Set by `__get()` method.
 			 *
 			 * @final Should NOT be overridden by class extenders.
 			 *    Would be `final` if PHP allowed such a thing.
@@ -414,7 +414,7 @@ namespace websharks_core_v000000_dev
 			 * A global/static cache for dynamic singleton object instances.
 			 *
 			 * @var array A global/static cache for dynamic singleton object instances.
-			 *    Defaults to an empty array. Set by ``__get()`` method.
+			 *    Defaults to an empty array. Set by `__get()` method.
 			 *
 			 * @final Should NOT be overridden by class extenders.
 			 *    Would be `final` if PHP allowed such a thing.
@@ -510,11 +510,11 @@ namespace websharks_core_v000000_dev
 			# --------------------------------------------------------------------------------------------------------------------------
 
 			/**
-			 * PHP's ``is_...()`` type checks.
+			 * PHP's `is_...()` type checks.
 			 *
-			 * @var array PHP ``is_...()`` type checks.
-			 *    Keys correspond with type hints accepted by ``check_arg_types()``.
-			 *    Values are ``is_...()`` functions needed to test for each type.
+			 * @var array PHP `is_...()` type checks.
+			 *    Keys correspond with type hints accepted by `check_arg_types()`.
+			 *    Values are `is_...()` functions needed to test for each type.
 			 *
 			 * @final Should NOT be overridden by class extenders.
 			 *    Would be `final` if PHP allowed such a thing.
@@ -587,14 +587,14 @@ namespace websharks_core_v000000_dev
 			 * A global/static cache for each class extender.
 			 *
 			 * @var array A global/static cache for each class extender.
-			 *    Defaults to an empty array. Set by ``___static()`` method.
+			 *    Defaults to an empty array. Set by `___static()` method.
 			 *
 			 * @final Should NOT be overridden by class extenders.
 			 *    Would be `final` if PHP allowed such a thing.
 			 *
 			 * @protected Accessible only to self & extenders.
 			 *
-			 * @see The ``___static()`` method for further details on this.
+			 * @see The `___static()` method for further details on this.
 			 */
 			protected static $___statics = array();
 
@@ -692,19 +692,19 @@ namespace websharks_core_v000000_dev
 			 * Core class constructor.
 			 *
 			 * @param object|array $___instance_config Required at all times.
-			 *    A parent object instance, which contains the parent's ``$___instance_config``.
-			 *    Or, a new ``$___instance_config`` array with the elements listed below.
+			 *    A parent object instance, which contains the parent's `$___instance_config`.
+			 *    Or, a new `$___instance_config` array with the elements listed below.
 			 *
 			 *    An array MUST contain the following elements:
-			 *       • ``(string)$___instance_config['plugin_name']`` — Name of current plugin.
-			 *       • ``(string)$___instance_config['plugin_var_ns']`` — Plugin variable namespace.
-			 *       • ``(string)$___instance_config['plugin_root_ns']`` — Root namespace of current plugin.
-			 *       • ``(string)$___instance_config['plugin_version']`` — Version of current plugin.
-			 *       • ``(string)$___instance_config['plugin_dir']`` — Current plugin directory.
-			 *       • ``(string)$___instance_config['plugin_site']`` — Plugin site URL (http://).
+			 *       • `(string)$___instance_config['plugin_name']` — Name of current plugin.
+			 *       • `(string)$___instance_config['plugin_var_ns']` — Plugin variable namespace.
+			 *       • `(string)$___instance_config['plugin_root_ns']` — Root namespace of current plugin.
+			 *       • `(string)$___instance_config['plugin_version']` — Version of current plugin.
+			 *       • `(string)$___instance_config['plugin_dir']` — Current plugin directory.
+			 *       • `(string)$___instance_config['plugin_site']` — Plugin site URL (http://).
 			 *
-			 * @throws \exception If there is a missing and/or invalid ``$___instance_config``.
-			 * @throws \exception If there are NOT 6 configuration elements in an ``$__instance_config`` array.
+			 * @throws \exception If there is a missing and/or invalid `$___instance_config`.
+			 * @throws \exception If there are NOT 6 configuration elements in an `$__instance_config` array.
 			 *
 			 * @throws \exception If the plugin's root namespace does NOT match this regex pattern validation.
 			 *    See: {@link stub::$regex_valid_plugin_root_ns}
@@ -730,8 +730,8 @@ namespace websharks_core_v000000_dev
 			 * @public A magic/overload constructor MUST always remain public.
 			 *
 			 * @extenders If a class extender creates its own constructor,
-			 *    it MUST collect an ``$___instance_config``, and it MUST call upon this core constructor using:
-			 *    ``parent::__construct($___instance_config)``.
+			 *    it MUST collect an `$___instance_config`, and it MUST call upon this core constructor using:
+			 *    `parent::__construct($___instance_config)`.
 			 *
 			 * @note This should NOT rely directly or indirectly on any other core class objects.
 			 *    Any static properties/methods in the WebSharks™ Core stub will be fine to use though.
@@ -745,7 +745,7 @@ namespace websharks_core_v000000_dev
 					$___parent_instance_config = $___instance_config->___instance_config;
 				else $___parent_instance_config = NULL; // No parent config.
 
-				$ns_class = get_class($this); // Always NEED ``$this`` (used in cache entry).
+				$ns_class = get_class($this); // Always NEED `$this` (used in cache entry).
 
 				if($___parent_instance_config) // Can we bypass validation in this case?
 				{
@@ -779,7 +779,7 @@ namespace websharks_core_v000000_dev
 				        && ($___instance_config['plugin_site'] = rtrim($___instance_config['plugin_site'], '/'))
 				        && preg_match('/^http\:\/\/.+/i', $___instance_config['plugin_site'])
 
-				) // A fully validated ``$___instance_config`` array (we'll convert to an object).
+				) // A fully validated `$___instance_config` array (we'll convert to an object).
 				{
 					$cache_entry = $___instance_config['plugin_root_ns'].$ns_class;
 
@@ -794,7 +794,7 @@ namespace websharks_core_v000000_dev
 				                                  print_r($___instance_config, TRUE))); // Definitely wrong!
 
 				// Mostly from core stub. These properties will NOT change from one class instance to another.
-				if(!$___parent_instance_config) // Only if we did NOT get a ``$___parent_instance``.
+				if(!$___parent_instance_config) // Only if we did NOT get a `$___parent_instance`.
 				{
 					// Miscellaneous core properties (mostly from the stub).
 					$this->___instance_config->core_name           = stub::$core_name;
@@ -804,21 +804,21 @@ namespace websharks_core_v000000_dev
 					$this->___instance_config->core_dir            = stub::n_dir_seps_up(__FILE__, 3);
 					$this->___instance_config->core_classes_dir    = $this->___instance_config->core_dir.'/classes';
 
-					// Based on ``stub::$core_ns``.
+					// Based on `stub::$core_ns`.
 					$this->___instance_config->core_ns             = stub::$core_ns;
 					$this->___instance_config->core_ns_prefix      = stub::$core_ns_prefix;
 					$this->___instance_config->core_ns_with_dashes = stub::$core_ns_with_dashes;
 
-					// Based on ``stub::$core_ns_stub``.
+					// Based on `stub::$core_ns_stub`.
 					$this->___instance_config->{stub::$core_ns_stub}    = stub::$core_ns_stub;
 					$this->___instance_config->core_ns_stub             = stub::$core_ns_stub;
 					$this->___instance_config->core_ns_stub_with_dashes = stub::$core_ns_stub_with_dashes;
 
-					// Based on ``stub::$core_ns_stub_v``.
+					// Based on `stub::$core_ns_stub_v`.
 					$this->___instance_config->core_ns_stub_v             = stub::$core_ns_stub_v;
 					$this->___instance_config->core_ns_stub_v_with_dashes = stub::$core_ns_stub_v_with_dashes;
 
-					// Based on ``stub::$core_version``.
+					// Based on `stub::$core_version`.
 					$this->___instance_config->core_version                  = stub::$core_version;
 					$this->___instance_config->core_version_with_underscores = stub::$core_version_with_underscores;
 					$this->___instance_config->core_version_with_dashes      = stub::$core_version_with_dashes;
@@ -833,35 +833,35 @@ namespace websharks_core_v000000_dev
 					throw new \exception(sprintf(stub::__('Namespace\\class contains invalid chars: `%1$s`.'),
 					                             $this->___instance_config->ns_class));
 
-				// The `namespace\sub_namespace\class` for ``$this`` class.
+				// The `namespace\sub_namespace\class` for `$this` class.
 				$this->___instance_config->ns_class_prefix           = '\\'.$this->___instance_config->ns_class;
 				$this->___instance_config->ns_class_with_underscores = stub::with_underscores($this->___instance_config->ns_class);
 				$this->___instance_config->ns_class_with_dashes      = stub::with_dashes($this->___instance_config->ns_class);
 				$this->___instance_config->ns_class_basename         = basename(str_replace('\\', '/', $this->___instance_config->ns_class));
 
-				// The `sub_namespace\class` for ``$this`` class.
+				// The `sub_namespace\class` for `$this` class.
 				$this->___instance_config->sub_ns_class                  = ltrim(strstr($this->___instance_config->ns_class, '\\'), '\\');
 				$this->___instance_config->sub_ns_class_with_underscores = stub::with_underscores($this->___instance_config->sub_ns_class);
 				$this->___instance_config->sub_ns_class_with_dashes      = stub::with_dashes($this->___instance_config->sub_ns_class);
 
-				// The `namespace\sub_namespace` for ``$this`` class.
+				// The `namespace\sub_namespace` for `$this` class.
 				$this->___instance_config->ns = substr($this->___instance_config->ns_class, 0, strrpos($this->___instance_config->ns_class, '\\'));
 
-				// Only if we're NOT in the same namespace as the ``$___parent_instance``.
+				// Only if we're NOT in the same namespace as the `$___parent_instance`.
 				if(!$___parent_instance_config || $___parent_instance_config->ns !== $this->___instance_config->ns)
 				{
-					// The `namespace\sub_namespace` for ``$this`` class.
+					// The `namespace\sub_namespace` for `$this` class.
 					$this->___instance_config->ns_prefix           = '\\'.$this->___instance_config->ns;
 					$this->___instance_config->ns_with_underscores = stub::with_underscores($this->___instance_config->ns);
 					$this->___instance_config->ns_with_dashes      = stub::with_dashes($this->___instance_config->ns);
 
-					// The `namespace` for ``$this`` class.
+					// The `namespace` for `$this` class.
 					$this->___instance_config->root_ns             = strstr($this->___instance_config->ns_class, '\\', TRUE);
 					$this->___instance_config->root_ns_prefix      = '\\'.$this->___instance_config->root_ns;
 					$this->___instance_config->root_ns_with_dashes = stub::with_dashes($this->___instance_config->root_ns);
 				}
 				// Based entirely on current plugin. These properties will NOT change from one class instance to another.
-				if(!$___parent_instance_config) // Only need this routine if we did NOT get a ``$___parent_instance``.
+				if(!$___parent_instance_config) // Only need this routine if we did NOT get a `$___parent_instance`.
 				{
 					// Based on `plugin_version`.
 					$this->___instance_config->plugin_version_with_underscores = stub::with_underscores($this->___instance_config->plugin_version);
@@ -916,7 +916,7 @@ namespace websharks_core_v000000_dev
 					$this->___instance_config->plugin_pro_class_file  = $this->___instance_config->plugin_pro_classes_dir.'/'.$this->___instance_config->plugin_root_ns_with_dashes.'/pro.php';
 				}
 				// Based on `plugin_root_ns_stub`.
-				// Also on `namespace\sub_namespace\class` for ``$this`` class.
+				// Also on `namespace\sub_namespace\class` for `$this` class.
 				// Here we swap out the real root namespace, in favor of the plugin's root namespace.
 				// This is helpful when we need to build strings for hooks, filters, contextual slugs, and the like.
 				$this->___instance_config->plugin_stub_as_root_ns_class                  = // Extended classes (e.g. `_x`) are treated the same here.
@@ -925,14 +925,14 @@ namespace websharks_core_v000000_dev
 				$this->___instance_config->plugin_stub_as_root_ns_class_with_dashes      = stub::with_dashes($this->___instance_config->plugin_stub_as_root_ns_class);
 
 				// Based on `plugin_root_ns_stub`.
-				// Also on `namespace\sub_namespace` for ``$this`` class.
+				// Also on `namespace\sub_namespace` for `$this` class.
 				// Here we swap out the real root namespace, in favor of the plugin's root namespace.
 				// This is helpful when we need to build strings for hooks, filters, contextual slugs, and the like.
 				$this->___instance_config->plugin_stub_as_root_ns                  = $this->___instance_config->plugin_root_ns_stub.substr($this->___instance_config->ns, $root_ns_length);
 				$this->___instance_config->plugin_stub_as_root_ns_with_underscores = stub::with_underscores($this->___instance_config->plugin_stub_as_root_ns);
 				$this->___instance_config->plugin_stub_as_root_ns_with_dashes      = stub::with_dashes($this->___instance_config->plugin_stub_as_root_ns);
 
-				// Now let's cache ``$this->___instance_config`` for easy re-use.
+				// Now let's cache `$this->___instance_config` for easy re-use.
 				static::$___instance_config_cache[$cache_entry] = $this->___instance_config;
 
 				// Check global reference & load plugin (if applicable).
@@ -961,9 +961,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @public Magic/overload methods must always remain public.
 			 *
-			 * @extenders If a class extender creates its own ``__isset()`` method, it MUST first make an attempt to resolve ``$property`` on its own.
-			 *    If it CANNOT resolve ``$property``, it MUST then return a call to this method, using: ``parent::__isset($property)``.
-			 *    This allows the core ``__isset()`` method to make a final attempt at resolving the value of ``$property``.
+			 * @extenders If a class extender creates its own `__isset()` method, it MUST first make an attempt to resolve `$property` on its own.
+			 *    If it CANNOT resolve `$property`, it MUST then return a call to this method, using: `parent::__isset($property)`.
+			 *    This allows the core `__isset()` method to make a final attempt at resolving the value of `$property`.
 			 *
 			 * @note This method should NOT rely directly or indirectly on any other dynamic properties.
 			 */
@@ -977,7 +977,7 @@ namespace websharks_core_v000000_dev
 					return TRUE; // It's a dynamic class reference that's set already.
 
 				if(property_exists($this, $property) && (in_array($property, static::$___read_only_properties, TRUE) || in_array($property, static::$____read_only_properties, TRUE)))
-					return isset($this->$property); // Available via ``__get()`` magic (public read-only; it's protected or private).
+					return isset($this->$property); // Available via `__get()` magic (public read-only; it's protected or private).
 
 				return FALSE; // Default return value.
 			}
@@ -990,7 +990,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param mixed  $value The new value for this magic/overload property.
 			 *
-			 * @return mixed The ``$value`` assigned to the magic/overload ``$property``.
+			 * @return mixed The `$value` assigned to the magic/overload `$property`.
 			 *
 			 * @throws exception If attempting to set magic/overload properties (this is NOT allowed).
 			 *    This magic/overload method is currently here ONLY to protect magic/overload property values.
@@ -998,9 +998,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @public Magic/overload methods must always remain public.
 			 *
-			 * @extenders If a class extender creates its own ``__set()`` method, it MUST first make an attempt to set ``$property`` on its own.
-			 *    If it CANNOT set ``$property``, it MUST then return a call to this method, using: ``parent::__set($property)``.
-			 *    This allows the core ``__set()`` method to make a final attempt at setting the value of ``$property``.
+			 * @extenders If a class extender creates its own `__set()` method, it MUST first make an attempt to set `$property` on its own.
+			 *    If it CANNOT set `$property`, it MUST then return a call to this method, using: `parent::__set($property)`.
+			 *    This allows the core `__set()` method to make a final attempt at setting the value of `$property`.
 			 *
 			 * @note This method should NOT rely directly or indirectly on any other magic/overload properties.
 			 */
@@ -1027,9 +1027,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @public Magic/overload methods must always remain public.
 			 *
-			 * @extenders If a class extender creates its own ``__unset()`` method, it MUST first make an attempt to unset ``$property`` on its own.
-			 *    If it CANNOT unset ``$property``, it MUST then return a call to this method, using: ``parent::__unset($property)``.
-			 *    This allows the core ``__unset()`` method to make a final attempt at unsetting the ``$property``.
+			 * @extenders If a class extender creates its own `__unset()` method, it MUST first make an attempt to unset `$property` on its own.
+			 *    If it CANNOT unset `$property`, it MUST then return a call to this method, using: `parent::__unset($property)`.
+			 *    This allows the core `__unset()` method to make a final attempt at unsetting the `$property`.
 			 *
 			 * @note This method should NOT rely directly or indirectly on any other magic/overload properties.
 			 */
@@ -1062,41 +1062,41 @@ namespace websharks_core_v000000_dev
 			 *    Also, here we're overloading dynamic singleton classes with `©`, and also dealing with class aliases.
 			 *
 			 *    Repeat calls will return an existing instance, if one exists for the current plugin; else a new instance is instantiated here.
-			 *    When/if a new instance is instantiated here, we pass the current object (i.e. ``$this``) to the constructor.
+			 *    When/if a new instance is instantiated here, we pass the current object (i.e. `$this`) to the constructor.
 			 *    The resulting instance is then cached into memory, for the current plugin to re-use.
 			 *
-			 *    A quick example might look like: ``$this->©class``. Which becomes: ``new \plugin_root_ns\class()``.
-			 *    If ``\plugin_root_ns\class()`` is missing, we'll try ``new \websharks_core_v000000_dev\class()``.
+			 *    A quick example might look like: `$this->©class`. Which becomes: `new \plugin_root_ns\class()`.
+			 *    If `\plugin_root_ns\class()` is missing, we'll try `new \websharks_core_v000000_dev\class()`.
 			 *
 			 *    If a sub-namespace is needed, suffix the required sub-namespace(s) with double underscores `__`.
-			 *    A quick example might look like: ``$this->©sub_namespace__sub_namespace__class``.
-			 *    Which becomes: ``new \plugin_root_ns\sub_namespace\sub_namespace\class()``.
-			 *    Or: ``new \websharks_core_v000000_dev\sub_namespace\sub_namespace\class()``.
+			 *    A quick example might look like: `$this->©sub_namespace__sub_namespace__class`.
+			 *    Which becomes: `new \plugin_root_ns\sub_namespace\sub_namespace\class()`.
+			 *    Or: `new \websharks_core_v000000_dev\sub_namespace\sub_namespace\class()`.
 			 *
 			 *    If the property contains a fully qualified namespace, use a `©` suffix, instead of a prefix.
 			 *    Then use double underscores `__` to separate any namespace paths in the property name.
-			 *    A quick example: ``$this->my_namespace__sub_namespace__class©``.
-			 *    Becomes: ``new \my_namespace\sub_namespace\class()``.
+			 *    A quick example: `$this->my_namespace__sub_namespace__class©`.
+			 *    Becomes: `new \my_namespace\sub_namespace\class()`.
 			 *
 			 *    This method also takes dynamic class aliases into consideration.
-			 *       See: ``$___dynamic_class_aliases`` for further details.
-			 *       See also: ``$____dynamic_class_aliases``.
+			 *       See: `$___dynamic_class_aliases` for further details.
+			 *       See also: `$____dynamic_class_aliases`.
 			 *
 			 * @return mixed Magic/overload property values, or a dynamic object instance; else an exception is thrown.
 			 *    Dynamic class instances are defined explicitly in the docBlock above.
 			 *    This way IDEs will jive with this dynamic behavior.
 			 *
-			 * @throws exception If ``$property`` CANNOT be defined in any way.
+			 * @throws exception If `$property` CANNOT be defined in any way.
 			 *
 			 * @note It is intentionally NOT possible to pass additional arguments to an object constructor this way.
-			 *    Any class that needs to be constructed with more than an ``$___instance_config``, cannot be instantiated here.
-			 *    Instead see ``__call()`` to instantiate "new" dynamic object instances with `©`.
+			 *    Any class that needs to be constructed with more than an `$___instance_config`, cannot be instantiated here.
+			 *    Instead see `__call()` to instantiate "new" dynamic object instances with `©`.
 			 *
 			 * @public Magic/overload methods must always remain public.
 			 *
-			 * @extenders If a class extender creates its own ``__get()`` method, it MUST first make an attempt to resolve ``$property`` on its own.
-			 *    If it CANNOT resolve ``$property``, it MUST then return a call to this method, using: ``parent::__get($property)``.
-			 *    This allows the core ``__get()`` method to make a final attempt at resolving the value of ``$property``.
+			 * @extenders If a class extender creates its own `__get()` method, it MUST first make an attempt to resolve `$property` on its own.
+			 *    If it CANNOT resolve `$property`, it MUST then return a call to this method, using: `parent::__get($property)`.
+			 *    This allows the core `__get()` method to make a final attempt at resolving the value of `$property`.
 			 *
 			 * @note This method should NOT rely directly or indirectly on any other magic/overload properties.
 			 *
@@ -1115,14 +1115,14 @@ namespace websharks_core_v000000_dev
 
 				if(($©strpos = strpos($property, '©')) !== FALSE) // A dynamic singleton is being requested in this case.
 				{
-					// Note... this ``$dyn_class`` may or may not contain a fully qualified namespace. In some cases it will (if `©` is a suffix).
-					// However, in most cases ``$dyn_class`` will contain only a class name itself, or perhaps a sub_namespace\class.
-					$dyn_class = str_replace('__', '\\', trim($property, '©')); // Converts to a ``$dyn_class`` path.
+					// Note... this `$dyn_class` may or may not contain a fully qualified namespace. In some cases it will (if `©` is a suffix).
+					// However, in most cases `$dyn_class` will contain only a class name itself, or perhaps a sub_namespace\class.
+					$dyn_class = str_replace('__', '\\', trim($property, '©')); // Converts to a `$dyn_class` path.
 
 					// This maps dynamic class aliases to their real (i.e. actual class) counterparts.
-					// Mapped by ``$property``, after it's been converted into a ``$dyn_class`` path, and BEFORE any prefixes occur.
-					// Example: ``$this->©sub_namespace__class`` maps to the alias entry `sub_namespace\class`.
-					// Another example: ``$this->©class`` maps to the alias entry `class`.
+					// Mapped by `$property`, after it's been converted into a `$dyn_class` path, and BEFORE any prefixes occur.
+					// Example: `$this->©sub_namespace__class` maps to the alias entry `sub_namespace\class`.
+					// Another example: `$this->©class` maps to the alias entry `class`.
 
 					if(!empty(static::$___dynamic_class_aliases[$dyn_class]))
 						$dyn_class = static::$___dynamic_class_aliases[$dyn_class];
@@ -1136,13 +1136,13 @@ namespace websharks_core_v000000_dev
 					if($©strpos !== 0) // Assuming a fully qualified namespace has been given in this case.
 						$dyn_class_lookups[] = '\\'.$dyn_class; // So we only add the `\` prefix.
 
-					else // Otherwise try ``$this->___instance_config->plugin_root_ns``, then ``$this->___instance_config->core_ns``.
+					else // Otherwise try `$this->___instance_config->plugin_root_ns`, then `$this->___instance_config->core_ns`.
 					{
 						$dyn_class_lookups[] = $this->___instance_config->plugin_root_ns_prefix.'\\'.$dyn_class;
 						$dyn_class_lookups[] = $this->___instance_config->core_ns_prefix.'\\'.$dyn_class;
 					}
-					// Note... ``$cache`` entries are created for each ``$this->___instance_config->plugin_root_ns.$property`` combination.
-					// However, ``$dyn_class_instances`` may contain entries used under several different aliases (i.e. by more than one cache entry).
+					// Note... `$cache` entries are created for each `$this->___instance_config->plugin_root_ns.$property` combination.
+					// However, `$dyn_class_instances` may contain entries used under several different aliases (i.e. by more than one cache entry).
 					// Therefore, ALWAYS check for the existence of a class instance first, even if a cache entry for it is currently missing.
 					// In other words, the instance itself may already exist; and perhaps we just need a new cache entry to reference it.
 
@@ -1199,44 +1199,44 @@ namespace websharks_core_v000000_dev
 			 *    However, this takes even the concept of a Factory a little further. Here we're overloading dynamic factory classes with `©`,
 			 *    and we're also dealing with dynamic class aliases.
 			 *
-			 *    A quick example might look like: ``$this->©class($arg1, $arg2)``. Which becomes: ``new \plugin_root_ns\class($arg1, $arg2)``.
-			 *    If ``\plugin_root_ns\class()`` is missing, we'll try ``new \websharks_core_v000000_dev\class($arg1, $arg2)``.
+			 *    A quick example might look like: `$this->©class($arg1, $arg2)`. Which becomes: `new \plugin_root_ns\class($arg1, $arg2)`.
+			 *    If `\plugin_root_ns\class()` is missing, we'll try `new \websharks_core_v000000_dev\class($arg1, $arg2)`.
 			 *
 			 *    If a sub-namespace is needed, suffix the required sub-namespace(s) with double underscores `__`.
-			 *    A quick example might look like: ``$this->©sub_namespace__sub_namespace__class($arg1, $arg2)``.
-			 *    Which becomes: ``new \plugin_root_ns\sub_namespace\sub_namespace\class($arg1, $arg2)``.
-			 *    Or: ``new \websharks_core_v000000_dev\sub_namespace\sub_namespace\class($arg1, $arg2)``.
+			 *    A quick example might look like: `$this->©sub_namespace__sub_namespace__class($arg1, $arg2)`.
+			 *    Which becomes: `new \plugin_root_ns\sub_namespace\sub_namespace\class($arg1, $arg2)`.
+			 *    Or: `new \websharks_core_v000000_dev\sub_namespace\sub_namespace\class($arg1, $arg2)`.
 			 *
 			 *    If the method name contains a fully qualified namespace, use a `©` suffix, instead of a prefix.
 			 *    Then use double underscores `__` to separate any namespace paths in the property name.
-			 *    A quick example: ``$this->my_namespace__sub_namespace__class©($arg1, $arg2)``.
-			 *    Becomes: ``new \my_namespace\sub_namespace\class($arg1, $arg2)``.
+			 *    A quick example: `$this->my_namespace__sub_namespace__class©($arg1, $arg2)`.
+			 *    Becomes: `new \my_namespace\sub_namespace\class($arg1, $arg2)`.
 			 *
 			 *    As mentioned earlier, it is also possible to call a dynamic singleton class method; also using the `©` prefix, along with a `.method_name` suffix.
-			 *    This special combination is handled a bit differently. We make a call to the ``__get()`` method in this case, for the dynamic singleton instance.
-			 *    Then, we use the dynamic singleton instance, and issue a call to `.method_name`, with ``$args`` passing through as well.
-			 *    A quick example: ``call_user_func_array(array($this, '©class.method_name'), array($arg1, $arg2))``.
-			 *    Another example: ``add_action('init', array($this, '©class.method_name'))``.
+			 *    This special combination is handled a bit differently. We make a call to the `__get()` method in this case, for the dynamic singleton instance.
+			 *    Then, we use the dynamic singleton instance, and issue a call to `.method_name`, with `$args` passing through as well.
+			 *    A quick example: `call_user_func_array(array($this, '©class.method_name'), array($arg1, $arg2))`.
+			 *    Another example: `add_action('init', array($this, '©class.method_name'))`.
 			 *
 			 *    This method also takes dynamic class aliases into consideration.
-			 *       See: ``$___dynamic_class_aliases`` for further details.
-			 *       See also: ``$____dynamic_class_aliases``.
+			 *       See: `$___dynamic_class_aliases` for further details.
+			 *       See also: `$____dynamic_class_aliases`.
 			 *
 			 * @param array  $args An array of arguments to the magic/overload method, or dynamic class object constructor.
 			 *    In the case of dynamic objects, it's fine to exclude the first argument, which is handled automatically by this routine.
-			 *    That is, the first argument to any extender is always the parent instance (i.e. ``$this``).
+			 *    That is, the first argument to any extender is always the parent instance (i.e. `$this`).
 			 *
 			 * @return mixed Magic/overload return values, or a dynamic object instance; else an exception is thrown.
 			 *    Dynamic class instances are defined explicitly in the docBlock above.
 			 *    This way IDEs will jive with this dynamic behavior.
 			 *
-			 * @throws exception If ``$method`` CANNOT be defined in any way.
+			 * @throws exception If `$method` CANNOT be defined in any way.
 			 *
 			 * @public Magic/overload methods must always remain public.
 			 *
-			 * @extenders If a class extender creates its own ``__call()`` method, it MUST first make an attempt to resolve ``$method`` on its own.
-			 *    If it CANNOT resolve ``$method``, it MUST then return a call to this method, using: ``parent::__call($method, $args)``.
-			 *    This allows the core ``__call()`` method to make a final attempt at resolving the value of ``$method``.
+			 * @extenders If a class extender creates its own `__call()` method, it MUST first make an attempt to resolve `$method` on its own.
+			 *    If it CANNOT resolve `$method`, it MUST then return a call to this method, using: `parent::__call($method, $args)`.
+			 *    This allows the core `__call()` method to make a final attempt at resolving the value of `$method`.
 			 *
 			 * @note This method should NOT rely directly or indirectly on any other magic/overload methods.
 			 *
@@ -1251,20 +1251,20 @@ namespace websharks_core_v000000_dev
 
 				if(($©strpos = strpos($method, '©')) !== FALSE) // Looking for a dynamic class?
 				{
-					// If ``$method`` ends with a `.method_name` we handle things quite differently.
+					// If `$method` ends with a `.method_name` we handle things quite differently.
 					if(strpos($method, '.') !== FALSE) // Calling a dynamic class method?
 					{
 						list($dyn_class, $dyn_method) = explode('.', $method, 2);
 						return call_user_func_array(array($this->__get($dyn_class), $dyn_method), $args);
 					}
-					// Note... this ``$dyn_class`` may or may not contain a fully qualified namespace. In some cases it will (if `©` is a suffix).
-					// However, in most cases ``$dyn_class`` will contain only a class name itself, or perhaps a sub_namespace\class.
-					$dyn_class = str_replace('__', '\\', trim($method, '©')); // Converts to a ``$dyn_class`` path.
+					// Note... this `$dyn_class` may or may not contain a fully qualified namespace. In some cases it will (if `©` is a suffix).
+					// However, in most cases `$dyn_class` will contain only a class name itself, or perhaps a sub_namespace\class.
+					$dyn_class = str_replace('__', '\\', trim($method, '©')); // Converts to a `$dyn_class` path.
 
 					// This maps dynamic class aliases to their real (i.e. actual class) counterparts.
-					// Mapped by ``$method``, after it's been converted into a ``$dyn_class`` path, and BEFORE any prefixes occur.
-					// Example: ``$this->©sub_namespace__class()`` maps to the alias entry `sub_namespace\class`.
-					// Another example: ``$this->©class()`` maps to the alias entry `class`.
+					// Mapped by `$method`, after it's been converted into a `$dyn_class` path, and BEFORE any prefixes occur.
+					// Example: `$this->©sub_namespace__class()` maps to the alias entry `sub_namespace\class`.
+					// Another example: `$this->©class()` maps to the alias entry `class`.
 
 					if(!empty(static::$___dynamic_class_aliases[$dyn_class]))
 						$dyn_class = static::$___dynamic_class_aliases[$dyn_class];
@@ -1278,21 +1278,21 @@ namespace websharks_core_v000000_dev
 					if($©strpos !== 0) // Assuming a fully qualified namespace has been given in this case.
 						$dyn_class_lookups[] = '\\'.$dyn_class; // So we only add the `\` prefix.
 
-					else // Otherwise try ``$this->___instance_config->plugin_root_ns``, then ``$this->___instance_config->core_ns``.
+					else // Otherwise try `$this->___instance_config->plugin_root_ns`, then `$this->___instance_config->core_ns`.
 					{
 						$dyn_class_lookups[] = $this->___instance_config->plugin_root_ns_prefix.'\\'.$dyn_class;
 						$dyn_class_lookups[] = $this->___instance_config->core_ns_prefix.'\\'.$dyn_class;
 					}
 					// Regarding a standard in the WebSharks™ Core.
-					// When/if a class extender creates its own ``__construct()`` method,
-					// it MUST collect an ``$___instance_config``, and it MUST call: ``parent::__construct($___instance_config)``.
+					// When/if a class extender creates its own `__construct()` method,
+					// it MUST collect an `$___instance_config`, and it MUST call: `parent::__construct($___instance_config)`.
 
 					foreach($dyn_class_lookups as $_dyn_class) // Now let's try to find the class.
 					{
 						if(!class_exists($_dyn_class)) // Triggers autoloader.
 							continue; // This class does NOT exist (we'll keep searching).
 
-						switch(count($args)) // Handles up to 10 hard coded ``$args``.
+						switch(count($args)) // Handles up to 10 hard coded `$args`.
 						{
 							// This tries to avoid the ReflectionClass, because it's MUCH slower.
 							// If there's more than 10 arguments to a constructor, we'll have to use it though, unfortunately.
@@ -1347,20 +1347,20 @@ namespace websharks_core_v000000_dev
 			 * @note Very important for this method to remain HIGHLY optimized at all times.
 			 *    This method is called MANY times throughout the entire WebSharks™ Core framework.
 			 *
-			 * @note This is about 6.5 times slower than ``is_...()`` checks alone (tested in PHP v5.3.13).
+			 * @note This is about 6.5 times slower than `is_...()` checks alone (tested in PHP v5.3.13).
 			 *    We've ALREADY put quite a bit of work into optimizing this as-is, so we might need an entirely new approach in the future.
 			 *    Benchmarking this against straight `is..()` checks alone, is not really fair either; since this routine "enforces" type hints.
 			 *    In the mean time, the benefits of using this method, far outweigh the cost in performance — in most cases.
 			 *    ~ Hopefully we'll have better support for type hinting upon the release of PHP 6.0.
 			 *
-			 * @note Try NOT to ``check_arg_types()`` recursively (i.e. in recursive functions). It's really a waste of resources.
-			 *    If a function is going to be called recursively, please design your function (while in recursion), to bypass ``check_arg_types()``.
+			 * @note Try NOT to `check_arg_types()` recursively (i.e. in recursive functions). It's really a waste of resources.
+			 *    If a function is going to be called recursively, please design your function (while in recursion), to bypass `check_arg_types()`.
 			 *
 			 * @params-variable-length This method accepts any number of parameters (i.e. type hints, as seen below).
 			 *
 			 *    Arguments to this method should first include a variable-length list of type hints.
 			 *
-			 *    Format as follows: ``check_arg_types('[type]', '[type]' ..., func_get_args())``.
+			 *    Format as follows: `check_arg_types('[type]', '[type]' ..., func_get_args())`.
 			 *    Where type hint arguments MUST be ordered exactly the same as each argument requested by the function/method we're checking.
 			 *    However, it's fine to exclude certain arguments from the end (i.e. any we don't need to check), or via exclusion w/ an empty string.
 			 *
@@ -1369,44 +1369,44 @@ namespace websharks_core_v000000_dev
 			 *    For performance reasons, `[type]` is caSe sensitive. Therefore, `INTeger` will NOT match `integer` (that would be invalid; resulting in a check requiring an instance of `INTeger`).
 			 *
 			 *    Negating certain types.
-			 *    Example: ``check_arg_types('!object', func_get_args())``.
+			 *    Example: `check_arg_types('!object', func_get_args())`.
 			 *    Allows anything, except an object type.
 			 *
-			 *    Require values that are NOT ``empty()``.
-			 *    Example: ``check_arg_types('string:!empty', func_get_args())``.
-			 *    Requires a string that is NOT considered ``empty()`` by the PHP interpreter.
+			 *    Require values that are NOT `empty()`.
+			 *    Example: `check_arg_types('string:!empty', func_get_args())`.
+			 *    Requires a string that is NOT considered `empty()` by the PHP interpreter.
 			 *
-			 *    Require anything that is NOT ``empty()``.
-			 *    Example: ``check_arg_types(':!empty', func_get_args())``.
-			 *    Anything that is NOT considered ``empty()`` by the PHP interpreter.
+			 *    Require anything that is NOT `empty()`.
+			 *    Example: `check_arg_types(':!empty', func_get_args())`.
+			 *    Anything that is NOT considered `empty()` by the PHP interpreter.
 			 *
 			 *    Using an array of multiple type hints.
-			 *    Example: ``check_arg_types(array('string', 'object'), func_get_args())``.
-			 *    Example: ``check_arg_types(array('string:!empty', 'object'), func_get_args())``.
+			 *    Example: `check_arg_types(array('string', 'object'), func_get_args())`.
+			 *    Example: `check_arg_types(array('string:!empty', 'object'), func_get_args())`.
 			 *    Allows either a string `OR` an object to be passed in as the first argument value.
 			 *    In the second example, we allow a string (NOT empty) `OR` an object instance.
 			 *
 			 *    Array w/ an empty type hint value (NOT recommended).
-			 *    Example: ``check_arg_types(array('string', ''), func_get_args())``.
+			 *    Example: `check_arg_types(array('string', ''), func_get_args())`.
 			 *    Allows a string, or anything else (so actually, anything is allowed here).
 			 *    It would be VERY odd to do this. Just documenting this behavior for the sake of clarity.
 			 *
 			 *    Using an `[instanceof]` check.
-			 *    Example: ``check_arg_types('\\websharks_core_v000000_dev\\users', func_get_args())``.
-			 *    Example: ``check_arg_types(array('WP_User', '\\websharks_core_v000000_dev\\users'), func_get_args())``.
+			 *    Example: `check_arg_types('\\websharks_core_v000000_dev\\users', func_get_args())`.
+			 *    Example: `check_arg_types(array('WP_User', '\\websharks_core_v000000_dev\\users'), func_get_args())`.
 			 *    For practicality & performance reasons, we do NOT check `!` or `:!empty` in the case of `[instanceof]`.
 			 *    It's VERY rare that one would need to require something that's NOT a specific object instance.
-			 *    And, objects are NEVER empty anyway, according to PHPs ``empty()`` function.
+			 *    And, objects are NEVER empty anyway, according to PHPs `empty()` function.
 			 *
 			 * @note Ordinarily, the last argument to this method is a numerically indexed array of all arguments that were passed into the function/method we're checking.
-			 *    Use ``func_get_args()`` as the last argument to this method. Example: ``check_arg_types('[type]', '[type]' ..., func_get_args())``.
+			 *    Use `func_get_args()` as the last argument to this method. Example: `check_arg_types('[type]', '[type]' ..., func_get_args())`.
 			 *
 			 * @note For performance reasons, array keys in the last argument, MUST be indexed numerically.
-			 *    Please make sure that ``func_get_args()`` is used as the last argument. Or, any array that uses numeric indexes, is also fine.
+			 *    Please make sure that `func_get_args()` is used as the last argument. Or, any array that uses numeric indexes, is also fine.
 			 *    Associative arrays will cause PHP notices, due to undefined indexes. We're expecting a numerically indexed array of arguments here.
 			 *
 			 * @note If the last argument to this method is an integer, instead of an array; we treat the last argument as the number of required arguments.
-			 *    Example: ``check_arg_types('[type]', '[type]' ..., func_get_args(), 2)``. This requires a minimum of two argument values.
+			 *    Example: `check_arg_types('[type]', '[type]' ..., func_get_args(), 2)`. This requires a minimum of two argument values.
 			 *    This is NOT needed in most cases. PHP should have already triggered a warning about missing arguments.
 			 *
 			 * @return boolean TRUE if all argument values can be validated against the list of type hints; else an exception is thrown.
@@ -1429,7 +1429,7 @@ namespace websharks_core_v000000_dev
 					$required_args = $_last_arg_value; // Number of required arguments.
 					$args          = (array)array_pop($_arg_type_hints__args__required_args);
 				}
-				else $args = (array)$_last_arg_value; // Use ``$_last_arg_value`` as ``$args``.
+				else $args = (array)$_last_arg_value; // Use `$_last_arg_value` as `$args`.
 
 				$arg_type_hints      = $_arg_type_hints__args__required_args; // Type hints (remaining arguments).
 				$total_args          = count($args); // Total arguments passed into the function/method we're checking.
@@ -1487,7 +1487,7 @@ namespace websharks_core_v000000_dev
 
 							/****************************************************************************/
 
-							case 'string': // All of these fall under ``!is_...()`` checks.
+							case 'string': // All of these fall under `!is_...()` checks.
 							case 'boolean':
 							case 'bool':
 							case 'integer':
@@ -1527,7 +1527,7 @@ namespace websharks_core_v000000_dev
 
 							/****************************************************************************/
 
-							case '!string': // All of these fall under ``is_...()`` checks.
+							case '!string': // All of these fall under `is_...()` checks.
 							case '!boolean':
 							case '!bool':
 							case '!integer':
@@ -1567,7 +1567,7 @@ namespace websharks_core_v000000_dev
 
 							/****************************************************************************/
 
-							case 'string:!empty': // These are ``!is_...()`` || ``empty()`` checks.
+							case 'string:!empty': // These are `!is_...()` || `empty()` checks.
 							case 'boolean:!empty':
 							case 'bool:!empty':
 							case 'integer:!empty':
@@ -1611,7 +1611,7 @@ namespace websharks_core_v000000_dev
 							default: // Assume object `instanceof` in this default case handler.
 								// For practicality & performance reasons, we do NOT check `!` or `:!empty` here.
 								// It's VERY rare that one would need to require something that's NOT a specific object instance.
-								// Objects are NEVER empty anyway, according to PHPs ``empty()`` function.
+								// Objects are NEVER empty anyway, according to PHPs `empty()` function.
 
 								if(!($args[$_arg_position] instanceof $_arg_type))
 								{
@@ -1665,20 +1665,20 @@ namespace websharks_core_v000000_dev
 			 *
 			 *    Arguments to this method should first include a variable-length list of type hints.
 			 *
-			 *    Format as follows: ``check_extension_arg_types('[type]', '[type]' ..., $default_args, $args)``.
-			 *    Where type hint arguments MUST be ordered exactly the same as each argument in the array of ``$default_args``.
+			 *    Format as follows: `check_extension_arg_types('[type]', '[type]' ..., $default_args, $args)`.
+			 *    Where type hint arguments MUST be ordered exactly the same as each argument in the array of `$default_args`.
 			 *    However, it's fine to exclude certain arguments from the end (i.e. any we don't need to check), or via exclusion w/ an empty string.
-			 *    This method uses ``check_arg_types()``. Please see ``check_arg_types()`` to learn more about type hints in the WebSharks™ Core.
+			 *    This method uses `check_arg_types()`. Please see `check_arg_types()` to learn more about type hints in the WebSharks™ Core.
 			 *
 			 * @note Ordinarily, the last argument to this method is an associative array of all arguments that were passed in through a single function/method parameter.
-			 *    For example: ``check_extension_arg_types('[type]', '[type]' ..., $default_args, array('hello' => 'hello', 'world' => 'world')``.
+			 *    For example: `check_extension_arg_types('[type]', '[type]' ..., $default_args, array('hello' => 'hello', 'world' => 'world')`.
 			 *
 			 * @note If the last argument to this method is an integer, instead of an array; we treat the last argument as the number of required arguments.
-			 *    Example: ``check_extension_arg_types('[type]', '[type]' ..., $default_args, $args, 2)``. This requires a minimum of two argument values.
-			 *    Required argument keys, are those which appear first in the array of ``$default_args`` (e.g. always based on default argument key positions).
+			 *    Example: `check_extension_arg_types('[type]', '[type]' ..., $default_args, $args, 2)`. This requires a minimum of two argument values.
+			 *    Required argument keys, are those which appear first in the array of `$default_args` (e.g. always based on default argument key positions).
 			 *
-			 * @return array Returns an array of extended ``$default_args``, if all argument values can be validated against the list of type hints.
-			 *    Note: the ``$default_args`` are extended with ``array_merge()``. Otherwise, an exception is thrown when there are problems.
+			 * @return array Returns an array of extended `$default_args`, if all argument values can be validated against the list of type hints.
+			 *    Note: the `$default_args` are extended with `array_merge()`. Otherwise, an exception is thrown when there are problems.
 			 *
 			 * @throws exception If the last parameter is an integer indicating a number of required arguments,
 			 *    and the number of arguments passed in, is less than this number.
@@ -1698,7 +1698,7 @@ namespace websharks_core_v000000_dev
 					$required_args = $_last_arg_value; // Number of required arguments.
 					$args          = (array)array_pop($_arg_type_hints__default_args__args__required_args);
 				}
-				else $args = (array)$_last_arg_value; // Use ``$_last_arg_value`` as ``$args``.
+				else $args = (array)$_last_arg_value; // Use `$_last_arg_value` as `$args`.
 
 				$default_args   = (array)array_pop($_arg_type_hints__default_args__args__required_args);
 				$arg_type_hints = $_arg_type_hints__default_args__args__required_args; // Type hints (remaining args).
@@ -1726,7 +1726,7 @@ namespace websharks_core_v000000_dev
 				// Commenting for performance. NOT absolutely necessary.
 				# unset($_default_arg_key_position, $_default_arg_key); // Housekeeping.
 
-				// Build ``$extension_args``, ``$intersecting_args`` and ``$intersecting_arg_type_hints``.
+				// Build `$extension_args`, `$intersecting_args` and `$intersecting_arg_type_hints`.
 
 				foreach(array_intersect_key($default_args, $args) as $_default_arg_key => $_default_arg)
 				{
@@ -1739,7 +1739,7 @@ namespace websharks_core_v000000_dev
 				// Commenting for performance. NOT absolutely necessary.
 				# unset($_default_arg_key, $_default_arg); // Housekeeping.
 
-				// Put everything into a single array & ``check_arg_types()``.
+				// Put everything into a single array & `check_arg_types()`.
 
 				$arg_type_hints__args   = $intersecting_arg_type_hints;
 				$arg_type_hints__args[] =& $intersecting_args;
@@ -1754,7 +1754,7 @@ namespace websharks_core_v000000_dev
 			# --------------------------------------------------------------------------------------------------------------------------
 
 			/**
-			 * Sets properties on ``$this`` object instance.
+			 * Sets properties on `$this` object instance.
 			 *
 			 * @param array $properties An associative array of object instance properties.
 			 *    Each property MUST already exist, and value types MUST match up.
@@ -1764,7 +1764,7 @@ namespace websharks_core_v000000_dev
 			 * @throws exception If attempting to set an undefined property (i.e. non-existent).
 			 * @throws exception If attempting to set a property value, which has a different value type.
 			 *    Properties with an existing NULL value, are an exception to this rule.
-			 *    If an existing property ``is_null()``, we allow ANY new value type.
+			 *    If an existing property `is_null()`, we allow ANY new value type.
 			 *
 			 * @final May NOT be overridden by extenders.
 			 * @public Available for public usage.
@@ -1802,7 +1802,7 @@ namespace websharks_core_v000000_dev
 			 * @param string $function Pass `__FUNCTION__` from any class member.
 			 *    Current class is prepended to this (very much like `__METHOD__`).
 			 *
-			 * @return string `__METHOD__` for current class; i.e. ``get_class($this)``.
+			 * @return string `__METHOD__` for current class; i.e. `get_class($this)`.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
@@ -1823,7 +1823,7 @@ namespace websharks_core_v000000_dev
 			 *    Current sub-namespace class is prepended; and we prefix a `©` symbol also.
 			 *    Please be sure `__FUNCTION__` begins w/ `®` as a registered call action handler.
 			 *
-			 * @return string Dynamic `©class.®method` for current class; i.e. ``get_class($this)``.
+			 * @return string Dynamic `©class.®method` for current class; i.e. `get_class($this)`.
 			 *
 			 * @throws exception If invalid types are passed through arguments list.
 			 *
@@ -1842,7 +1842,7 @@ namespace websharks_core_v000000_dev
 			# --------------------------------------------------------------------------------------------------------------------------
 
 			/**
-			 * Fires WordPress® Action Hooks for ``$this`` class.
+			 * Fires WordPress® Action Hooks for `$this` class.
 			 *
 			 * Automatically prefixes hook/filter names with the calling `namespace_stub__sub_namespace__class__`.
 			 * This allows for hooks/filters to be written with short names inside class methods, while still being
@@ -1850,22 +1850,22 @@ namespace websharks_core_v000000_dev
 			 *
 			 * The `namespace_stub__sub_namespace__class__` slug will always start with the plugin's root namespace stub,
 			 * so that every hook/filter implemented by a plugin contains the same prefix,
-			 * regardless of which namespace ``$this`` class is actually in.
+			 * regardless of which namespace `$this` class is actually in.
 			 *
-			 * For example, if a hook/filter is fired by ``$this`` class `websharks_core_v000000_dev\framework`,
-			 * the hook/filter slug is prefixed by: ``$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores``.
+			 * For example, if a hook/filter is fired by `$this` class `websharks_core_v000000_dev\framework`,
+			 * the hook/filter slug is prefixed by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__framework__hook_filter_name`.
 			 *
 			 * In the case of a sub-namespace, it works the same way.
 			 * The actual root namespace is swapped out, in favor of the plugin's root namespace stub.
-			 * If a hook/filter is fired by ``$this`` class `websharks_core_v000000_dev\sub_namespace\class`,
-			 * the hook/filter slug is prefixed again by: ``$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores``.
+			 * If a hook/filter is fired by `$this` class `websharks_core_v000000_dev\sub_namespace\class`,
+			 * the hook/filter slug is prefixed again by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__sub_namespace__class__hook_filter_name`.
 			 *
 			 * @param string $action Action Hook name.
 			 * @params-variable-length Additional arguments pass data to an action handler.
 			 *
-			 * @return null|mixed Result from call to ``do_action()`` (should be NULL).
+			 * @return null|mixed Result from call to `do_action()` (should be NULL).
 			 *
 			 * @final May NOT be overridden by extenders.
 			 * @public Available for public usage.
@@ -1880,7 +1880,7 @@ namespace websharks_core_v000000_dev
 			}
 
 			/**
-			 * Fires WordPress® Filters for ``$this`` class.
+			 * Fires WordPress® Filters for `$this` class.
 			 *
 			 * Automatically prefixes hook/filter names with the calling `namespace_stub__sub_namespace__class__`.
 			 * This allows for hooks/filters to be written with short names inside class methods, while still being
@@ -1888,23 +1888,23 @@ namespace websharks_core_v000000_dev
 			 *
 			 * The `namespace_stub__sub_namespace__class__` slug will always start with the plugin's root namespace stub,
 			 * so that every hook/filter implemented by a plugin contains the same prefix,
-			 * regardless of which namespace ``$this`` class is actually in.
+			 * regardless of which namespace `$this` class is actually in.
 			 *
-			 * For example, if a hook/filter is fired by ``$this`` class `websharks_core_v000000_dev\framework`,
-			 * the hook/filter slug is prefixed by: ``$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores``.
+			 * For example, if a hook/filter is fired by `$this` class `websharks_core_v000000_dev\framework`,
+			 * the hook/filter slug is prefixed by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__framework__hook_filter_name`.
 			 *
 			 * In the case of a sub-namespace, it works the same way.
 			 * The actual root namespace is swapped out, in favor of the plugin's root namespace stub.
-			 * If a hook/filter is fired by ``$this`` class `websharks_core_v000000_dev\sub_namespace\class`,
-			 * the hook/filter slug is prefixed again by: ``$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores``.
+			 * If a hook/filter is fired by `$this` class `websharks_core_v000000_dev\sub_namespace\class`,
+			 * the hook/filter slug is prefixed again by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__sub_namespace__class__hook_filter_name`.
 			 *
 			 * @param string $filter Filter name.
 			 * @param mixed  $value Value to Filter.
 			 * @params-variable-length Additional arguments pass data to a filter handler.
 			 *
-			 * @return mixed Result from call to ``apply_filters()`` (e.g. filtered value).
+			 * @return mixed Result from call to `apply_filters()` (e.g. filtered value).
 			 *
 			 * @final May NOT be overridden by extenders.
 			 * @public Available for public usage.
@@ -1929,21 +1929,21 @@ namespace websharks_core_v000000_dev
 			 * Contextual translation wrapper (context: `admin-side`).
 			 *
 			 * Automatically prefixes contextual slugs with the calling `namespace-stub--sub-namespace--`.
-			 * This allows for translations to be performed with a simple call to ``$this->__()``, while still being
+			 * This allows for translations to be performed with a simple call to `$this->__()`, while still being
 			 * given a consistently unique `namespace-stub--sub-namespace--` prefix.
 			 *
 			 * The `namespace-stub--sub-namespace--` slug will always start with the plugin's root namespace-stub,
 			 * so that every translation call implemented by a plugin contains the same prefix,
-			 * regardless of which namespace ``$this`` class is actually in.
+			 * regardless of which namespace `$this` class is actually in.
 			 *
-			 * For example, if a translation call is fired by ``$this`` class `websharks_core_v000000_dev\framework`,
-			 * the contextual slug prefix is: ``$this->___instance_config->plugin_stub_as_root_ns_with_dashes``.
+			 * For example, if a translation call is fired by `$this` class `websharks_core_v000000_dev\framework`,
+			 * the contextual slug prefix is: `$this->___instance_config->plugin_stub_as_root_ns_with_dashes`.
 			 * Which would result in this contextual slug: `plugin-root-ns-stub--(front|admin)-side`.
 			 *
 			 * In the case of a sub-namespace, it works the same way.
 			 * The actual root namespace is swapped out, in favor of the plugin's root namespace stub.
-			 * So if a translation call is fired by ``$this`` class `websharks_core_v000000_dev\sub_namespace\class`,
-			 * the contextual slug prefix is again: ``$this->___instance_config->plugin_stub_as_root_ns_with_dashes``.
+			 * So if a translation call is fired by `$this` class `websharks_core_v000000_dev\sub_namespace\class`,
+			 * the contextual slug prefix is again: `$this->___instance_config->plugin_stub_as_root_ns_with_dashes`.
 			 * Which would result in this contextual slug: `plugin-root-ns-stub--sub-namespace--(front|admin)-side`.
 			 *
 			 * @param string $string String to translate.
@@ -2105,7 +2105,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return framework The global WebSharks™ Core framework instance (this version).
 		 *
-		 * @note If ``$version`` is passed in, this returns a specific version of the WebSharks™ Core.
+		 * @note If `$version` is passed in, this returns a specific version of the WebSharks™ Core.
 		 *
 		 * @note This compliments {@link \websharks_core()} in the global namespace.
 		 *    This is for calls within THIS namespace; where we want to use this specific version.

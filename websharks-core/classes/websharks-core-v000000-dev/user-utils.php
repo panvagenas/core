@@ -59,11 +59,11 @@ namespace websharks_core_v000000_dev
 		 * Which user are we working with?
 		 *
 		 * @param null|integer|\WP_User|users $user Optional. One of the following:
-		 *    • NULL indicates the current user (i.e. ``$this->©user``).
+		 *    • NULL indicates the current user (i.e. `$this->©user`).
 		 *    • A value of `-1`, indicates NO user explicitly (e.g. a public user w/o an account).
 		 *    • An integer indicates a specific user ID (which we'll obtain an object instance for).
-		 *    • A ``\WP_User`` object, indicates a specific user (which we'll obtain an object instance for).
-		 *    • A ``users`` object, indicates a specific user object instance.
+		 *    • A `\WP_User` object, indicates a specific user (which we'll obtain an object instance for).
+		 *    • A `users` object, indicates a specific user object instance.
 		 *
 		 * @return users A user object instance.
 		 *    Else an exception is thrown (e.g. unable to determine).
@@ -102,22 +102,21 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets an array of ``$this->which()`` user types.
+		 * Gets an array of `$this->which()` user types.
 		 *
-		 * @return array Array of ``$this->which()`` user types.
+		 * @return array Array of `$this->which()` user types.
 		 */
 		public function which_types()
 		{
-			if(!isset($this->cache[__FUNCTION__]))
-			{
-				$this->cache[__FUNCTION__] = array_unique(
-					array(
-						'null', 'integer', '\\WP_User',
-						$this->___instance_config->core_ns_prefix.'\\users',
-						$this->___instance_config->plugin_root_ns_prefix.'\\users'
-					));
-			}
-			return $this->cache[__FUNCTION__];
+			if(isset($this->cache[__FUNCTION__]))
+				return $this->cache[__FUNCTION__];
+
+			return ($this->cache[__FUNCTION__]
+				= array_unique(array(
+					               'null', 'integer', '\\WP_User',
+					               $this->___instance_config->core_ns_prefix.'\\users',
+					               $this->___instance_config->plugin_root_ns_prefix.'\\users'
+				               )));
 		}
 
 		/**
@@ -130,14 +129,14 @@ namespace websharks_core_v000000_dev
 		 *    • `username`
 		 *    • `email`
 		 *    • `activation_key`
-		 *    • Others become possible, when/if ``get_id_by()`` is enhanced by a class extender.
+		 *    • Others become possible, when/if `get_id_by()` is enhanced by a class extender.
 		 *
 		 * @param string|integer|array $value A value to search for (e.g. username(s), email address(es), ID(s)).
 		 *
 		 * @return null|users A user object instance, else NULL on failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$by`` or ``$value`` are empty.
+		 * @throws exception If `$by` or `$value` are empty.
 		 *
 		 * @assert ('ID', 1) is-type 'object'
 		 * @assert ('username', 'Jason') is-type 'object'
@@ -186,7 +185,7 @@ namespace websharks_core_v000000_dev
 		 * @return integer A WordPress® user ID, else `0`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$by`` or ``$value`` are empty.
+		 * @throws exception If `$by` or `$value` are empty.
 		 *
 		 * @assert ('ID', 1) === 1
 		 * @assert ('username', 'Jason') === 1
@@ -310,7 +309,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $email A possible email address to validate.
 		 *
-		 * @return boolean|errors TRUE if ``$email`` is a valid (available) email address.
+		 * @return boolean|errors TRUE if `$email` is a valid (available) email address.
 		 *    Otherwise, this returns an errors object on failure.
 		 *
 		 * @note Emails may NEVER exceed 100 chars (the max DB column size).
@@ -420,7 +419,7 @@ namespace websharks_core_v000000_dev
 		 * @param string $email A possible email address to validate.
 		 * @param string $existing_email The user's existing email address (possibly the same).
 		 *
-		 * @return boolean|errors TRUE if ``$email`` is a valid (available) email address.
+		 * @return boolean|errors TRUE if `$email` is a valid (available) email address.
 		 *    Otherwise, this returns an errors object on failure.
 		 *
 		 * @note Emails may NEVER exceed 100 chars (the max DB column size).
@@ -532,7 +531,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $username A possible username to validate.
 		 *
-		 * @return boolean|errors TRUE if ``$username`` is a valid (available) username.
+		 * @return boolean|errors TRUE if `$username` is a valid (available) username.
 		 *    Otherwise, this returns an errors object on failure.
 		 *
 		 * @note Usernames may NEVER exceed 60 characters (the max DB column size).
@@ -637,8 +636,8 @@ namespace websharks_core_v000000_dev
 		 * @param null|integer $blog_id A specific blog ID. Defaults to a NULL value.
 		 *    If this is NULL, we assume the current blog ID.
 		 *
-		 * @return integer The existing user ID, if the ``$username``, ``$email`` combination actually DOES exist already,
-		 *    BUT the ``$username``, ``$email`` combination is NOT currently a member of ``$blog_id`` (e.g. we can add them to ``$blog_id``).
+		 * @return integer The existing user ID, if the `$username`, `$email` combination actually DOES exist already,
+		 *    BUT the `$username`, `$email` combination is NOT currently a member of `$blog_id` (e.g. we can add them to `$blog_id`).
 		 *    Otherwise, this returns `0` by default.
 		 */
 		public function username_email_exists_but_not_on_blog($username, $email, $blog_id = NULL)
@@ -673,7 +672,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $password A possible password to validate.
 		 *
-		 * @return boolean|errors TRUE if ``$password`` is a valid (i.e. long/strong enough).
+		 * @return boolean|errors TRUE if `$password` is a valid (i.e. long/strong enough).
 		 *    Otherwise, this returns an errors object on failure.
 		 *
 		 * @note Passwords may NEVER exceed 100 characters (that's ridiculous).
@@ -742,10 +741,10 @@ namespace websharks_core_v000000_dev
 		 *  • (string)`ip` A required parameter. An IP address for this user.
 		 *  • (string)`email` A required parameter. A valid email address.
 		 *
-		 *    All other parameters are optional. Except ``$username`` is required on multisite networks.
+		 *    All other parameters are optional. Except `$username` is required on multisite networks.
 		 *
 		 *  • (string)`username` Optional on standard WordPress® installs (but required in multisite networks).
-		 *       A valid username. Chars allowed: `A-Za-z0-9_.@-`. If empty, defaults to ``$email`` value.
+		 *       A valid username. Chars allowed: `A-Za-z0-9_.@-`. If empty, defaults to `$email` value.
 		 *
 		 *       Multisite networks MUST collect a username, because an email address will NOT work in a multisite network.
 		 *       WordPress® character restrictions (for usernames) in a multisite network, do NOT allow email addresses.
@@ -756,18 +755,18 @@ namespace websharks_core_v000000_dev
 		 *  • (string)`first_name` Optional. User's first name (self explanatory).
 		 *  • (string)`last_name` Optional. User's last name. Note that a user's `display_name`,
 		 *       is NOT collected by this method. Instead, we format a `display_name` automatically, based on preference.
-		 *       However, if you'd like to force a specific `display_name`, you can pass it through ``$data``, as detailed below.
-		 *       See also: ``format_display_name()`` for further details.
+		 *       However, if you'd like to force a specific `display_name`, you can pass it through `$data`, as detailed below.
+		 *       See also: `format_display_name()` for further details.
 		 *
 		 *  • (string)`url` Optional. A URL associated with this user (e.g. their website URL).
 		 *
 		 *  • (array)`options` Optional associative array. Any additional user option values.
-		 *       These are stored via ``update_user_option()`` (e.g. blog-specific meta values).
+		 *       These are stored via `update_user_option()` (e.g. blog-specific meta values).
 		 *
 		 *  • (array)`meta` Optional associative array. Any additional user meta values.
-		 *       These are stored via ``update_user_meta()`` (e.g. site-wide meta values).
+		 *       These are stored via `update_user_meta()` (e.g. site-wide meta values).
 		 *
-		 *  • (array)`data` Optional associative array. Any additional data you'd like to pass through ``wp_insert_user()``.
+		 *  • (array)`data` Optional associative array. Any additional data you'd like to pass through `wp_insert_user()`.
 		 *       See: http://codex.wordpress.org/Function_Reference/wp_insert_user
 		 *
 		 *  • (array)`profile_fields` Optional associative array w/ additional profile field values (by code).
@@ -839,9 +838,9 @@ namespace websharks_core_v000000_dev
 			if(!$args['password']) // If we were NOT given a plain text password, let's generate one automatically.
 				$args['password'] = $this->©string->random(15); // Not recommended, but possible.
 
-			// Put array of `data` together for our call to ``wp_insert_user()`` below.
+			// Put array of `data` together for our call to `wp_insert_user()` below.
 
-			$data = array_merge(array( // For ``wp_insert_user()`` below.
+			$data = array_merge(array( // For `wp_insert_user()` below.
 			                           'role'       => $args['role'],
 			                           'user_email' => (string)substr($args['email'], 0, 100),
 			                           'user_login' => (string)substr($args['username'], 0, 60),
@@ -880,7 +879,7 @@ namespace websharks_core_v000000_dev
 						);
 					return $this->©error(
 						$this->method(__FUNCTION__).'#wp_error_'.$add_existing_user_to_blog->get_error_code(), get_defined_vars(),
-						$add_existing_user_to_blog->get_error_message() // Message from ``add_existing_user_to_blog()``.
+						$add_existing_user_to_blog->get_error_message() // Message from `add_existing_user_to_blog()`.
 					);
 				}
 				if(!($user = $this->get_by('id', $user_id))) // A VERY wrong scenario.
@@ -917,7 +916,7 @@ namespace websharks_core_v000000_dev
 						);
 					return $this->©error(
 						$this->method(__FUNCTION__).'#wp_error_'.$wp_insert_user->get_error_code(), get_defined_vars(),
-						$wp_insert_user->get_error_message() // Message from ``wp_insert_user()``.
+						$wp_insert_user->get_error_message() // Message from `wp_insert_user()`.
 					);
 				}
 				if(is_multisite()) // In networks, we need to add the user to the current blog (formally).
@@ -933,7 +932,7 @@ namespace websharks_core_v000000_dev
 							);
 						return $this->©error(
 							$this->method(__FUNCTION__).'#wp_error_'.$add_existing_user_to_blog->get_error_code(), get_defined_vars(),
-							$add_existing_user_to_blog->get_error_message() // Message from ``add_existing_user_to_blog()``.
+							$add_existing_user_to_blog->get_error_message() // Message from `add_existing_user_to_blog()`.
 						);
 					}
 				if(!($user = $this->get_by('id', $user_id))) // A VERY wrong scenario.
@@ -975,13 +974,13 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Activates a new WordPress® user.
 		 *
-		 * @param string $activation_key An encrypted activation key, as produced by ``$this->send_activation_email()``.
+		 * @param string $activation_key An encrypted activation key, as produced by `$this->send_activation_email()`.
 		 *
 		 * @return array|errors This will return an array on success; else an errors object on failure.
 		 *    An array on success, includes: (integer)`ID`, (object)`user`, (string)`password`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$activation_key`` is empty.
+		 * @throws exception If `$activation_key` is empty.
 		 */
 		public function activate($activation_key)
 		{
@@ -1029,7 +1028,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param \WP_User|\WP_Error $authentication A `WP_User` object on success, else a `WP_Error` object failure.
 		 *
-		 * @return \WP_User|\WP_Error A `WP_Error` on failure, else pass ``$authentication`` through.
+		 * @return \WP_User|\WP_Error A `WP_Error` on failure, else pass `$authentication` through.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */

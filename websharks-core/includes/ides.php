@@ -20,7 +20,7 @@ namespace websharks_core_v000000_dev
 {
 	# Internal/namespaced aliases generated dynamically.
 	# While these are declared as extenders; they are actually aliases.
-	# IDEs don't normally understand calls to ``class_alias()``.
+	# IDEs don't normally understand calls to `class_alias()`.
 
 	class stub extends \websharks_core_v000000_dev{}
 	class deps extends \deps_websharks_core_v000000_dev{}
@@ -29,7 +29,7 @@ namespace # Global namespace.
 {
 	# Global aliases generated dynamically in one way or another.
 	# While these are declared as extenders; they are actually aliases.
-	# IDEs don't normally understand calls to ``class_alias()``.
+	# IDEs don't normally understand calls to `class_alias()`.
 
 	// Related to the WebSharks™ Core stub.
 	class websharks_core__stub extends \websharks_core_v000000_dev{}

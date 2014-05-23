@@ -142,8 +142,8 @@ namespace websharks_core_v000000_dev
 		 * @param string $ip An IP address.
 		 * @param string $cidr An IP address, or CIDR notation.
 		 *
-		 * @return boolean TRUE if ``$ip`` is within the range specified by ``$cidr``; else FALSE;
-		 *    Also returns TRUE, if ``$cidr`` is NOT a CIDR notation; and both ``$ip`` and ``$cidr`` are exactly the same.
+		 * @return boolean TRUE if `$ip` is within the range specified by `$cidr`; else FALSE;
+		 *    Also returns TRUE, if `$cidr` is NOT a CIDR notation; and both `$ip` and `$cidr` are exactly the same.
 		 *
 		 * @assert ('192.168.0.0', '192.168.0.0/16') === TRUE
 		 * @assert ('192.168.255.255', '192.168.0.0/16') === TRUE

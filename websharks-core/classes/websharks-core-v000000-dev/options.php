@@ -49,8 +49,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 */
 		public function __construct($___instance_config)
 		{
@@ -183,7 +183,7 @@ namespace websharks_core_v000000_dev
 		 * @return array The current array of options.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``count($default_options) !== count($validators)``.
+		 * @throws exception If `count($default_options) !== count($validators)`.
 		 *
 		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
@@ -226,7 +226,7 @@ namespace websharks_core_v000000_dev
 		 *    A string value, array, or multidimensional array.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$option_name`` is currently unknown.
+		 * @throws exception If `$option_name` is currently unknown.
 		 *
 		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
@@ -300,7 +300,7 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('array', func_get_args());
 
-			if($new_options) // An array with ``$new_options``, NOT empty?
+			if($new_options) // An array with `$new_options`, NOT empty?
 			{
 				$new_options = $this->©string->ify_deep($this->©array->ify_deep($new_options));
 
@@ -322,24 +322,24 @@ namespace websharks_core_v000000_dev
 		 * Validates the current array of option values.
 		 *
 		 * @param boolean $use_validators Defaults to FALSE. By default, we perform only a basic validation.
-		 *    If TRUE, a full validation is performed, including all ``$validators``.
+		 *    If TRUE, a full validation is performed, including all `$validators`.
 		 *
 		 * @return array The current array of options.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If an unknown validation type is found in the array of ``$validators``.
+		 * @throws exception If an unknown validation type is found in the array of `$validators`.
 		 * @modifies-options-array If an option fails validation, we silently revert that option to it's default value.
 		 *
 		 * @note Options will ONLY be strings, or multidimensional arrays containing other string option values.
-		 *    All ``$default_options``, and new options added via ``update()``, will be stringified/arrayified deeply.
-		 *    See: ``setup()`` and ``update()`` for further details regarding this.
+		 *    All `$default_options`, and new options added via `update()`, will be stringified/arrayified deeply.
+		 *    See: `setup()` and `update()` for further details regarding this.
 		 *
 		 * @note Option value types MUST match that of their default option counterpart.
 		 *    In addition, options NOT in the list of defaults, are NOT allowed to exist on their own.
 		 *    Any options NOT in the list of defaults, are silently removed by this routine.
 		 *
 		 * @note In order to avoid potential conflicts after a plugin upgrade,
-		 *    the ``©installation->activation()`` routine should always call upon the ``update()`` method here in this class,
+		 *    the `©installation->activation()` routine should always call upon the `update()` method here in this class,
 		 *    which fires this full validation routine; thereby preventing possible option value conflicts from one version to the next.
 		 *
 		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
@@ -379,7 +379,7 @@ namespace websharks_core_v000000_dev
 							$_validation_type = $_data; // As type.
 							$_data            = NULL; // Nullify data.
 						}
-						else // Associative key with possible ``$_data``.
+						else // Associative key with possible `$_data`.
 						{
 							/** @var mixed $_data */
 							$_validation_type = $_validation_key;
@@ -608,7 +608,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
-		 * @note Important... this is called upon by the ``deactivation_uninstall()`` method below.
+		 * @note Important... this is called upon by the `deactivation_uninstall()` method below.
 		 * @note This could also be used to revert a site owner back to our default options.
 		 *
 		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));

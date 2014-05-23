@@ -135,14 +135,14 @@ namespace websharks_core_v000000_dev
 		 * Gets a new writable temporary file path.
 		 *
 		 * @param string $prefix Optional. This defaults to an empty string.
-		 *    This is passed to the underlying call to PHP's ``uniqid()`` function.
+		 *    This is passed to the underlying call to PHP's `uniqid()` function.
 		 *
 		 * @param string $extension Optional. This defaults to `tmp`.
 		 *
 		 * @return string A new writable temporary file path.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$extension`` is empty.
+		 * @throws exception If `$extension` is empty.
 		 */
 		public function temp($prefix = '', $extension = 'tmp')
 		{
@@ -156,10 +156,10 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $type Optional. Defaults to {@link fw_constants::any_type}.
 		 *
-		 * @return array An array of file extensions; of a specific ``$type``.
+		 * @return array An array of file extensions; of a specific `$type`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$type`` is empty or unknown (e.g. invalid).
+		 * @throws exception If `$type` is empty or unknown (e.g. invalid).
 		 */
 		public function extensions($type = self::any_type)
 		{
@@ -199,9 +199,9 @@ namespace websharks_core_v000000_dev
 		 * @return string If file exists, an abbreviated byte notation; else an empty string.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$file`` is NOT a string; or is an empty string.
-		 * @throws exception If ``$file`` is NOT actually a file.
-		 * @throws exception If ``$file`` is NOT readable.
+		 * @throws exception If `$file` is NOT a string; or is an empty string.
+		 * @throws exception If `$file` is NOT actually a file.
+		 * @throws exception If `$file` is NOT readable.
 		 */
 		public function size_abbr($file)
 		{
@@ -326,12 +326,12 @@ namespace websharks_core_v000000_dev
 		 * @param integer $max_size Optional. This defaults to a value of `2097152` (2MB).
 		 *    This is the size at which files will be archived; if they exceed this max size.
 		 *
-		 * @return string A reverberation of ``$file`` (which may no longer exist after we're done here).
+		 * @return string A reverberation of `$file` (which may no longer exist after we're done here).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$file`` exists, but it's NOT readable/writable.
+		 * @throws exception If `$file` exists, but it's NOT readable/writable.
 		 * @throws exception If the containing dir is NOT readable/writable.
-		 * @throws exception If a PHP ``rename()`` fails.
+		 * @throws exception If a PHP `rename()` fails.
 		 */
 		public function maybe_archive($file, $max_size = 2097152)
 		{
@@ -352,7 +352,7 @@ namespace websharks_core_v000000_dev
 
 			$this->rename_to($file, $archived_file);
 
-			return $file; // Original ``$file``.
+			return $file; // Original `$file`.
 		}
 
 		/**
@@ -364,13 +364,13 @@ namespace websharks_core_v000000_dev
 		 * @return string New copy location; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$file`` is NOT a string; or is an empty string.
-		 * @throws exception If ``$file`` is NOT actually a file.
-		 * @throws exception If ``$file`` is NOT readable.
-		 * @throws exception If ``$to`` is NOT a string; or is an empty string.
-		 * @throws exception If ``$to`` already exists.
-		 * @throws exception If ``$to`` parent directory does NOT exist; or is NOT writable.
-		 * @throws exception If the underlying call to PHP's ``copy()`` function fails for any reason.
+		 * @throws exception If `$file` is NOT a string; or is an empty string.
+		 * @throws exception If `$file` is NOT actually a file.
+		 * @throws exception If `$file` is NOT readable.
+		 * @throws exception If `$to` is NOT a string; or is an empty string.
+		 * @throws exception If `$to` already exists.
+		 * @throws exception If `$to` parent directory does NOT exist; or is NOT writable.
+		 * @throws exception If the underlying call to PHP's `copy()` function fails for any reason.
 		 *
 		 * @note This will NOT copy directories; only a single file.
 		 */
@@ -433,13 +433,13 @@ namespace websharks_core_v000000_dev
 		 * @return string Path to new location; else an exception is thrown.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$file`` is NOT a string; or is an empty string.
-		 * @throws exception If ``$file`` is NOT actually a file.
-		 * @throws exception If ``$file`` is NOT a readable/writable file.
-		 * @throws exception If ``$to`` is NOT a string; or is an empty string.
-		 * @throws exception If ``$to`` already exists.
-		 * @throws exception If ``$to`` parent directory does NOT exist; or is NOT writable.
-		 * @throws exception If the underlying call to PHP's ``rename()`` function fails for any reason.
+		 * @throws exception If `$file` is NOT a string; or is an empty string.
+		 * @throws exception If `$file` is NOT actually a file.
+		 * @throws exception If `$file` is NOT a readable/writable file.
+		 * @throws exception If `$to` is NOT a string; or is an empty string.
+		 * @throws exception If `$to` already exists.
+		 * @throws exception If `$to` parent directory does NOT exist; or is NOT writable.
+		 * @throws exception If the underlying call to PHP's `rename()` function fails for any reason.
 		 *
 		 * @note This will NOT rename directories; only a single file.
 		 */
@@ -511,9 +511,9 @@ namespace websharks_core_v000000_dev
 		 * @note This will NOT delete directories; only files.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If any ``$file`` is NOT a string|array; or is an empty string|array.
-		 * @throws exception If any ``$file`` exists; but it is NOT actually a file.
-		 * @throws exception If any ``$file`` is NOT writable.
+		 * @throws exception If any `$file` is NOT a string|array; or is an empty string|array.
+		 * @throws exception If any `$file` exists; but it is NOT actually a file.
+		 * @throws exception If any `$file` is NOT writable.
 		 * @throws exception If deletion fails.
 		 */
 		public function delete($file)
@@ -592,8 +592,8 @@ namespace websharks_core_v000000_dev
 		 *    An exception is thrown otherwise; e.g. we either succeed or fail with an exception.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$pattern`` is empty.
-		 * @throws exception If ``$file`` is NOT actually a file.
+		 * @throws exception If `$pattern` is empty.
+		 * @throws exception If `$file` is NOT actually a file.
 		 */
 		public function preg_replace($pattern, $replacement, $file)
 		{
@@ -669,8 +669,8 @@ namespace websharks_core_v000000_dev
 		 * @return string PHP source code. No comments; minimum whitespace.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If ``$file`` is NOT actually a file.
-		 * @throws exception If ``$file`` does NOT have a PHP extension.
+		 * @throws exception If `$file` is NOT actually a file.
+		 * @throws exception If `$file` does NOT have a PHP extension.
 		 */
 		public function strip_php_whitespace($file)
 		{

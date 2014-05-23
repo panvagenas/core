@@ -25,14 +25,14 @@ namespace websharks_core_v000000_dev
 	class strings extends framework
 	{
 		/**
-		 * Short version of ``(isset() && is_string())``.
+		 * Short version of `(isset() && is_string())`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed $var A variable by reference (no NOTICE).
-		 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @return boolean TRUE if the variable ``(isset() && is_string())``, else FALSE.
+		 * @return boolean TRUE if the variable `(isset() && is_string())`, else FALSE.
 		 */
 		public function is(&$var)
 		{
@@ -43,11 +43,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->is()``, but this allows an expression.
+		 * Same as `$this->is()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @return boolean See ``$this->is()`` for further details.
+		 * @return boolean See `$this->is()` for further details.
 		 */
 		public function ¤is($var)
 		{
@@ -58,14 +58,14 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Short version of ``(!empty() && is_string())``.
+		 * Short version of `(!empty() && is_string())`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed $var A variable by reference (no NOTICE).
-		 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @return boolean TRUE if the variable is ``(!empty() && is_string())``, else FALSE.
+		 * @return boolean TRUE if the variable is `(!empty() && is_string())`, else FALSE.
 		 */
 		public function is_not_empty(&$var)
 		{
@@ -76,11 +76,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->is_not_empty()``, but this allows an expression.
+		 * Same as `$this->is_not_empty()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @return boolean See ``$this->is_not_empty()`` for further details.
+		 * @return boolean See `$this->is_not_empty()` for further details.
 		 */
 		public function ¤is_not_empty($var)
 		{
@@ -91,19 +91,19 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Short version of ``if(isset() && is_string()){} else{}``.
+		 * Short version of `if(isset() && is_string()){} else{}`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed   $var A variable by reference (no NOTICE).
-		 *    If ``$var`` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @param mixed   $or Defaults to an empty string. This is the return value if ``$var`` is NOT set, or is NOT a string.
+		 * @param mixed   $or Defaults to an empty string. This is the return value if `$var` is NOT set, or is NOT a string.
 		 *
-		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
+		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of `$var` will be set (via reference) to the return value.
 		 *
-		 * @return string|mixed Value of ``$var``, if ``(isset() && is_string())``.
-		 *    Else returns ``$or`` (which could be any mixed data type — defaults to an empty string).
+		 * @return string|mixed Value of `$var`, if `(isset() && is_string())`.
+		 *    Else returns `$or` (which could be any mixed data type — defaults to an empty string).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -119,15 +119,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->isset_or()``, but this allows an expression.
+		 * Same as `$this->isset_or()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @param mixed $or This is the return value if ``$var`` is NOT set, or is NOT a string.
+		 * @param mixed $or This is the return value if `$var` is NOT set, or is NOT a string.
 		 *
-		 * @note This does NOT support the ``$set_var`` parameter, because ``$var`` is NOT by reference here.
+		 * @note This does NOT support the `$set_var` parameter, because `$var` is NOT by reference here.
 		 *
-		 * @return string|mixed See ``$this->isset_or()`` for further details.
+		 * @return string|mixed See `$this->isset_or()` for further details.
 		 */
 		public function ¤isset_or($var, $or = '')
 		{
@@ -138,19 +138,19 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Short version of ``if(!empty() && is_string()){} else{}``.
+		 * Short version of `if(!empty() && is_string()){} else{}`.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @param mixed   $var A variable by reference (no NOTICE).
-		 *    If ``$var`` was NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
+		 *    If `$var` was NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @param mixed   $or Defaults to an empty string. This is the return value if ``$var`` IS empty, or is NOT a string.
+		 * @param mixed   $or Defaults to an empty string. This is the return value if `$var` IS empty, or is NOT a string.
 		 *
-		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of ``$var`` will be set (via reference) to the return value.
+		 * @param boolean $set_var Defaults to FALSE. If TRUE, the value of `$var` will be set (via reference) to the return value.
 		 *
-		 * @return string|mixed Value of ``$var``, if ``(!empty() && is_string())``.
-		 *    Else returns ``$or`` (which could be any mixed data type — defaults to an empty string).
+		 * @return string|mixed Value of `$var`, if `(!empty() && is_string())`.
+		 *    Else returns `$or` (which could be any mixed data type — defaults to an empty string).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -166,15 +166,15 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->is_not_empty_or()``, but this allows an expression.
+		 * Same as `$this->is_not_empty_or()`, but this allows an expression.
 		 *
 		 * @param mixed $var A variable (or an expression).
 		 *
-		 * @param mixed $or This is the return value if ``$var`` IS empty, or is NOT a string.
+		 * @param mixed $or This is the return value if `$var` IS empty, or is NOT a string.
 		 *
-		 * @note This does NOT support the ``$set_var`` parameter, because ``$var`` is NOT by reference here.
+		 * @note This does NOT support the `$set_var` parameter, because `$var` is NOT by reference here.
 		 *
-		 * @return string|mixed See ``$this->is_not_empty_or()`` for further details.
+		 * @return string|mixed See `$this->is_not_empty_or()` for further details.
 		 */
 		public function ¤is_not_empty_or($var, $or = '')
 		{
@@ -187,7 +187,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check if string values are set.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -234,11 +234,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->are_set()``, but this allows expressions.
+		 * Same as `$this->are_set()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->are_set()`` for further details.
+		 * @return boolean See `$this->are_set()` for further details.
 		 */
 		public function ¤are_set($a)
 		{
@@ -253,7 +253,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check if string values are NOT empty.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -300,11 +300,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->are_not_empty()``, but this allows expressions.
+		 * Same as `$this->are_not_empty()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->are_not_empty()`` for further details.
+		 * @return boolean See `$this->are_not_empty()` for further details.
 		 */
 		public function ¤are_not_empty($a)
 		{
@@ -319,12 +319,12 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Check if string values are NOT empty in strings/arrays/objects.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -383,11 +383,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->are_not_empty_in()``, but this allows expressions.
+		 * Same as `$this->are_not_empty_in()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return boolean See ``$this->are_not_empty_in()`` for further details.
+		 * @return boolean See `$this->are_not_empty_in()` for further details.
 		 */
 		public function ¤are_not_empty_in($a)
 		{
@@ -411,7 +411,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * NOT empty coalesce.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -458,11 +458,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->not_empty_coalesce()``, but this allows expressions.
+		 * Same as `$this->not_empty_coalesce()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return string See ``$this->not_empty_coalesce()`` for further details.
+		 * @return string See `$this->not_empty_coalesce()` for further details.
 		 */
 		public function ¤not_empty_coalesce($a)
 		{
@@ -477,7 +477,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Is set coalesce.
 		 *
-		 * @note Unlike PHP's ``is_...`` functions, this will NOT throw a NOTICE.
+		 * @note Unlike PHP's `is_...` functions, this will NOT throw a NOTICE.
 		 *
 		 * @note Max 26 arguments by reference. If vars are/were NOT already set,
 		 *    they will be set to NULL by PHP, as a result of passing them by reference.
@@ -524,11 +524,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Same as ``$this->isset_coalesce()``, but this allows expressions.
+		 * Same as `$this->isset_coalesce()`, but this allows expressions.
 		 *
 		 * @param mixed $a At least one variable (or an expression).
 		 *
-		 * @return string See ``$this->isset_coalesce()`` for further details.
+		 * @return string See `$this->isset_coalesce()` for further details.
 		 */
 		public function ¤isset_coalesce($a)
 		{
@@ -563,7 +563,7 @@ namespace websharks_core_v000000_dev
 		 * @param mixed $var Any value to test against here.
 		 *
 		 * @return boolean TRUE for anything that is (NOT): TRUE, 'TRUE', 'true', 1, '1', 'on', 'ON', 'yes', 'YES' — else FALSE.
-		 *    Any resource/object/array is of course NOT one of these values (which means it ``is_false()``).
+		 *    Any resource/object/array is of course NOT one of these values (which means it `is_false()`).
 		 *    In other words, any value that is NOT scalar, is NOT TRUE.
 		 */
 		public function is_false($var)
@@ -745,7 +745,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed $value Any value can be converted into a string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -801,7 +801,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param string  $regex A regular expression.
 		 *
@@ -810,16 +810,16 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param boolean $collect_key_props Collect array keys and/or object properties?
 		 *    This defaults to a FALSE value. If TRUE, this method returns an array with matching keys/properties.
-		 *    However, if the initial input ``$value`` is NOT an object/array, this flag is ignored completely.
+		 *    However, if the initial input `$value` is NOT an object/array, this flag is ignored completely.
 		 *
 		 * @param boolean $___recursion Internal use only.
 		 *
 		 * @return boolean|array TRUE if regular expression finds a match, else FALSE.
-		 *    If ``$collect_key_props`` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
+		 *    If `$collect_key_props` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
 		 *       else an empty array if no matches are found in the search for keys/properties.
 		 *
-		 *    IMPORTANT: if ``$collect_key_props`` is TRUE, but the initial input ``$value`` is NOT an object/array,
-		 *       the ``$collect_key_props`` flag is ignored completely (e.g. there's no object/array to search).
+		 *    IMPORTANT: if `$collect_key_props` is TRUE, but the initial input `$value` is NOT an object/array,
+		 *       the `$collect_key_props` flag is ignored completely (e.g. there's no object/array to search).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -867,30 +867,30 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param string  $string String to search within (possibly an empty string).
 		 *
 		 * @param mixed   $value This routine runs deeply into any value, looking for values that are already strings, and uses them as regex patterns.
-		 *    This differs slightly from ``in_wildcard_patterns()``, where we cast any non-array/object value as a string.
+		 *    This differs slightly from `in_wildcard_patterns()`, where we cast any non-array/object value as a string.
 		 *    This is because regex patterns will ONLY match if they are indeed a regex string pattern,
 		 *    whereas wildcard patterns might match any value that we've cast as a string.
 		 *    So, this routine will only look for values that are already strings.
 		 *
 		 * @param boolean $collect_key_props Collect array keys and/or object properties?
 		 *    This defaults to a FALSE value. If TRUE, this method returns an array with matching keys/properties.
-		 *    However, if the initial input ``$value`` is NOT an object/array, this flag is ignored completely.
+		 *    However, if the initial input `$value` is NOT an object/array, this flag is ignored completely.
 		 *
 		 * @param boolean $___recursion Internal use only.
 		 *
 		 * @return boolean|array TRUE if any string as a regex pattern finds a match, else FALSE.
-		 *    If ``$collect_key_props`` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
+		 *    If `$collect_key_props` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
 		 *       else an empty array if no matches are found in the search for keys/properties.
 		 *
-		 *    IMPORTANT: if ``$collect_key_props`` is TRUE, but the initial input ``$value`` is NOT an object/array,
-		 *       the ``$collect_key_props`` flag is ignored completely (e.g. there's no object/array to search).
+		 *    IMPORTANT: if `$collect_key_props` is TRUE, but the initial input `$value` is NOT an object/array,
+		 *       the `$collect_key_props` flag is ignored completely (e.g. there's no object/array to search).
 		 *
-		 * @note Error suppression applies to ``@ preg_match()`` here,
+		 * @note Error suppression applies to `@ preg_match()` here,
 		 *    simply due to the nature of this method. Searching through multiple dimensions, we need to suppress errors
 		 *    that may occur as a result of a non-regex string comparison being applied inadvertently.
 		 *
@@ -943,7 +943,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param string       $wildcard A wildcard pattern (possibly an empty string).
 		 *
@@ -955,19 +955,19 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param boolean      $collect_key_props Collect array keys and/or object properties?
 		 *    This defaults to a FALSE value. If TRUE, this method returns an array with matching keys/properties.
-		 *    However, if the initial input ``$value`` is NOT an object/array, this flag is ignored completely.
+		 *    However, if the initial input `$value` is NOT an object/array, this flag is ignored completely.
 		 *
 		 * @param null|integer $x_flags Optional. Defaults to a NULL value.
-		 *    Any additional flags supported by PHP's ``fnmatch()`` function are acceptable here.
+		 *    Any additional flags supported by PHP's `fnmatch()` function are acceptable here.
 		 *
 		 * @param boolean      $___recursion Internal use only. Tracks recursion in this routine.
 		 *
 		 * @return boolean|array TRUE if wildcard pattern finds a match, else FALSE.
-		 *    If ``$collect_key_props`` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
+		 *    If `$collect_key_props` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
 		 *       else an empty array if no matches are found in the search for keys/properties.
 		 *
-		 *    IMPORTANT: if ``$collect_key_props`` is TRUE, but the initial input ``$value`` is NOT an object/array,
-		 *       the ``$collect_key_props`` flag is ignored completely (e.g. there's no object/array to search).
+		 *    IMPORTANT: if `$collect_key_props` is TRUE, but the initial input `$value` is NOT an object/array,
+		 *       the `$collect_key_props` flag is ignored completely (e.g. there's no object/array to search).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -1029,13 +1029,13 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param string       $string String to search within (possibly an empty string).
 		 *
 		 * @param mixed        $value This routine runs deeply into any value,
 		 *    converting each non-array/object value into a wildcard string pattern.
-		 *    This differs slightly from ``in_regex_patterns()``, where we only use values that are already strings.
+		 *    This differs slightly from `in_regex_patterns()`, where we only use values that are already strings.
 		 *    This is because regex patterns will only match if they are indeed a regex string pattern,
 		 *    whereas wildcard patterns might match any value that we've cast as a string.
 		 *
@@ -1044,19 +1044,19 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param boolean      $collect_key_props Collect array keys and/or object properties?
 		 *    This defaults to a FALSE value. If TRUE, this method returns an array with matching keys/properties.
-		 *    However, if the initial input ``$value`` is NOT an object/array, this flag is ignored completely.
+		 *    However, if the initial input `$value` is NOT an object/array, this flag is ignored completely.
 		 *
 		 * @param null|integer $x_flags Optional. Defaults to a NULL value.
-		 *    Any additional flags supported by PHP's ``fnmatch()`` function are acceptable here.
+		 *    Any additional flags supported by PHP's `fnmatch()` function are acceptable here.
 		 *
 		 * @param boolean      $___recursion Internal use only. Tracks recursion in this routine.
 		 *
 		 * @return boolean|array TRUE if any wildcard pattern finds a match, else FALSE.
-		 *    If ``$collect_key_props`` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
+		 *    If `$collect_key_props` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
 		 *       else an empty array if no matches are found in the search for keys/properties.
 		 *
-		 *    IMPORTANT: if ``$collect_key_props`` is TRUE, but the initial input ``$value`` is NOT an object/array,
-		 *       the ``$collect_key_props`` flag is ignored completely (e.g. there's no object/array to search).
+		 *    IMPORTANT: if `$collect_key_props` is TRUE, but the initial input `$value` is NOT an object/array,
+		 *       the `$collect_key_props` flag is ignored completely (e.g. there's no object/array to search).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -1135,7 +1135,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into an escaped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1187,7 +1187,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into an escaped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1239,7 +1239,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @note This follows {@link http://www.json.org JSON} standards, with TWO exceptions.
 		 *    1. Special handling for line breaks: `\r\n` and `\r` are converted to `\n`.
@@ -1298,7 +1298,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into an escaped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1341,8 +1341,8 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
-		 * @note This method intentionally has NO ``$times`` parameter, because that makes no sense for SQL.
-		 *    In addition, if we attempted to use ``$times`` here, it would negate WordPress's ability to use ``mysql_real_escape_string()``.
+		 * @note This method intentionally has NO `$times` parameter, because that makes no sense for SQL.
+		 *    In addition, if we attempted to use `$times` here, it would negate WordPress's ability to use `mysql_real_escape_string()`.
 		 */
 		public function esc_sql($string, $convert_nulls_no_esc = FALSE)
 		{
@@ -1357,7 +1357,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into an escaped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1369,12 +1369,12 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param boolean $___recursion Internal use only.
 		 *
-		 * @return string|array|object Escaped string, array, object (possible `NULL` string if ``$convert_null_no_wrap`` is TRUE).
+		 * @return string|array|object Escaped string, array, object (possible `NULL` string if `$convert_null_no_wrap` is TRUE).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
-		 * @note This method intentionally has NO ``$times`` parameter, because that makes no sense for SQL.
-		 *    In addition, if we attempted to use ``$times`` here, it would negate WordPress's ability to use ``mysql_real_escape_string()``.
+		 * @note This method intentionally has NO `$times` parameter, because that makes no sense for SQL.
+		 *    In addition, if we attempted to use `$times` here, it would negate WordPress's ability to use `mysql_real_escape_string()`.
 		 */
 		public function esc_sql_deep($value, $convert_nulls_no_esc = FALSE, $___recursion = FALSE)
 		{
@@ -1420,7 +1420,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a plain text excerpt.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1454,7 +1454,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Escapes registered WordPress® Shortcodes (i.e. ``[[shortcode]]``).
+		 * Escapes registered WordPress® Shortcodes (i.e. `[[shortcode]]`).
 		 *
 		 * @param string $string A string value.
 		 *
@@ -1470,12 +1470,12 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Escapes registered WordPress® Shortcodes (i.e. ``[[shortcode]]``) deeply.
+		 * Escapes registered WordPress® Shortcodes (i.e. `[[shortcode]]`) deeply.
 		 *
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into an escaped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1524,17 +1524,17 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Escapes regex special chars deeply (i.e. ``preg_quote()`` deeply).
+		 * Escapes regex special chars deeply (i.e. `preg_quote()` deeply).
 		 *
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a quoted string.
 		 *    Actually, objects can't, but this recurses into objects.
 		 *
-		 * @param string  $delimiter Same as PHP's ``preg_quote()``.
+		 * @param string  $delimiter Same as PHP's `preg_quote()`.
 		 *
 		 * @param boolean $___recursion Internal use only.
 		 *
@@ -1585,7 +1585,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a trimmed string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1626,7 +1626,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a stripped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1659,7 +1659,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a slashes string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1713,7 +1713,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed  $value Any value can be converted into a trimmed/stripped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1761,7 +1761,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a trimmed string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1805,7 +1805,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed $value Any value can be converted into a trimmed string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1825,7 +1825,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed $value Any value can be converted into a trimmed string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1845,7 +1845,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed $value Any value can be converted into a trimmed string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1865,7 +1865,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a trimmed string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -1907,11 +1907,11 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string       $string A string to run replacements on (i.e. the string to search in).
 		 *
-		 * @return string Value of ``$string`` after ONE replacement.
+		 * @return string Value of `$string` after ONE replacement.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside ``$needle`` or ``$replace`` values.
-		 *    To avoid string conversion errors from PHP, please refrain from passing objects in ``$needle`` or ``$replace`` arrays (that would make no sense anyway).
+		 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside `$needle` or `$replace` values.
+		 *    To avoid string conversion errors from PHP, please refrain from passing objects in `$needle` or `$replace` arrays (that would make no sense anyway).
 		 */
 		public function ireplace_once($needle, $replace, $string)
 		{
@@ -1926,7 +1926,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param string|array $needle String, or an array of strings, to search for.
 		 *
@@ -1939,8 +1939,8 @@ namespace websharks_core_v000000_dev
 		 *    Any values that were NOT strings|arrays|objects, will be converted to strings by this routine.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside ``$needle`` or ``$replace`` values.
-		 *    To avoid string conversion errors from PHP, please refrain from passing objects in ``$needle`` or ``$replace`` arrays (that would make no sense anyway).
+		 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside `$needle` or `$replace` values.
+		 *    To avoid string conversion errors from PHP, please refrain from passing objects in `$needle` or `$replace` arrays (that would make no sense anyway).
 		 */
 		public function ireplace_once_deep($needle, $replace, $value)
 		{
@@ -1961,11 +1961,11 @@ namespace websharks_core_v000000_dev
 		 * @param boolean      $case_insensitive Case insensitive? Defaults to FALSE.
 		 *    If TRUE, the search is NOT case sensitive.
 		 *
-		 * @return string Value of ``$string`` after ONE string replacement.
+		 * @return string Value of `$string` after ONE string replacement.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside ``$needle`` or ``$replace`` values.
-		 *    To avoid string conversion errors from PHP, please refrain from passing objects in ``$needle`` or ``$replace`` arrays (that would make no sense anyway).
+		 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside `$needle` or `$replace` values.
+		 *    To avoid string conversion errors from PHP, please refrain from passing objects in `$needle` or `$replace` arrays (that would make no sense anyway).
 		 */
 		public function replace_once($needle, $replace, $string, $case_insensitive = FALSE)
 		{
@@ -1980,7 +1980,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param string|array $needle String, or an array of strings, to search for.
 		 *
@@ -1998,8 +1998,8 @@ namespace websharks_core_v000000_dev
 		 *    Any values that were NOT strings|arrays|objects, will be converted to strings by this routine.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside ``$needle`` or ``$replace`` values.
-		 *    To avoid string conversion errors from PHP, please refrain from passing objects in ``$needle`` or ``$replace`` arrays (that would make no sense anyway).
+		 * @throws exception For better performance, this function will NOT try to catch PHP string conversion errors when objects are passed inside `$needle` or `$replace` values.
+		 *    To avoid string conversion errors from PHP, please refrain from passing objects in `$needle` or `$replace` arrays (that would make no sense anyway).
 		 *
 		 * @see http://stackoverflow.com/questions/8177296/when-to-use-strtr-vs-str-replace
 		 */
@@ -2019,12 +2019,12 @@ namespace websharks_core_v000000_dev
 			$value = (string)$value; // Force string value.
 
 			if($case_insensitive) // Case insensitive scenario?
-				$strpos = 'stripos'; // Use ``stripos()``.
+				$strpos = 'stripos'; // Use `stripos()`.
 			else $strpos = 'strpos'; // Default.
 
 			if(is_array($needle)) // Array of needles?
 			{
-				if(is_array($replace)) // Optimized for ``$replace`` array.
+				if(is_array($replace)) // Optimized for `$replace` array.
 				{
 					foreach($needle as $_key => $_needle)
 						if(($_strpos = $strpos($value, ($_needle = (string)$_needle))) !== FALSE)
@@ -2037,7 +2037,7 @@ namespace websharks_core_v000000_dev
 
 					return $value; // String value.
 				}
-				else // Optimized for ``$replace`` string.
+				else // Optimized for `$replace` string.
 				{
 					$replace = (string)$replace;
 
@@ -2078,12 +2078,12 @@ namespace websharks_core_v000000_dev
 		 * @param string  $string A string to run replacements on.
 		 *
 		 * @param array   $meta_vars Optional. Defaults to an empty array.
-		 *    ~ This array is always given precedence over any other secondary ``$vars``.
-		 *    This is the primary array of data which will be used to replace codes in the ``$string``.
+		 *    ~ This array is always given precedence over any other secondary `$vars`.
+		 *    This is the primary array of data which will be used to replace codes in the `$string`.
 		 *    This is normally an associative array, but a numerically indexed array is also allowable.
 		 *
 		 * @param array   $vars Optional (any other secondary vars). Defaults to an empty array.
-		 *    This is an additional array of data which will be used to replace codes in the ``$string``.
+		 *    This is an additional array of data which will be used to replace codes in the `$string`.
 		 *    This is normally an associative array, but a numerically indexed array is also allowable.
 		 *
 		 * @param boolean $urlencode Optional. Defaults to a FALSE value.
@@ -2091,7 +2091,7 @@ namespace websharks_core_v000000_dev
 		 *    Setting this to a TRUE value also enables some additional magic replacement codes.
 		 *
 		 * @param string  $implode_non_scalars Optional. By default, any non-scalar values
-		 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
+		 *    in `$primary_vars` and/or `$vars` will be JSON encoded by this routine before replacements are performed here.
 		 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values.
 		 *
 		 * @return string String after replacing all codes.
@@ -2111,18 +2111,18 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a string to run replacements on.
 		 *    Actually, objects can't, but this recurses into objects.
 		 *
 		 * @param array   $meta_vars Optional. Defaults to an empty array.
-		 *    ~ This array is always given precedence over any other secondary ``$vars``.
-		 *    This is the primary array of data which will be used to replace codes in the ``$value``.
+		 *    ~ This array is always given precedence over any other secondary `$vars`.
+		 *    This is the primary array of data which will be used to replace codes in the `$value`.
 		 *    This is normally an associative array, but a numerically indexed array is also allowable.
 		 *
 		 * @param array   $vars Optional (any other secondary vars). Defaults to an empty array.
-		 *    This is an additional array of data which will be used to replace codes in the ``$value``.
+		 *    This is an additional array of data which will be used to replace codes in the `$value`.
 		 *    This is normally an associative array, but a numerically indexed array is also allowable.
 		 *
 		 * @param boolean $preserve_types Optional. Defaults to a FALSE value.
@@ -2134,12 +2134,12 @@ namespace websharks_core_v000000_dev
 		 *    Setting this to a TRUE value also enables some additional magic replacement codes.
 		 *
 		 * @param string  $implode_non_scalars Optional. By default, any non-scalar values
-		 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
+		 *    in `$primary_vars` and/or `$vars` will be JSON encoded by this routine before replacements are performed here.
 		 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values.
 		 *
 		 * @return mixed Values after replacing all codes (deeply).
 		 *    By default, any values that were NOT strings|arrays|objects, will be converted to strings by this routine.
-		 *    However, you can pass ``$preserve_types`` as TRUE to prevent this from occurring.
+		 *    However, you can pass `$preserve_types` as TRUE to prevent this from occurring.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -2156,12 +2156,12 @@ namespace websharks_core_v000000_dev
 		 * @param string  $string A string to run replacements on.
 		 *
 		 * @param array   $meta_vars Optional. Defaults to an empty array.
-		 *    ~ This array is always given precedence over any other secondary ``$vars``.
-		 *    This is the primary array of data which will be used to replace codes in the ``$string``.
+		 *    ~ This array is always given precedence over any other secondary `$vars`.
+		 *    This is the primary array of data which will be used to replace codes in the `$string`.
 		 *    This is normally an associative array, but a numerically indexed array is also allowable.
 		 *
 		 * @param array   $vars Optional (any other secondary vars). Defaults to an empty array.
-		 *    This is an additional array of data which will be used to replace codes in the ``$string``.
+		 *    This is an additional array of data which will be used to replace codes in the `$string`.
 		 *    This is normally an associative array, but a numerically indexed array is also allowable.
 		 *
 		 * @param boolean $case_insensitive Case insensitive? Defaults to a FALSE value (caSe sensitivity on).
@@ -2172,7 +2172,7 @@ namespace websharks_core_v000000_dev
 		 *    Setting this to a TRUE value also enables some additional magic replacement codes.
 		 *
 		 * @param string  $implode_non_scalars Optional. By default, any non-scalar values
-		 *    in ``$primary_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
+		 *    in `$primary_vars` and/or `$vars` will be JSON encoded by this routine before replacements are performed here.
 		 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values.
 		 *
 		 * @return string String after replacing all codes.
@@ -2192,17 +2192,17 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value will do just fine here.
 		 *
 		 * @param array   $meta_vars Optional. Defaults to an empty array.
-		 *    ~ This array is always given precedence over any other secondary ``$vars``.
-		 *    This is the primary array of data which will be used to replace codes in the ``$value``.
+		 *    ~ This array is always given precedence over any other secondary `$vars`.
+		 *    This is the primary array of data which will be used to replace codes in the `$value`.
 		 *    This is normally an associative array, but a numerically indexed array is also allowable.
 		 *
 		 * @param array   $vars Optional (any other secondary vars). Defaults to an empty array.
-		 *    This is an additional array of data which will be used to replace codes in the ``$value``.
+		 *    This is an additional array of data which will be used to replace codes in the `$value`.
 		 *    This is normally an associative array, but a numerically indexed array is also allowable.
 		 *
 		 * @param boolean $case_insensitive Case insensitive? Defaults to a FALSE value (caSe sensitivity on).
@@ -2217,7 +2217,7 @@ namespace websharks_core_v000000_dev
 		 *    Setting this to a TRUE value also enables some additional magic replacement codes.
 		 *
 		 * @param string  $implode_non_scalars Optional. By default, any non-scalar values
-		 *    in ``$meta_vars`` and/or ``$vars`` will be JSON encoded by this routine before replacements are performed here.
+		 *    in `$meta_vars` and/or `$vars` will be JSON encoded by this routine before replacements are performed here.
 		 *    However, this behavior can be modified by passing this parameter with a non-empty string value to implode such values by.
 		 *
 		 * @param boolean $___raw_vars Internal use only.
@@ -2226,7 +2226,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return mixed Values after replacing all codes (deeply).
 		 *    By default, any values that were NOT strings|arrays|objects, will be converted to strings by this routine.
-		 *    However, you can pass ``$preserve_types`` as TRUE to prevent this from occurring.
+		 *    However, you can pass `$preserve_types` as TRUE to prevent this from occurring.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -2385,7 +2385,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a stripped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -2455,7 +2455,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a stripped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -2516,10 +2516,10 @@ namespace websharks_core_v000000_dev
 		 * @param string $string Input string to be base64 encoded.
 		 *
 		 * @param array  $url_unsafe_chars Optional. An array of un-safe characters.
-		 *    Defaults to: ``array('+', '/')``.
+		 *    Defaults to: `array('+', '/')`.
 		 *
 		 * @param array  $url_safe_chars Optional. An array of safe character replacements.
-		 *    Defaults to: ``array("-", "_")``.
+		 *    Defaults to: `array("-", "_")`.
 		 *
 		 * @param string $trim_padding_chars Optional. A string of padding chars to rtrim.
 		 *    Defaults to: `=`.
@@ -2527,7 +2527,7 @@ namespace websharks_core_v000000_dev
 		 * @return string The base64 URL-safe encoded string.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If the call to ``base64_encode()`` fails.
+		 * @throws exception If the call to `base64_encode()` fails.
 		 */
 		public function base64_url_safe_encode($string, $url_unsafe_chars = array('+', '/'), $url_safe_chars = array('-', '_'), $trim_padding_chars = '=')
 		{
@@ -2550,15 +2550,15 @@ namespace websharks_core_v000000_dev
 		 * @param string $base64_url_safe Input string to be base64 decoded.
 		 *
 		 * @param array  $url_unsafe_chars Optional. An array of un-safe character replacements.
-		 *    Defaults to: ``array('+', '/')``.
+		 *    Defaults to: `array('+', '/')`.
 		 *
 		 * @param array  $url_safe_chars Optional. An array of safe characters.
-		 *    Defaults to: ``array('-', '_')``.
+		 *    Defaults to: `array('-', '_')`.
 		 *
 		 * @param string $trim_padding_chars Optional. A string of padding chars to rtrim.
 		 *    Defaults to: `=`.
 		 *
-		 * @return string The decoded string. Or, possibly the original string, if ``$base64_url_safe``
+		 * @return string The decoded string. Or, possibly the original string, if `$base64_url_safe`
 		 *    was NOT base64 encoded to begin with. Helps prevent accidental data corruption.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
@@ -2578,7 +2578,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Decodes unreserved chars encoded by PHP's ``urlencode()``.
+		 * Decodes unreserved chars encoded by PHP's `urlencode()`.
 		 *
 		 * @param string $string The input string to be decoded here.
 		 *
@@ -2594,12 +2594,12 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Decodes unreserved chars deeply; encoded by PHP's ``urlencode()``.
+		 * Decodes unreserved chars deeply; encoded by PHP's `urlencode()`.
 		 *
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a decoded string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -2632,7 +2632,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a wrapped string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -2647,13 +2647,13 @@ namespace websharks_core_v000000_dev
 		 *    Should 0-byte strings be wrapped too?
 		 *
 		 * @param boolean $convert_nulls_no_wrap Optional. Defaults to a FALSE value.
-		 *    By default, we convert all values into strings, and wrap them (based on ``$wrap_0b_strings``).
+		 *    By default, we convert all values into strings, and wrap them (based on `$wrap_0b_strings`).
 		 *    However, if this is TRUE, NULL values are treated differently. We convert them to the string `NULL`, and they are NOT wrapped up.
 		 *    This is useful when data is being prepared for database insertion and/or updates.
 		 *
 		 * @param boolean $___recursion Internal use only.
 		 *
-		 * @return string|array|object Wrapped string, array, object (possible `NULL` string if ``$convert_null_no_wrap`` is TRUE).
+		 * @return string|array|object Wrapped string, array, object (possible `NULL` string if `$convert_null_no_wrap` is TRUE).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -2686,14 +2686,14 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a word-wrapped string.
 		 *    Actually, objects can't, but this recurses into objects.
 		 *
-		 * @param integer $width See PHP's ``wordwrap()`` function.
-		 * @param string  $break See PHP's ``wordwrap()`` function.
-		 * @param boolean $cut See PHP's ``wordwrap()`` function.
+		 * @param integer $width See PHP's `wordwrap()` function.
+		 * @param string  $break See PHP's `wordwrap()` function.
+		 * @param boolean $cut See PHP's `wordwrap()` function.
 		 *
 		 * @param boolean $___recursion Internal use only.
 		 *
@@ -2739,7 +2739,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string       $string An input string to convert to UTF-8.
 		 *
-		 * @param string|array $detection_order Optional. Defaults to ``$this->mb_detection_order``.
+		 * @param string|array $detection_order Optional. Defaults to `$this->mb_detection_order`.
 		 *    If a NON-empty string/array is provided, it is used instead.
 		 *
 		 * @return string A UTF-8 encoded string value.
@@ -2759,12 +2759,12 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed        $value Any value can be converted into a UTF-8 string.
 		 *    Actually, objects can't, but this recurses into objects.
 		 *
-		 * @param string|array $detection_order Optional. Defaults to ``$this->mb_detection_order``.
+		 * @param string|array $detection_order Optional. Defaults to `$this->mb_detection_order`.
 		 *    If a NON-empty string/array is provided, it is used instead.
 		 *
 		 * @param boolean      $___recursion Internal use only.
@@ -2819,7 +2819,7 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @param mixed   $value Any value can be converted into a UTF-8 string.
 		 *    Actually, objects can't, but this recurses into objects.
@@ -2852,7 +2852,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $string String to be converted into `[aA][bB]`.
 		 *
-		 * @return string String as `[aA][bB]`; suitable for ``fnmatch()`` or ``glob()``.
+		 * @return string String as `[aA][bB]`; suitable for `fnmatch()` or `glob()`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -2869,10 +2869,10 @@ namespace websharks_core_v000000_dev
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
 		 * @note This routine will usually NOT include private, protected or static properties of an object class.
 		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
-		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by ``foreach()``.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
 		 *
 		 * @note This will NOT convert stream wrappers (i.e. `phar://`); or drive letters (i.e. `C:/` or `E:\`).
-		 *    This is because the PHP ``glob()`` function is NOT compatible with character classes in those locations.
+		 *    This is because the PHP `glob()` function is NOT compatible with character classes in those locations.
 		 *
 		 * @note This will NOT convert characters ALREADY inside character class brackets `[]`.
 		 *    Also, this routine is smart enough to determine when square brackets have been escaped as literals.
@@ -2883,7 +2883,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param boolean $___recursion Internal use only.
 		 *
-		 * @return string|array|object String as `[aA][bB]`; suitable for ``fnmatch()`` or ``glob()``.
+		 * @return string|array|object String as `[aA][bB]`; suitable for `fnmatch()` or `glob()`.
 		 *    Or an array/object containing strings converted into `[aA][bB]`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
@@ -2961,7 +2961,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param string $json JSON (or JavaScript object as string).
 		 *
-		 * @return string The original ``$json`` code w/ double-quoted property names.
+		 * @return string The original `$json` code w/ double-quoted property names.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -2973,9 +2973,9 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Gets a string containing a verbose description of: ``preg_last_error()``.
+		 * Gets a string containing a verbose description of: `preg_last_error()`.
 		 *
-		 * @return string Verbose description of ``preg_last_error()``.
+		 * @return string Verbose description of `preg_last_error()`.
 		 */
 		public function preg_last_error()
 		{
@@ -3007,7 +3007,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @param mixed $error_code The file upload error code.
 		 *
-		 * @return string Verbose description of ``$error_code``.
+		 * @return string Verbose description of `$error_code`.
 		 */
 		public function file_upload_error($error_code)
 		{
@@ -3047,10 +3047,10 @@ namespace websharks_core_v000000_dev
 		 * Generates a unique alphanumeric ID (based on time).
 		 *
 		 * @param string $prefix Optional. Defaults to an empty string.
-		 *    See PHP's ``uniqid()`` function, for further details.
+		 *    See PHP's `uniqid()` function, for further details.
 		 *
 		 * @return string A unique alphanumeric ID (always w/ extra entropy).
-		 *    Always 32 characters; plus the length of the optional ``$prefix``.
+		 *    Always 32 characters; plus the length of the optional `$prefix`.
 		 */
 		public function unique_id($prefix = '')
 		{

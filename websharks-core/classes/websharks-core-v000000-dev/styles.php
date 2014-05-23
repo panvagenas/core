@@ -49,8 +49,8 @@ namespace websharks_core_v000000_dev
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
 		 *
 		 * @throws exception If this class is instantiated before the `init` action hook.
 		 */
@@ -144,7 +144,7 @@ namespace websharks_core_v000000_dev
 		 *    Helpful if we're pulling all current components, along with something else (like a theme).
 		 *
 		 * @return array Plugin components (selective components which apply in the current context).
-		 *    See also ``$this->©plugin->needs_*()``; where filters are implemented via easy-to-use methods.
+		 *    See also `$this->©plugin->needs_*()`; where filters are implemented via easy-to-use methods.
 		 */
 		public function contextual_components($others = array())
 		{
