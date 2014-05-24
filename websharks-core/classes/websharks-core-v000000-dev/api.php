@@ -244,6 +244,11 @@ namespace websharks_core_v000000_dev
 	 * @method static \websharks_core_v000000_dev\objects objects()
 	 * @method static \websharks_core_v000000_dev\objects object()
 	 *
+	 * @property \websharks_core_v000000_dev\packages                $packages
+	 * @property \websharks_core_v000000_dev\packages                $package
+	 * @method static \websharks_core_v000000_dev\packages packages()
+	 * @method static \websharks_core_v000000_dev\packages package()
+	 *
 	 * @property \websharks_core_v000000_dev\php                     $php
 	 * @method static \websharks_core_v000000_dev\php php()
 	 *

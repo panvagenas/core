@@ -95,6 +95,7 @@ namespace # Global namespace.
 	class websharks_core__objects_os extends \websharks_core_v000000_dev\objects_os{}
 	class websharks_core__options extends \websharks_core_v000000_dev\options{}
 	class websharks_core__php extends \websharks_core_v000000_dev\php{}
+	class websharks_core__packages extends \websharks_core_v000000_dev\packages{}
 	class websharks_core__plugins extends \websharks_core_v000000_dev\plugins{}
 	class websharks_core__posts extends \websharks_core_v000000_dev\posts{}
 	class websharks_core__replicator extends \websharks_core_v000000_dev\replicator{}
@@ -112,5 +113,7 @@ namespace # Global namespace.
 
 	class websharks_core__menu_pages__menu_page extends \websharks_core_v000000_dev\menu_pages\menu_page{}
 	class websharks_core__menu_pages__panels__panel extends \websharks_core_v000000_dev\menu_pages\panels\panel{}
+	class websharks_core__packages__package extends \websharks_core_v000000_dev\packages\package{}
+	class websharks_core__packages__dependency extends \websharks_core_v000000_dev\packages\dependency{}
 	class websharks_core__shortcodes__shortcode extends \websharks_core_v000000_dev\shortcodes\shortcode{}
 }

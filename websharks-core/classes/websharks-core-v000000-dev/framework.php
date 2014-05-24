@@ -285,6 +285,11 @@ namespace websharks_core_v000000_dev
 		 * @method \websharks_core_v000000_dev\objects ©objects()
 		 * @method \websharks_core_v000000_dev\objects ©object()
 		 *
+		 * @property \websharks_core_v000000_dev\packages                       $©packages
+		 * @property \websharks_core_v000000_dev\packages                       $©package
+		 * @method \websharks_core_v000000_dev\packages ©packages()
+		 * @method \websharks_core_v000000_dev\packages ©package()
+		 *
 		 * @property \websharks_core_v000000_dev\php                            $©php
 		 * @method \websharks_core_v000000_dev\php ©php()
 		 *
@@ -476,6 +481,7 @@ namespace websharks_core_v000000_dev
 				'option'     => 'options',
 				'object_os'  => 'objects_os',
 				'object'     => 'objects',
+				'package'    => 'packages',
 				'plugin'     => 'plugins',
 				'post'       => 'posts',
 				'replicate'  => 'replicator',
