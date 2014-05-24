@@ -26,145 +26,122 @@ namespace websharks_core_v000000_dev
 	{
 		/**
 		 * @var successes A successes object instance.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $successes; // Defaults to a NULL value.
 
 		/**
 		 * @var boolean Defaults to a value of FALSE, for security purposes.
-		 * @by-constructor Set by class constructor.
 		 */
 		public $can_build = FALSE;
 
 		/**
 		 * @var string Core repo dir.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $core_repo_dir = '';
 
 		/**
 		 * @var string Core dir.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $core_dir = '';
 
 		/**
 		 * @var string Plugin dir.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $plugin_dir = '';
 
 		/**
 		 * @var string Plugin repo dir.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $plugin_repo_dir = '';
 
 		/**
 		 * @var string Plugin name.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $plugin_name = '';
 
 		/**
 		 * @var string Plugin root namespace.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $plugin_root_ns = '';
 
 		/**
 		 * @var string Distros directory.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $distros_dir = '';
 
 		/**
 		 * @var string Downloads directory.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $downloads_dir = '';
 
 		/**
 		 * @var string Pro plugin dir.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $plugin_pro_dir = '';
 
 		/**
 		 * @var string Pro plugin repo dir.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $plugin_pro_repo_dir = '';
 
 		/**
 		 * @var string Plugin extras dir.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $plugin_extras_dir = '';
 
 		/**
 		 * @var string Version number.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $version = '';
 
 		/**
 		 * @var string Requires at least Apache version.
-		 * @by-constructor Set dynamically by class constructor.
 		 * @note This default value is updated by JasWSInc when it needs to change.
 		 */
 		public $requires_at_least_apache_version = '2.1';
 
 		/**
 		 * @var string Tested up to Apache version.
-		 * @by-constructor Set dynamically by class constructor.
 		 * @note This default value is updated by JasWSInc when it needs to change.
 		 */
 		public $tested_up_to_apache_version = '2.4.7';
 
 		/**
 		 * @var string Requires at least PHP version.
-		 * @by-constructor Set dynamically by class constructor.
 		 * @note This default value is updated by JasWSInc when it needs to change.
 		 */
 		public $requires_at_least_php_version = '5.3.1';
 
 		/**
 		 * @var string Tested up to PHP version.
-		 * @by-constructor Set dynamically by class constructor.
 		 * @note This default value is updated by JasWSInc when it needs to change.
 		 */
 		public $tested_up_to_php_version = PHP_VERSION;
 
 		/**
 		 * @var string Requires at least WordPress® version.
-		 * @by-constructor Set dynamically by class constructor.
 		 * @note This default value is updated by JasWSInc when it needs to change.
 		 */
 		public $requires_at_least_wp_version = '3.5.1';
 
 		/**
 		 * @var string Tested up to WordPress® version.
-		 * @by-constructor Set dynamically by class constructor.
 		 * @note This default value is updated by JasWSInc when it needs to change.
 		 */
 		public $tested_up_to_wp_version = WP_VERSION;
 
 		/**
 		 * @var boolean Distribute core in which way?
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $use_core_type = 'directory';
 
 		/**
 		 * @var boolean Build from a specific core version?
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $build_from_core_version = '';
 
 		/**
 		 * @var boolean Current branches (when we start).
-		 * @by-constructor Set dynamically by class constructor.
 		 */
 		public $starting_branches = array('core' => '', 'plugin' => '', 'plugin_pro' => '');
 
