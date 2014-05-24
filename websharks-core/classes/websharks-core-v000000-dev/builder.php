@@ -1185,19 +1185,15 @@ namespace websharks_core_v000000_dev
 					' '.$this->__('This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 				);
 				$this->©file->delete($_this_core_phar); // In case it already exists.
-				$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
 				$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar,
 				                     $_this_core_distro_temp_dir_stub, TRUE, TRUE, array_keys($this->©files->compressable_mime_types()),
 				                     $this->___instance_config->core_ns_stub_v.$this->©string->with_underscores($this->version));
 
-				$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
-
 				$this->©dir->delete($_this_core_distro_temp_dir); // Remove temp directory now.
 
 				$successes->add($this->method(__FUNCTION__).'#'.$new_slug.'core_phar_built_for_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
 				                sprintf($this->__('A temporary distro copy of the %1$s has been compressed into a single PHP Archive file here: `%2$s`.'), $this->___instance_config->core_name, $_this_core_phar).
-				                ' '.sprintf($this->__('This PHP Archive file has been added to the list of version controlled files in the %1$s repo.'), $this->___instance_config->core_name).
 				                ' '.sprintf($this->__('The temporary distro copy of the %1$s was successfully deleted after processing.'), $this->___instance_config->core_name)
 				);
 				unset($_this_core_phar, $_this_core_distro_temp_dir, $_this_core_distro_temp_dir_stub, $_this_core_distro_temp_dir_htaccess);
