@@ -133,7 +133,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * @var boolean Distribute core in which way?
 		 */
-		public $use_core_type = 'directory';
+		public $use_core_type = 'submodule';
 
 		/**
 		 * @var boolean Build from a specific core version?
@@ -395,7 +395,7 @@ namespace websharks_core_v000000_dev
 				);
 			// Validate core type.
 
-			if(!in_array($this->use_core_type, array('directory', 'phar', 'stub'), TRUE))
+			if(!in_array($this->use_core_type, array('directory', 'phar', 'stub', 'submodule'), TRUE))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_core_type', get_defined_vars(),
 					sprintf($this->__('Invalid core type: `%1$s`.'), $this->use_core_type)
@@ -493,9 +493,11 @@ namespace websharks_core_v000000_dev
 				$this->©dir->rename_to($this->©replicate($this->plugin_dir, $this->plugin_repo_dir, '', array($this::gitignore => $this->core_repo_dir.'/.gitignore'))->new_core_dir, $_new_core_dir);
 				$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 
-				if($this->use_core_type !== 'directory') // Should we delete the directory immediately?
+				// Add/remove directories/files based on build type.
+
+				if($this->use_core_type !== 'directory') // Delete directory?
 				{
-					$this->©dir->delete($_new_core_dir); // Delete immediately.
+					$this->©dir->delete($_new_core_dir); // Delete directory immediately.
 					$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 				}
 				$successes->add($this->method(__FUNCTION__).'#new_core_dir_replication_into_plugin_dir', get_defined_vars(),
@@ -506,28 +508,26 @@ namespace websharks_core_v000000_dev
 				);
 				if($this->use_core_type !== 'directory') unset($_new_core_dir); // Housekeeping.
 
-				// WebSharks™ Core stub file (always).
+				if($this->use_core_type !== 'submodule') // WebSharks™ Core stub file?
+				{
+					$_core_stub     = $this->core_dir.'/stub.php';
+					$_new_core_stub = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
 
-				$_core_stub     = $this->core_dir.'/stub.php';
-				$_new_core_stub = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
+					$this->©file->delete($_new_core_stub); // In case it already exists.
+					$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
 
-				$this->©file->delete($_new_core_stub); // In case it already exists.
-				$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
+					$this->©file->copy_to($_core_stub, $_new_core_stub);
+					$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
 
-				$this->©file->copy_to($_core_stub, $_new_core_stub);
-				$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
-
-				$successes->add($this->method(__FUNCTION__).'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
-				                sprintf($this->__('The %1$s stub has been added to the plugin directory here: `%2$s`.'), $this->___instance_config->core_name, $_new_core_stub).
-				                ' '.sprintf($this->__('The %1$s stub has also been added to the list of version controlled files in this plugin repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir).
-				                ' '.sprintf($this->__('The %1$s stub will remain in the plugin repo. This unifies the way in which plugins include the %1$s. Making it possible for a plugin to utilize different types of %1$s distributions — without modification.'), $this->___instance_config->core_name).
-				                ' '.sprintf($this->__('While a plugin\'s repo will NOT include the entire %1$s (that\'s what the distro is for); leaving the stub behind (in the repo) allows a plugin to function, so long as the %1$s is available somewhere on the site; in one form or another.'), $this->___instance_config->core_name)
-				);
-				unset($_core_stub, $_new_core_stub); // Housekeeping.
-
-				// Bundle WebSharks™ Core PHP archive (e.g. the PHAR file)?
-
-				if($this->use_core_type === 'phar') // Only if we ARE using a PHAR file.
+					$successes->add($this->method(__FUNCTION__).'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
+					                sprintf($this->__('The %1$s stub has been added to the plugin directory here: `%2$s`.'), $this->___instance_config->core_name, $_new_core_stub).
+					                ' '.sprintf($this->__('The %1$s stub has also been added to the list of version controlled files in this plugin repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir).
+					                ' '.sprintf($this->__('The %1$s stub will remain in the plugin repo. This unifies the way in which plugins include the %1$s. Making it possible for a plugin to utilize different types of %1$s distributions — without modification.'), $this->___instance_config->core_name).
+					                ' '.sprintf($this->__('While a plugin\'s repo will NOT include the entire %1$s (that\'s what the distro is for); leaving the stub behind (in the repo) allows a plugin to function, so long as the %1$s is available somewhere on the site; in one form or another.'), $this->___instance_config->core_name)
+					);
+					unset($_core_stub, $_new_core_stub); // Housekeeping.
+				}
+				if($this->use_core_type === 'phar') // Bundle WebSharks™ Core PHP archive (e.g. the PHAR file)?
 				{
 					$_core_phar                = $this->core_repo_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
 					$_new_core_phar            = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
@@ -544,7 +544,6 @@ namespace websharks_core_v000000_dev
 						sprintf($this->__('Unable to find a valid `.htaccess` file here: `%1$s`.'), $_plugin_dir_htaccess_file).
 						' '.$this->__('This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 					);
-
 					$this->©file->copy_to($_core_phar, $_new_core_phar);
 					$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
 
@@ -592,7 +591,6 @@ namespace websharks_core_v000000_dev
 						$this->method(__FUNCTION__).'#plugin_framework_file_permissions', get_defined_vars(),
 						sprintf($this->__('Permission issues with plugin `framework.php` file: `%1$s`.'), $_plugin_framework_file)
 					);
-
 				$_plugin_file_contents           = file_get_contents($_plugin_file);
 				$_plugin_readme_file_contents    = file_get_contents($_plugin_readme_file);
 				$_plugin_framework_file_contents = file_get_contents($_plugin_framework_file);
@@ -635,7 +633,6 @@ namespace websharks_core_v000000_dev
 						$this->method(__FUNCTION__).'#plugin_framework_file_write_error', get_defined_vars(),
 						$this->__('Unable to write (update) the plugin `framework.php` file.')
 					);
-
 				$successes->add($this->method(__FUNCTION__).'#plugin_file_updates', get_defined_vars(),
 				                $this->__('Plugin files updated with versions/requirements.').
 				                ' '.sprintf($this->__('Plugin version: `%1$s`.'), $this->version).
@@ -1038,7 +1035,6 @@ namespace websharks_core_v000000_dev
 					                sprintf($this->__('A new branch has been created for core version: `%1$s`.'), $this->version).
 					                ' '.sprintf($this->__('Now working from this new branch: `%1$s`.'), $this->version)
 					);
-
 					$_this_core_dir = $this->©replicate($this->core_repo_dir, $this->core_repo_dir, $this->version)
 						->new_core_dir; // Replicate; and then grab the new core directory here.
 
@@ -1102,7 +1098,6 @@ namespace websharks_core_v000000_dev
 						$this->method(__FUNCTION__).'#'.$new_slug.'core_deps_x_file_permissions', get_defined_vars(),
 						sprintf($this->__('Permission issues with %1$score `deps-x.php` file: `%2$s`.'), $new_space, $_this_core_deps_x_file)
 					);
-
 				$_this_core_stub_file_contents   = file_get_contents($_this_core_stub_file);
 				$_this_core_plugin_file_contents = file_get_contents($_this_core_plugin_file);
 				$_this_core_readme_file_contents = file_get_contents($_this_core_readme_file);
@@ -1157,7 +1152,6 @@ namespace websharks_core_v000000_dev
 						$this->method(__FUNCTION__).'#'.$new_slug.'core_deps_x_file_write_error', get_defined_vars(),
 						sprintf($this->__('Unable to write (update) the %1$score `deps-x.php` file.'), $new_space)
 					);
-
 				$successes->add($this->method(__FUNCTION__).'#'.$new_slug.'core_file_updates', get_defined_vars(),
 				                sprintf($this->__('%1$s files updated with versions/requirements.'), $ucfirst_core).
 				                ' '.sprintf($this->__('%1$s version: `v%2$s`.'), $ucfirst_core, $this->version).
@@ -1184,13 +1178,12 @@ namespace websharks_core_v000000_dev
 
 				if(!is_file($_this_core_distro_temp_dir_htaccess)
 				   || !is_readable($_this_core_distro_temp_dir_htaccess)
-				   || FALSE === strpos(file_get_contents($_this_core_distro_temp_dir_htaccess), 'AcceptPathInfo')
+				   || strpos(file_get_contents($_this_core_distro_temp_dir_htaccess), 'AcceptPathInfo') === FALSE
 				) throw $this->©exception(
 					$this->method(__FUNCTION__).'#unable_to_find_valid_htaccess_file_in_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
 					sprintf($this->__('Unable to find a valid `.htaccess` file here: `%1$s`.'), $_this_core_distro_temp_dir_htaccess).
 					' '.$this->__('This file MUST exist; and it MUST contain: `AcceptPathInfo` for webPhar compatibility.')
 				);
-
 				$this->©file->delete($_this_core_phar); // In case it already exists.
 				$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_this_core_phar), $this->core_repo_dir);
 
