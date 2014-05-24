@@ -147,11 +147,11 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *
 	 * @param string  $plugin_name If empty, defaults to a generic value.
 	 *    Name of the plugin that's checking dependencies;
-	 *    e.g. the plugin that called this routine.
+	 *    i.e. the plugin that called this routine.
 	 *
 	 * @param string  $plugin_dir_names If empty, defaults to a generic value.
 	 *    Name of one or more (comma-delimited) plugin directories associated with dependency scans;
-	 *    e.g. directories associated with the plugin that called this routine.
+	 *    i.e. directories associated with the plugin that called this routine.
 	 *
 	 * @param boolean $report_notices TRUE by default.
 	 *    If FALSE, do NOT report any notices.
@@ -915,7 +915,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						' Please check with your hosting provider to resolve this issue and have PHP <code>eval()</code> enabled.'.
 						' Note... the use of <code>eval()</code>, is limited to areas where it is absolutely necessary to achieve a desired functionality.'.
 						' For instance, where PHP code is supplied by a site owner (or by their developer) to achieve advanced customization through a UI panel. This can be evaluated at runtime to allow for the inclusion of PHP conditionals or dynamic values.'.
-						' In cases such as these, the PHP <code>eval()</code> function serves a valid purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (e.g. the code can be trusted in this case).'
+						' In cases such as these, the PHP <code>eval()</code> function serves a valid purpose. This does NOT introduce a vulnerability, because the code being evaluated has actually been introduced by the site owner (i.e. the code can be trusted in this case).'
 					), htmlspecialchars($plugin_name)
 				)
 			);
@@ -2153,7 +2153,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 * @param string  $dir The directory we should begin with.
 	 *
 	 * @param boolean $ignore_vcs_dirs Optional. Defaults to a TRUE value.
-	 *    By default, we ignore VCS directories (e.g. `.git` and `.svn`).
+	 *    By default, we ignore VCS directories (i.e. `.git`, `.svn`, `.bzr`).
 	 *
 	 * @param string  $___root_dir Internal parameter. Defaults to an empty string, indicating the current `$dir`.
 	 *    Recursive calls to this method will automatically pass this value, indicating the main root directory value.
@@ -2374,7 +2374,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		echo '<head>';
 
 		echo '<title>'.
-		     $this->__('Server Scan By:').
+		     $this->__('Server Scan by:').
 		     ' '.htmlspecialchars($this->check['plugin_name']).
 		     '</title>';
 
@@ -2426,7 +2426,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		echo '<div class="wrapper">';
 
 		echo '<h1>'.
-		     $this->__('Server Scan By:').
+		     $this->__('Server Scan by:').
 		     ' <strong>'.htmlspecialchars($this->check['plugin_name']).'</strong>';
 
 		echo '<div class="tools">';
@@ -2511,7 +2511,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							)
 						);
 						$_auto_fix_confirmation =
-							"onclick=\"return confirm('".$this->__("ARE YOU SURE ABOUT THIS?\\nThis is a PHP routine, that will attempt to fix the issue automatically (e.g. to fix it programmatically).\\n\\t\\nBACKUP NOTICE: Please backup all of your files, and all of your database tables, before running this routine.\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company), before running this routine. It is always better to have a qualified web developer help you. If you run this routine, you do so at your own risk.")."');\"";
+							"onclick=\"return confirm('".$this->__("ARE YOU SURE ABOUT THIS?\\nThis is a PHP routine that will attempt to fix the issue automatically (i.e. to fix it programmatically).\\n\\t\\nBACKUP NOTICE: Please backup all of your files, and all of your database tables before running this routine.\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company) before running this routine. It is always better to have a qualified web developer help you. If you run this routine, you do so at your own risk.")."');\"";
 
 						echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_auto_fix), (string)$_SERVER['REQUEST_URI'])).'" '.$_auto_fix_confirmation.'>'.
 						     $this->__('AUTO-FIX<em>!</em>').
@@ -2528,7 +2528,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 							)
 						);
 						$_dismissal_confirmation =
-							"onclick=\"return confirm('".$this->__("ARE YOU SURE ABOUT THIS?\\nYou want to dismiss (i.e. ignore) this message?\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company), before ignoring this message. It is better to fix the underlying cause. If you ignore this message, you do so at your own risk.")."');\"";
+							"onclick=\"return confirm('".$this->__("ARE YOU SURE ABOUT THIS?\\nYou want to dismiss (i.e. ignore) this message?\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company) before ignoring this message. It is better to fix the underlying cause. If you ignore this message, you do so at your own risk.")."');\"";
 
 						echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_dismiss), (string)$_SERVER['REQUEST_URI'])).'" '.$_dismissal_confirmation.'>'.
 						     $this->__('dismiss?').
@@ -2620,7 +2620,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 		echo '<style type="text/css">';
 		$div_notice = 'div.websharks-core-deps-notice';
-		echo $div_notice.'.wrapper { background:#FBF6DD url(\''.$this->icons['plugin'].'\') no-repeat right top; border:1px solid #C1B98E; }';
+		echo $div_notice.'.wrapper { background:#FBF6DD url(\''.$this->icons['plugin'].'\') no-repeat right top; border:1px solid #C1B98E; border-radius:5px; }';
 		echo $div_notice.' div.container { padding:25px; }';
 		echo '</style>';
 
@@ -2659,7 +2659,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		echo '<div class="container">';
 
 		echo '<h2 class="heading">'.
-		     $this->__('Server Scan By:').
+		     $this->__('Server Scan by:').
 		     ' <strong>'.$this->check['plugin_name'].'</strong>'.
 		     '</h2>';
 
@@ -2705,7 +2705,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					)
 				);
 				$_auto_fix_confirmation =
-					"onclick=\"return confirm('".$this->__("ARE YOU SURE ABOUT THIS?\\nThis is a PHP routine, that will attempt to fix the issue automatically (e.g. to fix it programmatically).\\n\\t\\nBACKUP NOTICE: Please backup all of your files, and all of your database tables, before running this routine.\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company), before running this routine. It is always better to have a qualified web developer help you. If you run this routine, you do so at your own risk.")."');\"";
+					"onclick=\"return confirm('".$this->__("ARE YOU SURE ABOUT THIS?\\nThis is a PHP routine that will attempt to fix the issue automatically (i.e. to fix it programmatically).\\n\\t\\nBACKUP NOTICE: Please backup all of your files, and all of your database tables before running this routine.\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company) before running this routine. It is always better to have a qualified web developer help you. If you run this routine, you do so at your own risk.")."');\"";
 
 				echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_auto_fix), (string)$_SERVER['REQUEST_URI'])).'" '.$_auto_fix_confirmation.'>'.
 				     $this->__('AUTO-FIX<em>!</em>').
@@ -2722,7 +2722,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 					)
 				);
 				$_dismissal_confirmation =
-					"onclick=\"return confirm('".$this->__("ARE YOU SURE ABOUT THIS?\\nYou want to dismiss (i.e. ignore) this message?\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company), before ignoring this message. It is better to fix the underlying cause, and then re-activate the plugin. If you ignore this message, you do so at your own risk.")."');\"";
+					"onclick=\"return confirm('".$this->__("ARE YOU SURE ABOUT THIS?\\nYou want to dismiss (i.e. ignore) this message?\\n\\t\\nNOTE: Please consult with a qualified web developer (or your hosting company) before ignoring this message. It is better to fix the underlying cause, and then re-activate the plugin. If you ignore this message, you do so at your own risk.")."');\"";
 
 				echo '<a href="'.esc_attr(add_query_arg(urlencode_deep($_dismiss), (string)$_SERVER['REQUEST_URI'])).'" '.$_dismissal_confirmation.'>'.
 				     $this->__('dismiss?').
