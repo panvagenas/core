@@ -129,8 +129,29 @@ namespace websharks_core_v000000_dev
 					$GLOBALS[$this->___instance_config->plugin_pro_var] = $GLOBALS[$this->___instance_config->plugin_root_ns];
 					autoloader::add_classes_dir($this->___instance_config->plugin_pro_classes_dir);
 				}
-				else $this->enqueue_pro_update_sync_notice(); // Pro add-on needs to be synchronized with current version.
+				else $this->enqueue_update_sync_pro_notice(); // Pro add-on needs to be synchronized with current version.
 			}
+		}
+
+		/**
+		 * Collects an array of all currently active plugins.
+		 *
+		 * @note This also includes active sitewide plugins in a multisite installation.
+		 *
+		 * @return array All currently active plugins.
+		 *
+		 * @assert () !empty TRUE
+		 */
+		public function active()
+		{
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
+
+			$active = (is_array($active = get_option('active_plugins'))) ? $active : array();
+			if(is_multisite() && is_array($active_sitewide_plugins = get_site_option('active_sitewide_plugins')))
+				$active = array_unique(array_merge($active, $active_sitewide_plugins));
+
+			return ($this->static[__FUNCTION__] = $active);
 		}
 
 		/**
@@ -139,16 +160,14 @@ namespace websharks_core_v000000_dev
 		 * @note This does NOT perform any tests against the current framework and/or pro add-on.
 		 *    Tests should be performed BEFORE calling upon this method. See `load_pro_include_file_if_active()`.
 		 */
-		public function enqueue_pro_update_sync_notice()
+		public function enqueue_update_sync_pro_notice()
 		{
 			if(class_exists($this->___instance_config->plugin_root_ns_prefix.'\\menu_pages\\update_sync'))
-			{
 				$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
 					'<p>'.$this->__('Your pro add-on MUST be updated now.').
 					' '.sprintf($this->__('Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
 					'</p>'
 				);
-			}
 		}
 
 		/**
@@ -328,6 +347,56 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
+		 * Updates framework.
+		 *
+		 * @param string $username Optional. Plugin site username. Defaults to an empty string.
+		 *    This is ONLY required if the underlying plugin site requires it.
+		 *
+		 * @param string $password Optional. Plugin site password. Defaults to an empty string.
+		 *    This is ONLY required if the underlying plugin site requires it.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 */
+		public function ®update($username = '', $password = '')
+		{
+			$this->check_arg_types('string', 'string', func_get_args());
+
+			if(!$this->©errors->exist_in($response = $this->©url->to_plugin_update_via_wp($username, $password)))
+				$url = $response; // We got the update URL.
+			else $errors = $response;
+
+			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
+
+			if(!empty($url)) // We got the update URL. Perform the update now.
+				wp_redirect($url).exit();
+		}
+
+		/**
+		 * Updates (and synchronizes) pro add-on.
+		 *
+		 * @param string $username Optional. Plugin site username. Defaults to an empty string.
+		 *    This is ONLY required if the underlying plugin site requires it.
+		 *
+		 * @param string $password Optional. Plugin site password. Defaults to an empty string.
+		 *    This is ONLY required if the underlying plugin site requires it.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 */
+		public function ®update_sync_pro($username = '', $password = '')
+		{
+			$this->check_arg_types('string', 'string', func_get_args());
+
+			if(!$this->©errors->exist_in($response = $this->©url->to_plugin_pro_update_via_wp($username, $password)))
+				$url = $response; // We got the update URL.
+			else $errors = $response;
+
+			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
+
+			if(!empty($url)) // We got the update URL. Perform the update now.
+				wp_redirect($url).exit();
+		}
+
+		/**
 		 * The WebSharks™ Core itself?
 		 *
 		 * @return boolean TRUE if the current plugin is actually the WebSharks™ Core.
@@ -471,27 +540,6 @@ namespace websharks_core_v000000_dev
 
 			$this->needs_stand_alone_styles($needs, $theme);
 			$this->needs_stand_alone_scripts($needs);
-		}
-
-		/**
-		 * Collects an array of all currently active plugins.
-		 *
-		 * @note This also includes active sitewide plugins in a multisite installation.
-		 *
-		 * @return array All currently active plugins.
-		 *
-		 * @assert () !empty TRUE
-		 */
-		public function active()
-		{
-			if(isset($this->static[__FUNCTION__]))
-				return $this->static[__FUNCTION__];
-
-			$active = (is_array($active = get_option('active_plugins'))) ? $active : array();
-			if(is_multisite() && is_array($active_sitewide_plugins = get_site_option('active_sitewide_plugins')))
-				$active = array_unique(array_merge($active, $active_sitewide_plugins));
-
-			return ($this->static[__FUNCTION__] = $active);
 		}
 	}
 }

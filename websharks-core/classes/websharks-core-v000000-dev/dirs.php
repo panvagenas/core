@@ -1296,10 +1296,10 @@ namespace websharks_core_v000000_dev
 		{
 			$data_dir = $this->___instance_config->plugin_data_dir;
 
-			if(!is_dir($data_dir) && is_writable($this->n_seps_up($data_dir)))
+			if(!is_dir($data_dir)) // Create if not exists.
 			{
-				mkdir($data_dir, 0775);
-				clearstatcache(); // Clear cache.
+				@mkdir($data_dir, 0775, TRUE); // Including parents.
+				clearstatcache(); // Clear stat cache for checks below.
 			}
 			if(is_dir($data_dir) && is_readable($data_dir) && is_writable($data_dir))
 				return TRUE; // Yes, we have a good data directory now.
@@ -1451,9 +1451,9 @@ namespace websharks_core_v000000_dev
 					$this->__('Please create this directory: <code>%1$s</code>.'),
 					$this->©dirs->doc_root_path($this->___instance_config->plugin_data_dir)
 				).
-				' '.$this->__('You\'ll need to log in via FTP, and set directory permissions to <code>777</code>.').
-				' '.$this->__('Please use an application like <a href="http://filezilla-project.org/" target="_blank">FileZilla™</a>.').
-				' '.$this->__('See also: <a href="http://www.youtube.com/watch?v=oq0oM2w9lcQ" target="_blank">this video tutorial</a>').
+				' '.$this->__('You\'ll need to log in via FTP and set directory permissions to <code>775</code> (or higher).').
+				' '.$this->__('Please use an application like <a href="http://filezilla-project.org/" target="_blank">FileZilla</a>.').
+				' '.$this->__('If you\'re unfamiliar with FTP, please watch <a href="http://www.youtube.com/watch?v=oq0oM2w9lcQ" target="_blank">this video tutorial</a>.').
 				'</p>'
 			);
 			return FALSE; // Default return value.

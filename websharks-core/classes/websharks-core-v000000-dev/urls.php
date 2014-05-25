@@ -901,7 +901,8 @@ namespace websharks_core_v000000_dev
 
 				$parts['fragment'] = $uri_parts['fragment']; // URI fragment always.
 			}
-			if(!$this->©file->has_extension($parts['path'])) $parts['path'] = user_trailingslashit($parts['path']);
+			if(!$this->©file->has_extension($parts['path']))
+				$parts['path'] = user_trailingslashit($parts['path']);
 
 			$url = home_url($this->unparse($parts));
 
@@ -1339,106 +1340,88 @@ namespace websharks_core_v000000_dev
 		/**
 		 * URL leading to a WordPress® `/directory-or-file`.
 		 *
-		 * @param string $abs_dir_file Absolute server path to a WordPress® `/directory-or-file`.
+		 * @param string  $abs_dir_file Absolute server path to a WordPress® `/directory-or-file`.
 		 *    Note that relative paths are NOT possible here (this MUST be absolute).
 		 *
-		 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+		 * @param string  $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
+		 *
+		 * @param boolean $___realpath Internal use only; used in recursion.
 		 *
 		 * @return string URL leading to a WordPress® `/directory-or-file` (no trailing slash).
 		 *    Else if file is NOT within WordPress; we return a direct URL using a `file://` stream wrapper.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function to_wp_abs_dir_file($abs_dir_file, $scheme = '')
+		public function to_wp_abs_dir_file($abs_dir_file, $scheme = '', $___realpath = FALSE)
 		{
-			$this->check_arg_types('string:!empty', 'string', func_get_args());
+			if(!$___realpath) // Only on the initial call w/o a realpath check.
+				$this->check_arg_types('string:!empty', 'string', 'boolean', func_get_args());
 
-			// Normalize & get real `$dir`/`$file` locations also.
+			// Normalize & break apart the `$dir`/`$file` portions.
 
-			$abs_dir_file = $this->©dir->n_seps($abs_dir_file);
+			if(!($abs_dir_file = $this->©dir->n_seps($abs_dir_file)))
+				return ''; // Catch empty directory here.
 
 			if($this->©file->has_extension($abs_dir_file) || is_file($abs_dir_file))
 			{
-				$file = '/'.basename($abs_dir_file);
 				$dir  = $this->©dir->n_seps_up($abs_dir_file);
-
-				if(($dir_realpath = realpath($dir)) && $dir_realpath !== $dir)
-				{
-					$dir_realpath = $this->©dir->n_seps($dir_realpath);
-
-					if(($possible_real_file = realpath($dir.$file)))
-						$possible_real_file = '/'.basename($possible_real_file);
-					else $possible_real_file = $file;
-				}
-				else $dir_realpath = $possible_real_file = '';
+				$file = '/'.basename($abs_dir_file);
 			}
-			else // Else, NO file (e.g. it's a directory path).
+			else // Else, NO file (i.e. it's a directory path).
 			{
-				$file = $possible_real_file = '';
 				$dir  = $this->©dir->n_seps($abs_dir_file);
-
-				if(($dir_realpath = realpath($dir)) && $dir_realpath !== $dir)
-					$dir_realpath = $this->©dir->n_seps($dir_realpath);
-				else $dir_realpath = '';
+				$file = ''; // No file, it's a directory.
 			}
+			if(!$dir || $dir === '.') // Root?
+				return ''; // Catch empty directory here.
+
 			// Remove stream wrappers (assuming WordPress® does NOT use these).
 
 			if(!isset($this->static[__FUNCTION__.'__regex_stream_wrapper'])) // We only need this ONE time.
 				$this->static[__FUNCTION__.'__regex_stream_wrapper'] = substr(stub::$regex_valid_dir_file_stream_wrapper, 0, -2).'/';
 
-			if(strpos($dir, '://') !== FALSE)
+			if(strpos($dir, '://') !== FALSE) // Has a stream wrapper?
 				$dir = preg_replace($this->static[__FUNCTION__.'__regex_stream_wrapper'], '', $dir);
-
-			if($dir_realpath && strpos($dir_realpath, '://') !== FALSE)
-				$dir_realpath = preg_replace($this->static[__FUNCTION__.'__regex_stream_wrapper'], '', $dir_realpath);
 
 			// Check WordPress® absolute/root directory (this is enough in most cases).
 
 			if(strpos($dir.'/', ($wp_dir = $this->©dir->n_seps(ABSPATH)).'/') === 0)
 				return rtrim($this->to_wp_site_uri($this->encode_path_parts($this->©string->replace_once($wp_dir, '', $dir).$file), $scheme), '/');
 
-			if($dir_realpath && strpos($dir_realpath.'/', $wp_dir.'/') === 0)
-				return rtrim($this->to_wp_site_uri($this->encode_path_parts($this->©string->replace_once($wp_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
+			// Check WordPress® plugin paths (in case of a symlinked plugin).
+
+			if($this->©array->is_not_empty($GLOBALS['wp_plugin_paths'])) foreach($GLOBALS['wp_plugin_paths'] as $_plugin_dir => $_plugin_realdir)
+				if(($_plugin_realdir = $this->©dir->n_seps($_plugin_realdir)) && strpos($dir.'/', $_plugin_realdir.'/') === 0)
+					return rtrim($this->to_wp_plugins_uri($this->encode_path_parts($this->©string->replace_once($this->©dir->n_seps_up($_plugin_realdir), '', $dir).$file), $scheme), '/');
+			unset($_plugin_dir, $_plugin_realdir); // Housekeeping.
 
 			// Check WordPress® content directory (in case this resides in a non-standard location).
 
 			if(strpos($dir.'/', ($wp_content_dir = $this->©dir->n_seps(WP_CONTENT_DIR)).'/') === 0)
 				return rtrim($this->to_wp_content_uri($this->encode_path_parts($this->©string->replace_once($wp_content_dir, '', $dir).$file), $scheme), '/');
 
-			if($dir_realpath && strpos($dir_realpath.'/', $wp_content_dir.'/') === 0)
-				return rtrim($this->to_wp_content_uri($this->encode_path_parts($this->©string->replace_once($wp_content_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
-
 			// Check WordPress® includes directory (in case this resides in a non-standard location).
 
 			if(strpos($dir.'/', ($wp_includes_dir = $this->©dir->n_seps(ABSPATH.WPINC)).'/') === 0)
 				return rtrim($this->to_wp_includes_uri($this->encode_path_parts($this->©string->replace_once($wp_includes_dir, '', $dir).$file), $scheme), '/');
-
-			if($dir_realpath && strpos($dir_realpath.'/', $wp_includes_dir.'/') === 0)
-				return rtrim($this->to_wp_includes_uri($this->encode_path_parts($this->©string->replace_once($wp_includes_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
 
 			// Check WordPress® plugins directory (in case this resides in a non-standard location).
 
 			if(strpos($dir.'/', ($wp_plugins_dir = $this->©dir->n_seps(WP_PLUGIN_DIR)).'/') === 0)
 				return rtrim($this->to_wp_plugins_uri($this->encode_path_parts($this->©string->replace_once($wp_plugins_dir, '', $dir).$file), $scheme), '/');
 
-			if($dir_realpath && strpos($dir_realpath.'/', $wp_plugins_dir.'/') === 0)
-				return rtrim($this->to_wp_plugins_uri($this->encode_path_parts($this->©string->replace_once($wp_plugins_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
-
 			// Check WordPress® active style directory (in case this resides in a non-standard location).
 
 			if(strpos($dir.'/', ($wp_active_style_dir = $this->©dir->n_seps(get_stylesheet_directory())).'/') === 0)
 				return rtrim($this->to_wp_stylesheet_uri($this->encode_path_parts($this->©string->replace_once($wp_active_style_dir, '', $dir).$file), $scheme), '/');
-
-			if($dir_realpath && strpos($dir_realpath.'/', $wp_active_style_dir.'/') === 0)
-				return rtrim($this->to_wp_stylesheet_uri($this->encode_path_parts($this->©string->replace_once($wp_active_style_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
 
 			// Check WordPress® active theme directory (in case this resides in a non-standard location).
 
 			if(strpos($dir.'/', ($wp_active_theme_dir = $this->©dir->n_seps(get_template_directory())).'/') === 0)
 				return rtrim($this->to_wp_template_uri($this->encode_path_parts($this->©string->replace_once($wp_active_theme_dir, '', $dir).$file), $scheme), '/');
 
-			if($dir_realpath && strpos($dir_realpath.'/', $wp_active_theme_dir.'/') === 0)
-				return rtrim($this->to_wp_template_uri($this->encode_path_parts($this->©string->replace_once($wp_active_theme_dir, '', $dir_realpath).$possible_real_file), $scheme), '/');
+			if(!$___realpath && ($abs_dir_file_realpath = realpath($dir)) && ($abs_dir_file_realpath = $this->©dir->n_seps($abs_dir_file_realpath)) && $abs_dir_file_realpath !== $abs_dir_file)
+				return $this->to_wp_abs_dir_file($abs_dir_file_realpath, $scheme, TRUE); // Retry w/ a `realpath()` now.
 
 			// By default we use `file://`. Windows® drive letter is removed temporarily here.
 
@@ -1618,7 +1601,7 @@ namespace websharks_core_v000000_dev
 
 			// Connects to the plugin site (POST array includes `slug`, `version`, `username`, `password`).
 			// The plugin site should return a JSON object with `version`, `zip` elements (e.g. version + full URL to a ZIP file).
-			// If an error occurs at the plugin site, the plugin site can return an `error` element, w/ an error message.
+			// If an error occurs at the plugin site, the plugin site can return an `error` element w/ an error message.
 
 			$plugin_site_credentials = $this->©plugin->get_site_credentials($username, $password, TRUE);
 
@@ -1626,7 +1609,7 @@ namespace websharks_core_v000000_dev
 			                                                'slug'     => $this->___instance_config->plugin_dir_basename, 'version' => 'latest-stable',
 			                                                'username' => $plugin_site_credentials['username'], 'password' => $plugin_site_credentials['password']
 			));
-			$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/products/update-sync.php'), $plugin_site_post_vars);
+			$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/updater/update-sync.php'), $plugin_site_post_vars);
 			if(!is_array($plugin_site_response = json_decode($plugin_site_response, TRUE))) $plugin_site_response = array();
 
 			if($this->©strings->are_not_empty($plugin_site_response['version'], $plugin_site_response['zip']))
@@ -1639,7 +1622,7 @@ namespace websharks_core_v000000_dev
 				$update_args[$this->___instance_config->plugin_var_ns.'_update_version'] = $plugin_site_response['version'];
 				$update_args[$this->___instance_config->plugin_var_ns.'_update_zip']     = $plugin_site_response['zip'];
 
-				return add_query_arg(urlencode_deep($update_args), $this->to_wp_admin_uri('/update.php'));
+				return add_query_arg(urlencode_deep($update_args), $this->to_wp_self_admin_uri('/update.php'));
 			}
 			if($this->©string->is_not_empty($plugin_site_response['error']))
 				return $this->©error(
@@ -1673,7 +1656,7 @@ namespace websharks_core_v000000_dev
 
 			// Connects to the plugin site (POST array includes `slug`, `version`, `username`, `password`).
 			// The plugin site should return a JSON object with `version`, `zip` elements (e.g. version + full URL to a ZIP file).
-			// If an error occurs at the plugin site, the plugin site can return an `error` element, w/ an error message.
+			// If an error occurs at the plugin site, the plugin site can return an `error` element w/ an error message.
 
 			$plugin_site_credentials = $this->©plugin->get_site_credentials($username, $password, TRUE);
 
@@ -1681,7 +1664,7 @@ namespace websharks_core_v000000_dev
 			                                                'slug'     => $this->___instance_config->plugin_pro_dir_basename, 'version' => $this->___instance_config->plugin_version,
 			                                                'username' => $plugin_site_credentials['username'], 'password' => $plugin_site_credentials['password']
 			));
-			$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/products/update-sync.php'), $plugin_site_post_vars);
+			$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/updater/update-sync.php'), $plugin_site_post_vars);
 			if(!is_array($plugin_site_response = json_decode($plugin_site_response, TRUE))) $plugin_site_response = array();
 
 			if($this->©strings->are_not_empty($plugin_site_response['version'], $plugin_site_response['zip']))
@@ -1694,7 +1677,7 @@ namespace websharks_core_v000000_dev
 				$update_args[$this->___instance_config->plugin_var_ns.'_pro_update_version'] = $plugin_site_response['version'];
 				$update_args[$this->___instance_config->plugin_var_ns.'_pro_update_zip']     = $plugin_site_response['zip'];
 
-				return add_query_arg(urlencode_deep($update_args), $this->to_wp_admin_uri('/update.php'));
+				return add_query_arg(urlencode_deep($update_args), $this->to_wp_self_admin_uri('/update.php'));
 			}
 			if($this->©string->is_not_empty($plugin_site_response['error']))
 				return $this->©error(

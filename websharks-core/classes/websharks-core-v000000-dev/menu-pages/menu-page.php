@@ -1,6 +1,6 @@
 <?php
 /**
- * Menu Page (Base Class).
+ * Menu Page.
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -15,7 +15,7 @@ namespace websharks_core_v000000_dev\menu_pages
 		exit('Do NOT access this file directly: '.basename(__FILE__));
 
 	/**
-	 * Menu Page (Base Class).
+	 * Menu Page.
 	 *
 	 * @package WebSharks\Core
 	 * @since 120318
@@ -26,50 +26,42 @@ namespace websharks_core_v000000_dev\menu_pages
 	{
 		/**
 		 * @var string Slug for this menu page.
-		 *
-		 * @by-constructor Set dynamically by the class constructor.
-		 *    This is always set to the base name of the class.
+		 * @note This is always set to the base name of the class.
 		 */
 		public $slug = '';
 
 		/**
 		 * @var string Heading/title for this menu page.
-		 *
 		 * @extenders Should be overridden by class extenders.
 		 */
 		public $heading_title = '';
 
 		/**
 		 * @var string Sub-heading/description for this menu page.
-		 *
 		 * @extenders Should be overridden by class extenders.
 		 */
 		public $sub_heading_description = '';
 
 		/**
 		 * @var array Array of content panels for this menu page.
-		 *
-		 * @note Constructed dynamically, by adding panels via `add_content_panel()`.
+		 * @note Constructed dynamically by adding panels via `add_content_panel()`.
 		 */
 		public $content_panels = array();
 
 		/**
 		 * @var array Array of sidebar panels for this menu page.
-		 *
-		 * @note Constructed dynamically, by adding panels via `add_sidebar_panel()`.
+		 * @note Constructed dynamically by adding panels via `add_sidebar_panel()`.
 		 */
 		public $sidebar_panels = array();
 
 		/**
 		 * @var boolean Should sidebar panels share a global order?
-		 *
 		 * @extenders Can be overridden by class extenders.
 		 */
 		public $sidebar_panels_share_global_order = TRUE;
 
 		/**
 		 * @var boolean Should sidebar panels share a global state?
-		 *
 		 * @extenders Can be overridden by class extenders.
 		 */
 		public $sidebar_panels_share_global_state = TRUE;
@@ -90,9 +82,7 @@ namespace websharks_core_v000000_dev\menu_pages
 
 		/**
 		 * @var null|\websharks_core_v000000_dev\form_fields Instance of form fields class, for option updates.
-		 *
-		 * @by-constructor Set dynamically by the class constructor.
-		 *    Set only if `$updates_options` is TRUE.
+		 * @note Set only if `$updates_options` is TRUE.
 		 */
 		public $option_fields; // Defaults to a NULL value.
 
@@ -338,7 +328,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			echo '<div class="clear"></div>';
 			echo '</div>';
 
-			echo '<h1 class="menu-page heading-title">['.$this->___instance_config->plugin_name.'] '.$this->heading_title.'</h1>';
+			echo '<h1 class="menu-page heading-title">'.esc_html($this->___instance_config->plugin_name).' '.$this->heading_title.'</h1>';
 			echo '<div class="menu-page sub-heading-description">'.$this->sub_heading_description.'</div>';
 		}
 
@@ -357,7 +347,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			     $this->__('Choose Admin Theme').
 			     '</button>';
 
-			echo '<form method="POST" class="controls update-theme">';
+			echo '<form method="post" class="controls update-theme">';
 			echo $this->©action->hidden_inputs_for_call('©menu_pages.®update_theme', $this::private_type);
 			echo '<input type="hidden" name="'.esc_attr($this->©action->input_name_for_call_arg(1)).'" class="theme" />';
 
@@ -411,7 +401,7 @@ namespace websharks_core_v000000_dev\menu_pages
 		{
 			if($this->updates_options)
 			{
-				echo '<form method="POST" class="update-options ui-form">';
+				echo '<form method="post" class="update-options ui-form">';
 				echo $this->©action->hidden_inputs_for_call('©menu_pages.®update_options', $this::private_type);
 			}
 		}
@@ -439,8 +429,8 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_content_panels_in_order()
 		{
+			$panel_slugs_displayed           = array(); // Initialize.
 			$content_panels_in_order_by_slug = $this->get_content_panel_order();
-			$panel_slugs_displayed           = array();
 
 			foreach($content_panels_in_order_by_slug as $_panel_slug)
 			{

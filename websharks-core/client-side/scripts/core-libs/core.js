@@ -70,6 +70,7 @@
 		if(typeof $$.___verifiers[key] === 'string')
 			return $$.___verifiers[key];
 
+		console.log($$.___verifiers);
 		throw $.sprintf($$.__('verifier__failure'), key);
 	};
 
@@ -155,17 +156,17 @@
 	/**
 	 * @type {String} Represents a `public` type.
 	 */
-	$w.$$websharks_core.$.prototype.___public_type = '___public_type';
+	$w.$$websharks_core.$.prototype.___public_type = '___public_type___';
 
 	/**
 	 * @type {String} Represents a `protected` type.
 	 */
-	$w.$$websharks_core.$.prototype.___protected_type = '___protected_type';
+	$w.$$websharks_core.$.prototype.___protected_type = '___protected_type___';
 
 	/**
 	 * @type {String} Represents a `private` type.
 	 */
-	$w.$$websharks_core.$.prototype.___private_type = '___private_type';
+	$w.$$websharks_core.$.prototype.___private_type = '___private_type___';
 
 	/**
 	 * WebSharks™ Core constructor.

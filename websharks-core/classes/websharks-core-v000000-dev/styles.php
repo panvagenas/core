@@ -26,22 +26,16 @@ namespace websharks_core_v000000_dev
 	{
 		/**
 		 * @var array Handles for all front-side components.
-		 *
-		 * @by-constructor Set dynamically by the class constructor.
 		 */
 		public $front_side_components = array();
 
 		/**
 		 * @var array Handles for all stand-alone components.
-		 *
-		 * @by-constructor Set dynamically by the class constructor.
 		 */
 		public $stand_alone_components = array();
 
 		/**
 		 * @var array Handles for all menu page components.
-		 *
-		 * @by-constructor Set dynamically by the class constructor.
 		 */
 		public $menu_page_components = array();
 
@@ -120,7 +114,6 @@ namespace websharks_core_v000000_dev
 			$dirs[] = $this->©dir->n_seps_up(__FILE__, 3).'/client-side';
 
 			foreach(array_reverse($dirs) as $_dir) // For correct precedence.
-
 				if(is_dir($_themes_dir = $_dir.'/styles/jquery-ui/themes'))
 				{
 					foreach(scandir($_themes_dir) as $_theme_dir)
@@ -190,7 +183,6 @@ namespace websharks_core_v000000_dev
 						$this->__('Invalid style configuration. Missing and/or invalid `url`.').
 						' '.sprintf($this->__('Problematic style handle: `%1$s`.'), $_handle)
 					);
-
 				// Additional configurations (all optional).
 				$_style['deps']  = $this->©array->isset_or($_style['deps'], array());
 				$_style['ver']   = $this->©string->isset_or($_style['ver'], '');
@@ -239,7 +231,6 @@ namespace websharks_core_v000000_dev
 			$print = (array)$print; // Force an array value.
 
 			global $wp_styles; // Global object reference.
-
 			if(!($wp_styles instanceof \WP_Styles))
 				$wp_styles = new \WP_Styles();
 

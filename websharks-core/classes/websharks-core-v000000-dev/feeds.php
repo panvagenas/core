@@ -40,7 +40,7 @@ namespace websharks_core_v000000_dev
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$url`, `$max_items`, or `$cache_expiration` are empty.
 		 */
-		public function items($url, $max_items = 3, $cache_expiration = 43200)
+		public function items($url, $max_items = 5, $cache_expiration = 43200)
 		{
 			$this->check_arg_types('string:!empty', 'integer:!empty', 'integer:!empty', func_get_args());
 

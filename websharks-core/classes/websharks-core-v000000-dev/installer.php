@@ -68,9 +68,9 @@ namespace websharks_core_v000000_dev
 			}
 			else // The activation failed for some reason.
 			{
-				$this->©notice->enqueue(
+				$this->©notice->enqueue_error(
 					'<p>'.
-					sprintf($this->__('%1$s failed (please try again). Or contact support if you need assistance.'),
+					sprintf($this->__('%1$s failed (please try again). Or, contact support if you need assistance.'),
 						(($reactivating) ? $this->__('Reactivation') : $this->__('Activation'))).
 					'</p>'
 				);

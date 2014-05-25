@@ -70,8 +70,8 @@ namespace websharks_core_v000000_dev
 
 				'scripts.front_side.load'                   => '0',
 				'scripts.front_side.load_by_default'        => '0',
-				'scripts.front_side.load_jquery_via_google' => '0',
-				'scripts.admin_side.load_jquery_via_google' => '0',
+				'scripts.front_side.load_jquery_via_cdn' => '0',
+				'scripts.admin_side.load_jquery_via_cdn' => '0',
 
 				'crons.config'                              => array(),
 
@@ -128,8 +128,8 @@ namespace websharks_core_v000000_dev
 
 				'scripts.front_side.load'                   => array('string:numeric >=' => 0),
 				'scripts.front_side.load_by_default'        => array('string:numeric >=' => 0),
-				'scripts.front_side.load_jquery_via_google' => array('string:numeric >=' => 0),
-				'scripts.admin_side.load_jquery_via_google' => array('string:numeric >=' => 0),
+				'scripts.front_side.load_jquery_via_cdn' => array('string:numeric >=' => 0),
+				'scripts.admin_side.load_jquery_via_cdn' => array('string:numeric >=' => 0),
 
 				'crons.config'                              => array('array:!empty'),
 

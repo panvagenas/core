@@ -70,9 +70,8 @@ namespace websharks_core_v000000_dev
 			// Only if NOT already registered.
 			if(!wp_script_is('jquery-ui-components', 'registered'))
 				$scripts_to_register['jquery-ui-components'] = array(
-					'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
-					'url'  => $this->©url->current_scheme().'//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js',
-					'ver'  => $this->___instance_config->core_ns_with_dashes
+					'deps' => array('jquery'), // Does NOT depend on core-libs; that creates and endless loop.
+					'url'  => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js',
 				);
 			// Only if core has NOT already been registered by another WebSharks™ plugin.
 			if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
@@ -83,8 +82,8 @@ namespace websharks_core_v000000_dev
 
 					'localize' => array( // Array of WebSharks™ Core JavaScript translations.
 
-					                     'instance_config__failure'                           => $this->__('Could NOT instance config value for key: `%1$s`.'),
-					                     'verifier__failure'                                  => $this->__('Could NOT verifier for key: `%1$s`.'),
+					                     'instance_config__failure'                           => $this->__('Could NOT get instance config value for key: `%1$s`.'),
+					                     'verifier__failure'                                  => $this->__('Could NOT get verifier for key: `%1$s`.'),
 					                     '____failure'                                        => $this->__('Could NOT get translation string for key: `%1$s`.'),
 
 					                     'view_source__doc_title'                             => $this->_x('Source'),
@@ -150,14 +149,14 @@ namespace websharks_core_v000000_dev
 					);
 			}
 			// Add jQuery™ (if loading via Google® instead of WordPress®).
-			if(!is_admin() && $this->©options->get('scripts.front_side.load_jquery_via_google'))
+			if(!is_admin() && $this->©options->get('scripts.front_side.load_jquery_via_cdn'))
 				$scripts_to_register['jquery'] = array(
-					'url' => $this->©url->current_scheme().'://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'
+					'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 				);
 			// Add jQuery™ (if loading via Google® instead of WordPress®).
-			if(is_admin() && $this->©options->get('scripts.admin_side.load_jquery_via_google'))
+			if(is_admin() && $this->©options->get('scripts.admin_side.load_jquery_via_cdn'))
 				$scripts_to_register['jquery'] = array(
-					'url' => $this->©url->current_scheme().'://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'
+					'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 				);
 			// Register scripts (if there are any to register).
 			if($scripts_to_register) $this->register($scripts_to_register);
@@ -338,12 +337,11 @@ namespace websharks_core_v000000_dev
 						$this->__('Invalid script configuration. Missing and/or invalid `url`.').
 						' '.sprintf($this->__('Problematic script handle: `%1$s`.'), $_handle)
 					);
-
 				// Additional configurations (all optional).
 				$_script['deps']      = $this->©array->isset_or($_script['deps'], array());
 				$_script['ver']       = $this->©string->isset_or($_script['ver'], '');
 				$_script['ver']       = ($_script['ver']) ? $_script['ver'] : NULL;
-				$_script['in_footer'] = $this->©boolean->isset_or($_script['in_footer'], FALSE);
+				$_script['in_footer'] = $this->©boolean->isset_or($_script['in_footer'], TRUE);
 
 				// Filter for site owners needing specific scripts in the footer.
 				$_script['in_footer'] = $this->apply_filters('in_footer', $_script['in_footer'], $_handle);
@@ -396,7 +394,6 @@ namespace websharks_core_v000000_dev
 			$components = (array)$components; // Force an array value.
 
 			global $wp_scripts; // Global object reference.
-
 			if(!($wp_scripts instanceof \WP_Scripts))
 				$wp_scripts = new \WP_Scripts();
 
@@ -469,7 +466,6 @@ namespace websharks_core_v000000_dev
 			$components = (array)$components; // Force array value.
 
 			global $wp_scripts; // Global object reference.
-
 			if(!($wp_scripts instanceof \WP_Scripts))
 				$wp_scripts = new \WP_Scripts();
 

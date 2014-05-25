@@ -259,11 +259,11 @@ namespace websharks_core_v000000_dev
 
 			if($dir !== $this->core_repo_dir) // Don't bypass the core repo directory itself.
 				if(preg_match('/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//', $dir.'/'))
-					if(stripos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
+					if(strpos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
 						return; // Past or present WebSharks™ Core directory.
 
 			if(preg_match('/\/'.substr(stub::$regex_valid_core_ns_version_with_dashes, 2, -2).'\//', $dir.'/'))
-				if(stripos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
+				if(strpos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
 					return; // Past or present WebSharks™ Core directory.
 
 			// Handle core directories that need to be renamed before processing continues.

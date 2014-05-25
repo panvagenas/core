@@ -72,6 +72,27 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
+		 * Enqueues an administrative error notice.
+		 *
+		 * @param string|array $notice The notice itself (i.e. a string message).
+		 *    Or, an array with notice configuration parameters.
+		 *
+		 * @return boolean TRUE if the notice was enqueued, else FALSE.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 */
+		public function enqueue_error($notice)
+		{
+			$this->check_arg_types(array('string', 'array'), func_get_args());
+
+			if(!is_array($notice))
+				$notice = array('notice' => $notice);
+			$notice['error'] = TRUE;
+
+			return $this->enqueue($notice);
+		}
+
+		/**
 		 * Displays an administrative notice.
 		 *
 		 * @param string|array $notice The notice itself (i.e. a string message).
@@ -110,8 +131,20 @@ namespace websharks_core_v000000_dev
 					        '</span>';
 
 				if(stripos($notice['notice'], '<p>') === 0)
-					$notice['notice'] = $this->©string->ireplace_once('<p>', '<p>'.$icon.'<strong>['.$this->___instance_config->plugin_name.' '.$this->__('says...').']</strong> ', $notice['notice']);
-				else $notice['notice'] = '<p>'.$icon.'<strong>['.$this->___instance_config->plugin_name.' '.$this->__('says...').']</strong></p>'.$notice['notice'];
+				{
+					$notice['notice'] = substr($notice['notice'], 3);
+					if(isset($notice['notice'][0]) && ctype_upper($notice['notice'][0]))
+						$notice['notice'][0] = strtolower($notice['notice'][0]);
+
+					$notice['notice'] = '<p>'.$icon.'<strong>'.$this->___instance_config->plugin_name.' '.$this->__('says...').'</strong> '.$notice['notice'];
+				}
+				else // It doesn't start with a `<p>` tag, so we'll do the best we can here.
+				{
+					if(isset($notice['notice'][0]) && ctype_upper($notice['notice'][0]))
+						$notice['notice'][0] = strtolower($notice['notice'][0]);
+
+					$notice['notice'] = '<p>'.$icon.'<strong>'.$this->___instance_config->plugin_name.' '.$this->__('says...').'</strong></p>'.$notice['notice'];
+				}
 			}
 			if($notice['allow_dismissals']) // Allowing dismissals?
 			{

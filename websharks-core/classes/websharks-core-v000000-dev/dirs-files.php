@@ -136,18 +136,19 @@ namespace websharks_core_v000000_dev
 			$this->check_arg_types('string:!empty', 'string:!empty', 'boolean', 'boolean', func_get_args());
 
 			$from = $dir_file_from; // A shorter name.
-			$to   = $dir_file_to; // A shorter name for this too.
+			$to   = $dir_file_to; // A shorter name.
 
 			if($try_realpaths) // Try to find realpaths?
+			{
 				if(($_real_from = realpath($from)) && ($_real_to = realpath($to)))
 				{
 					$from = $_real_from; // Real path on server.
 					$to   = $_real_to; // Use real path on server.
 				}
-			unset($_real_from, $_real_to); // A little housekeeping.
-
+				unset($_real_from, $_real_to); // Housekeeping.
+			}
 			if($this->has_extension($from) || is_file($from))
-				$from = $this->n_seps_up($from); // Up one. We need a directory.
+				$from = $this->n_seps_up($from); // Need a directory.
 
 			$from = preg_split('/\//', $this->n_seps($from)); // Allow empty values.
 			$to   = preg_split('/\//', $this->n_seps($to)); // Allow empty values here too.

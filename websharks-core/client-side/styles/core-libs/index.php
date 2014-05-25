@@ -23,8 +23,6 @@ header('Pragma: public');
 echo "@import url('//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&subset=latin,latin-ext');";
 
 echo file_get_contents(dirname(__FILE__).'/resets.min.css');
-
 echo file_get_contents(dirname(dirname(__FILE__)).'/jquery-ui/core.min.css');
 echo file_get_contents(dirname(dirname(__FILE__)).'/jquery-ui/forms.min.css');
-
 echo file_get_contents(dirname(__FILE__).'/core.min.css');

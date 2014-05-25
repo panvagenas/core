@@ -896,7 +896,7 @@ namespace websharks_core_v000000_dev
 					// Based on the plugin's directory (i.e. `plugin_dir`).
 					if($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns)
 						$this->___instance_config->plugin_data_dir = stub::get_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes.'-data';
-					else $this->___instance_config->plugin_data_dir = stub::n_dir_seps(WP_CONTENT_DIR).'/'.$this->___instance_config->plugin_dir_basename.'-data';
+					else $this->___instance_config->plugin_data_dir = stub::n_dir_seps(WP_CONTENT_DIR).'/data/'.$this->___instance_config->plugin_dir_basename;
 
 					// Based on the plugin's directory (i.e. `plugin_dir`).
 					$this->___instance_config->plugin_data_dir = // Give filters a chance to modify this if they'd like to.
@@ -1109,6 +1109,8 @@ namespace websharks_core_v000000_dev
 			 * @assert ('©strings') instanceof '\\websharks_core_v000000_dev\\strings'
 			 * @assert ('©string') instanceof '\\websharks_core_v000000_dev\\strings'
 			 * @assert ('©method') instanceof '\\websharks_core_v000000_dev\\functions'
+			 *
+			 * @TODO Optimize this further.
 			 */
 			public function __get($property)
 			{
@@ -1249,6 +1251,8 @@ namespace websharks_core_v000000_dev
 			 * @assert ('©strings', array()) instanceof ('\\websharks_core_v000000_dev\\strings')
 			 * @assert ('©string', array()) instanceof ('\\websharks_core_v000000_dev\\strings')
 			 * @assert ('©method', array()) instanceof ('\\websharks_core_v000000_dev\\functions')
+			 *
+			 * @TODO Optimize this further.
 			 */
 			public function __call($method, $args)
 			{

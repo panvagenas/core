@@ -180,7 +180,7 @@ namespace websharks_core_v000000_dev
 			$this->check_arg_types('string', 'string', 'string', func_get_args());
 
 			$page_arg = array('page' => $this->___instance_config->plugin_root_ns_stub.(($slug) ? '__'.$slug : ''));
-			$url      = add_query_arg(urlencode_deep($page_arg), $this->©url->to_wp_admin_uri('/admin.php'));
+			$url      = add_query_arg(urlencode_deep($page_arg), $this->©url->to_wp_self_admin_uri('/admin.php'));
 
 			if($content_panel_slug) // A specific content panel slug?
 				$url = $this->©url->add_query_hash('content_panel_slug', $content_panel_slug, $url);
