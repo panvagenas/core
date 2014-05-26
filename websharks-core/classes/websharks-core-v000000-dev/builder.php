@@ -122,7 +122,7 @@ namespace websharks_core_v000000_dev
 		 * @var string Requires at least WordPress® version.
 		 * @note This default value is updated by JasWSInc when it needs to change.
 		 */
-		public $requires_at_least_wp_version = '3.5.1';
+		public $requires_at_least_wp_version = '3.9';
 
 		/**
 		 * @var string Tested up to WordPress® version.

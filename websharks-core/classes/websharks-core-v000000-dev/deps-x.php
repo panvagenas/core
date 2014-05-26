@@ -208,8 +208,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		// If this IS an auto-fix request, should we compact (or extract) the originals?
 
 		if($is_wp_loaded && $is_auto_fix) // Yes, this IS an auto-fix request.
-			// Before we can auto-fix anything; we need to wait for the `init` hook.
-			if(!did_action('init')) // We'll return FALSE (at least for now).
+			// Before we can auto-fix anything; we need to wait for `init` hook completion.
+			if(!did_action('init') || ($this->is_function_possible('doing_action') && doing_action('init')))
 			{
 				$this->auto_fix_orig_check_args = // Remember these.
 					compact(
@@ -217,7 +217,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 						'report_notices', 'report_warnings',
 						'check_last_ok', 'maybe_display_wp_admin_notices'
 					);
-				add_action('init', array($this, 'check'), 1);
+				add_action('wp_loaded', array($this, 'check'), 1);
 
 				return ($this->check = FALSE);
 			}
@@ -2120,8 +2120,8 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			);
 			if($is_stand_alone) // Running stand-alone?
 			{
-				if($is_wp_loaded && !did_action('init'))
-					add_action('init', array($this, 'display_stand_alone_report'), 1);
+				if($is_wp_loaded && (!did_action('init') || ($this->is_function_possible('doing_action') && doing_action('init'))))
+					add_action('wp_loaded', array($this, 'display_stand_alone_report'), 1);
 
 				else $this->display_stand_alone_report();
 			}
@@ -2227,10 +2227,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			return $this->__(
 				'WordPress® NOT loaded up.'
 			);
-		else if(!did_action('init'))
+		else if(!did_action('init') || ($this->is_function_possible('doing_action') && doing_action('init')))
 			return $this->__(
-				'WordPress® `init` action hook has NOT fired yet.'.
-				' Unable to check permissions.'
+				'WordPress® `init` hook has NOT been fully processed yet.'.
+				' Unable to check user permissions.'
 			);
 		else if(!is_super_admin())
 			return $this->__(
@@ -2296,10 +2296,10 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			return $this->__(
 				'WordPress® NOT loaded up.'
 			);
-		else if(!did_action('init'))
+		else if(!did_action('init') || ($this->is_function_possible('doing_action') && doing_action('init')))
 			return $this->__(
-				'WordPress® `init` action hook has NOT fired yet.'.
-				' Unable to check permissions.'
+				'WordPress® `init` hook has NOT been fully processed yet.'.
+				' Unable to check user permissions.'
 			);
 		else if(!is_super_admin())
 			return $this->__(
@@ -2359,8 +2359,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				$this->__('Unknown error. Invalid/unexpected scenario.').
 				' '.$this->__('Cannot display stand-alone report data here. This method should NOT have been called upon.')
 			);
-		if(ob_get_level()) // Cleans output buffers.
-			while(ob_get_level()) ob_end_clean();
+		$this->ob_end_clean(); // Clean output buffers.
 
 		// HTML document w/ DOCTYPE tag.
 
@@ -3174,6 +3173,24 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				self::$static[__FUNCTION__] = TRUE;
 		}
 		return self::$static[__FUNCTION__];
+	}
+
+	/**
+	 * Cleans any existing output buffers.
+	 *
+	 * @return boolean {@inheritdoc}
+	 *
+	 * @see websharks_core_v000000_dev\env::ob_end_clean()
+	 * @inheritdoc websharks_core_v000000_dev\env::ob_end_clean()
+	 */
+	public function ob_end_clean()
+	{
+		$ob_levels = ob_get_level(); // Cleans output buffers.
+		for($ob_level = 0; $ob_level < $ob_levels; $ob_level++)
+			ob_end_clean(); // May fail on a locked buffer.
+		unset($ob_levels, $ob_level);
+
+		return ob_get_level() ? FALSE : TRUE;
 	}
 
 	# --------------------------------------------------------------------------------------------------------------------------------------

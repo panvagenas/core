@@ -29,7 +29,7 @@ $exception = $this->data->exception;
 <head>
 	<meta charset="UTF-8" />
 	<title><?php echo $this->_x('Uncaught Exception'); ?> | <?php echo esc_html(get_bloginfo('name')); ?></title>
-	<?php echo $this->stand_alone_styles().$this->stand_alone_scripts(); ?>
+	<?php echo $this->stand_alone_styles(); ?>
 </head>
 <body>
 
@@ -122,6 +122,8 @@ $exception = $this->data->exception;
 
 	</div>
 </div>
+
+<?php echo $this->stand_alone_footer_scripts(); ?>
 
 </body>
 </html>

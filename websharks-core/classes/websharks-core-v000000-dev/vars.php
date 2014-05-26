@@ -1086,7 +1086,7 @@ namespace websharks_core_v000000_dev
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$file_info_key` is empty; or it is NOT an associative array key.
 		 */
-		public function _merge_FILES_deeply_into(&$array, $file_info_key, $file_info_values, $___depth = 0, $___recursion = FALSE)
+		protected function _merge_FILES_deeply_into(&$array, $file_info_key, $file_info_values, $___depth = 0, $___recursion = FALSE)
 		{
 			if(!$___recursion) // Only for the initial caller.
 				$this->check_arg_types('array', 'string:!empty', 'array', 'integer', 'boolean', func_get_args());

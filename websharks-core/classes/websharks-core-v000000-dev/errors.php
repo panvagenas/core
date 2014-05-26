@@ -38,6 +38,5 @@ namespace websharks_core_v000000_dev
 		 * @var boolean Log into a DB table?
 		 */
 		public $db_log = TRUE;
-
 	}
 }

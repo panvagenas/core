@@ -38,14 +38,16 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Handles actions.
 		 *
-		 * @attaches-to WordPress® `init` action hook.
-		 * @hook-priority `2` Before most everything else.
-		 *    BUT, after other VERY early hooks are complete.
+		 * @attaches-to WordPress® `wp_loaded` action hook.
+		 * @hook-priority `-(PHP_INT_MAX - 100)` Before most everything else.
+		 *    We process actions after early `init` hooks are complete.
 		 *
 		 * @assert () === NULL
 		 */
-		public function init()
+		public function wp_loaded()
 		{
+			throw $this->©exception('debug');
+
 			if(!$this->is()) return;
 
 			$this->©env->increase_db_wait_timeout();

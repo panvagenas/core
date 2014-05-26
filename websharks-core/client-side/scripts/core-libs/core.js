@@ -11,6 +11,8 @@
  * @TODO Finish documenting properties in this file.
  *    Most docBlocks are already in place; but they still need to be filled in.
  *    Several parameters are untyped and undocumented (among other things that are incomplete).
+ *
+ * @TODO Fix IDE references to `sprintf()`.
  */
 
 (function($w) // Begin WebSharks™ Core closure.
@@ -48,7 +50,7 @@
 		if(!$$.empty(typeof $$.___instance_config[key]))
 			return $$.___instance_config[key];
 
-		throw $.sprintf($$.__('instance_config__failure'), key);
+		throw sprintf($$.__('instance_config__failure'), key);
 	};
 
 	/**
@@ -71,7 +73,7 @@
 			return $$.___verifiers[key];
 
 		console.log($$.___verifiers);
-		throw $.sprintf($$.__('verifier__failure'), key);
+		throw sprintf($$.__('verifier__failure'), key);
 	};
 
 	/**
@@ -93,7 +95,7 @@
 		if(typeof $$.___i18n[key] === 'string')
 			return $$.___i18n[key];
 
-		throw $.sprintf($$.___i18n['____failure'], key);
+		throw sprintf($$.___i18n['____failure'], key);
 	};
 
 	/**
@@ -947,7 +949,7 @@
 											      validation_abs_minimum = validation_minimum;
 								      }
 								      if($$.isset(validation_abs_minimum) && (!$$.is_array(value) || value.length < validation_abs_minimum))
-									      required_minimum_errors[id].push($.sprintf($$.__('validate_ui_form__required_select_at_least'), validation_abs_minimum));
+									      required_minimum_errors[id].push(sprintf($$.__('validate_ui_form__required_select_at_least'), validation_abs_minimum));
 							      }
 							      if($$.empty(required_minimum_errors[id]) && (!$$.is_array(value) || value.length < 1))
 								      required_minimum_errors[id].push($$.__('validate_ui_form__required_select_at_least_one'));
@@ -980,7 +982,7 @@
 													      validation_abs_minimum = validation_minimum;
 										      }
 										      if($$.isset(validation_abs_minimum) && (!(files instanceof FileList) || files.length < validation_abs_minimum))
-											      required_minimum_errors[id].push($.sprintf($$.__('validate_ui_form__required_file_at_least'), validation_abs_minimum));
+											      required_minimum_errors[id].push(sprintf($$.__('validate_ui_form__required_file_at_least'), validation_abs_minimum));
 									      }
 									      if($$.empty(required_minimum_errors[id]) && (!(files instanceof FileList) || files.length < 1))
 										      required_minimum_errors[id].push($$.__('validate_ui_form__required_file_at_least_one'));
@@ -1023,8 +1025,8 @@
 										      if($$.isset(validation_abs_minimum) && checked < validation_abs_minimum)
 										      {
 											      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-												      required_minimum_errors[id].push($.sprintf($$.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
-											      rc_required_minimum_errors[id].push($.sprintf($$.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
+												      required_minimum_errors[id].push(sprintf($$.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
+											      rc_required_minimum_errors[id].push(sprintf($$.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
 										      }
 									      }
 									      if($$.empty(required_minimum_errors[id]) && checked < 1)
@@ -1709,7 +1711,7 @@
 		{
 			caller = $$.__('check_arg_types__caller'); // Generic.
 			// caller = arguments.callee.caller.name; not possible in strict mode.
-			throw $.sprintf($$.__('check_arg_types__missing_args'), caller, required_args, total_args);
+			throw sprintf($$.__('check_arg_types__missing_args'), caller, required_args, total_args);
 		}
 		else if(total_args === 0) // No arguments (no problem).
 			return true; // We can stop right here in this case.
@@ -1929,7 +1931,7 @@
 
 			caller = $$.__('check_arg_types__caller'); // Generic.
 			// caller = arguments.callee.caller.name; not possible in strict mode.
-			throw $.sprintf($$.__('check_arg_types__invalid_arg'), position, caller, types, empty, type_given);
+			throw sprintf($$.__('check_arg_types__invalid_arg'), position, caller, types, empty, type_given);
 		}
 		return true; // Default return value (no problem).
 	};

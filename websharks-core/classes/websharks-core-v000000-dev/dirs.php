@@ -1317,9 +1317,14 @@ namespace websharks_core_v000000_dev
 			$dirs = array(
 				$this->n_seps(get_stylesheet_directory()).'/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
 				$this->n_seps(get_template_directory()).'/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
+
+				$this->___instance_config->plugin_pro_dir.'/templates/', // Templates for plugin that extend the core.
 				$this->___instance_config->plugin_pro_dir.'/templates/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
+
+				$this->___instance_config->plugin_dir.'/templates/', // Templates for plugin that extend the core.
 				$this->___instance_config->plugin_dir.'/templates/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
-				$this->___instance_config->core_dir.'/templates/'
+
+				$this->___instance_config->core_dir.'/templates/' // Default core template files.
 			);
 			return $this->apply_filters(__FUNCTION__, $dirs);
 		}

@@ -57,6 +57,45 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
+		 * Default (core-driven) menu pages.
+		 *
+		 * @return array Default (core-driven) menu pages.
+		 */
+		public function default_menu_pages()
+		{
+			$doc_title      = $this->___instance_config->plugin_name;
+			$main_menu_slug = $this->___instance_config->plugin_root_ns_stub;
+
+			$default_menu_pages = array(
+
+				$main_menu_slug       => array(
+					'doc_title'    => $doc_title,
+					'menu_title'   => $this->___instance_config->plugin_name,
+					'cap_required' => $this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_page__'.$main_menu_slug),
+					'displayer'    => array($this, '©menu_pages__main.display'),
+					'icon'         => $this->©url->to_template_dir_file('/client-side/images/favicon-16x16.png')
+				),
+
+				'___'.$main_menu_slug => array(
+					'doc_title'    => $doc_title,
+					'menu_title'   => $this->__('Quick-Start Guide'),
+					'cap_required' => $this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_page__'.$main_menu_slug),
+					'displayer'    => array($this, '©menu_pages__main.display'),
+					'is_under'     => $main_menu_slug
+				),
+
+				'general_options'     => array(
+					'doc_title'    => $doc_title,
+					'menu_title'   => $this->__('General Options'),
+					'cap_required' => $this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_page__general_options'),
+					'displayer'    => array($this, '©menu_pages__general_options.display'),
+					'is_under'     => $main_menu_slug
+				)
+			);
+			return $default_menu_pages;
+		}
+
+		/**
 		 * Is this an administrative page for the current plugin?
 		 *
 		 * @param string|array $slug_s Optional. By default, we simply check to see if this is an administrative page for the current plugin.

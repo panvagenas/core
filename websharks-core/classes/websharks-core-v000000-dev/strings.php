@@ -1514,7 +1514,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list (disabled).
 		 */
-		public function _esc_shortcodes($m)
+		protected function _esc_shortcodes($m)
 		{
 			if(isset($m[1], $m[6]) && $m[1] === '[' && $m[6] === ']')
 				return $m[0]; // Already escaped.

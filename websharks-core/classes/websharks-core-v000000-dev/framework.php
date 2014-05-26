@@ -75,289 +75,322 @@ namespace websharks_core_v000000_dev
 		 * @note Magic properties/methods should be declared with a FQN because PhpStorm™ seems to have trouble
 		 *    identifying them throughout the entire codebase w/o a FQN (for whatever reason — a possible bug).
 		 *
-		 * @property \websharks_core_v000000_dev\actions                        $©actions
-		 * @property \websharks_core_v000000_dev\actions                        $©action
+		 * @property \websharks_core_v000000_dev\actions                                  $©actions
+		 * @property \websharks_core_v000000_dev\actions                                  $©action
 		 * @method \websharks_core_v000000_dev\actions ©actions()
 		 * @method \websharks_core_v000000_dev\actions ©action()
 		 *
-		 * @property \websharks_core_v000000_dev\arrays                         $©arrays
-		 * @property \websharks_core_v000000_dev\arrays                         $©array
+		 * @property \websharks_core_v000000_dev\arrays                                   $©arrays
+		 * @property \websharks_core_v000000_dev\arrays                                   $©array
 		 * @method \websharks_core_v000000_dev\arrays ©arrays()
 		 * @method \websharks_core_v000000_dev\arrays ©array()
 		 *
-		 * @property \websharks_core_v000000_dev\booleans                       $©booleans
-		 * @property \websharks_core_v000000_dev\booleans                       $©boolean
+		 * @property \websharks_core_v000000_dev\booleans                                 $©booleans
+		 * @property \websharks_core_v000000_dev\booleans                                 $©boolean
 		 * @method \websharks_core_v000000_dev\booleans ©booleans()
 		 * @method \websharks_core_v000000_dev\booleans ©boolean()
 		 *
 		 * @method \websharks_core_v000000_dev\builder ©builder()
 		 * @method \websharks_core_v000000_dev\builder ©build()
 		 *
-		 * @property \websharks_core_v000000_dev\caps                           $©caps
-		 * @property \websharks_core_v000000_dev\caps                           $©cap
+		 * @property \websharks_core_v000000_dev\caps                                     $©caps
+		 * @property \websharks_core_v000000_dev\caps                                     $©cap
 		 * @method \websharks_core_v000000_dev\caps ©caps()
 		 * @method \websharks_core_v000000_dev\caps ©cap()
 		 *
-		 * @property \websharks_core_v000000_dev\captchas                       $©captchas
-		 * @property \websharks_core_v000000_dev\captchas                       $©captcha
+		 * @property \websharks_core_v000000_dev\captchas                                 $©captchas
+		 * @property \websharks_core_v000000_dev\captchas                                 $©captcha
 		 * @method \websharks_core_v000000_dev\captchas ©captchas()
 		 * @method \websharks_core_v000000_dev\captchas ©captcha()
 		 *
-		 * @property \websharks_core_v000000_dev\classes                        $©classes
-		 * @property \websharks_core_v000000_dev\classes                        $©class
+		 * @property \websharks_core_v000000_dev\classes                                  $©classes
+		 * @property \websharks_core_v000000_dev\classes                                  $©class
 		 * @method \websharks_core_v000000_dev\classes ©classes()
 		 * @method \websharks_core_v000000_dev\classes ©class()
 		 *
-		 * @property \websharks_core_v000000_dev\commands                       $©commands
-		 * @property \websharks_core_v000000_dev\commands                       $©command
+		 * @property \websharks_core_v000000_dev\commands                                 $©commands
+		 * @property \websharks_core_v000000_dev\commands                                 $©command
 		 * @method \websharks_core_v000000_dev\commands ©commands()
 		 * @method \websharks_core_v000000_dev\commands ©command()
 		 *
-		 * @property \websharks_core_v000000_dev\cookies                        $©cookies
-		 * @property \websharks_core_v000000_dev\cookies                        $©cookie
+		 * @property \websharks_core_v000000_dev\cookies                                  $©cookies
+		 * @property \websharks_core_v000000_dev\cookies                                  $©cookie
 		 * @method \websharks_core_v000000_dev\cookies ©cookies()
 		 * @method \websharks_core_v000000_dev\cookies ©cookie()
 		 *
-		 * @property \websharks_core_v000000_dev\crons                          $©crons
-		 * @property \websharks_core_v000000_dev\crons                          $©cron
+		 * @property \websharks_core_v000000_dev\crons                                    $©crons
+		 * @property \websharks_core_v000000_dev\crons                                    $©cron
 		 * @method \websharks_core_v000000_dev\crons ©crons()
 		 * @method \websharks_core_v000000_dev\crons ©cron()
 		 *
-		 * @property \websharks_core_v000000_dev\currencies                     $©currencies
-		 * @property \websharks_core_v000000_dev\currencies                     $©currency
+		 * @property \websharks_core_v000000_dev\currencies                               $©currencies
+		 * @property \websharks_core_v000000_dev\currencies                               $©currency
 		 * @method \websharks_core_v000000_dev\currencies ©currencies()
 		 * @method \websharks_core_v000000_dev\currencies ©currency()
 		 *
-		 * @property \websharks_core_v000000_dev\dates                          $©dates
-		 * @property \websharks_core_v000000_dev\dates                          $©date
+		 * @property \websharks_core_v000000_dev\dates                                    $©dates
+		 * @property \websharks_core_v000000_dev\dates                                    $©date
 		 * @method \websharks_core_v000000_dev\dates ©dates()
 		 * @method \websharks_core_v000000_dev\dates ©date()
 		 *
-		 * @property \wpdb|\websharks_core_v000000_dev\db                       $©db
+		 * @property \wpdb|\websharks_core_v000000_dev\db                                 $©db
 		 * @method \wpdb|\websharks_core_v000000_dev\db ©db()
 		 *
-		 * @property \websharks_core_v000000_dev\db_cache                       $©db_cache
+		 * @property \websharks_core_v000000_dev\db_cache                                 $©db_cache
 		 * @method \websharks_core_v000000_dev\db_cache ©db_cache()
 		 *
-		 * @property \websharks_core_v000000_dev\db_tables                      $©db_tables
-		 * @property \websharks_core_v000000_dev\db_tables                      $©db_table
+		 * @property \websharks_core_v000000_dev\db_tables                                $©db_tables
+		 * @property \websharks_core_v000000_dev\db_tables                                $©db_table
 		 * @method \websharks_core_v000000_dev\db_tables ©db_tables()
 		 * @method \websharks_core_v000000_dev\db_tables ©db_table()
 		 *
-		 * @property \websharks_core_v000000_dev\db_utils                       $©db_utils
-		 * @property \websharks_core_v000000_dev\db_utils                       $©db_util
+		 * @property \websharks_core_v000000_dev\db_utils                                 $©db_utils
+		 * @property \websharks_core_v000000_dev\db_utils                                 $©db_util
 		 * @method \websharks_core_v000000_dev\db_utils ©db_utils()
 		 * @method \websharks_core_v000000_dev\db_utils ©db_util()
 		 *
-		 * @property \websharks_core_v000000_dev\diagnostics                    $©diagnostics
-		 * @property \websharks_core_v000000_dev\diagnostics                    $©diagnostic
+		 * @property \websharks_core_v000000_dev\diagnostics                              $©diagnostics
+		 * @property \websharks_core_v000000_dev\diagnostics                              $©diagnostic
 		 * @method \websharks_core_v000000_dev\diagnostics ©diagnostics()
 		 * @method \websharks_core_v000000_dev\diagnostics ©diagnostic()
 		 *
-		 * @property \websharks_core_v000000_dev\dirs                           $©dirs
-		 * @property \websharks_core_v000000_dev\dirs                           $©dir
+		 * @property \websharks_core_v000000_dev\dirs                                     $©dirs
+		 * @property \websharks_core_v000000_dev\dirs                                     $©dir
 		 * @method \websharks_core_v000000_dev\dirs ©dirs()
 		 * @method \websharks_core_v000000_dev\dirs ©dir()
 		 *
-		 * @property \websharks_core_v000000_dev\dirs_files                     $©dirs_files
-		 * @property \websharks_core_v000000_dev\dirs_files                     $©dir_file
+		 * @property \websharks_core_v000000_dev\dirs_files                               $©dirs_files
+		 * @property \websharks_core_v000000_dev\dirs_files                               $©dir_file
 		 * @method \websharks_core_v000000_dev\dirs_files ©dirs_files()
 		 * @method \websharks_core_v000000_dev\dirs_files ©dir_file()
 		 *
-		 * @property \websharks_core_v000000_dev\encryption                     $©encryption
+		 * @property \websharks_core_v000000_dev\encryption                               $©encryption
 		 * @method \websharks_core_v000000_dev\encryption ©encryption()
 		 *
-		 * @property \websharks_core_v000000_dev\env                            $©env
+		 * @property \websharks_core_v000000_dev\env                                      $©env
 		 * @method \websharks_core_v000000_dev\env ©env()
 		 *
-		 * @property \websharks_core_v000000_dev\errors                         $©errors
-		 * @property \websharks_core_v000000_dev\errors                         $©error
+		 * @property \websharks_core_v000000_dev\errors                                   $©errors
+		 * @property \websharks_core_v000000_dev\errors                                   $©error
 		 * @method \websharks_core_v000000_dev\errors ©errors()
 		 * @method \websharks_core_v000000_dev\errors ©error()
 		 *
-		 * @property \websharks_core_v000000_dev\exception                      $©exception
+		 * @property \websharks_core_v000000_dev\exception                                $©exception
 		 * @method \websharks_core_v000000_dev\exception ©exception()
 		 *
-		 * @property \websharks_core_v000000_dev\feeds                          $©feeds
-		 * @property \websharks_core_v000000_dev\feeds                          $©feed
+		 * @property \websharks_core_v000000_dev\feeds                                    $©feeds
+		 * @property \websharks_core_v000000_dev\feeds                                    $©feed
 		 * @method \websharks_core_v000000_dev\feeds ©feeds()
 		 * @method \websharks_core_v000000_dev\feeds ©feed()
 		 *
-		 * @property \websharks_core_v000000_dev\files                          $©files
-		 * @property \websharks_core_v000000_dev\files                          $©file
+		 * @property \websharks_core_v000000_dev\files                                    $©files
+		 * @property \websharks_core_v000000_dev\files                                    $©file
 		 * @method \websharks_core_v000000_dev\files ©files()
 		 * @method \websharks_core_v000000_dev\files ©file()
 		 *
-		 * @property \websharks_core_v000000_dev\floats                         $©floats
-		 * @property \websharks_core_v000000_dev\floats                         $©float
+		 * @property \websharks_core_v000000_dev\floats                                   $©floats
+		 * @property \websharks_core_v000000_dev\floats                                   $©float
 		 * @method \websharks_core_v000000_dev\floats ©floats()
 		 * @method \websharks_core_v000000_dev\floats ©float()
 		 *
-		 * @property \websharks_core_v000000_dev\forms                          $©forms
-		 * @property \websharks_core_v000000_dev\forms                          $©form
+		 * @property \websharks_core_v000000_dev\forms                                    $©forms
+		 * @property \websharks_core_v000000_dev\forms                                    $©form
 		 * @method \websharks_core_v000000_dev\forms ©forms()
 		 * @method \websharks_core_v000000_dev\forms ©form()
 		 *
-		 * @property \websharks_core_v000000_dev\form_fields                    $©form_fields
-		 * @property \websharks_core_v000000_dev\form_fields                    $©form_field
+		 * @property \websharks_core_v000000_dev\form_fields                              $©form_fields
+		 * @property \websharks_core_v000000_dev\form_fields                              $©form_field
 		 * @method \websharks_core_v000000_dev\form_fields ©form_fields()
 		 * @method \websharks_core_v000000_dev\form_fields ©form_field()
 		 *
-		 * @property \websharks_core_v000000_dev\framework                      $©framework
+		 * @property \websharks_core_v000000_dev\framework                                $©framework
 		 * @method \websharks_core_v000000_dev\framework ©framework()
 		 *
-		 * @property \websharks_core_v000000_dev\functions                      $©functions
-		 * @property \websharks_core_v000000_dev\functions                      $©function
+		 * @property \websharks_core_v000000_dev\functions                                $©functions
+		 * @property \websharks_core_v000000_dev\functions                                $©function
 		 * @method \websharks_core_v000000_dev\functions ©functions()
 		 * @method \websharks_core_v000000_dev\functions ©function()
 		 *
-		 * @property \websharks_core_v000000_dev\gmp                            $©gmp
+		 * @property \websharks_core_v000000_dev\gmp                                      $©gmp
 		 * @method \websharks_core_v000000_dev\gmp ©gmp()
 		 *
-		 * @property \websharks_core_v000000_dev\headers                        $©headers
-		 * @property \websharks_core_v000000_dev\headers                        $©header
+		 * @property \websharks_core_v000000_dev\headers                                  $©headers
+		 * @property \websharks_core_v000000_dev\headers                                  $©header
 		 * @method \websharks_core_v000000_dev\headers ©headers()
 		 * @method \websharks_core_v000000_dev\headers ©header()
 		 *
-		 * @property \websharks_core_v000000_dev\initializer                    $©initializer
+		 * @property \websharks_core_v000000_dev\initializer                              $©initializer
 		 * @method \websharks_core_v000000_dev\initializer ©initializer()
 		 *
-		 * @property \websharks_core_v000000_dev\installer                      $©installer
+		 * @property \websharks_core_v000000_dev\installer                                $©installer
 		 * @method \websharks_core_v000000_dev\installer ©installer()
 		 *
-		 * @property \websharks_core_v000000_dev\integers                       $©integers
-		 * @property \websharks_core_v000000_dev\integers                       $©integer
+		 * @property \websharks_core_v000000_dev\integers                                 $©integers
+		 * @property \websharks_core_v000000_dev\integers                                 $©integer
 		 * @method \websharks_core_v000000_dev\integers ©integers()
 		 * @method \websharks_core_v000000_dev\integers ©integer()
 		 *
-		 * @property \websharks_core_v000000_dev\ips                            $©ips
-		 * @property \websharks_core_v000000_dev\ips                            $©ip
+		 * @property \websharks_core_v000000_dev\ips                                      $©ips
+		 * @property \websharks_core_v000000_dev\ips                                      $©ip
 		 * @method \websharks_core_v000000_dev\ips ©ips()
 		 * @method \websharks_core_v000000_dev\ips ©ip()
 		 *
-		 * @property \websharks_core_v000000_dev\mail                           $©mail
+		 * @property \websharks_core_v000000_dev\mail                                     $©mail
 		 * @method \websharks_core_v000000_dev\mail ©mail()
 		 *
-		 * @property \websharks_core_v000000_dev\markdown                       $©markdown
+		 * @property \websharks_core_v000000_dev\markdown                                 $©markdown
 		 * @method \websharks_core_v000000_dev\markdown ©markdown()
 		 *
-		 * @property \websharks_core_v000000_dev\menu_pages                     $©menu_pages
-		 * @property \websharks_core_v000000_dev\menu_pages                     $©menu_page
+		 * @property \websharks_core_v000000_dev\menu_pages                               $©menu_pages
+		 * @property \websharks_core_v000000_dev\menu_pages                               $©menu_page
 		 * @method \websharks_core_v000000_dev\menu_pages ©menu_pages()
 		 * @method \websharks_core_v000000_dev\menu_pages ©menu_page()
 		 *
-		 * @property \websharks_core_v000000_dev\menu_pages\menu_page           $©menu_pages__menu_page
+		 * @property \websharks_core_v000000_dev\menu_pages\general_options               $©menu_pages__general_options
+		 * @method \websharks_core_v000000_dev\menu_pages\general_options ©menu_pages__general_options()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\main                          $©menu_pages__main
+		 * @method \websharks_core_v000000_dev\menu_pages\main ©menu_pages__main()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\menu_page                     $©menu_pages__menu_page
 		 * @method \websharks_core_v000000_dev\menu_pages\menu_page ©menu_pages__menu_page()
 		 *
-		 * @property \websharks_core_v000000_dev\menu_pages\panels\panel        $©menu_pages__panels__panel
+		 * @property \websharks_core_v000000_dev\menu_pages\update_sync                   $©menu_pages__update_sync
+		 * @method \websharks_core_v000000_dev\menu_pages\update_sync ©menu_pages__update_sync()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\community_forum        $©menu_pages__panels__community_forum
+		 * @method \websharks_core_v000000_dev\menu_pages\panels\community_forum ©menu_pages__panels__community_forum()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\donations              $©menu_pages__panels__donations
+		 * @method \websharks_core_v000000_dev\menu_pages\panels\donations ©menu_pages__panels__donations()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\email_updates          $©menu_pages__panels__email_updates
+		 * @method \websharks_core_v000000_dev\menu_pages\panels\email_updates ©menu_pages__panels__email_updates()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\news_kb                $©menu_pages__panels__news_kb
+		 * @method \websharks_core_v000000_dev\menu_pages\panels\news_kb ©menu_pages__panels__news_kb()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\panel                  $©menu_pages__panels__panel
 		 * @method \websharks_core_v000000_dev\menu_pages\panels\panel ©menu_pages__panels__panel()
 		 *
-		 * @property \websharks_core_v000000_dev\messages                       $©messages
-		 * @property \websharks_core_v000000_dev\messages                       $©message
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\pro_upgrade            $©menu_pages__panels__pro_upgrade
+		 * @method \websharks_core_v000000_dev\menu_pages\panels\pro_upgrade ©menu_pages__panels__pro_upgrade()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\quick_start            $©menu_pages__panels__quick_start
+		 * @method \websharks_core_v000000_dev\menu_pages\panels\quick_start ©menu_pages__panels__quick_start()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\update                 $©menu_pages__panels__update
+		 * @method \websharks_core_v000000_dev\menu_pages\panels\update ©menu_pages__panels__update()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\videos                 $©menu_pages__panels__videos
+		 * @method \websharks_core_v000000_dev\menu_pages\panels\videos ©menu_pages__panels__videos()
+		 *
+		 * @property \websharks_core_v000000_dev\messages                                 $©messages
+		 * @property \websharks_core_v000000_dev\messages                                 $©message
 		 * @method \websharks_core_v000000_dev\messages ©messages()
 		 * @method \websharks_core_v000000_dev\messages ©message()
 		 *
-		 * @property \websharks_core_v000000_dev\functions                      $©methods
-		 * @property \websharks_core_v000000_dev\functions                      $©method
+		 * @property \websharks_core_v000000_dev\functions                                $©methods
+		 * @property \websharks_core_v000000_dev\functions                                $©method
 		 * @method \websharks_core_v000000_dev\functions ©methods()
 		 * @method \websharks_core_v000000_dev\functions ©method()
 		 *
-		 * @property \websharks_core_v000000_dev\no_cache                       $©no_cache
+		 * @property \websharks_core_v000000_dev\no_cache                                 $©no_cache
 		 * @method \websharks_core_v000000_dev\no_cache ©no_cache()
 		 *
-		 * @property \websharks_core_v000000_dev\notices                        $©notices
-		 * @property \websharks_core_v000000_dev\notices                        $©notice
+		 * @property \websharks_core_v000000_dev\notices                                  $©notices
+		 * @property \websharks_core_v000000_dev\notices                                  $©notice
 		 * @method \websharks_core_v000000_dev\notices ©notices()
 		 * @method \websharks_core_v000000_dev\notices ©notice()
 		 *
-		 * @property \websharks_core_v000000_dev\options                        $©options
-		 * @property \websharks_core_v000000_dev\options                        $©option
+		 * @property \websharks_core_v000000_dev\options                                  $©options
+		 * @property \websharks_core_v000000_dev\options                                  $©option
 		 * @method \websharks_core_v000000_dev\options ©options()
 		 * @method \websharks_core_v000000_dev\options ©option()
 		 *
-		 * @property \websharks_core_v000000_dev\objects_os                     $©objects_os
-		 * @property \websharks_core_v000000_dev\objects_os                     $©object_os
+		 * @property \websharks_core_v000000_dev\objects_os                               $©objects_os
+		 * @property \websharks_core_v000000_dev\objects_os                               $©object_os
 		 * @method \websharks_core_v000000_dev\objects_os ©objects_os()
 		 * @method \websharks_core_v000000_dev\objects_os ©object_os()
 		 *
-		 * @property \websharks_core_v000000_dev\objects                        $©objects
-		 * @property \websharks_core_v000000_dev\objects                        $©object
+		 * @property \websharks_core_v000000_dev\objects                                  $©objects
+		 * @property \websharks_core_v000000_dev\objects                                  $©object
 		 * @method \websharks_core_v000000_dev\objects ©objects()
 		 * @method \websharks_core_v000000_dev\objects ©object()
 		 *
-		 * @property \websharks_core_v000000_dev\packages                       $©packages
-		 * @property \websharks_core_v000000_dev\packages                       $©package
+		 * @property \websharks_core_v000000_dev\packages                                 $©packages
+		 * @property \websharks_core_v000000_dev\packages                                 $©package
 		 * @method \websharks_core_v000000_dev\packages ©packages()
 		 * @method \websharks_core_v000000_dev\packages ©package()
 		 *
-		 * @property \websharks_core_v000000_dev\php                            $©php
+		 * @property \websharks_core_v000000_dev\php                                      $©php
 		 * @method \websharks_core_v000000_dev\php ©php()
 		 *
-		 * @property \websharks_core_v000000_dev\plugins                        $©plugins
-		 * @property \websharks_core_v000000_dev\plugins                        $©plugin
+		 * @property \websharks_core_v000000_dev\plugins                                  $©plugins
+		 * @property \websharks_core_v000000_dev\plugins                                  $©plugin
 		 * @method \websharks_core_v000000_dev\plugins ©plugins()
 		 * @method \websharks_core_v000000_dev\plugins ©plugin()
 		 *
-		 * @property \websharks_core_v000000_dev\posts                          $©posts
-		 * @property \websharks_core_v000000_dev\posts                          $©post
+		 * @property \websharks_core_v000000_dev\posts                                    $©posts
+		 * @property \websharks_core_v000000_dev\posts                                    $©post
 		 * @method \websharks_core_v000000_dev\posts ©posts()
 		 * @method \websharks_core_v000000_dev\posts ©post()
 		 *
 		 * @method \websharks_core_v000000_dev\replicator ©replicator()
 		 * @method \websharks_core_v000000_dev\replicator ©replicate()
 		 *
-		 * @property \websharks_core_v000000_dev\scripts                        $©scripts
-		 * @property \websharks_core_v000000_dev\scripts                        $©script
+		 * @property \websharks_core_v000000_dev\scripts                                  $©scripts
+		 * @property \websharks_core_v000000_dev\scripts                                  $©script
 		 * @method \websharks_core_v000000_dev\scripts ©scripts()
 		 * @method \websharks_core_v000000_dev\scripts ©script()
 		 *
-		 * @property \websharks_core_v000000_dev\strings                        $©strings
-		 * @property \websharks_core_v000000_dev\strings                        $©string
+		 * @property \websharks_core_v000000_dev\strings                                  $©strings
+		 * @property \websharks_core_v000000_dev\strings                                  $©string
 		 * @method \websharks_core_v000000_dev\strings ©strings()
 		 * @method \websharks_core_v000000_dev\strings ©string()
 		 *
-		 * @property \websharks_core_v000000_dev\styles                         $©styles
-		 * @property \websharks_core_v000000_dev\styles                         $©style
+		 * @property \websharks_core_v000000_dev\styles                                   $©styles
+		 * @property \websharks_core_v000000_dev\styles                                   $©style
 		 * @method \websharks_core_v000000_dev\styles ©styles()
 		 * @method \websharks_core_v000000_dev\styles ©style()
 		 *
-		 * @property \websharks_core_v000000_dev\successes                      $©successes
-		 * @property \websharks_core_v000000_dev\successes                      $©success
+		 * @property \websharks_core_v000000_dev\successes                                $©successes
+		 * @property \websharks_core_v000000_dev\successes                                $©success
 		 * @method \websharks_core_v000000_dev\successes ©successes()
 		 * @method \websharks_core_v000000_dev\successes ©success()
 		 *
-		 * @property \websharks_core_v000000_dev\templates                      $©templates
-		 * @property \websharks_core_v000000_dev\templates                      $©template
+		 * @property \websharks_core_v000000_dev\templates                                $©templates
+		 * @property \websharks_core_v000000_dev\templates                                $©template
 		 * @method \websharks_core_v000000_dev\templates ©templates()
 		 * @method \websharks_core_v000000_dev\templates ©template()
 		 *
-		 * @property \websharks_core_v000000_dev\urls                           $©urls
-		 * @property \websharks_core_v000000_dev\urls                           $©url
+		 * @property \websharks_core_v000000_dev\urls                                     $©urls
+		 * @property \websharks_core_v000000_dev\urls                                     $©url
 		 * @method \websharks_core_v000000_dev\urls ©urls()
 		 * @method \websharks_core_v000000_dev\urls ©url()
 		 *
-		 * @property \websharks_core_v000000_dev\vars                           $©vars
-		 * @property \websharks_core_v000000_dev\vars                           $©var
+		 * @property \websharks_core_v000000_dev\vars                                     $©vars
+		 * @property \websharks_core_v000000_dev\vars                                     $©var
 		 * @method \websharks_core_v000000_dev\vars ©vars()
 		 * @method \websharks_core_v000000_dev\vars ©var()
 		 *
-		 * @property \websharks_core_v000000_dev\videos                         $©videos
-		 * @property \websharks_core_v000000_dev\videos                         $©video
+		 * @property \websharks_core_v000000_dev\videos                                   $©videos
+		 * @property \websharks_core_v000000_dev\videos                                   $©video
 		 * @method \websharks_core_v000000_dev\videos ©videos()
 		 * @method \websharks_core_v000000_dev\videos ©video()
 		 *
-		 * @property \websharks_core_v000000_dev\users                          $©users
-		 * @property \websharks_core_v000000_dev\users                          $©user
+		 * @property \websharks_core_v000000_dev\users                                    $©users
+		 * @property \websharks_core_v000000_dev\users                                    $©user
 		 * @method \websharks_core_v000000_dev\users ©users()
 		 * @method \websharks_core_v000000_dev\users ©user()
 		 *
-		 * @property \websharks_core_v000000_dev\user_utils                     $©user_utils
+		 * @property \websharks_core_v000000_dev\user_utils                               $©user_utils
 		 * @method \websharks_core_v000000_dev\user_utils ©user_utils()
 		 *
-		 * @property \websharks_core_v000000_dev\xml                            $©xml
+		 * @property \websharks_core_v000000_dev\xml                                      $©xml
 		 * @method \websharks_core_v000000_dev\xml ©xml()
 		 *
-		 * @property object                                                     $___instance_config Public/magic read-only access.
+		 * @property object                                                               $___instance_config Public/magic read-only access.
 		 */
 		class framework implements fw_constants // Base class for the WebSharks™ Core (and for plugins powered by it).
 		{

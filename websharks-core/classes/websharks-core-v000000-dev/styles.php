@@ -52,20 +52,20 @@ namespace websharks_core_v000000_dev
 		{
 			parent::__construct($___instance_config);
 
-			if(!did_action('init'))
+			if(!did_action('init') || doing_action('init'))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#init', NULL,
-					$this->__('Doing it wrong (`init` hook has NOT been fired yet).')
+					$this->__('Doing it wrong (`init` hook has NOT been fully processed yet).')
 				);
 			// Add components & register styles (based on context).
 
 			$styles_to_register = array(); // Initialize array of styles to register.
 
 			// Only if core libs have NOT already been registered by another WebSharks™ plugin.
-			if(!wp_style_is('ws-core-libs', 'registered')) // Available in all contexts.
-				$styles_to_register['ws-core-libs'] = array(
+			if(!wp_style_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
+				$styles_to_register[$this->___instance_config->core_ns_stub_with_dashes] = array(
 					'url' => $this->©url->to_core_dir_file('/client-side/styles/core-libs').'/',
-					'ver' => $this->___instance_config->core_ns_with_dashes
+					'ver' => $this->___instance_config->core_version_with_dashes
 				);
 			if(is_admin() || $this->©options->get('styles.front_side.load'))
 			{
@@ -73,11 +73,28 @@ namespace websharks_core_v000000_dev
 					// Only if theme has NOT already been registered by another WebSharks™ plugin.
 					if(!wp_style_is($_theme, 'registered')) // Available in all contexts.
 						$styles_to_register[$_theme] = array(
-							'deps' => array('ws-core-libs'),
+							'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
 							'url'  => $this->©url->to_wp_abs_dir_file($_theme_dir.'/ui-theme.min.css'),
-							'ver'  => $this->___instance_config->core_ns_with_dashes
+							'ver'  => $this->___instance_config->core_version_with_dashes
 						);
 				unset($_theme, $_theme_dir); // A little housekeeping.
+			}
+			if(!is_admin() && $this->©options->get('styles.front_side.load'))
+			{
+				$this->front_side_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side';
+
+				$styles_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side'] = array(
+					'deps' => array_merge(array($this->___instance_config->core_ns_stub_with_dashes), $this->©options->get('styles.front_side.load_themes')),
+					'url'  => $this->©url->to_template_dir_file('client-side/styles/front-side.min.css'),
+					'ver'  => $this->___instance_config->plugin_version_with_dashes
+				);
+				$this->stand_alone_components[]                                                                = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone';
+
+				$styles_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone'] = array(
+					'deps' => array($this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side'),
+					'url'  => $this->©url->to_template_dir_file('client-side/styles/stand-alone.min.css'),
+					'ver'  => $this->___instance_config->plugin_version_with_dashes
+				);
 			}
 			if(is_admin() && $this->©menu_page->is_plugin_page()) // For plugin menu pages.
 			{
@@ -91,7 +108,7 @@ namespace websharks_core_v000000_dev
 					$styles_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
 						'deps' => array($current_menu_pages_theme),
 						'url'  => $this->©url->to_core_dir_file('/client-side/styles/menu-pages/menu-pages.min.css'),
-						'ver'  => $this->___instance_config->core_ns_with_dashes
+						'ver'  => $this->___instance_config->core_version_with_dashes
 					);
 			}
 			if($styles_to_register) $this->register($styles_to_register); // Register styles.

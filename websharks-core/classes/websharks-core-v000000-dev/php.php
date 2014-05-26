@@ -66,6 +66,8 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', 'array', 'boolean', func_get_args());
 
+			if(!isset($string[0])) return ''; // Empty.
+
 			if($vars) extract($vars, EXTR_PREFIX_SAME, 'xps');
 
 			if($this->©function->is_possible('eval'))
@@ -127,7 +129,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @assert (array('[gallery]')) === '<span style="color:#946201;">[gallery]</span>'
 		 */
-		public function _hilite_shortcodes($m)
+		protected function _hilite_shortcodes($m)
 		{
 			// Commenting this out for performance.
 			// This is used as a callback for `preg_replace()`, so it's NOT absolutely necessary.

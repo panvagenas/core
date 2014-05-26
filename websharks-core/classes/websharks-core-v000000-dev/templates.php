@@ -158,18 +158,37 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Gets stand-alone scripts.
 		 *
+		 * @param boolean $in_footer Optional. Defaults to FALSE.
+		 *    See @{link stand_alone_footer_scripts}
+		 *
 		 * @return string Stand-alone scripts.
+		 *
+		 * @see stand_alone_footer_scripts
 		 */
-		public function stand_alone_scripts()
+		public function stand_alone_scripts($in_footer = FALSE)
 		{
 			$this->©plugin->needs_stand_alone_scripts(TRUE);
 
 			ob_start(); // Open output buffer.
 
+			if($in_footer) echo '<!-- footer-scripts -->'."\n";
 			$this->©scripts->print_scripts($this->©scripts->contextual_components());
 			echo $this->©php->evaluate($this->©options->get('templates.stand_alone.scripts'))."\n";
+			if($in_footer) echo '<!-- footer-scripts -->'."\n";
 
 			return ob_get_clean(); // Return final output buffer.
+		}
+
+		/**
+		 * Gets stand-alone scripts (for footer).
+		 *
+		 * @return string Stand-alone scripts (for footer).
+		 *
+		 * @see stand_alone_scripts
+		 */
+		public function stand_alone_footer_scripts()
+		{
+			return $this->stand_alone_scripts(TRUE);
 		}
 
 		/**

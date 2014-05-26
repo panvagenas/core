@@ -58,27 +58,43 @@ namespace websharks_core_v000000_dev
 		{
 			parent::__construct($___instance_config);
 
-			if(!did_action('init'))
+			if(!did_action('init') || doing_action('init'))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#init', NULL,
-					$this->__('Doing it wrong (`init` hook has NOT been fired yet).')
+					$this->__('Doing it wrong (`init` hook has NOT been fully processed yet).')
 				);
 			// Add components & register scripts (based on context).
 
 			$scripts_to_register = array(); // Initialize scripts to register.
 
+			// Add jQuery™ (if loading via Google® instead of WordPress®).
+			if(!is_admin() && $this->©options->get('scripts.front_side.load_jquery_via_cdn'))
+				$scripts_to_register['jquery'] = array(
+					'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+				);
+			// Add jQuery™ (if loading via Google® instead of WordPress®).
+			if(is_admin() && $this->©options->get('scripts.admin_side.load_jquery_via_cdn'))
+				$scripts_to_register['jquery'] = array(
+					'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+				);
 			// Only if NOT already registered.
 			if(!wp_script_is('jquery-ui-components', 'registered'))
 				$scripts_to_register['jquery-ui-components'] = array(
-					'deps' => array('jquery'), // Does NOT depend on core-libs; that creates and endless loop.
+					'deps' => array('jquery'), // Does NOT depend on core-libs; that creates an endless loop.
 					'url'  => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js',
+				);
+			// Only if NOT already registered.
+			if(!wp_script_is('sprintf', 'registered'))
+				$scripts_to_register['sprintf'] = array(
+					'deps' => array(), // Does NOT depend on core-libs; that creates an endless loop.
+					'url'  => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.min.js',
 				);
 			// Only if core has NOT already been registered by another WebSharks™ plugin.
 			if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
 				$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes] = array(
-					'deps'     => array('jquery', 'jquery-ui-components'),
+					'deps'     => array('jquery', 'jquery-ui-components', 'sprintf'),
 					'url'      => $this->©url->to_core_dir_file('/client-side/scripts/core-libs').'/',
-					'ver'      => $this->___instance_config->core_ns_with_dashes,
+					'ver'      => $this->___instance_config->core_version_with_dashes,
 
 					'localize' => array( // Array of WebSharks™ Core JavaScript translations.
 
@@ -136,7 +152,7 @@ namespace websharks_core_v000000_dev
 					$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
 						'deps'     => array($this->___instance_config->core_ns_stub_with_dashes),
 						'url'      => $this->©url->to_core_dir_file('/client-side/scripts/menu-pages/menu-pages.min.js'),
-						'ver'      => $this->___instance_config->core_ns_with_dashes,
+						'ver'      => $this->___instance_config->core_version_with_dashes,
 
 						'localize' => array( // WebSharks™ Core translations.
 
@@ -148,16 +164,6 @@ namespace websharks_core_v000000_dev
 						)
 					);
 			}
-			// Add jQuery™ (if loading via Google® instead of WordPress®).
-			if(!is_admin() && $this->©options->get('scripts.front_side.load_jquery_via_cdn'))
-				$scripts_to_register['jquery'] = array(
-					'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
-				);
-			// Add jQuery™ (if loading via Google® instead of WordPress®).
-			if(is_admin() && $this->©options->get('scripts.admin_side.load_jquery_via_cdn'))
-				$scripts_to_register['jquery'] = array(
-					'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
-				);
 			// Register scripts (if there are any to register).
 			if($scripts_to_register) $this->register($scripts_to_register);
 

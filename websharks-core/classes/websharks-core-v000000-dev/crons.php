@@ -28,8 +28,8 @@ namespace websharks_core_v000000_dev
 		 * Handles loading sequence.
 		 *
 		 * @attaches-to WordPress® `wp_loaded` action hook.
-		 * @hook-priority `PHP_INT_MAX-1` After most everything else; but before other hooks that configure CRONs.
-		 *    Other `wp_loaded` hooks that setup CRON jobs should use `PHP_INT_MAX`.
+		 * @hook-priority `PHP_INT_MAX - 100` After most everything else; but before other hooks that configure CRONs.
+		 *    Other `wp_loaded` hooks that setup CRON jobs could just use `PHP_INT_MAX` or `PHP_INT_MAX - 99`.
 		 */
 		public function wp_loaded()
 		{

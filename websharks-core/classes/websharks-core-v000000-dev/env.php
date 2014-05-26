@@ -562,13 +562,20 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Cleans any existing output buffers.
 		 *
+		 * @return boolean TRUE if all output buffers are cleaned; else FALSE.
+		 *    This can return FALSE if a locked output buffer exists.
+		 *
 		 * @note It is not possible to clean a locked buffer.
 		 *    This will trigger an `E_NOTICE` if a buffer is not cleanable.
 		 */
 		public function ob_end_clean()
 		{
-			if(ob_get_level()) // Cleans output buffers.
-				while(ob_get_level()) ob_end_clean();
+			$ob_levels = ob_get_level(); // Cleans output buffers.
+			for($ob_level = 0; $ob_level < $ob_levels; $ob_level++)
+				ob_end_clean(); // May fail on a locked buffer.
+			unset($ob_levels, $ob_level);
+
+			return ob_get_level() ? FALSE : TRUE;
 		}
 
 		/**

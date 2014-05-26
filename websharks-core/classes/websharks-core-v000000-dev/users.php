@@ -195,10 +195,10 @@ namespace websharks_core_v000000_dev
 			                       array('null', 'string:!empty', 'integer:!empty', 'array:!empty'),
 			                       'array', func_get_args());
 
-			if(!did_action('init'))
+			if(!did_action('init') || doing_action('init'))
 				throw $this->©exception( // Should NOT happen.
-					$this->method(__FUNCTION__).'#user_init_hook', array_merge(get_defined_vars(), array('user' => $this)),
-					$this->__('Doing it wrong (the `init` hook has NOT been fired yet).')
+					$this->method(__FUNCTION__).'#init', array_merge(get_defined_vars(), array('user' => $this)),
+					$this->__('Doing it wrong (the `init` hook has NOT been fully processed yet).')
 				);
 			if($user_id && $user_id < 0) $by = $value = NULL; // Nullify.
 			$this->args = array('user_id'            => $user_id, 'by' => $by, 'value' => $value,

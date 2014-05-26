@@ -201,7 +201,7 @@ namespace websharks_core_v000000_dev
 				// Construct template data.
 				$exception = static::$exception; // For template data.
 
-				if(static::$plugin->©env->is_browser()) // Exception message (for on-site display in browsers).
+				if(static::$plugin->©env->is_browser() && did_action('init') && !doing_action('init'))
 					if(($template = static::$plugin->©template('exception.php', get_defined_vars())) && $template->content)
 					{
 						if(!headers_sent()) // Can exception stand-alone?
@@ -209,19 +209,20 @@ namespace websharks_core_v000000_dev
 							static::$plugin->©headers->clean_status_type(500, 'text/html', TRUE);
 							exit($template->content); // Display.
 						}
-						else if(preg_match(static::$plugin->©template->regex_template_content_body, $template->content, $_m))
+						else if(preg_match($template->regex_template_content_body, $template->content, $_m))
 							exit(str_replace('<pre>', '<pre style="max-height:200px; overflow:auto;">', $_m['template_content_body']));
 					}
-				// Output exception message (command-line; and other non-browser devices).
-				// This MAY also get fired if headers have already been sent, and for some reason we were unable
-				// to parse a content body section from the template file; see the routine above to understand this.
+				// General fallback; i.e. early exceptions, command-line, other non-browser devices.
+
+				if(static::$plugin->©env->is_browser() && !headers_sent())
+					static::$plugin->©headers->clean_status_type(500, 'text/plain', TRUE);
 
 				echo sprintf(static::$plugin->_x('Exception Code: %1$s'), static::$exception->getCode());
 
-				if(static::$plugin->©env->is_in_wp_debug_display_mode() || is_super_admin())
+				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('init') && !doing_action('init') && static::$plugin->©user->is_super_admin()))
 					echo "\n".sprintf(static::$plugin->_x('Exception Message: %1$s'), static::$exception->getMessage());
 
-				if(static::$plugin->©env->is_in_wp_debug_display_mode() || is_super_admin())
+				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('init') && !doing_action('init') && static::$plugin->©user->is_super_admin()))
 					echo "\n".static::$exception->getTraceAsString();
 
 				exit(); // Clean exit now.

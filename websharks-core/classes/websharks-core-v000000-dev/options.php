@@ -25,18 +25,11 @@ namespace websharks_core_v000000_dev
 	class options extends framework
 	{
 		/**
-		 * Array of options.
-		 *
-		 * @var array Defaults to an empty array.
-		 */
-		public $options = array();
-
-		/**
 		 * Array of default options.
 		 *
 		 * @var array Defaults to an empty array.
 		 */
-		public $default_options = array();
+		public $defaults = array();
 
 		/**
 		 * Array of option validators.
@@ -44,6 +37,13 @@ namespace websharks_core_v000000_dev
 		 * @var array Defaults to an empty array.
 		 */
 		public $validators = array();
+
+		/**
+		 * Array of options.
+		 *
+		 * @var array Defaults to an empty array.
+		 */
+		public $options = array();
 
 		/**
 		 * Constructor.
@@ -56,159 +56,191 @@ namespace websharks_core_v000000_dev
 		{
 			parent::__construct($___instance_config);
 
-			$default_options = array(
-				'encryption.key'                            => '',
+			$defaults   = array(
+				'encryption.key'                             => '',
 
-				'support.url'                               => 'mailto:'.get_bloginfo('admin_email'),
+				'support.url'                                => 'mailto:'.get_bloginfo('admin_email'),
 
-				'no_cache.headers.always'                   => '0',
+				'no_cache.headers.always'                    => '0',
 
-				'styles.front_side.load'                    => '0',
-				'styles.front_side.load_by_default'         => '0',
-				'styles.front_side.load_themes'             => array('jquery-ui-theme-default'),
-				'styles.front_side.theme'                   => 'jquery-ui-theme-default',
+				'styles.front_side.load'                     => '0',
+				'styles.front_side.load_by_default'          => '0',
+				'styles.front_side.load_themes'              => array('jquery-ui-theme-default'),
+				'styles.front_side.theme'                    => 'jquery-ui-theme-default',
 
-				'scripts.front_side.load'                   => '0',
-				'scripts.front_side.load_by_default'        => '0',
-				'scripts.front_side.load_jquery_via_cdn' => '0',
-				'scripts.admin_side.load_jquery_via_cdn' => '0',
+				'scripts.front_side.load'                    => '0',
+				'scripts.front_side.load_by_default'         => '0',
+				'scripts.front_side.load_jquery_via_cdn'     => '0',
+				'scripts.admin_side.load_jquery_via_cdn'     => '0',
 
-				'crons.config'                              => array(),
+				'crons.config'                               => array(),
 
-				'menu_pages.theme'                          => 'jquery-ui-theme-default',
-				'menu_pages.panels.order'                   => array(),
-				'menu_pages.panels.state'                   => array(),
+				'menu_pages.theme'                           => 'jquery-ui-theme-default',
+				'menu_pages.panels.order'                    => array(),
+				'menu_pages.panels.state'                    => array(),
 
-				'ips.prioritize_remote_addr'                => '0',
+				'ips.prioritize_remote_addr'                 => '0',
 
-				'captchas.google.public_key'                => '6LeCANsSAAAAAIIrlB3FrXe42mr0OSSZpT0pkpFK',
-				'captchas.google.private_key'               => '6LeCANsSAAAAAGBXMIKAirv6G4PmaGa-ORxdD-oZ',
+				'captchas.google.public_key'                 => '6LeCANsSAAAAAIIrlB3FrXe42mr0OSSZpT0pkpFK',
+				'captchas.google.private_key'                => '6LeCANsSAAAAAGBXMIKAirv6G4PmaGa-ORxdD-oZ',
 
-				'url_shortener.default_built_in_api'        => 'goo_gl',
-				'url_shortener.custom_url_api'              => '',
-				'url_shortener.api_keys.goo_gl'             => '',
+				'url_shortener.default_built_in_api'         => 'goo_gl',
+				'url_shortener.custom_url_api'               => '',
+				'url_shortener.api_keys.goo_gl'              => '',
 
-				'installer.deactivation.uninstalls'         => '0',
+				'installer.deactivation.uninstalls'          => '0',
 
-				'templates.stand_alone.styles'              => '<style type="text/css">'."\n\n".'</style>',
-				'templates.stand_alone.scripts'             => '<script type="text/javascript">'."\n\n".'</script>',
-				'templates.stand_alone.bg_style'            => 'background: #FFFFFF;',
-				'templates.stand_alone.header'              => '',
-				'templates.stand_alone.footer'              => '',
-				'templates.email.header'                    => '',
-				'templates.email.footer'                    => '',
+				'templates.stand_alone.styles'               => '<style type="text/css">'."\n\n".'</style>',
+				'templates.stand_alone.scripts'              => '<script type="text/javascript">'."\n\n".'</script>',
+				'templates.stand_alone.bg_style'             => 'background: #F2F1F0 url(\''.$this->©string->esc_sq($this->©url->to_template_dir_file('client-side/images/stand-alone-bg.png')).'\') repeat left top;',
+				'templates.stand_alone.header'               => '<a href="'.esc_attr($this->©url->to_wp_home_uri()).'"><img class="logo" src="'.esc_attr($this->©url->to_template_dir_file('client-side/images/stand-alone-logo.png')).'" alt="" /></a>',
+				'templates.stand_alone.footer'               => '',
+				'templates.email.header'                     => '',
+				'templates.email.footer'                     => '',
 
-				'users.registration.display_name_format'    => 'first_name',
+				'users.registration.display_name_format'     => 'first_name',
 
-				'mail.smtp'                                 => '0',
-				'mail.smtp.force_from'                      => '0',
-				'mail.smtp.from_name'                       => get_bloginfo('name'),
-				'mail.smtp.from_addr'                       => get_bloginfo('admin_email'),
-				'mail.smtp.host'                            => '',
-				'mail.smtp.port'                            => '0',
-				'mail.smtp.secure'                          => '', // tls or ssl
-				'mail.smtp.username'                        => '',
-				'mail.smtp.password'                        => '',
+				'mail.smtp'                                  => '0',
+				'mail.smtp.force_from'                       => '0',
+				'mail.smtp.from_name'                        => get_bloginfo('name'),
+				'mail.smtp.from_addr'                        => get_bloginfo('admin_email'),
+				'mail.smtp.host'                             => '',
+				'mail.smtp.port'                             => '0',
+				'mail.smtp.secure'                           => '', // `tls` or `ssl`
+				'mail.smtp.username'                         => '',
+				'mail.smtp.password'                         => '',
 
-				'plugin_site.username'                      => '',
-				'plugin_site.password'                      => ''
+				'plugin_site.username'                       => '',
+				'plugin_site.password'                       => '',
 
+				'menu_pages.panels.email_updates.action_url' => '',
+				'menu_pages.panels.community_forum.feed_url' => '',
+				'menu_pages.panels.news_kb.feed_url'         => '',
+				'menu_pages.panels.videos.yt_playlist'       => '',
 			);
-			$validators      = array(
-				'encryption.key'                            => array('string:!empty'),
+			$validators = array(
+				'encryption.key'                             => array('string:!empty'),
 
-				'support.url'                               => array('string:!empty'),
+				'support.url'                                => array('string:!empty'),
 
-				'no_cache.headers.always'                   => array('string:numeric >=' => 0),
+				'no_cache.headers.always'                    => array('string:numeric >=' => 0),
 
-				'styles.front_side.load'                    => array('string:numeric >=' => 0),
-				'styles.front_side.load_by_default'         => array('string:numeric >=' => 0),
-				'styles.front_side.load_themes'             => array('array'),
-				'styles.front_side.theme'                   => array('string:!empty'),
+				'styles.front_side.load'                     => array('string:numeric >=' => 0),
+				'styles.front_side.load_by_default'          => array('string:numeric >=' => 0),
+				'styles.front_side.load_themes'              => array('array'),
+				'styles.front_side.theme'                    => array('string:!empty'),
 
-				'scripts.front_side.load'                   => array('string:numeric >=' => 0),
-				'scripts.front_side.load_by_default'        => array('string:numeric >=' => 0),
-				'scripts.front_side.load_jquery_via_cdn' => array('string:numeric >=' => 0),
-				'scripts.admin_side.load_jquery_via_cdn' => array('string:numeric >=' => 0),
+				'scripts.front_side.load'                    => array('string:numeric >=' => 0),
+				'scripts.front_side.load_by_default'         => array('string:numeric >=' => 0),
+				'scripts.front_side.load_jquery_via_cdn'     => array('string:numeric >=' => 0),
+				'scripts.admin_side.load_jquery_via_cdn'     => array('string:numeric >=' => 0),
 
-				'crons.config'                              => array('array:!empty'),
+				'crons.config'                               => array('array:!empty'),
 
-				'menu_pages.theme'                          => array('string:!empty'),
-				'menu_pages.panels.order'                   => array('array:!empty'),
-				'menu_pages.panels.state'                   => array('array:!empty'),
+				'menu_pages.theme'                           => array('string:!empty'),
+				'menu_pages.panels.order'                    => array('array:!empty'),
+				'menu_pages.panels.state'                    => array('array:!empty'),
 
-				'ips.prioritize_remote_addr'                => array('string:numeric >=' => 0),
+				'ips.prioritize_remote_addr'                 => array('string:numeric >=' => 0),
 
-				'captchas.google.public_key'                => array('string:!empty'),
-				'captchas.google.private_key'               => array('string:!empty'),
+				'captchas.google.public_key'                 => array('string:!empty'),
+				'captchas.google.private_key'                => array('string:!empty'),
 
-				'url_shortener.default_built_in_api'        => array('string:in_array' => array('tiny_url', 'goo_gl')),
-				'url_shortener.custom_url_api'              => array('string:preg_match' => '/^https?\:/i'),
-				'url_shortener.api_keys.goo_gl'             => array('string:!empty'),
+				'url_shortener.default_built_in_api'         => array('string:in_array' => array('tiny_url', 'goo_gl')),
+				'url_shortener.custom_url_api'               => array('string:preg_match' => '/^https?\:/i'),
+				'url_shortener.api_keys.goo_gl'              => array('string:!empty'),
 
-				'installer.deactivation.uninstalls'         => array('string:numeric >=' => 0),
+				'installer.deactivation.uninstalls'          => array('string:numeric >=' => 0),
 
-				'templates.stand_alone.styles'              => array('string:!empty'),
-				'templates.stand_alone.scripts'             => array('string:!empty'),
-				'templates.stand_alone.bg_style'            => array('string'),
-				'templates.stand_alone.header'              => array('string:!empty'),
-				'templates.stand_alone.footer'              => array('string:!empty'),
-				'templates.email.header'                    => array('string:!empty'),
-				'templates.email.footer'                    => array('string:!empty'),
+				'templates.stand_alone.styles'               => array('string'),
+				'templates.stand_alone.scripts'              => array('string'),
+				'templates.stand_alone.bg_style'             => array('string'),
+				'templates.stand_alone.header'               => array('string'),
+				'templates.stand_alone.footer'               => array('string'),
+				'templates.email.header'                     => array('string'),
+				'templates.email.footer'                     => array('string'),
 
-				'users.registration.display_name_format'    => array('string:!empty'),
+				'users.registration.display_name_format'     => array('string:!empty'),
 
-				'mail.smtp'                                 => array('string:numeric >=' => 0),
-				'mail.smtp.force_from'                      => array('string:numeric >=' => 0),
-				'mail.smtp.from_name'                       => array('string:!empty'),
-				'mail.smtp.from_addr'                       => array('string:!empty'),
-				'mail.smtp.host'                            => array('string:!empty'),
-				'mail.smtp.port'                            => array('string:numeric >=' => 1),
-				'mail.smtp.secure'                          => array('string:in_array' => array('ssl', 'tls')),
-				'mail.smtp.username'                        => array('string:!empty'),
-				'mail.smtp.password'                        => array('string:!empty'),
+				'mail.smtp'                                  => array('string:numeric >=' => 0),
+				'mail.smtp.force_from'                       => array('string:numeric >=' => 0),
+				'mail.smtp.from_name'                        => array('string:!empty'),
+				'mail.smtp.from_addr'                        => array('string:!empty'),
+				'mail.smtp.host'                             => array('string:!empty'),
+				'mail.smtp.port'                             => array('string:numeric >=' => 1),
+				'mail.smtp.secure'                           => array('string:in_array' => array('ssl', 'tls')),
+				'mail.smtp.username'                         => array('string:!empty'),
+				'mail.smtp.password'                         => array('string:!empty'),
 
-				'plugin_site.username'                      => array('string:!empty'),
-				'plugin_site.password'                      => array('string:!empty')
+				'plugin_site.username'                       => array('string:!empty'),
+				'plugin_site.password'                       => array('string:!empty'),
+
+				'menu_pages.panels.email_updates.action_url' => array('string:!empty'),
+				'menu_pages.panels.community_forum.feed_url' => array('string:!empty'),
+				'menu_pages.panels.news_kb.feed_url'         => array('string:!empty'),
+				'menu_pages.panels.videos.yt_playlist'       => array('string:!empty'),
 			);
-			$this->setup($default_options, $validators);
+			$this->setup($defaults, $validators);
 		}
 
 		/**
 		 * Sets up default options and validators.
 		 *
-		 * @param array $default_options An associative array of default options.
+		 * @extenders Can be overridden by class extenders (i.e. to override the defaults/validators);
+		 *    or to add additional default options and their associated validators.
+		 *
+		 * @param array $defaults An associative array of default options.
 		 * @param array $validators An array of validators (can be a combination of numeric/associative keys).
 		 *
 		 * @return array The current array of options.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If `count($default_options) !== count($validators)`.
+		 * @throws exception If `count($defaults) !== count($validators)`.
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    ($default_options, $validators) === array('unit' => '1', 'test' => array('1'))
+		 *    ($defaults, $validators) === array('unit' => '1', 'test' => array('1'))
 		 */
-		public function setup($default_options, $validators)
+		public function setup($defaults, $validators)
+		{
+			$this->_setup($defaults, $validators);
+		}
+
+		/**
+		 * Sets up default options and validators (helper).
+		 *
+		 * @param array $defaults An associative array of default options.
+		 * @param array $validators An array of validators (can be a combination of numeric/associative keys).
+		 *
+		 * @return array The current array of options.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 * @throws exception If `count($defaults) !== count($validators)`.
+		 *
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
+		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
+		 *    ($defaults, $validators) === array('unit' => '1', 'test' => array('1'))
+		 */
+		protected function _setup($defaults, $validators)
 		{
 			$this->check_arg_types('array', 'array', func_get_args());
 
-			$default_options = $this->apply_filters('default_options', $default_options);
-			$validators      = $this->apply_filters('validators', $validators);
+			$defaults   = $this->apply_filters('defaults', $defaults);
+			$validators = $this->apply_filters('validators', $validators);
 
-			if(count($default_options) !== count($validators))
+			if(count($defaults) !== count($validators))
 				throw $this->©exception( // This helps us catch mistakes.
 					$this->method(__FUNCTION__).'#options_mismatch_to_validators', get_defined_vars(),
 					$this->__('Options mismatch. If you add a new default option, please add a validator for it also.').
-					' '.sprintf($this->__('Got `%1$s` default options, `%2$s` validators. These should match up.'), count($default_options), count($validators))
+					' '.sprintf($this->__('Got `%1$s` default options, `%2$s` validators. These should match up.'), count($defaults), count($validators))
 				);
 			if(!is_array($this->options = get_option($this->___instance_config->plugin_root_ns_stub.'__options')))
 				update_option($this->___instance_config->plugin_root_ns_stub.'__options', ($this->options = array()));
 
-			$this->default_options = $this->©string->ify_deep($this->©array->ify_deep($default_options));
-			$this->options         = array_merge($this->default_options, $this->options);
-			$this->validators      = $validators;
-			$this->options         = $this->validate();
+			$this->defaults   = $this->©string->ify_deep($this->©array->ify_deep($defaults));
+			$this->options    = array_merge($this->defaults, $this->options);
+			$this->validators = $validators;
+			$this->options    = $this->validate();
 
 			return $this->options; // All options (after setup is complete).
 		}
@@ -228,27 +260,27 @@ namespace websharks_core_v000000_dev
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$option_name` is currently unknown.
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    ('unit') === '1'
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    ('test') === array('1')
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    ('unknown') throws exception
 		 */
 		public function get($option_name, $get_default = FALSE)
 		{
 			$this->check_arg_types('string:!empty', 'boolean', func_get_args());
 
-			if($get_default && isset($this->default_options[$option_name]))
-				return $this->apply_filters('get_'.$option_name, $this->default_options[$option_name]);
+			if($get_default && isset($this->defaults[$option_name]))
+				return $this->apply_filters('get_'.$option_name, $this->defaults[$option_name]);
 
 			if(!$get_default && isset($this->options[$option_name]))
 				return $this->apply_filters('get_'.$option_name, $this->options[$option_name]);
@@ -271,30 +303,30 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    (array('test' => array('2'))) === array('unit' => '1', 'test' => array('2'))
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    (array('unit' => '2')) === array('unit' => '2', 'test' => array('1'))
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    (array('unit' => '2', 'test' => array('2'))) === array('unit' => '2', 'test' => array('2'))
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
-		 *    (array('unit' => '', 'test' => array())) === $default_options
+		 *    $this->object->setup($defaults, $validators);
+		 *    (array('unit' => '', 'test' => array())) === $defaults
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
-		 *    () === $default_options
+		 *    $this->object->setup($defaults, $validators);
+		 *    () === $defaults
 		 */
 		public function update($new_options = array())
 		{
@@ -331,7 +363,7 @@ namespace websharks_core_v000000_dev
 		 * @modifies-options-array If an option fails validation, we silently revert that option to it's default value.
 		 *
 		 * @note Options will ONLY be strings, or multidimensional arrays containing other string option values.
-		 *    All `$default_options`, and new options added via `update()`, will be stringified/arrayified deeply.
+		 *    All `$defaults`, and new options added via `update()`, will be stringified/arrayified deeply.
 		 *    See: `setup()` and `update()` for further details regarding this.
 		 *
 		 * @note Option value types MUST match that of their default option counterpart.
@@ -342,15 +374,15 @@ namespace websharks_core_v000000_dev
 		 *    the `©installation->activation()` routine should always call upon the `update()` method here in this class,
 		 *    which fires this full validation routine; thereby preventing possible option value conflicts from one version to the next.
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    $this->object->update(array('unit' => array('2'), 'test' => '2'));
 		 *    (TRUE) === array('unit' => '1', 'test' => array('1'))
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    $this->object->update(array('unit' => '2', 'test' => array('2')));
 		 *    (TRUE) === array('unit' => '2', 'test' => array('2'))
 		 */
@@ -360,13 +392,13 @@ namespace websharks_core_v000000_dev
 
 			foreach($this->options as $_key => &$_value)
 			{
-				if(!isset($this->default_options[$_key])) unset($this->options[$_key]);
+				if(!isset($this->defaults[$_key])) unset($this->options[$_key]);
 
 				else if(!in_array(gettype($_value), array('string', 'array'), TRUE))
-					$_value = $this->default_options[$_key];
+					$_value = $this->defaults[$_key];
 
-				else if(gettype($_value) !== gettype($this->default_options[$_key]))
-					$_value = $this->default_options[$_key];
+				else if(gettype($_value) !== gettype($this->defaults[$_key]))
+					$_value = $this->defaults[$_key];
 
 				else if($use_validators && $this->©array->is_not_empty($this->validators[$_key]))
 				{
@@ -390,7 +422,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -399,7 +431,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value) || empty($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -407,7 +439,7 @@ namespace websharks_core_v000000_dev
 							case 'string:strlen': // Validation only.
 								if(!is_string($_value) || !strlen($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -416,7 +448,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value) || (is_numeric($_data) && strlen($_value) > $_data))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -425,7 +457,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value) || (is_numeric($_data) && strlen($_value) < $_data))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -434,7 +466,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value) || !is_numeric($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -443,7 +475,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value) || !is_numeric($_value) || (is_numeric($_data) && $_value > $_data))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -452,7 +484,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value) || !is_numeric($_value) || (is_numeric($_data) && $_value < $_data))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -461,7 +493,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value) || (is_string($_data) && !preg_match($_data, $_value)))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -470,7 +502,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value) || (is_array($_data) && !in_array($_value, $_data)))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -479,7 +511,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								else // Just force lowercase.
@@ -492,7 +524,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_string($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								else if(is_array($_data) && $this->©strings->are_set($_data['replace'], $_data['with']))
@@ -504,7 +536,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_array($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -513,7 +545,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_array($_value) || empty($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -522,7 +554,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_array($_value) || (is_numeric($_data) && count($_value) > $_data))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -531,7 +563,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_array($_value) || (is_numeric($_data) && count($_value) < $_data))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -540,7 +572,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_array($_value) || !in_array($_data, $_value, TRUE))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -549,7 +581,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_array($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								else if(is_array($_data))
@@ -559,7 +591,7 @@ namespace websharks_core_v000000_dev
 											break; // Do next validation.
 
 									unset($_data_value); // Housekeeping.
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								break; // Do next validation.
@@ -568,7 +600,7 @@ namespace websharks_core_v000000_dev
 
 								if(!is_array($_value))
 								{
-									$_value = $this->default_options[$_key];
+									$_value = $this->defaults[$_key];
 									break 2; // Done validating here.
 								}
 								else if(is_array($_data))
@@ -576,7 +608,7 @@ namespace websharks_core_v000000_dev
 									foreach($_data as $_data_value)
 										if(!in_array($_data_value, $_value, TRUE))
 										{
-											$_value = $this->default_options[$_key];
+											$_value = $this->defaults[$_key];
 											break 2; // Done validating here.
 										}
 									unset($_data_value); // Housekeeping.
@@ -611,17 +643,17 @@ namespace websharks_core_v000000_dev
 		 * @note Important... this is called upon by the `deactivation_uninstall()` method below.
 		 * @note This could also be used to revert a site owner back to our default options.
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    $this->object->update(array('unit' => '2', 'test' => array('2')));
 		 *    () === array('unit' => '2', 'test' => array('2'))
 		 *
-		 * @assert $default_options = array('unit' => '1', 'test' => array('1'));
+		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
 		 * $validators = array('unit' => array('string:strlen'), 'test' => array('array:!empty'));
-		 *    $this->object->setup($default_options, $validators);
+		 *    $this->object->setup($defaults, $validators);
 		 *    $this->object->update(array('unit' => '2', 'test' => array('2')));
-		 *    (TRUE) === $default_options
+		 *    (TRUE) === $defaults
 		 */
 		public function delete($confirmation = FALSE)
 		{
@@ -629,7 +661,7 @@ namespace websharks_core_v000000_dev
 
 			if($confirmation) // Do we have confirmation?
 			{
-				$this->options = $this->default_options;
+				$this->options = $this->defaults;
 				delete_option($this->___instance_config->plugin_root_ns_stub.'__options');
 			}
 			return $this->options; // Defaults.

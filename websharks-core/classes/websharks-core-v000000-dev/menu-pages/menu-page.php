@@ -328,7 +328,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			echo '<div class="clear"></div>';
 			echo '</div>';
 
-			echo '<h1 class="menu-page heading-title">'.esc_html($this->___instance_config->plugin_name).' '.$this->heading_title.'</h1>';
+			echo '<h1 class="menu-page heading-title"><img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/favicon-24x24.png')).'" alt="" /> '.esc_html($this->___instance_config->plugin_name).' » '.$this->heading_title.'</h1>';
 			echo '<div class="menu-page sub-heading-description">'.$this->sub_heading_description.'</div>';
 		}
 
@@ -598,13 +598,22 @@ namespace websharks_core_v000000_dev\menu_pages
 		/**
 		 * Displays HTML markup producing sidebar panels for this menu page.
 		 *
-		 * @extenders Should be overridden by class extenders (e.g. by each menu page),
+		 * @extenders Can be overridden by class extenders (i.e. by each menu page),
 		 *    so that custom sidebar panels can be displayed by this routine.
 		 *
 		 * @return null Nothing.
 		 */
 		public function display_sidebar_panels()
 		{
+			if(!$this->©plugin->has_pro())
+				$this->add_sidebar_panel($this->©menu_pages__panels__pro_upgrade($this), TRUE);
+
+			$this->add_sidebar_panel($this->©menu_pages__panels__email_updates($this));
+			$this->add_sidebar_panel($this->©menu_pages__panels__news_kb($this));
+			$this->add_sidebar_panel($this->©menu_pages__panels__community_forum($this));
+			$this->add_sidebar_panel($this->©menu_pages__panels__videos($this));
+			$this->add_sidebar_panel($this->©menu_pages__panels__donations($this));
+
 			$this->display_sidebar_panels_in_order();
 		}
 

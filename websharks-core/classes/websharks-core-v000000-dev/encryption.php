@@ -349,7 +349,7 @@ namespace websharks_core_v000000_dev
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$openssl` is empty.
 		 */
-		public function _rsa_sha1_shell_sign($string, $key = '', $openssl = 'openssl')
+		protected function _rsa_sha1_shell_sign($string, $key = '', $openssl = 'openssl')
 		{
 			$this->check_arg_types('string', 'string', 'string:!empty', func_get_args());
 
@@ -381,7 +381,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @see http://www.faqs.org/qa/qa-14736.html
 		 */
-		public function _rsa_sha1_key_fix_wrappers($key)
+		protected function _rsa_sha1_key_fix_wrappers($key)
 		{
 			$this->check_arg_types('string', func_get_args());
 

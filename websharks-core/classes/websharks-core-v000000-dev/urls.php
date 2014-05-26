@@ -1824,7 +1824,7 @@ namespace websharks_core_v000000_dev
 		 * Catches details sent through the WordPress® `WP_Http` class.
 		 *
 		 * @attaches-to WordPress® `http_api_debug` hook (if `WP_DEBUG` mode is enabled).
-		 * @hook-priority `PHP_INT_MAX` After most everything else (if `WP_DEBUG` mode is enabled).
+		 * @hook-priority `PHP_INT_MAX - 100` After most everything else (if `WP_DEBUG` mode is enabled).
 		 *
 		 * @param array  $response `WP_Http` response array.
 		 * @param string $state `WP_Http` current state (i.e. `response`).
