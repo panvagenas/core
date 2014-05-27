@@ -32,7 +32,7 @@ namespace websharks_core_v000000_dev
 			if(isset($this->cache[__FUNCTION__]))
 				return; // Already loaded.
 
-			$this->cache[__FUNCTION__] = TRUE;
+			$this->cache[__FUNCTION__] = -1;
 
 			// Don't load the core.
 			if($this->is_core()) return;
@@ -61,7 +61,7 @@ namespace websharks_core_v000000_dev
 			if(isset($this->cache[__FUNCTION__]))
 				return; // Already attempted this once.
 
-			$this->cache[__FUNCTION__] = TRUE;
+			$this->cache[__FUNCTION__] = -1;
 
 			autoloader::add_classes_dir($this->___instance_config->plugin_classes_dir);
 		}
@@ -74,7 +74,7 @@ namespace websharks_core_v000000_dev
 			if(isset($this->cache[__FUNCTION__]))
 				return; // Already attempted this once.
 
-			$this->cache[__FUNCTION__] = TRUE;
+			$this->cache[__FUNCTION__] = -1;
 
 			if(is_file($this->___instance_config->plugin_api_class_file))
 				require_once $this->___instance_config->plugin_api_class_file;
@@ -96,7 +96,7 @@ namespace websharks_core_v000000_dev
 			if(isset($this->cache[__FUNCTION__]))
 				return; // Already attempted this once.
 
-			$this->cache[__FUNCTION__] = TRUE;
+			$this->cache[__FUNCTION__] = -1;
 
 			// Define these in an API class file if you wish to override these defaults.
 
@@ -115,7 +115,7 @@ namespace websharks_core_v000000_dev
 			if(isset($this->cache[__FUNCTION__]))
 				return; // Already attempted this once.
 
-			$this->cache[__FUNCTION__] = TRUE;
+			$this->cache[__FUNCTION__] = -1;
 
 			if(is_file($this->___instance_config->plugin_pro_class_file)
 			   && in_array($this->___instance_config->plugin_pro_dir_file_basename, $this->active(), TRUE)
@@ -139,8 +139,6 @@ namespace websharks_core_v000000_dev
 		 * @note This also includes active sitewide plugins in a multisite installation.
 		 *
 		 * @return array All currently active plugins.
-		 *
-		 * @assert () !empty TRUE
 		 */
 		public function active()
 		{
@@ -158,30 +156,29 @@ namespace websharks_core_v000000_dev
 		 * Enqueues pro update/sync notice.
 		 *
 		 * @note This does NOT perform any tests against the current framework and/or pro add-on.
-		 *    Tests should be performed BEFORE calling upon this method. See `load_pro_include_file_if_active()`.
+		 *    Tests should be performed BEFORE calling upon this method. See {@link load_pro_class()}.
 		 */
 		public function enqueue_update_sync_pro_notice()
 		{
-			if(class_exists($this->___instance_config->plugin_root_ns_prefix.'\\menu_pages\\update_sync'))
-				$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
-					'<p>'.$this->__('Your pro add-on MUST be updated now.').
-					' '.sprintf($this->__('Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
-					'</p>'
-				);
+			$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
+				'<p>'.$this->__('Your pro add-on MUST be updated now.').
+				' '.sprintf($this->__('Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
+				'</p>'
+			);
 		}
 
 		/**
 		 * Checks/forces activation of the current plugin.
 		 *
 		 * @note If the current plugin is NOT active at it's currently installed version;
-		 *    we force activation and/or reactivation to occur on the WordPress® `setup_theme` hook, at priority `1`.
+		 *    we force activation and/or reactivation to occur on the WordPress® `setup_theme` hook, at priority `-10000`.
 		 *    We attach to `setup_theme`, so that activation occurs before `init`, and before theme functions are loaded up.
 		 *    Theme functions may include code which has plugin dependencies, so this is always a good idea.
 		 */
 		public function check_force_activation()
 		{
 			if(!$this->is_active_at_current_version())
-				add_action('setup_theme', array($this, '©installer.activation'), 1);
+				$this->add_action('setup_theme', '©installer.activation', -10000);
 		}
 
 		/**
@@ -192,10 +189,6 @@ namespace websharks_core_v000000_dev
 		 *    If this is {@link fw_constants::reconsider}, we force a reconsideration.
 		 *
 		 * @return boolean TRUE if the current plugin is active, at the currently installed version, else FALSE.
-		 *
-		 * @assert () === FALSE
-		 * @assert (\websharks_core_v000000_dev\fw_constants::reconsider) === FALSE
-		 * @assert () === FALSE
 		 */
 		public function is_active_at_current_version($reconsider = '')
 		{
@@ -203,8 +196,7 @@ namespace websharks_core_v000000_dev
 
 			if(!isset($this->cache[__FUNCTION__]) || $reconsider === $this::reconsider)
 			{
-				$this->cache[__FUNCTION__] = FALSE;
-
+				$this->cache[__FUNCTION__] = FALSE; // Initialize.
 				if(($last_active_version = $this->last_active_version())
 				   && version_compare($last_active_version, $this->___instance_config->plugin_version, '>=')
 				) $this->cache[__FUNCTION__] = TRUE;
@@ -219,8 +211,6 @@ namespace websharks_core_v000000_dev
 		 *    This method returns the last version that was successfully activated (i.e. fully active).
 		 *
 		 * @return string Last active version string, else an empty string.
-		 *
-		 * @assert () === ''
 		 */
 		public function last_active_version()
 		{
@@ -231,8 +221,6 @@ namespace websharks_core_v000000_dev
 		 * Checks to see if the current plugin has it's pro add-on loaded up.
 		 *
 		 * @return boolean TRUE if the current plugin has it's pro addon loaded up, else FALSE.
-		 *
-		 * @assert () === FALSE
 		 */
 		public function has_pro()
 		{
@@ -247,7 +235,7 @@ namespace websharks_core_v000000_dev
 		 * Filters site transients, to allow for custom ZIP files during plugin updates.
 		 *
 		 * @attaches-to WordPress® filter `pre_site_transient_update_plugins`.
-		 * @filter-priority `PHP_INT_MAX - 100` After most everything else.
+		 * @filter-priority `10000` After most everything else.
 		 *
 		 * @param boolean|mixed $transient This is passed by WordPress® as a FALSE value (initially).
 		 *    However, it could be filtered by other plugins, so we need to check for an array.

@@ -52,10 +52,10 @@ namespace websharks_core_v000000_dev
 		{
 			parent::__construct($___instance_config);
 
-			if(!did_action('init') || doing_action('init'))
+			if(!did_action('init'))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#init', NULL,
-					$this->__('Doing it wrong (`init` hook has NOT been fully processed yet).')
+					$this->__('Doing it wrong (the `init` hook has NOT been fired yet).')
 				);
 			$is_admin           = is_admin(); // Conditional cache.
 			$is_plugin_page     = $is_admin && $this->©menu_page->is_plugin_page();

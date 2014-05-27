@@ -1436,11 +1436,8 @@ namespace websharks_core_v000000_dev
 		 * @notice Enqueues notice if we do NOT have a readable/writable data directory.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () === FALSE
-		 * @assert (TRUE) === TRUE
 		 */
-		public function activation_install($confirmation = FALSE)
+		public function ___activate___($confirmation = FALSE)
 		{
 			$this->check_arg_types('boolean', func_get_args());
 
@@ -1450,7 +1447,7 @@ namespace websharks_core_v000000_dev
 			if($this->data_readable_writable())
 				return TRUE; // That's it! We're good here.
 
-			$this->©notice->enqueue(
+			$this->©notice->enqueue( // Ask for manual creation.
 				'<p>'.
 				sprintf(
 					$this->__('Please create this directory: <code>%1$s</code>.'),
@@ -1473,11 +1470,8 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if successfully uninstalled, else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () === FALSE
-		 * @assert (TRUE) === TRUE
 		 */
-		public function deactivation_uninstall($confirmation = FALSE)
+		public function ___uninstall___($confirmation = FALSE)
 		{
 			$this->check_arg_types('boolean', func_get_args());
 

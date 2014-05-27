@@ -792,7 +792,7 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			if($this->©env->is_bp_installed() && function_exists('bp_get_signup_page'))
+			if($this->©env->has_bp_active() && function_exists('bp_get_signup_page'))
 				$url = bp_get_signup_page();
 			else $url = ''; // Not applicable.
 
@@ -812,7 +812,7 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			if($this->©env->is_bp_installed() && function_exists('bp_get_activation_page'))
+			if($this->©env->has_bp_active() && function_exists('bp_get_activation_page'))
 				$url = bp_get_activation_page();
 			else $url = ''; // Not applicable.
 
@@ -1824,7 +1824,7 @@ namespace websharks_core_v000000_dev
 		 * Catches details sent through the WordPress® `WP_Http` class.
 		 *
 		 * @attaches-to WordPress® `http_api_debug` hook (if `WP_DEBUG` mode is enabled).
-		 * @hook-priority `PHP_INT_MAX - 100` After most everything else (if `WP_DEBUG` mode is enabled).
+		 * @hook-priority `10000` After most everything else (if `WP_DEBUG` mode is enabled).
 		 *
 		 * @param array  $response `WP_Http` response array.
 		 * @param string $state `WP_Http` current state (i.e. `response`).

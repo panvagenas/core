@@ -39,10 +39,7 @@ namespace websharks_core_v000000_dev
 		 * Handles actions.
 		 *
 		 * @attaches-to WordPress® `wp_loaded` action hook.
-		 * @hook-priority `-(PHP_INT_MAX - 100)` Before most everything else.
-		 *    We process actions after early `init` hooks are complete.
-		 *
-		 * @assert () === NULL
+		 * @hook-priority `-10000` Before most everything else.
 		 */
 		public function wp_loaded()
 		{
@@ -561,7 +558,7 @@ namespace websharks_core_v000000_dev
 
 				case $this::protected_type: // Requires an `$expiration_time-`.
 
-					$this->©no_cache->constants(); // Caching is NOT allowed in this case.
+					$this->©no_cache->constants($this::reason_dynamic); // Caching NOT allowed in this case.
 
 					if($expires_after > 0 && $expiration_time <= 0) // Can we use `$expires_after`?
 						// If `$expires_after`, and there's NO explicit `$expiration_time`.
@@ -573,7 +570,7 @@ namespace websharks_core_v000000_dev
 
 				case $this::private_type: // Requires a logged-in user, and an `$expiration_time-`.
 
-					$this->©no_cache->constants(); // Caching is NOT allowed in this case.
+					$this->©no_cache->constants($this::reason_dynamic); // Caching NOT allowed in this case.
 
 					if($expires_after > 0 && $expiration_time <= 0) // Can we use `$expires_after`?
 						// If `$expires_after`, and there's NO explicit `$expiration_time`.

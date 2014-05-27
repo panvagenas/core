@@ -619,30 +619,74 @@ namespace websharks_core_v000000_dev
 			);
 
 			# --------------------------------------------------------------------------------------------------------------------------
+			# Properties for static hooks.
+			# --------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * A global/static array of hooks across all extenders; broken down by plugin root namespace.
+			 *
+			 * @var array A global/static array of hooks across all extenders; broken down by plugin root namespace.
+			 *
+			 * @final Should NOT be overridden by class extenders.
+			 *    Would be `final` if PHP allowed such a thing.
+			 *
+			 * @protected Accessible only to self & extenders.
+			 */
+			protected static $___hooks = array();
+
+			/**
+			 * A reference to the array of hooks across all extenders; for the current plugin root namespace.
+			 *
+			 * @return array A reference to the array of hooks across all extenders; for the current plugin root namespace.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 *
+			 * @protected Accessible only to self & extenders.
+			 */
+			final protected static function &___hooks()
+			{
+				$plugin_root_ns = strstr(get_called_class(), '\\', TRUE);
+
+				if(!isset(static::$___hooks[$plugin_root_ns]))
+					static::$___hooks[$plugin_root_ns] = array();
+
+				return static::$___hooks[$plugin_root_ns];
+			}
+
+			/**
+			 * An instance-based reference to the array of hooks across all extenders; for the current plugin root namespace.
+			 *
+			 * @var array An instance-based reference to the array of hooks across all extenders; for the current plugin root namespace.
+			 *
+			 * @final Should NOT be overridden by class extenders.
+			 *    Would be `final` if PHP allowed such a thing.
+			 *
+			 * @protected Accessible only to self & extenders.
+			 */
+			protected $hooks = array();
+
+			# --------------------------------------------------------------------------------------------------------------------------
 			# Properties for static & instance-based caches.
 			# --------------------------------------------------------------------------------------------------------------------------
 
 			/**
-			 * A global/static cache for each class extender.
+			 * A global/static cache across all extenders; broken down by blog ID & class extender.
 			 *
-			 * @var array A global/static cache for each class extender.
-			 *    Defaults to an empty array. Set by `___static()` method.
+			 * @var array A global/static cache across all extenders; broken down by blog ID & class extender.
 			 *
 			 * @final Should NOT be overridden by class extenders.
 			 *    Would be `final` if PHP allowed such a thing.
 			 *
 			 * @protected Accessible only to self & extenders.
 			 *
-			 * @see The `___static()` method for further details on this.
+			 * @see The {@link ___static()} method for further details on this.
 			 */
 			protected static $___statics = array();
 
 			/**
-			 * Gets static cache values on a per-class basis.
+			 * A reference to the global/static cache for the current blog ID & class extender.
 			 *
-			 * @return array A reference to the entire cache array; for the calling class.
-			 *    Each blog ID has its own static array of properties. This prevents issues in cache values
-			 *    across multiple child blogs (when running on a multisite network).
+			 * @return array A reference to the global/static cache for the current blog ID & class extender.
 			 *
 			 * @final May NOT be overridden by extenders.
 			 *
@@ -660,12 +704,9 @@ namespace websharks_core_v000000_dev
 			}
 
 			/**
-			 * An instance-based reference to the global/static cache for each class.
+			 * An instance-based reference to the global/static cache for the current blog ID & class extender.
 			 *
-			 * @var array An instance-based reference to the global/static cache for each class.
-			 *    Defaults to an empty array.
-			 *
-			 * @by-constructor Set by class constructor.
+			 * @var array An instance-based reference to the global/static cache for the current blog ID & class extender.
 			 *
 			 * @final Should NOT be overridden by class extenders.
 			 *    Would be `final` if PHP allowed such a thing.
@@ -678,7 +719,6 @@ namespace websharks_core_v000000_dev
 			 * An instance-based cache for each class.
 			 *
 			 * @var array An instance-based cache for each class.
-			 *    Defaults to an empty array.
 			 *
 			 * @final Should NOT be overridden by class extenders.
 			 *    Would be `final` if PHP allowed such a thing.
@@ -778,6 +818,7 @@ namespace websharks_core_v000000_dev
 			 */
 			public function __construct($___instance_config)
 			{
+				$this->hooks  =& static::___hooks();
 				$this->static =& static::___static();
 
 				if($___instance_config instanceof framework)
@@ -979,9 +1020,9 @@ namespace websharks_core_v000000_dev
 				   || !($GLOBALS[$this->___instance_config->plugin_root_ns] instanceof framework)
 				) // Create global reference & load plugin on first instance (if applicable).
 				{
+					$GLOBALS[$this->___instance_config->plugin_root_ns] = $this;
 					if($this->___instance_config->plugin_root_ns !== stub::$core_ns)
 						$this->©plugin->load(); // Not the core (only load plugins).
-					$GLOBALS[$this->___instance_config->plugin_root_ns] = $this;
 				}
 			}
 
@@ -1257,7 +1298,6 @@ namespace websharks_core_v000000_dev
 			 *    This special combination is handled a bit differently. We make a call to the `__get()` method in this case, for the dynamic singleton instance.
 			 *    Then, we use the dynamic singleton instance, and issue a call to `.method_name`, with `$args` passing through as well.
 			 *    A quick example: `call_user_func_array(array($this, '©class.method_name'), array($arg1, $arg2))`.
-			 *    Another example: `add_action('init', array($this, '©class.method_name'))`.
 			 *
 			 *    This method also takes dynamic class aliases into consideration.
 			 *       See: `$___dynamic_class_aliases` for further details.
@@ -1802,7 +1842,6 @@ namespace websharks_core_v000000_dev
 			 * @param array $properties An associative array of object instance properties.
 			 *    Each property MUST already exist, and value types MUST match up.
 			 *
-			 * @throws exception If invalid types are passed through arguments list.
 			 * @throws exception If attempting to set a special property (e.g. `___*`).
 			 * @throws exception If attempting to set an undefined property (i.e. non-existent).
 			 * @throws exception If attempting to set a property value, which has a different value type.
@@ -1814,7 +1853,7 @@ namespace websharks_core_v000000_dev
 			 */
 			final public function set_properties($properties = array())
 			{
-				$this->check_arg_types('array', func_get_args());
+				$properties = (array)$properties;
 
 				foreach($properties as $_property => $_value)
 				{
@@ -1847,8 +1886,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return string `__METHOD__` for current class; i.e. `get_class($this)`.
 			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 *
 			 * @final May NOT be overridden by extenders.
 			 * @public Available for public usage.
 			 */
@@ -1868,8 +1905,6 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @return string Dynamic `©class.®method` for current class; i.e. `get_class($this)`.
 			 *
-			 * @throws exception If invalid types are passed through arguments list.
-			 *
 			 * @final May NOT be overridden by extenders.
 			 * @public Available for public usage.
 			 */
@@ -1883,6 +1918,245 @@ namespace websharks_core_v000000_dev
 			# --------------------------------------------------------------------------------------------------------------------------
 			# Methods related to hooks/filters.
 			# --------------------------------------------------------------------------------------------------------------------------
+
+			/**
+			 * Adds a new plugin-related action handler.
+			 *
+			 * @param string  $hook An action hook.
+			 *
+			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 *
+			 * @param integer $priority Action hook priority (optional); defaults to `10`.
+			 *
+			 * @param integer $args Number of arguments to handler (optional); defaults to `1`.
+			 *
+			 * @return boolean Always returns a boolean TRUE value.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 * @public Available for public usage.
+			 *
+			 * @uses ___add_hook()
+			 */
+			final public function add_action($hook, $dynamic_call, $priority = 10, $args = 1)
+			{
+				return $this->___add_hook($hook, $dynamic_call, $priority, $args, $this::action_type);
+			}
+
+			/**
+			 * Removes an existing plugin-related action handler.
+			 *
+			 * @param string  $hook An action hook.
+			 *
+			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 *
+			 * @param integer $priority Action hook priority (optional); defaults to `10`.
+			 *    Note that `$priority` MUST match the original action priority.
+			 *
+			 * @return boolean TRUE if action removal was a success.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 * @public Available for public usage.
+			 *
+			 * @uses ___remove_hook()
+			 */
+			final public function remove_action($hook, $dynamic_call, $priority = 10)
+			{
+				return $this->___remove_hook($hook, $dynamic_call, $priority, $this::action_type);
+			}
+
+			/**
+			 * Removes all existing plugin-related action handlers.
+			 *
+			 * @param string       $hook An action hook (optional).
+			 *    If empty remove all actions; w/ any hook name.
+			 *
+			 * @param integer|null $priority Action hook priority (optional).
+			 *    If NULL remove all actions, no matter the priority.
+			 *
+			 * @return integer Total number of action removals.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 * @public Available for public usage.
+			 *
+			 * @uses ___remove_all_hooks()
+			 */
+			final public function remove_all_actions($hook = '', $priority = NULL)
+			{
+				return $this->___remove_all_hooks($hook, $priority, $this::action_type);
+			}
+
+			/**
+			 * Adds a new plugin-related filter handler.
+			 *
+			 * @param string  $hook A filter hook.
+			 *
+			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 *
+			 * @param integer $priority Filter hook priority (optional); defaults to `10`.
+			 *
+			 * @param integer $args Number of arguments to handler (optional); defaults to `1`.
+			 *
+			 * @return boolean Always returns a boolean TRUE value.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 * @public Available for public usage.
+			 *
+			 * @uses ___add_hook()
+			 */
+			final public function add_filter($hook, $dynamic_call, $priority = 10, $args = 1)
+			{
+				return $this->___add_hook($hook, $dynamic_call, $priority, $args, $this::filter_type);
+			}
+
+			/**
+			 * Removes an existing plugin-related filter handler.
+			 *
+			 * @param string  $hook A filter hook.
+			 *
+			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 *
+			 * @param integer $priority Filter hook priority (optional); defaults to `10`.
+			 *    Note that `$priority` MUST match the original filter priority.
+			 *
+			 * @return boolean TRUE if filter removal was a success.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 * @public Available for public usage.
+			 *
+			 * @uses ___remove_hook()
+			 */
+			final public function remove_filter($hook, $dynamic_call, $priority = 10)
+			{
+				return $this->___remove_hook($hook, $dynamic_call, $priority, $this::filter_type);
+			}
+
+			/**
+			 * Removes all existing plugin-related filter handlers.
+			 *
+			 * @param string       $hook A filter hook (optional).
+			 *    If empty remove all filters; w/ any hook name.
+			 *
+			 * @param integer|null $priority Action hook priority (optional).
+			 *    If NULL remove all filters, no matter the priority.
+			 *
+			 * @return integer Total number of filter removals.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 * @public Available for public usage.
+			 *
+			 * @uses ___remove_all_hooks()
+			 */
+			final public function remove_all_filters($hook = '', $priority = NULL)
+			{
+				return $this->___remove_all_hooks($hook, $priority, $this::filter_type);
+			}
+
+			/**
+			 * Adds a new plugin-related hook handler.
+			 *
+			 * @param string  $hook An action/filter hook.
+			 *
+			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 *
+			 * @param integer $priority Action/filter hook priority.
+			 *
+			 * @param integer $args Number of arguments to handler.
+			 *
+			 * @param string  $type {@link action_type} or {@link filter_type}.
+			 *
+			 * @return boolean Always returns a boolean TRUE value.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 * @private Accessible only to self.
+			 *
+			 * @see add_action()
+			 * @see add_filter()
+			 */
+			final private function ___add_hook($hook, $dynamic_call, $priority, $args, $type)
+			{
+				$hook         = (string)$hook;
+				$dynamic_call = (string)$dynamic_call;
+				$priority     = (integer)$priority;
+				$args         = (integer)$args;
+				$type         = (string)$type;
+
+				$plugin              = $GLOBALS[$this->___instance_config->plugin_root_ns];
+				$idx                 = spl_object_hash($plugin).$dynamic_call.$priority;
+				$plugin->hooks[$idx] = compact('hook', 'dynamic_call', 'priority', 'type');
+
+				if($type === $this::filter_type)
+					return add_filter($hook, array($plugin, $dynamic_call), $priority, $args);
+				return add_action($hook, array($plugin, $dynamic_call), $priority, $args);
+			}
+
+			/**
+			 * Removes an existing plugin-related hook handler.
+			 *
+			 * @param string  $hook An action/filter hook.
+			 *
+			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 *
+			 * @param integer $priority Action/filter hook priority.
+			 *    Note that `$priority` MUST match the original priority.
+			 *
+			 * @param string  $type {@link action_type} or {@link filter_type}.
+			 *
+			 * @return boolean TRUE if hook removal was a success.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 * @private Accessible only to self.
+			 *
+			 * @see remove_action()
+			 * @see remove_filter()
+			 */
+			final private function ___remove_hook($hook, $dynamic_call, $priority, $type)
+			{
+				$hook         = (string)$hook;
+				$dynamic_call = (string)$dynamic_call;
+				$priority     = (integer)$priority;
+				$type         = (string)$type;
+
+				$plugin = $GLOBALS[$this->___instance_config->plugin_root_ns];
+				unset($plugin->hooks[spl_object_hash($plugin).$dynamic_call.$priority]);
+
+				if($type === $this::filter_type)
+					return remove_filter($hook, array($plugin, $dynamic_call), $priority);
+				return remove_action($hook, array($plugin, $dynamic_call), $priority);
+			}
+
+			/**
+			 * Removes all existing plugin-related hook handlers.
+			 *
+			 * @param string       $hook An action/filter hook.
+			 *    If empty remove all action/filter hooks, w/ any name.
+			 *
+			 * @param integer|null $priority Action/filter hook priority.
+			 *    If NULL remove all action/filter hooks, no matter the priority.
+			 *
+			 * @param string       $type {@link action_type} or {@link filter_type}.
+			 *
+			 * @return integer Total number of hook removals.
+			 *
+			 * @final May NOT be overridden by extenders.
+			 * @private Accessible only to self.
+			 *
+			 * @uses ___remove_hook()
+			 */
+			final private function ___remove_all_hooks($hook, $priority, $type)
+			{
+				$hook = (string)$hook; // Force arg types.
+				if(!is_integer($priority)) $priority = NULL;
+
+				$removals = 0; // Initialize.
+
+				foreach($GLOBALS[$this->___instance_config->plugin_root_ns]->hooks as $_idx => $_hook)
+					if((!$hook || $_hook['hook'] === $hook) && (!isset($priority) || $_hook['priority'] === $priority) && $_hook['type'] === $type)
+						if($this->___remove_hook($_hook['hook'], $_hook['dynamic_call'], $_hook['priority'], $_hook['type']))
+							$removals++; // Increment removal counter.
+				unset($_idx, $_hook); // Housekeeping.
+
+				return $removals;
+			}
 
 			/**
 			 * Fires WordPress® Action Hooks for `$this` class.
@@ -1905,7 +2179,7 @@ namespace websharks_core_v000000_dev
 			 * the hook/filter slug is prefixed again by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__sub_namespace__class__hook_filter_name`.
 			 *
-			 * @param string $action Action Hook name.
+			 * @param string $hook Action hook name.
 			 * @params-variable-length Additional arguments pass data to an action handler.
 			 *
 			 * @return null|mixed Result from call to `do_action()` (should be NULL).
@@ -1913,7 +2187,7 @@ namespace websharks_core_v000000_dev
 			 * @final May NOT be overridden by extenders.
 			 * @public Available for public usage.
 			 */
-			final public function do_action($action)
+			final public function do_action($hook)
 			{
 				$args    = func_get_args();
 				$args[0] = (string)$args[0]; // Force string.
@@ -1943,7 +2217,7 @@ namespace websharks_core_v000000_dev
 			 * the hook/filter slug is prefixed again by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__sub_namespace__class__hook_filter_name`.
 			 *
-			 * @param string $filter Filter name.
+			 * @param string $hook Filter hook name.
 			 * @param mixed  $value Value to Filter.
 			 * @params-variable-length Additional arguments pass data to a filter handler.
 			 *
@@ -1955,7 +2229,7 @@ namespace websharks_core_v000000_dev
 			 * @assert ('filter', 'value') === 'value'
 			 * @assert ('filter', 'value', get_defined_vars()) === 'value'
 			 */
-			final public function apply_filters($filter, $value)
+			final public function apply_filters($hook, $value)
 			{
 				$args    = func_get_args();
 				$args[0] = (string)$args[0]; // Force string.

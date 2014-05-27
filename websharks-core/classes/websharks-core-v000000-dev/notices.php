@@ -305,11 +305,8 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if successfully installed, else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () === FALSE
-		 * @assert (TRUE) === TRUE
 		 */
-		public function activation_install($confirmation = FALSE)
+		public function ___activate___($confirmation = FALSE)
 		{
 			$this->check_arg_types('boolean', func_get_args());
 
@@ -328,11 +325,8 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if successfully uninstalled, else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () === FALSE
-		 * @assert (TRUE) === TRUE
 		 */
-		public function deactivation_uninstall($confirmation = FALSE)
+		public function ___uninstall___($confirmation = FALSE)
 		{
 			$this->check_arg_types('boolean', func_get_args());
 

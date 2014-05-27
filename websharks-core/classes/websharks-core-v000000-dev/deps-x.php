@@ -2122,7 +2122,6 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			{
 				if($is_wp_loaded && (!did_action('init') || ($this->is_function_possible('doing_action') && doing_action('init'))))
 					add_action('wp_loaded', array($this, 'display_stand_alone_report'), 1);
-
 				else $this->display_stand_alone_report();
 			}
 			else if($is_wp_loaded && $maybe_display_wp_admin_notices)
@@ -2227,9 +2226,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			return $this->__(
 				'WordPress® NOT loaded up.'
 			);
-		else if(!did_action('init') || ($this->is_function_possible('doing_action') && doing_action('init')))
+		else if(!did_action('init'))
 			return $this->__(
-				'WordPress® `init` hook has NOT been fully processed yet.'.
+				'WordPress® `init` hook has NOT been fired yet.'.
 				' Unable to check user permissions.'
 			);
 		else if(!is_super_admin())
@@ -2296,9 +2295,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			return $this->__(
 				'WordPress® NOT loaded up.'
 			);
-		else if(!did_action('init') || ($this->is_function_possible('doing_action') && doing_action('init')))
+		else if(!did_action('init'))
 			return $this->__(
-				'WordPress® `init` hook has NOT been fully processed yet.'.
+				'WordPress® `init` hook has NOT been fired yet.'.
 				' Unable to check user permissions.'
 			);
 		else if(!is_super_admin())
@@ -3205,14 +3204,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	 *
 	 * @return boolean TRUE if successfully uninstalled, else FALSE.
 	 *
-	 * @see deps_websharks_core_v000000_dev::deactivation_uninstall()
+	 * @see deps_websharks_core_v000000_dev::___uninstall___()
 	 *
 	 * @throws exception If invalid types are passed through arguments list.
 	 *
 	 * @assert () === FALSE
 	 * @assert (TRUE) === TRUE
 	 */
-	public function deactivation_uninstall($confirmation = FALSE)
+	public function ___uninstall___($confirmation = FALSE)
 	{
 		if(!is_bool($confirmation))
 			throw new exception( // Fail here; detected invalid arguments.

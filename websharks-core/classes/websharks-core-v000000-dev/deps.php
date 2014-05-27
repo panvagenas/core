@@ -126,11 +126,11 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 		 *
 		 * @return boolean TRUE if successfully uninstalled, else FALSE.
 		 *
-		 * @see deps_x_websharks_core_v000000_dev::deactivation_uninstall()
+		 * @see deps_x_websharks_core_v000000_dev::___uninstall___()
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public static function deactivation_uninstall($confirmation = FALSE)
+		public static function ___uninstall___($confirmation = FALSE)
 		{
 			if(!is_bool($confirmation))
 				throw new exception( // Fail here; detected invalid arguments.
@@ -148,7 +148,7 @@ if(!class_exists('deps_websharks_core_v000000_dev'))
 
 			$x = new deps_x_websharks_core_v000000_dev();
 
-			return $x->deactivation_uninstall(TRUE);
+			return $x->___uninstall___(TRUE);
 		}
 	}
 

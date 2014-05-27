@@ -29,63 +29,67 @@ namespace websharks_core_v000000_dev
 		 */
 		public function prepare_hooks()
 		{
-			// Activation/deactivation (installation class).
-			// These MUST be capable of running independently from hooks/filters `after_setup_theme`.
-			// For example, activation/deactivation routines should NOT be dependent upon action handlers.
-			register_activation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.activation'));
-			register_deactivation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.deactivation'));
-
-			// Process hooks in the routine above (when/if possible).
-			add_action('after_setup_theme', array($this, 'after_setup_theme'), -(PHP_INT_MAX - 100));
+			$this->register_installer_hooks(); // Registers several installer hooks.
+			$this->add_action('after_setup_theme', '©initializer.after_setup_theme', -10000);
 		}
 
 		/**
 		 * Initialization routines/hooks.
 		 *
 		 * @attaches-to WordPress® `after_setup_theme`.
-		 * @hook-priority `-(PHP_INT_MAX - 100)` Before most everything else.
+		 * @hook-priority `-10000` Before most everything else.
 		 */
 		public function after_setup_theme()
 		{
 			if(!$this->©plugin->is_active_at_current_version())
 				return; // Do NOT go any further here.
 
-			// Handles no-cache headers/constants.
-			add_action('wp_loaded', array($this, '©no_cache.wp_loaded'), -(PHP_INT_MAX - 100));
+			$this->add_action('init', '©no_cache.init', -10000);
+			$this->add_action('init', '©db_cache.init', -10010);
 
-			// Keeps the DB cache fresh while site owners' work.
-			add_action('wp_loaded', array($this, '©db_cache.wp_loaded'), -(PHP_INT_MAX - 100));
+			$this->add_action('wp_loaded', '©actions.wp_loaded', -10000);
+			$this->add_action('wp_loaded', '©crons.wp_loaded', 10000);
+			$this->add_action('wp_loaded', '©db_utils.wp_loaded_crons', 10010);
 
-			// Handles plugin actions.
-			add_action('wp_loaded', array($this, '©actions.wp_loaded'), -(PHP_INT_MAX - 100));
+			$this->add_action('wp_print_scripts', '©scripts.wp_print_scripts', 9);
+			$this->add_action('wp_print_styles', '©styles.wp_print_styles', 9);
 
-			// Other hooks on `wp_loaded` (misc routines).
-			add_action('wp_loaded', array($this, '©crons.wp_loaded'), PHP_INT_MAX - 100);
-			add_action('wp_loaded', array($this, '©db_utils.wp_loaded'), PHP_INT_MAX - 99);
+			$this->add_action('admin_print_scripts', '©scripts.admin_print_scripts', 9);
+			$this->add_action('admin_print_styles', '©styles.admin_print_styles', 9);
 
-			// Initializes front-side scripts/styles.
-			add_action('wp_print_scripts', array($this, '©scripts.wp_print_scripts'), 9);
-			add_action('wp_print_styles', array($this, '©styles.wp_print_styles'), 9);
+			$this->add_action('admin_menu', '©menu_pages.admin_menu');
+			$this->add_action('network_admin_menu', '©menu_pages.network_admin_menu');
 
-			// Initializes admin-side scripts/styles.
-			add_action('admin_print_scripts', array($this, '©scripts.admin_print_scripts'), 9);
-			add_action('admin_print_styles', array($this, '©styles.admin_print_styles'), 9);
+			$this->add_action('all_admin_notices', '©notices.all_admin_notices');
 
-			// Add support for administrative menu panels.
-			add_action('admin_menu', array($this, '©menu_pages.admin_menu'));
-			add_action('network_admin_menu', array($this, '©menu_pages.network_admin_menu'));
-
-			// Adds support for administrative notices.
-			add_action('all_admin_notices', array($this, '©notices.all_admin_notices'));
-
-			// Records HTTP communication (only ONE plugin needs to add this hook).
-			if($this->©env->is_in_wp_debug_mode() && !isset($this->static[__FUNCTION__]['urls.http_api_debug']))
+			if(!isset($this->static[__FUNCTION__]['urls.http_api_debug']) && $this->©env->is_in_wp_debug_mode())
 			{
-				add_action('http_api_debug', array($this, '©urls.http_api_debug'), PHP_INT_MAX - 100, 5);
-				$this->static[__FUNCTION__]['http_api_debug'] = TRUE;
+				$this->static[__FUNCTION__]['urls.http_api_debug'] = 'urls.http_api_debug';
+				$this->add_action('http_api_debug', '©urls.http_api_debug', 10000, 5);
 			}
-			// Handles `update_plugins` array (for pro upgrades).
-			add_filter('pre_site_transient_update_plugins', array($this, '©plugins.pre_site_transient_update_plugins'), PHP_INT_MAX - 100);
+			$this->add_filter('pre_site_transient_update_plugins', '©plugins.pre_site_transient_update_plugins', 10000);
+
+			$this->after_setup_theme_hooks(); // Additional hooks/filters needed by an extender.
+		}
+
+		/**
+		 * Add any additional hooks/filters needed by an extender.
+		 *
+		 * @extenders This should be overwritten by class extenders (when/if needed).
+		 */
+		public function after_setup_theme_hooks()
+		{
+		}
+
+		/**
+		 * These CANNOT be attached to a hook. Hooks are fired before a plugin is loaded upon activation.
+		 *    See: <http://codex.wordpress.org/Function_Reference/register_activation_hook>
+		 */
+		public function register_installer_hooks()
+		{
+			register_activation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.activation'));
+			register_deactivation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.deactivation'));
+			register_uninstall_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.uninstall'));
 		}
 	}
 }

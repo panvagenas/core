@@ -199,7 +199,7 @@ namespace websharks_core_v000000_dev
 				static::$plugin->©env->ob_end_clean();
 
 				$exception = static::$exception; // For template.
-				if(static::$plugin->©env->is_browser() && did_action('init') && !doing_action('init'))
+				if(static::$plugin->©env->is_browser() && did_action('init'))
 					if(($template = static::$plugin->©template('exception.php', get_defined_vars())) && $template->content)
 					{
 						if(!headers_sent()) // Can exception stand-alone?
@@ -217,10 +217,10 @@ namespace websharks_core_v000000_dev
 
 				echo sprintf(static::$plugin->_x('Exception Code: %1$s'), static::$exception->getCode());
 
-				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('init') && !doing_action('init') && static::$plugin->©user->is_super_admin()))
+				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('init') && static::$plugin->©user->is_super_admin()))
 					echo "\n".sprintf(static::$plugin->_x('Exception Message: %1$s'), static::$exception->getMessage());
 
-				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('init') && !doing_action('init') && static::$plugin->©user->is_super_admin()))
+				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('init') && static::$plugin->©user->is_super_admin()))
 					echo "\n".static::$exception->getTraceAsString();
 
 				exit(); // Clean exit now.

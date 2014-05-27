@@ -88,8 +88,6 @@ namespace websharks_core_v000000_dev
 				'url_shortener.custom_url_api'               => '',
 				'url_shortener.api_keys.goo_gl'              => '',
 
-				'installer.deactivation.uninstalls'          => '0',
-
 				'templates.stand_alone.styles'               => '<style type="text/css">'."\n\n".'</style>',
 				'templates.stand_alone.scripts'              => '<script type="text/javascript">'."\n\n".'</script>',
 				'templates.stand_alone.bg_style'             => 'background: #F2F1F0 url(\''.$this->©string->esc_sq($this->©url->to_template_dir_file('client-side/images/stand-alone-bg.png')).'\') repeat left top;',
@@ -149,8 +147,6 @@ namespace websharks_core_v000000_dev
 				'url_shortener.default_built_in_api'         => array('string:in_array' => array('tiny_url', 'goo_gl')),
 				'url_shortener.custom_url_api'               => array('string:preg_match' => '/^https?\:/i'),
 				'url_shortener.api_keys.goo_gl'              => array('string:!empty'),
-
-				'installer.deactivation.uninstalls'          => array('string:numeric >=' => 0),
 
 				'templates.stand_alone.styles'               => array('string'),
 				'templates.stand_alone.scripts'              => array('string'),
@@ -640,7 +636,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
-		 * @note Important... this is called upon by the `deactivation_uninstall()` method below.
+		 * @note Important... this is called upon by the {@link ___uninstall___()} method below.
 		 * @note This could also be used to revert a site owner back to our default options.
 		 *
 		 * @assert $defaults = array('unit' => '1', 'test' => array('1'));
@@ -676,11 +672,8 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if successfully installed, else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () === FALSE
-		 * @assert (TRUE) === TRUE
 		 */
-		public function activation_install($confirmation = FALSE)
+		public function ___activate___($confirmation = FALSE)
 		{
 			$this->check_arg_types('boolean', func_get_args());
 
@@ -701,11 +694,8 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if successfully uninstalled, else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () === FALSE
-		 * @assert (TRUE) === TRUE
 		 */
-		public function deactivation_uninstall($confirmation = FALSE)
+		public function ___uninstall___($confirmation = FALSE)
 		{
 			$this->check_arg_types('boolean', func_get_args());
 

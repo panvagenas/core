@@ -24,59 +24,81 @@ namespace websharks_core_v000000_dev
 	 */
 	class no_cache extends framework
 	{
+
 		/**
 		 * Handles no-cache headers/constants.
 		 *
-		 * @attaches-to WordPress® `wp_loaded` action hook.
-		 * @hook-priority `-(PHP_INT_MAX - 100)` Before most everything else.
+		 * @attaches-to WordPress® `init` action hook.
+		 * @hook-priority `-10000` Before most everything else.
 		 *
 		 * @assertion-via WordPress®.
-		 *
-		 * @TODO Consider logged-in user caching in QC Pro here.
 		 */
-		public function wp_loaded()
+		public function init()
 		{
-			if(is_admin() // No-cache all administrative areas.
-			   || $this->©env->is_systematic_routine()
-			   || $this->©user->is_logged_in()
-			   || $this->©action->is()
-			) // No cache in these cases.
+			if(is_admin())
 			{
-				$this->headers(); // Prevents browser caching.
-				$this->constants(); // Stops caching plugins.
+				$this->headers($this::reason_is_admin);
+				$this->constants($this::reason_is_admin);
+			}
+			else if($this->©env->is_systematic_routine())
+			{
+				$this->headers($this::reason_is_systematic_routine);
+				$this->constants($this::reason_is_systematic_routine);
+			}
+			else if($this->©user->is_logged_in())
+			{
+				$this->headers($this::reason_is_logged_in);
+				$this->constants($this::reason_is_logged_in);
+			}
+			else if($this->©action->is())
+			{
+				$this->headers($this::reason_is_action);
+				$this->constants($this::reason_is_action);
 			}
 			else if($this->©options->get('no_cache.headers.always'))
-				$this->headers(); // Prevents browser caching.
+				$this->headers($this::reason_is_option);
 		}
 
 		/**
 		 * Sends no-cache headers.
+		 *
+		 * @param string $reason Optional; specify a reason why.
+		 *    Use a framework constant for this parameter.
 		 */
-		public function headers()
+		public function headers($reason = self::reason_other)
 		{
-			if(isset($this->static[__FUNCTION__]))
-				return; // Already sent.
+			if(isset($this->static[__FUNCTION__][$reason]))
+				return; // Already done.
 
-			if(($qcABC = $this->©vars->_REQUEST('qcABC'))
-			   && $this->©string->is_true($qcABC)
-			) return; // Respect Quick Cache.
+			$this->static[__FUNCTION__][$reason] = -1;
+
+			$has_qc_active = $this->©env->has_qc_active();
+			if($has_qc_active && $this->©string->is_true($this->©vars->_REQUEST('qcABC')))
+				return; // Respect Quick Cache `?qcABC` variable.
 
 			$this->©headers->no_cache();
-
-			$this->static[__FUNCTION__] = TRUE;
 		}
 
 		/**
 		 * Sets no-cache constants.
+		 *
+		 * @param string $reason Optional; specify a reason why.
+		 *    Use a framework constant for this parameter.
 		 */
-		public function constants()
+		public function constants($reason = self::reason_other)
 		{
-			if(isset($this->static[__FUNCTION__]))
-				return; // Already defined.
+			if(isset($this->static[__FUNCTION__][$reason]))
+				return; // Already done.
 
-			if(($qcAC = $this->©vars->_REQUEST('qcAC'))
-			   && $this->©string->is_true($qcAC)
-			) return; // Respect Quick Cache.
+			$this->static[__FUNCTION__][$reason] = -1;
+
+			$has_qc_active = $this->©env->has_qc_active();
+			if($has_qc_active && $this->©string->is_true($this->©vars->_REQUEST('qcAC')))
+				return; // Respect Quick Cache `?qcAC` variable.
+
+			if($has_qc_active && $reason === $this::reason_is_logged_in)
+				if(defined('QUICK_CACHE_WHEN_LOGGED_IN') && QUICK_CACHE_WHEN_LOGGED_IN)
+					return; // Allow Quick Cache to do its thing here.
 
 			if(!defined('DONOTCACHEDB'))
 				/**
@@ -101,8 +123,6 @@ namespace websharks_core_v000000_dev
 				 * @var boolean For Quick Cache.
 				 */
 				define ('QUICK_CACHE_ALLOWED', FALSE);
-
-			$this->static[__FUNCTION__] = TRUE;
 		}
 	}
 }

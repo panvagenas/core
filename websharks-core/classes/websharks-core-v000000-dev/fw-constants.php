@@ -182,6 +182,20 @@ namespace websharks_core_v000000_dev
 		const regex_js = '___regex_js___';
 
 		# --------------------------------------------------------------------------------------------------------------------------------
+		# Hook types.
+		# --------------------------------------------------------------------------------------------------------------------------------
+
+		/**
+		 * @var string Represents an `action` type.
+		 */
+		const action_type = '___action_type___';
+
+		/**
+		 * @var string Represents a `filter` type.
+		 */
+		const filter_type = '___filter_type___';
+
+		# --------------------------------------------------------------------------------------------------------------------------------
 		# Context types.
 		# --------------------------------------------------------------------------------------------------------------------------------
 
@@ -327,6 +341,45 @@ namespace websharks_core_v000000_dev
 		 * @var string Represents `gitignore` array key.
 		 */
 		const gitignore = '___gitignore___';
+
+		# --------------------------------------------------------------------------------------------------------------------------------
+		# Reason types.
+		# --------------------------------------------------------------------------------------------------------------------------------
+
+		/**
+		 * @var string Represents `is_admin` reason.
+		 */
+		const reason_is_admin = '___reason_is_admin___';
+
+		/**
+		 * @var string Represents `is_systematic_routine` reason.
+		 */
+		const reason_is_systematic_routine = '___reason_is_systematic_routine___';
+
+		/**
+		 * @var string Represents `is_logged_in` reason.
+		 */
+		const reason_is_logged_in = '___reason_is_logged_in___';
+
+		/**
+		 * @var string Represents `is_action` reason.
+		 */
+		const reason_is_action = '___reason_is_action___';
+
+		/**
+		 * @var string Represents `is_option` reason.
+		 */
+		const reason_is_option = '___reason_is_option___';
+
+		/**
+		 * @var string Represents `dynamic` reason.
+		 */
+		const reason_dynamic = '___reason_dynamic___';
+
+		/**
+		 * @var string Represents `other` reason.
+		 */
+		const reason_other = '___reason_other___';
 
 		# --------------------------------------------------------------------------------------------------------------------------------
 		# URL parts/components bitmask for WebSharks™ Core.

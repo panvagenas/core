@@ -378,13 +378,33 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Is BuddyPress™ installed?
+		 * Is Quick Cache™ installed/active?
 		 *
-		 * @return boolean TRUE if BuddyPress™ is installed, else FALSE.
+		 * @return boolean TRUE if Quick Cache™ is installed/active.
 		 *
 		 * @assert () === FALSE
 		 */
-		public function is_bp_installed()
+		public function has_qc_active()
+		{
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
+
+			$this->static[__FUNCTION__] = FALSE;
+
+			if(defined('QUICK_CACHE_ENABLE') && QUICK_CACHE_ENABLE)
+				$this->static[__FUNCTION__] = TRUE;
+
+			return $this->static[__FUNCTION__];
+		}
+
+		/**
+		 * Is BuddyPress™ installed/active?
+		 *
+		 * @return boolean TRUE if BuddyPress™ is installed/active.
+		 *
+		 * @assert () === FALSE
+		 */
+		public function has_bp_active()
 		{
 			if(isset($this->static[__FUNCTION__]))
 				return $this->static[__FUNCTION__];

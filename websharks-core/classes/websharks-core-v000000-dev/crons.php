@@ -28,12 +28,12 @@ namespace websharks_core_v000000_dev
 		 * Handles loading sequence.
 		 *
 		 * @attaches-to WordPress® `wp_loaded` action hook.
-		 * @hook-priority `PHP_INT_MAX - 100` After most everything else; but before other hooks that configure CRONs.
-		 *    Other `wp_loaded` hooks that setup CRON jobs could just use `PHP_INT_MAX` or `PHP_INT_MAX - 99`.
+		 * @hook-priority `10000` After most everything else; but before other hooks that configure CRONs.
+		 *    Other `wp_loaded` hooks that setup CRON jobs could just use `10010`.
 		 */
 		public function wp_loaded()
 		{
-			add_filter('cron_schedules', array($this, 'extend'));
+			$this->add_filter('cron_schedules', '©crons.extend');
 			if($this->©env->is_cron_job()) $this->©env->prep_for_cron_procedure();
 		}
 
@@ -104,7 +104,7 @@ namespace websharks_core_v000000_dev
 				list($_cron_job['©class'], $_cron_job['method']) = explode('.', $_cron_job['©class.method'], 2);
 				$_cron_job['event_hook'] = '_cron__'.$this->___instance_config->plugin_root_ns_stub.'__'.trim($_cron_job['©class'], '©').'__'.$_cron_job['method'];
 
-				add_action($_cron_job['event_hook'], array($this, $_cron_job['©class.method']));
+				$this->add_action($_cron_job['event_hook'], $_cron_job['©class.method']);
 
 				if(!empty($config[$_key]['last_config_time']))
 					$_cron_job['last_config_time'] = (integer)$config[$_key]['last_config_time'];
@@ -183,11 +183,8 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if successfully installed, else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () === FALSE
-		 * @assert (TRUE) === TRUE
 		 */
-		public function activation_install($confirmation = FALSE)
+		public function ___activate___($confirmation = FALSE)
 		{
 			$this->check_arg_types('boolean', func_get_args());
 
@@ -208,11 +205,8 @@ namespace websharks_core_v000000_dev
 		 * @return boolean TRUE if successfully uninstalled, else FALSE.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () === FALSE
-		 * @assert (TRUE) === TRUE
 		 */
-		public function deactivation_uninstall($confirmation = FALSE)
+		public function ___uninstall___($confirmation = FALSE)
 		{
 			$this->check_arg_types('boolean', func_get_args());
 
