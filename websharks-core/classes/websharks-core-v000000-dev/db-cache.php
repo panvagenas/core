@@ -104,12 +104,12 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Handles automatic cache purges.
 		 *
-		 * @attaches-to WordPress® `admin_init` hook.
+		 * @attaches-to WordPress® `wp_loaded` hook.
 		 * @hook-priority `-(PHP_INT_MAX - 100)` Before most everything else.
 		 *
 		 * @assertion-via WordPress®.
 		 */
-		public function admin_init()
+		public function wp_loaded()
 		{
 			$this->purge();
 		}

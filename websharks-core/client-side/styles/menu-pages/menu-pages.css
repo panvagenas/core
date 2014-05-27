@@ -1,5 +1,5 @@
 /**
- * Menu Page CSS/Styles.
+ * Menu Page CSS/Styles
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -173,7 +173,7 @@ html
 .websharks-core.ui.ui div.feed-item-title a
 {
 	padding-left : 18px;
-	background   : url('../../images/xlink-13x13.png') no-repeat center left;
+	background   : url('../images/xlink-13x13.png') no-repeat center left;
 }
 .websharks-core.ui.ui div.feed-item-excerpt
 {

@@ -2789,7 +2789,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		if(isset(self::$static[__FUNCTION__]))
 			return self::$static[__FUNCTION__];
 
-		$regex = '/Apache\/(?P<version>[1-9][^\s]*)/i';
+		$regex = '/Apache\/(?P<version>[1-9][0-9]*\.[0-9][^\s]*)/i';
 
 		if($this->is_function_possible('apache_get_version'))
 			if(($apache_get_version = apache_get_version()) && preg_match($regex, $apache_get_version, $apache))
@@ -3169,7 +3169,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		{
 			self::$static[__FUNCTION__] = FALSE;
 
-			if(PHP_SAPI === 'cli')
+			if(strcasecmp(PHP_SAPI, 'cli') === 0)
 				self::$static[__FUNCTION__] = TRUE;
 		}
 		return self::$static[__FUNCTION__];

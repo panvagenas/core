@@ -1,5 +1,5 @@
 /**
- * WebSharks™ Core Styles.
+ * WebSharks™ Core Styles
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -162,7 +162,7 @@
 .websharks-core.ui a[rel~="xlink"]
 {
 	padding-right : 18px;
-	background    : url('../../images/xlink-13x13.png') no-repeat center right;
+	background    : url('images/xlink-13x13.png') no-repeat center right;
 }
 
 /* Responses. */

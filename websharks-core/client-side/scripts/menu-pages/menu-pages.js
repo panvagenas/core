@@ -1,5 +1,5 @@
 /**
- * Menu Pages Extension.
+ * Menu Pages Extension
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}

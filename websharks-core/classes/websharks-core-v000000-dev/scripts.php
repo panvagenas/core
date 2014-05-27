@@ -63,37 +63,24 @@ namespace websharks_core_v000000_dev
 					$this->method(__FUNCTION__).'#init', NULL,
 					$this->__('Doing it wrong (`init` hook has NOT been fully processed yet).')
 				);
-			// Add components & register scripts (based on context).
-
+			$is_admin            = is_admin(); // Conditional cache.
+			$is_plugin_page      = $is_admin && $this->©menu_page->is_plugin_page();
+			$front_side_load     = !$is_admin && $this->©options->get('scripts.front_side.load');
+			$load_jquery_via_cdn = !$is_admin && $this->©options->get('scripts.front_side.load_jquery_via_cdn');
+			$load_jquery_via_cdn = $load_jquery_via_cdn || ($is_admin && $this->©options->get('scripts.admin_side.load_jquery_via_cdn'));
 			$scripts_to_register = array(); // Initialize scripts to register.
 
-			// Add jQuery™ (if loading via Google® instead of WordPress®).
-			if(!is_admin() && $this->©options->get('scripts.front_side.load_jquery_via_cdn'))
-				$scripts_to_register['jquery'] = array(
-					'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
-				);
-			// Add jQuery™ (if loading via Google® instead of WordPress®).
-			if(is_admin() && $this->©options->get('scripts.admin_side.load_jquery_via_cdn'))
-				$scripts_to_register['jquery'] = array(
-					'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
-				);
-			// Only if NOT already registered.
-			if(!wp_script_is('jquery-ui-components', 'registered'))
-				$scripts_to_register['jquery-ui-components'] = array(
-					'deps' => array('jquery'), // Does NOT depend on core-libs; that creates an endless loop.
-					'url'  => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js',
-				);
-			// Only if NOT already registered.
-			if(!wp_script_is('sprintf', 'registered'))
-				$scripts_to_register['sprintf'] = array(
-					'deps' => array(), // Does NOT depend on core-libs; that creates an endless loop.
-					'url'  => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.min.js',
-				);
-			// Only if core has NOT already been registered by another WebSharks™ plugin.
+			// Add jQuery™ (if loading via CDN).
+
+			if($load_jquery_via_cdn) $scripts_to_register['jquery'] = array(
+				'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+			);
+			// Core libs; available in all contexts.
+
 			if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
 				$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes] = array(
-					'deps'     => array('jquery', 'jquery-ui-components', 'sprintf'),
-					'url'      => $this->©url->to_core_dir_file('/client-side/scripts/core-libs').'/',
+					'deps'     => array('jquery'), // jQuery dependency only; we compile others.
+					'url'      => $this->©url->to_core_dir_file('/client-side/scripts/core-libs.min.js'),
 					'ver'      => $this->___instance_config->core_version_with_dashes,
 
 					'localize' => array( // Array of WebSharks™ Core JavaScript translations.
@@ -143,11 +130,33 @@ namespace websharks_core_v000000_dev
 					                     'password_strength_mismatch_status__mismatch'        => $this->_x('mismatch')
 					)
 				);
-			if(is_admin() && $this->©menu_page->is_plugin_page()) // For plugin menu pages.
+			// Front-side components; only if applicable.
+
+			if($front_side_load) // Front-side styles.
+			{
+				$this->front_side_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side';
+
+				$scripts_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side'] = array(
+					'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
+					'url'  => $this->©url->to_template_dir_file('/client-side/scripts/front-side.min.js'),
+					'ver'  => $this->___instance_config->plugin_version_with_dashes
+				);
+			}
+			// Stand-alone components; available in all contexts.
+
+			$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone';
+
+			$scripts_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone'] = array(
+				'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
+				'url'  => $this->©url->to_template_dir_file('/client-side/scripts/stand-alone.min.js'),
+				'ver'  => $this->___instance_config->plugin_version_with_dashes
+			);
+			// Menu page components; only if applicable.
+
+			if($is_plugin_page) // Menu page scripts.
 			{
 				$this->menu_page_components[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-pages';
 
-				// Only if NOT already registered by another WebSharks™ plugin (and it should NOT be).
 				if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
 					$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
 						'deps'     => array($this->___instance_config->core_ns_stub_with_dashes),
@@ -164,16 +173,16 @@ namespace websharks_core_v000000_dev
 						)
 					);
 			}
-			// Register scripts (if there are any to register).
 			if($scripts_to_register) $this->register($scripts_to_register);
 
-			// Add core inline data (i.e. inline JavaScript code) — for core libs.
-			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->build_instance_config_for_core_inline_data());
-			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->build_verifiers_for_core_inline_data());
+			// Add data separately, as this might change for each plugin the core processes.
 
-			// Add core inline data (i.e. inline JavaScript code) — for menu pages.
-			if(is_admin() && $this->©menu_page->is_plugin_page()) // For plugin menu pages.
-				$this->add_data($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', $this->build_menu_page_inline_data());
+			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_instance_config_for_core_inline_data());
+			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_verifiers_for_core_inline_data());
+
+			if($front_side_load) $this->add_data($this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side', $this->build_front_side_inline_data());
+			$this->add_data($this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone', $this->build_stand_alone_inline_data());
+			if($is_plugin_page) $this->add_data($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', $this->build_menu_page_inline_data());
 		}
 
 		/**
@@ -181,7 +190,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return string Instance config for core inline data.
 		 */
-		public function build_instance_config_for_core_inline_data()
+		protected function _build_instance_config_for_core_inline_data()
 		{
 			if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
 
@@ -213,7 +222,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return string Verifiers for core inline data.
 		 */
-		public function build_verifiers_for_core_inline_data()
+		protected function _build_verifiers_for_core_inline_data()
 		{
 			if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
 
@@ -227,7 +236,7 @@ namespace websharks_core_v000000_dev
 				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_class.'.®update_sidebar_panels_order', $this::private_type).',';
 				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_class.'.®update_sidebar_panels_state', $this::private_type).',';
 			}
-			$data .= $this->build_additional_verifiers_for_core_inline_data(); // Make this easy for class extenders.
+			$data .= $this->build_verifiers_for_core_inline_data(); // Make this easy for class extenders.
 
 			$data = rtrim($data, ',').'};'; // Trim and close curly bracket.
 
@@ -244,7 +253,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return string Additional verifiers for inline data.
 		 */
-		public function build_additional_verifiers_for_core_inline_data()
+		public function build_verifiers_for_core_inline_data()
 		{
 			if(isset($this->cache[__FUNCTION__]))
 				return $this->cache[__FUNCTION__];
@@ -307,16 +316,15 @@ namespace websharks_core_v000000_dev
 			$components = array(); // Initialize array.
 			$others     = ($others) ? (array)$others : array();
 
-			if(!is_admin() && $this->©options->get('scripts.front_side.load'))
-				if($this->apply_filters('front_side', (boolean)$this->©options->get('scripts.front_side.load_by_default')))
-					$components = array_merge($components, $this->front_side_components);
+			$is_admin                = is_admin(); // Conditional cache.
+			$is_plugin_page          = $is_admin && $this->©menu_page->is_plugin_page();
+			$front_side_load         = !$is_admin && $this->©options->get('scripts.front_side.load');
+			$front_side_load_filter  = $front_side_load && $this->apply_filters('front_side', (boolean)$this->©options->get('scripts.front_side.load_by_default'));
+			$stand_alone_load_filter = $this->apply_filters('stand_alone', FALSE); // Stand-alone is always off by default.
 
-			if(!is_admin() && $this->©options->get('scripts.front_side.load'))
-				if($this->apply_filters('stand_alone', FALSE)) // Stand-alone is always off by default.
-					$components = array_merge($components, $this->stand_alone_components);
-
-			if(is_admin() && $this->©menu_page->is_plugin_page()) // No filters (already loaded selectively).
-				$components = array_merge($components, $this->menu_page_components);
+			if($front_side_load_filter) $components = array_merge($components, $this->front_side_components);
+			if($stand_alone_load_filter) $components = array_merge($components, $this->stand_alone_components);
+			if($is_plugin_page) $components = array_merge($components, $this->menu_page_components);
 
 			return array_unique(array_merge($components, $others));
 		}

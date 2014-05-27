@@ -1,5 +1,5 @@
 /**
- * WebSharks™ Core Scripts.
+ * WebSharks™ Core Scripts
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -11,13 +11,21 @@
  * @TODO Finish documenting properties in this file.
  *    Most docBlocks are already in place; but they still need to be filled in.
  *    Several parameters are untyped and undocumented (among other things that are incomplete).
- *
- * @TODO Fix IDE references to `sprintf()`.
  */
 
 (function($w) // Begin WebSharks™ Core closure.
 {
 	'use strict'; // Standards.
+
+	/**
+	 * To satisfy IDEs here.
+	 *
+	 * @param s {String} Input string.
+	 *
+	 * @return {String}
+	 */
+	if(typeof sprintf !== 'function')
+		$w.sprintf = function(s){ return s; };
 
 	/**
 	 * @type {Object} WebSharks™ Core.

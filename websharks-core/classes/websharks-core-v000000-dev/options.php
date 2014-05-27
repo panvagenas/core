@@ -63,12 +63,12 @@ namespace websharks_core_v000000_dev
 
 				'no_cache.headers.always'                    => '0',
 
-				'styles.front_side.load'                     => '0',
+				'styles.front_side.load'                     => '1',
 				'styles.front_side.load_by_default'          => '0',
 				'styles.front_side.load_themes'              => array('jquery-ui-theme-default'),
 				'styles.front_side.theme'                    => 'jquery-ui-theme-default',
 
-				'scripts.front_side.load'                    => '0',
+				'scripts.front_side.load'                    => '1',
 				'scripts.front_side.load_by_default'         => '0',
 				'scripts.front_side.load_jquery_via_cdn'     => '0',
 				'scripts.admin_side.load_jquery_via_cdn'     => '0',

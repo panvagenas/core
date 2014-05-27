@@ -180,7 +180,7 @@ namespace websharks_core_v000000_dev
 			if(isset($this->static[__FUNCTION__]))
 				return $this->static[__FUNCTION__];
 
-			$regex = '/Apache\/(?P<version>[1-9][^\s]*)/i';
+			$regex = '/Apache\/(?P<version>[1-9][0-9]*\.[0-9][^\s]*)/i';
 
 			if($this->©function->is_possible('apache_get_version'))
 				if(($apache_get_version = apache_get_version()) && preg_match($regex, $apache_get_version, $apache))
@@ -228,7 +228,7 @@ namespace websharks_core_v000000_dev
 
 			$this->static[__FUNCTION__] = FALSE;
 
-			if(PHP_SAPI === 'cli')
+			if(strcasecmp(PHP_SAPI, 'cli') === 0)
 				$this->static[__FUNCTION__] = TRUE;
 
 			return $this->static[__FUNCTION__];

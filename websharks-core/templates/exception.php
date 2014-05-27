@@ -1,7 +1,7 @@
 <?php
 namespace websharks_core_v000000_dev;
 /**
- * Template.
+ * Template
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -48,7 +48,6 @@ $exception = $this->data->exception;
 			<div class="content container <?php echo esc_attr($this->ui_widget_classes()); ?>">
 
 				<!-- BEGIN: Content Body -->
-				<!-- ↑ For exception handler (leave intact). -->
 
 				<a name="exception" class="anchor"></a>
 
@@ -106,7 +105,6 @@ $exception = $this->data->exception;
 
 				<div class="clear"></div>
 
-				<!-- ↓ For exception handler (leave intact). -->
 				<!-- / END: Content Body -->
 
 			</div>

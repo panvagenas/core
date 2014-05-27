@@ -198,9 +198,7 @@ namespace websharks_core_v000000_dev
 			{
 				static::$plugin->©env->ob_end_clean();
 
-				// Construct template data.
-				$exception = static::$exception; // For template data.
-
+				$exception = static::$exception; // For template.
 				if(static::$plugin->©env->is_browser() && did_action('init') && !doing_action('init'))
 					if(($template = static::$plugin->©template('exception.php', get_defined_vars())) && $template->content)
 					{

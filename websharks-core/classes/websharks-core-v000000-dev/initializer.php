@@ -35,11 +35,6 @@ namespace websharks_core_v000000_dev
 			register_activation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.activation'));
 			register_deactivation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.deactivation'));
 
-			// Adds support for administrative notices.
-			// This MUST be capable of running independently from hooks/filters `after_setup_theme`.
-			// For example, administrative notices should NOT be dependent upon action handlers.
-			add_action('all_admin_notices', array($this, '©notices.all_admin_notices'));
-
 			// Process hooks in the routine above (when/if possible).
 			add_action('after_setup_theme', array($this, 'after_setup_theme'), -(PHP_INT_MAX - 100));
 		}
@@ -56,10 +51,10 @@ namespace websharks_core_v000000_dev
 				return; // Do NOT go any further here.
 
 			// Handles no-cache headers/constants.
-			add_action('init', array($this, '©no_cache.init'), -(PHP_INT_MAX - 100));
+			add_action('wp_loaded', array($this, '©no_cache.wp_loaded'), -(PHP_INT_MAX - 100));
 
 			// Keeps the DB cache fresh while site owners' work.
-			add_action('admin_init', array($this, '©db_cache.admin_init'), -(PHP_INT_MAX - 100));
+			add_action('wp_loaded', array($this, '©db_cache.wp_loaded'), -(PHP_INT_MAX - 100));
 
 			// Handles plugin actions.
 			add_action('wp_loaded', array($this, '©actions.wp_loaded'), -(PHP_INT_MAX - 100));
@@ -79,6 +74,9 @@ namespace websharks_core_v000000_dev
 			// Add support for administrative menu panels.
 			add_action('admin_menu', array($this, '©menu_pages.admin_menu'));
 			add_action('network_admin_menu', array($this, '©menu_pages.network_admin_menu'));
+
+			// Adds support for administrative notices.
+			add_action('all_admin_notices', array($this, '©notices.all_admin_notices'));
 
 			// Records HTTP communication (only ONE plugin needs to add this hook).
 			if($this->©env->is_in_wp_debug_mode() && !isset($this->static[__FUNCTION__]['urls.http_api_debug']))

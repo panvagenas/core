@@ -27,12 +27,14 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Handles no-cache headers/constants.
 		 *
-		 * @attaches-to WordPress® `init` action hook.
-		 * @hook-priority `-1` Before most everything else.
+		 * @attaches-to WordPress® `wp_loaded` action hook.
+		 * @hook-priority `-(PHP_INT_MAX - 100)` Before most everything else.
 		 *
 		 * @assertion-via WordPress®.
+		 *
+		 * @TODO Consider logged-in user caching in QC Pro here.
 		 */
-		public function init()
+		public function wp_loaded()
 		{
 			if(is_admin() // No-cache all administrative areas.
 			   || $this->©env->is_systematic_routine()
