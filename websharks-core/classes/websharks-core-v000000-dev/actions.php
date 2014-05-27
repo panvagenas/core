@@ -43,8 +43,6 @@ namespace websharks_core_v000000_dev
 		 */
 		public function wp_loaded()
 		{
-			throw $this->©exception('debug');
-
 			if(!$this->is()) return;
 
 			$this->©env->increase_db_wait_timeout();

@@ -105,6 +105,9 @@ namespace websharks_core_v000000_dev
 
 			if(!$this->©function->is_possible('\\'.$this->___instance_config->plugin_var_ns))
 				$this->©php->¤eval('function '.$this->___instance_config->plugin_var_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
+
+			if(!$this->©function->is_possible('\\'.$this->___instance_config->plugin_root_ns.'_uninstall'))
+				$this->©php->¤eval('function '.$this->___instance_config->plugin_root_ns.'_uninstall(){ $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']->©installer->uninstall(); }');
 		}
 
 		/**
@@ -174,6 +177,8 @@ namespace websharks_core_v000000_dev
 		 *    we force activation and/or reactivation to occur on the WordPress® `setup_theme` hook, at priority `-10000`.
 		 *    We attach to `setup_theme`, so that activation occurs before `init`, and before theme functions are loaded up.
 		 *    Theme functions may include code which has plugin dependencies, so this is always a good idea.
+		 *
+		 * @TODO Find a way to move this to the `init` hook.
 		 */
 		public function check_force_activation()
 		{

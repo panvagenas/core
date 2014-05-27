@@ -25,7 +25,7 @@ namespace websharks_core_v000000_dev
 	class initializer extends framework
 	{
 		/**
-		 * Prepares initializer hooks.
+		 * Prepares initialization routines/hooks.
 		 */
 		public function prepare_hooks()
 		{
@@ -89,7 +89,7 @@ namespace websharks_core_v000000_dev
 		{
 			register_activation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.activation'));
 			register_deactivation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.deactivation'));
-			register_uninstall_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.uninstall'));
+			register_uninstall_hook($this->___instance_config->plugin_dir_file_basename, $this->___instance_config->plugin_root_ns.'_uninstall');
 		}
 	}
 }
