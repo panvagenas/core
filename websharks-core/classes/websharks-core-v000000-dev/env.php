@@ -193,7 +193,7 @@ namespace websharks_core_v000000_dev
 			if(!$this->©function->is_possible('shell_exec') || ini_get('open_basedir'))
 				return ($this->static[__FUNCTION__] = ''); // Not possible.
 
-			if(!($httpd_v = shell_exec('/usr/bin/env httpd -v')) && !($httpd_v = shell_exec('/usr/bin/env apachectl -v')))
+			if(!($httpd_v = @shell_exec('/usr/bin/env httpd -v')) && !($httpd_v = @shell_exec('/usr/bin/env apachectl -v')))
 			{
 				$_possible_httpd_locations = array(
 					'/usr/sbin/httpd', '/usr/bin/httpd',
@@ -202,7 +202,7 @@ namespace websharks_core_v000000_dev
 					'/usr/local/apache/sbin/httpd', '/usr/local/apache/bin/httpd',
 				);
 				foreach($_possible_httpd_locations as $_httpd_location) if(is_file($_httpd_location))
-					if(($httpd_v = shell_exec(escapeshellarg($_httpd_location).' -v')))
+					if(($httpd_v = @shell_exec(escapeshellarg($_httpd_location).' -v')))
 						break; // All done here.
 				unset($_possible_httpd_locations, $_httpd_location);
 			}
@@ -592,7 +592,7 @@ namespace websharks_core_v000000_dev
 		{
 			$ob_levels = ob_get_level(); // Cleans output buffers.
 			for($ob_level = 0; $ob_level < $ob_levels; $ob_level++)
-				ob_end_clean(); // May fail on a locked buffer.
+				@ob_end_clean(); // May fail on a locked buffer.
 			unset($ob_levels, $ob_level);
 
 			return ob_get_level() ? FALSE : TRUE;

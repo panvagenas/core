@@ -195,13 +195,18 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	{
 		// Establish some important working variables.
 
-		$is_stand_alone = $GLOBALS[__FILE__]['is_in_stand_alone_mode'];
-		$is_wp_loaded   = defined('WPINC'); // We'll be checking these flags in several places below.
-		$_g             = ($is_wp_loaded && !empty($_GET['websharks_core__deps'])) ? stripslashes_deep($_GET['websharks_core__deps']) : array();
-		$is_auto_fix    = ($is_wp_loaded && !empty($_g['auto_fix']) && is_string($_g['auto_fix']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['auto_fix'], $_g['checksum']));
-		$is_dismissal   = ($is_wp_loaded && !empty($_g['dismiss']) && is_string($_g['dismiss']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['dismiss'], $_g['checksum']));
-		$is_test_email  = ($is_wp_loaded && !empty($_g['test_email']) && is_string($_g['test_email']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['test_email'], $_g['checksum']));
-		$is_test_https  = ($is_wp_loaded && !empty($_g['test_https']) && is_string($_g['test_https']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['test_https'], $_g['checksum']));
+		$is_stand_alone        = $GLOBALS[__FILE__]['is_in_stand_alone_mode'];
+		$is_wp_loaded          = defined('WPINC'); // We'll be checking these flags in several places below.
+		$_g                    = ($is_wp_loaded && !empty($_GET['websharks_core__deps'])) ? stripslashes_deep($_GET['websharks_core__deps']) : array();
+		$is_auto_fix           = ($is_wp_loaded && !empty($_g['auto_fix']) && is_string($_g['auto_fix']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['auto_fix'], $_g['checksum']));
+		$is_dismissal          = ($is_wp_loaded && !empty($_g['dismiss']) && is_string($_g['dismiss']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['dismiss'], $_g['checksum']));
+		$is_test_email         = ($is_wp_loaded && !empty($_g['test_email']) && is_string($_g['test_email']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['test_email'], $_g['checksum']));
+		$is_test_https         = ($is_wp_loaded && !empty($_g['test_https']) && is_string($_g['test_https']) && !empty($_g['checksum']) && is_string($_g['checksum']) && $this->verify_checksum($_g['test_https'], $_g['checksum']));
+		$is_localhost_test_url = !empty($_g['localhost_test_url']); // A test back to the same site; we should NOT scan dependencies in a loop.
+
+		# --------------------------------------------------------------------------------------------------------------------------------
+
+		if($is_localhost_test_url) return FALSE; // A test back to the same site; we should NOT scan dependencies in a loop.
 
 		# --------------------------------------------------------------------------------------------------------------------------------
 
@@ -990,12 +995,13 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		$_fopen_url_possible          = filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOLEAN);
 		$_fopen_url_over_ssl_possible = ($_fopen_url_possible && extension_loaded('openssl'));
 
-		$_curl_over_ssl_test_success                       = $_fopen_url_over_ssl_test_success = FALSE;
-		$_curl_fopen_ssl_test_url                          = 'https://www.websharks-inc.com/robots.txt';
-		$_curl_fopen_ssl_test_url_return_string_frag       = 'user-agent';
-		$_curl_localhost_test_success                      = $_fopen_url_localhost_test_success = FALSE;
-		$_curl_fopen_localhost_test_url                    = // A value of `http://localhost` has special meaning below.
+		$_curl_over_ssl_test_success                 = $_fopen_url_over_ssl_test_success = FALSE;
+		$_curl_fopen_ssl_test_url                    = 'https://www.websharks-inc.com/robots.txt';
+		$_curl_fopen_ssl_test_url_return_string_frag = 'user-agent';
+		$_curl_localhost_test_success                = $_fopen_url_localhost_test_success = FALSE;
+		$_curl_fopen_localhost_test_url              = // A value of `http://localhost` has special meaning below.
 			'http://'.((!empty($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'localhost');
+		$_curl_fopen_localhost_test_url .= '/?websharks_core__deps[localhost_test_url]=1';
 		$_curl_fopen_localhost_test_url_return_string_frag = '<html';
 
 		if($_curl_possible && $_curl_over_ssl_possible)
@@ -1551,14 +1557,14 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 
 					$_mailer->SetFrom(get_bloginfo('admin_email'), $plugin_name);
 					$_mailer->AddAddress(get_bloginfo('admin_email'), $plugin_name);
-					$_mailer->Subject = sprintf($this->__('Test Email (Server Scan by: %1$s)'), $plugin_name);
+					$_mailer->Subject = sprintf($this->__('Test Email (Dependency Scan by: %1$s)'), $plugin_name);
 
 					$_mailer->MsgHTML(
 						sprintf(
 							$this->__(
 								'<p><strong>%1$s</strong></p>'.
 								'<p>This message was sent as a test.</p>'.
-								'<p>It\'s part of a server scan processed by: %2$s.</p>'.
+								'<p>It\'s part of a dependency scan processed by: %2$s.</p>'.
 								'<p>A plugin for WordPress®.</p>'
 							), htmlspecialchars($_mailer->Subject), htmlspecialchars($plugin_name)
 						)
@@ -2372,7 +2378,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		echo '<head>';
 
 		echo '<title>'.
-		     $this->__('Server Scan by:').
+		     $this->__('Dependency Scan by').
 		     ' '.htmlspecialchars($this->check['plugin_name']).
 		     '</title>';
 
@@ -2424,7 +2430,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		echo '<div class="wrapper">';
 
 		echo '<h1>'.
-		     $this->__('Server Scan by:').
+		     $this->__('Dependency Scan by').
 		     ' <strong>'.htmlspecialchars($this->check['plugin_name']).'</strong>';
 
 		echo '<div class="tools">';
@@ -2657,12 +2663,13 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		echo '<div class="container">';
 
 		echo '<h2 class="heading">'.
-		     $this->__('Server Scan by:').
-		     ' <strong>'.$this->check['plugin_name'].'</strong>'.
+		     $this->__('Dependency Scan by').
+		     ' <strong>'.esc_html($this->check['plugin_name']).'</strong>'.
 		     '</h2>';
 
 		echo '<h3 class="heading">'.
-		     $this->__('The following issues are preventing full activation of at least one installed plugin.').
+		     sprintf($this->__('The following issues are preventing full activation of %1$s.'),
+		             esc_html($this->check['plugin_name'])).
 		     (($this->check['has_notices'] || $this->check['has_warnings'])
 			     ? ((is_super_admin())
 				     ? $this->__(
@@ -2801,7 +2808,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		if(!$this->is_function_possible('shell_exec') || ini_get('open_basedir'))
 			return (self::$static[__FUNCTION__] = ''); // Not possible.
 
-		if(!($httpd_v = shell_exec('/usr/bin/env httpd -v')) && !($httpd_v = shell_exec('/usr/bin/env apachectl -v')))
+		if(!($httpd_v = @shell_exec('/usr/bin/env httpd -v')) && !($httpd_v = @shell_exec('/usr/bin/env apachectl -v')))
 		{
 			$_possible_httpd_locations = array(
 				'/usr/sbin/httpd', '/usr/bin/httpd',
@@ -2810,7 +2817,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 				'/usr/local/apache/sbin/httpd', '/usr/local/apache/bin/httpd',
 			);
 			foreach($_possible_httpd_locations as $_httpd_location) if(is_file($_httpd_location))
-				if(($httpd_v = shell_exec(escapeshellarg($_httpd_location).' -v')))
+				if(($httpd_v = @shell_exec(escapeshellarg($_httpd_location).' -v')))
 					break; // All done here.
 			unset($_possible_httpd_locations, $_httpd_location);
 		}
@@ -3186,7 +3193,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 	{
 		$ob_levels = ob_get_level(); // Cleans output buffers.
 		for($ob_level = 0; $ob_level < $ob_levels; $ob_level++)
-			ob_end_clean(); // May fail on a locked buffer.
+			@ob_end_clean(); // May fail on a locked buffer.
 		unset($ob_levels, $ob_level);
 
 		return ob_get_level() ? FALSE : TRUE;
