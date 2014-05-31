@@ -46,10 +46,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 
 				'<div>'.
 				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/discussion-64x64.png')).'" style="width:64px; height:64px; float:right; margin:0 0 0 10px;" alt="" />'.
-				sprintf($this->__(
-					'<p style="margin-top:0;">These are the latest %1$s community forum topics.</p>'.
-					'<p class="clear" style="margin-bottom:0;"><strong>See also:</strong> <a href="%2$s" target="_blank" rel="xlink">%1$s Support Policy</a></p>'
-				), esc_html($this->___instance_config->plugin_name), esc_attr($this->©url->to_plugin_site_uri('/support/'))).
+				$this->__('<p style="margin-top:0;">These are the latest community forum topics.</p>').
 				'</div>';
 
 			$this->content_body .= '<hr />';
@@ -83,7 +80,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 				'<div style="text-align:center;">'.
 				sprintf($this->__(
 					'<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">All Community Forum Topics</a></p>'
-				), esc_attr($this->©url->to_plugin_site_uri('/r/community-forum/'))).
+				), esc_attr($this->©url->to_plugin_site_uri('/community/'))).
 				'</div>';
 		}
 	}

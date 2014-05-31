@@ -53,9 +53,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 
 				'<div>'.
 				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/email-64x64.png')).'" style="width:64px; height:64px; float:right; margin:0 0 0 10px;" alt="" />'.
-				sprintf($this->__(
-					'<p style="margin:0;">Receive important email updates from %1$s. We send emails regarding new releases of this software; and also when we publish new articles in the %1$s knowledge base.</p>'
-				), esc_html($this->___instance_config->plugin_name)).
+				$this->__('<p style="margin:0;">Get the latest news &amp; knowledge base articles.</p>').
 				'</div>'.
 
 				$form_fields->construct_field_markup(

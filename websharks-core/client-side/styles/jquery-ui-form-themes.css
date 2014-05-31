@@ -1,0 +1,31 @@
+/**
+ * jQuery™ UI Form Themes (w/ WebSharks™ Prefix)
+ *
+ * Copyright: © 2012 (coded in the USA)
+ * {@link http://www.websharks-inc.com WebSharks™}
+ *
+ * @author JasWSInc
+ * @package WebSharks\Core
+ * @since 120318
+ *
+ * @note The extra `.ui.ui` is to gain precedence over the jQuery™ UI core.
+ *    Our jQuery™ UI core uses `.websharks-core.ui`.
+ */
+
+.websharks-core.ui.ui-theme-default .ui-form-field-tag,
+.websharks-core.ui.ui-theme-default .ui-form-field-tag:-webkit-autofill,
+.websharks-core.ui.ui-theme-default .ui-form-field-type-radios .ui-form-field-container,
+.websharks-core.ui.ui-theme-default .ui-form-field-type-checkboxes .ui-form-field-container,
+.websharks-core.ui.ui-theme-default .ui-form-field-type-checkbox .ui-form-field-container,
+.websharks-core.ui.ui-theme-default .ui-form-field-type-radio .ui-form-field-container
+{
+	color      : #666666;
+	background : #F9F9F9;
+}
+.websharks-core.ui.ui-theme-default .ui-form-field-tag:focus,
+.websharks-core.ui.ui-theme-default .ui-form-field-type-radios .ui-form-field-container label:hover,
+.websharks-core.ui.ui-theme-default .ui-form-field-type-checkboxes .ui-form-field-container label:hover
+{
+	color      : #000000;
+	background : #FFFFFF;
+}

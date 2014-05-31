@@ -40,8 +40,6 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 
 			$this->heading_title = $this->__('Pro Upgrade');
 
-			$form_fields = $this->©form_fields(); // Object instance.
-
 			$this->content_body = // Pro upgrade.
 
 				'<div style="text-align:center;">'.
@@ -52,13 +50,6 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 
 				'<div style="text-align:center; margin-top:5px;">'.
 				'<p style="margin:0;"><a href="'.esc_attr($this->©url->to_plugin_site_uri('/pro/')).'" target="_blank"><img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/pro-upgrade-160x80.png')).'" style="width:160px; height:80px;" alt="" /></a></p>'.
-				'</div>'.
-
-				'<div style="text-align:center; margin-top:5px;">'.
-				sprintf($this->__(
-					'<p style="margin:0;"><strong>See also:</strong> <a href="%2$s" target="_blank" rel="xlink">%1$s Testimonials</a></p>'.
-					'<p style="margin:0;"><a href="%3$s" target="_blank" rel="xlink">%1$s Prices / Licensing Options</a></p>'
-				), esc_html($this->___instance_config->plugin_name), esc_attr($this->©url->to_plugin_site_uri('/testimonials/')), esc_attr($this->©url->to_plugin_site_uri('/prices/'))).
 				'</div>';
 		}
 	}

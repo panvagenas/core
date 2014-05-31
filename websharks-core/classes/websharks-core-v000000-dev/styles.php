@@ -142,7 +142,7 @@ namespace websharks_core_v000000_dev
 					{
 						if(strpos($_theme_dir, '.') === 0 || $_theme_dir === 'index.php')
 							continue; // Skip all dots and `index.php` files.
-						else if(is_file($_themes_dir.'/'.$_theme_dir.'/ui-theme.min.css'))
+						else if(is_file($_themes_dir.'/'.$_theme_dir.'/jquery-ui-1.10.4.custom.min.css'))
 							$themes['jquery-ui-theme-'.$_theme_dir] = $_themes_dir.'/'.$_theme_dir;
 					}
 					unset($_theme_dir); // Housekeeping.

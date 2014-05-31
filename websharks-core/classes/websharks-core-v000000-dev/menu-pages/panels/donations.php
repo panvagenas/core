@@ -44,18 +44,11 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 
 			$this->content_body = // Donations (form field selection).
 
-				'<div>'.
-				sprintf($this->__(
-					'<p style="margin-top:0;">If you\'re running the free version of %1$s, please consider making a donation to help support the continued development of this software.</p>'.
-					'<p style="margin-bottom:0;">Or, instead of making a donation you could purchase <a href="%2$s" target="_blank" rel="xlink">%1$s Pro</a>.</p>'
-				), esc_html($this->___instance_config->plugin_name), esc_attr($this->©url->to_plugin_site_uri('/pro/'))).
-				'</div>'.
-
 				'<form'.
 				' method="get"'.
 				' target="_blank"'.
 				' class="donate ui-form"'.
-				' action="'.esc_attr($this->©url->to_plugin_site_uri('/r/donate/')).'"'.
+				' action="'.esc_attr($this->©url->to_plugin_site_uri('/donate/')).'"'.
 				'>'.
 				$form_fields->construct_field_markup(
 					$form_fields->¤value(NULL),

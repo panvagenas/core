@@ -125,7 +125,7 @@
 /* Code Tags. */
 .websharks-core.ui code, .websharks-core.ui pre
 {
-	font-family : 'Consolas', 'Courier New', monospace;
+	font-family : 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
 }
 .websharks-core.ui pre
 {

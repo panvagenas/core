@@ -13,7 +13,6 @@
 {
 	$.fn.toggles = function(options, actions)
 	{
-		// Defaults.
 		var defaults =
 		{
 			options: {
@@ -28,24 +27,20 @@
 				toggleAll: false
 			}
 		};
-
-		// Define options object.
 		if(typeof options === 'object')
 			options = $.extend({}, defaults.options, options);
 		else options = defaults.options;
 
-		// Define actions object.
 		if(typeof actions === 'object')
 			actions = $.extend({}, defaults.actions, actions);
 		else actions = defaults.actions;
 
-		// Show all.
 		var showAll = function()
 		{
 			var $toggles = $(this);
 
 			if(!$toggles.data('toggles-setup'))
-				return;
+				return; // Not setup.
 
 			var options = $toggles.data('toggle-options');
 
@@ -57,7 +52,6 @@
 			options.onToggle.apply(this, [getToggleStates.apply(this)]);
 		};
 
-		// Hide all.
 		var hideAll = function()
 		{
 			var $toggles = $(this);
@@ -75,7 +69,6 @@
 			options.onToggle.apply(this, [getToggleStates.apply(this)]);
 		};
 
-		// Toggle all.
 		var toggleAll = function()
 		{
 			var $toggles = $(this);
@@ -90,7 +83,6 @@
 			else hideAll.apply(this);
 		};
 
-		// Set active toggle panels.
 		var setActivePanels = function()
 		{
 			var $toggles = $(this);
@@ -106,20 +98,15 @@
 				      {
 					      if(options.isActive.apply(this))
 					      {
-						      // Seems like a bug in PhpStorm.
-						      // The `.parent()` arg is optional!
-						      // noinspection JSCheckFunctionSignatures
 						      headerToggle.apply($(this).parent().get(0));
 						      specificTogglesActive = true;
 					      }
 				      });
-
 			if(!specificTogglesActive)
 				$toggles.find(options.header + '.' + options.activeByDefaultClass)
 					.each(function(){ headerToggle.apply(this); });
 		};
 
-		// Get toggle states.
 		var getToggleStates = function()
 		{
 			var $toggles = $(this);
@@ -137,11 +124,9 @@
 						      active.push(this);
 					      else inactive.push(this);
 				      });
-
 			return {active: active, inactive: inactive};
 		};
 
-		// Toggle specific panel.
 		var headerToggle = function()
 		{
 			var $header = $(this);
@@ -151,7 +136,6 @@
 				.next().toggle().toggleClass('ui-accordion-content-active');
 		};
 
-		// Setup/initialize toggles.
 		var setupInitialize = function()
 		{
 			var toggles = this;
@@ -161,11 +145,11 @@
 			{
 				$toggles.data('toggle-options', options).data('toggles-setup', true)
 
-					.addClass('ui-accordion ui-widget ui-helper-reset ui-accordion-icons')
+					.addClass('ui-accordion ui-widget ui-helper-reset')
 
 					.find(options.header)
-					.addClass('ui-accordion-header ui-helper-reset ui-state-default ui-corner-all')
-					.prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+					.addClass('ui-accordion-header ui-accordion-icons ui-helper-reset ui-state-default ui-corner-all')
+					.prepend('<span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>')
 
 					.hover(function(){ $(this).toggleClass('ui-state-hover'); })
 
@@ -175,14 +159,12 @@
 						       options.onToggle.apply(toggles, [getToggleStates.apply(toggles)]);
 						       return false;
 					       })
-
 					.next().addClass('ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom').hide();
 
 				$toggles.css({visibility: 'visible'}), setActivePanels.apply(this);
 			}
 		};
 
-		// Process actions.
 		if(actions.showAll)
 			return this.each(showAll);
 
@@ -192,7 +174,6 @@
 		else if(actions.toggleAll)
 			return this.each(toggleAll);
 
-		// Else setup/initialize.
 		return this.each(setupInitialize);
 	};
 })(jQuery);

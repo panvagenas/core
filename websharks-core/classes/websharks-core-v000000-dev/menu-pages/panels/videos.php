@@ -46,7 +46,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 
 				'<div style="text-align:center;">'.
 				sprintf($this->__(
-					'<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">Click here for more video tutorials</a>.</p>'
+					'<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">More Great Video Tutorials</a></p>'
 				), esc_attr($this->©url->to_plugin_site_uri('/videos/'))).
 				'</div>';
 		}

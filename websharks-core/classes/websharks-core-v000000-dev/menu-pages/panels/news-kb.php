@@ -38,16 +38,13 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 		{
 			parent::__construct($___instance_config, $menu_page);
 
-			$this->heading_title = $this->__('Latest News / KB Articles');
+			$this->heading_title = $this->__('Recent News / KB Articles');
 
 			$this->content_body = // Latest news feed (powered by FeedBurner).
 
 				'<div>'.
-				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/kb-article-60x60.png')).'" style="width:60px; height:60px; background:#FFFFFF; border:2px solid #EEEEEE; border-radius:5px; float:right; margin:0 0 0 10px;" alt="" />'.
-				sprintf($this->__(
-					'<p style="margin-top:0;">These are the latest news &amp; knowledge base articles from %1$s</p>'.
-					'<p class="clear" style="margin-bottom:0;"><strong>See also:</strong> <a href="%2$s" target="_blank" rel="xlink">%1$s FAQs</a></p>'
-				), esc_html($this->___instance_config->plugin_name), esc_attr($this->©url->to_plugin_site_uri('/faqs/'))).
+				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/kb-article-60x60.png')).'" style="width:48px; height:48px; background:#FFFFFF; border:2px solid #EEEEEE; border-radius:5px; float:right; margin:0 0 0 10px;" alt="" />'.
+				$this->__('<p style="margin-top:0;">The most recent news &amp; knowledge base articles.</p>').
 				'</div>';
 
 			$this->content_body .= '<hr />';
