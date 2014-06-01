@@ -400,35 +400,6 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Sets selective loading status for front-side styles.
-		 *
-		 * @param boolean $needs TRUE if the plugin needs front-side styles (or FALSE if it does NOT need them).
-		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side styles.
-		 *
-		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on `$needs`).
-		 */
-		public function needs_front_side_styles($needs, $theme = '')
-		{
-			$this->check_arg_types('boolean', 'string', func_get_args());
-
-			if(!$this->©options->get('styles.front_side.load'))
-				return; // Nothing to do here.
-
-			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__styles__front_side');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__front_side', $filter);
-
-			$components = $this->©styles->front_side_components;
-			if($theme) // A specific theme will be enqueued or dequeued (depending on `$needs`).
-				$components[] = $theme; // Add to components.
-
-			if($needs) // Enqueue or dequeue.
-				$this->©styles->enqueue($components);
-			else $this->©styles->dequeue($components);
-		}
-
-		/**
 		 * Sets selective loading status for stand-alone styles.
 		 *
 		 * @param boolean $needs TRUE if the plugin needs stand-alone styles (or FALSE if it does NOT need them).
@@ -458,25 +429,32 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Sets selective loading status for front-side scripts.
+		 * Sets selective loading status for front-side styles.
 		 *
-		 * @param boolean $needs TRUE if the plugin needs front-side scripts (or FALSE if it does NOT need them).
-		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side scripts.
+		 * @param boolean $needs TRUE if the plugin needs front-side styles (or FALSE if it does NOT need them).
+		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side styles.
+		 *
+		 * @param string  $theme Optional. Defaults to an empty string.
+		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on `$needs`).
 		 */
-		public function needs_front_side_scripts($needs)
+		public function needs_front_side_styles($needs, $theme = '')
 		{
-			$this->check_arg_types('boolean', func_get_args());
+			$this->check_arg_types('boolean', 'string', func_get_args());
 
-			if(!$this->©options->get('scripts.front_side.load'))
+			if(!$this->©options->get('styles.front_side.load'))
 				return; // Nothing to do here.
 
 			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side', $filter);
+			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__styles__front_side');
+			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__front_side', $filter);
 
-			if($needs) // Enqueue or dequeue (based on `$needs`).
-				$this->©scripts->enqueue($this->©scripts->front_side_components);
-			else $this->©scripts->dequeue($this->©scripts->front_side_components);
+			$components = $this->©styles->front_side_components;
+			if($theme) // A specific theme will be enqueued or dequeued (depending on `$needs`).
+				$components[] = $theme; // Add to components.
+
+			if($needs) // Enqueue or dequeue.
+				$this->©styles->enqueue($components);
+			else $this->©styles->dequeue($components);
 		}
 
 		/**
@@ -502,20 +480,25 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Sets selective loading status for front-side scripts/styles (both at the same time).
+		 * Sets selective loading status for front-side scripts.
 		 *
-		 * @param boolean $needs TRUE if the plugin needs front-side scripts/styles (or FALSE if it does NOT need them).
-		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side scripts/styles.
-		 *
-		 * @param string  $theme Optional. Defaults to an empty string.
-		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on `$needs`).
+		 * @param boolean $needs TRUE if the plugin needs front-side scripts (or FALSE if it does NOT need them).
+		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side scripts.
 		 */
-		public function needs_front_side_styles_scripts($needs, $theme = '')
+		public function needs_front_side_scripts($needs)
 		{
-			$this->check_arg_types('boolean', 'string', func_get_args());
+			$this->check_arg_types('boolean', func_get_args());
 
-			$this->needs_front_side_styles($needs, $theme);
-			$this->needs_front_side_scripts($needs);
+			if(!$this->©options->get('scripts.front_side.load'))
+				return; // Nothing to do here.
+
+			$filter = ($needs) ? '__return_true' : '__return_false';
+			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side');
+			add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side', $filter);
+
+			if($needs) // Enqueue or dequeue (based on `$needs`).
+				$this->©scripts->enqueue($this->©scripts->front_side_components);
+			else $this->©scripts->dequeue($this->©scripts->front_side_components);
 		}
 
 		/**
@@ -533,6 +516,23 @@ namespace websharks_core_v000000_dev
 
 			$this->needs_stand_alone_styles($needs, $theme);
 			$this->needs_stand_alone_scripts($needs);
+		}
+
+		/**
+		 * Sets selective loading status for front-side scripts/styles (both at the same time).
+		 *
+		 * @param boolean $needs TRUE if the plugin needs front-side scripts/styles (or FALSE if it does NOT need them).
+		 *    The internal default is FALSE. This MUST be set to TRUE, to enable front-side scripts/styles.
+		 *
+		 * @param string  $theme Optional. Defaults to an empty string.
+		 *    If passed in, a specific UI theme will be enqueued or dequeued (depending on `$needs`).
+		 */
+		public function needs_front_side_styles_scripts($needs, $theme = '')
+		{
+			$this->check_arg_types('boolean', 'string', func_get_args());
+
+			$this->needs_front_side_styles($needs, $theme);
+			$this->needs_front_side_scripts($needs);
 		}
 	}
 }

@@ -20,10 +20,11 @@ if(strcasecmp(PHP_SAPI, 'cli') !== 0)
 ob_start(); // Begin compilation.
 
 echo file_get_contents('http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&subset=latin,latin-ext')."\n";
+
 echo file_get_contents(dirname(__FILE__).'/resets.min.css')."\n";
-echo file_get_contents(dirname(__FILE__).'/jquery-ui-core.min.css')."\n";
-echo file_get_contents(dirname(__FILE__).'/jquery-ui-forms.min.css')."\n";
-echo file_get_contents(dirname(__FILE__).'/jquery-ui-form-themes.min.css')."\n";
 echo file_get_contents(dirname(__FILE__).'/core.min.css')."\n";
+echo file_get_contents(dirname(__FILE__).'/jquery-ui-core.min.css')."\n";
+echo file_get_contents(dirname(__FILE__).'/jquery-ui-core-forms.min.css')."\n";
+echo file_get_contents(dirname(__FILE__).'/jquery-ui-form-themes.min.css')."\n";
 
 file_put_contents(dirname(__FILE__).'/core-libs.min.css', trim(ob_get_clean()));

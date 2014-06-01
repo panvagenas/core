@@ -328,7 +328,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			echo '<div class="clear"></div>';
 			echo '</div>';
 
-			echo '<h1 class="menu-page heading-title"><img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/favicon-24x24.png')).'" alt="" /> » '.$this->heading_title.'</h1>';
+			echo '<h1 class="menu-page heading-title"><img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/favicon-24x24.png')).'" alt="" /> '.$this->heading_title.'</h1>';
 			echo '<div class="menu-page sub-heading-description">'.$this->sub_heading_description.'</div>';
 		}
 

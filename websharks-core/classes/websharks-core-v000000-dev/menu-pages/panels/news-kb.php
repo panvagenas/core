@@ -43,7 +43,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 			$this->content_body = // Latest news feed (powered by FeedBurner).
 
 				'<div>'.
-				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/kb-article-60x60.png')).'" style="width:48px; height:48px; background:#FFFFFF; border:2px solid #EEEEEE; border-radius:5px; float:right; margin:0 0 0 10px;" alt="" />'.
+				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/kb-article-64x64.png')).'" style="width:64px; height:64px; float:right; margin:0 0 0 10px;" alt="" />'.
 				$this->__('<p style="margin-top:0;">The most recent news &amp; knowledge base articles.</p>').
 				'</div>';
 
@@ -76,9 +76,8 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 				'<hr />'.
 
 				'<div style="text-align:center;">'.
-				sprintf($this->__(
-					'<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">%1$s Knowledge Base</a></p>'
-				), esc_html($this->___instance_config->plugin_name), esc_attr($this->©url->to_plugin_site_uri('/kb-articles/'))).
+				sprintf($this->__('<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">%2$s Knowledge Base</a></p>'),
+				        esc_attr($this->©url->to_plugin_site_uri('/kb-articles/')), esc_html($this->___instance_config->plugin_name)).
 				'</div>';
 		}
 	}

@@ -25,17 +25,17 @@ namespace websharks_core_v000000_dev
 	class styles extends framework
 	{
 		/**
-		 * @var array Handles for all front-side components.
-		 */
-		public $front_side_components = array();
-
-		/**
-		 * @var array Handles for all stand-alone components.
+		 * @var array Stand-alone components.
 		 */
 		public $stand_alone_components = array();
 
 		/**
-		 * @var array Handles for all menu page components.
+		 * @var array Front-side components.
+		 */
+		public $front_side_components = array();
+
+		/**
+		 * @var array Menu page components.
 		 */
 		public $menu_page_components = array();
 
@@ -73,11 +73,20 @@ namespace websharks_core_v000000_dev
 				if(!wp_style_is($_theme, 'registered'))
 					$styles_to_register[$_theme] = array(
 						'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
-						'url'  => $this->©url->to_wp_abs_dir_file($_theme_dir.'/ui-theme.min.css'),
+						'url'  => $this->©url->to_wp_abs_dir_file($_theme_dir.'/jquery-ui-1.10.4.custom.min.css'),
 						'ver'  => $this->___instance_config->core_version_with_dashes
 					);
 			unset($_theme, $_theme_dir); // A little housekeeping.
 
+			// Stand-alone components; available in all contexts.
+
+			$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone';
+
+			$styles_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone'] = array(
+				'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
+				'url'  => $this->©url->to_template_dir_file('client-side/styles/stand-alone.min.css'),
+				'ver'  => $this->___instance_config->plugin_version_with_dashes
+			);
 			// Front-side components; only if applicable.
 
 			if($front_side_load) // Front-side styles.
@@ -90,15 +99,6 @@ namespace websharks_core_v000000_dev
 					'ver'  => $this->___instance_config->plugin_version_with_dashes
 				);
 			}
-			// Stand-alone components; available in all contexts.
-
-			$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone';
-
-			$styles_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone'] = array(
-				'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
-				'url'  => $this->©url->to_template_dir_file('client-side/styles/stand-alone.min.css'),
-				'ver'  => $this->___instance_config->plugin_version_with_dashes
-			);
 			// Menu page components; only if applicable.
 
 			if($is_plugin_page) // Menu page styles.
@@ -111,7 +111,7 @@ namespace websharks_core_v000000_dev
 				// Only if NOT already registered by another WebSharks™ plugin (it should NOT be).
 				if(!wp_style_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
 					$styles_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
-						'deps' => array($current_menu_pages_theme),
+						'deps' => array($this->___instance_config->core_ns_stub_with_dashes, $current_menu_pages_theme),
 						'url'  => $this->©url->to_core_dir_file('/client-side/styles/menu-pages/menu-pages.min.css'),
 						'ver'  => $this->___instance_config->core_version_with_dashes
 					);
@@ -170,12 +170,12 @@ namespace websharks_core_v000000_dev
 
 			$is_admin                = is_admin(); // Conditional cache.
 			$is_plugin_page          = $is_admin && $this->©menu_page->is_plugin_page();
+			$stand_alone_load_filter = $this->apply_filters('stand_alone', FALSE);
 			$front_side_load         = !$is_admin && $this->©options->get('styles.front_side.load');
 			$front_side_load_filter  = $front_side_load && $this->apply_filters('front_side', (boolean)$this->©options->get('styles.front_side.load_by_default'));
-			$stand_alone_load_filter = $this->apply_filters('stand_alone', FALSE); // Stand-alone is always off by default.
 
-			if($front_side_load_filter) $components = array_merge($components, $this->front_side_components);
 			if($stand_alone_load_filter) $components = array_merge($components, $this->stand_alone_components);
+			if($front_side_load_filter) $components = array_merge($components, $this->front_side_components);
 			if($is_plugin_page) $components = array_merge($components, $this->menu_page_components);
 
 			return array_unique(array_merge($components, $others));

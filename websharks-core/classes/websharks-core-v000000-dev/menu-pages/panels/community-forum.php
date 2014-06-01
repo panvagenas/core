@@ -78,9 +78,8 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 				'<hr />'.
 
 				'<div style="text-align:center;">'.
-				sprintf($this->__(
-					'<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">All Community Forum Topics</a></p>'
-				), esc_attr($this->©url->to_plugin_site_uri('/community/'))).
+				sprintf($this->__('<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">All Community Forum Topics</a></p>'),
+				        esc_attr($this->©url->to_plugin_site_uri('/community/'))).
 				'</div>';
 		}
 	}

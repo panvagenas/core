@@ -8,8 +8,8 @@
  * @package WebSharks\Core
  * @since 120318
  *
- * @note The extra `.ui` is to achieve equal precedence to UI themes.
- *    UI themes use `.websharks-core.ui.ui-theme-x`.
+ * @note The `.ui.ui` is to gain precedence over core libs.
+ *    Our core libs use `.websharks-core.ui`.
  */
 
 html
@@ -59,20 +59,18 @@ html
 /* Controls: Update Theme. */
 .websharks-core.ui.ui div.menu-page.controls form.update-theme
 {
-	z-index            : 1;
-	position           : absolute;
+	z-index       : 1;
+	position      : absolute;
 
-	display            : none;
-	padding            : 10px;
-	width              : 165px;
-	background         : #F9F9F9;
+	display       : none;
+	padding       : 10px;
+	width         : 165px;
+	background    : #F9F9F9;
 
-	border-radius      : 3px;
-	border             : 1px solid #FFFFFF;
+	border-radius : 3px;
+	border        : 1px solid #FFFFFF;
 
-	-moz-box-shadow    : 0 0 5px #CCCCCC;
-	-webkit-box-shadow : 0 0 5px #CCCCCC;
-	box-shadow         : 0 0 5px #CCCCCC;
+	box-shadow    : 0 0 5px #CCCCCC;
 }
 .websharks-core.ui.ui div.menu-page.controls form.update-theme ul.theme-options
 {

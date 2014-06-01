@@ -8,13 +8,12 @@
  * @package WebSharks\Core
  * @since 120318
  *
- * @note CSS in this file has lower precedence than jQuery™ themes.
- *    Theme styles take precedence over everything here.
- *
- * @special-case We use `!important` w/ all utility styles below.
+ * @note CSS in this file has lower precedence than UI core/themes.
+ *    However, we use `!important` w/ all utility styles.
  */
 
 /* Headings. */
+
 .websharks-core.ui h1,
 .websharks-core.ui h2
 {
@@ -33,6 +32,7 @@
 }
 
 /* Misc. Font Sizes. */
+
 .websharks-core.ui big
 {
 	font-size : 115%;
@@ -43,6 +43,7 @@
 }
 
 /* P + Block Elements. */
+
 .websharks-core.ui p + div,
 	/**/
 .websharks-core.ui p + hgroup,
@@ -89,23 +90,27 @@
 }
 
 /* Consecutive `pre` Tags. */
+
 .websharks-core.ui pre + pre
 {
 	margin-top : 10px;
 }
 
 /* Horizontal Lines. */
+
 .websharks-core.ui hr
 {
 	line-height  : 0;
 	height       : 0;
 	clear        : both;
+	opacity      : 0.25;
 	border       : 1px solid;
 	border-width : 1px 0 0 0;
 	margin       : 10px 0 10px 0;
 }
 
 /* Lists. */
+
 .websharks-core.ui ul,
 .websharks-core.ui ol
 {
@@ -121,8 +126,19 @@
 {
 	margin : 5px 0 5px 0;
 }
+.websharks-core.ui ul li:first-child,
+.websharks-core.ui ol li:first-child
+{
+	margin-top : 0;
+}
+.websharks-core.ui ul li:last-child,
+.websharks-core.ui ol li:last-child
+{
+	margin-bottom : 0;
+}
 
 /* Code Tags. */
+
 .websharks-core.ui code, .websharks-core.ui pre
 {
 	font-family : 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
@@ -144,6 +160,7 @@
 }
 
 /* Links. */
+
 .websharks-core.ui a:link
 {
 	color           : #666666;
@@ -166,6 +183,7 @@
 }
 
 /* Responses. */
+
 .websharks-core.ui div.responses
 {
 	margin-bottom : 10px;
@@ -186,24 +204,30 @@
 }
 .websharks-core.ui div.responses.validation-errors
 {
-	width     : 98%;
-	font-size : 90% !important;
-	margin    : 0 auto 0 auto;
+	width      : 95%;
+	padding    : 5px;
+	box-sizing : border-box;
+	font-size  : 90% !important;
+	border-top : 0 !important;
+	margin     : 0 auto 0 auto;
 }
 
 /* Panels. */
+
 .websharks-core.ui div.panel.wrapper
 {
 	margin : 10px 0 10px 0;
 }
 
 /* Disabled Sections. */
+
 .websharks-core.ui *[disabled="disabled"]
 {
 	opacity : 0.7;
 }
 
 /* Misc. Utilities. */
+
 .websharks-core.ui .clear
 {
 	margin : 0 !important;
@@ -216,12 +240,11 @@
 	overflow      : hidden !important;
 	text-wrap     : none !important;
 	text-overflow : ellipsis !important;
-
 	white-space   : pre !important;
-	/* ^ In case text-wrap fails. */
 }
 
 /* Float Utilities. */
+
 .websharks-core.ui .float-left
 {
 	float      : left !important;
@@ -254,6 +277,7 @@
 }
 
 /* Border Utilities. */
+
 .websharks-core.ui .border-all
 {
 	border : 1px solid !important;
@@ -276,6 +300,7 @@
 }
 
 /* Box Shadow Utilities. */
+
 .websharks-core.ui .box-shadow-all
 {
 	box-shadow : 0 0 5px rgba(0, 0, 0, 0.3) !important;
@@ -290,6 +315,7 @@
 }
 
 /* Text Shadow Utilities. */
+
 .websharks-core.ui .text-shadow
 {
 	text-shadow : 0 1px 1px rgba(0, 0, 0, 0.3) !important;
@@ -297,6 +323,7 @@
 
 /* Padding Utilities
 (after other utilities). */
+
 .websharks-core.ui .padding
 {
 	padding : 10px !important;
@@ -308,6 +335,7 @@
 
 /* Margin Utilities
 (after other utilities). */
+
 .websharks-core.ui .marginize
 {
 	margin : 10px 0 10px 0 !important;
@@ -350,6 +378,7 @@
 }
 
 /* jQuery™ UI Tweaks. */
+
 .websharks-core.ui .ui-dialog-content,
 .websharks-core.ui .ui-accordion-content
 {
@@ -357,5 +386,5 @@
 }
 .websharks-core.ui .ui-accordion-content
 {
-	font-size : 95% !important;
+	font-size : 85% !important;
 }
