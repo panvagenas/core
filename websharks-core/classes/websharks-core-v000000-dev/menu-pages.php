@@ -259,9 +259,6 @@ namespace websharks_core_v000000_dev
 		 * @return null Nothing. Simply updates current options with one or more new option values.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert $options = array('menu_pages.theme' => 'jquery-ui-theme-default');
-		 *    ($options) === NULL
 		 */
 		public function ®update_options($new_options = array())
 		{

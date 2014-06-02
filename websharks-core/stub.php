@@ -87,6 +87,20 @@ if(!class_exists('websharks_core_v000000_dev'))
 		public static $local_core_repo_dir = '%%$_SERVER[WEBSHARK_HOME]%%/WebSharks/websharks-core';
 
 		/**
+		 * WebSharks™ Core prefix.
+		 *
+		 * @var string WebSharks™ Core prefix.
+		 */
+		public static $core_prefix = 'wsc_';
+
+		/**
+		 * WebSharks™ Core prefix w/ dashes.
+		 *
+		 * @var string WebSharks™ Core prefix w/ dashes.
+		 */
+		public static $core_prefix_with_dashes = 'wsc-';
+
+		/**
 		 * WebSharks™ Core stub.
 		 *
 		 * @var string WebSharks™ Core stub.

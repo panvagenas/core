@@ -815,6 +815,8 @@ namespace websharks_core_v000000_dev
 			 * @note This should NOT rely directly or indirectly on any other core class objects.
 			 *    Any static properties/methods in the WebSharks™ Core stub will be fine to use though.
 			 *    In addition — once the object if fully constructed; we can use anything :-)
+			 *
+			 * @TODO Make instance config a class of it's own for better IDE support.
 			 */
 			public function __construct($___instance_config)
 			{
@@ -825,7 +827,7 @@ namespace websharks_core_v000000_dev
 					$___parent_instance_config = $___instance_config->___instance_config;
 				else $___parent_instance_config = NULL; // No parent config.
 
-				$ns_class = get_class($this); // Always NEED `$this` (used in cache entry).
+				$ns_class = get_class($this); // Always NEED `$this` for cache entry.
 
 				if($___parent_instance_config) // Can we bypass validation in this case?
 				{
@@ -876,13 +878,19 @@ namespace websharks_core_v000000_dev
 				// Mostly from core stub. These properties will NOT change from one class instance to another.
 				if(!$___parent_instance_config) // Only if we did NOT get a `$___parent_instance`.
 				{
-					// Miscellaneous core properties (mostly from the stub).
-					$this->___instance_config->core_name           = stub::$core_name;
-					$this->___instance_config->core_site           = stub::$core_site;
+					// Core name & core site; begins with `http://`.
+					$this->___instance_config->core_name = stub::$core_name;
+					$this->___instance_config->core_site = stub::$core_site;
+
+					// Core directories; mostly from stub.
 					$this->___instance_config->local_wp_dev_dir    = stub::$local_wp_dev_dir;
 					$this->___instance_config->local_core_repo_dir = stub::$local_core_repo_dir;
 					$this->___instance_config->core_dir            = stub::n_dir_seps_up(__FILE__, 3);
 					$this->___instance_config->core_classes_dir    = $this->___instance_config->core_dir.'/classes';
+
+					// Based on `stub::$core_prefix`.
+					$this->___instance_config->core_prefix             = stub::$core_prefix;
+					$this->___instance_config->core_prefix_with_dashes = stub::$core_prefix_with_dashes;
 
 					// Based on `stub::$core_ns`.
 					$this->___instance_config->core_ns             = stub::$core_ns;
@@ -913,19 +921,19 @@ namespace websharks_core_v000000_dev
 					throw new \exception(sprintf(stub::__('Namespace\\class contains invalid chars: `%1$s`.'),
 					                             $this->___instance_config->ns_class));
 
-				// The `namespace\sub_namespace\class` for `$this` class.
-				$this->___instance_config->ns_class_prefix           = '\\'.$this->___instance_config->ns_class;
-				$this->___instance_config->ns_class_with_underscores = stub::with_underscores($this->___instance_config->ns_class);
-				$this->___instance_config->ns_class_with_dashes      = stub::with_dashes($this->___instance_config->ns_class);
-				$this->___instance_config->ns_class_basename         = basename(str_replace('\\', '/', $this->___instance_config->ns_class));
+				// The `namespace\sub_namespace` for `$this` class.
+				$this->___instance_config->ns = substr($this->___instance_config->ns_class, 0, strrpos($this->___instance_config->ns_class, '\\'));
 
 				// The `sub_namespace\class` for `$this` class.
 				$this->___instance_config->sub_ns_class                  = ltrim(strstr($this->___instance_config->ns_class, '\\'), '\\');
 				$this->___instance_config->sub_ns_class_with_underscores = stub::with_underscores($this->___instance_config->sub_ns_class);
 				$this->___instance_config->sub_ns_class_with_dashes      = stub::with_dashes($this->___instance_config->sub_ns_class);
 
-				// The `namespace\sub_namespace` for `$this` class.
-				$this->___instance_config->ns = substr($this->___instance_config->ns_class, 0, strrpos($this->___instance_config->ns_class, '\\'));
+				// The `namespace\sub_namespace\class` for `$this` class.
+				$this->___instance_config->ns_class_prefix           = '\\'.$this->___instance_config->ns_class;
+				$this->___instance_config->ns_class_with_underscores = stub::with_underscores($this->___instance_config->ns_class);
+				$this->___instance_config->ns_class_with_dashes      = stub::with_dashes($this->___instance_config->ns_class);
+				$this->___instance_config->ns_class_basename         = basename(str_replace('\\', '/', $this->___instance_config->ns_class));
 
 				// Only if we're NOT in the same namespace as the `$___parent_instance`.
 				if(!$___parent_instance_config || $___parent_instance_config->ns !== $this->___instance_config->ns)
@@ -943,15 +951,29 @@ namespace websharks_core_v000000_dev
 				// Based entirely on current plugin. These properties will NOT change from one class instance to another.
 				if(!$___parent_instance_config) // Only need this routine if we did NOT get a `$___parent_instance`.
 				{
+					// Plugin name & plugin site; begins with `http://`.
+					$this->___instance_config->plugin_name = $this->___instance_config->plugin_name;
+					$this->___instance_config->plugin_site = $this->___instance_config->plugin_site;
+
 					// Based on `plugin_version`.
+					$this->___instance_config->plugin_version                  = $this->___instance_config->plugin_version;
 					$this->___instance_config->plugin_version_with_underscores = stub::with_underscores($this->___instance_config->plugin_version);
 					$this->___instance_config->plugin_version_with_dashes      = stub::with_dashes($this->___instance_config->plugin_version);
 
 					// Based on `plugin_var_ns` (which serves a few different purposes).
-					$this->___instance_config->plugin_prefix             = $this->___instance_config->plugin_var_ns.'_';
+					$this->___instance_config->plugin_var_ns             = $this->___instance_config->plugin_var_ns;
 					$this->___instance_config->plugin_var_ns_with_dashes = stub::with_dashes($this->___instance_config->plugin_var_ns);
 
+					// Based on `plugin_var_ns` (which serves a few different purposes).
+					$this->___instance_config->plugin_prefix             = $this->___instance_config->plugin_var_ns.'_';
+					$this->___instance_config->plugin_prefix_with_dashes = stub::with_dashes($this->___instance_config->plugin_prefix);
+					if($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns)
+					{
+						$this->___instance_config->plugin_prefix             = $this->___instance_config->core_prefix;
+						$this->___instance_config->plugin_prefix_with_dashes = $this->___instance_config->core_prefix_with_dashes;
+					}
 					// Based on plugin's root `namespace` (via `plugin_root_ns`).
+					$this->___instance_config->plugin_root_ns             = $this->___instance_config->plugin_root_ns;
 					$this->___instance_config->plugin_root_ns_prefix      = '\\'.$this->___instance_config->plugin_root_ns;
 					$this->___instance_config->plugin_root_ns_with_dashes = stub::with_dashes($this->___instance_config->plugin_root_ns);
 
@@ -964,6 +986,7 @@ namespace websharks_core_v000000_dev
 						$this->___instance_config->plugin_root_ns_stub_with_dashes = $this->___instance_config->core_ns_stub_with_dashes;
 					}
 					// Based on the plugin's directory (i.e. `plugin_dir`).
+					$this->___instance_config->plugin_dir               = $this->___instance_config->plugin_dir;
 					$this->___instance_config->plugin_dir_basename      = basename($this->___instance_config->plugin_dir);
 					$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/plugin.php';
 
@@ -983,11 +1006,10 @@ namespace websharks_core_v000000_dev
 
 					// Based on the current plugin; we establish properties for a pro add-on (optional).
 					$this->___instance_config->plugin_pro_var = $this->___instance_config->plugin_root_ns.'_pro';
+
 					$this->___instance_config->plugin_pro_dir = $this->___instance_config->plugin_dir.'-pro';
-
-					if(stripos($this->___instance_config->plugin_pro_dir, 'phar://') === 0)
+					if(stripos($this->___instance_config->plugin_pro_dir, 'phar://') === 0) // In case of core.
 						$this->___instance_config->plugin_pro_dir = substr($this->___instance_config->plugin_pro_dir, 7);
-
 					$this->___instance_config->plugin_pro_dir_basename      = basename($this->___instance_config->plugin_pro_dir);
 					$this->___instance_config->plugin_pro_dir_file_basename = $this->___instance_config->plugin_pro_dir_basename.'/plugin.php';
 
@@ -1897,13 +1919,13 @@ namespace websharks_core_v000000_dev
 			}
 
 			/**
-			 * Gets dynamic `©class.®method` for current class.
+			 * Gets dynamic `©class.®method` call for current class.
 			 *
 			 * @param string $function Pass `__FUNCTION__` from any class member.
 			 *    Current sub-namespace class is prepended; and we prefix a `©` symbol also.
-			 *    Please be sure `__FUNCTION__` begins w/ `®` as a registered call action handler.
+			 *    Please be sure `__FUNCTION__` begins w/ `®` if it's a registered call action handler.
 			 *
-			 * @return string Dynamic `©class.®method` for current class; i.e. `get_class($this)`.
+			 * @return string Dynamic `©class.®method` call for current class; i.e. `get_class($this)`.
 			 *
 			 * @final May NOT be overridden by extenders.
 			 * @public Available for public usage.
@@ -1924,7 +1946,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $hook An action hook.
 			 *
-			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 * @param string  $call A dynamic `©class.method` call handler.
 			 *
 			 * @param integer $priority Action hook priority (optional); defaults to `10`.
 			 *
@@ -1937,9 +1959,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @uses ___add_hook()
 			 */
-			final public function add_action($hook, $dynamic_call, $priority = 10, $args = 1)
+			final public function add_action($hook, $call, $priority = 10, $args = 1)
 			{
-				return $this->___add_hook($hook, $dynamic_call, $priority, $args, $this::action_type);
+				return $this->___add_hook($hook, $call, $priority, $args, $this::action_type);
 			}
 
 			/**
@@ -1947,7 +1969,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $hook An action hook.
 			 *
-			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 * @param string  $call A dynamic `©class.method` call handler.
 			 *
 			 * @param integer $priority Action hook priority (optional); defaults to `10`.
 			 *    Note that `$priority` MUST match the original action priority.
@@ -1959,9 +1981,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @uses ___remove_hook()
 			 */
-			final public function remove_action($hook, $dynamic_call, $priority = 10)
+			final public function remove_action($hook, $call, $priority = 10)
 			{
-				return $this->___remove_hook($hook, $dynamic_call, $priority, $this::action_type);
+				return $this->___remove_hook($hook, $call, $priority, $this::action_type);
 			}
 
 			/**
@@ -1990,7 +2012,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $hook A filter hook.
 			 *
-			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 * @param string  $call A dynamic `©class.method` call handler.
 			 *
 			 * @param integer $priority Filter hook priority (optional); defaults to `10`.
 			 *
@@ -2003,9 +2025,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @uses ___add_hook()
 			 */
-			final public function add_filter($hook, $dynamic_call, $priority = 10, $args = 1)
+			final public function add_filter($hook, $call, $priority = 10, $args = 1)
 			{
-				return $this->___add_hook($hook, $dynamic_call, $priority, $args, $this::filter_type);
+				return $this->___add_hook($hook, $call, $priority, $args, $this::filter_type);
 			}
 
 			/**
@@ -2013,7 +2035,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $hook A filter hook.
 			 *
-			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 * @param string  $call A dynamic `©class.method` call handler.
 			 *
 			 * @param integer $priority Filter hook priority (optional); defaults to `10`.
 			 *    Note that `$priority` MUST match the original filter priority.
@@ -2025,9 +2047,9 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @uses ___remove_hook()
 			 */
-			final public function remove_filter($hook, $dynamic_call, $priority = 10)
+			final public function remove_filter($hook, $call, $priority = 10)
 			{
-				return $this->___remove_hook($hook, $dynamic_call, $priority, $this::filter_type);
+				return $this->___remove_hook($hook, $call, $priority, $this::filter_type);
 			}
 
 			/**
@@ -2056,7 +2078,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $hook An action/filter hook.
 			 *
-			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 * @param string  $call A dynamic `©class.method` call handler.
 			 *
 			 * @param integer $priority Action/filter hook priority.
 			 *
@@ -2072,21 +2094,21 @@ namespace websharks_core_v000000_dev
 			 * @see add_action()
 			 * @see add_filter()
 			 */
-			final private function ___add_hook($hook, $dynamic_call, $priority, $args, $type)
+			final private function ___add_hook($hook, $call, $priority, $args, $type)
 			{
-				$hook         = (string)$hook;
-				$dynamic_call = (string)$dynamic_call;
-				$priority     = (integer)$priority;
-				$args         = (integer)$args;
-				$type         = (string)$type;
+				$hook     = (string)$hook;
+				$call     = (string)$call;
+				$priority = (integer)$priority;
+				$args     = (integer)$args;
+				$type     = (string)$type;
 
 				$plugin              = $GLOBALS[$this->___instance_config->plugin_root_ns];
-				$idx                 = spl_object_hash($plugin).$dynamic_call.$priority;
+				$idx                 = spl_object_hash($plugin).$call.$priority;
 				$plugin->hooks[$idx] = compact('hook', 'dynamic_call', 'priority', 'type');
 
 				if($type === $this::filter_type)
-					return add_filter($hook, array($plugin, $dynamic_call), $priority, $args);
-				return add_action($hook, array($plugin, $dynamic_call), $priority, $args);
+					return add_filter($hook, array($plugin, $call), $priority, $args);
+				return add_action($hook, array($plugin, $call), $priority, $args);
 			}
 
 			/**
@@ -2094,7 +2116,7 @@ namespace websharks_core_v000000_dev
 			 *
 			 * @param string  $hook An action/filter hook.
 			 *
-			 * @param string  $dynamic_call A dynamic `©class.method` handler.
+			 * @param string  $call A dynamic `©class.method` call handler.
 			 *
 			 * @param integer $priority Action/filter hook priority.
 			 *    Note that `$priority` MUST match the original priority.
@@ -2109,19 +2131,19 @@ namespace websharks_core_v000000_dev
 			 * @see remove_action()
 			 * @see remove_filter()
 			 */
-			final private function ___remove_hook($hook, $dynamic_call, $priority, $type)
+			final private function ___remove_hook($hook, $call, $priority, $type)
 			{
-				$hook         = (string)$hook;
-				$dynamic_call = (string)$dynamic_call;
-				$priority     = (integer)$priority;
-				$type         = (string)$type;
+				$hook     = (string)$hook;
+				$call     = (string)$call;
+				$priority = (integer)$priority;
+				$type     = (string)$type;
 
 				$plugin = $GLOBALS[$this->___instance_config->plugin_root_ns];
-				unset($plugin->hooks[spl_object_hash($plugin).$dynamic_call.$priority]);
+				unset($plugin->hooks[spl_object_hash($plugin).$call.$priority]);
 
 				if($type === $this::filter_type)
-					return remove_filter($hook, array($plugin, $dynamic_call), $priority);
-				return remove_action($hook, array($plugin, $dynamic_call), $priority);
+					return remove_filter($hook, array($plugin, $call), $priority);
+				return remove_action($hook, array($plugin, $call), $priority);
 			}
 
 			/**
