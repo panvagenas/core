@@ -64,8 +64,8 @@ namespace websharks_core_v000000_dev\shortcodes
 			$attr = $this->©array->to_one_dimension($attr);
 			$attr = $this->©strings->trim_deep($attr);
 
-			if(!empty($attr['theme'])) // Add `jquery-ui-theme-` prefix.
-				$attr['theme'] = 'jquery-ui-theme-'.str_replace('jquery-ui-theme-', '', $attr['theme']);
+			if(!empty($attr['theme'])) // Add core/theme prefix.
+				$attr['theme'] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$attr['theme'];
 
 			foreach($this->boolean_attr_keys() as $_attr_key)
 			{

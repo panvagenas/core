@@ -429,10 +429,10 @@ namespace websharks_core_v000000_dev
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
-			if(in_array($this->theme, array_keys($this->©styles->jquery_ui_themes()), TRUE))
+			if(in_array($this->theme, array_keys($this->©styles->ui_themes()), TRUE))
 			{
-				$classes[] = 'ui'; // This enables WebSharks™ UI styles overall.
-				$classes[] = str_replace('jquery-ui-theme-', 'ui-theme-', $this->theme);
+				$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui';
+				$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$this->theme;
 			}
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-wrapper';
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-wrapper';

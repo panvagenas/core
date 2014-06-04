@@ -9,9 +9,32 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
+ *
+ * @note This compiler requires that you have SASS installed.
+ * @note This compiler requires that you have the YUI Compressor installed also.
+ *
+ * @TODO Make this use local dev utilities instead of an absolute path.
  */
 require_once $_SERVER['WEBSHARK_HOME'].'/WebSharks/websharks-core/.~dev-utilities/core.php';
 websharks_core()->©env->prep_for_cli_dev_procedure();
+compile_all(); // Run compiler.
+
+/*
+ * Compile All
+ */
+
+function compile_all()
+{
+	$core = websharks_core();
+	compile_font_awesome();
+	compile_bootstrap_themes();
+
+	ob_start(); // Begin compilation.
+	echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-resets.min.css')."\n";
+	echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core.min.css')."\n";
+	echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css')."\n";
+	file_put_contents($core->©dir->n_seps_up(__FILE__).'/core-libs.min.css', trim(ob_get_clean()));
+}
 
 /*
  * Font Awesome Compiler
@@ -19,9 +42,16 @@ websharks_core()->©env->prep_for_cli_dev_procedure();
 
 function compile_font_awesome()
 {
-	$core_prefix = websharks_core()->___instance_config->core_prefix_with_dashes;
-	$file        = dirname(__FILE__).'/core-fa.scss';
-	if(!is_dir(dirname($file))) mkdir(dirname($file), 0755, TRUE);
+	$core        = websharks_core();
+	$core_prefix = $core->___instance_config->core_prefix_with_dashes;
+
+	$file     = $core->©dir->n_seps_up(__FILE__).'/core-fa.css';
+	$min_file = $core->©dir->n_seps_up(__FILE__).'/core-fa.min.css';
+
+	$file_dir     = $core->©dir->n_seps_up($file);
+	$min_file_dir = $core->©dir->n_seps_up($min_file);
+	if(!is_dir($file_dir)) mkdir($file_dir, 0755, TRUE);
+	if(!is_dir($min_file_dir)) mkdir($min_file_dir, 0755, TRUE);
 
 	$css = file_get_contents('http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
 	$css = str_replace('../fonts/', '//netdna.bootstrapcdn.com/font-awesome/4.1.0/fonts/', $css);
@@ -43,16 +73,16 @@ function compile_font_awesome()
 	$keyframes_tokenizer = keyframes_tokenizer($css);
 	$css                 = $keyframes_tokenizer['css'];
 
-	file_put_contents($file, $css);
-	shell_exec('sass '.escapeshellarg($file).' '.escapeshellarg($file));
+	file_put_contents($file, $css); // Save to file & Sassify.
+	$core->©command->sass('--scss '.escapeshellarg($file).' '.escapeshellarg($file));
 	$css = file_get_contents($file);
 
 	$css = font_face_tokenizer($css, $font_face_tokenizer['tokens']);
 	$css = keyframes_tokenizer($css, $keyframes_tokenizer['tokens']);
 
-	file_put_contents($file, $css);
-	shell_exec('compress-css '.escapeshellarg($file));
-	unlink($file); // Keep `.min.css` file only.
+	file_put_contents($file, $css); // Save to file & compress.
+	$core->©command->yuic('--type="css" -o '.escapeshellarg($min_file).' '.escapeshellarg($file));
+	$core->©file->delete($file); // We only need to keep the `.min.css` file.
 }
 
 /*
@@ -63,27 +93,34 @@ function compile_bootstrap_themes()
 {
 	$themes = array
 	( // <http://www.bootstrapcdn.com/?theme=1#bootswatch_tab>
-	  'amelia'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/amelia/bootstrap.min.css',
-	  'cerulean'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cerulean/bootstrap.min.css',
-	  'cosmo'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cosmo/bootstrap.min.css',
-	  'cyborg'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cyborg/bootstrap.min.css',
-	  'flatly'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css',
-	  'journal'   => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/journal/bootstrap.min.css',
-	  'lumen'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/lumen/bootstrap.min.css',
-	  'readable'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/readable/bootstrap.min.css',
-	  'simplex'   => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/simplex/bootstrap.min.css',
-	  'slate'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/slate/bootstrap.min.css',
-	  'spacelab'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/spacelab/bootstrap.min.css',
-	  'superhero' => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/superhero/bootstrap.min.css',
-	  'united'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/united/bootstrap.min.css',
-	  'yeti'      => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css',
-	  'darkly'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/darkly/bootstrap.min.css',
+	  'amelia' => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/amelia/bootstrap.min.css',
+	  //	  'cerulean'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cerulean/bootstrap.min.css',
+	  //	  'cosmo'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cosmo/bootstrap.min.css',
+	  //	  'cyborg'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cyborg/bootstrap.min.css',
+	  //	  'flatly'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css',
+	  //	  'journal'   => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/journal/bootstrap.min.css',
+	  //	  'lumen'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/lumen/bootstrap.min.css',
+	  //	  'readable'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/readable/bootstrap.min.css',
+	  //	  'simplex'   => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/simplex/bootstrap.min.css',
+	  //	  'slate'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/slate/bootstrap.min.css',
+	  //	  'spacelab'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/spacelab/bootstrap.min.css',
+	  //	  'superhero' => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/superhero/bootstrap.min.css',
+	  //	  'united'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/united/bootstrap.min.css',
+	  //	  'yeti'      => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css',
+	  //	  'darkly'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/darkly/bootstrap.min.css',
 	);
 	foreach($themes as $slug => $url)
 	{
-		$core_prefix = websharks_core()->___instance_config->core_prefix_with_dashes;
-		$file        = dirname(__FILE__).'/themes/'.$slug.'/theme.scss';
-		if(!is_dir(dirname($file))) mkdir(dirname($file), 0755, TRUE);
+		$core        = websharks_core();
+		$core_prefix = $core->___instance_config->core_prefix_with_dashes;
+
+		$file     = $core->©dir->n_seps_up(__FILE__).'/themes/'.$slug.'/theme.css';
+		$min_file = $core->©dir->n_seps_up(__FILE__).'/themes/'.$slug.'/theme.min.css';
+
+		$file_dir     = $core->©dir->n_seps_up($file);
+		$min_file_dir = $core->©dir->n_seps_up($min_file);
+		if(!is_dir($file_dir)) mkdir($file_dir, 0755, TRUE);
+		if(!is_dir($min_file_dir)) mkdir($min_file_dir, 0755, TRUE);
 
 		$css = file_get_contents($url);
 		$css = str_replace('[data-', '[data-'.$core_prefix, $css);
@@ -105,8 +142,8 @@ function compile_bootstrap_themes()
 		$keyframes_tokenizer = keyframes_tokenizer($css);
 		$css                 = $keyframes_tokenizer['css'];
 
-		file_put_contents($file, $css);
-		shell_exec('sass '.escapeshellarg($file).' '.escapeshellarg($file));
+		file_put_contents($file, $css); // Save to file & Sassify.
+		$core->©command->sass('--scss '.escapeshellarg($file).' '.escapeshellarg($file));
 		$css = file_get_contents($file);
 
 		$css = preg_replace('/'.preg_quote('.'.$core_prefix.'ui-'.$slug, '/').'\s+(?:html|body)\s+{/i',
@@ -115,9 +152,9 @@ function compile_bootstrap_themes()
 		$css = font_face_tokenizer($css, $font_face_tokenizer['tokens']);
 		$css = keyframes_tokenizer($css, $keyframes_tokenizer['tokens']);
 
-		file_put_contents($file, $css);
-		shell_exec('compress-css '.escapeshellarg($file));
-		unlink($file); // Keep `.min.css` file only.
+		file_put_contents($file, $css); // Save to file & compress.
+		$core->©command->yuic('--type="css" -o '.escapeshellarg($min_file).' '.escapeshellarg($file));
+		$core->©file->delete($file); // We only need to keep the `.min.css` file.
 	}
 }
 
@@ -161,9 +198,10 @@ function keyframes_tokenizer($css, $tokens = NULL)
 	}
 	else // Else we need to tokenize (default behavior).
 	{
+		$core        = websharks_core();
 		$tokens      = array(); // Initialize the array of tokens.
 		$animations  = array(); // Initialize the array of CSS animations.
-		$core_prefix = websharks_core()->___instance_config->core_prefix_with_dashes;
+		$core_prefix = $core->___instance_config->core_prefix_with_dashes;
 		$css         = preg_replace_callback('/(?P<keyframes>@(?:[\w\-]+?\-)?keyframes)\s*(?P<animation>[\w\-]+)\s*(?P<brackets>\{(?:[^{}]|(?&brackets))*?\})/is', function ($m) use (&$tokens, &$animations, $core_prefix)
 		{
 			$animations[$m['animation']] = $core_prefix.$m['animation'];
@@ -177,16 +215,3 @@ function keyframes_tokenizer($css, $tokens = NULL)
 		return compact('css', 'tokens');
 	}
 }
-
-/*
- * Core Libs
- */
-
-compile_font_awesome();
-compile_bootstrap_themes();
-
-ob_start(); // Begin compilation.
-echo file_get_contents(dirname(__FILE__).'/core-resets.min.css')."\n";
-echo file_get_contents(dirname(__FILE__).'/core.min.css')."\n";
-echo file_get_contents(dirname(__FILE__).'/core-fa.min.css')."\n";
-file_put_contents(dirname(__FILE__).'/core-libs.min.css', trim(ob_get_clean()));

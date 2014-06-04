@@ -162,11 +162,11 @@ namespace websharks_core_v000000_dev
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
-			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->jquery_ui_themes()), TRUE))
+			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->ui_themes()), TRUE))
 				$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
-			$classes[] = 'ui'; // This enables WebSharks™ UI styles overall.
-			$classes[] = str_replace('jquery-ui-theme-', 'ui-theme-', $current_menu_pages_theme);
+			$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui';
+			$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$current_menu_pages_theme;
 
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">'.
 

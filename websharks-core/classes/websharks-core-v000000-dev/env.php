@@ -174,6 +174,8 @@ namespace websharks_core_v000000_dev
 		 *    Otherwise, if not running Apache (or we're unable to detect the version) an empty string.
 		 *
 		 * @see \deps_x_websharks_core_v000000_dev::apache_version()
+		 *
+		 * @TODO Update this so it uses our commands class.
 		 */
 		public function apache_version()
 		{

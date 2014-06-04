@@ -69,11 +69,11 @@ namespace websharks_core_v000000_dev
 					'url' => $this->©url->to_core_dir_file('/client-side/styles/core-libs.min.css'),
 					'ver' => $this->___instance_config->core_version_with_dashes
 				);
-			foreach($this->jquery_ui_themes() as $_theme => $_theme_dir)
+			foreach($this->ui_themes() as $_theme => $_theme_dir)
 				if(!wp_style_is($_theme, 'registered'))
 					$styles_to_register[$_theme] = array(
 						'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
-						'url'  => $this->©url->to_wp_abs_dir_file($_theme_dir.'/jquery-ui-1.10.4.custom.min.css'),
+						'url'  => $this->©url->to_wp_abs_dir_file($_theme_dir.'/theme.min.css'),
 						'ver'  => $this->___instance_config->core_version_with_dashes
 					);
 			unset($_theme, $_theme_dir); // A little housekeeping.
@@ -105,7 +105,7 @@ namespace websharks_core_v000000_dev
 			{
 				$this->menu_page_components[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-pages';
 
-				if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->jquery_ui_themes()), TRUE))
+				if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->ui_themes()), TRUE))
 					$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
 				// Only if NOT already registered by another WebSharks™ plugin (it should NOT be).
@@ -120,29 +120,29 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An array of all jQuery™ UI themes.
+		 * An array of all UI themes.
 		 *
-		 * @return array An associative array of all jQuery™ UI themes.
-		 *    Array keys are handles; values are absolute theme directory paths.
+		 * @return array An associative array of all UI themes.
+		 *    Array keys are handles; values are absolute directory paths.
 		 */
-		public function jquery_ui_themes()
+		public function ui_themes()
 		{
 			if(is_array($cache = $this->©db_cache->get($this->method(__FUNCTION__))))
 				return $cache; // Already cached these.
 
-			$themes = array(); // Initialize jQuery™ UI themes array.
+			$themes = array(); // Initialize UI themes array.
 
 			$dirs   = $this->©dirs->where_templates_may_reside();
 			$dirs[] = $this->©dir->n_seps_up(__FILE__, 3);
 
-			foreach(array_reverse($dirs) as $_dir) // For correct precedence.
-				if(is_dir($_themes_dir = $_dir.'/client-side/styles/jquery-ui-themes'))
+			foreach(array_reverse($dirs) as $_dir) // Precedence.
+				if(is_dir($_themes_dir = $_dir.'/client-side/styles/themes'))
 				{
 					foreach(scandir($_themes_dir) as $_theme_dir)
 					{
 						if(strpos($_theme_dir, '.') === 0 || $_theme_dir === 'index.php')
 							continue; // Skip all dots and `index.php` files.
-						else if(is_file($_themes_dir.'/'.$_theme_dir.'/jquery-ui-1.10.4.custom.min.css'))
+						else if(is_file($_themes_dir.'/'.$_theme_dir.'/theme.min.css'))
 							$themes['jquery-ui-theme-'.$_theme_dir] = $_themes_dir.'/'.$_theme_dir;
 					}
 					unset($_theme_dir); // Housekeeping.

@@ -8,6 +8,8 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
+ *
+ * @TODO Optimize this class; make it DRYer.
  */
 namespace websharks_core_v000000_dev
 {
@@ -26,6 +28,7 @@ namespace websharks_core_v000000_dev
 	{
 		/**
 		 * Path to Git application.
+		 *
 		 * Normally exit status `0` indicates success.
 		 *
 		 * @var string Path to `git` command line tool.
@@ -33,7 +36,26 @@ namespace websharks_core_v000000_dev
 		public $git = 'git';
 
 		/**
+		 * Path to SASS application.
+		 *
+		 * Normally exit status `0` indicates success.
+		 *
+		 * @var string Path to `sass` command line tool.
+		 */
+		public $sass = 'sass';
+
+		/**
+		 * Path to YUI Compressor application.
+		 *
+		 * Normally exit status `0` indicates success.
+		 *
+		 * @var string Path to `yuicompressor` command line tool.
+		 */
+		public $yuic = 'yuicompressor --charset="utf-8"';
+
+		/**
 		 * Path to Java™ application.
+		 *
 		 * Normally exit status `0` indicates success.
 		 * However, this depends on which JAR file is called upon.
 		 *
@@ -43,6 +65,7 @@ namespace websharks_core_v000000_dev
 
 		/**
 		 * Path to `rmdir` in Windows®. Exit status `0` on success.
+		 *
 		 * However, unable to find any official docs on exit status codes.
 		 *
 		 * @var string Path to `rmdir` command line tool.
@@ -53,6 +76,7 @@ namespace websharks_core_v000000_dev
 
 		/**
 		 * Path to `mklink` on Windows®. Exit status `0` on success.
+		 *
 		 * However, unable to find any official docs on exit status codes.
 		 *
 		 * @var string Path to `mklink` command line tool.
@@ -60,11 +84,25 @@ namespace websharks_core_v000000_dev
 		public $mklink = 'mklink';
 
 		/**
+		 * Constructor.
+		 *
+		 * @param object|array $___instance_config Required at all times.
+		 *    A parent object instance, which contains the parent's `$___instance_config`,
+		 *    or a new `$___instance_config` array.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 */
+		public function __construct($___instance_config)
+		{
+			parent::__construct($___instance_config); // Construct instance.
+
+			$this->sass = 'sass --cache-location='.escapeshellarg($this->©dir->temp().'/.sass-cache');
+		}
+
+		/**
 		 * Are command line operations possible?
 		 *
-		 * @return boolean TRUE if commands are possible, else FALSE.
-		 *
-		 * @assert () === TRUE
+		 * @return boolean TRUE if commands are possible.
 		 */
 		public function possible()
 		{
@@ -84,10 +122,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Are Unix® command line operations possible?
 		 *
-		 * @return boolean TRUE if Unix® command line operations are possible, else FALSE.
-		 *
-		 * @assert // Test development server.
-		 *    () === TRUE
+		 * @return boolean TRUE if Unix® command line operations are possible.
 		 */
 		public function unix_possible()
 		{
@@ -105,10 +140,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Are Windows® command line operations possible?
 		 *
-		 * @return boolean TRUE if Windows® command line operations are possible, else FALSE.
-		 *
-		 * @assert // Test development server.
-		 *    () === FALSE
+		 * @return boolean TRUE if Windows® command line operations are possible.
 		 */
 		public function windows_possible()
 		{
@@ -126,10 +158,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Are Java™ command line operations possible?
 		 *
-		 * @return boolean TRUE if Java™ command line operations are possible, else FALSE.
-		 *
-		 * @assert // Test development server.
-		 *    () === FALSE
+		 * @return boolean TRUE if Java™ command line operations are possible.
 		 */
 		public function java_possible()
 		{
@@ -139,7 +168,7 @@ namespace websharks_core_v000000_dev
 			$this->static[__FUNCTION__] = FALSE;
 
 			if($this->possible() && is_array($java = $this->exec($this->java.' -version', '', TRUE)))
-				if($java['status'] === 0 && stripos($java['output'], 'error') === FALSE && stripos($java['output'], 'version') !== FALSE)
+				if($java['status'] === 0 && preg_match('/[1-9]+\.[0-9]/', $java['output']))
 					$this->static[__FUNCTION__] = TRUE;
 
 			return $this->static[__FUNCTION__];
@@ -148,10 +177,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Are Git command line operations possible?
 		 *
-		 * @return boolean TRUE if Git command line operations are possible, else FALSE.
-		 *
-		 * @assert // Test development server.
-		 *    () === FALSE
+		 * @return boolean TRUE if Git command line operations are possible.
 		 */
 		public function git_possible()
 		{
@@ -161,7 +187,45 @@ namespace websharks_core_v000000_dev
 			$this->static[__FUNCTION__] = FALSE;
 
 			if($this->possible() && is_array($git = $this->exec($this->git.' --version', '', TRUE)))
-				if($git['status'] === 0 && stripos($git['output'], 'error') === FALSE && stripos($git['output'], 'version') !== FALSE)
+				if($git['status'] === 0 && preg_match('/[1-9]+\.[0-9]/', $git['output']))
+					$this->static[__FUNCTION__] = TRUE;
+
+			return $this->static[__FUNCTION__];
+		}
+
+		/**
+		 * Are SASS command line operations possible?
+		 *
+		 * @return boolean TRUE if SASS command line operations are possible.
+		 */
+		public function sass_possible()
+		{
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
+
+			$this->static[__FUNCTION__] = FALSE;
+
+			if($this->possible() && is_array($sass = $this->exec($this->sass.' --version', '', TRUE)))
+				if($sass['status'] === 0 && preg_match('/[1-9]+\.[0-9]/', $sass['output']))
+					$this->static[__FUNCTION__] = TRUE;
+
+			return $this->static[__FUNCTION__];
+		}
+
+		/**
+		 * Are YUI Compressor command line operations possible?
+		 *
+		 * @return boolean TRUE if YUI Compressor command line operations are possible.
+		 */
+		public function yuic_possible()
+		{
+			if(isset($this->static[__FUNCTION__]))
+				return $this->static[__FUNCTION__];
+
+			$this->static[__FUNCTION__] = FALSE;
+
+			if($this->possible() && is_array($yuic = $this->exec($this->yuic.' --version', '', TRUE)))
+				if($yuic['status'] === 0 && preg_match('/[1-9]+\.[0-9]/', $yuic['output']))
 					$this->static[__FUNCTION__] = TRUE;
 
 			return $this->static[__FUNCTION__];
@@ -201,9 +265,6 @@ namespace websharks_core_v000000_dev
 		 *    ~ And, of course, also based on the argument values: `$return_array`, `$return_errors`.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert // Test development server.
-		 *    ('whoami') === 'websharks-inc.com'
 		 */
 		public function exec($cmd_args, $stdin = '', $return_array = FALSE, $return_errors = FALSE, $cwd = '', $env = array(), $other = array())
 		{
@@ -268,14 +329,110 @@ namespace websharks_core_v000000_dev
 					'errors' => $errors,
 					'status' => $status
 				);
-			return $output; // Default return value (string).
+			return $output;
+		}
+
+		/**
+		 * A utility method for easier SASS interaction.
+		 *
+		 * @param string  $args Command and arguments; or only the arguments.
+		 *    It is NOT necessary to prefix this with `sass`; this routine will handle that automatically.
+		 *    If you do pass `sass`; it will be removed automatically and replaced with `$this->sass`.
+		 *
+		 * @param string  $cwd Current working directory. This must be an absolute directory path.
+		 *    Optional. This is the working directory from which SASS will be called upon.
+		 *
+		 * @param boolean $return_array Return full array? Defaults to FALSE. If TRUE, this method will return an array with all connection details.
+		 *    The default behavior of this function is to simply return a string that contains any output received from the command line routine.
+		 *
+		 * @return string|array The output from SASS; always a string. However, this will throw an exception if SASS returns a non-zero status or errors.
+		 *    If `$return_array` is TRUE, we simply return the full array of connection details, regardless of what SASS returns.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 * @throws exception If `$return_array` is FALSE; and SASS returns a non-zero status.
+		 * @throws exception If `$return_array` is FALSE; and SASS returns errors.
+		 */
+		public function sass($args, $cwd = '', $return_array = FALSE)
+		{
+			$this->check_arg_types('string:!empty', 'string', 'boolean', func_get_args());
+
+			$sass_args = $this->sass.' '.preg_replace('/^(?:'.preg_quote($this->sass, '/').'|sass)\s+/', '', $args);
+			$sass      = $this->exec($sass_args, '', TRUE, FALSE, $cwd);
+
+			if($return_array) return $sass; // Return array to caller?
+
+			$sass_status = $sass['status'];
+			$sass_errors = $sass['errors'];
+			/** @var errors $sass_errors */
+
+			if($sass_status !== 0)
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#non_zero_status', get_defined_vars(),
+					sprintf($this->__('The command: `%1$s` returned a non-zero status: `%2$s`. SASS said: `%3$s`'),
+					        $sass_args, $sass_status, $sass_errors->get_message())
+				);
+			if($sass_errors->exist())
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#errors_exist', get_defined_vars(),
+					sprintf($this->__('The command: `%1$s` returned errors w/ status: `%2$s`. SASS said: `%3$s`'),
+					        $sass_args, $sass_status, $sass_errors->get_message())
+				);
+			return $sass['output'];
+		}
+
+		/**
+		 * A utility method for easier YUI Compressor interaction.
+		 *
+		 * @param string  $args Command and arguments; or only the arguments.
+		 *    It is NOT necessary to prefix this with `yuicompressor`; this routine will handle that automatically.
+		 *    If you do pass `yuicompressor`; it will be removed automatically and replaced with `$this->yuic`.
+		 *
+		 * @param string  $cwd Current working directory. This must be an absolute directory path.
+		 *    Optional. This is the working directory from which YUI Compressor will be called upon.
+		 *
+		 * @param boolean $return_array Return full array? Defaults to FALSE. If TRUE, this method will return an array with all connection details.
+		 *    The default behavior of this function is to simply return a string that contains any output received from the command line routine.
+		 *
+		 * @return string|array The output from YUI Compressor; always a string. However, this will throw an exception if YUI Compressor returns a non-zero status or errors.
+		 *    If `$return_array` is TRUE, we simply return the full array of connection details, regardless of what YUI Compressor returns.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 * @throws exception If `$return_array` is FALSE; and YUI Compressor returns a non-zero status.
+		 * @throws exception If `$return_array` is FALSE; and YUI Compressor returns errors.
+		 */
+		public function yuic($args, $cwd = '', $return_array = FALSE)
+		{
+			$this->check_arg_types('string:!empty', 'string', 'boolean', func_get_args());
+
+			$yuic_args = $this->yuic.' '.preg_replace('/^(?:'.preg_quote($this->yuic, '/').'|yuicompressor)\s+/', '', $args);
+			$yuic      = $this->exec($yuic_args, '', TRUE, FALSE, $cwd);
+
+			if($return_array) return $yuic; // Return array to caller?
+
+			$yuic_status = $yuic['status'];
+			$yuic_errors = $yuic['errors'];
+			/** @var errors $yuic_errors */
+
+			if($yuic_status !== 0)
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#non_zero_status', get_defined_vars(),
+					sprintf($this->__('The command: `%1$s` returned a non-zero status: `%2$s`. YUI Compressor said: `%3$s`'),
+					        $yuic_args, $yuic_status, $yuic_errors->get_message())
+				);
+			if($yuic_errors->exist())
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#errors_exist', get_defined_vars(),
+					sprintf($this->__('The command: `%1$s` returned errors w/ status: `%2$s`. YUI Compressor said: `%3$s`'),
+					        $yuic_args, $yuic_status, $yuic_errors->get_message())
+				);
+			return $yuic['output'];
 		}
 
 		/**
 		 * A utility method for easier Git interaction.
 		 *
 		 * @param string  $args Command and arguments; or only the arguments.
-		 *    It is NOT necessary to prefix this with `git`; this routine will handle this automatically.
+		 *    It is NOT necessary to prefix this with `git`; this routine will handle that automatically.
 		 *    If you do pass `git`; it will be removed automatically and replaced with `$this->git`.
 		 *
 		 * @param string  $cwd_repo_dir The repo directory. This must be an absolute directory path.
@@ -284,11 +441,11 @@ namespace websharks_core_v000000_dev
 		 * @param boolean $return_array Return full array? Defaults to FALSE. If TRUE, this method will return an array with all connection details.
 		 *    The default behavior of this function is to simply return a string that contains any output received from the command line routine.
 		 *
-		 * @return string|array The output from Git; always a string. However, this will thrown an exception if Git returns a non-zero status.
+		 * @return string|array The output from Git; always a string. However, this will throw an exception if Git returns a non-zero status.
 		 *    If `$return_array` is TRUE, we simply return the full array of connection details, regardless of what Git returns.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception Only if `$return_array` is FALSE; and Git returns a non-zero status.
+		 * @throws exception If `$return_array` is FALSE; and Git returns a non-zero status.
 		 *    We ignore Git error messages; because Git writes its progress to STDERR.
 		 *    Thus, STDERR really should NOT be used to determine Git status.
 		 */
@@ -300,7 +457,7 @@ namespace websharks_core_v000000_dev
 			$args         = preg_replace('/\/+/', '/', str_replace(array(DIRECTORY_SEPARATOR, '\\', '/'), '/', $args));
 			$args         = str_ireplace($cwd_repo_dir.'/', '', $args);
 
-			$git_args = $this->git.' '.preg_replace('/^'.preg_quote($this->git, '/').'\s+/', '', $args);
+			$git_args = $this->git.' '.preg_replace('/^(?:'.preg_quote($this->git, '/').'|git)\s+/', '', $args);
 			$git      = $this->exec($git_args, '', TRUE, FALSE, $cwd_repo_dir);
 
 			if($return_array) return $git; // Return array to caller?
@@ -312,7 +469,7 @@ namespace websharks_core_v000000_dev
 			if($git_status !== 0)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#non_zero_status', get_defined_vars(),
-					sprintf($this->__('The command: `%1$s`, returned a non-zero status: `%2$s`. Git said: `%3$s`'),
+					sprintf($this->__('The command: `%1$s` returned a non-zero status: `%2$s`. Git said: `%3$s`'),
 					        $git_args, $git_status, $git_errors->get_message())
 				);
 			return $git['output'];
