@@ -16,7 +16,7 @@
  * @note This compiler requires that you have the YUI Compressor installed also.
  *    e.g. `brew install yuicompressor`
  */
-require_once dirname(dirname(dirname(dirname(__FILE__)))).'/.~dev-utilities/core.php';
+require_once dirname(dirname(dirname(dirname(__FILE__)))).'/.dev-utilities/core.php';
 websharks_core()->©env->prep_for_cli_dev_procedure();
 compile_all(); // Run compiler.
 

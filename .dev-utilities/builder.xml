@@ -1,0 +1,521 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--suppress XmlUnboundNsPrefix PhpStorm® is already Phing-aware. -->
+
+<project name='WebSharks™ Core' default='Rebuild: 000000-dev'>
+
+	<target name='Rebuild: 000000-dev'>
+		<echo>Building ${phing.project.name} w/ PHP v${php.version}...</echo>
+		<exec executable='php' outputProperty='ws.builder.output'>
+			<arg file='./builder.php' />
+
+			<!-- Plugin directory. -->
+			<arg value='""' />
+
+			<!-- plugin name -->
+			<arg value='""' />
+
+			<!-- Plugin root namespace. -->
+			<arg value='""' />
+
+			<!-- Distros directory. -->
+			<arg value='""' />
+
+			<!-- Downloads directory. -->
+			<arg value='""' />
+
+			<!-- Version (defaults to YYMMDD). -->
+			<arg value='000000-dev' />
+
+			<!-- Requires at least Apache version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Tested up to Apache version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Requires at least PHP version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Tested up to PHP version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Requires at least WordPress® version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Tested up to WordPress® version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Use core type? (defaults to `submodule`). -->
+			<arg value='""' />
+
+			<!-- Build from core version? (defaults to latest stable release). -->
+			<arg value='000000-dev' />
+		</exec>
+		<echo msg='${ws.builder.output}' />
+	</target>
+
+	<target name='Build Stable: YYMMDD (from 000000-dev)'>
+		<echo>Building ${phing.project.name} w/ PHP v${php.version}...</echo>
+		<exec executable='php' outputProperty='ws.builder.output'>
+			<arg file='./builder.php' />
+
+			<!-- Plugin directory. -->
+			<arg value='""' />
+
+			<!-- plugin name -->
+			<arg value='""' />
+
+			<!-- Plugin root namespace. -->
+			<arg value='""' />
+
+			<!-- Distros directory. -->
+			<arg value='""' />
+
+			<!-- Downloads directory. -->
+			<arg value='""' />
+
+			<!-- Version (defaults to YYMMDD). -->
+			<arg value='""' />
+
+			<!-- Requires at least Apache version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Tested up to Apache version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Requires at least PHP version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Tested up to PHP version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Requires at least WordPress® version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Tested up to WordPress® version (defaults to core value). -->
+			<arg value='""' />
+
+			<!-- Use core type? (defaults to `submodule`). -->
+			<arg value='""' />
+
+			<!-- Build from core version? (defaults to latest stable release). -->
+			<arg value='000000-dev' />
+		</exec>
+		<echo msg='${ws.builder.output}' />
+	</target>
+
+	<target name='Build Interactive (custom configuration)'>
+
+		<!-- Configuration variables. -->
+
+		<property name='ws.cfg.websharks_dir' value='${env.WEBSHARK_HOME}/WebSharks' />
+		<property name='ws.cfg.distros_dir' value='${env.WEBSHARK_HOME}/WebSharks/ws-nfs-files/distros' />
+		<property name='ws.cfg.downloads_dir' value='${env.WEBSHARK_HOME}/WebSharks/ws-nfs-files/downloads' />
+
+		<property name='ws.cfg.div_over' value='-----------------------------------------------------------------------------------${line.separator}' />
+		<property name='ws.cfg.div_under' value='${line.separator}-----------------------------------------------------------------------------------' />
+
+		<!-- Choose build type (i.e. what are we building?). -->
+
+		<input message='Please choose one of these options.${ws.cfg.div_under}'
+		       propertyName='ws.input.build' validArgs='core,plugin' defaultValue='core' promptChar=':'>
+			Build the WebSharks™ Core, or a plugin?
+		</input>
+
+		<!-- Handle build type, from core version details. -->
+
+		<if>
+			<equals arg1='${ws.input.build}' arg2='plugin' />
+			<then>
+				<echo>Building A Plugin</echo>
+				<property name='ws.builder.building' value='plugin' />
+			</then>
+			<else>
+				<echo>Building WebSharks™ Core</echo>
+				<property name='ws.builder.building' value='core' />
+			</else>
+		</if>
+
+		<!-- Specify core version to build from. -->
+
+		<if>
+			<equals arg1='${ws.builder.building}' arg2='plugin' />
+			<then>
+				<input message='Optional (default value is the latest stable release).${ws.cfg.div_under}'
+				       propertyName='ws.input.build_from_core_version' defaultValue='' promptChar=':'>
+					Build plugin from which version of the WebSharks™ Core?
+					(press enter to use default value)
+				</input>
+			</then>
+			<elseif>
+				<equals arg1='${ws.builder.building}' arg2='core' />
+				<then>
+					<input message='Optional (default value is the latest stable release).${ws.cfg.div_under}'
+					       propertyName='ws.input.build_from_core_version' defaultValue='' promptChar=':'>
+						Build core from which version of the WebSharks™ Core?
+						(press enter to use default value)
+					</input>
+				</then>
+			</elseif>
+		</if>
+
+		<!-- Input fields for plugin builds. -->
+
+		<if>
+			<equals arg1='${ws.builder.building}' arg2='plugin' />
+			<then>
+				<input message='${ws.cfg.div_over}This is a required field when building a plugin.${ws.cfg.div_under}'
+				       propertyName='ws.input.repo_plugin_dir_basename' defaultValue='""' promptChar='${ws.cfg.websharks_dir}/:'>
+					Repo/Plugin Directory Basename (repo/plugin):
+				</input>
+				<input message='${ws.cfg.div_over}This is a required field when building a plugin.${ws.cfg.div_under}'
+				       propertyName='ws.input.plugin_name' defaultValue='""' promptChar=':'>
+					Plugin Name:
+				</input>
+				<input message='${ws.cfg.div_over}This is a required field when building a plugin.${ws.cfg.div_under}'
+				       propertyName='ws.input.plugin_root_ns' defaultValue='""' promptChar=':'>
+					Plugin Root Namespace:
+				</input>
+
+				<input message='${ws.cfg.div_over}This is a required field when building a plugin.${ws.cfg.div_under}'
+				       propertyName='ws.input.distros_dir_basename' defaultValue='${ws.input.plugin_root_ns}' promptChar='${ws.cfg.distros_dir}/:'>
+					Distros Directory Basename:
+				</input>
+				<input message='${ws.cfg.div_over}This is a required field when building a plugin.${ws.cfg.div_under}'
+				       propertyName='ws.input.downloads_dir_basename' defaultValue='${ws.input.plugin_root_ns}' promptChar='${ws.cfg.downloads_dir}/:'>
+					Downloads Directory Basename:
+				</input>
+			</then>
+		</if>
+
+		<!-- Input fields for version details. -->
+
+		<input message='${ws.cfg.div_over}This is optional (defaults to YYMMDD).${ws.cfg.div_under}'
+		       propertyName='ws.input.version' defaultValue='' promptChar=':'>
+			Version (press enter to use default value):
+		</input>
+		<input message='${ws.cfg.div_over}This is optional (defaults to core value).${ws.cfg.div_under}'
+		       propertyName='ws.input.requires_at_least_apache_version' defaultValue='' promptChar=':'>
+			Requires at least Apache version (press enter to use default value):
+		</input>
+		<input message='${ws.cfg.div_over}This is optional (defaults to core value).${ws.cfg.div_under}'
+		       propertyName='ws.input.tested_up_to_apache_version' defaultValue='' promptChar=':'>
+			Tested up to Apache version (press enter to use default value):
+		</input>
+		<input message='${ws.cfg.div_over}This is optional (defaults to core value).${ws.cfg.div_under}'
+		       propertyName='ws.input.requires_at_least_php_version' defaultValue='' promptChar=':'>
+			Requires at least PHP version (press enter to use default value):
+		</input>
+		<input message='${ws.cfg.div_over}This is optional (defaults to core value).${ws.cfg.div_under}'
+		       propertyName='ws.input.tested_up_to_php_version' defaultValue='' promptChar=':'>
+			Tested up to PHP version (press enter to use default value):
+		</input>
+		<input message='${ws.cfg.div_over}This is optional (defaults to core value).${ws.cfg.div_under}'
+		       propertyName='ws.input.requires_at_least_wp_version' defaultValue='' promptChar=':'>
+			Requires at least WordPress® version (press enter to use default value):
+		</input>
+		<input message='${ws.cfg.div_over}This is optional (defaults to core value).${ws.cfg.div_under}'
+		       propertyName='ws.input.tested_up_to_wp_version' defaultValue='' promptChar=':'>
+			Tested up to WordPress® version (press enter to use default value):
+		</input>
+
+		<!-- Decision: Use core type? (applies only to plugins). -->
+
+		<if>
+			<equals arg1='${ws.builder.building}' arg2='plugin' />
+			<then>
+				<input message='${ws.cfg.div_over}Please choose one of these options.${ws.cfg.div_under}'
+				       propertyName='ws.input.use_core_type' validArgs='directory,phar,stub,submodule' defaultValue='submodule' promptChar=':'>
+					The WebSharks™ Core will be distributed in what way?
+				</input>
+			</then>
+		</if>
+
+		<!-- Ready to build now? We request final confirmation here. -->
+
+		<input message='${ws.cfg.div_over}Please type `yes` to initiate the build process.${ws.cfg.div_under}'
+		       propertyName='ws.input.confirmation' validArgs='yes,no' defaultValue='no' promptChar=':'>
+			Ready to build now?
+		</input>
+
+		<!-- Auto-adjust and/or catch potentially dangerous issues. -->
+
+		<if>
+			<and>
+				<equals arg1='${ws.builder.building}' arg2='plugin' />
+				<isset property='ws.input.repo_plugin_dir_basename' />
+				<istrue value='${ws.input.repo_plugin_dir_basename}' />
+				<not>
+					<contains string='${ws.input.repo_plugin_dir_basename}' substring='/' />
+				</not>
+			</and>
+			<then>
+				<property name='ws.input.adjusted_repo_plugin_dir_basename' value='${ws.input.repo_plugin_dir_basename}/${ws.input.repo_plugin_dir_basename}' />
+			</then>
+			<elseif>
+				<and>
+					<equals arg1='${ws.builder.building}' arg2='plugin' />
+					<isset property='ws.input.repo_plugin_dir_basename' />
+					<istrue value='${ws.input.repo_plugin_dir_basename}' />
+				</and>
+				<then>
+					<property name='ws.input.adjusted_repo_plugin_dir_basename' value='${ws.input.repo_plugin_dir_basename}' />
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1='${ws.builder.building}' arg2='plugin' />
+				<then>
+					<property name='ws.input.adjusted_repo_plugin_dir_basename' value='""' />
+					<fail message='Missing repo/plugin directory basename.' />
+				</then>
+			</elseif>
+			<else>
+				<property name='ws.input.adjusted_repo_plugin_dir_basename' value='""' />
+			</else>
+		</if>
+
+		<!-- Input sanitations and default values. -->
+
+		<if>
+			<and>
+				<equals arg1='${ws.builder.building}' arg2='plugin' />
+				<isset property='ws.input.adjusted_repo_plugin_dir_basename' />
+				<istrue value='${ws.input.adjusted_repo_plugin_dir_basename}' />
+			</and>
+			<then>
+				<property name='ws.args.plugin_dir' value='${ws.cfg.websharks_dir}/${ws.input.adjusted_repo_plugin_dir_basename}' />
+			</then>
+			<elseif>
+				<equals arg1='${ws.builder.building}' arg2='plugin' />
+				<then>
+					<property name='ws.args.plugin_dir' value='""' />
+					<fail message='Missing repo/plugin directory basename.' />
+				</then>
+			</elseif>
+			<else>
+				<property name='ws.args.plugin_dir' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<equals arg1='${ws.builder.building}' arg2='plugin' />
+				<isset property='ws.input.plugin_name' />
+				<istrue value='${ws.input.plugin_name}' />
+			</and>
+			<then>
+				<property name='ws.args.plugin_name' value='${ws.input.plugin_name}' />
+			</then>
+			<else>
+				<property name='ws.args.plugin_name' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<equals arg1='${ws.builder.building}' arg2='plugin' />
+				<isset property='ws.input.plugin_root_ns' />
+				<istrue value='${ws.input.plugin_root_ns}' />
+			</and>
+			<then>
+				<property name='ws.args.plugin_root_ns' value='${ws.input.plugin_root_ns}' />
+			</then>
+			<else>
+				<property name='ws.args.plugin_root_ns' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<equals arg1='${ws.builder.building}' arg2='plugin' />
+				<isset property='ws.input.distros_dir_basename' />
+				<istrue value='${ws.input.distros_dir_basename}' />
+			</and>
+			<then>
+				<property name='ws.args.distros_dir' value='${ws.cfg.distros_dir}/${ws.input.distros_dir_basename}' />
+			</then>
+			<else>
+				<property name='ws.args.distros_dir' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<equals arg1='${ws.builder.building}' arg2='plugin' />
+				<isset property='ws.input.downloads_dir_basename' />
+				<istrue value='${ws.input.downloads_dir_basename}' />
+			</and>
+			<then>
+				<property name='ws.args.downloads_dir' value='${ws.cfg.downloads_dir}/${ws.input.downloads_dir_basename}' />
+			</then>
+			<else>
+				<property name='ws.args.downloads_dir' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<isset property='ws.input.version' />
+				<istrue value='${ws.input.version}' />
+			</and>
+			<then>
+				<property name='ws.args.version' value='${ws.input.version}' />
+			</then>
+			<else>
+				<property name='ws.args.version' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<isset property='ws.input.requires_at_least_apache_version' />
+				<istrue value='${ws.input.requires_at_least_apache_version}' />
+			</and>
+			<then>
+				<property name='ws.args.requires_at_least_apache_version' value='${ws.input.requires_at_least_apache_version}' />
+			</then>
+			<else>
+				<property name='ws.args.requires_at_least_apache_version' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<isset property='ws.input.tested_up_to_apache_version' />
+				<istrue value='${ws.input.tested_up_to_apache_version}' />
+			</and>
+			<then>
+				<property name='ws.args.tested_up_to_apache_version' value='${ws.input.tested_up_to_apache_version}' />
+			</then>
+			<else>
+				<property name='ws.args.tested_up_to_apache_version' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<isset property='ws.input.requires_at_least_php_version' />
+				<istrue value='${ws.input.requires_at_least_php_version}' />
+			</and>
+			<then>
+				<property name='ws.args.requires_at_least_php_version' value='${ws.input.requires_at_least_php_version}' />
+			</then>
+			<else>
+				<property name='ws.args.requires_at_least_php_version' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<isset property='ws.input.tested_up_to_php_version' />
+				<istrue value='${ws.input.tested_up_to_php_version}' />
+			</and>
+			<then>
+				<property name='ws.args.tested_up_to_php_version' value='${ws.input.tested_up_to_php_version}' />
+			</then>
+			<else>
+				<property name='ws.args.tested_up_to_php_version' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<isset property='ws.input.requires_at_least_wp_version' />
+				<istrue value='${ws.input.requires_at_least_wp_version}' />
+			</and>
+			<then>
+				<property name='ws.args.requires_at_least_wp_version' value='${ws.input.requires_at_least_wp_version}' />
+			</then>
+			<else>
+				<property name='ws.args.requires_at_least_wp_version' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<isset property='ws.input.tested_up_to_wp_version' />
+				<istrue value='${ws.input.tested_up_to_wp_version}' />
+			</and>
+			<then>
+				<property name='ws.args.tested_up_to_wp_version' value='${ws.input.tested_up_to_wp_version}' />
+			</then>
+			<else>
+				<property name='ws.args.tested_up_to_wp_version' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<equals arg1='${ws.builder.building}' arg2='plugin' />
+				<isset property='ws.input.use_core_type' />
+				<istrue value='${ws.input.use_core_type}' />
+			</and>
+			<then>
+				<property name='ws.args.use_core_type' value='${ws.input.use_core_type}' />
+			</then>
+			<else>
+				<property name='ws.args.use_core_type' value='""' />
+			</else>
+		</if>
+		<if>
+			<and>
+				<isset property='ws.input.build_from_core_version' />
+				<istrue value='${ws.input.build_from_core_version}' />
+			</and>
+			<then>
+				<property name='ws.args.build_from_core_version' value='${ws.input.build_from_core_version}' />
+			</then>
+			<else>
+				<property name='ws.args.build_from_core_version' value='""' />
+			</else>
+		</if>
+
+		<!-- Custom builder (execute if we have confirmation). -->
+
+		<if>
+			<equals arg1='${ws.input.confirmation}' arg2='yes' />
+			<then>
+				<echo>Building ${ws.builder.building} w/ PHP v${php.version} (custom)...${ws.cfg.div_under}</echo>
+				<exec executable='php' outputProperty='ws.builder.output'>
+					<arg file='./builder.php' />
+
+					<!-- Plugin directory. -->
+					<arg value='${ws.args.plugin_dir}' />
+
+					<!-- plugin name -->
+					<arg value='${ws.args.plugin_name}' />
+
+					<!-- Plugin root namespace. -->
+					<arg value='${ws.args.plugin_root_ns}' />
+
+					<!-- Distros directory. -->
+					<arg value='${ws.args.distros_dir}' />
+
+					<!-- Downloads directory. -->
+					<arg value='${ws.args.downloads_dir}' />
+
+					<!-- Version (defaults to YYMMDD). -->
+					<arg value='${ws.args.version}' />
+
+					<!-- Requires at least Apache version (defaults to core value). -->
+					<arg value='${ws.args.requires_at_least_apache_version}' />
+
+					<!-- Tested up to Apache version (defaults to core value). -->
+					<arg value='${ws.args.tested_up_to_apache_version}' />
+
+					<!-- Requires at least PHP version (defaults to core value). -->
+					<arg value='${ws.args.requires_at_least_php_version}' />
+
+					<!-- Tested up to PHP version (defaults to core value). -->
+					<arg value='${ws.args.tested_up_to_php_version}' />
+
+					<!-- Requires at least WordPress® version (defaults to core value). -->
+					<arg value='${ws.args.requires_at_least_wp_version}' />
+
+					<!-- Tested up to WordPress® version (defaults to core value). -->
+					<arg value='${ws.args.tested_up_to_wp_version}' />
+
+					<!-- Use core type? (defaults to `submodule`). -->
+					<arg value='${ws.args.use_core_type}' />
+
+					<!-- Build from core version? (defaults to latest stable release). -->
+					<arg value='${ws.args.build_from_core_version}' />
+				</exec>
+				<echo msg='${ws.builder.output}' />
+			</then>
+			<else>
+				<echo>Build terminated. No confirmation.${ws.cfg.div_under}</echo>
+			</else>
+		</if>
+
+	</target>
+
+</project>
