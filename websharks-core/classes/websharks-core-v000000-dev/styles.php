@@ -57,51 +57,50 @@ namespace websharks_core_v000000_dev
 					$this->method(__FUNCTION__).'#init', NULL,
 					$this->__('Doing it wrong (the `init` hook has NOT been fired yet).')
 				);
-			$is_admin           = is_admin(); // Conditional cache.
-			$is_plugin_page     = $is_admin && $this->©menu_page->is_plugin_page();
-			$front_side_load    = !$is_admin && $this->©options->get('styles.front_side.load');
 			$styles_to_register = array(); // Initialize array of styles to register.
 
-			// Core libs and jQuery UI themes; available in all contexts.
+			// Core libs and UI themes; available in all contexts.
 
 			if(!wp_style_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
 				$styles_to_register[$this->___instance_config->core_ns_stub_with_dashes] = array(
 					'url' => $this->©url->to_core_dir_file('/client-side/styles/core-libs.min.css'),
 					'ver' => $this->___instance_config->core_version_with_dashes
 				);
-			foreach($this->ui_themes() as $_theme => $_theme_dir)
+			foreach($this->ui_themes() as $_theme => $_theme_file)
 				if(!wp_style_is($_theme, 'registered'))
-					$styles_to_register[$_theme] = array(
+					$styles_to_register[$this->___instance_config->core_prefix_with_dashes.'ui-'.$_theme] = array(
 						'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
-						'url'  => $this->©url->to_wp_abs_dir_file($_theme_dir.'/theme.min.css'),
-						'ver'  => $this->___instance_config->core_version_with_dashes
+						'url'  => $this->©url->to_wp_abs_dir_file($_theme_file),
+						'ver'  => $this->___instance_config->plugin_version_with_dashes
 					);
-			unset($_theme, $_theme_dir); // A little housekeeping.
+			unset($_theme, $_theme_file); // A little housekeeping.
 
-			// Stand-alone components; available in all contexts.
+			// Front-side components (including themes); available in all contexts.
+
+			$front_side_ui_themes          = array($this->___instance_config->core_prefix_with_dashes.'ui-'.$this->options['styles.front_side.theme']);
+			$this->front_side_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side';
+			foreach($this->©options->get('styles.front_side.load_themes') as $_theme) // Load by default :-)
+				$front_side_ui_themes[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$_theme;
+			$front_side_ui_themes = array_unique($front_side_ui_themes);
+			unset($_theme); // Housekeeping.
+
+			$styles_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side'] = array(
+				'deps' => array_merge(array($this->___instance_config->core_ns_stub_with_dashes), $front_side_ui_themes),
+				'url'  => $this->©url->to_template_dir_file('client-side/styles/front-side.min.css'),
+				'ver'  => $this->___instance_config->plugin_version_with_dashes
+			);
+			// Stand-alone components; available in all contexts (depends on front-side).
 
 			$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone';
 
 			$styles_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone'] = array(
-				'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
+				'deps' => array($this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side'),
 				'url'  => $this->©url->to_template_dir_file('client-side/styles/stand-alone.min.css'),
 				'ver'  => $this->___instance_config->plugin_version_with_dashes
 			);
-			// Front-side components; only if applicable.
-
-			if($front_side_load) // Front-side styles.
-			{
-				$this->front_side_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side';
-
-				$styles_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side'] = array(
-					'deps' => array_merge(array($this->___instance_config->core_ns_stub_with_dashes), $this->©options->get('styles.front_side.load_themes')),
-					'url'  => $this->©url->to_template_dir_file('client-side/styles/front-side.min.css'),
-					'ver'  => $this->___instance_config->plugin_version_with_dashes
-				);
-			}
 			// Menu page components; only if applicable.
 
-			if($is_plugin_page) // Menu page styles.
+			if($this->©menu_page->is_plugin_page()) // Menu page styles.
 			{
 				$this->menu_page_components[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-pages';
 
@@ -111,7 +110,7 @@ namespace websharks_core_v000000_dev
 				// Only if NOT already registered by another WebSharks™ plugin (it should NOT be).
 				if(!wp_style_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
 					$styles_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
-						'deps' => array($this->___instance_config->core_ns_stub_with_dashes, $current_menu_pages_theme),
+						'deps' => array($this->___instance_config->core_prefix_with_dashes.'ui-'.$current_menu_pages_theme),
 						'url'  => $this->©url->to_core_dir_file('/client-side/styles/menu-pages/menu-pages.min.css'),
 						'ver'  => $this->___instance_config->core_version_with_dashes
 					);
@@ -132,20 +131,19 @@ namespace websharks_core_v000000_dev
 
 			$themes = array(); // Initialize UI themes array.
 
-			$dirs   = $this->©dirs->where_templates_may_reside();
-			$dirs[] = $this->©dir->n_seps_up(__FILE__, 3);
-
-			foreach(array_reverse($dirs) as $_dir) // Precedence.
+			foreach($this->©dirs->where_templates_may_reside() as $_dir)
 				if(is_dir($_themes_dir = $_dir.'/client-side/styles/themes'))
 				{
-					foreach(scandir($_themes_dir) as $_theme_dir)
+					foreach(scandir($_themes_dir) as $_theme_dir_slug)
 					{
-						if(strpos($_theme_dir, '.') === 0 || $_theme_dir === 'index.php')
-							continue; // Skip all dots and `index.php` files.
-						else if(is_file($_themes_dir.'/'.$_theme_dir.'/theme.min.css'))
-							$themes['jquery-ui-theme-'.$_theme_dir] = $_themes_dir.'/'.$_theme_dir;
+						if(strpos($_theme_dir_slug, '.') === 0)
+							continue; // Skip `.` and `..`.
+						else if(!empty($themes[$_theme_dir_slug]))
+							continue; // Allows UI themes to be overridden.
+						else if(is_file($_theme_file = $_themes_dir.'/'.$_theme_dir_slug.'/theme.min.css'))
+							$themes[$_theme_dir_slug] = $_theme_file;
 					}
-					unset($_theme_dir); // Housekeeping.
+					unset($_theme_dir_slug, $_theme_file); // Housekeeping.
 				}
 			unset($_dir, $_themes_dir); // Final housekeeping.
 
@@ -168,14 +166,12 @@ namespace websharks_core_v000000_dev
 			$components = array(); // Initialize array.
 			$others     = ($others) ? (array)$others : array();
 
-			$is_admin                = is_admin(); // Conditional cache.
-			$is_plugin_page          = $is_admin && $this->©menu_page->is_plugin_page();
+			$front_side_load_filter  = $this->apply_filters('front_side', (boolean)$this->©options->get('styles.front_side.load_by_default'));
 			$stand_alone_load_filter = $this->apply_filters('stand_alone', FALSE);
-			$front_side_load         = !$is_admin && $this->©options->get('styles.front_side.load');
-			$front_side_load_filter  = $front_side_load && $this->apply_filters('front_side', (boolean)$this->©options->get('styles.front_side.load_by_default'));
+			$is_plugin_page          = $this->©menu_page->is_plugin_page();
 
-			if($stand_alone_load_filter) $components = array_merge($components, $this->stand_alone_components);
 			if($front_side_load_filter) $components = array_merge($components, $this->front_side_components);
+			if($stand_alone_load_filter) $components = array_merge($components, $this->stand_alone_components);
 			if($is_plugin_page) $components = array_merge($components, $this->menu_page_components);
 
 			return array_unique(array_merge($components, $others));

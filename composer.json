@@ -19,7 +19,7 @@
 	"description": "WebSharks™ Core framework for WordPress® plugin development.",
 	"keywords"   : ["websharks", "websharks core", "wordpress", "wordpress plugins"],
 
-	"license": "GPL-2.0+",
+	"license": "GPL-3.0+",
 	"support": {
 		"email" : "websharks@websharks-inc.com",
 		"source": "http://github.com/WebSharks/Core"

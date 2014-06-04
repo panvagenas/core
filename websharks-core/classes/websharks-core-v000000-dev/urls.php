@@ -1372,8 +1372,7 @@ namespace websharks_core_v000000_dev
 				$dir  = $this->©dir->n_seps($abs_dir_file);
 				$file = ''; // No file, it's a directory.
 			}
-			if(!$dir || $dir === '.') // Root?
-				return ''; // Catch empty directory here.
+			if(!$dir) return ''; // Catch empty directory here.
 
 			// Remove stream wrappers (assuming WordPress® does NOT use these).
 
@@ -1420,10 +1419,10 @@ namespace websharks_core_v000000_dev
 			if(strpos($dir.'/', ($wp_active_theme_dir = $this->©dir->n_seps(get_template_directory())).'/') === 0)
 				return rtrim($this->to_wp_template_uri($this->encode_path_parts($this->©string->replace_once($wp_active_theme_dir, '', $dir).$file), $scheme), '/');
 
-			if(!$___realpath && ($abs_dir_file_realpath = realpath($dir)) && ($abs_dir_file_realpath = $this->©dir->n_seps($abs_dir_file_realpath)) && $abs_dir_file_realpath !== $abs_dir_file)
+			if(!$___realpath && ($abs_dir_file_realpath = $this->©dir->n_seps((string)realpath($abs_dir_file))) && $abs_dir_file_realpath !== $abs_dir_file)
 				return $this->to_wp_abs_dir_file($abs_dir_file_realpath, $scheme, TRUE); // Retry w/ a `realpath()` now.
 
-			// By default we use `file://`. Windows® drive letter is removed temporarily here.
+			// By default we use `file://`. A Windows® drive letter becomes: `file://[drive letter]/`.
 
 			if(!isset($this->static[__FUNCTION__.'__regex_win_drive_letter'])) // We only need this ONE time.
 				$this->static[__FUNCTION__.'__regex_win_drive_letter'] = substr(stub::$regex_valid_win_drive_letter, 0, -2).'/';

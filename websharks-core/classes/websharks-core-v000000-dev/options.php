@@ -63,12 +63,10 @@ namespace websharks_core_v000000_dev
 
 				'no_cache.headers.always'                    => '0',
 
-				'styles.front_side.load'                     => '1',
 				'styles.front_side.load_by_default'          => '0',
 				'styles.front_side.load_themes'              => array(),
 				'styles.front_side.theme'                    => 'spacelab',
 
-				'scripts.front_side.load'                    => '1',
 				'scripts.front_side.load_by_default'         => '0',
 				'scripts.front_side.load_jquery_via_cdn'     => '0',
 				'scripts.admin_side.load_jquery_via_cdn'     => '0',
@@ -93,6 +91,7 @@ namespace websharks_core_v000000_dev
 				'templates.stand_alone.bg_style'             => 'background: #F2F1F0 url(\''.$this->©string->esc_sq($this->©url->to_template_dir_file('client-side/images/stand-alone-bg.png')).'\') repeat left top;',
 				'templates.stand_alone.header'               => '<a href="'.esc_attr($this->©url->to_wp_home_uri()).'"><img class="logo" src="'.esc_attr($this->©url->to_template_dir_file('client-side/images/stand-alone-logo.png')).'" alt="" /></a>',
 				'templates.stand_alone.footer'               => '',
+
 				'templates.email.header'                     => '',
 				'templates.email.footer'                     => '',
 
@@ -123,12 +122,10 @@ namespace websharks_core_v000000_dev
 
 				'no_cache.headers.always'                    => array('string:numeric >=' => 0),
 
-				'styles.front_side.load'                     => array('string:numeric >=' => 0),
 				'styles.front_side.load_by_default'          => array('string:numeric >=' => 0),
 				'styles.front_side.load_themes'              => array('array'),
 				'styles.front_side.theme'                    => array('string:!empty'),
 
-				'scripts.front_side.load'                    => array('string:numeric >=' => 0),
 				'scripts.front_side.load_by_default'         => array('string:numeric >=' => 0),
 				'scripts.front_side.load_jquery_via_cdn'     => array('string:numeric >=' => 0),
 				'scripts.admin_side.load_jquery_via_cdn'     => array('string:numeric >=' => 0),
@@ -153,6 +150,7 @@ namespace websharks_core_v000000_dev
 				'templates.stand_alone.bg_style'             => array('string'),
 				'templates.stand_alone.header'               => array('string'),
 				'templates.stand_alone.footer'               => array('string'),
+
 				'templates.email.header'                     => array('string'),
 				'templates.email.footer'                     => array('string'),
 

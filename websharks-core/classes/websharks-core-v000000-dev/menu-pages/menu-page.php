@@ -354,11 +354,11 @@ namespace websharks_core_v000000_dev\menu_pages
 			$current_theme = $this->©options->get('menu_pages.theme');
 
 			echo '<ul class="controls theme-options">';
-			foreach($this->©styles->ui_themes() as $_theme => $_theme_dir)
+			foreach($this->©styles->ui_themes() as $_theme => $_theme_file)
 				echo '<li'.(($_theme === $current_theme) ? ' class="current"' : '').' data-theme="'.esc_attr($_theme).'">'.
-				     esc_html(ucwords(str_replace(array('jquery-ui-theme-', '-'), array('', ' '), $_theme))).
+				     esc_html(ucwords(str_replace('-', ' ', $_theme))).
 				     '</li>';
-			unset($_theme, $_theme_dir);
+			unset($_theme, $_theme_file);
 			echo '</ul>';
 
 			echo '</form>';

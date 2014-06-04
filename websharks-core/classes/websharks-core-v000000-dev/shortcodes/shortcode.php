@@ -64,9 +64,6 @@ namespace websharks_core_v000000_dev\shortcodes
 			$attr = $this->©array->to_one_dimension($attr);
 			$attr = $this->©strings->trim_deep($attr);
 
-			if(!empty($attr['theme'])) // Add core/theme prefix.
-				$attr['theme'] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$attr['theme'];
-
 			foreach($this->boolean_attr_keys() as $_attr_key)
 			{
 				if(isset($attr[$_attr_key]) && is_string($attr[$_attr_key]))
@@ -74,7 +71,7 @@ namespace websharks_core_v000000_dev\shortcodes
 						$attr[$_attr_key] = '1';
 					else $attr[$_attr_key] = '0';
 			}
-			unset($_attr_key); // Housekeeping.
+			unset($_attr_key); // Just a little housekeeping.
 
 			return array_merge($this->attr_defaults(), $attr);
 		}

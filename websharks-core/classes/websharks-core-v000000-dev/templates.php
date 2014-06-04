@@ -37,7 +37,7 @@ namespace websharks_core_v000000_dev
 		public $data; // Defaults to a NULL value.
 
 		/**
-		 * @var string jQuery™ UI theme.
+		 * @var string UI theme.
 		 *    Defaults to the current front-side theme.
 		 * @by-constructor Set dynamically by class constructor.
 		 */
@@ -104,15 +104,16 @@ namespace websharks_core_v000000_dev
 		{
 			parent::__construct($___instance_config);
 
-			$this->check_arg_types('', 'string:!empty', array('array', 'object'), 'string', 'string', func_get_args());
+			$this->check_arg_types('', 'string:!empty', array('array', 'object'), 'string', func_get_args());
 
-			// Enables front-side plugin styles/scripts.
-			$this->©plugin->needs_front_side_styles_scripts(TRUE, $theme);
+			$this->file = $file; // Template file name (relative path).
+			$this->data = $this->parse_data($data); // Supports all possible scenarios.
 
-			// Populates all object properties.
-			$this->file    = $file; // Template file name (relative path).
-			$this->data    = $this->parse_data($data); // Supports all possible scenarios.
-			$this->theme   = ($theme) ? $theme : $this->©options->get('styles.front_side.theme');
+			$this->theme = ($theme) ? $theme : $this->©options->get('styles.front_side.theme');
+			if(!in_array($this->theme, array_keys($this->©styles->ui_themes()), TRUE))
+				$this->theme = $this->©options->get('styles.front_side.theme', TRUE);
+			$this->©plugin->needs_front_side_styles_scripts(TRUE, $this->theme);
+
 			$this->content = $this->parse_content(); // Parses content in this template file.
 			$this->config  = $this->parse_config(); // Gets XML config values from this template file.
 		}
@@ -129,12 +130,13 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			if($theme) $this->theme = $theme;
+			if($theme && in_array($this->theme, array_keys($this->©styles->ui_themes()), TRUE))
+				$this->theme = $theme; // Validate.
 			$this->©plugin->needs_stand_alone_styles(TRUE, $this->theme);
 
 			ob_start(); // Open output buffer.
 
-			$this->©styles->print_styles($this->©styles->contextual_components($this->theme));
+			$this->©styles->print_styles($this->©styles->contextual_components($this->___instance_config->core_prefix_with_dashes.'ui-'.$this->theme));
 			echo '<style type="text/css">html{'.$this->©options->get('templates.stand_alone.bg_style').'}</style>'."\n";
 			echo $this->©php->evaluate($this->©options->get('templates.stand_alone.styles'))."\n";
 
@@ -429,11 +431,9 @@ namespace websharks_core_v000000_dev
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
-			if(in_array($this->theme, array_keys($this->©styles->ui_themes()), TRUE))
-			{
-				$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui';
-				$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$this->theme;
-			}
+			$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui';
+			$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$this->theme;
+
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-wrapper';
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-wrapper';
 			$classes[] = $for.'-wrapper'; // This one is the same (but without the leading prefix).

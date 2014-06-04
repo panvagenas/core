@@ -172,7 +172,7 @@ namespace websharks_core_v000000_dev
 
 			     '<div class="notice fade '.(($notice['error']) ? 'error' : 'updated').
 			     ' ui-widget ui-state-'.(($notice['error']) ? 'error' : 'highlight').' ui-corner-all"'.
-			     '>'. // With WordPress® styles (and also with WebSharks™ UI theme styles).
+			     '>'. // With WordPress® styles (and also w/ UI theme styles).
 
 			     $notice['notice']. // HTML markup.
 
