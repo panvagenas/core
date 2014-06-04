@@ -11,11 +11,12 @@
  * @since 120318
  *
  * @note This compiler requires that you have SASS installed.
- * @note This compiler requires that you have the YUI Compressor installed also.
+ *    e.g. `brew install sass`
  *
- * @TODO Make this use local dev utilities instead of an absolute path.
+ * @note This compiler requires that you have the YUI Compressor installed also.
+ *    e.g. `brew install yuicompressor`
  */
-require_once $_SERVER['WEBSHARK_HOME'].'/WebSharks/websharks-core/.~dev-utilities/core.php';
+require_once dirname(dirname(dirname(dirname(__FILE__)))).'/.~dev-utilities/core.php';
 websharks_core()->©env->prep_for_cli_dev_procedure();
 compile_all(); // Run compiler.
 
@@ -93,21 +94,21 @@ function compile_bootstrap_themes()
 {
 	$themes = array
 	( // <http://www.bootstrapcdn.com/?theme=1#bootswatch_tab>
-	  'amelia' => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/amelia/bootstrap.min.css',
-	  //	  'cerulean'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cerulean/bootstrap.min.css',
-	  //	  'cosmo'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cosmo/bootstrap.min.css',
-	  //	  'cyborg'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cyborg/bootstrap.min.css',
-	  //	  'flatly'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css',
-	  //	  'journal'   => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/journal/bootstrap.min.css',
-	  //	  'lumen'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/lumen/bootstrap.min.css',
-	  //	  'readable'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/readable/bootstrap.min.css',
-	  //	  'simplex'   => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/simplex/bootstrap.min.css',
-	  //	  'slate'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/slate/bootstrap.min.css',
-	  //	  'spacelab'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/spacelab/bootstrap.min.css',
-	  //	  'superhero' => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/superhero/bootstrap.min.css',
-	  //	  'united'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/united/bootstrap.min.css',
-	  //	  'yeti'      => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css',
-	  //	  'darkly'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/darkly/bootstrap.min.css',
+	  'amelia'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/amelia/bootstrap.min.css',
+	  'cerulean'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cerulean/bootstrap.min.css',
+	  'cosmo'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cosmo/bootstrap.min.css',
+	  'cyborg'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/cyborg/bootstrap.min.css',
+	  'flatly'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css',
+	  'journal'   => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/journal/bootstrap.min.css',
+	  'lumen'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/lumen/bootstrap.min.css',
+	  'readable'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/readable/bootstrap.min.css',
+	  'simplex'   => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/simplex/bootstrap.min.css',
+	  'slate'     => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/slate/bootstrap.min.css',
+	  'spacelab'  => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/spacelab/bootstrap.min.css',
+	  'superhero' => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/superhero/bootstrap.min.css',
+	  'united'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/united/bootstrap.min.css',
+	  'yeti'      => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css',
+	  'darkly'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/darkly/bootstrap.min.css',
 	);
 	foreach($themes as $slug => $url)
 	{
