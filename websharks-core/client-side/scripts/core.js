@@ -193,7 +193,8 @@
 	$$websharks_core.$.prototype.core_constructor = function(plugin_root_ns_stub, extension)
 	{
 		this.check_arg_types('string', 'string', arguments, 0);
-		var core_ns_stub = 'websharks_core';
+
+		var core_ns_stub = 'websharks_core'; // Hard-coded.
 
 		// Set dynamic `___i18n` property.
 
