@@ -22,14 +22,12 @@ namespace websharks_core_dev_utilities
 	function compile_all()
 	{
 		$core = core(); // WebSharks™ Core.
+
 		ob_start(); // Begin compilation.
-
-		echo file_get_contents('http://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/1.4.11/jquery.scrollTo.min.js')."\n";
-		echo file_get_contents('http://cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.min.js')."\n";
-		echo file_get_contents('http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js')."\n";
-		echo file_get_contents(dirname(__FILE__).'/jquery-ui-toggles.min.js')."\n";
-		echo file_get_contents(dirname(__FILE__).'/core.min.js')."\n";
-
+		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-sprintf.min.js')."\n";
+		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-jq-scrollto.min.js')."\n";
+		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-bs.min.js')."\n";
+		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core.min.js')."\n";
 		file_put_contents(dirname(__FILE__).'/core-libs.min.js', trim(ob_get_clean()));
 	}
 }

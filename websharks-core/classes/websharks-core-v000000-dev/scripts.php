@@ -66,15 +66,8 @@ namespace websharks_core_v000000_dev
 			$is_admin            = is_admin(); // Conditional cache.
 			$is_plugin_page      = $is_admin && $this->©menu_page->is_plugin_page();
 			$front_side_load     = !$is_admin && $this->©options->get('scripts.front_side.load');
-			$load_jquery_via_cdn = !$is_admin && $this->©options->get('scripts.front_side.load_jquery_via_cdn');
-			$load_jquery_via_cdn = $load_jquery_via_cdn || ($is_admin && $this->©options->get('scripts.admin_side.load_jquery_via_cdn'));
 			$scripts_to_register = array(); // Initialize scripts to register.
 
-			// Add jQuery™ (if loading via CDN).
-
-			if($load_jquery_via_cdn) $scripts_to_register['jquery'] = array(
-				'url' => $this->©url->current_scheme().'://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'
-			);
 			// Core libs; available in all contexts.
 
 			if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
@@ -157,9 +150,15 @@ namespace websharks_core_v000000_dev
 			{
 				$this->menu_page_components[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-pages';
 
+				if(!wp_script_is('jquery-html5-sortable', 'registered'))
+					$scripts_to_register['jquery-html5-sortable'] = array(
+						'deps' => array('jquery'), // jQuery dependency only.
+						'url'  => $this->©url->to_core_dir_file('/client-side/scripts/jq-sortable.min.js'),
+						'ver'  => $this->___instance_config->core_version_with_dashes
+					);
 				if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
 					$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
-						'deps'     => array($this->___instance_config->core_ns_stub_with_dashes),
+						'deps'     => array($this->___instance_config->core_ns_stub_with_dashes, 'jquery-html5-sortable'),
 						'url'      => $this->©url->to_core_dir_file('/client-side/scripts/menu-pages/menu-pages.min.js'),
 						'ver'      => $this->___instance_config->core_version_with_dashes,
 

@@ -7,42 +7,28 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
- *
- * @TODO Finish documenting properties in this file.
- *    Most docBlocks are already in place; but they still need to be filled in.
- *    Several parameters are untyped and undocumented (among other things that are incomplete).
  */
 
-(function($w) // Begin WebSharks™ Core closure.
+(function($) // Begin WebSharks™ Core closure.
 {
 	'use strict'; // Standards.
 
 	/**
-	 * To satisfy IDEs here.
-	 *
-	 * @param s {String} Input string.
-	 *
-	 * @return {String}
-	 */
-	if(typeof sprintf !== 'function')
-		$w.sprintf = function(s){ return s; };
-
-	/**
 	 * @type {Object} WebSharks™ Core.
 	 */
-	$w.$$websharks_core = $w.$$websharks_core || {};
-	if(typeof $w.$$websharks_core.$ === 'function')
+	window.$$websharks_core = $$websharks_core || {};
+	if(typeof $$websharks_core.$ === 'function')
 		return; // Core already exists.
 
 	/**
 	 * @constructor WebSharks™ Core constructor.
 	 */
-	$w.$$websharks_core.$ = function(){this.core_constructor.apply(this, arguments);};
+	$$websharks_core.$ = function(){this.core_constructor.apply(this, arguments);};
 
 	/**
 	 * @type {Object} Current instance configuration.
 	 */
-	$w.$$websharks_core.$.prototype.___instance_config = {};
+	$$websharks_core.$.prototype.___instance_config = {};
 
 	/**
 	 * Get instance configuration property.
@@ -51,20 +37,42 @@
 	 *
 	 * @return {String|Array|Object|Number|Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.instance_config = function(key)
+	$$websharks_core.$.prototype.instance_config = function(key)
 	{
-		var $$ = this, $ = jQuery;
+		if(!this.empty(typeof this.___instance_config[key]))
+			return this.___instance_config[key];
 
-		if(!$$.empty(typeof $$.___instance_config[key]))
-			return $$.___instance_config[key];
+		throw this.sprintf(this.__('instance_config__failure'), key);
+	};
 
-		throw sprintf($$.__('instance_config__failure'), key);
+	/**
+	 * JavaScript equivalent to PHP's `sprintf()` function.
+	 *
+	 * @see http://cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.js
+	 *
+	 * @returns {String}
+	 */
+	$$websharks_core.$.prototype.sprintf = function()
+	{
+		return $$websharks_core.sprintf.apply(window, arguments);
+	};
+
+	/**
+	 * JavaScript equivalent to PHP's `vsprintf()` function.
+	 *
+	 * @see http://cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.js
+	 *
+	 * @returns {String}
+	 */
+	$$websharks_core.$.prototype.vsprintf = function()
+	{
+		return $$websharks_core.vsprintf.apply(window, arguments);
 	};
 
 	/**
 	 * @type {Object} Current verifiers.
 	 */
-	$w.$$websharks_core.$.prototype.___verifiers = {};
+	$$websharks_core.$.prototype.___verifiers = {};
 
 	/**
 	 * Get string verifier property.
@@ -73,21 +81,18 @@
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.verifier = function(key)
+	$$websharks_core.$.prototype.verifier = function(key)
 	{
-		var $$ = this, $ = jQuery;
+		if(typeof this.___verifiers[key] === 'string')
+			return this.___verifiers[key];
 
-		if(typeof $$.___verifiers[key] === 'string')
-			return $$.___verifiers[key];
-
-		console.log($$.___verifiers);
-		throw sprintf($$.__('verifier__failure'), key);
+		throw this.sprintf(this.__('verifier__failure'), key);
 	};
 
 	/**
 	 * @type {Object} Current translations.
 	 */
-	$w.$$websharks_core.$.prototype.___i18n = {};
+	$$websharks_core.$.prototype.___i18n = {};
 
 	/**
 	 * Get i18n string translation property.
@@ -96,20 +101,18 @@
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.__ = function(key)
+	$$websharks_core.$.prototype.__ = function(key)
 	{
-		var $$ = this, $ = jQuery;
+		if(typeof this.___i18n[key] === 'string')
+			return this.___i18n[key];
 
-		if(typeof $$.___i18n[key] === 'string')
-			return $$.___i18n[key];
-
-		throw sprintf($$.___i18n['____failure'], key);
+		throw this.sprintf(this.___i18n['____failure'], key);
 	};
 
 	/**
 	 * @type {Object} All `is...()` type checks.
 	 */
-	$w.$$websharks_core.$.prototype.___is_type_checks = {
+	$$websharks_core.$.prototype.___is_type_checks = {
 		'string'       : 'is_string',
 		'!string'      : 'is_string',
 		'string:!empty': 'is_string',
@@ -166,17 +169,17 @@
 	/**
 	 * @type {String} Represents a `public` type.
 	 */
-	$w.$$websharks_core.$.prototype.___public_type = '___public_type___';
+	$$websharks_core.$.prototype.___public_type = '___public_type___';
 
 	/**
 	 * @type {String} Represents a `protected` type.
 	 */
-	$w.$$websharks_core.$.prototype.___protected_type = '___protected_type___';
+	$$websharks_core.$.prototype.___protected_type = '___protected_type___';
 
 	/**
 	 * @type {String} Represents a `private` type.
 	 */
-	$w.$$websharks_core.$.prototype.___private_type = '___private_type___';
+	$$websharks_core.$.prototype.___private_type = '___private_type___';
 
 	/**
 	 * WebSharks™ Core constructor.
@@ -187,202 +190,174 @@
 	 * @param plugin_root_ns_stub {String} Optional plugin root namespace stub.
 	 * @param extension {String} Optional plugin extension name (if creating new extensions).
 	 */
-	$w.$$websharks_core.$.prototype.core_constructor = function(plugin_root_ns_stub, extension)
+	$$websharks_core.$.prototype.core_constructor = function(plugin_root_ns_stub, extension)
 	{
-		var $$ = this, $ = jQuery, core_ns_stub = 'websharks_core';
-
-		$$.check_arg_types('string', 'string', arguments, 0);
+		this.check_arg_types('string', 'string', arguments, 0);
+		var core_ns_stub = 'websharks_core';
 
 		// Set dynamic `___i18n` property.
 
-		$$.___i18n = $.extend({}, $w['$' + core_ns_stub + '___i18n'], $$.___i18n);
+		this.___i18n = $.extend({}, this.___i18n, window['$' + core_ns_stub + '___i18n']);
+		if(!this.empty(plugin_root_ns_stub) && typeof window['$' + plugin_root_ns_stub + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + plugin_root_ns_stub + '___i18n']);
 
-		if(!$$.empty(plugin_root_ns_stub) && typeof $w['$' + plugin_root_ns_stub + '___i18n'] === 'object')
-			$.extend($$.___i18n, $w['$' + plugin_root_ns_stub + '___i18n']);
-
-		if(!$$.empty(plugin_root_ns_stub, extension) && typeof $w['$' + plugin_root_ns_stub + '__' + extension + '___i18n'] === 'object')
-			$.extend($$.___i18n, $w['$' + plugin_root_ns_stub + '__' + extension + '___i18n']);
+		if(!this.empty(plugin_root_ns_stub, extension) && typeof window['$' + plugin_root_ns_stub + '__' + extension + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + plugin_root_ns_stub + '__' + extension + '___i18n']);
 
 		// Set dynamic `___instance_config` property.
 
-		$$.___instance_config = $w['$' + core_ns_stub + '__current_plugin___instance_config'];
-
-		if(!$$.empty(plugin_root_ns_stub) && typeof $w['$' + plugin_root_ns_stub + '___instance_config'] === 'object')
-			$$.___instance_config = $w['$' + plugin_root_ns_stub + '___instance_config'];
+		this.___instance_config = window['$' + core_ns_stub + '__current_plugin___instance_config'];
+		if(!this.empty(plugin_root_ns_stub) && typeof window['$' + plugin_root_ns_stub + '___instance_config'] === 'object')
+			this.___instance_config = window['$' + plugin_root_ns_stub + '___instance_config'];
 
 		// Set dynamic `___verifiers` property.
 
-		$$.___verifiers = $w['$' + core_ns_stub + '__current_plugin___verifiers'];
-
-		if(!$$.empty(plugin_root_ns_stub) && typeof $w['$' + plugin_root_ns_stub + '___verifiers'] === 'object')
-			$$.___verifiers = $w['$' + plugin_root_ns_stub + '___verifiers'];
+		this.___verifiers = window['$' + core_ns_stub + '__current_plugin___verifiers'];
+		if(!this.empty(plugin_root_ns_stub) && typeof window['$' + plugin_root_ns_stub + '___verifiers'] === 'object')
+			this.___verifiers = window['$' + plugin_root_ns_stub + '___verifiers'];
 	};
 
 	/**
 	 * Test for string type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_string = function(v)
+	$$websharks_core.$.prototype.is_string = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
 		return (typeof v === 'string');
 	};
 
 	/**
 	 * Test for boolean type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_boolean = function(v)
+	$$websharks_core.$.prototype.is_boolean = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
 		return (typeof v === 'boolean');
 	};
 
 	/**
 	 * Test for integer type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_integer = function(v)
+	$$websharks_core.$.prototype.is_integer = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
-		return (typeof v === 'number' && String(v).indexOf('.') === -1);
+		return (typeof v === 'number' && !isNaN(v) && String(v).indexOf('.') === -1);
 	};
 
 	/**
 	 * Test for float type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_float = function(v)
+	$$websharks_core.$.prototype.is_float = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
-		return (typeof v === 'number' && String(v).indexOf('.') !== -1);
+		return (typeof v === 'number' && !isNaN(v) && String(v).indexOf('.') !== -1);
 	};
 
 	/**
 	 * Test for number type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_number = function(v)
+	$$websharks_core.$.prototype.is_number = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
-		return (typeof v === 'number');
+		return (typeof v === 'number' && !isNaN(v));
 	};
 
 	/**
 	 * Test for numeric type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_numeric = function(v)
+	$$websharks_core.$.prototype.is_numeric = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
 		return ((typeof(v) === 'number' || typeof(v) === 'string') && v !== '' && !isNaN(v));
 	};
 
 	/**
 	 * Test for array type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_array = function(v)
+	$$websharks_core.$.prototype.is_array = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
 		return (v instanceof Array);
 	};
 
 	/**
 	 * Test for function type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_function = function(v)
+	$$websharks_core.$.prototype.is_function = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
 		return (typeof v === 'function');
 	};
 
 	/**
 	 * Test for XML type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_xml = function(v)
+	$$websharks_core.$.prototype.is_xml = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
 		return (typeof v === 'xml');
 	};
 
 	/**
 	 * Test for object type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_object = function(v)
+	$$websharks_core.$.prototype.is_object = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
 		return (typeof v === 'object');
 	};
 
 	/**
 	 * Test for NULL type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_null = function(v)
+	$$websharks_core.$.prototype.is_null = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
 		return (typeof v === 'null');
 	};
 
 	/**
 	 * Test for undefined type.
 	 *
-	 * @param v
+	 * @param v {*}
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_undefined = function(v)
+	$$websharks_core.$.prototype.is_undefined = function(v)
 	{
-		var $$ = this, $ = jQuery;
-
 		return (typeof v === 'undefined');
 	};
 
@@ -391,17 +366,12 @@
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.isset = function()
+	$$websharks_core.$.prototype.isset = function()
 	{
-		var $$ = this, $ = jQuery;
-
 		var undefined_var; // Undefined value.
-
-		for(var _i = 0; _i < arguments.length; _i++)
-		{ // noinspection JSUnusedAssignment
+		for(var _i = 0; _i < arguments.length; _i++) // noinspection JSUnusedAssignment
 			if(arguments[_i] === undefined_var || arguments[_i] === null)
 				return false;
-		}
 		return true;
 	};
 
@@ -410,10 +380,8 @@
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.empty = function()
+	$$websharks_core.$.prototype.empty = function()
 	{
-		var $$ = this, $ = jQuery;
-
 		empty: // Main iteration loop.
 			for(var _i = 0, _p; _i < arguments.length; _i++)
 			{
@@ -439,18 +407,16 @@
 	/**
 	 * Quotes regex meta characters.
 	 *
-	 * @param string
-	 * @param delimiter
+	 * @param string {String}
+	 * @param delimiter {String}
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.preg_quote = function(string, delimiter)
+	$$websharks_core.$.prototype.preg_quote = function(string, delimiter)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types('string', 'string', arguments, 1);
 
-		$$.check_arg_types('string', 'string', arguments, 1);
-
-		delimiter = !$$.empty(delimiter) ? delimiter : ''; // Force string value.
+		delimiter = !this.empty(delimiter) ? delimiter : ''; // Force string value.
 
 		var metaChars = ['.', '\\', '+', '*', '?', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|', ':', '-'];
 		var regex = new RegExp('([\\' + metaChars.join('\\') + delimiter + '])', 'g');
@@ -461,15 +427,13 @@
 	/**
 	 * Escapes HTML special chars.
 	 *
-	 * @param string
+	 * @param string {String}
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.esc_html = $w.$$websharks_core.$.prototype.esc_attr = function(string)
+	$$websharks_core.$.prototype.esc_html = $$websharks_core.$.prototype.esc_attr = function(string)
 	{
-		var $$ = this, $ = jQuery;
-
-		$$.check_arg_types('string', arguments, 1);
+		this.check_arg_types('string', arguments, 1);
 
 		if(string.match(/[&<>"']/))
 		{
@@ -483,15 +447,13 @@
 	/**
 	 * Escapes variables for use in jQuery™ attribute selectors.
 	 *
-	 * @param string
+	 * @param string {String}
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.esc_jquery_attr = function(string)
+	$$websharks_core.$.prototype.esc_jquery_attr = function(string)
 	{
-		var $$ = this, $ = jQuery;
-
-		$$.check_arg_types('string', arguments, 1);
+		this.check_arg_types('string', arguments, 1);
 
 		return string.replace(/([.:\[\]])/g, '\\$1');
 	};
@@ -500,24 +462,24 @@
 	 * Gets the WebSharks™ Core CSS class name.
 	 *
 	 * @return {String} CSS class name.
+	 *
+	 * @TODO Check this return value.
 	 */
-	$w.$$websharks_core.$.prototype.core_css_class = function()
+	$$websharks_core.$.prototype.core_css_class = function()
 	{
-		var $$ = this, $ = jQuery;
-
-		return $$.instance_config('core_ns_stub_with_dashes');
+		return this.instance_config('core_ns_stub_with_dashes');
 	};
 
 	/**
 	 * Gets the plugin CSS class name (for current plugin).
 	 *
 	 * @return {String} CSS class name.
+	 *
+	 * @TODO Check this return value.
 	 */
-	$w.$$websharks_core.$.prototype.plugin_css_class = function()
+	$$websharks_core.$.prototype.plugin_css_class = function()
 	{
-		var $$ = this, $ = jQuery;
-
-		return $$.instance_config('plugin_root_ns_stub_with_dashes');
+		return this.instance_config('plugin_root_ns_stub_with_dashes');
 	};
 
 	/**
@@ -526,17 +488,20 @@
 	 * @note The search begins with `to` (and may also end at `to`, if it contains a theme CSS class).
 	 *    The search continues with jQuery™ `parents()`; the search will fail if no parents have a UI theme class.
 	 *
+	 * @param object {Node|Object|String} The object to start from.
+	 * @param include_ui_class {Boolean} Include UI class too?
+	 *
 	 * @return {String} CSS class name.
+	 *
+	 * @TODO Check this return value.
 	 */
-	$w.$$websharks_core.$.prototype.closest_ui_theme_css_class_to = function(obj, include_ui_class)
+	$$websharks_core.$.prototype.closest_ui_theme_css_class_to = function(object, include_ui_class)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types(['object', 'string:!empty'], 'boolean', arguments, 1);
 
-		$$.check_arg_types('object', 'boolean', arguments, 1);
+		var _this = this, theme_css_class = ''; // Initialize string.
 
-		var theme_css_class = ''; // Initialize string.
-
-		$(obj).add($(obj).parents('.' + $$.plugin_css_class() + '.ui'))
+		$(object).add($(object).parents('.' + this.plugin_css_class() + '.ui'))
 			.each(function() // Begin iterations (we have two here).
 			      {
 				      var classes = $(this).attr('class');
@@ -550,12 +515,11 @@
 					      }
 					      return true; // Default return value.
 				      });
-				      if(!$$.empty(theme_css_class))
+				      if(!_this.empty(theme_css_class))
 					      return false; // Breaks loop.
-
 				      return true; // Default return value.
 			      });
-		if(!$$.empty(theme_css_class))
+		if(!this.empty(theme_css_class))
 			return (include_ui_class) ? 'ui ' + theme_css_class : theme_css_class;
 
 		return ''; // Default return value.
@@ -567,77 +531,33 @@
 	 * @note The `ui` class will ONLY be included, if we find a CSS theme class.
 	 *    This is the intended behavior. If there is no UI theme, we exclude the `ui` class.
 	 *
-	 * @note The UI classes that we construct here, have a reaching impact on:
-	 *    `$$.wrap_problematic_ui_theme_components()`.
+	 * @param object {Node|Object|String} The object to start from.
 	 *
 	 * @return {String}
+	 *
+	 * @TODO Check this return value.
 	 */
-	$w.$$websharks_core.$.prototype.ui_dialogue_classes_for = function(obj)
+	$$websharks_core.$.prototype.ui_dialogue_classes_for = function(object)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
-		$$.check_arg_types('object', arguments, 1);
-
-		return $.trim($$.core_css_class() + ' ' + $$.plugin_css_class() + ' ' + $$.closest_ui_theme_css_class_to(obj, true));
-	};
-
-	/**
-	 * Wraps up problematic jQuery™ UI components (i.e. dialogues and overlays).
-	 */
-	$w.$$websharks_core.$.prototype.wrap_problematic_ui_theme_components = function()
-	{
-		var $$ = this, $ = jQuery;
-
-		$('.' + $$.plugin_css_class() + '.ui.ui-dialog')
-			.each(function() // Iterate dialogues.
-			      {
-				      var $this = $(this),
-					      wrapper_classes = [
-						      $$.core_css_class(),
-						      $$.plugin_css_class(),
-						      'ui', // WebSharks™ Core UI enabler.
-						      $$.closest_ui_theme_css_class_to($this),
-						      // ^ We get a UI theme class from `$this`.
-						      $$.plugin_css_class() + '-ui-wrapper'
-					      ];
-				      var wrapper = '<div class="' + $$.esc_attr(wrapper_classes.join(' ')) + '"></div>';
-
-				      $(this).wrap(wrapper)
-					      .bind('dialogopen', function()
-					            {
-						            $('.ui-widget-overlay').wrap(wrapper);
-					            })
-					      .bind('dialogclose', function()
-					            {
-						            $('.' + wrapper_classes.join('.') + ':empty').remove();
-					            });
-			      });
+		return $.trim(this.core_css_class() + ' ' + this.plugin_css_class() + ' ' + this.closest_ui_theme_css_class_to(object, true));
 	};
 
 	/**
 	 * Prepares jQuery™ UI forms.
+	 *
+	 * @TODO Check this function.
 	 */
-	$w.$$websharks_core.$.prototype.prepare_ui_forms = function()
+	$$websharks_core.$.prototype.prepare_ui_forms = function()
 	{
-		var $$ = this, $ = jQuery;
-
-		var ui_form = '.' + $$.plugin_css_class() + ' form.ui-form';
+		var _this = this, ui_form = '.' + this.plugin_css_class() + ' form.ui-form';
 
 		// Attach focus handlers to form field containers.
 
 		$(ui_form + ' .ui-form-field-container')
-			.focusin(function()
-			         {
-				         $(this)
-					         .addClass('ui-state-highlight')
-					         .removeClass('ui-state-default');
-			         })
-			.focusout(function()
-			          {
-				          $(this)
-					          .addClass('ui-state-default')
-					          .removeClass('ui-state-highlight');
-			          });
+			.focusin(function(){ $(this).addClass('ui-state-highlight').removeClass('ui-state-default'); })
+			.focusout(function(){ $(this).addClass('ui-state-default').removeClass('ui-state-highlight'); });
 		// Buttonize `input|button` `type="submit|reset|button"` elements.
 
 		$(ui_form + ' input[type="submit"], ' + ui_form + ' input[type="reset"], ' + ui_form + ' input[type="button"], ' +
@@ -676,7 +596,7 @@
 
 		var password_strength_mismatch_status = function(password1, password2)
 		{
-			$$.check_arg_types('string', 'string', arguments, 2);
+			_this.check_arg_types('string', 'string', arguments, 2);
 
 			var score = 0; // Initialize score.
 
@@ -717,7 +637,7 @@
 					             {
 						             var strength_mismatch_status = password_strength_mismatch_status($.trim(String($password1.val())), $.trim(String($password2.val())));
 						             $strength_mismatch_indicator.attr('class', strength_mismatch_indicator_classes.join(' ') + ' ' + strength_mismatch_status)
-							             .html($$.__('password_strength_mismatch_status__' + strength_mismatch_status));
+							             .html(_this.__('password_strength_mismatch_status__' + strength_mismatch_status));
 					             }).trigger('keyup');
 			      });
 		// Form field validation.
@@ -732,12 +652,12 @@
 					            {
 						            var $this = $(this), form_field_code, $input, $response_validation_errors;
 
-						            if($$.empty(form_field_code = $this.attr('data-form-field-code')))
+						            if(_this.empty(form_field_code = $this.attr('data-form-field-code')))
 							            return; // No code for this error (continue loop).
 
-						            if(!($input = $(':input[name="' + $$.esc_jquery_attr(form_field_code) + '"],' +
-						                            ' :input[name$="' + $$.esc_jquery_attr('[' + form_field_code + ']') + '"],' +
-						                            ' :input[name$="' + $$.esc_jquery_attr('[' + form_field_code + '][]') + '"]',
+						            if(!($input = $(':input[name="' + _this.esc_jquery_attr(form_field_code) + '"],' +
+						                            ' :input[name$="' + _this.esc_jquery_attr('[' + form_field_code + ']') + '"],' +
+						                            ' :input[name$="' + _this.esc_jquery_attr('[' + form_field_code + '][]') + '"]',
 						                            $form).first()).length) // First in this form.
 							            return; // Unable to locate form field w/ code.
 
@@ -763,12 +683,12 @@
 					            });
 				      if($('ul:empty', $response_errors).length) // Don't leave completely empty.
 					      $('ul', $response_errors).append('<li><span class="ui-icon ui-icon-alert"></span>'
-					                                       + $$.__('validate_ui_form__check_issues_below') + '</li>');
+					                                       + _this.__('validate_ui_form__check_issues_below') + '</li>');
 			      });
 		$(ui_form).attr({'novalidate': 'novalidate'})// Disables HTML 5 validation via browser.
 			.submit(function() // This uses our own form field validation handler instead of the browser's.
 			        {
-				        return $$.validate_ui_form(this);
+				        return _this.validate_ui_form(this);
 			        });
 	};
 
@@ -778,14 +698,17 @@
 	 * @note This is an EXTREMELY COMPLEX routine that should NOT be modified without serious consideration.
 	 *    See standards here: \websharks_core_v000000_dev\form_fields in the WebSharks™ Core.
 	 *
+	 * @param context {Node|Object|String}
+	 *
 	 * @return {Boolean}
+	 *
+	 * @TODO Check this function.
 	 */
-	$w.$$websharks_core.$.prototype.validate_ui_form = function(context)
+	$$websharks_core.$.prototype.validate_ui_form = function(context)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types('object', arguments, 1);
 
-		$$.check_arg_types('object', arguments, 1);
-
+		var _this = this; // Self reference.
 		var confirmation_errors = {}, unique_value_errors = {};
 		var required_minimum_errors = {}, rc_required_minimum_errors = {};
 		var validation_errors = {};
@@ -798,31 +721,31 @@
 				      var $field1 = $(':input', this).first();
 				      var $field2 = $(':input', $(this).next('.ui-form-field')).first();
 
-				      if(!$$.empty($field1.attr('readonly')) || !$$.empty($field2.attr('readonly')))
+				      if(!_this.empty($field1.attr('readonly')) || !_this.empty($field2.attr('readonly')))
 					      return; // One of these is NOT even enabled (do nothing in this case).
 
-				      if(!$$.empty($field1.attr('disabled')) || !$$.empty($field2.attr('disabled')))
+				      if(!_this.empty($field1.attr('disabled')) || !_this.empty($field2.attr('disabled')))
 					      return; // One of these is NOT even enabled (do nothing in this case).
 
 				      var id = $field1.attr('id');
-				      if($$.empty(id) || !$$.is_string(id))
+				      if(_this.empty(id) || !_this.is_string(id))
 					      return; // Must have an ID.
 				      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
 
 				      confirmation_errors[id] = confirmation_errors[id] || [];
 
 				      var name = $field1.attr('name');
-				      if($$.empty(name) || !$$.is_string(name))
+				      if(_this.empty(name) || !_this.is_string(name))
 					      return; // Must have a name.
 
 				      var tag_name = $field1.prop('tagName');
-				      if($$.empty(tag_name) || !$$.is_string(tag_name))
+				      if(_this.empty(tag_name) || !_this.is_string(tag_name))
 					      return; // Must have a tag name.
 				      else tag_name = tag_name.toLowerCase();
 
 				      var type = $field1.attr('type'); // May need this below (for input tags).
 				      if(tag_name === 'input') // Must have a type for input tags.
-					      if($$.empty(type) || !$$.is_string(type))
+					      if(_this.empty(type) || !_this.is_string(type))
 						      return; // Must have a type.
 					      else type = type.toLowerCase();
 
@@ -835,43 +758,43 @@
 				      // NOTE: It's possible for either of these values to be empty (perfectly OK).
 
 				      var field1_value = $field1.val(); // Possible array.
-				      if($$.is_number(field1_value)) field1_value = String(field1_value); // Force numeric string.
-				      if($$.is_string(field1_value)) field1_value = $.trim(field1_value); // Trim string value.
+				      if(_this.is_number(field1_value)) field1_value = String(field1_value); // Force numeric string.
+				      if(_this.is_string(field1_value)) field1_value = $.trim(field1_value); // Trim string value.
 
 				      var field2_value = $field2.val(); // Possible array.
-				      if($$.is_number(field2_value)) field2_value = String(field2_value); // Force numeric string.
-				      if($$.is_string(field2_value)) field2_value = $.trim(field2_value); // Trim string value.
+				      if(_this.is_number(field2_value)) field2_value = String(field2_value); // Force numeric string.
+				      if(_this.is_string(field2_value)) field2_value = $.trim(field2_value); // Trim string value.
 
 				      if(field1_value !== field2_value) // Values are a mismatch?
-					      confirmation_errors[id].push($$.__('validate_ui_form__mismatch_fields'));
+					      confirmation_errors[id].push(_this.__('validate_ui_form__mismatch_fields'));
 			      });
 		$(':input[data-unique]', context)// Validation routine (for fields that MUST be unique).
 			.each(function() // Checks form fields that require unique values (this relies upon callbacks).
 			      {
 				      var $this = $(this); // jQuery object instance.
 
-				      if(!$$.empty($this.attr('readonly')) || !$$.empty($this.attr('disabled')))
+				      if(!_this.empty($this.attr('readonly')) || !_this.empty($this.attr('disabled')))
 					      return; // It's NOT even enabled (or it's read-only).
 
 				      var id = $this.attr('id');
-				      if($$.empty(id) || !$$.is_string(id))
+				      if(_this.empty(id) || !_this.is_string(id))
 					      return; // Must have an ID.
 				      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
 
 				      unique_value_errors[id] = unique_value_errors[id] || [];
 
 				      var name = $this.attr('name');
-				      if($$.empty(name) || !$$.is_string(name))
+				      if(_this.empty(name) || !_this.is_string(name))
 					      return; // Must have a name.
 
 				      var tag_name = $this.prop('tagName');
-				      if($$.empty(tag_name) || !$$.is_string(tag_name))
+				      if(_this.empty(tag_name) || !_this.is_string(tag_name))
 					      return; // Must have a tag name.
 				      else tag_name = tag_name.toLowerCase();
 
 				      var type = $this.attr('type'); // May need this below (for input tags).
 				      if(tag_name === 'input') // Must have a type for input tags.
-					      if($$.empty(type) || !$$.is_string(type))
+					      if(_this.empty(type) || !_this.is_string(type))
 						      return; // Must have a type.
 					      else type = type.toLowerCase();
 
@@ -883,26 +806,26 @@
 					      return; // Exclude (these are NEVER checked for a unique value).
 
 				      var callback = $this.attr('data-unique-callback'); // Need this below.
-				      if($$.empty(callback) || !$$.is_string(callback) || typeof $w[callback] !== 'function')
+				      if(_this.empty(callback) || !_this.is_string(callback) || typeof window[callback] !== 'function')
 					      return; // Must have a type.
 
 				      var value = $this.val(); // Possible array.
-				      if($$.is_number(value)) value = String(value); // Force numeric string.
-				      if($$.is_string(value)) value = $.trim(value); // Trim string value.
+				      if(_this.is_number(value)) value = String(value); // Force numeric string.
+				      if(_this.is_string(value)) value = $.trim(value); // Trim string value.
 
-				      if(!$$.empty(value) && $$.is_string(value) && !$w[callback](value))
-					      unique_value_errors[id].push($$.__('validate_ui_form__unique_field'));
+				      if(!_this.empty(value) && _this.is_string(value) && !window[callback](value))
+					      unique_value_errors[id].push(_this.__('validate_ui_form__unique_field'));
 			      });
 		$(':input[data-required]', context)// Validation routine (for required fields).
 			.each(function() // Checks each `data-required` form field (some tag names are handled differently).
 			      {
 				      var $this = $(this); // jQuery object instance.
 
-				      if(!$$.empty($this.attr('readonly')) || !$$.empty($this.attr('disabled')))
+				      if(!_this.empty($this.attr('readonly')) || !_this.empty($this.attr('disabled')))
 					      return; // It's NOT even enabled (or it's read-only).
 
 				      var id = $this.attr('id');
-				      if($$.empty(id) || !$$.is_string(id))
+				      if(_this.empty(id) || !_this.is_string(id))
 					      return; // Must have an ID.
 				      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
 
@@ -910,17 +833,17 @@
 				      rc_required_minimum_errors[id] = rc_required_minimum_errors[id] || [];
 
 				      var name = $this.attr('name');
-				      if($$.empty(name) || !$$.is_string(name))
+				      if(_this.empty(name) || !_this.is_string(name))
 					      return; // Must have a name.
 
 				      var tag_name = $this.prop('tagName');
-				      if($$.empty(tag_name) || !$$.is_string(tag_name))
+				      if(_this.empty(tag_name) || !_this.is_string(tag_name))
 					      return; // Must have a tag name.
 				      else tag_name = tag_name.toLowerCase();
 
 				      var type = $this.attr('type'); // May need this below (for input tags).
 				      if(tag_name === 'input') // Must have a type for input tags.
-					      if($$.empty(type) || !$$.is_string(type))
+					      if(_this.empty(type) || !_this.is_string(type))
 						      return; // Must have a type.
 					      else type = type.toLowerCase();
 
@@ -932,8 +855,8 @@
 					      return; // Exclude (these are NEVER required).
 
 				      var value = $this.val(); // Possible array.
-				      if($$.is_number(value)) value = String(value); // Force numeric string.
-				      if($$.is_string(value)) value = $.trim(value); // Trim string value.
+				      if(_this.is_number(value)) value = String(value); // Force numeric string.
+				      if(_this.is_string(value)) value = $.trim(value); // Trim string value.
 
 				      var validation_minimum, validation_min_max_type, validation_abs_minimum = null;
 				      var _i, files, checked; // For files/radios/checkboxes below.
@@ -942,28 +865,28 @@
 				      {
 					      case 'select': // We also check for multiple selections (i.e. `multiple="multiple"`).
 
-						      if(!$$.empty($this.attr('multiple'))) // This field allows multiple selections?
+						      if(!_this.empty($this.attr('multiple'))) // This field allows multiple selections?
 						      {
 							      if($this.attr('data-validation-name-0')) // Has validators?
 							      {
 								      for(_i = 0; _i <= 24; _i++) // Iterate validation patterns.
 								      {
 									      validation_minimum = $this.attr('data-validation-minimum-' + _i);
-									      validation_minimum = ($$.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
+									      validation_minimum = (_this.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
 									      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
-									      if(validation_min_max_type === 'array_length' && $$.isset(validation_minimum) && validation_minimum > 1)
-										      if(!$$.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
+									      if(validation_min_max_type === 'array_length' && _this.isset(validation_minimum) && validation_minimum > 1)
+										      if(!_this.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
 											      validation_abs_minimum = validation_minimum;
 								      }
-								      if($$.isset(validation_abs_minimum) && (!$$.is_array(value) || value.length < validation_abs_minimum))
-									      required_minimum_errors[id].push(sprintf($$.__('validate_ui_form__required_select_at_least'), validation_abs_minimum));
+								      if(_this.isset(validation_abs_minimum) && (!_this.is_array(value) || value.length < validation_abs_minimum))
+									      required_minimum_errors[id].push(_this.sprintf(_this.__('validate_ui_form__required_select_at_least'), validation_abs_minimum));
 							      }
-							      if($$.empty(required_minimum_errors[id]) && (!$$.is_array(value) || value.length < 1))
-								      required_minimum_errors[id].push($$.__('validate_ui_form__required_select_at_least_one'));
+							      if(_this.empty(required_minimum_errors[id]) && (!_this.is_array(value) || value.length < 1))
+								      required_minimum_errors[id].push(_this.__('validate_ui_form__required_select_at_least_one'));
 						      }
-						      else if(!$$.is_string(value) || value.length < 1)
-							      required_minimum_errors[id].push($$.__('validate_ui_form__required_field'));
+						      else if(!_this.is_string(value) || value.length < 1)
+							      required_minimum_errors[id].push(_this.__('validate_ui_form__required_field'));
 
 						      break; // Break switch handler.
 
@@ -973,7 +896,7 @@
 						      {
 							      case 'file': // Handle file uploads.
 
-								      if(!$$.empty($this.attr('multiple'))) // Allows multiple files?
+								      if(!_this.empty($this.attr('multiple'))) // Allows multiple files?
 								      {
 									      files = $this.prop('files'); // List of files (object: FileList).
 
@@ -982,77 +905,77 @@
 										      for(_i = 0; _i <= 24; _i++) // Iterate validation patterns.
 										      {
 											      validation_minimum = $this.attr('data-validation-minimum-' + _i);
-											      validation_minimum = ($$.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
+											      validation_minimum = (_this.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
 											      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
-											      if(validation_min_max_type === 'array_length' && $$.isset(validation_minimum) && validation_minimum > 1)
-												      if(!$$.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
+											      if(validation_min_max_type === 'array_length' && _this.isset(validation_minimum) && validation_minimum > 1)
+												      if(!_this.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
 													      validation_abs_minimum = validation_minimum;
 										      }
-										      if($$.isset(validation_abs_minimum) && (!(files instanceof FileList) || files.length < validation_abs_minimum))
-											      required_minimum_errors[id].push(sprintf($$.__('validate_ui_form__required_file_at_least'), validation_abs_minimum));
+										      if(_this.isset(validation_abs_minimum) && (!(files instanceof FileList) || files.length < validation_abs_minimum))
+											      required_minimum_errors[id].push(_this.sprintf(_this.__('validate_ui_form__required_file_at_least'), validation_abs_minimum));
 									      }
-									      if($$.empty(required_minimum_errors[id]) && (!(files instanceof FileList) || files.length < 1))
-										      required_minimum_errors[id].push($$.__('validate_ui_form__required_file_at_least_one'));
+									      if(_this.empty(required_minimum_errors[id]) && (!(files instanceof FileList) || files.length < 1))
+										      required_minimum_errors[id].push(_this.__('validate_ui_form__required_file_at_least_one'));
 								      }
-								      else if(!$$.is_string(value) || value.length < 1)
-									      required_minimum_errors[id].push($$.__('validate_ui_form__required_file'));
+								      else if(!_this.is_string(value) || value.length < 1)
+									      required_minimum_errors[id].push(_this.__('validate_ui_form__required_file'));
 
 								      break; // Break switch handler.
 
 							      case 'radio': // Radio button(s).
 
-								      checked = $('input[id^="' + $$.esc_jquery_attr(id) + '"]:checked', context).length;
+								      checked = $('input[id^="' + _this.esc_jquery_attr(id) + '"]:checked', context).length;
 
 								      if(checked < 1) // MUST have at least one checked radio.
 								      {
-									      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-										      required_minimum_errors[id].push($$.__('validate_ui_form__required_radio'));
-									      rc_required_minimum_errors[id].push($$.__('validate_ui_form__required_radio'));
+									      if(_this.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
+										      required_minimum_errors[id].push(_this.__('validate_ui_form__required_radio'));
+									      rc_required_minimum_errors[id].push(_this.__('validate_ui_form__required_radio'));
 								      }
 								      break; // Break switch handler.
 
 							      case 'checkbox': // Checkbox(es).
 
-								      checked = $('input[id^="' + $$.esc_jquery_attr(id) + '"]:checked', context).length;
+								      checked = $('input[id^="' + _this.esc_jquery_attr(id) + '"]:checked', context).length;
 
-								      if($('input[id^="' + $$.esc_jquery_attr(id) + '"]', context).length > 1) // Multiple?
+								      if($('input[id^="' + _this.esc_jquery_attr(id) + '"]', context).length > 1) // Multiple?
 								      {
 									      if($this.attr('data-validation-name-0')) // Has validators?
 									      {
 										      for(_i = 0; _i <= 24; _i++) // Iterate validation patterns.
 										      {
 											      validation_minimum = $this.attr('data-validation-minimum-' + _i);
-											      validation_minimum = ($$.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
+											      validation_minimum = (_this.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
 											      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
-											      if(validation_min_max_type === 'array_length' && $$.isset(validation_minimum) && validation_minimum > 1)
-												      if(!$$.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
+											      if(validation_min_max_type === 'array_length' && _this.isset(validation_minimum) && validation_minimum > 1)
+												      if(!_this.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
 													      validation_abs_minimum = validation_minimum;
 										      }
-										      if($$.isset(validation_abs_minimum) && checked < validation_abs_minimum)
+										      if(_this.isset(validation_abs_minimum) && checked < validation_abs_minimum)
 										      {
-											      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-												      required_minimum_errors[id].push(sprintf($$.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
-											      rc_required_minimum_errors[id].push(sprintf($$.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
+											      if(_this.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
+												      required_minimum_errors[id].push(_this.sprintf(_this.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
+											      rc_required_minimum_errors[id].push(_this.sprintf(_this.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
 										      }
 									      }
-									      if($$.empty(required_minimum_errors[id]) && checked < 1)
+									      if(_this.empty(required_minimum_errors[id]) && checked < 1)
 									      {
-										      if($$.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-											      required_minimum_errors[id].push($$.__('validate_ui_form__required_check_at_least_one'));
-										      rc_required_minimum_errors[id].push($$.__('validate_ui_form__required_check_at_least_one'));
+										      if(_this.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
+											      required_minimum_errors[id].push(_this.__('validate_ui_form__required_check_at_least_one'));
+										      rc_required_minimum_errors[id].push(_this.__('validate_ui_form__required_check_at_least_one'));
 									      }
 								      }
 								      else if(checked < 1) // A single checkbox.
-									      required_minimum_errors[id].push($$.__('validate_ui_form__required_checkbox'));
+									      required_minimum_errors[id].push(_this.__('validate_ui_form__required_checkbox'));
 
 								      break; // Break switch handler.
 
 							      default: // All other input types (default handler).
 
-								      if(!$$.is_string(value) || value.length < 1)
-									      required_minimum_errors[id].push($$.__('validate_ui_form__required_field'));
+								      if(!_this.is_string(value) || value.length < 1)
+									      required_minimum_errors[id].push(_this.__('validate_ui_form__required_field'));
 
 								      break; // Break switch handler.
 						      }
@@ -1060,8 +983,8 @@
 
 					      default: // Everything else (including textarea fields).
 
-						      if(!$$.is_string(value) || value.length < 1)
-							      required_minimum_errors[id].push($$.__('validate_ui_form__required_field'));
+						      if(!_this.is_string(value) || value.length < 1)
+							      required_minimum_errors[id].push(_this.__('validate_ui_form__required_field'));
 
 						      break; // Break switch handler.
 				      }
@@ -1071,28 +994,28 @@
 			      {
 				      var $this = $(this); // jQuery object instance.
 
-				      if(!$$.empty($this.attr('readonly')) || !$$.empty($this.attr('disabled')))
+				      if(!_this.empty($this.attr('readonly')) || !_this.empty($this.attr('disabled')))
 					      return; // It's NOT even enabled (or it's read-only).
 
 				      var id = $this.attr('id');
-				      if($$.empty(id) || !$$.is_string(id))
+				      if(_this.empty(id) || !_this.is_string(id))
 					      return; // Must have an ID.
 				      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
 
 				      validation_errors[id] = validation_errors[id] || [];
 
 				      var name = $this.attr('name');
-				      if($$.empty(name) || !$$.is_string(name))
+				      if(_this.empty(name) || !_this.is_string(name))
 					      return; // Must have a name.
 
 				      var tag_name = $this.prop('tagName');
-				      if($$.empty(tag_name) || !$$.is_string(tag_name))
+				      if(_this.empty(tag_name) || !_this.is_string(tag_name))
 					      return; // Must have a tag name.
 				      else tag_name = tag_name.toLowerCase();
 
 				      var type = $this.attr('type'); // May need this below (for input tags).
 				      if(tag_name === 'input') // Must have a type for input tags.
-					      if($$.empty(type) || !$$.is_string(type))
+					      if(_this.empty(type) || !_this.is_string(type))
 						      return; // Must have a type.
 					      else type = type.toLowerCase();
 
@@ -1104,14 +1027,14 @@
 					      return; // Exclude (these are NEVER validated here).
 
 				      var value = $this.val(); // Possible array.
-				      if($$.is_number(value)) value = String(value); // Force numeric string.
-				      if($$.is_string(value)) value = $.trim(value); // Trim the value.
+				      if(_this.is_number(value)) value = String(value); // Force numeric string.
+				      if(_this.is_string(value)) value = $.trim(value); // Trim the value.
 
-				      if($$.empty(typeof value) || $$.empty(typeof value.length) || !value.length)
-					      if(!$$.isset($this.attr('data-required'))) return; // Empty (but NOT required).
+				      if(_this.empty(typeof value) || _this.empty(typeof value.length) || !value.length)
+					      if(!_this.isset($this.attr('data-required'))) return; // Empty (but NOT required).
 					      else // This value is required and it is NOT defined. We need to stop here.
 					      {
-						      validation_errors[id].push($$.__('validate_ui_form__required_field'));
+						      validation_errors[id].push(_this.__('validate_ui_form__required_field'));
 						      return; // We CANNOT validate this any further.
 					      }
 				      var validation_description_prefix, validation_name, validation_regex;
@@ -1122,27 +1045,27 @@
 
 				      for(id_validation_errors = [], rc_id_validation_errors = [], _i = 0; _i <= 24; _i++)
 				      {
-					      if(!$$.empty(id_validation_errors))
-						      validation_description_prefix = $$.__('validate_ui_form__or_validation_description_prefix');
-					      else validation_description_prefix = $$.__('validate_ui_form__validation_description_prefix');
+					      if(!_this.empty(id_validation_errors))
+						      validation_description_prefix = _this.__('validate_ui_form__or_validation_description_prefix');
+					      else validation_description_prefix = _this.__('validate_ui_form__validation_description_prefix');
 
 					      validation_name = $this.attr('data-validation-name-' + _i);
-					      if($$.empty(validation_name) || !$$.is_string(validation_name))
+					      if(_this.empty(validation_name) || !_this.is_string(validation_name))
 						      continue; // Must have a validation name.
 
 					      validation_description = $this.attr('data-validation-description-' + _i);
-					      if($$.empty(validation_description) || !$$.is_string(validation_description))
+					      if(_this.empty(validation_description) || !_this.is_string(validation_description))
 						      continue; // Must have a validation description.
 
 					      validation_regex = $this.attr('data-validation-regex-' + _i);
-					      if($$.empty(validation_regex) || !$$.is_string(validation_regex))
+					      if(_this.empty(validation_regex) || !_this.is_string(validation_regex))
 						      validation_regex = '/[\\s\\S]*/';
 
 					      validation_minimum = $this.attr('data-validation-minimum-' + _i);
-					      validation_minimum = ($$.isset(validation_minimum)) ? Number(validation_minimum) : null;
+					      validation_minimum = (_this.isset(validation_minimum)) ? Number(validation_minimum) : null;
 
 					      validation_maximum = $this.attr('data-validation-maximum-' + _i);
-					      validation_maximum = ($$.isset(validation_maximum)) ? Number(validation_maximum) : null;
+					      validation_maximum = (_this.isset(validation_maximum)) ? Number(validation_maximum) : null;
 
 					      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
@@ -1156,7 +1079,7 @@
 					      regex_flags = validation_regex.substr(regex_end + 1);
 					      regex = new RegExp(regex_pattern, regex_flags);
 
-					      if($$.empty(typeof id_validation_errors[_i])) // Still no error?
+					      if(_this.empty(typeof id_validation_errors[_i])) // Still no error?
 						      switch(tag_name) // Perform regex validations (based on tag name).
 						      {
 							      case 'input': // This includes several type checks.
@@ -1165,17 +1088,17 @@
 								      {
 									      case 'file': // Deal with file uploads.
 
-										      if(!$$.empty($this.attr('multiple')) && (files = $this.prop('files')) instanceof FileList)
+										      if(!_this.empty($this.attr('multiple')) && (files = $this.prop('files')) instanceof FileList)
 										      {
-											      for(__i = 0; __i < files.length; __i++) if(!$$.is_string(files[__i].name) || !files[__i].name.match(regex))
+											      for(__i = 0; __i < files.length; __i++) if(!_this.is_string(files[__i].name) || !files[__i].name.match(regex))
 											      {
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      break; // No need to check any further.
 											      }
 										      } // Else look for a single file.
-										      else if($$.empty($this.attr('multiple')))
+										      else if(_this.empty($this.attr('multiple')))
 										      {
-											      if(!$$.is_string(value) || !value.match(regex)) // Regex validation.
+											      if(!_this.is_string(value) || !value.match(regex)) // Regex validation.
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1184,7 +1107,7 @@
 
 										      if($.inArray(type, ['radio', 'checkbox']) === -1) // Exclusions w/ predefined values.
 										      {
-											      if(!$$.is_string(value) || !value.match(regex)) // Regex validation.
+											      if(!_this.is_string(value) || !value.match(regex)) // Regex validation.
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1195,12 +1118,12 @@
 
 								      if(tag_name !== 'select') // Exclusions w/ predefined values.
 								      {
-									      if(!$$.is_string(value) || !value.match(regex)) // Regex validation.
+									      if(!_this.is_string(value) || !value.match(regex)) // Regex validation.
 										      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 								      }
 								      break; // Break switch handler.
 						      }
-					      if($$.empty(typeof id_validation_errors[_i]) && ($$.isset(validation_minimum) || $$.isset(validation_maximum)))
+					      if(_this.empty(typeof id_validation_errors[_i]) && (_this.isset(validation_minimum) || _this.isset(validation_maximum)))
 						      switch(validation_min_max_type) // Handle this based on min/max type.
 						      {
 							      case 'numeric_value': // Against min/max numeric value.
@@ -1214,10 +1137,10 @@
 											      default: // All other types (excluding files/radios/checkboxes).
 												      if($.inArray(type, ['file', 'radio', 'checkbox']) === -1) // Exclusions w/ predefined and/or non-numeric values.
 												      {
-													      if($$.isset(validation_minimum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
+													      if(_this.isset(validation_minimum) && (!_this.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-													      else if($$.isset(validation_maximum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
+													      else if(_this.isset(validation_maximum) && (!_this.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      }
 												      break; // Break switch handler.
@@ -1228,10 +1151,10 @@
 
 										      if(tag_name !== 'select') // Exclusions w/ predefined values.
 										      {
-											      if($$.isset(validation_minimum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
+											      if(_this.isset(validation_minimum) && (!_this.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-											      else if($$.isset(validation_maximum) && (!$$.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
+											      else if(_this.isset(validation_maximum) && (!_this.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1252,10 +1175,10 @@
 												      {
 													      for(size = 0, __i = 0; __i < files.length; __i++) size += files[__i].size;
 
-													      if($$.isset(validation_minimum) && size < validation_minimum)
+													      if(_this.isset(validation_minimum) && size < validation_minimum)
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-													      else if($$.isset(validation_maximum) && size > validation_maximum)
+													      else if(_this.isset(validation_maximum) && size > validation_maximum)
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      }
 												      break; // Break switch handler.
@@ -1275,10 +1198,10 @@
 											      default: // All other types (excluding files/radios/checkboxes).
 												      if($.inArray(type, ['file', 'radio', 'checkbox']) === -1) // Exclusions w/ predefined and/or n/a values.
 												      {
-													      if($$.isset(validation_minimum) && (!$$.is_string(value) || value.length < validation_minimum))
+													      if(_this.isset(validation_minimum) && (!_this.is_string(value) || value.length < validation_minimum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-													      else if($$.isset(validation_maximum) && (!$$.is_string(value) || value.length > validation_maximum))
+													      else if(_this.isset(validation_maximum) && (!_this.is_string(value) || value.length > validation_maximum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      }
 												      break; // Break switch handler.
@@ -1289,10 +1212,10 @@
 
 										      if(tag_name !== 'select') // Exclusions w/ predefined values.
 										      {
-											      if($$.isset(validation_minimum) && (!$$.is_string(value) || value.length < validation_minimum))
+											      if(_this.isset(validation_minimum) && (!_this.is_string(value) || value.length < validation_minimum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-											      else if($$.isset(validation_maximum) && (!$$.is_string(value) || value.length > validation_maximum))
+											      else if(_this.isset(validation_maximum) && (!_this.is_string(value) || value.length > validation_maximum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1305,12 +1228,12 @@
 								      {
 									      case 'select': // Select menus w/ multiple options possible.
 
-										      if(!$$.empty($this.attr('multiple')))
+										      if(!_this.empty($this.attr('multiple')))
 										      {
-											      if($$.isset(validation_minimum) && (!$$.is_array(value) || value.length < validation_minimum))
+											      if(_this.isset(validation_minimum) && (!_this.is_array(value) || value.length < validation_minimum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-											      else if($$.isset(validation_maximum) && (!$$.is_array(value) || value.length > validation_maximum))
+											      else if(_this.isset(validation_maximum) && (!_this.is_array(value) || value.length > validation_maximum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1321,33 +1244,33 @@
 										      {
 											      case 'file': // Handle file uploads w/ multiple files possible.
 
-												      if(!$$.empty($this.attr('multiple'))) // Multiple files possible?
+												      if(!_this.empty($this.attr('multiple'))) // Multiple files possible?
 												      {
 													      files = $this.prop('files'); // List of files (object: FileList).
 
-													      if($$.isset(validation_minimum) && (!(files instanceof FileList) || files.length < validation_minimum))
+													      if(_this.isset(validation_minimum) && (!(files instanceof FileList) || files.length < validation_minimum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-													      else if($$.isset(validation_maximum) && (!(files instanceof FileList) || files.length > validation_maximum))
+													      else if(_this.isset(validation_maximum) && (!(files instanceof FileList) || files.length > validation_maximum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      }
 												      break; // Break switch handler.
 
 											      case 'checkbox': // Checkboxes (more than one).
 
-												      if($('input[id^="' + $$.esc_jquery_attr(id) + '"]', context).length > 1) // Multiple?
+												      if($('input[id^="' + _this.esc_jquery_attr(id) + '"]', context).length > 1) // Multiple?
 												      {
-													      checked = $('input[id^="' + $$.esc_jquery_attr(id) + '"]:checked', context).length;
+													      checked = $('input[id^="' + _this.esc_jquery_attr(id) + '"]:checked', context).length;
 
-													      if($$.isset(validation_minimum) && checked < validation_minimum)
+													      if(_this.isset(validation_minimum) && checked < validation_minimum)
 													      {
-														      if($$.empty(rc_id_validation_errors)) // Only ONE error for each group.
+														      if(_this.empty(rc_id_validation_errors)) // Only ONE error for each group.
 															      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 														      rc_id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 													      }
-													      else if($$.isset(validation_maximum) && checked > validation_maximum)
+													      else if(_this.isset(validation_maximum) && checked > validation_maximum)
 													      {
-														      if($$.empty(rc_id_validation_errors)) // Only ONE error for each group.
+														      if(_this.empty(rc_id_validation_errors)) // Only ONE error for each group.
 															      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 														      rc_id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 													      }
@@ -1358,7 +1281,7 @@
 								      }
 								      break; // Break switch handler.
 						      }
-					      if($$.empty(typeof id_validation_errors[_i]) && $$.empty(typeof rc_id_validation_errors[_i]))
+					      if(_this.empty(typeof id_validation_errors[_i]) && _this.empty(typeof rc_id_validation_errors[_i]))
 					      // If this one passes, it negates all existing validation errors (e.g. OR logic).
 						      id_validation_errors = [], rc_id_validation_errors = [];
 				      }
@@ -1380,7 +1303,7 @@
 
 		for(id in errors) // Iterate all errors (from all of the routines above).
 		{
-			if(!errors.hasOwnProperty(id) || $$.empty(errors[id]))
+			if(!errors.hasOwnProperty(id) || this.empty(errors[id]))
 				continue; // No errors in this entry.
 
 			errors_exist = true; // We DO have errors.
@@ -1412,17 +1335,15 @@
 	/**
 	 * Gets a query string variable value.
 	 *
-	 * @param query_var
+	 * @param query_var {String}
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.get_query_var = function(query_var)
+	$$websharks_core.$.prototype.get_query_var = function(query_var)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types('string:!empty', arguments, 1);
 
-		$$.check_arg_types('string:!empty', arguments, 1);
-
-		var qs_pairs = [];
+		var qs_pairs = []; // Initialize.
 
 		if(location.hash.substr(0, 2) === '#!')
 			qs_pairs = qs_pairs.concat(location.hash.substr(2).split('&'));
@@ -1443,36 +1364,34 @@
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_admin = function()
+	$$websharks_core.$.prototype.is_admin = function()
 	{
-		var $$ = this, $ = jQuery;
-
-		return location.href.match(/\/wp-admin(?:[\/?#]|$)/) ? true : false;
+		return location.href.match(/\/wp\-admin(?:[\/?#]|$)/) ? true : false;
 	};
 
 	/**
 	 * Is this a WordPress® menu page, for the current plugin?
 	 *
-	 * @param slug_s
+	 * @param slugs {String|Array}
 	 *
 	 * @return {String|Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.is_plugin_menu_page = function(slug_s)
+	$$websharks_core.$.prototype.is_plugin_menu_page = function(slugs)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types(['string:!empty', 'array:!empty'], arguments, 0);
 
-		$$.check_arg_types(['string', 'array'], arguments, 0);
+		var current_page, matches, page_slug; // Initialize.
+		var regex = new RegExp('^' + this.preg_quote(this.instance_config('plugin_root_ns_stub')) + '(?:__(.+))?$');
 
-		var current_page, _matches, _page_slug;
-		var regex = new RegExp('^' + $$.preg_quote($$.instance_config('plugin_root_ns_stub')) + '(?:__(.+))?$');
-
-		if($$.is_admin() && !$$.empty(current_page = $$.get_query_var('page')) && (_matches = regex.exec(current_page)).length)
+		if(this.is_admin() && !this.empty(current_page = this.get_query_var('page'))
+		   && (matches = regex.exec(current_page)).length)
 		{
-			_page_slug = (_matches.length >= 2 && !$$.empty(_matches[1])) ? _matches[1] : $$.instance_config('plugin_root_ns_stub');
+			page_slug = (matches.length >= 2 && !this.empty(matches[1]))
+				? matches[1] : this.instance_config('plugin_root_ns_stub');
 
-			if($$.empty(slug_s)) return _page_slug;
-			if($$.is_string(slug_s) && _page_slug === slug_s) return _page_slug;
-			if($$.is_array(slug_s) && $.inArray(_page_slug, slug_s) !== -1) return _page_slug;
+			if(this.empty(slugs)) return page_slug;
+			if(this.is_string(slugs) && page_slug === slugs) return page_slug;
+			if(this.is_array(slugs) && $.inArray(page_slug, slugs) !== -1) return page_slug;
 		}
 		return false;
 	};
@@ -1480,60 +1399,44 @@
 	/**
 	 * Selects a DOM element.
 	 *
-	 * @param str_obj
+	 * @param object {Node|Object|String}
 	 */
-	$w.$$websharks_core.$.prototype.select_all = function(str_obj)
+	$$websharks_core.$.prototype.select_all = function(object)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
-		$$.check_arg_types(['string:!empty', 'object'], arguments, 1);
-
-		var obj = $(str_obj).get(0), range, selection;
-
-		if(obj && document.implementation.hasFeature('Range', '2.0'))
+		if((object = $(object)[0]) && document.implementation.hasFeature('Range', '2.0'))
 		{
-			selection = $w.getSelection();
-			selection.removeAllRanges();
-
-			range = document.createRange();
-			range.selectNodeContents(obj);
+			var selection, range; // Initialize.
+			selection = getSelection(), selection.removeAllRanges();
+			range = document.createRange(), range.selectNodeContents(object);
 			selection.addRange(range);
-
-			return; // All done.
-		}
-		var body = document.getElementsByTagName('body')[0];
-		if(obj && typeof body.createTextRange === 'function')
-		{
-			range = body.createTextRange();
-			range.moveToElementText(obj);
-			range.select();
 		}
 	};
 
 	/**
 	 * Opens source code for a DOM element, in a new window.
 	 *
-	 * @param str_obj
+	 * @param object {Node|Object|String}
 	 */
-	$w.$$websharks_core.$.prototype.view_source = function(str_obj)
+	$$websharks_core.$.prototype.view_source = function(object)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
-		$$.check_arg_types(['string:!empty', 'object'], arguments, 1);
+		var $object = $(object), win, source, // Initialize.
+			css = '* { list-style:none; font-size:12px; font-family:"Menlo","Monaco","Consolas",monospace; }';
 
-		var $obj = $(str_obj), win, source, css = '* { list-style:none; font-size:12px; font-family:"Consolas",monospace; }';
-
-		if((win = $$.win_open('', 750, 500)) && (source = win.document) && source.open())
+		if((win = this.win_open('', 750, 500)) && (source = win.document) && source.open())
 		{
 			source.write('<!DOCTYPE html>');
 			source.write('<html>');
 
 			source.write('<head>');
-			source.write('<title>' + $$.__('view_source__doc_title') + '</title>');
-			source.write('<style type="text/css" media="screen,print">' + css + '</style>');
+			source.write('<title>' + this.__('view_source__doc_title') + '</title>');
+			source.write('<style type="text/css" media="all">' + css + '</style>');
 			source.write('</head>');
 
-			source.write('<body><pre>' + $obj.html() + '</pre></body>');
+			source.write('<body><pre>' + $object.html() + '</pre></body>');
 
 			source.write('</html>');
 
@@ -1544,45 +1447,41 @@
 	/**
 	 * Opens a new window.
 	 *
-	 * @param url
-	 * @param width
-	 * @param height
-	 * @param name
+	 * @param url {String}
+	 * @param width {Number}
+	 * @param height {Number}
+	 * @param name {String}
 	 *
 	 * @return {Object}
 	 */
-	$w.$$websharks_core.$.prototype.win_open = function(url, width, height, name)
+	$$websharks_core.$.prototype.win_open = function(url, width, height, name)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types('string', 'integer', 'integer', 'string', arguments, 1);
 
-		$$.check_arg_types('string', 'integer', 'integer', 'string', arguments, 1);
-
-		width = (!$$.empty(width)) ? width : 1000, height = (!$$.empty(height)) ? height : 700, name = (!$$.empty(name)) ? name : '_win_open';
+		width = (!this.empty(width)) ? width : 1000, height = (!this.empty(height)) ? height : 700, name = (!this.empty(name)) ? name : '_win_open';
 		var win, params = 'scrollbars=yes,resizable=yes,centerscreen=yes,modal=yes,width=' + width + ',height=' + height + ',top=' + ((screen.height - height) / 2) + ',screenY=' + ((screen.height - height) / 2) + ',left=' + ((screen.width - width) / 2) + ',screenX=' + ((screen.width - width) / 2);
 
-		if(!(win = $w.open(url, name, params)))
-			alert($$.__('win_open__turn_off_popup_blockers'));
-		else win.focus();
+		if(!(win = open(url, name, params)))
+			alert(this.__('win_open__turn_off_popup_blockers'));
+		else win.blur(), win.focus();
 
 		return win; // Window handle.
 	};
 
 	/**
-	 * PHP equivalent of `mt_rand()`.
+	 * JavaScript equivalent to PHP's `mt_rand()` function.
 	 *
-	 * @param min
-	 * @param max
+	 * @param min {Number}
+	 * @param max {Number}
 	 *
 	 * @return {Number}
 	 */
-	$w.$$websharks_core.$.prototype.mt_rand = function(min, max)
+	$$websharks_core.$.prototype.mt_rand = function(min, max)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types('integer', 'integer', arguments, 0);
 
-		$$.check_arg_types('integer', 'integer', arguments, 0);
-
-		min = ($$.isset(min)) ? min : 0;
-		max = ($$.isset(max)) ? max : 2147483647;
+		min = (this.isset(min)) ? min : 0;
+		max = (this.isset(max)) ? max : 2147483647;
 
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	};
@@ -1590,17 +1489,15 @@
 	/**
 	 * Adds a query string argument onto a URL.
 	 *
-	 * @param name
-	 * @param value
-	 * @param url
+	 * @param name {String}
+	 * @param value {String}
+	 * @param url {String}
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.add_query_arg = function(name, value, url)
+	$$websharks_core.$.prototype.add_query_arg = function(name, value, url)
 	{
-		var $$ = this, $ = jQuery;
-
-		$$.check_arg_types('string:!empty', 'string', 'string', arguments, 3);
+		this.check_arg_types('string:!empty', 'string', 'string', arguments, 3);
 
 		url += (url.indexOf('?') === -1) ? '?' : '&';
 		url += encodeURIComponent(name) + '=' + encodeURIComponent(value);
@@ -1611,47 +1508,43 @@
 	/**
 	 * Gets verifier for an AJAX action call.
 	 *
-	 * @param call
-	 * @param type
+	 * @param call {String}
+	 * @param type {String}
 	 *
 	 * @return {String}
 	 */
-	$w.$$websharks_core.$.prototype.get_call_verifier = function(call, type)
+	$$websharks_core.$.prototype.get_call_verifier = function(call, type)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types('string:!empty', 'string:!empty', arguments, 2);
 
-		$$.check_arg_types('string:!empty', 'string:!empty', arguments, 2);
-
-		return $$.verifier(type + '::' + call);
+		return this.verifier(type + '::' + call);
 	};
 
 	/**
 	 * Makes an AJAX call.
 	 *
-	 * @param method
-	 * @param call
-	 * @param type
-	 * @param args
-	 * @param ajax
+	 * @param method {String}
+	 * @param call {String}
+	 * @param type {String}
+	 * @param args {Array}
+	 * @param ajax {Object}
 	 */
-	$w.$$websharks_core.$.prototype.ajax = function(method, call, type, args, ajax)
+	$$websharks_core.$.prototype.ajax = function(method, call, type, args, ajax)
 	{
-		var $$ = this, $ = jQuery;
+		this.check_arg_types('string:!empty', 'string:!empty', 'string:!empty', 'array', 'object', arguments, 3);
 
-		$$.check_arg_types('string:!empty', 'string:!empty', 'string:!empty', 'array', 'object', arguments, 3);
+		var url = this.instance_config('wp_load_url');
+		var plugin_var_ns = this.instance_config('plugin_var_ns');
 
-		var url = $$.instance_config('wp_load_url');
-		var plugin_var_ns = $$.instance_config('plugin_var_ns');
-
-		ajax = (!$$.empty(ajax)) ? ajax : {};
+		ajax = (!this.empty(ajax)) ? ajax : {};
 		ajax.type = method, ajax.url = url, ajax.data = {};
 
 		ajax.data[plugin_var_ns + '[a][s]'] = 'ajax';
 		ajax.data[plugin_var_ns + '[a][c]'] = call;
 		ajax.data[plugin_var_ns + '[a][t]'] = type;
-		ajax.data[plugin_var_ns + '[a][v]'] = $$.get_call_verifier(call, type);
+		ajax.data[plugin_var_ns + '[a][v]'] = this.get_call_verifier(call, type);
 
-		if(!$$.empty(args)) ajax.data[plugin_var_ns + '[a][a]'] = JSON.stringify(args);
+		if(!this.empty(args)) ajax.data[plugin_var_ns + '[a][a]'] = JSON.stringify(args);
 
 		$.ajax(ajax);
 	};
@@ -1659,37 +1552,33 @@
 	/**
 	 * Makes an AJAX call via the GET method.
 	 *
-	 * @param call
-	 * @param type
-	 * @param args
-	 * @param ajax
+	 * @param call {String}
+	 * @param type {String}
+	 * @param args {Array}
+	 * @param ajax {Object}
 	 */
-	$w.$$websharks_core.$.prototype.get = function(call, type, args, ajax)
+	$$websharks_core.$.prototype.get = function(call, type, args, ajax)
 	{
-		var $$ = this, $ = jQuery;
-
-		$$.check_arg_types('string:!empty', 'string:!empty', 'array', 'object', arguments, 2);
+		this.check_arg_types('string:!empty', 'string:!empty', 'array', 'object', arguments, 2);
 
 		var _arguments = $.makeArray(arguments);
-		_arguments.unshift('GET'), $$.ajax.apply($$, _arguments);
+		_arguments.unshift('GET'), this.ajax.apply(this, _arguments);
 	};
 
 	/**
 	 * Makes an AJAX call via the POST method.
 	 *
-	 * @param call
-	 * @param type
-	 * @param args
-	 * @param ajax
+	 * @param call {String}
+	 * @param type {String}
+	 * @param args {Array}
+	 * @param ajax {Object}
 	 */
-	$w.$$websharks_core.$.prototype.post = function(call, type, args, ajax)
+	$$websharks_core.$.prototype.post = function(call, type, args, ajax)
 	{
-		var $$ = this, $ = jQuery;
-
-		$$.check_arg_types('string:!empty', 'string:!empty', 'array', 'object', arguments, 2);
+		this.check_arg_types('string:!empty', 'string:!empty', 'array', 'object', arguments, 2);
 
 		var _arguments = $.makeArray(arguments);
-		_arguments.unshift('POST'), $$.ajax.apply($$, _arguments);
+		_arguments.unshift('POST'), this.ajax.apply(this, _arguments);
 	};
 
 	/**
@@ -1697,10 +1586,8 @@
 	 *
 	 * @return {Boolean}
 	 */
-	$w.$$websharks_core.$.prototype.check_arg_types = function()
+	$$websharks_core.$.prototype.check_arg_types = function()
 	{
-		var $$ = this, $ = jQuery;
-
 		var _arg_type_hints__args__required_args = $.makeArray(arguments);
 
 		var required_args = Number(_arg_type_hints__args__required_args.pop());
@@ -1717,9 +1604,9 @@
 
 		if(total_args < required_args)
 		{
-			caller = $$.__('check_arg_types__caller'); // Generic.
+			caller = this.__('check_arg_types__caller'); // Generic.
 			// caller = arguments.callee.caller.name; not possible in strict mode.
-			throw sprintf($$.__('check_arg_types__missing_args'), caller, required_args, total_args);
+			throw this.sprintf(this.__('check_arg_types__missing_args'), caller, required_args, total_args);
 		}
 		else if(total_args === 0) // No arguments (no problem).
 			return true; // We can stop right here in this case.
@@ -1729,7 +1616,7 @@
 			for(_arg_position = 0; _arg_position < arg_type_hints.length; _arg_position++)
 			{
 				_arg_type_hints = arg_type_hints[_arg_position]; // Possible `string|array`.
-				_arg_types = !$$.is_array(_arg_type_hints) ? [_arg_type_hints] : _arg_type_hints;
+				_arg_types = !this.is_array(_arg_type_hints) ? [_arg_type_hints] : _arg_type_hints;
 
 				if(_arg_position > total_arg_positions) // Argument not even passed in?
 					continue; // Argument was not even passed in (we don't need to check this value).
@@ -1754,7 +1641,7 @@
 								/****************************************************************************/
 
 								case ':!empty': // Anything goes. But check if it's empty.
-									if($$.empty(args[_arg_position])) // Is empty?
+									if(this.empty(args[_arg_position])) // Is empty?
 									{
 										if(_last_arg_type_key === -1)
 											_last_arg_type_key = _arg_types.length - 1;
@@ -1766,7 +1653,7 @@
 												'types'   : _arg_types,
 												'position': _arg_position,
 												'value'   : args[_arg_position],
-												'empty'   : $$.empty(args[_arg_position])
+												'empty'   : this.empty(args[_arg_position])
 											};
 											break main_loop;
 										}
@@ -1791,7 +1678,7 @@
 								case 'null':
 								case 'undefined':
 
-									is_ = $$[$$.___is_type_checks[_arg_type]];
+									is_ = this[this.___is_type_checks[_arg_type]];
 
 									if(!is_(args[_arg_position])) // Not this type?
 									{
@@ -1805,7 +1692,7 @@
 												'types'   : _arg_types,
 												'position': _arg_position,
 												'value'   : args[_arg_position],
-												'empty'   : $$.empty(args[_arg_position])
+												'empty'   : this.empty(args[_arg_position])
 											};
 											break main_loop;
 										}
@@ -1830,7 +1717,7 @@
 								case '!null':
 								case '!undefined':
 
-									is_ = $$[$$.___is_type_checks[_arg_type]];
+									is_ = this[this.___is_type_checks[_arg_type]];
 
 									if(is_(args[_arg_position])) // Is this type?
 									{
@@ -1844,7 +1731,7 @@
 												'types'   : _arg_types,
 												'position': _arg_position,
 												'value'   : args[_arg_position],
-												'empty'   : $$.empty(args[_arg_position])
+												'empty'   : this.empty(args[_arg_position])
 											};
 											break main_loop;
 										}
@@ -1869,9 +1756,9 @@
 								case 'null:!empty':
 								case 'undefined:!empty':
 
-									is_ = $$[$$.___is_type_checks[_arg_type]];
+									is_ = this[this.___is_type_checks[_arg_type]];
 
-									if(!is_(args[_arg_position]) || $$.empty(args[_arg_position]))
+									if(!is_(args[_arg_position]) || this.empty(args[_arg_position]))
 									// Now, have we exhausted the list of possible types?
 									{
 										if(_last_arg_type_key === -1)
@@ -1884,7 +1771,7 @@
 												'types'   : _arg_types,
 												'position': _arg_position,
 												'value'   : args[_arg_position],
-												'empty'   : $$.empty(args[_arg_position])
+												'empty'   : this.empty(args[_arg_position])
 											};
 											break main_loop;
 										}
@@ -1901,7 +1788,7 @@
 									// In fact, the `_arg_type` value should NOT be a string representation in this case.
 									// JavaScript ONLY handles `instanceof`, w/ comparison to an actual function value.
 
-									if(!$$.is_function(_arg_type) || !(args[_arg_position] instanceof _arg_type))
+									if(!this.is_function(_arg_type) || !(args[_arg_position] instanceof _arg_type))
 									{
 										if(_last_arg_type_key === -1)
 											_last_arg_type_key = _arg_types.length - 1;
@@ -1913,7 +1800,7 @@
 												'types'   : _arg_types,
 												'position': _arg_position,
 												'value'   : args[_arg_position],
-												'empty'   : $$.empty(args[_arg_position])
+												'empty'   : this.empty(args[_arg_position])
 											};
 											break main_loop;
 										}
@@ -1925,27 +1812,27 @@
 					}
 			}
 
-		if(!$$.empty(problem)) // We have a problem!
+		if(!this.empty(problem)) // We have a problem!
 		{
 			position = problem.position + 1;
 
 			type_given = $.type(problem.value);
-			empty = (problem.empty) ? $$.__('check_arg_types__empty') + ' ' : '';
+			empty = (problem.empty) ? this.__('check_arg_types__empty') + ' ' : '';
 
-			if(problem.types.length && $$.is_string(problem.types[0]))
+			if(problem.types.length && this.is_string(problem.types[0]))
 				types = problem.types.join('|');
 			// Else we say `[a different object type]`.
-			else types = $$.__('check_arg_types__diff_object_type');
+			else types = this.__('check_arg_types__diff_object_type');
 
-			caller = $$.__('check_arg_types__caller'); // Generic.
+			caller = this.__('check_arg_types__caller'); // Generic.
 			// caller = arguments.callee.caller.name; not possible in strict mode.
-			throw sprintf($$.__('check_arg_types__invalid_arg'), position, caller, types, empty, type_given);
+			throw this.sprintf(this.__('check_arg_types__invalid_arg'), position, caller, types, empty, type_given);
 		}
 		return true; // Default return value (no problem).
 	};
 	/**
 	 * @type {Object} WebSharks™ Core instance.
 	 */
-	$w.$websharks_core = new $w.$$websharks_core.$();
+	window.$websharks_core = new $$websharks_core.$();
 
-})(this); // End WebSharks™ Core closure.
+})(jQuery); // End WebSharks™ Core closure.

@@ -36,6 +36,8 @@ namespace websharks_core_dev_utilities
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core.min.css')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css')."\n";
 		file_put_contents($core->©dir->n_seps_up(__FILE__).'/core-libs.min.css', trim(ob_get_clean()));
+
+		$this->©file->delete($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css');
 	}
 
 	/*

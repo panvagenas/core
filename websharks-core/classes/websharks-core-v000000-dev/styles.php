@@ -77,12 +77,13 @@ namespace websharks_core_v000000_dev
 
 			// Front-side components (including themes); available in all contexts.
 
-			$front_side_ui_themes          = array($this->___instance_config->core_prefix_with_dashes.'ui-'.$this->options['styles.front_side.theme']);
-			$this->front_side_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side';
+			$front_side_ui_themes = array($this->___instance_config->core_prefix_with_dashes.'ui-'.$this->options['styles.front_side.theme']);
 			foreach($this->©options->get('styles.front_side.load_themes') as $_theme) // Load by default :-)
 				$front_side_ui_themes[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$_theme;
 			$front_side_ui_themes = array_unique($front_side_ui_themes);
 			unset($_theme); // Housekeeping.
+
+			$this->front_side_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side';
 
 			$styles_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side'] = array(
 				'deps' => array_merge(array($this->___instance_config->core_ns_stub_with_dashes), $front_side_ui_themes),

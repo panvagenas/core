@@ -222,9 +222,6 @@
 				       // Prepare UI forms.
 				       $$.prepare_ui_forms();
 
-				       // Wrap problematic UI theme components.
-				       $$.wrap_problematic_ui_theme_components();
-
 				       // Make menu page visible (it's hidden initially via CSS).
 				       $(div.menu_page).css({visibility: 'visible'});
 			       });
