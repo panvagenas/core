@@ -110,7 +110,7 @@ namespace websharks_core_v000000_dev
 			$this->data = $this->parse_data($data); // Supports all possible scenarios.
 
 			$this->theme = ($theme) ? $theme : $this->©options->get('styles.front_side.theme');
-			if(!in_array($this->theme, array_keys($this->©styles->ui_themes()), TRUE))
+			if(!in_array($this->theme, array_keys($this->©styles->themes()), TRUE))
 				$this->theme = $this->©options->get('styles.front_side.theme', TRUE);
 			$this->©plugin->needs_front_side_styles_scripts(TRUE, $this->theme);
 
@@ -130,13 +130,13 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			if($theme && in_array($this->theme, array_keys($this->©styles->ui_themes()), TRUE))
+			if($theme && in_array($this->theme, array_keys($this->©styles->themes()), TRUE))
 				$this->theme = $theme; // Validate.
 			$this->©plugin->needs_stand_alone_styles(TRUE, $this->theme);
 
 			ob_start(); // Open output buffer.
 
-			$this->©styles->print_styles($this->©styles->contextual_components($this->___instance_config->core_prefix_with_dashes.'ui-'.$this->theme));
+			$this->©styles->print_styles($this->©styles->contextual_components($this->___instance_config->core_prefix_with_dashes.$this->theme));
 			echo '<style type="text/css">html{'.$this->©options->get('templates.stand_alone.bg_style').'}</style>'."\n";
 			echo $this->©php->evaluate($this->©options->get('templates.stand_alone.styles'))."\n";
 
@@ -431,8 +431,8 @@ namespace websharks_core_v000000_dev
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
-			$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui';
-			$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$this->theme;
+			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
+			$classes[] = $this->___instance_config->core_prefix_with_dashes.$this->theme;
 
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-wrapper';
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-wrapper';

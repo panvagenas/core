@@ -13,8 +13,8 @@
 <https://developer.mozilla.org/en-US/docs/Web/CSS/inherit> */
 /* noinspection ALL */
 
-.wsc-ui,
-.wsc-ui *
+.wsc,
+.wsc *
 {
 	margin              : 0;
 	padding             : 0;
@@ -80,7 +80,7 @@
 
 /* Parent Styles from which to Inherit */
 
-.wsc-ui
+.wsc
 {
 	cursor          : auto;
 
@@ -110,103 +110,103 @@
 /* Block & Inline Elements
 <https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements> */
 
-.wsc-ui address,
-.wsc-ui article,
-.wsc-ui aside,
-.wsc-ui audio,
-.wsc-ui blockquote,
-.wsc-ui canvas,
-.wsc-ui dd,
-.wsc-ui div,
-.wsc-ui dl,
-.wsc-ui fieldset,
-.wsc-ui figcaption,
-.wsc-ui figure,
-.wsc-ui footer,
-.wsc-ui form,
-.wsc-ui h1,
-.wsc-ui h2,
-.wsc-ui h3,
-.wsc-ui h4,
-.wsc-ui h5,
-.wsc-ui h6,
-.wsc-ui header,
-.wsc-ui hgroup,
-.wsc-ui hr,
-.wsc-ui noscript,
-.wsc-ui ol,
-.wsc-ui output,
-.wsc-ui p,
-.wsc-ui pre,
-.wsc-ui section,
-.wsc-ui table,
-.wsc-ui tfoot,
-.wsc-ui ul,
-.wsc-ui video
+.wsc address,
+.wsc article,
+.wsc aside,
+.wsc audio,
+.wsc blockquote,
+.wsc canvas,
+.wsc dd,
+.wsc div,
+.wsc dl,
+.wsc fieldset,
+.wsc figcaption,
+.wsc figure,
+.wsc footer,
+.wsc form,
+.wsc h1,
+.wsc h2,
+.wsc h3,
+.wsc h4,
+.wsc h5,
+.wsc h6,
+.wsc header,
+.wsc hgroup,
+.wsc hr,
+.wsc noscript,
+.wsc ol,
+.wsc output,
+.wsc p,
+.wsc pre,
+.wsc section,
+.wsc table,
+.wsc tfoot,
+.wsc ul,
+.wsc video
 {
 	display : block;
 }
-.wsc-ui b,
-.wsc-ui big,
-.wsc-ui i,
-.wsc-ui small,
-.wsc-ui tt,
-.wsc-ui abbr,
-.wsc-ui acronym,
-.wsc-ui cite,
-.wsc-ui code,
-.wsc-ui dfn,
-.wsc-ui em,
-.wsc-ui kbd,
-.wsc-ui strong,
-.wsc-ui samp,
-.wsc-ui var,
-.wsc-ui a,
-.wsc-ui bdo,
-.wsc-ui br,
-.wsc-ui img,
-.wsc-ui map,
-.wsc-ui object,
-.wsc-ui q,
-.wsc-ui script,
-.wsc-ui span,
-.wsc-ui sub,
-.wsc-ui sup,
-.wsc-ui button,
-.wsc-ui input,
-.wsc-ui label,
-.wsc-ui select,
-.wsc-ui textarea
+.wsc b,
+.wsc big,
+.wsc i,
+.wsc small,
+.wsc tt,
+.wsc abbr,
+.wsc acronym,
+.wsc cite,
+.wsc code,
+.wsc dfn,
+.wsc em,
+.wsc kbd,
+.wsc strong,
+.wsc samp,
+.wsc var,
+.wsc a,
+.wsc bdo,
+.wsc br,
+.wsc img,
+.wsc map,
+.wsc object,
+.wsc q,
+.wsc script,
+.wsc span,
+.wsc sub,
+.wsc sup,
+.wsc button,
+.wsc input,
+.wsc label,
+.wsc select,
+.wsc textarea
 {
 	display : inline;
 }
 
 /* Preformatted Tags */
 
-.wsc-ui pre,
-.wsc-ui select
+.wsc pre,
+.wsc select
 {
 	white-space : pre;
 }
 
 /* Monospace Tags */
 
-.wsc-ui tt, code
+.wsc tt, code
 {
 	font-family : monospace;
 }
 
 /* Quotes */
 
-.wsc-ui q,
-.wsc-ui blockquote
+.wsc q,
+.wsc blockquote
 {
 	quotes : none;
 }
-.wsc-ui q:before,
-.wsc-ui q:after,
-.wsc-ui blockquote:before,
-.wsc-ui blockquote:after
+.wsc q:before,
+.wsc q:after,
+.wsc blockquote:before,
+.wsc blockquote:after
 {
 	content : '';
 	content : none;
@@ -214,7 +214,7 @@
 
 /* Images */
 
-.wsc-ui img
+.wsc img
 {
 	vertical-align : bottom;
 }

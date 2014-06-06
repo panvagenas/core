@@ -266,7 +266,11 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Locates a template directory/file (relative path).
 		 *
-		 * @param string $dir_file Template directory/file name (relative path).
+		 * @param string  $dir_file Template directory/file name (relative path).
+		 *
+		 * @param boolean $allow_failure Optional. Defaults to a `FALSE` value.
+		 *    By default, if the template dir/file does NOT exist, an exception is thrown.
+		 *    If `TRUE`, an empty string is returned on failure; instead of throwing an exception.
 		 *
 		 * @return string Absolute path to a template directory/file (w/ the highest precedence).
 		 *
@@ -274,16 +278,18 @@ namespace websharks_core_v000000_dev
 		 * @throws exception If `$dir_file` is empty (it MUST be passed as a string, NOT empty).
 		 * @throws exception If `$dir_file` does NOT exist, or is NOT readable.
 		 */
-		public function template($dir_file)
+		public function template($dir_file, $allow_failure = FALSE)
 		{
-			$this->check_arg_types('string:!empty', func_get_args());
+			$this->check_arg_types('string:!empty', 'boolean', func_get_args());
 
 			$dir_file = ltrim($this->n_seps($dir_file), '/');
 
 			foreach(($dirs = $this->©dirs->where_templates_may_reside()) as $_dir)
 				if(file_exists($path = $_dir.'/'.$dir_file) && is_readable($path))
-					return $path;
+					return $path; // Absolute directory/file path.
 			unset($_dir); // Housekeeping.
+
+			if($allow_failure) return '';
 
 			throw $this->©exception(
 				$this->method(__FUNCTION__).'#dir_file_missing', get_defined_vars(),

@@ -1,7 +1,19 @@
 /*!
- * Bootstrap v3.1.1 (http://getbootstrap.com)
- * Copyright 2011-2014 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * Bootstrap v3.1.1 (namespaced); copyright 2011-2014 Twitter, Inc.
+ * MIT license <https://github.com/twbs/bootstrap/blob/master/LICENSE>
+ */
+/*
+ * Namespaced by WebSharks, Inc. as follows...
+ *    - replace bs. with wsc-bs.
+ *    - replace data-api with data-wsc-api
+ *    - replace $.fn.[x] with $.fn.wsc[X]
+ *    - replace data-x="x" with data-x="wsc-x"
+ *    - exclude `.wsc` in dropdown plugin.
+ *    - prefix selectors w/ `.wsc`.
+ *    - plus other minor tweaks.
+ *
+ * @note To see ALL of the changes please run a diff against this file.
+ * <http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.js>
  */
 
 /* ========================================================================
@@ -12,7 +24,6 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
-
 +function ($) {
   'use strict';
 
@@ -20,7 +31,7 @@
   // ============================================================
 
   function transitionEnd() {
-    var el = document.createElement('bootstrap')
+    var el = document.createElement('wscBootstrap')
 
     var transEndEventNames = {
       'WebkitTransition' : 'webkitTransitionEnd',
@@ -39,7 +50,7 @@
   }
 
   // http://blog.alexmaccaw.com/css-transitions
-  $.fn.emulateTransitionEnd = function (duration) {
+  $.fn.wscEmulateTransitionEnd = function (duration) {
     var called = false, $el = this
     $(this).one($.support.transition.end, function () { called = true })
     var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
@@ -61,14 +72,13 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
-
 +function ($) {
   'use strict';
 
   // ALERT CLASS DEFINITION
   // ======================
 
-  var dismiss = '[data-dismiss="alert"]'
+  var dismiss = '[data-dismiss="wsc-alert"]'
   var Alert   = function (el) {
     $(el).on('click', dismiss, this.close)
   }
@@ -90,55 +100,52 @@
       $parent = $this.hasClass('alert') ? $this : $this.parent()
     }
 
-    $parent.trigger(e = $.Event('close.bs.alert'))
+    $parent.trigger(e = $.Event('close.wsc-bs.alert'))
 
     if (e.isDefaultPrevented()) return
 
     $parent.removeClass('in')
 
     function removeElement() {
-      $parent.trigger('closed.bs.alert').remove()
+      $parent.trigger('closed.wsc-bs.alert').remove()
     }
 
     $.support.transition && $parent.hasClass('fade') ?
       $parent
         .one($.support.transition.end, removeElement)
-        .emulateTransitionEnd(150) :
+        .wscEmulateTransitionEnd(150) :
       removeElement()
   }
-
 
   // ALERT PLUGIN DEFINITION
   // =======================
 
-  var old = $.fn.alert
+  var old = $.fn.wscAlert
 
-  $.fn.alert = function (option) {
+  $.fn.wscAlert = function (option) {
     return this.each(function () {
       var $this = $(this)
-      var data  = $this.data('bs.alert')
+      var data  = $this.data('wsc-bs.alert')
 
-      if (!data) $this.data('bs.alert', (data = new Alert(this)))
+      if (!data) $this.data('wsc-bs.alert', (data = new Alert(this)))
       if (typeof option == 'string') data[option].call($this)
     })
   }
 
-  $.fn.alert.Constructor = Alert
-
+  $.fn.wscAlert.Constructor = Alert
 
   // ALERT NO CONFLICT
   // =================
 
-  $.fn.alert.noConflict = function () {
-    $.fn.alert = old
+  $.fn.wscAlert.noConflict = function () {
+    $.fn.wscAlert = old
     return this
   }
-
 
   // ALERT DATA-API
   // ==============
 
-  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)
+  $(document).on('click.wsc-bs.alert.data-wsc-api', '.wsc ' + dismiss, Alert.prototype.close)
 
 }(jQuery);
 
@@ -149,7 +156,6 @@
  * Copyright 2011-2014 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
-
 
 +function ($) {
   'use strict';
@@ -193,7 +199,7 @@
 
   Button.prototype.toggle = function () {
     var changed = true
-    var $parent = this.$element.closest('[data-toggle="buttons"]')
+    var $parent = this.$element.closest('[data-toggle="wsc-buttons"]')
 
     if ($parent.length) {
       var $input = this.$element.find('input')
@@ -207,44 +213,41 @@
     if (changed) this.$element.toggleClass('active')
   }
 
-
   // BUTTON PLUGIN DEFINITION
   // ========================
 
-  var old = $.fn.button
+  var old = $.fn.wscButton
 
-  $.fn.button = function (option) {
+  $.fn.wscButton = function (option) {
     return this.each(function () {
       var $this   = $(this)
-      var data    = $this.data('bs.button')
+      var data    = $this.data('wsc-bs.button')
       var options = typeof option == 'object' && option
 
-      if (!data) $this.data('bs.button', (data = new Button(this, options)))
+      if (!data) $this.data('wsc-bs.button', (data = new Button(this, options)))
 
       if (option == 'toggle') data.toggle()
       else if (option) data.setState(option)
     })
   }
 
-  $.fn.button.Constructor = Button
-
+  $.fn.wscButton.Constructor = Button
 
   // BUTTON NO CONFLICT
   // ==================
 
-  $.fn.button.noConflict = function () {
-    $.fn.button = old
+  $.fn.wscButton.noConflict = function () {
+    $.fn.wscButton = old
     return this
   }
-
 
   // BUTTON DATA-API
   // ===============
 
-  $(document).on('click.bs.button.data-api', '[data-toggle^=button]', function (e) {
+  $(document).on('click.wsc-bs.button.data-wsc-api', '.wsc [data-toggle^=wsc-button]', function (e) {
     var $btn = $(e.target)
     if (!$btn.hasClass('btn')) $btn = $btn.closest('.btn')
-    $btn.button('toggle')
+    $btn.wscButton('toggle')
     e.preventDefault()
   })
 
@@ -257,7 +260,6 @@
  * Copyright 2011-2014 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
-
 
 +function ($) {
   'use strict';
@@ -311,7 +313,7 @@
 
     if (pos > (this.$items.length - 1) || pos < 0) return
 
-    if (this.sliding)       return this.$element.one('slid.bs.carousel', function () { that.to(pos) })
+    if (this.sliding)       return this.$element.one('slid.wsc-bs.carousel', function () { that.to(pos) })
     if (activeIndex == pos) return this.pause().cycle()
 
     return this.slide(pos > activeIndex ? 'next' : 'prev', $(this.$items[pos]))
@@ -355,7 +357,7 @@
 
     if ($next.hasClass('active')) return this.sliding = false
 
-    var e = $.Event('slide.bs.carousel', { relatedTarget: $next[0], direction: direction })
+    var e = $.Event('slide.wsc-bs.carousel', { relatedTarget: $next[0], direction: direction })
     this.$element.trigger(e)
     if (e.isDefaultPrevented()) return
 
@@ -365,7 +367,7 @@
 
     if (this.$indicators.length) {
       this.$indicators.find('.active').removeClass('active')
-      this.$element.one('slid.bs.carousel', function () {
+      this.$element.one('slid.wsc-bs.carousel', function () {
         var $nextIndicator = $(that.$indicators.children()[that.getActiveIndex()])
         $nextIndicator && $nextIndicator.addClass('active')
       })
@@ -381,14 +383,14 @@
           $next.removeClass([type, direction].join(' ')).addClass('active')
           $active.removeClass(['active', direction].join(' '))
           that.sliding = false
-          setTimeout(function () { that.$element.trigger('slid.bs.carousel') }, 0)
+          setTimeout(function () { that.$element.trigger('slid.wsc-bs.carousel') }, 0)
         })
-        .emulateTransitionEnd($active.css('transition-duration').slice(0, -1) * 1000)
+        .wscEmulateTransitionEnd($active.css('transition-duration').slice(0, -1) * 1000)
     } else {
       $active.removeClass('active')
       $next.addClass('active')
       this.sliding = false
-      this.$element.trigger('slid.bs.carousel')
+      this.$element.trigger('slid.wsc-bs.carousel')
     }
 
     isCycling && this.cycle()
@@ -396,61 +398,58 @@
     return this
   }
 
-
   // CAROUSEL PLUGIN DEFINITION
   // ==========================
 
-  var old = $.fn.carousel
+  var old = $.fn.wscCarousel
 
-  $.fn.carousel = function (option) {
+  $.fn.wscCarousel = function (option) {
     return this.each(function () {
       var $this   = $(this)
-      var data    = $this.data('bs.carousel')
+      var data    = $this.data('wsc-bs.carousel')
       var options = $.extend({}, Carousel.DEFAULTS, $this.data(), typeof option == 'object' && option)
       var action  = typeof option == 'string' ? option : options.slide
 
-      if (!data) $this.data('bs.carousel', (data = new Carousel(this, options)))
+      if (!data) $this.data('wsc-bs.carousel', (data = new Carousel(this, options)))
       if (typeof option == 'number') data.to(option)
       else if (action) data[action]()
       else if (options.interval) data.pause().cycle()
     })
   }
 
-  $.fn.carousel.Constructor = Carousel
-
+  $.fn.wscCarousel.Constructor = Carousel
 
   // CAROUSEL NO CONFLICT
   // ====================
 
-  $.fn.carousel.noConflict = function () {
-    $.fn.carousel = old
+  $.fn.wscCarousel.noConflict = function () {
+    $.fn.wscCarousel = old
     return this
   }
-
 
   // CAROUSEL DATA-API
   // =================
 
-  $(document).on('click.bs.carousel.data-api', '[data-slide], [data-slide-to]', function (e) {
+  $(document).on('click.wsc-bs.carousel.data-wsc-api', '.wsc [data-wsc-slide], .wsc [data-wsc-slide-to]', function (e) {
     var $this   = $(this), href
     var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
     var options = $.extend({}, $target.data(), $this.data())
     var slideIndex = $this.attr('data-slide-to')
     if (slideIndex) options.interval = false
 
-    $target.carousel(options)
+    $target.wscCarousel(options)
 
     if (slideIndex = $this.attr('data-slide-to')) {
-      $target.data('bs.carousel').to(slideIndex)
+      $target.data('wsc-bs.carousel').to(slideIndex)
     }
 
     e.preventDefault()
   })
 
   $(window).on('load', function () {
-    $('[data-ride="carousel"]').each(function () {
+    $('[data-ride="wsc-carousel"]').each(function () {
       var $carousel = $(this)
-      $carousel.carousel($carousel.data())
+      $carousel.wscCarousel($carousel.data())
     })
   })
 
@@ -463,7 +462,6 @@
  * Copyright 2011-2014 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
-
 
 +function ($) {
   'use strict';
@@ -492,17 +490,17 @@
   Collapse.prototype.show = function () {
     if (this.transitioning || this.$element.hasClass('in')) return
 
-    var startEvent = $.Event('show.bs.collapse')
+    var startEvent = $.Event('show.wsc-bs.collapse')
     this.$element.trigger(startEvent)
     if (startEvent.isDefaultPrevented()) return
 
     var actives = this.$parent && this.$parent.find('> .panel > .in')
 
     if (actives && actives.length) {
-      var hasData = actives.data('bs.collapse')
+      var hasData = actives.data('wsc-bs.collapse')
       if (hasData && hasData.transitioning) return
-      actives.collapse('hide')
-      hasData || actives.data('bs.collapse', null)
+      actives.wscCollapse('hide')
+      hasData || actives.data('wsc-bs.collapse', null)
     }
 
     var dimension = this.dimension()
@@ -520,7 +518,7 @@
         .addClass('collapse in')
         [dimension]('auto')
       this.transitioning = 0
-      this.$element.trigger('shown.bs.collapse')
+      this.$element.trigger('shown.wsc-bs.collapse')
     }
 
     if (!$.support.transition) return complete.call(this)
@@ -529,14 +527,14 @@
 
     this.$element
       .one($.support.transition.end, $.proxy(complete, this))
-      .emulateTransitionEnd(350)
+      .wscEmulateTransitionEnd(350)
       [dimension](this.$element[0][scrollSize])
   }
 
   Collapse.prototype.hide = function () {
     if (this.transitioning || !this.$element.hasClass('in')) return
 
-    var startEvent = $.Event('hide.bs.collapse')
+    var startEvent = $.Event('hide.wsc-bs.collapse')
     this.$element.trigger(startEvent)
     if (startEvent.isDefaultPrevented()) return
 
@@ -556,7 +554,7 @@
     var complete = function () {
       this.transitioning = 0
       this.$element
-        .trigger('hidden.bs.collapse')
+        .trigger('hidden.wsc-bs.collapse')
         .removeClass('collapsing')
         .addClass('collapse')
     }
@@ -566,63 +564,60 @@
     this.$element
       [dimension](0)
       .one($.support.transition.end, $.proxy(complete, this))
-      .emulateTransitionEnd(350)
+      .wscEmulateTransitionEnd(350)
   }
 
   Collapse.prototype.toggle = function () {
     this[this.$element.hasClass('in') ? 'hide' : 'show']()
   }
 
-
   // COLLAPSE PLUGIN DEFINITION
   // ==========================
 
-  var old = $.fn.collapse
+  var old = $.fn.wscCollapse
 
-  $.fn.collapse = function (option) {
+  $.fn.wscCollapse = function (option) {
     return this.each(function () {
       var $this   = $(this)
-      var data    = $this.data('bs.collapse')
+      var data    = $this.data('wsc-bs.collapse')
       var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
 
       if (!data && options.toggle && option == 'show') option = !option
-      if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
+      if (!data) $this.data('wsc-bs.collapse', (data = new Collapse(this, options)))
       if (typeof option == 'string') data[option]()
     })
   }
 
-  $.fn.collapse.Constructor = Collapse
-
+  $.fn.wscCollapse.Constructor = Collapse
 
   // COLLAPSE NO CONFLICT
   // ====================
 
-  $.fn.collapse.noConflict = function () {
-    $.fn.collapse = old
+  $.fn.wscCollapse.noConflict = function () {
+    $.fn.wscCollapse = old
     return this
   }
-
 
   // COLLAPSE DATA-API
   // =================
 
-  $(document).on('click.bs.collapse.data-api', '[data-toggle=collapse]', function (e) {
+  $(document).on('click.wsc-bs.collapse.data-wsc-api', '.wsc [data-toggle=wsc-collapse]', function (e) {
     var $this   = $(this), href
     var target  = $this.attr('data-target')
         || e.preventDefault()
         || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') //strip for ie7
     var $target = $(target)
-    var data    = $target.data('bs.collapse')
+    var data    = $target.data('wsc-bs.collapse')
     var option  = data ? 'toggle' : $this.data()
     var parent  = $this.attr('data-parent')
     var $parent = parent && $(parent)
 
     if (!data || !data.transitioning) {
-      if ($parent) $parent.find('[data-toggle=collapse][data-parent="' + parent + '"]').not($this).addClass('collapsed')
+      if ($parent) $parent.find('[data-toggle=wsc-collapse][data-parent="' + parent + '"]').not($this).addClass('collapsed')
       $this[$target.hasClass('in') ? 'addClass' : 'removeClass']('collapsed')
     }
 
-    $target.collapse(option)
+    $target.wscCollapse(option)
   })
 
 }(jQuery);
@@ -635,17 +630,16 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
-
 +function ($) {
   'use strict';
 
   // DROPDOWN CLASS DEFINITION
   // =========================
 
-  var backdrop = '.dropdown-backdrop'
-  var toggle   = '[data-toggle=dropdown]'
+  var backdrop = '.wsc-dropdown-backdrop'
+  var toggle   = '[data-toggle=wsc-dropdown]'
   var Dropdown = function (element) {
-    $(element).on('click.bs.dropdown', this.toggle)
+    $(element).on('click.wsc-bs.dropdown', this.toggle)
   }
 
   Dropdown.prototype.toggle = function (e) {
@@ -665,13 +659,13 @@
       }
 
       var relatedTarget = { relatedTarget: this }
-      $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
+      $parent.trigger(e = $.Event('show.wsc-bs.dropdown', relatedTarget))
 
       if (e.isDefaultPrevented()) return
 
       $parent
         .toggleClass('open')
-        .trigger('shown.bs.dropdown', relatedTarget)
+        .trigger('shown.wsc-bs.dropdown', relatedTarget)
 
       $this.focus()
     }
@@ -712,14 +706,14 @@
   }
 
   function clearMenus(e) {
-    $(backdrop).remove()
-    $(toggle).each(function () {
+    $('.wsc ' + backdrop).remove()
+    $('.wsc ' + toggle).each(function () {
       var $parent = getParent($(this))
       var relatedTarget = { relatedTarget: this }
       if (!$parent.hasClass('open')) return
-      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
+      $parent.trigger(e = $.Event('hide.wsc-bs.dropdown', relatedTarget))
       if (e.isDefaultPrevented()) return
-      $parent.removeClass('open').trigger('hidden.bs.dropdown', relatedTarget)
+      $parent.removeClass('open').trigger('hidden.wsc-bs.dropdown', relatedTarget)
     })
   }
 
@@ -736,42 +730,46 @@
     return $parent && $parent.length ? $parent : $this.parent()
   }
 
-
   // DROPDOWN PLUGIN DEFINITION
   // ==========================
 
-  var old = $.fn.dropdown
+  var old = $.fn.wscDropdown
 
-  $.fn.dropdown = function (option) {
+  $.fn.wscDropdown = function (option) {
     return this.each(function () {
       var $this = $(this)
-      var data  = $this.data('bs.dropdown')
+      var data  = $this.data('wsc-bs.dropdown')
 
-      if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)))
+      if (!data) $this.data('wsc-bs.dropdown', (data = new Dropdown(this)))
       if (typeof option == 'string') data[option].call($this)
     })
   }
 
-  $.fn.dropdown.Constructor = Dropdown
-
+  $.fn.wscDropdown.Constructor = Dropdown
 
   // DROPDOWN NO CONFLICT
   // ====================
 
-  $.fn.dropdown.noConflict = function () {
-    $.fn.dropdown = old
+  $.fn.wscDropdown.noConflict = function () {
+    $.fn.wscDropdown = old
     return this
   }
-
 
   // APPLY TO STANDARD DROPDOWN ELEMENTS
   // ===================================
 
   $(document)
-    .on('click.bs.dropdown.data-api', clearMenus)
-    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
-    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
-    .on('keydown.bs.dropdown.data-api', toggle + ', [role=menu], [role=listbox]', Dropdown.prototype.keydown)
+    .on('click.wsc-bs.dropdown.data-wsc-api', clearMenus)
+    .on('click.wsc-bs.dropdown.data-wsc-api', '.wsc .dropdown form', function (e) { e.stopPropagation() })
+    .on('click.wsc-bs.dropdown.data-wsc-api', '.wsc ' + toggle, Dropdown.prototype.toggle)
+    .on('keydown.wsc-bs.dropdown.data-wsc-api', '.wsc ' + toggle + ', .wsc [role=menu], .wsc [role=listbox]', Dropdown.prototype.keydown)
+
+	$(window).on('load', function(){
+		if(typeof $.fn.dropdown === 'function' && typeof $.fn.dropdown.Constructor.prototype.keydown === 'function' && typeof $.fn.emulateTransitionEnd === 'function') {
+			$(document).off('keydown.bs.dropdown.data-api') // Reattach native Bootstrap; excluding `.wsc` this time whenever we query for `role=menu` & `role=listbox`.
+				.on('keydown.bs.dropdown.data-api', '[data-toggle=dropdown], [role=menu]:not(.wsc [role=menu]), [role=listbox]:not(.wsc [role=listbox])', $.fn.dropdown.Constructor.prototype.keydown)
+		}
+	})
 
 }(jQuery);
 
@@ -782,7 +780,6 @@
  * Copyright 2011-2014 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
-
 
 +function ($) {
   'use strict';
@@ -800,7 +797,7 @@
       this.$element
         .find('.modal-content')
         .load(this.options.remote, $.proxy(function () {
-          this.$element.trigger('loaded.bs.modal')
+          this.$element.trigger('loaded.wsc-bs.modal')
         }, this))
     }
   }
@@ -817,7 +814,7 @@
 
   Modal.prototype.show = function (_relatedTarget) {
     var that = this
-    var e    = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
+    var e    = $.Event('show.wsc-bs.modal', { relatedTarget: _relatedTarget })
 
     this.$element.trigger(e)
 
@@ -827,7 +824,7 @@
 
     this.escape()
 
-    this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
+    this.$element.on('click.dismiss.wsc-bs.modal', '[data-dismiss="wsc-modal"]', $.proxy(this.hide, this))
 
     this.backdrop(function () {
       var transition = $.support.transition && that.$element.hasClass('fade')
@@ -850,14 +847,14 @@
 
       that.enforceFocus()
 
-      var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
+      var e = $.Event('shown.wsc-bs.modal', { relatedTarget: _relatedTarget })
 
       transition ?
         that.$element.find('.modal-dialog') // wait for modal to slide in
           .one($.support.transition.end, function () {
             that.$element.focus().trigger(e)
           })
-          .emulateTransitionEnd(300) :
+          .wscEmulateTransitionEnd(300) :
         that.$element.focus().trigger(e)
     })
   }
@@ -865,7 +862,7 @@
   Modal.prototype.hide = function (e) {
     if (e) e.preventDefault()
 
-    e = $.Event('hide.bs.modal')
+    e = $.Event('hide.wsc-bs.modal')
 
     this.$element.trigger(e)
 
@@ -875,24 +872,24 @@
 
     this.escape()
 
-    $(document).off('focusin.bs.modal')
+    $(document).off('focusin.wsc-bs.modal')
 
     this.$element
       .removeClass('in')
       .attr('aria-hidden', true)
-      .off('click.dismiss.bs.modal')
+      .off('click.dismiss.wsc-bs.modal')
 
     $.support.transition && this.$element.hasClass('fade') ?
       this.$element
         .one($.support.transition.end, $.proxy(this.hideModal, this))
-        .emulateTransitionEnd(300) :
+        .wscEmulateTransitionEnd(300) :
       this.hideModal()
   }
 
   Modal.prototype.enforceFocus = function () {
     $(document)
-      .off('focusin.bs.modal') // guard against infinite focus loop
-      .on('focusin.bs.modal', $.proxy(function (e) {
+      .off('focusin.wsc-bs.modal') // guard against infinite focus loop
+      .on('focusin.wsc-bs.modal', $.proxy(function (e) {
         if (this.$element[0] !== e.target && !this.$element.has(e.target).length) {
           this.$element.focus()
         }
@@ -901,11 +898,11 @@
 
   Modal.prototype.escape = function () {
     if (this.isShown && this.options.keyboard) {
-      this.$element.on('keyup.dismiss.bs.modal', $.proxy(function (e) {
+      this.$element.on('keyup.dismiss.wsc-bs.modal', $.proxy(function (e) {
         e.which == 27 && this.hide()
       }, this))
     } else if (!this.isShown) {
-      this.$element.off('keyup.dismiss.bs.modal')
+      this.$element.off('keyup.dismiss.wsc-bs.modal')
     }
   }
 
@@ -914,7 +911,7 @@
     this.$element.hide()
     this.backdrop(function () {
       that.removeBackdrop()
-      that.$element.trigger('hidden.bs.modal')
+      that.$element.trigger('hidden.wsc-bs.modal')
     })
   }
 
@@ -929,10 +926,10 @@
     if (this.isShown && this.options.backdrop) {
       var doAnimate = $.support.transition && animate
 
-      this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
+      this.$backdrop = $('<div class="wsc modal-backdrop ' + animate + '" />')
         .appendTo(document.body)
 
-      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
+      this.$element.on('click.dismiss.wsc-bs.modal', $.proxy(function (e) {
         if (e.target !== e.currentTarget) return
         this.options.backdrop == 'static'
           ? this.$element[0].focus.call(this.$element[0])
@@ -948,7 +945,7 @@
       doAnimate ?
         this.$backdrop
           .one($.support.transition.end, callback)
-          .emulateTransitionEnd(150) :
+          .wscEmulateTransitionEnd(150) :
         callback()
 
     } else if (!this.isShown && this.$backdrop) {
@@ -957,7 +954,7 @@
       $.support.transition && this.$element.hasClass('fade') ?
         this.$backdrop
           .one($.support.transition.end, callback)
-          .emulateTransitionEnd(150) :
+          .wscEmulateTransitionEnd(150) :
         callback()
 
     } else if (callback) {
@@ -965,57 +962,54 @@
     }
   }
 
-
   // MODAL PLUGIN DEFINITION
   // =======================
 
-  var old = $.fn.modal
+  var old = $.fn.wscModal
 
-  $.fn.modal = function (option, _relatedTarget) {
+  $.fn.wscModal = function (option, _relatedTarget) {
     return this.each(function () {
       var $this   = $(this)
-      var data    = $this.data('bs.modal')
+      var data    = $this.data('wsc-bs.modal')
       var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
 
-      if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
+      if (!data) $this.data('wsc-bs.modal', (data = new Modal(this, options)))
       if (typeof option == 'string') data[option](_relatedTarget)
       else if (options.show) data.show(_relatedTarget)
     })
   }
 
-  $.fn.modal.Constructor = Modal
-
+  $.fn.wscModal.Constructor = Modal
 
   // MODAL NO CONFLICT
   // =================
 
-  $.fn.modal.noConflict = function () {
-    $.fn.modal = old
+  $.fn.wscModal.noConflict = function () {
+    $.fn.wscModal = old
     return this
   }
-
 
   // MODAL DATA-API
   // ==============
 
-  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
+  $(document).on('click.wsc-bs.modal.data-wsc-api', '.wsc [data-toggle="wsc-modal"]', function (e) {
     var $this   = $(this)
     var href    = $this.attr('href')
     var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
-    var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+    var option  = $target.data('wsc-bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
 
     if ($this.is('a')) e.preventDefault()
 
     $target
-      .modal(option, this)
+      .wscModal(option, this)
       .one('hide', function () {
         $this.is(':visible') && $this.focus()
       })
   })
 
   $(document)
-    .on('show.bs.modal', '.modal', function () { $(document.body).addClass('modal-open') })
-    .on('hidden.bs.modal', '.modal', function () { $(document.body).removeClass('modal-open') })
+    .on('show.wsc-bs.modal', '.wsc .modal', function () { $(document.body).addClass('wsc-modal-open') })
+    .on('hidden.wsc-bs.modal', '.wsc .modal', function () { $(document.body).removeClass('wsc-modal-open') })
 
 }(jQuery);
 
@@ -1027,7 +1021,6 @@
  * Copyright 2011-2014 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
-
 
 +function ($) {
   'use strict';
@@ -1115,7 +1108,7 @@
 
   Tooltip.prototype.enter = function (obj) {
     var self = obj instanceof this.constructor ?
-      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('wsc-bs.' + this.type)
 
     clearTimeout(self.timeout)
 
@@ -1130,7 +1123,7 @@
 
   Tooltip.prototype.leave = function (obj) {
     var self = obj instanceof this.constructor ?
-      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('wsc-bs.' + this.type)
 
     clearTimeout(self.timeout)
 
@@ -1144,7 +1137,7 @@
   }
 
   Tooltip.prototype.show = function () {
-    var e = $.Event('show.bs.' + this.type)
+    var e = $.Event('show.wsc-bs.' + this.type)
 
     if (this.hasContent() && this.enabled) {
       this.$element.trigger(e)
@@ -1203,13 +1196,13 @@
       this.hoverState = null
 
       var complete = function() {
-        that.$element.trigger('shown.bs.' + that.type)
+        that.$element.trigger('shown.wsc-bs.' + that.type)
       }
 
       $.support.transition && this.$tip.hasClass('fade') ?
         $tip
           .one($.support.transition.end, complete)
-          .emulateTransitionEnd(150) :
+          .wscEmulateTransitionEnd(150) :
         complete()
     }
   }
@@ -1289,11 +1282,11 @@
   Tooltip.prototype.hide = function () {
     var that = this
     var $tip = this.tip()
-    var e    = $.Event('hide.bs.' + this.type)
+    var e    = $.Event('hide.wsc-bs.' + this.type)
 
     function complete() {
       if (that.hoverState != 'in') $tip.detach()
-      that.$element.trigger('hidden.bs.' + that.type)
+      that.$element.trigger('hidden.wsc-bs.' + that.type)
     }
 
     this.$element.trigger(e)
@@ -1305,7 +1298,7 @@
     $.support.transition && this.$tip.hasClass('fade') ?
       $tip
         .one($.support.transition.end, complete)
-        .emulateTransitionEnd(150) :
+        .wscEmulateTransitionEnd(150) :
       complete()
 
     this.hoverState = null
@@ -1379,41 +1372,39 @@
   }
 
   Tooltip.prototype.toggle = function (e) {
-    var self = e ? $(e.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type) : this
+    var self = e ? $(e.currentTarget)[this.type](this.getDelegateOptions()).data('wsc-bs.' + this.type) : this
     self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
   }
 
   Tooltip.prototype.destroy = function () {
     clearTimeout(this.timeout)
-    this.hide().$element.off('.' + this.type).removeData('bs.' + this.type)
+    this.hide().$element.off('.' + this.type).removeData('wsc-bs.' + this.type)
   }
-
 
   // TOOLTIP PLUGIN DEFINITION
   // =========================
 
-  var old = $.fn.tooltip
+  var old = $.fn.wscTooltip
 
-  $.fn.tooltip = function (option) {
+  $.fn.wscTooltip = function (option) {
     return this.each(function () {
       var $this   = $(this)
-      var data    = $this.data('bs.tooltip')
+      var data    = $this.data('wsc-bs.tooltip')
       var options = typeof option == 'object' && option
 
       if (!data && option == 'destroy') return
-      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
+      if (!data) $this.data('wsc-bs.tooltip', (data = new Tooltip(this, options)))
       if (typeof option == 'string') data[option]()
     })
   }
 
-  $.fn.tooltip.Constructor = Tooltip
-
+  $.fn.wscTooltip.Constructor = Tooltip
 
   // TOOLTIP NO CONFLICT
   // ===================
 
-  $.fn.tooltip.noConflict = function () {
-    $.fn.tooltip = old
+  $.fn.wscTooltip.noConflict = function () {
+    $.fn.wscTooltip = old
     return this
   }
 
@@ -1427,7 +1418,6 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
-
 +function ($) {
   'use strict';
 
@@ -1438,20 +1428,19 @@
     this.init('popover', element, options)
   }
 
-  if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
+  if (!$.fn.wscTooltip) throw new Error('Popover requires wscTooltip')
 
-  Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
+  Popover.DEFAULTS = $.extend({}, $.fn.wscTooltip.Constructor.DEFAULTS, {
     placement: 'right',
     trigger: 'click',
     content: '',
     template: '<div class="popover"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
   })
 
-
   // NOTE: POPOVER EXTENDS tooltip.js
   // ================================
 
-  Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype)
+  Popover.prototype = $.extend({}, $.fn.wscTooltip.Constructor.prototype)
 
   Popover.prototype.constructor = Popover
 
@@ -1499,188 +1488,32 @@
     return this.$tip
   }
 
-
   // POPOVER PLUGIN DEFINITION
   // =========================
 
-  var old = $.fn.popover
+  var old = $.fn.wscPopover
 
-  $.fn.popover = function (option) {
+  $.fn.wscPopover = function (option) {
     return this.each(function () {
       var $this   = $(this)
-      var data    = $this.data('bs.popover')
+      var data    = $this.data('wsc-bs.popover')
       var options = typeof option == 'object' && option
 
       if (!data && option == 'destroy') return
-      if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
+      if (!data) $this.data('wsc-bs.popover', (data = new Popover(this, options)))
       if (typeof option == 'string') data[option]()
     })
   }
 
-  $.fn.popover.Constructor = Popover
-
+  $.fn.wscPopover.Constructor = Popover
 
   // POPOVER NO CONFLICT
   // ===================
 
-  $.fn.popover.noConflict = function () {
-    $.fn.popover = old
+  $.fn.wscPopover.noConflict = function () {
+    $.fn.wscPopover = old
     return this
   }
-
-}(jQuery);
-
-/* ========================================================================
- * Bootstrap: scrollspy.js v3.1.1
- * http://getbootstrap.com/javascript/#scrollspy
- * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-+function ($) {
-  'use strict';
-
-  // SCROLLSPY CLASS DEFINITION
-  // ==========================
-
-  function ScrollSpy(element, options) {
-    var href
-    var process  = $.proxy(this.process, this)
-
-    this.$element       = $(element).is('body') ? $(window) : $(element)
-    this.$body          = $('body')
-    this.$scrollElement = this.$element.on('scroll.bs.scroll-spy.data-api', process)
-    this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
-    this.selector       = (this.options.target
-      || ((href = $(element).attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
-      || '') + ' .nav li > a'
-    this.offsets        = $([])
-    this.targets        = $([])
-    this.activeTarget   = null
-
-    this.refresh()
-    this.process()
-  }
-
-  ScrollSpy.DEFAULTS = {
-    offset: 10
-  }
-
-  ScrollSpy.prototype.refresh = function () {
-    var offsetMethod = this.$element[0] == window ? 'offset' : 'position'
-
-    this.offsets = $([])
-    this.targets = $([])
-
-    var self     = this
-    var $targets = this.$body
-      .find(this.selector)
-      .map(function () {
-        var $el   = $(this)
-        var href  = $el.data('target') || $el.attr('href')
-        var $href = /^#./.test(href) && $(href)
-
-        return ($href
-          && $href.length
-          && $href.is(':visible')
-          && [[ $href[offsetMethod]().top + (!$.isWindow(self.$scrollElement.get(0)) && self.$scrollElement.scrollTop()), href ]]) || null
-      })
-      .sort(function (a, b) { return a[0] - b[0] })
-      .each(function () {
-        self.offsets.push(this[0])
-        self.targets.push(this[1])
-      })
-  }
-
-  ScrollSpy.prototype.process = function () {
-    var scrollTop    = this.$scrollElement.scrollTop() + this.options.offset
-    var scrollHeight = this.$scrollElement[0].scrollHeight || this.$body[0].scrollHeight
-    var maxScroll    = scrollHeight - this.$scrollElement.height()
-    var offsets      = this.offsets
-    var targets      = this.targets
-    var activeTarget = this.activeTarget
-    var i
-
-    if (scrollTop >= maxScroll) {
-      return activeTarget != (i = targets.last()[0]) && this.activate(i)
-    }
-
-    if (activeTarget && scrollTop <= offsets[0]) {
-      return activeTarget != (i = targets[0]) && this.activate(i)
-    }
-
-    for (i = offsets.length; i--;) {
-      activeTarget != targets[i]
-        && scrollTop >= offsets[i]
-        && (!offsets[i + 1] || scrollTop <= offsets[i + 1])
-        && this.activate( targets[i] )
-    }
-  }
-
-  ScrollSpy.prototype.activate = function (target) {
-    this.activeTarget = target
-
-    $(this.selector)
-      .parentsUntil(this.options.target, '.active')
-      .removeClass('active')
-
-    var selector = this.selector +
-        '[data-target="' + target + '"],' +
-        this.selector + '[href="' + target + '"]'
-
-    var active = $(selector)
-      .parents('li')
-      .addClass('active')
-
-    if (active.parent('.dropdown-menu').length) {
-      active = active
-        .closest('li.dropdown')
-        .addClass('active')
-    }
-
-    active.trigger('activate.bs.scrollspy')
-  }
-
-
-  // SCROLLSPY PLUGIN DEFINITION
-  // ===========================
-
-  var old = $.fn.scrollspy
-
-  $.fn.scrollspy = function (option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.scrollspy')
-      var options = typeof option == 'object' && option
-
-      if (!data) $this.data('bs.scrollspy', (data = new ScrollSpy(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  $.fn.scrollspy.Constructor = ScrollSpy
-
-
-  // SCROLLSPY NO CONFLICT
-  // =====================
-
-  $.fn.scrollspy.noConflict = function () {
-    $.fn.scrollspy = old
-    return this
-  }
-
-
-  // SCROLLSPY DATA-API
-  // ==================
-
-  $(window).on('load', function () {
-    $('[data-spy="scroll"]').each(function () {
-      var $spy = $(this)
-      $spy.scrollspy($spy.data())
-    })
-  })
 
 }(jQuery);
 
@@ -1691,7 +1524,6 @@
  * Copyright 2011-2014 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
-
 
 +function ($) {
   'use strict';
@@ -1716,7 +1548,7 @@
     if ($this.parent('li').hasClass('active')) return
 
     var previous = $ul.find('.active:last a')[0]
-    var e        = $.Event('show.bs.tab', {
+    var e        = $.Event('show.wsc-bs.tab', {
       relatedTarget: previous
     })
 
@@ -1729,7 +1561,7 @@
     this.activate($this.parent('li'), $ul)
     this.activate($target, $target.parent(), function () {
       $this.trigger({
-        type: 'shown.bs.tab',
+        type: 'shown.wsc-bs.tab',
         relatedTarget: previous
       })
     })
@@ -1766,46 +1598,43 @@
     transition ?
       $active
         .one($.support.transition.end, next)
-        .emulateTransitionEnd(150) :
+        .wscEmulateTransitionEnd(150) :
       next()
 
     $active.removeClass('in')
   }
 
-
   // TAB PLUGIN DEFINITION
   // =====================
 
-  var old = $.fn.tab
+  var old = $.fn.wscTab
 
-  $.fn.tab = function ( option ) {
+  $.fn.wscTab = function ( option ) {
     return this.each(function () {
       var $this = $(this)
-      var data  = $this.data('bs.tab')
+      var data  = $this.data('wsc-bs.tab')
 
-      if (!data) $this.data('bs.tab', (data = new Tab(this)))
+      if (!data) $this.data('wsc-bs.tab', (data = new Tab(this)))
       if (typeof option == 'string') data[option]()
     })
   }
 
-  $.fn.tab.Constructor = Tab
-
+  $.fn.wscTab.Constructor = Tab
 
   // TAB NO CONFLICT
   // ===============
 
-  $.fn.tab.noConflict = function () {
-    $.fn.tab = old
+  $.fn.wscTab.noConflict = function () {
+    $.fn.wscTab = old
     return this
   }
-
 
   // TAB DATA-API
   // ============
 
-  $(document).on('click.bs.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+  $(document).on('click.wsc-bs.tab.data-wsc-api', '.wsc [data-toggle="wsc-tab"], .wsc [data-toggle="wsc-pill"]', function (e) {
     e.preventDefault()
-    $(this).tab('show')
+    $(this).wscTab('show')
   })
 
 }(jQuery);
@@ -1818,7 +1647,6 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
-
 +function ($) {
   'use strict';
 
@@ -1828,8 +1656,8 @@
   var Affix = function (element, options) {
     this.options = $.extend({}, Affix.DEFAULTS, options)
     this.$window = $(window)
-      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
-      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
+      .on('scroll.wsc-bs.affix.data-wsc-api', $.proxy(this.checkPosition, this))
+      .on('click.wsc-bs.affix.data-wsc-api',  $.proxy(this.checkPositionWithEventLoop, this))
 
     this.$element     = $(element)
     this.affixed      =
@@ -1881,7 +1709,7 @@
     if (this.unpin) this.$element.css('top', '')
 
     var affixType = 'affix' + (affix ? '-' + affix : '')
-    var e         = $.Event(affixType + '.bs.affix')
+    var e         = $.Event(affixType + '.wsc-bs.affix')
 
     this.$element.trigger(e)
 
@@ -1900,40 +1728,37 @@
     }
   }
 
-
   // AFFIX PLUGIN DEFINITION
   // =======================
 
-  var old = $.fn.affix
+  var old = $.fn.wscAffix
 
-  $.fn.affix = function (option) {
+  $.fn.wscAffix = function (option) {
     return this.each(function () {
       var $this   = $(this)
-      var data    = $this.data('bs.affix')
+      var data    = $this.data('wsc-bs.affix')
       var options = typeof option == 'object' && option
 
-      if (!data) $this.data('bs.affix', (data = new Affix(this, options)))
+      if (!data) $this.data('wsc-bs.affix', (data = new Affix(this, options)))
       if (typeof option == 'string') data[option]()
     })
   }
 
-  $.fn.affix.Constructor = Affix
-
+  $.fn.wscAffix.Constructor = Affix
 
   // AFFIX NO CONFLICT
   // =================
 
-  $.fn.affix.noConflict = function () {
-    $.fn.affix = old
+  $.fn.wscAffix.noConflict = function () {
+    $.fn.wscAffix = old
     return this
   }
-
 
   // AFFIX DATA-API
   // ==============
 
   $(window).on('load', function () {
-    $('[data-spy="affix"]').each(function () {
+    $('.wsc [data-spy="wsc-affix"]').each(function () {
       var $spy = $(this)
       var data = $spy.data()
 
@@ -1942,7 +1767,7 @@
       if (data.offsetBottom) data.offset.bottom = data.offsetBottom
       if (data.offsetTop)    data.offset.top    = data.offsetTop
 
-      $spy.affix(data)
+      $spy.wscAffix(data)
     })
   })
 

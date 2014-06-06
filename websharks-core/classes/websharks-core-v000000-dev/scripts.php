@@ -25,18 +25,18 @@ namespace websharks_core_v000000_dev
 	class scripts extends framework
 	{
 		/**
-		 * @var array Stand-alone components.
-		 *
-		 * @by-constructor Set dynamically by the class constructor.
-		 */
-		public $stand_alone_components = array();
-
-		/**
 		 * @var array Front-side components.
 		 *
 		 * @by-constructor Set dynamically by the class constructor.
 		 */
 		public $front_side_components = array();
+
+		/**
+		 * @var array Stand-alone components.
+		 *
+		 * @by-constructor Set dynamically by the class constructor.
+		 */
+		public $stand_alone_components = array();
 
 		/**
 		 * @var array Menu page components.
@@ -63,10 +63,7 @@ namespace websharks_core_v000000_dev
 					$this->method(__FUNCTION__).'#init', NULL,
 					$this->__('Doing it wrong (the `init` hook has NOT been fired yet).')
 				);
-			$is_admin            = is_admin(); // Conditional cache.
-			$is_plugin_page      = $is_admin && $this->©menu_page->is_plugin_page();
-			$front_side_load     = !$is_admin && $this->©options->get('scripts.front_side.load');
-			$scripts_to_register = array(); // Initialize scripts to register.
+			$scripts_to_register = array(); // Initialize scripts.
 
 			// Core libs; available in all contexts.
 
@@ -123,32 +120,45 @@ namespace websharks_core_v000000_dev
 					                     'password_strength_mismatch_status__mismatch'        => $this->_x('mismatch')
 					)
 				);
-			// Stand-alone components; available in all contexts.
+			// Front-side components; available in all contexts.
 
-			$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone';
+			$this->front_side_components = $this->front_side_components();
 
-			$scripts_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone'] = array(
-				'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
-				'url'  => $this->©url->to_template_dir_file('/client-side/scripts/stand-alone.min.js'),
-				'ver'  => $this->___instance_config->plugin_version_with_dashes
-			);
-			// Front-side components; only if applicable.
-
-			if($front_side_load) // Front-side styles.
+			if(($front_side_file = $this->©file->template('/client-side/scripts/front-side.min.js', TRUE)))
 			{
 				$this->front_side_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side';
 
 				$scripts_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side'] = array(
 					'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
-					'url'  => $this->©url->to_template_dir_file('/client-side/scripts/front-side.min.js'),
+					'url'  => $this->©url->to_wp_abs_dir_file($front_side_file),
 					'ver'  => $this->___instance_config->plugin_version_with_dashes
 				);
 			}
+			else $this->front_side_components = // Running w/ core only; no separate front-side scripts.
+				array_merge($this->front_side_components, array($this->___instance_config->core_ns_stub_with_dashes));
+
+			// Stand-alone components; available in all contexts (depends on front-side).
+
+			$this->stand_alone_components = $this->stand_alone_components();
+
+			if(($stand_alone_file = $this->©file->template('client-side/scripts/stand-alone.min.js', TRUE)))
+			{
+				$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone';
+
+				$scripts_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone'] = array(
+					'deps' => $this->front_side_components,
+					'url'  => $this->©url->to_wp_abs_dir_file($stand_alone_file),
+					'ver'  => $this->___instance_config->plugin_version_with_dashes
+				);
+			}
+			else $this->stand_alone_components = // No separate stand-alone scripts.
+				array_merge($this->stand_alone_components, $this->front_side_components);
+
 			// Menu page components; only if applicable.
 
-			if($is_plugin_page) // Menu page scripts.
+			if(($is_plugin_page = $this->©menu_page->is_plugin_page())) // Menu page scripts.
 			{
-				$this->menu_page_components[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-pages';
+				$this->menu_page_components = $this->menu_page_components();
 
 				if(!wp_script_is('jquery-html5-sortable', 'registered'))
 					$scripts_to_register['jquery-html5-sortable'] = array(
@@ -156,6 +166,8 @@ namespace websharks_core_v000000_dev
 						'url'  => $this->©url->to_core_dir_file('/client-side/scripts/jq-sortable.min.js'),
 						'ver'  => $this->___instance_config->core_version_with_dashes
 					);
+				$this->menu_page_components[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-pages';
+
 				if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
 					$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
 						'deps'     => array($this->___instance_config->core_ns_stub_with_dashes, 'jquery-html5-sortable'),
@@ -179,9 +191,49 @@ namespace websharks_core_v000000_dev
 			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_instance_config_for_core_inline_data());
 			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_verifiers_for_core_inline_data());
 
-			$this->add_data($this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone', $this->build_stand_alone_inline_data());
-			if($front_side_load) $this->add_data($this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side', $this->build_front_side_inline_data());
+			if(in_array($this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side', $this->front_side_components, TRUE))
+				$this->add_data($this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side', $this->build_front_side_inline_data());
+
+			if(in_array($this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone', $this->stand_alone_components, TRUE))
+				$this->add_data($this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone', $this->build_stand_alone_inline_data());
+
 			if($is_plugin_page) $this->add_data($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', $this->build_menu_page_inline_data());
+		}
+
+		/**
+		 * Builds the initial set of front-side components.
+		 *
+		 * @extenders Can be extended to add additional front-side components.
+		 *
+		 * @return array An array of any additional front-side components.
+		 */
+		public function front_side_components()
+		{
+			return array(); // Not implemented by core.
+		}
+
+		/**
+		 * Builds the initial set of stand-alone components.
+		 *
+		 * @extenders Can be extended to add additional stand-alone components.
+		 *
+		 * @return array An array of any additional stand-alone components.
+		 */
+		public function stand_alone_components()
+		{
+			return array(); // Not implemented by core.
+		}
+
+		/**
+		 * Builds the initial set of menu page components.
+		 *
+		 * @extenders Can be extended to add additional menu page components.
+		 *
+		 * @return array An array of any additional menu page components.
+		 */
+		public function menu_page_components()
+		{
+			return array(); // Not implemented by core.
 		}
 
 		/**
@@ -261,11 +313,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Builds stand-alone inline data.
+		 * Builds front-side inline data.
 		 *
-		 * @return string Stand-alone inline data.
+		 * @return string Front-side inline data.
 		 */
-		public function build_stand_alone_inline_data()
+		public function build_front_side_inline_data()
 		{
 			if(isset($this->cache[__FUNCTION__]))
 				return $this->cache[__FUNCTION__];
@@ -274,11 +326,11 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Builds front-side inline data.
+		 * Builds stand-alone inline data.
 		 *
-		 * @return string Front-side inline data.
+		 * @return string Stand-alone inline data.
 		 */
-		public function build_front_side_inline_data()
+		public function build_stand_alone_inline_data()
 		{
 			if(isset($this->cache[__FUNCTION__]))
 				return $this->cache[__FUNCTION__];
@@ -315,14 +367,12 @@ namespace websharks_core_v000000_dev
 			$components = array(); // Initialize array.
 			$others     = ($others) ? (array)$others : array();
 
-			$is_admin                = is_admin(); // Conditional cache.
-			$is_plugin_page          = $is_admin && $this->©menu_page->is_plugin_page();
+			$front_side_load_filter  = $this->apply_filters('front_side', (boolean)$this->©options->get('scripts.front_side.load_by_default'));
 			$stand_alone_load_filter = $this->apply_filters('stand_alone', FALSE);
-			$front_side_load         = !$is_admin && $this->©options->get('scripts.front_side.load');
-			$front_side_load_filter  = $front_side_load && $this->apply_filters('front_side', (boolean)$this->©options->get('scripts.front_side.load_by_default'));
+			$is_plugin_page          = $this->©menu_page->is_plugin_page();
 
-			if($stand_alone_load_filter) $components = array_merge($components, $this->stand_alone_components);
 			if($front_side_load_filter) $components = array_merge($components, $this->front_side_components);
+			if($stand_alone_load_filter) $components = array_merge($components, $this->stand_alone_components);
 			if($is_plugin_page) $components = array_merge($components, $this->menu_page_components);
 
 			return array_unique(array_merge($components, $others));

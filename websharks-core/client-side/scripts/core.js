@@ -1,3 +1,7 @@
+/*!
+ * WebSharks Core™; copyright 2014 WebSharks, Inc.
+ * GPL license <https://github.com/websharks/core>
+ */
 /**
  * WebSharks™ Core Scripts
  *

@@ -37,7 +37,7 @@ namespace websharks_core_dev_utilities
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css')."\n";
 		file_put_contents($core->©dir->n_seps_up(__FILE__).'/core-libs.min.css', trim(ob_get_clean()));
 
-		$this->©file->delete($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css');
+		$core->©file->delete($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css');
 	}
 
 	/*
@@ -68,7 +68,7 @@ namespace websharks_core_dev_utilities
 			return ''; // Remove.
 		}, $css); // Move to top.
 		$css                 = implode("\n", $imports)."\n".
-		                       '.'.$core_prefix_with_dashes.'ui{'."\n".
+		                       '.'.trim($core_prefix_with_dashes, '-').'{'."\n".
 		                       ' '.trim($css)."\n".
 		                       '}';
 		$font_face_tokenizer = font_face_tokenizer($css);
@@ -116,10 +116,8 @@ namespace websharks_core_dev_utilities
 			$core                    = core(); // WebSharks™ Core.
 			$core_prefix_with_dashes = $core->___instance_config->core_prefix_with_dashes;
 
-			$file     = $core->©dir->n_seps_up(__FILE__, 3).
-			            '/templates/client-side/styles/themes/'.$slug.'/theme.css';
-			$min_file = $core->©dir->n_seps_up(__FILE__, 3).
-			            '/templates/client-side/styles/themes/'.$slug.'/theme.min.css';
+			$file     = $core->©dir->n_seps_up(__FILE__, 3).'/templates/client-side/styles/themes/'.$slug.'/theme.css';
+			$min_file = $core->©dir->n_seps_up(__FILE__, 3).'/templates/client-side/styles/themes/'.$slug.'/theme.min.css';
 
 			$file_dir     = $core->©dir->n_seps_up($file);
 			$min_file_dir = $core->©dir->n_seps_up($min_file);
@@ -127,7 +125,10 @@ namespace websharks_core_dev_utilities
 			if(!is_dir($min_file_dir)) mkdir($min_file_dir, 0755, TRUE);
 
 			$css = file_get_contents($url);
-			$css = str_replace('[data-', '[data-'.$core_prefix_with_dashes, $css);
+			$css = preg_replace('/\.dropdown\-backdrop\b/', '.'.$core_prefix_with_dashes.'dropdown-backdrop', $css);
+			$css = preg_replace('/\[data\-dismiss\=(["\'])?/', '[data-dismiss=${1}'.$core_prefix_with_dashes, $css);
+			$css = preg_replace('/\[data\-toggle\=(["\'])?/', '[data-toggle=${1}'.$core_prefix_with_dashes, $css);
+			$css = preg_replace('/\[data\-spy\=(["\'])?/', '[data-spy=${1}'.$core_prefix_with_dashes, $css);
 			$css = str_replace('../fonts/', '//netdna.bootstrapcdn.com/bootswatch/3.1.1/fonts/', $css);
 			$css = preg_replace('/@(?:[\w\-]+?\-)?viewport\s*(\{(?:[^{}]|(?1))*?\})/is', '', $css);
 
@@ -138,7 +139,7 @@ namespace websharks_core_dev_utilities
 				return ''; // Remove.
 			}, $css); // Move to top.
 			$css                 = implode("\n", $imports)."\n".
-			                       '.'.$core_prefix_with_dashes.'ui-'.$slug.'{'."\n".
+			                       '.'.$core_prefix_with_dashes.$slug.'{'."\n".
 			                       ' '.trim($css)."\n".
 			                       '}';
 			$font_face_tokenizer = font_face_tokenizer($css);
@@ -150,8 +151,8 @@ namespace websharks_core_dev_utilities
 			$core->©command->sass('--scss '.escapeshellarg($file).' '.escapeshellarg($file));
 			$css = file_get_contents($file);
 
-			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.'ui-'.$slug, '/').'\s+(?:html|body)\s+{/i',
-			                    '.'.$core_prefix_with_dashes.'ui-'.$slug.' {', $css);
+			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+(?:html|body)\s+{/i', '.'.$core_prefix_with_dashes.$slug.' {', $css);
+			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+.modal\-open\s+{/i', '.'.$core_prefix_with_dashes.'modal-open {', $css);
 
 			$css = font_face_tokenizer($css, $font_face_tokenizer['tokens']);
 			$css = keyframes_tokenizer($css, $keyframes_tokenizer['tokens']);

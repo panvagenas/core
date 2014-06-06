@@ -307,11 +307,11 @@ namespace websharks_core_v000000_dev\menu_pages
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
-			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->ui_themes()), TRUE))
+			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->themes()), TRUE))
 				$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
-			$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui';
-			$classes[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$current_menu_pages_theme;
+			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
+			$classes[] = $this->___instance_config->core_prefix_with_dashes.$current_menu_pages_theme;
 
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page';
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page';
@@ -354,7 +354,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			$current_theme = $this->©options->get('menu_pages.theme');
 
 			echo '<ul class="controls theme-options">';
-			foreach($this->©styles->ui_themes() as $_theme => $_theme_file)
+			foreach($this->©styles->themes() as $_theme => $_theme_file)
 				echo '<li'.(($_theme === $current_theme) ? ' class="current"' : '').' data-theme="'.esc_attr($_theme).'">'.
 				     esc_html(ucwords(str_replace('-', ' ', $_theme))).
 				     '</li>';

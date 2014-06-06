@@ -417,8 +417,8 @@ namespace websharks_core_v000000_dev
 			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__front_side', $filter);
 
 			$components = $this->©styles->front_side_components;
-			if($theme && in_array($theme, array_keys($this->©styles->ui_themes()), TRUE))
-				$components[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$theme;
+			if($theme && in_array($theme, array_keys($this->©styles->themes()), TRUE))
+				$components[] = $this->___instance_config->core_prefix_with_dashes.$theme;
 			// A specific theme will be enqueued or dequeued (depending on `$needs`).
 
 			if($needs) // Enqueue or dequeue.
@@ -444,8 +444,8 @@ namespace websharks_core_v000000_dev
 			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__stand_alone', $filter);
 
 			$components = $this->©styles->stand_alone_components;
-			if($theme && in_array($theme, array_keys($this->©styles->ui_themes()), TRUE))
-				$components[] = $this->___instance_config->core_prefix_with_dashes.'ui-'.$theme;
+			if($theme && in_array($theme, array_keys($this->©styles->themes()), TRUE))
+				$components[] = $this->___instance_config->core_prefix_with_dashes.$theme;
 			// A specific theme will be enqueued or dequeued (depending on `$needs`).
 
 			if($needs) // Enqueue or dequeue.
