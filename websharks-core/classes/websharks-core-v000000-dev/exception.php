@@ -125,7 +125,7 @@ namespace websharks_core_v000000_dev
 				           $this->plugin->__('Exception Time').': '.$this->plugin->©env->time_details()."\n".
 				           $this->plugin->__('Memory Details').': '.$this->plugin->©env->memory_details()."\n".
 				           $this->plugin->__('Version Details').': '.$this->plugin->©env->version_details()."\n".
-				           (did_action('init') ? // Only if WP already triggered the `init` hook.
+				           (did_action('set_current_user') ? // Only if `set_current_user` fired already.
 					           $this->plugin->__('Current User ID').': '.$this->plugin->©user->ID."\n".
 					           $this->plugin->__('Current User Email').': '.$this->plugin->©user->email."\n" : '').
 				           $this->plugin->__('Exception Message').': '.$this->getMessage()."\n\n".

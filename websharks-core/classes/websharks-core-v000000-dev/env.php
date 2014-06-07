@@ -40,11 +40,9 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're in a localhost environment.
 		 *
-		 * @return boolean TRUE if we're in a localhost environment, else FALSE.
+		 * @return boolean TRUE if we're in a localhost environment.
 		 *
 		 * @see \deps_x_websharks_core_v000000_dev::is_localhost()
-		 *
-		 * @assert () === FALSE
 		 */
 		public function is_localhost()
 		{
@@ -65,9 +63,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're in a Unix environment.
 		 *
-		 * @return boolean TRUE if we're in a Unix environment, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if we're in a Unix environment.
 		 */
 		public function is_unix()
 		{
@@ -85,9 +81,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're in a Windows® environment.
 		 *
-		 * @return boolean TRUE if we're in a Windows® environment, else FALSE.
-		 *
-		 * @assert () === TRUE
+		 * @return boolean TRUE if we're in a Windows® environment.
 		 */
 		public function is_windows()
 		{
@@ -105,9 +99,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're running under an Apache web server.
 		 *
-		 * @return boolean TRUE if we're running under an Apache web server, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if we're running under an Apache web server.
 		 */
 		public function is_apache()
 		{
@@ -129,9 +121,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're running under a LiteSpeed web server.
 		 *
-		 * @return boolean TRUE if we're running under a LiteSpeed web server, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if we're running under a LiteSpeed web server.
 		 */
 		public function is_litespeed()
 		{
@@ -150,9 +140,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're running under an Apache-compatible web server.
 		 *
-		 * @return boolean TRUE if we're running under an Apache-compatible web server, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if we're running under an Apache-compatible web server.
 		 */
 		public function is_apache_compatible()
 		{
@@ -174,8 +162,6 @@ namespace websharks_core_v000000_dev
 		 *    Otherwise, if not running Apache (or we're unable to detect the version) an empty string.
 		 *
 		 * @see \deps_x_websharks_core_v000000_dev::apache_version()
-		 *
-		 * @TODO Update this so it uses our commands class.
 		 */
 		public function apache_version()
 		{
@@ -192,10 +178,11 @@ namespace websharks_core_v000000_dev
 				if(preg_match($regex, $_SERVER['SERVER_SOFTWARE'], $apache))
 					return ($this->static[__FUNCTION__] = $apache['version']);
 
-			if(!$this->©function->is_possible('shell_exec') || ini_get('open_basedir'))
-				return ($this->static[__FUNCTION__] = ''); // Not possible.
+			if(!$this->©commands->possible()) return ($this->static[__FUNCTION__] = '');
 
-			if(!($httpd_v = @shell_exec('/usr/bin/env httpd -v')) && !($httpd_v = @shell_exec('/usr/bin/env apachectl -v')))
+			if(!($httpd_v = $this->©command->exec('/usr/bin/env httpd -v'))
+			   && !($httpd_v = $this->©command->exec('/usr/bin/env apachectl -v'))
+			) // If both of these, let's search just a little more.
 			{
 				$_possible_httpd_locations = array(
 					'/usr/sbin/httpd', '/usr/bin/httpd',
@@ -204,7 +191,7 @@ namespace websharks_core_v000000_dev
 					'/usr/local/apache/sbin/httpd', '/usr/local/apache/bin/httpd',
 				);
 				foreach($_possible_httpd_locations as $_httpd_location) if(is_file($_httpd_location))
-					if(($httpd_v = @shell_exec(escapeshellarg($_httpd_location).' -v')))
+					if(($httpd_v = $this->©command->exec(escapeshellarg($_httpd_location).' -v')))
 						break; // All done here.
 				unset($_possible_httpd_locations, $_httpd_location);
 			}
@@ -217,11 +204,9 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're running under a command line interface.
 		 *
-		 * @return boolean TRUE if we're running under a command line interface, else FALSE.
+		 * @return boolean TRUE if we're running under a command line interface.
 		 *
 		 * @see \deps_x_websharks_core_v000000_dev::is_cli()
-		 *
-		 * @assert () === FALSE
 		 */
 		public function is_cli()
 		{
@@ -239,7 +224,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're running a CRON job.
 		 *
-		 * @return boolean TRUE if we're running a CRON job, else FALSE.
+		 * @return boolean TRUE if we're running a CRON job.
 		 */
 		public function is_cron_job()
 		{
@@ -257,9 +242,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're running a systematic routine.
 		 *
-		 * @return boolean TRUE if we're running a systematic routine, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if we're running a systematic routine.
 		 */
 		public function is_systematic_routine()
 		{
@@ -282,9 +265,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if we're currently on `/wp-login.php`.
 		 *
-		 * @return boolean TRUE if we're currently on `/wp-login.php`, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if we're currently on `/wp-login.php`.
 		 */
 		public function is_wp_login()
 		{
@@ -302,9 +283,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Determines whether or not this is a multisite farm.
 		 *
-		 * @return boolean TRUE if `MULTISITE_FARM` is TRUE inside `/wp-config.php`, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if `MULTISITE_FARM` is TRUE inside `/wp-config.php`.
 		 */
 		public function is_multisite_farm()
 		{
@@ -322,9 +301,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Determines whether or not we're in `WP_DEBUG` mode.
 		 *
-		 * @return boolean TRUE if we're in `WP_DEBUG` mode, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if we're in `WP_DEBUG` mode.
 		 */
 		public function is_in_wp_debug_mode()
 		{
@@ -342,9 +319,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Determines whether or not we're in `WP_DEBUG_LOG` mode.
 		 *
-		 * @return boolean TRUE if we're in `WP_DEBUG_LOG` mode, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if we're in `WP_DEBUG_LOG` mode.
 		 */
 		public function is_in_wp_debug_log_mode()
 		{
@@ -362,9 +337,7 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Determines whether or not we're in `WP_DEBUG_DISPLAY` mode.
 		 *
-		 * @return boolean TRUE if we're in `WP_DEBUG_DISPLAY` mode, else FALSE.
-		 *
-		 * @assert () === FALSE
+		 * @return boolean TRUE if we're in `WP_DEBUG_DISPLAY` mode.
 		 */
 		public function is_in_wp_debug_display_mode()
 		{
@@ -383,8 +356,6 @@ namespace websharks_core_v000000_dev
 		 * Is Quick Cache™ installed/active?
 		 *
 		 * @return boolean TRUE if Quick Cache™ is installed/active.
-		 *
-		 * @assert () === FALSE
 		 */
 		public function has_qc_active()
 		{
@@ -403,8 +374,6 @@ namespace websharks_core_v000000_dev
 		 * Is BuddyPress™ installed/active?
 		 *
 		 * @return boolean TRUE if BuddyPress™ is installed/active.
-		 *
-		 * @assert () === FALSE
 		 */
 		public function has_bp_active()
 		{
@@ -438,8 +407,6 @@ namespace websharks_core_v000000_dev
 		 * Acquires information about memory usage.
 		 *
 		 * @return string `Memory x MB :: Real Memory x MB :: Peak Memory x MB :: Real Peak Memory x MB`.
-		 *
-		 * @assert () !empty TRUE
 		 */
 		public function memory_details()
 		{
@@ -460,8 +427,6 @@ namespace websharks_core_v000000_dev
 		 * String with all version details (for PHP, WordPress®, current plugin).
 		 *
 		 * @return string `PHP vX.XX :: WordPress® vX.XX :: Plugin vX.XX + Pro Add-On`.
-		 *
-		 * @assert () !empty TRUE
 		 */
 		public function version_details()
 		{
@@ -557,7 +522,7 @@ namespace websharks_core_v000000_dev
 		 * @param string $slug_or_file Optional. Defaults to an empty string (i.e. any admin page).
 		 *    If this is a non-empty string, we'll test for a specific administrative page slug (or file name).
 		 *
-		 * @return boolean TRUE if we're currently on an administrative page, else FALSE by default.
+		 * @return boolean TRUE if we're currently on an administrative page.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -584,11 +549,10 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Cleans any existing output buffers.
 		 *
-		 * @return boolean TRUE if all output buffers are cleaned; else FALSE.
+		 * @return boolean TRUE if all output buffers are cleaned.
 		 *    This can return FALSE if a locked output buffer exists.
 		 *
 		 * @note It is not possible to clean a locked buffer.
-		 *    This will trigger an `E_NOTICE` if a buffer is not cleanable.
 		 */
 		public function ob_end_clean()
 		{
@@ -709,8 +673,6 @@ namespace websharks_core_v000000_dev
 		 * Get the current visitor's real IP address.
 		 *
 		 * @return string Real IP address, else an empty string on failure.
-		 *
-		 * @assert () === '76.105.125.176'
 		 */
 		public function ip() // IP address.
 		{

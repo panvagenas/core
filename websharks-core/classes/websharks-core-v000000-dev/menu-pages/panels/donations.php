@@ -47,7 +47,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 				'<form'.
 				' method="get"'.
 				' target="_blank"'.
-				' class="donate ui-form"'.
+				' class="donate"'.
 				' action="'.esc_attr($this->©url->to_plugin_site_uri('/donate/')).'"'.
 				'>'.
 				$form_fields->construct_field_markup(

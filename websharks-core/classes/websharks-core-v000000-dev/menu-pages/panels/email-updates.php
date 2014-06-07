@@ -47,7 +47,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 				'<form'.
 				' method="post"'.
 				' target="_blank"'.
-				' class="email-updates ui-form"'.
+				' class="email-updates"'.
 				' action="'.esc_attr($this->©options->get('menu_pages.panels.email_updates.action_url')).'"'.
 				'>'.
 

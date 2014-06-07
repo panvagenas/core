@@ -31,7 +31,7 @@ $exception = $this->data->exception;
 	<title><?php echo $this->_x('Uncaught Exception'); ?> | <?php echo esc_html(get_bloginfo('name')); ?></title>
 	<?php echo $this->stand_alone_styles(); ?>
 </head>
-<body>
+<body class="<?php echo esc_attr($this->stand_alone_body_classes()); ?>">
 
 <div class="<?php echo esc_attr($this->stand_alone_wrapper_classes()); ?>">
 	<div class="<?php echo esc_attr($this->stand_alone_container_classes()); ?>">
@@ -45,7 +45,7 @@ $exception = $this->data->exception;
 		</div>
 
 		<div class="content wrapper">
-			<div class="content container <?php echo esc_attr($this->ui_widget_classes()); ?>">
+			<div class="content container">
 
 				<!-- BEGIN: Content Body -->
 

@@ -464,18 +464,6 @@
 	};
 
 	/**
-	 * Gets the WebSharks™ Core CSS class name.
-	 *
-	 * @return {String} CSS class name.
-	 *
-	 * @TODO Check this return value.
-	 */
-	$$websharks_core.$.prototype.core_css_class = function()
-	{
-		return this.instance_config('core_ns_stub_with_dashes');
-	};
-
-	/**
 	 * Gets the plugin CSS class name (for current plugin).
 	 *
 	 * @return {String} CSS class name.
@@ -506,7 +494,7 @@
 
 		var _this = this, theme_css_class = ''; // Initialize string.
 
-		$(object).add($(object).parents('.' + this.plugin_css_class() + '.ui'))
+		$(object).add($(object).parents('.' + this.plugin_css_class()))
 			.each(function() // Begin iterations (we have two here).
 			      {
 				      var classes = $(this).attr('class');
@@ -528,25 +516,6 @@
 			return (include_ui_class) ? 'ui ' + theme_css_class : theme_css_class;
 
 		return ''; // Default return value.
-	};
-
-	/**
-	 * Gets UI dialogue classes for an object (space separated).
-	 *
-	 * @note The `ui` class will ONLY be included, if we find a CSS theme class.
-	 *    This is the intended behavior. If there is no UI theme, we exclude the `ui` class.
-	 *
-	 * @param object {Node|Object|String} The object to start from.
-	 *
-	 * @return {String}
-	 *
-	 * @TODO Check this return value.
-	 */
-	$$websharks_core.$.prototype.ui_dialogue_classes_for = function(object)
-	{
-		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
-
-		return $.trim(this.core_css_class() + ' ' + this.plugin_css_class() + ' ' + this.closest_ui_theme_css_class_to(object, true));
 	};
 
 	/**

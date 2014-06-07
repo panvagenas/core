@@ -20,7 +20,7 @@ namespace websharks_core_v000000_dev
 	if(!class_exists('\\'.__NAMESPACE__.'\\framework'))
 	{
 		# -----------------------------------------------------------------------------------------------------------------------------
-		# WebSharks™ Core stub class (and an internal/namespaced alias).
+		# WebSharks™ Core stub class; and an internal/namespaced alias.
 		# -----------------------------------------------------------------------------------------------------------------------------
 
 		if(!class_exists('\\'.__NAMESPACE__))
@@ -32,7 +32,7 @@ namespace websharks_core_v000000_dev
 			class_alias('\\'.__NAMESPACE__, __NAMESPACE__.'\\stub');
 
 		# -----------------------------------------------------------------------------------------------------------------------------
-		# WebSharks™ Core deps class (and an internal/namespaced alias).
+		# WebSharks™ Core deps class; and an internal/namespaced alias.
 		# -----------------------------------------------------------------------------------------------------------------------------
 
 		if(!class_exists('\\deps_'.__NAMESPACE__))
@@ -42,11 +42,18 @@ namespace websharks_core_v000000_dev
 			class_alias('\\deps_'.__NAMESPACE__, __NAMESPACE__.'\\deps');
 
 		# -----------------------------------------------------------------------------------------------------------------------------
-		# WebSharks™ Core framework constants (interface).
+		# WebSharks™ Core framework constants.
 		# -----------------------------------------------------------------------------------------------------------------------------
 
 		if(!interface_exists('\\'.__NAMESPACE__.'\\fw_constants'))
 			require_once dirname(__FILE__).'/fw-constants.php';
+
+		# -----------------------------------------------------------------------------------------------------------------------------
+		# WebSharks™ Core instance config.
+		# -----------------------------------------------------------------------------------------------------------------------------
+
+		if(!class_exists('\\'.__NAMESPACE__.'\\instance_config'))
+			require_once dirname(__FILE__).'/instance-config.php';
 
 		# -----------------------------------------------------------------------------------------------------------------------------
 		# WordPress® version (only if NOT already defined by WordPress®).
@@ -390,7 +397,7 @@ namespace websharks_core_v000000_dev
 		 * @property \websharks_core_v000000_dev\xml                                      $©xml
 		 * @method \websharks_core_v000000_dev\xml ©xml()
 		 *
-		 * @property object                                                               $___instance_config Public/magic read-only access.
+		 * @property \websharks_core_v000000_dev\instance_config                          $___instance_config Public/magic read-only access.
 		 */
 		class framework implements fw_constants // Base class for the WebSharks™ Core (and for plugins powered by it).
 		{
@@ -401,7 +408,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Current instance configuration.
 			 *
-			 * @var object Current instance config for `$this`.
+			 * @var instance_config Current instance config for `$this`.
 			 *    Defaults to NULL. Set by constructor.
 			 *
 			 * @by-constructor Set by class constructor.
@@ -417,7 +424,7 @@ namespace websharks_core_v000000_dev
 			/**
 			 * A global/static cache of all instance configurations.
 			 *
-			 * @var array A global/static cache of all instance configurations.
+			 * @var instance_config[] A global/static cache of all instance configurations.
 			 *    Defaults to an empty array. Set by constructor.
 			 *
 			 * @by-constructor Set by class constructor.
@@ -770,8 +777,8 @@ namespace websharks_core_v000000_dev
 			/**
 			 * Core class constructor.
 			 *
-			 * @param object|array $___instance_config Required at all times.
-			 *    A parent object instance, which contains the parent's `$___instance_config`.
+			 * @param framework|array $___instance_config Required at all times.
+			 *    A framework class object instance containing a parent's `$___instance_config`.
 			 *    Or, a new `$___instance_config` array with the elements listed below.
 			 *
 			 *    An array MUST contain the following elements:
@@ -815,8 +822,6 @@ namespace websharks_core_v000000_dev
 			 * @note This should NOT rely directly or indirectly on any other core class objects.
 			 *    Any static properties/methods in the WebSharks™ Core stub will be fine to use though.
 			 *    In addition — once the object if fully constructed; we can use anything :-)
-			 *
-			 * @TODO Make instance config a class of it's own for better IDE support.
 			 */
 			public function __construct($___instance_config)
 			{
@@ -870,10 +875,9 @@ namespace websharks_core_v000000_dev
 						$this->___instance_config = static::$___instance_config_cache[$cache_entry];
 						return; // Using cache (nothing more to do here).
 					}
-					$this->___instance_config = (object)$___instance_config;
+					$this->___instance_config = new instance_config($___instance_config);
 				}
-				else throw new \exception(sprintf(stub::__('Invalid `$___instance_config` to constructor: `%1$s`'),
-				                                  print_r($___instance_config, TRUE))); // Definitely wrong!
+				else throw new \exception(sprintf(stub::__('Invalid `$___instance_config` to constructor: `%1$s`'), print_r($___instance_config, TRUE)));
 
 				// Mostly from core stub. These properties will NOT change from one class instance to another.
 				if(!$___parent_instance_config) // Only if we did NOT get a `$___parent_instance`.

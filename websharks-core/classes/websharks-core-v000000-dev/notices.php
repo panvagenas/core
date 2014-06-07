@@ -81,7 +81,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function enqueue_error($notice)
+		public function error_enqueue($notice)
 		{
 			$this->check_arg_types(array('string', 'array'), func_get_args());
 
@@ -124,11 +124,8 @@ namespace websharks_core_v000000_dev
 			{
 				$icon = ''; // Default. Assume we are NOT displaying an icon.
 
-				if($notice['with_prefix_icon']) // An icon?
-					$icon = '<span class="ui-icon ui-icon-'.esc_attr($notice['with_prefix_icon']).'"'.
-					        ' style="display:none;"'. // Hide until CSS forces it to display.
-					        '>'.
-					        '</span>';
+				if($notice['with_prefix_icon']) // A prefix icon?
+					$icon = '<i class="'.esc_attr($notice['with_prefix_icon']).'"></i> ';
 
 				if(stripos($notice['notice'], '<p>') === 0)
 				{
@@ -159,24 +156,24 @@ namespace websharks_core_v000000_dev
 
 				$notice['notice'] .= ' [ <a href="'.$dismiss.'">'.$this->__('dismiss this message').'</a> ]';
 			}
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
-
 			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->themes()), TRUE))
 				$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
 			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
 			$classes[] = $this->___instance_config->core_prefix_with_dashes.$current_menu_pages_theme;
 
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
+
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">'.
 
-			     '<div class="notice fade '.(($notice['error']) ? 'error' : 'updated').
-			     ' ui-widget ui-state-'.(($notice['error']) ? 'error' : 'highlight').' ui-corner-all"'.
+			     '<div class="notice fade clearfix'.
+			     ' '.(($notice['error']) ? 'error' : 'updated').
+			     ' alert alert-'.(($notice['error']) ? 'danger' : 'info').'"'.
 			     '>'. // With WordPress® styles (and also w/ UI theme styles).
 
 			     $notice['notice']. // HTML markup.
 
-			     '<div class="clear"></div>'.
 			     '</div>'.
 
 			     '</div>';
@@ -282,7 +279,8 @@ namespace websharks_core_v000000_dev
 				'in_areas'         => array(),
 				'on_time'          => 0,
 				'with_prefix'      => TRUE,
-				'with_prefix_icon' => !empty($notice['error']) ? 'alert' : 'info',
+				'with_prefix_icon' => !empty($notice['error'])
+					? 'fa fa-exclamation-triangle' : 'fa fa-comments-o',
 				'allow_dismissals' => FALSE,
 				'checksum'         => '' // Determined below.
 			);

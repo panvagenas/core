@@ -900,20 +900,20 @@ namespace websharks_core_v000000_dev
 
 			if(($errors = $this->has_call_data_errors_for($call, $group)))
 				$responses .= // Errors (as HTML markup). Also w/ a specific icon.
-					'<div class="responses errors ui-widget ui-corner-all ui-state-error">'.
-					'<ul>'.$errors->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-alert"></span>').'</ul>'.
+					'<div class="responses errors alert alert-danger">'.
+					'<ul>'.$errors->get_messages_as_list_items('', 0, '<i class="fa fa-exclamation-triangle"></i> ').'</ul>'.
 					'</div>';
 
 			if(($successes = $this->has_call_data_successes_for($call, $group)))
 				$responses .= // Successes (as HTML markup). Also w/ a specific icon.
-					'<div class="responses successes ui-widget ui-corner-all ui-state-highlight">'.
-					'<ul>'.$successes->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-check"></span>').'</ul>'.
+					'<div class="responses successes alert alert-success">'.
+					'<ul>'.$successes->get_messages_as_list_items('', 0, '<i class="fa fa-thumbs-o-up"></i> ').'</ul>'.
 					'</div>';
 
 			if(($messages = $this->has_call_data_messages_for($call, $group)))
 				$responses .= // Messages (as HTML markup). Also w/ a specific icon.
-					'<div class="responses messages ui-widget ui-corner-all ui-state-highlight">'.
-					'<ul>'.$messages->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-info"></span>').'</ul>'.
+					'<div class="responses messages alert alert-info">'.
+					'<ul>'.$messages->get_messages_as_list_items('', 0, '<i class="fa fa-comments-o"></i> ').'</ul>'.
 					'</div>';
 
 			return $responses; // All types of responses (as HTML markup).

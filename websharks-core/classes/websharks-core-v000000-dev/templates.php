@@ -68,12 +68,6 @@ namespace websharks_core_v000000_dev
 		public $content = '';
 
 		/**
-		 * @var object XML config object properties.
-		 * @by-constructor Set dynamically by class constructor.
-		 */
-		public $config; // Defaults to a NULL value.
-
-		/**
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
@@ -115,82 +109,19 @@ namespace websharks_core_v000000_dev
 			$this->©plugin->needs_front_side_styles_scripts(TRUE, $this->theme);
 
 			$this->content = $this->parse_content(); // Parses content in this template file.
-			$this->config  = $this->parse_config(); // Gets XML config values from this template file.
 		}
 
 		/**
-		 * Gets stand-alone styles.
+		 * Parses a template file (returns content).
 		 *
-		 * @param string $theme Optional. Defaults to an empty string.
-		 *    If this is passed in, a specific UI theme will be forced into play.
-		 *
-		 * @return string Stand-alone styles.
+		 * @return string The parsed template file content.
+		 *    Templates are included w/ PHP `include()`. Output is buffered by this routine.
 		 */
-		public function stand_alone_styles($theme = '')
+		protected function parse_content()
 		{
-			$this->check_arg_types('string', func_get_args());
-
-			if($theme && in_array($this->theme, array_keys($this->©styles->themes()), TRUE))
-				$this->theme = $theme; // Validate.
-			$this->©plugin->needs_stand_alone_styles(TRUE, $this->theme);
-
-			ob_start(); // Open output buffer.
-
-			$this->©styles->print_styles($this->©styles->contextual_components($this->___instance_config->core_prefix_with_dashes.$this->theme));
-			echo '<style type="text/css">html{'.$this->©options->get('templates.stand_alone.bg_style').'}</style>'."\n";
-			echo $this->©php->evaluate($this->©options->get('templates.stand_alone.styles'))."\n";
-
-			return ob_get_clean(); // Return final output buffer.
-		}
-
-		/**
-		 * Gets email styles (e.g. those specifically for email messages).
-		 *
-		 * @return string Email styles.
-		 */
-		public function email_styles()
-		{
-			$styles = '<style type="text/css">';
-			$styles .= file_get_contents($this->©file->template('client-side/styles/email.min.css'));
-			$styles .= '</style>'; // Inline email classes via `<style>` tag.
-
-			return $styles; // Return final styles.
-		}
-
-		/**
-		 * Gets stand-alone scripts.
-		 *
-		 * @param boolean $in_footer Optional. Defaults to FALSE.
-		 *    See @{link stand_alone_footer_scripts}
-		 *
-		 * @return string Stand-alone scripts.
-		 *
-		 * @see stand_alone_footer_scripts
-		 */
-		public function stand_alone_scripts($in_footer = FALSE)
-		{
-			$this->©plugin->needs_stand_alone_scripts(TRUE);
-
-			ob_start(); // Open output buffer.
-
-			if($in_footer) echo '<!-- footer-scripts -->'."\n";
-			$this->©scripts->print_scripts($this->©scripts->contextual_components());
-			echo $this->©php->evaluate($this->©options->get('templates.stand_alone.scripts'))."\n";
-			if($in_footer) echo '<!-- footer-scripts -->'."\n";
-
-			return ob_get_clean(); // Return final output buffer.
-		}
-
-		/**
-		 * Gets stand-alone scripts (for footer).
-		 *
-		 * @return string Stand-alone scripts (for footer).
-		 *
-		 * @see stand_alone_scripts
-		 */
-		public function stand_alone_footer_scripts()
-		{
-			return $this->stand_alone_scripts(TRUE);
+			ob_start();
+			require $this->©file->template($this->file);
+			return ($this->content = ob_get_clean());
 		}
 
 		/**
@@ -212,24 +143,6 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for `$this->front_side_wrapper_classes()`.
-		 *
-		 * @param string|array $others Optional. Defaults to an empty array.
-		 *    Any additional classes that should be included.
-		 *
-		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
-		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
-		 *
-		 * @return string|array CSS front-side wrapper classes.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 */
-		public function front_side_wrapper_classes_plus($others = array(), $format = self::space_sep_string)
-		{
-			return $this->front_side_wrapper_classes($others, $format);
-		}
-
-		/**
 		 * CSS front-side container classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
@@ -248,7 +161,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for `$this->front_side_container_classes()`.
+		 * CSS stand-alone body classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -256,13 +169,13 @@ namespace websharks_core_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS front-side container classes.
+		 * @return string|array CSS body wrapper classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function front_side_container_classes_plus($others = array(), $format = self::space_sep_string)
+		public function stand_alone_body_classes($others = array(), $format = self::space_sep_string)
 		{
-			return $this->front_side_container_classes($others, $format);
+			return $this->body_classes_for('stand-alone', $others, $format);
 		}
 
 		/**
@@ -284,24 +197,6 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for `$this->stand_alone_wrapper_classes()`.
-		 *
-		 * @param string|array $others Optional. Defaults to an empty array.
-		 *    Any additional classes that should be included.
-		 *
-		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
-		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
-		 *
-		 * @return string|array CSS stand-alone wrapper classes.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 */
-		public function stand_alone_wrapper_classes_plus($others = array(), $format = self::space_sep_string)
-		{
-			return $this->stand_alone_wrapper_classes($others, $format);
-		}
-
-		/**
 		 * CSS stand-alone container classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
@@ -317,24 +212,6 @@ namespace websharks_core_v000000_dev
 		public function stand_alone_container_classes($others = array(), $format = self::space_sep_string)
 		{
 			return $this->container_classes_for('stand-alone', $others, $format);
-		}
-
-		/**
-		 * An alias for `$this->stand_alone_container_classes()`.
-		 *
-		 * @param string|array $others Optional. Defaults to an empty array.
-		 *    Any additional classes that should be included.
-		 *
-		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
-		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
-		 *
-		 * @return string|array CSS stand-alone container classes.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 */
-		public function stand_alone_container_classes_plus($others = array(), $format = self::space_sep_string)
-		{
-			return $this->stand_alone_container_classes($others, $format);
 		}
 
 		/**
@@ -356,24 +233,6 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for `$this->email_wrapper_classes()`.
-		 *
-		 * @param string|array $others Optional. Defaults to an empty array.
-		 *    Any additional classes that should be included.
-		 *
-		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
-		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
-		 *
-		 * @return string|array CSS email wrapper classes.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 */
-		public function email_wrapper_classes_plus($others = array(), $format = self::space_sep_string)
-		{
-			return $this->email_wrapper_classes($others, $format);
-		}
-
-		/**
 		 * CSS email container classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
@@ -392,7 +251,9 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * An alias for `$this->email_container_classes()`.
+		 * CSS body classes.
+		 *
+		 * @param string       $for A class prefix.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -400,13 +261,31 @@ namespace websharks_core_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS email container classes.
+		 * @return string|array CSS body classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function email_container_classes_plus($others = array(), $format = self::space_sep_string)
+		public function body_classes_for($for, $others = array(), $format = self::space_sep_string)
 		{
-			return $this->email_container_classes($others, $format);
+			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
+
+			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
+			$classes[] = $this->___instance_config->core_prefix_with_dashes.$this->theme;
+
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
+
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-body';
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-body';
+			$classes[] = $for.'-body'; // This one is the same (but without the leading prefix).
+			$classes[] = $for.'-'.$this->©file->to_css_class(basename($this->file)).'-body';
+			$classes[] = $this->©file->to_css_class(basename($this->file)).'-body';
+			$classes[] = 'body';
+
+			$others  = ($others) ? (array)$others : array();
+			$classes = array_unique(array_merge($classes, $others));
+
+			return ($format === $this::array_n) ? $classes : implode(' ', $classes);
 		}
 
 		/**
@@ -428,11 +307,11 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
-
 			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
 			$classes[] = $this->___instance_config->core_prefix_with_dashes.$this->theme;
+
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-wrapper';
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-wrapper';
@@ -480,41 +359,64 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * UI widget classes.
+		 * Gets stand-alone styles.
 		 *
-		 * @param string|array $others Optional. Defaults to an empty array.
-		 *    Any additional classes that should be included.
+		 * @param string $theme Optional. Defaults to an empty string.
+		 *    If this is passed in, a specific UI theme will be forced into play.
 		 *
-		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
-		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
-		 *
-		 * @return string|array UI widget classes.
+		 * @return string Stand-alone styles.
 		 */
-		public function ui_widget_classes($others = array(), $format = self::space_sep_string)
+		public function stand_alone_styles($theme = '')
 		{
-			$this->check_arg_types(array('string', 'array'), 'string', func_get_args());
+			$this->check_arg_types('string', func_get_args());
 
-			$others  = ($others) ? (array)$others : array();
-			$classes = array('ui-widget', 'ui-widget-content', 'ui-corner-all');
-			$classes = array_unique(array_merge($classes, $others));
+			if($theme && in_array($this->theme, array_keys($this->©styles->themes()), TRUE))
+				$this->theme = $theme; // Validate.
+			$this->©plugin->needs_stand_alone_styles(TRUE, $this->theme);
 
-			return ($format === $this::array_n) ? $classes : implode(' ', $classes);
+			ob_start(); // Open output buffer.
+
+			$this->©styles->print_styles($this->©styles->contextual_components($this->___instance_config->core_prefix_with_dashes.$this->theme));
+			echo '<style type="text/css">html{'.$this->©options->get('templates.stand_alone.bg_style').'}</style>'."\n";
+			echo $this->©php->evaluate($this->©options->get('templates.stand_alone.styles'))."\n";
+
+			return ob_get_clean(); // Return final output buffer.
 		}
 
 		/**
-		 * An alias for `$this->ui_widget_classes()`.
+		 * Gets stand-alone scripts.
 		 *
-		 * @param string|array $others Optional. Defaults to an empty array.
-		 *    Any additional classes that should be included.
+		 * @param boolean $in_footer Optional. Defaults to FALSE.
+		 *    See @{link stand_alone_footer_scripts}
 		 *
-		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
-		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
+		 * @return string Stand-alone scripts.
 		 *
-		 * @return string|array UI widget classes.
+		 * @see stand_alone_footer_scripts
 		 */
-		public function ui_widget_classes_plus($others = array(), $format = self::space_sep_string)
+		public function stand_alone_scripts($in_footer = FALSE)
 		{
-			return $this->ui_widget_classes($others, $format);
+			$this->©plugin->needs_stand_alone_scripts(TRUE);
+
+			ob_start(); // Open output buffer.
+
+			if($in_footer) echo '<!-- footer-scripts -->'."\n";
+			$this->©scripts->print_scripts($this->©scripts->contextual_components());
+			echo $this->©php->evaluate($this->©options->get('templates.stand_alone.scripts'))."\n";
+			if($in_footer) echo '<!-- footer-scripts -->'."\n";
+
+			return ob_get_clean(); // Return final output buffer.
+		}
+
+		/**
+		 * Gets stand-alone scripts (for footer).
+		 *
+		 * @return string Stand-alone scripts (for footer).
+		 *
+		 * @see stand_alone_scripts
+		 */
+		public function stand_alone_footer_scripts()
+		{
+			return $this->stand_alone_scripts(TRUE);
 		}
 
 		/**
@@ -535,6 +437,20 @@ namespace websharks_core_v000000_dev
 		public function stand_alone_footer()
 		{
 			return $this->©php->evaluate($this->©options->get('templates.stand_alone.footer'));
+		}
+
+		/**
+		 * Gets email styles (e.g. those specifically for email messages).
+		 *
+		 * @return string Email styles.
+		 */
+		public function email_styles()
+		{
+			$styles = '<style type="text/css">';
+			$styles .= file_get_contents($this->©file->template('client-side/styles/email.min.css'));
+			$styles .= '</style>'; // Inline email classes via `<style>` tag.
+
+			return $styles; // Return final styles.
 		}
 
 		/**
@@ -626,20 +542,20 @@ namespace websharks_core_v000000_dev
 
 			if($this->has_errors()) // Do we have errors?
 				$responses .= // Errors (as HTML markup). Also w/ a specific icon.
-					'<div class="responses errors ui-widget ui-corner-all ui-state-error">'.
-					'<ul>'.$this->errors->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-alert"></span>').'</ul>'.
+					'<div class="responses errors alert alert-danger">'.
+					'<ul>'.$this->errors->get_messages_as_list_items('', 0, '<i class="fa fa-exclamation-triangle"></i> ').'</ul>'.
 					'</div>';
 
 			if($this->has_successes()) // Do we have successes?
 				$responses .= // Successes (as HTML markup). Also w/ a specific icon.
-					'<div class="responses successes ui-widget ui-corner-all ui-state-highlight">'.
-					'<ul>'.$this->successes->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-check"></span>').'</ul>'.
+					'<div class="responses successes alert alert-success">'.
+					'<ul>'.$this->successes->get_messages_as_list_items('', 0, '<i class="fa fa-thumbs-o-up"></i> ').'</ul>'.
 					'</div>';
 
 			if($this->has_messages()) // Do we have messages?
 				$responses .= // Messages (as HTML markup). Also w/ a specific icon.
-					'<div class="responses messages ui-widget ui-corner-all ui-state-highlight">'.
-					'<ul>'.$this->messages->get_messages_as_list_items('', 0, '<span class="ui-icon ui-icon-info"></span>').'</ul>'.
+					'<div class="responses messages alert alert-info">'.
+					'<ul>'.$this->messages->get_messages_as_list_items('', 0, '<i class="fa fa-comments-o"></i> ').'</ul>'.
 					'</div>';
 
 			return $responses; // All types of responses (as HTML markup).
@@ -689,68 +605,6 @@ namespace websharks_core_v000000_dev
 				$this->messages = $this->data->messages;
 
 			return $this->data; // Object properties.
-		}
-
-		/**
-		 * Parses a template file (returns content).
-		 *
-		 * @return string The parsed template file content.
-		 *    Templates are included w/ PHP `include()`. Output is buffered by this routine.
-		 */
-		protected function parse_content()
-		{
-			ob_start();
-			require $this->©file->template($this->file);
-			return ($this->content = ob_get_clean());
-		}
-
-		/**
-		 * Parses template configs (returns config array).
-		 *
-		 * @return object An object with all template configuration properties.
-		 *    Also removes `<template-config>` tags from `$this->content`.
-		 *
-		 * @throws exception If any `<template-config>` tag is corrupt.
-		 */
-		protected function parse_config()
-		{
-			$this->config = new \stdClass(); // Standard object class.
-
-			$regex_template_configs         = '/\<template-config[^\>]*\>.*?\<\/template-config\>/is';
-			$regex_template_config_comments = '/\<\!\-\- BEGIN\: XML Template Config[^\>]*\>.*?\<\!\-\- \/ END\: XML Template Config \-\-\>/is';
-
-			if($this->content && preg_match_all($regex_template_configs, $this->content, $_template_configs, PREG_SET_ORDER))
-			{
-				foreach($_template_configs as $_template_config) // Iterates through each `<template-config>` tag.
-				{
-					$_xml_obj = simplexml_load_string('<?xml version="1.0" encoding="UTF-8" ?>'."\n".
-					                                  $_template_config[0], NULL, LIBXML_NOCDATA | LIBXML_NOERROR | LIBXML_NOWARNING);
-
-					/** @var $_xml_obj \SimpleXMLElement We're looking for this specific type of class. */
-
-					if(!$_xml_obj || !($_xml_obj instanceof \SimpleXMLElement)) // XML is corrupt?
-						throw $this->©exception(
-							$this->method(__FUNCTION__).'#unparsable_xml_config', get_defined_vars(),
-							sprintf($this->__('Unparsable XML `<template-config>` in `%1$s`.'), $this->file).
-							' '.$this->__('Please be sure to encode XML entities (i.e. special chars).').
-							' '.sprintf($this->__('Got: `%1$s`.'), $_template_config)
-						);
-					if($this->©xml->attribute($_xml_obj, 'file') !== $this->file)
-						continue; // It's NOT for this template file.
-
-					foreach($_xml_obj->children() as $_xml_tag)
-						if($_xml_tag instanceof \SimpleXMLElement)
-							$this->config->{$_xml_tag->getName()} = trim((string)$_xml_tag);
-					unset($_xml_tag); // Housekeeping.
-				}
-				unset($_template_config, $_xml_obj); // Housekeeping.
-
-				$this->content = trim(preg_replace($regex_template_configs, '', $this->content));
-				$this->content = trim(preg_replace($regex_template_config_comments, '', $this->content));
-			}
-			unset($_template_configs); // Some final housekeeping.
-
-			return $this->config; // Object with all configuration properties.
 		}
 
 		/**

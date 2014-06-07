@@ -19,9 +19,9 @@ namespace websharks_core_v000000_dev
 
 	if(!class_exists('\\'.__NAMESPACE__.'\\exception_handler'))
 	{
-		# -----------------------------------------------------------------------------------------------------------------------------
-		# WebSharks™ Core stub class (and an internal/namespaced alias).
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
+		# WebSharks™ Core stub class; and an internal/namespaced alias.
+		# --------------------------------------------------------------------------------------------------------------------------------
 
 		if(!class_exists('\\'.__NAMESPACE__))
 		{
@@ -31,9 +31,9 @@ namespace websharks_core_v000000_dev
 		if(!class_exists('\\'.__NAMESPACE__.'\\stub'))
 			class_alias('\\'.__NAMESPACE__, __NAMESPACE__.'\\stub');
 
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
 		# WebSharks™ Core exception handler definition.
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
 		/**
 		 * Exception Handler.
 		 *
@@ -49,9 +49,9 @@ namespace websharks_core_v000000_dev
 		 */
 		final class exception_handler // Static properties/methods only please.
 		{
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 			# Protected/static properties (some are defined by the initializer).
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Initialized yet?
@@ -71,9 +71,9 @@ namespace websharks_core_v000000_dev
 			 */
 			protected static $previous_handler; // Defaults to a NULL value.
 
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 			# Public properties (so templates can use them).
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Exception being handled by this class.
@@ -93,9 +93,9 @@ namespace websharks_core_v000000_dev
 			 */
 			public static $plugin; // Defaults to a NULL value.
 
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 			# Initializer.
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Initializes properties.
@@ -111,6 +111,9 @@ namespace websharks_core_v000000_dev
 
 				if(!apply_filters(stub::$core_ns_stub.'__exception_handler__disable', FALSE))
 					static::$previous_handler = set_exception_handler('\\'.__CLASS__.'::handle');
+
+				if(!class_exists(stub::$core_ns_stub.'__exception_handler'))
+					class_alias(__CLASS__, stub::$core_ns_stub.'__exception_handler');
 
 				return (static::$initialized = TRUE);
 			}
@@ -184,9 +187,9 @@ namespace websharks_core_v000000_dev
 				}
 			}
 
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 			# Handles the output of exceptions on behalf of plugins integrated w/ the WebSharks™ Core.
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Handles a plugin exception.
@@ -199,7 +202,7 @@ namespace websharks_core_v000000_dev
 				static::$plugin->©env->ob_end_clean();
 
 				$exception = static::$exception; // For template.
-				if(static::$plugin->©env->is_browser() && did_action('init'))
+				if(static::$plugin->©env->is_browser() && did_action('init') /* For styles/scripts. */)
 					if(($template = static::$plugin->©template('exception.php', get_defined_vars())) && $template->content)
 					{
 						if(!headers_sent()) // Can exception stand-alone?
@@ -217,19 +220,19 @@ namespace websharks_core_v000000_dev
 
 				echo sprintf(static::$plugin->_x('Exception Code: %1$s'), static::$exception->getCode());
 
-				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('init') && static::$plugin->©user->is_super_admin()))
+				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('set_current_user') && static::$plugin->©user->is_super_admin()))
 					echo "\n".sprintf(static::$plugin->_x('Exception Message: %1$s'), static::$exception->getMessage());
 
-				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('init') && static::$plugin->©user->is_super_admin()))
+				if(static::$plugin->©env->is_in_wp_debug_display_mode() || (did_action('set_current_user') && static::$plugin->©user->is_super_admin()))
 					echo "\n".static::$exception->getTraceAsString();
 
 				exit(); // Clean exit now.
 			}
 		}
 
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
 		# Initialize the WebSharks™ Core exception handler.
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
 
 		exception_handler::initialize(); // Also registers the exception handler.
 	}

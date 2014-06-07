@@ -8,6 +8,9 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
+ *
+ * @TODO Update icons used by this class. Done; needs implementation.
+ * Remove the `class_prefix` property in this class.
  */
 namespace websharks_core_v000000_dev
 {
@@ -25,11 +28,11 @@ namespace websharks_core_v000000_dev
 	class form_fields extends framework
 	{
 		/**
-		 * @var string Defaults to `ui-`, for jQuery™ UI themes.
+		 * @var string Prefix for field IDs.
 		 *
 		 * @note This can be overridden on a per-field basis.
 		 */
-		public $ui_prefix = 'ui-';
+		public $id_prefix = '';
 
 		/**
 		 * @var string Prefix for field names.
@@ -39,11 +42,11 @@ namespace websharks_core_v000000_dev
 		public $name_prefix = '';
 
 		/**
-		 * @var string Prefix for field IDs.
+		 * @var string Empty by default.
 		 *
 		 * @note This can be overridden on a per-field basis.
 		 */
-		public $id_prefix = '';
+		public $class_prefix = '';
 
 		/**
 		 * @var string Common CSS classes.
@@ -122,7 +125,7 @@ namespace websharks_core_v000000_dev
 			'extra_details'       => '',
 
 			// Icon for this field, if applicable.
-			'icon'                => 'icon-arrowreturnthick-1-e',
+			'icon'                => '',
 
 			// Requirements.
 			'unique'              => FALSE,
@@ -184,14 +187,14 @@ namespace websharks_core_v000000_dev
 			// Option update marker.
 			'use_update_marker'   => FALSE,
 
-			// UI theme prefix.
-			'ui_prefix'           => 'ui-',
+			// Field ID prefix.
+			'id_prefix'           => '',
 
 			// Field name prefix.
 			'name_prefix'         => '',
 
-			// Field ID prefix.
-			'id_prefix'           => '',
+			// Class prefix.
+			'class_prefix'        => '',
 
 			// Custom/common classes.
 			'common_classes'      => '',
@@ -315,14 +318,14 @@ namespace websharks_core_v000000_dev
 		 * @var array Defaults icons, by field type.
 		 */
 		public $default_icons_by_type = array(
-			'tel'      => 'icon-contact',
-			'url'      => 'icon-link',
-			'text'     => 'icon-arrowreturnthick-1-e',
-			'email'    => 'icon-mail-closed',
-			'number'   => 'icon-calculator',
-			'search'   => 'icon-search',
-			'password' => 'icon-key',
-			'select'   => 'icon-triangle-1-s'
+			'tel'      => 'fa fa-phone',
+			'url'      => 'fa fa-link',
+			'text'     => 'fa fa-keyboard-o',
+			'email'    => 'fa fa-envelope-o',
+			'number'   => 'fa fa-keyboard-o',
+			'search'   => 'fa fa-search',
+			'password' => 'fa fa-key',
+			'select'   => 'fa fa-list-alt'
 		);
 
 		/**
@@ -384,7 +387,7 @@ namespace websharks_core_v000000_dev
 
 			if($properties) $this->set_properties($properties);
 
-			$this->defaults['ui_prefix']         = $this->ui_prefix;
+			$this->defaults['class_prefix']      = $this->class_prefix;
 			$this->defaults['name_prefix']       = $this->name_prefix;
 			$this->defaults['id_prefix']         = $this->id_prefix;
 			$this->defaults['common_classes']    = $this->common_classes;
@@ -430,9 +433,9 @@ namespace websharks_core_v000000_dev
 
 			if($field['type'] !== 'hidden')
 				$html .= '<div'.
-				         ' class="'.esc_attr($field['id_prefix'].$field['id'].' '.$field['ui_prefix'].'form-field-wrapper '.$field['ui_prefix'].'form-field-type-'.$field['type'].(($field['confirm']) ? ' '.$field['ui_prefix'].'form-field-confirm' : '').' '.$field['ui_prefix'].'form-field').
-				         (($field['block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['ui_prefix'].'form-field-type-block-rcs') : '').
-				         (($field['scrolling_block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['ui_prefix'].'form-field-type-scrolling-block-rcs') : '').
+				         ' class="'.esc_attr($field['id_prefix'].$field['id'].' '.$field['class_prefix'].'form-field-wrapper '.$field['class_prefix'].'form-field-type-'.$field['type'].(($field['confirm']) ? ' '.$field['class_prefix'].'form-field-confirm' : '').' '.$field['class_prefix'].'form-field').
+				         (($field['block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['class_prefix'].'form-field-type-block-rcs') : '').
+				         (($field['scrolling_block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['class_prefix'].'form-field-type-scrolling-block-rcs') : '').
 				         esc_attr($field['div_wrapper_classes'].$field['common_classes']).'"'.
 				         $field['common_attrs'].
 				         '>';
@@ -441,7 +444,7 @@ namespace websharks_core_v000000_dev
 			{
 				$html .= '<label'.
 				         ((in_array($field['type'], $this->multi_check_types, TRUE)) ? '' : ' for="'.esc_attr($field['id_prefix'].$field['id']).'"').
-				         ' class="'.esc_attr($field['ui_prefix'].'form-field-label'.$field['common_classes']).'"'.
+				         ' class="'.esc_attr($field['class_prefix'].'form-field-label'.$field['common_classes']).'"'.
 				         ' title="'.esc_attr($field['label']).'"'.
 				         $field['common_attrs'].
 				         '>'.
@@ -455,7 +458,7 @@ namespace websharks_core_v000000_dev
 			if($field['details'] && $field['type'] !== 'hidden')
 			{
 				$html .= '<div'.
-				         ' class="'.esc_attr($field['ui_prefix'].'form-field-details'.$field['common_classes']).'"'.
+				         ' class="'.esc_attr($field['class_prefix'].'form-field-details'.$field['common_classes']).'"'.
 				         $field['common_attrs'].
 				         '>'.
 
@@ -465,14 +468,14 @@ namespace websharks_core_v000000_dev
 			}
 			if($field['type'] !== 'hidden')
 				$html .= '<div'.
-				         ' class="'.esc_attr($field['ui_prefix'].'form-field-container '.$field['ui_prefix'].'state-default '.$field['ui_prefix'].'corner-all'.$field['common_classes']).'"'.
+				         ' class="'.esc_attr($field['class_prefix'].'form-field-container '.$field['class_prefix'].'state-default '.$field['class_prefix'].'corner-all'.$field['common_classes']).'"'.
 				         $field['common_attrs'].
 				         '>';
 
 			if(in_array($field['type'], $this->types_with_icons, TRUE) && $field['type'] !== 'hidden')
 			{
 				$html .= '<span'.
-				         ' class="'.esc_attr($field['ui_prefix'].'form-field-icon '.$field['ui_prefix'].'icon '.$field['ui_prefix'].$field['icon'].$field['common_classes']).'"'.
+				         ' class="'.esc_attr($field['class_prefix'].'form-field-icon '.$field['class_prefix'].'icon '.$field['class_prefix'].$field['icon'].$field['common_classes']).'"'.
 				         $field['common_attrs'].
 				         '>'.
 				         '</span>';
@@ -490,7 +493,7 @@ namespace websharks_core_v000000_dev
 				$html .= '<select'.
 				         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
 				         ' name="'.esc_attr($field['name_prefix'].$field['name'].(($field['multiple']) ? '[]' : '')).'"'.
-				         ' class="'.esc_attr($field['ui_prefix'].'form-field-tag '.$field['ui_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['ui_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
+				         ' class="'.esc_attr($field['class_prefix'].'form-field-tag '.$field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
 
 				         (($field['multiple']) ? ' multiple="multiple" size="'.esc_attr((string)$field['size']).'"' : '').
 
@@ -550,7 +553,7 @@ namespace websharks_core_v000000_dev
 					if(is_array($_option) && $this->©strings->are_set($_option['label'], $_option['value']))
 					{
 						$html .= '<label'.
-						         ' class="'.esc_attr($field['ui_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['ui_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
+						         ' class="'.esc_attr($field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
 						         $field['common_attrs'].
 						         '>'.
 
@@ -558,7 +561,7 @@ namespace websharks_core_v000000_dev
 						         ' type="'.esc_attr(rtrim($field['type'], 'es')).'"'.
 						         ' id="'.esc_attr($field['id_prefix'].$field['id']).'---'.esc_attr($_key).'"'.
 						         ' name="'.esc_attr($field['name_prefix'].$field['name'].(($field['type'] === 'checkboxes') ? '[]' : '')).'"'.
-						         ' class="'.esc_attr($field['ui_prefix'].'form-field-tag'.$field['common_classes']).'"'.
+						         ' class="'.esc_attr($field['class_prefix'].'form-field-tag'.$field['common_classes']).'"'.
 						         ' value="'.esc_attr($_option['value']).'"'.
 
 						         ((($field['type'] === 'radios' && is_string($value) && $value === $_option['value'])
@@ -591,7 +594,7 @@ namespace websharks_core_v000000_dev
 				         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
 				         ' name="'.esc_attr($field['name_prefix'].$field['name']).'"'.
 
-				         ' class="'.esc_attr($field['ui_prefix'].'form-field-tag '.$field['ui_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['ui_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
+				         ' class="'.esc_attr($field['class_prefix'].'form-field-tag '.$field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
 
 				         (($field['required']) ? ' data-required="'.esc_attr('true').'"' : '').
 				         (($field['maxlength']) ? ' maxlength="'.esc_attr((string)$field['maxlength']).'"' : '').
@@ -624,7 +627,7 @@ namespace websharks_core_v000000_dev
 				$html .= '<button'.
 				         ' type="'.esc_attr($field['type']).'"'.
 				         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
-				         ' class="'.esc_attr($field['ui_prefix'].'form-field-tag-button '.$field['ui_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['ui_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
+				         ' class="'.esc_attr($field['class_prefix'].'form-field-tag-button '.$field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
 
 				         ((!isset($value)) ? ' value="'.esc_attr($field['default_value']).'"' : ' value="'.esc_attr((string)$value).'"').
 
@@ -657,7 +660,7 @@ namespace websharks_core_v000000_dev
 				         ' type="'.esc_attr($field['type']).'"'.
 				         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
 				         ((in_array($field['type'], $this->button_types, TRUE)) ? '' : ' name="'.esc_attr($field['name_prefix'].$field['name'].(($field['type'] === 'file' && $field['multiple']) ? '[]' : '')).'"').
-				         (($field['type'] === 'hidden') ? '' : ' class="'.esc_attr($field['ui_prefix'].'form-field-'.((in_array($field['type'], $this->button_types, TRUE)) ? 'tag-button' : 'tag').' '.$field['ui_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['ui_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"').
+				         (($field['type'] === 'hidden') ? '' : ' class="'.esc_attr($field['class_prefix'].'form-field-'.((in_array($field['type'], $this->button_types, TRUE)) ? 'tag-button' : 'tag').' '.$field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"').
 
 				         (($field['type'] === 'file') ? '' // Exclude (NOT possible to define a value for files).
 					         : ((in_array($field['type'], $this->single_check_types, TRUE)) ? ' value="'.esc_attr($field['checked_value']).'"'
@@ -696,7 +699,7 @@ namespace websharks_core_v000000_dev
 
 					         '<label'.
 					         ' for="'.esc_attr($field['id_prefix'].$field['id']).'"'.
-					         ' class="'.esc_attr($field['ui_prefix'].'form-field-check-label').(($field['mono']) ? ' '.esc_attr($field['ui_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
+					         ' class="'.esc_attr($field['class_prefix'].'form-field-check-label').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
 					         $field['common_attrs'].
 					         '>'.
 
@@ -715,7 +718,7 @@ namespace websharks_core_v000000_dev
 			if($field['extra_details'] && $field['type'] !== 'hidden')
 			{
 				$html .= '<div'.
-				         ' class="'.esc_attr($field['ui_prefix'].'form-field-extra-details'.$field['common_classes']).'"'.
+				         ' class="'.esc_attr($field['class_prefix'].'form-field-extra-details'.$field['common_classes']).'"'.
 				         $field['common_attrs'].
 				         '>'.
 

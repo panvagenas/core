@@ -8,8 +8,6 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
- *
- * @TODO Optimize this class; make it DRYer.
  */
 namespace websharks_core_v000000_dev
 {
@@ -114,6 +112,7 @@ namespace websharks_core_v000000_dev
 			if($this->©function->is_possible('exec')
 			   && $this->©function->is_possible('shell_exec')
 			   && $this->©function->is_possible('proc_open')
+			   && !ini_get('open_basedir')
 			) $this->static[__FUNCTION__] = TRUE;
 
 			return $this->static[__FUNCTION__];

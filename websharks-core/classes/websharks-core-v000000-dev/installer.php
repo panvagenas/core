@@ -42,6 +42,7 @@ namespace websharks_core_v000000_dev
 			if($this->cache[__FUNCTION__] > 1 /* More than ONE time? */)
 				return; // Only run this routine ONE time.
 
+			wp_get_current_user(); // Make sure WP has this.
 			$reactivating = $this->©plugin->last_active_version();
 
 			if( // Run all activation routines.
@@ -57,8 +58,7 @@ namespace websharks_core_v000000_dev
 
 			) // Activation success! Everything TRUE here.
 			{
-				update_option($this->___instance_config->plugin_root_ns_stub.'__version',
-				              $this->___instance_config->plugin_version);
+				update_option($this->___instance_config->plugin_root_ns_stub.'__version', $this->___instance_config->plugin_version);
 				$this->©plugin->is_active_at_current_version($this::reconsider);
 
 				$this->©notice->enqueue( // A complete success.
@@ -70,7 +70,7 @@ namespace websharks_core_v000000_dev
 			}
 			else // The activation failed for some reason.
 			{
-				$this->©notice->enqueue_error( // Error in some way.
+				$this->©notice->error_enqueue( // Error in some way.
 					'<p>'.
 					sprintf($this->__('%1$s failed (please try again). Or, contact the developer if you need assistance.'),
 						(($reactivating) ? $this->__('Reactivation') : $this->__('Activation'))).

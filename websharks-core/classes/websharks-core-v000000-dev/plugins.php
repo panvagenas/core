@@ -45,7 +45,6 @@ namespace websharks_core_v000000_dev
 			$this->load_api_classes();
 			$this->load_api_funcs();
 			$this->load_pro_class();
-			$this->check_force_activation();
 			$this->©initializer->prepare_hooks();
 
 			// Completes loading sequence.
@@ -143,7 +142,7 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @return array All currently active plugins.
 		 */
-		public function active()
+		public function active() // Active WordPress plugins.
 		{
 			if(isset($this->static[__FUNCTION__]))
 				return $this->static[__FUNCTION__];
@@ -156,44 +155,13 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Enqueues pro update/sync notice.
-		 *
-		 * @note This does NOT perform any tests against the current framework and/or pro add-on.
-		 *    Tests should be performed BEFORE calling upon this method. See {@link load_pro_class()}.
-		 */
-		public function enqueue_update_sync_pro_notice()
-		{
-			$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
-				'<p>'.$this->__('Your pro add-on MUST be updated now.').
-				' '.sprintf($this->__('Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
-				'</p>'
-			);
-		}
-
-		/**
-		 * Checks/forces activation of the current plugin.
-		 *
-		 * @note If the current plugin is NOT active at it's currently installed version;
-		 *    we force activation and/or reactivation to occur on the WordPress® `setup_theme` hook, at priority `-10000`.
-		 *    We attach to `setup_theme`, so that activation occurs before `init`, and before theme functions are loaded up.
-		 *    Theme functions may include code which has plugin dependencies, so this is always a good idea.
-		 *
-		 * @TODO Find a way to move this to the `init` hook.
-		 */
-		public function check_force_activation()
-		{
-			if(!$this->is_active_at_current_version())
-				$this->add_action('setup_theme', '©installer.activation', -10000);
-		}
-
-		/**
-		 * Checks if the current plugin is active, at the currently installed version.
+		 * Checks if the current plugin is active at the currently installed version.
 		 *
 		 * @param string $reconsider Optional. Empty string default (e.g. do NOT reconsider).
 		 *    You MUST use class constant {@link fw_constants::reconsider} for this argument value.
 		 *    If this is {@link fw_constants::reconsider}, we force a reconsideration.
 		 *
-		 * @return boolean TRUE if the current plugin is active, at the currently installed version, else FALSE.
+		 * @return boolean TRUE if the current plugin is active at the currently installed version.
 		 */
 		public function is_active_at_current_version($reconsider = '')
 		{
@@ -225,15 +193,30 @@ namespace websharks_core_v000000_dev
 		/**
 		 * Checks to see if the current plugin has it's pro add-on loaded up.
 		 *
-		 * @return boolean TRUE if the current plugin has it's pro addon loaded up, else FALSE.
+		 * @return boolean TRUE if the current plugin has it's pro addon loaded up.
 		 */
 		public function has_pro()
 		{
 			if(isset($GLOBALS[$this->___instance_config->plugin_pro_var])
 			   && $GLOBALS[$this->___instance_config->plugin_pro_var] instanceof framework
-			) return TRUE; // Yes.
+			) return TRUE; // Yes, the current plugin is running it's pro version.
 
 			return FALSE; // Default return value.
+		}
+
+		/**
+		 * Enqueues pro update/sync notice.
+		 *
+		 * @note This does NOT perform any tests against the current framework and/or pro add-on.
+		 *    Tests should be performed BEFORE calling upon this method. See {@link load_pro_class()}.
+		 */
+		public function enqueue_update_sync_pro_notice()
+		{
+			$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
+				'<p>'.$this->__('Your pro add-on MUST be updated now to keep all software running smoothly.').
+				' '.sprintf($this->__('Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
+				'</p>'
+			);
 		}
 
 		/**

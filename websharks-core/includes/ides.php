@@ -42,10 +42,10 @@ namespace # Global namespace.
 	// Related to WebSharks™ Core deps.
 	class websharks_core__deps extends \deps_websharks_core_v000000_dev{}
 	class websharks_core__deps_x extends \deps_x_websharks_core_v000000_dev{}
-	class deps_x_stand_alone_websharks_core_v000000_dev extends \deps_x_websharks_core_v000000_dev{}
 	class websharks_core__deps_x_stand_alone extends \deps_x_stand_alone_websharks_core_v000000_dev{}
+	class deps_x_stand_alone_websharks_core_v000000_dev extends \deps_x_websharks_core_v000000_dev{}
 
-	// A complete list of all WebSharks™ Core classes.
+	// A complete list of all WebSharks™ Core class aliases.
 	class websharks_core__actions extends \websharks_core_v000000_dev\actions{}
 	class websharks_core__api extends \websharks_core_v000000_dev\api{}
 	class websharks_core__arrays extends \websharks_core_v000000_dev\arrays{}
@@ -79,10 +79,12 @@ namespace # Global namespace.
 	class websharks_core__forms extends \websharks_core_v000000_dev\forms{}
 	class websharks_core__framework extends \websharks_core_v000000_dev\framework{}
 	class websharks_core__functions extends \websharks_core_v000000_dev\functions{}
+	class websharks_core__fw_constants extends \websharks_core_v000000_dev\fw_constants{}
 	class websharks_core__gmp extends \websharks_core_v000000_dev\gmp{}
 	class websharks_core__headers extends \websharks_core_v000000_dev\headers{}
 	class websharks_core__initializer extends \websharks_core_v000000_dev\initializer{}
 	class websharks_core__installer extends \websharks_core_v000000_dev\installer{}
+	class websharks_core__instance_config extends \websharks_core_v000000_dev\instance_config{}
 	class websharks_core__integers extends \websharks_core_v000000_dev\integers{}
 	class websharks_core__ips extends \websharks_core_v000000_dev\ips{}
 	class websharks_core__mail extends \websharks_core_v000000_dev\mail{}

@@ -19,9 +19,9 @@ namespace websharks_core_v000000_dev
 
 	if(!class_exists('\\'.__NAMESPACE__.'\\autoloader'))
 	{
-		# -----------------------------------------------------------------------------------------------------------------------------
-		# WebSharks™ Core stub class (and an internal/namespaced alias).
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
+		# WebSharks™ Core stub class; and an internal/namespaced alias.
+		# --------------------------------------------------------------------------------------------------------------------------------
 
 		if(!class_exists('\\'.__NAMESPACE__))
 		{
@@ -31,9 +31,9 @@ namespace websharks_core_v000000_dev
 		if(!class_exists('\\'.__NAMESPACE__.'\\stub'))
 			class_alias('\\'.__NAMESPACE__, __NAMESPACE__.'\\stub');
 
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
 		# WebSharks™ Core autoloader definition.
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
 		/**
 		 * WebSharks™ Core Autoloader.
 		 *
@@ -45,9 +45,9 @@ namespace websharks_core_v000000_dev
 		 */
 		final class autoloader // Static properties/methods only please.
 		{
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 			# Protected/static autoloader properties (many of these are defined by the initializer).
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Initialized yet?
@@ -85,9 +85,9 @@ namespace websharks_core_v000000_dev
 			 */
 			protected static $class_dirs = array();
 
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 			# Initializer.
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Initializes the WebSharks™ Core autoloader.
@@ -101,9 +101,9 @@ namespace websharks_core_v000000_dev
 				if(static::$initialized)
 					return TRUE; // Initialized already.
 
-				$core_ns_classes_dir      = stub::n_dir_seps_up(__FILE__); // This directory.
-				static::$core_classes_dir = stub::n_dir_seps_up($core_ns_classes_dir); // Core `classes` directory.
-				$core_dir                 = stub::n_dir_seps_up(static::$core_classes_dir); // Core directory.
+				$core_ns_classes_dir      = stub::n_dir_seps_up(__FILE__);
+				static::$core_classes_dir = stub::n_dir_seps_up($core_ns_classes_dir);
+				$core_dir                 = stub::n_dir_seps_up(static::$core_classes_dir);
 
 				static::add_special_class(stub::$core_ns, $core_dir.'/stub.php');
 				static::add_special_class(stub::$core_ns_stub.'__stub', $core_dir.'/stub.php');
@@ -117,18 +117,24 @@ namespace websharks_core_v000000_dev
 				static::add_special_class(stub::$core_ns.'\\stub', $core_ns_classes_dir.'/framework.php');
 				static::add_special_class(stub::$core_ns.'\\deps', $core_ns_classes_dir.'/framework.php');
 				static::add_special_class(stub::$core_ns.'\\core', $core_ns_classes_dir.'/framework.php');
+				static::add_special_class(stub::$core_ns.'\\fw_constants', $core_ns_classes_dir.'/framework.php');
+				static::add_special_class(stub::$core_ns.'\\instance_config', $core_ns_classes_dir.'/framework.php');
+				static::add_special_class(stub::$core_ns.'\\exception_handler', $core_ns_classes_dir.'/framework.php');
 				static::add_special_class(stub::$core_ns_stub, $core_ns_classes_dir.'/framework.php');
 
 				static::add_classes_dir(static::$core_classes_dir);
 
 				spl_autoload_register('\\'.__CLASS__.'::load_ns_class');
 
+				if(!class_exists(stub::$core_ns_stub.'__autoloader'))
+					class_alias(__CLASS__, stub::$core_ns_stub.'__autoloader');
+
 				return (static::$initialized = TRUE);
 			}
 
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 			# Autoload handler.
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Autoloads classes for the WebSharks™ Core (and for plugins powered by it).
@@ -184,9 +190,9 @@ namespace websharks_core_v000000_dev
 				unset($_classes_dir); // Housekeeping.
 			}
 
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 			# Utility methods.
-			# --------------------------------------------------------------------------------------------------------------------------
+			# -----------------------------------------------------------------------------------------------------------------------------
 
 			/**
 			 * Adds a new special class to the map.
@@ -305,9 +311,9 @@ namespace websharks_core_v000000_dev
 			}
 		}
 
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
 		# Initialize the WebSharks™ Core autoloader.
-		# -----------------------------------------------------------------------------------------------------------------------------
+		# --------------------------------------------------------------------------------------------------------------------------------
 
 		autoloader::initialize(); // Also registers autoloader handler.
 	}

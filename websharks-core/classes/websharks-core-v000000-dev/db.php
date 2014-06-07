@@ -30,15 +30,13 @@ namespace websharks_core_v000000_dev
 		 * WordPress® database object instance.
 		 *
 		 * @var \wpdb WordPress® database object instance.
-		 * @by-constructor Set dynamically by class constructor.
 		 */
-		public $wpdb; // Defaults to a NULL value.
+		private $wpdb; // Set by constructor.
 
 		/**
 		 * @var boolean TRUE if modifying plugin tables.
-		 * @note See {@link is_modifying_plugin_tables()} for further details.
 		 */
-		public $is_modifying_plugin_tables = FALSE; // Default value.
+		private $is_modifying_plugin_tables = FALSE; // Default value.
 
 		/**
 		 * Constructor.
@@ -141,26 +139,25 @@ namespace websharks_core_v000000_dev
 
 			if(method_exists($this->wpdb, $method)) // Method in WordPress® database class?
 			{
-				if(!in_array($method, array('escape', '_real_escape'), TRUE) // Early exclusion.
+				if(!empty($args[0]) && is_string($args[0]) // Have an arg to inspect below?
+				   && !in_array($method, array('escape', '_real_escape'), TRUE) // Early exclusion.
 				   && !$this->©plugin->is_active_at_current_version() && !$this->is_modifying_plugin_tables()
 					// Stops plugin table queries, when plugin is NOT active at it's current version (on current blog).
 				) // NOTE: We try to catch `escape`, `_real_escape` early, to prevent unnecessary processing here.
 				{
-					if(!empty($args[0]) && is_string($args[0])) // Can inspect?
-					{
-						$lc_method                        = strtolower($method);
-						$plugin_tables_imploded_for_regex = $this->©db_tables->imploded_for_regex();
+					$lc_method                        = strtolower($method);
+					$plugin_tables_imploded_for_regex = $this->©db_tables->imploded_for_regex();
 
-						if( // In all of these cases, we're looking at a full MySQL query string.
-							(in_array($lc_method, array('query', 'get_var', 'get_row', 'get_col', 'get_results'), TRUE)
-							 && preg_match('/`(?:'.$plugin_tables_imploded_for_regex.')`/', $args[0]))
+					if( // In all of these cases, we're looking at a full MySQL query string.
+						(in_array($lc_method, array('query', 'get_var', 'get_row', 'get_col', 'get_results'), TRUE)
+						 && preg_match('/`(?:'.$plugin_tables_imploded_for_regex.')`/', $args[0]))
 
-							// In all of these cases, we're looking at a specific table name.
-							|| (in_array($lc_method, array('insert', 'replace', '_insert_replace_helper', 'update', 'delete'), TRUE)
-							    && preg_match('/^(?:'.$plugin_tables_imploded_for_regex.')$/', $args[0]))
+						// In all of these cases, we're looking at a specific table name.
+						|| (in_array($lc_method, array('insert', 'replace', '_insert_replace_helper', 'update', 'delete'), TRUE)
+						    && preg_match('/^(?:'.$plugin_tables_imploded_for_regex.')$/', $args[0]))
 
-						) return NULL; // Nullify. Stop plugin queries.
-					}
+					) return NULL; // Stop plugin queries.
+
 				} // Else call upon the WordPress® DB class.
 				return call_user_func_array(array($this->wpdb, $method), $args);
 			}

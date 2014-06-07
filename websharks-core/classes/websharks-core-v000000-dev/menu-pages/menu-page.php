@@ -401,7 +401,7 @@ namespace websharks_core_v000000_dev\menu_pages
 		{
 			if($this->updates_options)
 			{
-				echo '<form method="post" class="update-options ui-form">';
+				echo '<form method="post" class="update-options">';
 				echo $this->©action->hidden_inputs_for_call('©menu_pages.®update_options', $this::private_type);
 			}
 		}

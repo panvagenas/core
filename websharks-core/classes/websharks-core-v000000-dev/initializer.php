@@ -26,6 +26,9 @@ namespace websharks_core_v000000_dev
 	{
 		/**
 		 * Prepares initialization routines/hooks.
+		 *
+		 * @note This is called during the plugin loading phase;
+		 *    i.e. as the plugin is being loaded by the core.
 		 */
 		public function prepare_hooks()
 		{
@@ -42,10 +45,13 @@ namespace websharks_core_v000000_dev
 		public function after_setup_theme()
 		{
 			if(!$this->©plugin->is_active_at_current_version())
+				$this->©installer->activation(); // Activate.
+
+			if(!$this->©plugin->is_active_at_current_version())
 				return; // Do NOT go any further here.
 
 			$this->add_action('init', '©no_cache.init', -10000);
-			$this->add_action('init', '©db_cache.init', -10010);
+			$this->add_action('init', '©db_cache.init', -10000);
 
 			$this->add_action('wp_loaded', '©actions.wp_loaded', -10000);
 			$this->add_action('wp_loaded', '©crons.wp_loaded', 10000);

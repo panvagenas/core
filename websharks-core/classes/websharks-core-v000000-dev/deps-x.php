@@ -2232,9 +2232,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			return $this->__(
 				'WordPress® NOT loaded up.'
 			);
-		else if(!did_action('init'))
+		else if(!did_action('set_current_user'))
 			return $this->__(
-				'WordPress® `init` hook has NOT been fired yet.'.
+				'WordPress® `set_current_user` hook has NOT been fired yet.'.
 				' Unable to check user permissions.'
 			);
 		else if(!is_super_admin())
@@ -2301,9 +2301,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 			return $this->__(
 				'WordPress® NOT loaded up.'
 			);
-		else if(!did_action('init'))
+		else if(!did_action('set_current_user'))
 			return $this->__(
-				'WordPress® `init` hook has NOT been fired yet.'.
+				'WordPress® `set_current_user` hook has NOT been fired yet.'.
 				' Unable to check user permissions.'
 			);
 		else if(!is_super_admin())
@@ -2808,7 +2808,9 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		if(!$this->is_function_possible('shell_exec') || ini_get('open_basedir'))
 			return (self::$static[__FUNCTION__] = ''); // Not possible.
 
-		if(!($httpd_v = @shell_exec('/usr/bin/env httpd -v')) && !($httpd_v = @shell_exec('/usr/bin/env apachectl -v')))
+		if(!($httpd_v = @shell_exec('/usr/bin/env httpd -v'))
+		   && !($httpd_v = @shell_exec('/usr/bin/env apachectl -v'))
+		) // If both of these, let's search just a little more.
 		{
 			$_possible_httpd_locations = array(
 				'/usr/sbin/httpd', '/usr/bin/httpd',
