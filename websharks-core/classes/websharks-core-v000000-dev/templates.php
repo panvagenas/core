@@ -143,7 +143,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * CSS front-side container classes.
+		 * CSS front-side wrap classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -151,13 +151,13 @@ namespace websharks_core_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS front-side container classes.
+		 * @return string|array CSS front-side wrap classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function front_side_container_classes($others = array(), $format = self::space_sep_string)
+		public function front_side_wrap_classes($others = array(), $format = self::space_sep_string)
 		{
-			return $this->container_classes_for('front-side', $others, $format);
+			return $this->wrap_classes_for('front-side', $others, $format);
 		}
 
 		/**
@@ -197,7 +197,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * CSS stand-alone container classes.
+		 * CSS stand-alone wrap classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -205,13 +205,13 @@ namespace websharks_core_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS stand-alone container classes.
+		 * @return string|array CSS stand-alone wrap classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function stand_alone_container_classes($others = array(), $format = self::space_sep_string)
+		public function stand_alone_wrap_classes($others = array(), $format = self::space_sep_string)
 		{
-			return $this->container_classes_for('stand-alone', $others, $format);
+			return $this->wrap_classes_for('stand-alone', $others, $format);
 		}
 
 		/**
@@ -233,7 +233,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * CSS email container classes.
+		 * CSS email wrap classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -241,13 +241,13 @@ namespace websharks_core_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS email container classes.
+		 * @return string|array CSS email wrap classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function email_container_classes($others = array(), $format = self::space_sep_string)
+		public function email_wrap_classes($others = array(), $format = self::space_sep_string)
 		{
-			return $this->container_classes_for('email', $others, $format);
+			return $this->wrap_classes_for('email', $others, $format);
 		}
 
 		/**
@@ -272,15 +272,18 @@ namespace websharks_core_v000000_dev
 			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
 			$classes[] = $this->___instance_config->core_prefix_with_dashes.$this->theme;
 
+			$classes[] = trim($this->___instance_config->plugin_prefix_with_dashes, '-');
+			$classes[] = $this->___instance_config->plugin_prefix_with_dashes.$this->theme;
+
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
+			$classes[] = 'body'; // Simple body class.
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-body';
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-body';
 			$classes[] = $for.'-body'; // This one is the same (but without the leading prefix).
 			$classes[] = $for.'-'.$this->©file->to_css_class(basename($this->file)).'-body';
 			$classes[] = $this->©file->to_css_class(basename($this->file)).'-body';
-			$classes[] = 'body';
 
 			$others  = ($others) ? (array)$others : array();
 			$classes = array_unique(array_merge($classes, $others));
@@ -310,15 +313,18 @@ namespace websharks_core_v000000_dev
 			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
 			$classes[] = $this->___instance_config->core_prefix_with_dashes.$this->theme;
 
+			$classes[] = trim($this->___instance_config->plugin_prefix_with_dashes, '-');
+			$classes[] = $this->___instance_config->plugin_prefix_with_dashes.$this->theme;
+
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
+			$classes[] = 'wrapper'; // Simple wrapper class.
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-wrapper';
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-wrapper';
 			$classes[] = $for.'-wrapper'; // This one is the same (but without the leading prefix).
 			$classes[] = $for.'-'.$this->©file->to_css_class(basename($this->file)).'-wrapper';
 			$classes[] = $this->©file->to_css_class(basename($this->file)).'-wrapper';
-			$classes[] = 'wrapper';
 
 			$others  = ($others) ? (array)$others : array();
 			$classes = array_unique(array_merge($classes, $others));
@@ -327,7 +333,7 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * CSS container classes.
+		 * CSS wrap classes.
 		 *
 		 * @param string       $for A class prefix.
 		 *
@@ -337,20 +343,20 @@ namespace websharks_core_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS container classes.
+		 * @return string|array CSS wrap classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function container_classes_for($for, $others = array(), $format = self::space_sep_string)
+		public function wrap_classes_for($for, $others = array(), $format = self::space_sep_string)
 		{
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-container';
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-container';
-			$classes[] = $for.'-container'; // This one is the same (but without the leading prefix).
-			$classes[] = $for.'-'.$this->©file->to_css_class(basename($this->file)).'-container';
-			$classes[] = $this->©file->to_css_class(basename($this->file)).'-container';
-			$classes[] = 'container';
+			$classes[] = 'wrap'; // Simple wrap class.
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-wrap';
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-wrap';
+			$classes[] = $for.'-wrap'; // This one is the same (but without the leading prefix).
+			$classes[] = $for.'-'.$this->©file->to_css_class(basename($this->file)).'-wrap';
+			$classes[] = $this->©file->to_css_class(basename($this->file)).'-wrap';
 
 			$others  = ($others) ? (array)$others : array();
 			$classes = array_unique(array_merge($classes, $others));

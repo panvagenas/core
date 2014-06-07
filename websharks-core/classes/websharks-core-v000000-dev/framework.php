@@ -256,11 +256,11 @@ namespace websharks_core_v000000_dev
 		 * @property \websharks_core_v000000_dev\menu_pages\general_options               $©menu_pages__general_options
 		 * @method \websharks_core_v000000_dev\menu_pages\general_options ©menu_pages__general_options()
 		 *
-		 * @property \websharks_core_v000000_dev\menu_pages\main                          $©menu_pages__main
-		 * @method \websharks_core_v000000_dev\menu_pages\main ©menu_pages__main()
-		 *
 		 * @property \websharks_core_v000000_dev\menu_pages\menu_page                     $©menu_pages__menu_page
 		 * @method \websharks_core_v000000_dev\menu_pages\menu_page ©menu_pages__menu_page()
+		 *
+		 * @property \websharks_core_v000000_dev\menu_pages\quick_start                   $©menu_pages__quick_start
+		 * @method \websharks_core_v000000_dev\menu_pages\quick_start ©menu_pages__quick_start()
 		 *
 		 * @property \websharks_core_v000000_dev\menu_pages\update_sync                   $©menu_pages__update_sync
 		 * @method \websharks_core_v000000_dev\menu_pages\update_sync ©menu_pages__update_sync()
@@ -283,8 +283,8 @@ namespace websharks_core_v000000_dev
 		 * @property \websharks_core_v000000_dev\menu_pages\panels\pro_upgrade            $©menu_pages__panels__pro_upgrade
 		 * @method \websharks_core_v000000_dev\menu_pages\panels\pro_upgrade ©menu_pages__panels__pro_upgrade()
 		 *
-		 * @property \websharks_core_v000000_dev\menu_pages\panels\quick_start            $©menu_pages__panels__quick_start
-		 * @method \websharks_core_v000000_dev\menu_pages\panels\quick_start ©menu_pages__panels__quick_start()
+		 * @property \websharks_core_v000000_dev\menu_pages\panels\quick_start_video      $©menu_pages__panels__quick_start_video
+		 * @method \websharks_core_v000000_dev\menu_pages\panels\quick_start_video ©menu_pages__panels__quick_start_video()
 		 *
 		 * @property \websharks_core_v000000_dev\menu_pages\panels\update                 $©menu_pages__panels__update
 		 * @method \websharks_core_v000000_dev\menu_pages\panels\update ©menu_pages__panels__update()
@@ -2108,7 +2108,7 @@ namespace websharks_core_v000000_dev
 
 				$plugin              = $GLOBALS[$this->___instance_config->plugin_root_ns];
 				$idx                 = spl_object_hash($plugin).$call.$priority;
-				$plugin->hooks[$idx] = compact('hook', 'dynamic_call', 'priority', 'type');
+				$plugin->hooks[$idx] = compact('hook', 'call', 'priority', 'type');
 
 				if($type === $this::filter_type)
 					return add_filter($hook, array($plugin, $call), $priority, $args);
@@ -2177,7 +2177,7 @@ namespace websharks_core_v000000_dev
 
 				foreach($GLOBALS[$this->___instance_config->plugin_root_ns]->hooks as $_idx => $_hook)
 					if((!$hook || $_hook['hook'] === $hook) && (!isset($priority) || $_hook['priority'] === $priority) && $_hook['type'] === $type)
-						if($this->___remove_hook($_hook['hook'], $_hook['dynamic_call'], $_hook['priority'], $_hook['type']))
+						if($this->___remove_hook($_hook['hook'], $_hook['call'], $_hook['priority'], $_hook['type']))
 							$removals++; // Increment removal counter.
 				unset($_idx, $_hook); // Housekeeping.
 

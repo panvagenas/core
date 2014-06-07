@@ -468,7 +468,7 @@ namespace websharks_core_v000000_dev
 			}
 			if($field['type'] !== 'hidden')
 				$html .= '<div'.
-				         ' class="'.esc_attr($field['class_prefix'].'form-field-container '.$field['class_prefix'].'state-default '.$field['class_prefix'].'corner-all'.$field['common_classes']).'"'.
+				         ' class="'.esc_attr($field['class_prefix'].'form-field-wrap '.$field['class_prefix'].'state-default '.$field['class_prefix'].'corner-all'.$field['common_classes']).'"'.
 				         $field['common_attrs'].
 				         '>';
 
@@ -712,8 +712,8 @@ namespace websharks_core_v000000_dev
 			else throw $this->©exception($this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
 			                             sprintf($this->__('Invalid form field type: `%1$s`.'), $field['type']));
 
-			if($field['type'] !== 'hidden') // Close container?
-				$html .= '</div>'; // Closes container dive tag now.
+			if($field['type'] !== 'hidden') // Close wrap?
+				$html .= '</div>'; // Closes wrap div tag now.
 
 			if($field['extra_details'] && $field['type'] !== 'hidden')
 			{

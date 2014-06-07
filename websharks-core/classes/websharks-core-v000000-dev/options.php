@@ -108,10 +108,10 @@ namespace websharks_core_v000000_dev
 				'plugin_site.username'                       => '',
 				'plugin_site.password'                       => '',
 
-				'menu_pages.panels.email_updates.action_url' => '',
-				'menu_pages.panels.community_forum.feed_url' => '',
-				'menu_pages.panels.news_kb.feed_url'         => '',
-				'menu_pages.panels.videos.yt_playlist'       => '',
+				'menu_pages.panels.email_updates.action_url' => 'http://websharks-inc.us1.list-manage.com/subscribe/post?u=8f347da54d66b5298d13237d9&id=65240782e2',
+				'menu_pages.panels.community_forum.feed_url' => 'http://wordpress.org/support/rss',
+				'menu_pages.panels.news_kb.feed_url'         => 'http://make.wordpress.org/core/feed/',
+				'menu_pages.panels.videos.yt_playlist'       => 'PLBmUTJGsRqNKM--kwBeKJY9wOT-n7OhnC',
 			);
 			$validators = array(
 				'encryption.key'                             => array('string:!empty'),

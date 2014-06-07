@@ -44,7 +44,7 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_content_panels()
 		{
-			$this->add_content_panel($this->©menu_pages__panels__update($this));
+			$this->add_content_panel($this->©menu_pages__panels__update($this), TRUE);
 
 			parent::display_content_panels();
 		}

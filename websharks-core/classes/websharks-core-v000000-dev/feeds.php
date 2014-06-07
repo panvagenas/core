@@ -39,8 +39,10 @@ namespace websharks_core_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$url`, `$max_items`, or `$cache_expiration` are empty.
+		 *
+		 * @see http://www.sitepoint.com/parsing-xml-with-simplexml/
 		 */
-		public function items($url, $max_items = 5, $cache_expiration = 43200)
+		public function items($url, $max_items = 3, $cache_expiration = 43200)
 		{
 			$this->check_arg_types('string:!empty', 'integer:!empty', 'integer:!empty', func_get_args());
 
@@ -56,41 +58,54 @@ namespace websharks_core_v000000_dev
 			// Is this an RSS feed? If so, parse each `item`.
 			if($xml && isset($xml->channel->item) && $xml->channel->item instanceof \SimpleXMLElement)
 			{
-				foreach($xml->channel->item as $_item) // Iterates each feed `item`.
+				$xmlns = $xml->getNamespaces(TRUE); // XML namespaces.
+				foreach($xml->channel->item as $_item/** @var $_item \SimpleXMLElement */)
 					if($this->©objects->are_not_ass_empty($_item->link, $_item->title, $_item->pubDate))
 					{
+						if(isset($xmlns['dc']))
+							$_item_dc = $_item->children($xmlns['dc']);
+						else $_item_dc = NULL;
+
 						$feed_items[] = array(
-							'link'    => (string)$_item->link,
-							'title'   => (string)$_item->title,
-							'time'    => strtotime((string)$_item->pubDate),
-							'content' => (($this->©object->is_not_ass_empty($_item->description)) ? (string)$_item->description : ''),
-							'excerpt' => (($this->©object->is_not_ass_empty($_item->description)) ? strip_tags((string)$_item->description) : '')
+							'link'     => (string)$_item->link,
+							'title'    => (string)$_item->title,
+							'time'     => strtotime((string)$_item->pubDate),
+							'category' => (($this->©object->is_not_ass_empty($_item->category)) ? (string)$_item->category : ''),
+							'content'  => (($this->©object->is_not_ass_empty($_item->description)) ? (string)$_item->description : ''),
+							'excerpt'  => (($this->©object->is_not_ass_empty($_item->description)) ? strip_tags((string)$_item->description) : ''),
+							'author'   => (($_item_dc && $this->©object->is_not_ass_empty($_item_dc->creator)) ? (string)$_item_dc->creator : '')
 						);
 					}
-				unset($_item); // A little housekeeping.
+				unset($_item, $_item_dc); // A little housekeeping.
 
 				$this->©db_utils->set_transient($transient, $feed_items, abs($cache_expiration)); // Cache feed items.
 			}
-
 			// Is this an ATOM feed? If so, parse each `entry`.
 			else if($xml && isset($xml->entry) && $xml->entry instanceof \SimpleXMLElement)
 			{
-				foreach($xml->entry as $_entry) // Iterates each feed `entry`.
+				$xmlns = $xml->getNamespaces(TRUE); // XML namespaces.
+				foreach($xml->entry as $_entry/** @var $_entry \SimpleXMLElement */)
 					if($this->©objects->are_not_ass_empty($_entry->link, $_entry->title, $_entry->updated)
 					   && ($_entry_link = $this->atom_link($_entry->link, 'alternate'))
 					) // Entry links are parsed via `$this->atom_link()`.
 					{
+						if(isset($xmlns['dc']))
+							$_entry_dc = $_entry->children($xmlns['dc']);
+						else $_entry_dc = NULL;
+
 						$feed_items[] = array(
-							'link'    => (string)$_entry_link,
-							'title'   => (string)$_entry->title,
-							'time'    => strtotime((string)$_entry->updated),
-							'content' => (($this->©object->is_not_ass_empty($_entry->content)) ? (string)$_entry->content
+							'link'     => (string)$_entry_link,
+							'title'    => (string)$_entry->title,
+							'time'     => strtotime((string)$_entry->updated),
+							'category' => (($this->©object->is_not_ass_empty($_entry->category)) ? (string)$_entry->category : ''),
+							'content'  => (($this->©object->is_not_ass_empty($_entry->content)) ? (string)$_entry->content
 								: (($this->©object->is_not_ass_empty($_entry->summary)) ? (string)$_entry->summary : '')),
-							'excerpt' => (($this->©object->is_not_ass_empty($_entry->summary)) ? strip_tags((string)$_entry->summary)
-								: (($this->©object->is_not_ass_empty($_entry->content)) ? strip_tags((string)$_entry->content) : ''))
+							'excerpt'  => (($this->©object->is_not_ass_empty($_entry->summary)) ? strip_tags((string)$_entry->summary)
+								: (($this->©object->is_not_ass_empty($_entry->content)) ? strip_tags((string)$_entry->content) : '')),
+							'author'   => (($_entry_dc && $this->©object->is_not_ass_empty($_entry_dc->creator)) ? (string)$_entry_dc->creator : '')
 						);
 					}
-				unset($_entry, $_entry_link); // A little housekeeping.
+				unset($_entry, $_entry_dc, $_entry_link); // A little housekeeping.
 
 				$this->©db_utils->set_transient($transient, $feed_items, abs($cache_expiration)); // Cache feed items.
 			}

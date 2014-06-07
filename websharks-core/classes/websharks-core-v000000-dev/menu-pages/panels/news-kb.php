@@ -42,43 +42,44 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 
 			$this->content_body = // Latest news feed (powered by FeedBurner).
 
-				'<div>'.
-				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/kb-article-64x64.png')).'" style="width:64px; height:64px; float:right; margin:0 0 0 10px;" alt="" />'.
-				$this->__('<p style="margin-top:0;">The most recent news &amp; knowledge base articles.</p>').
-				'</div>';
+				'<p>'. // Brief description.
+				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/kb-article-64x64.png')).'" class="pull-right l-margin" style="width:64px; height:64px;" alt="" />'.
+				sprintf($this->__('The most recent news &amp; knowledge base articles from %1$s'), esc_html($this->___instance_config->plugin_name)).
+				'</p>';
 
 			$this->content_body .= '<hr />';
-			$this->content_body .= '<div class="feed">';
+
 			if(($feed_url = $this->©options->get('menu_pages.panels.news_kb.feed_url')))
 				foreach($this->©feed->items($feed_url) as $_item)
 					$this->content_body .= // Feed items.
-						'<div class="feed-item">'.
+						'<div class="em-b-margin clearfix">'.
 
-						'<div class="feed-item-title">'.
-						'<a href="'.esc_attr($_item['link']).'" title="'.esc_attr($_item['title']).'" target="_blank" rel="xlink">'.
-						$this->©string->excerpt($_item['title'], 35).
+						'<p class="text-ellipsis no-b-margin">'.
+						'<a href="'.esc_attr($_item['link']).'" title="'.esc_attr($_item['title']).'" target="_blank">'.
+						'<i class="fa fa-external-link"></i> '.$this->©string->excerpt($_item['title'], 35).
 						'</a>'.
-						'</div>'.
+						'</p>'.
 
-						'<div class="feed-item-excerpt">'.
+						'<p class="font-80 no-b-margin">'.
 						$this->©string->excerpt($_item['excerpt'], 185).
-						'</div>'.
+						'</p>'.
 
-						'<div class="feed-item-date">'.
-						$this->©date->i18n('M jS, Y', $_item['time']).
-						'</div>'.
+						'<p class="font-80 pull-left">'.
+						'<i class="fa fa-user"></i> <em>'.esc_html($_item['author']).'</em>'.
+						'</p>'.
+
+						'<p class="font-80 pull-right">'.
+						'<em>'.esc_html($this->©date->i18n('M jS, Y', $_item['time'])).'</em> <i class="fa fa-calendar"></i>'.
+						'</p>'.
 
 						'</div>';
 			unset($_item); // Housekeeping.
-			$this->content_body .= '</div>';
 
 			$this->content_body .= // Additional links.
-				'<hr />'.
-
-				'<div style="text-align:center;">'.
-				sprintf($this->__('<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">%2$s Knowledge Base</a></p>'),
+				'<p class="text-center no-b-margin">'.
+				sprintf($this->__('<a class="btn btn-default width-100" href="%1$s" target="_blank">%2$s Knowledge Base <i class="fa fa-external-link"></i></a>'),
 				        esc_attr($this->©url->to_plugin_site_uri('/kb-articles/')), esc_html($this->___instance_config->plugin_name)).
-				'</div>';
+				'</p>';
 		}
 	}
 }

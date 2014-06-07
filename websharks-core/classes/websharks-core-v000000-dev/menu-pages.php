@@ -72,7 +72,7 @@ namespace websharks_core_v000000_dev
 					'doc_title'    => $doc_title,
 					'menu_title'   => $this->___instance_config->plugin_name,
 					'cap_required' => $this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_page__'.$main_menu_slug),
-					'displayer'    => array($this, '©menu_pages__main.display'),
+					'displayer'    => array($this, '©menu_pages__quick_start.display'),
 					'icon'         => $this->©url->to_template_dir_file('/client-side/images/favicon-16x16.png')
 				),
 
@@ -80,7 +80,7 @@ namespace websharks_core_v000000_dev
 					'doc_title'    => $doc_title,
 					'menu_title'   => $this->__('Quick-Start Guide'),
 					'cap_required' => $this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_page__'.$main_menu_slug),
-					'displayer'    => array($this, '©menu_pages__main.display'),
+					'displayer'    => array($this, '©menu_pages__quick_start.display'),
 					'is_under'     => $main_menu_slug
 				),
 

@@ -36,7 +36,8 @@ namespace websharks_core_v000000_dev\menu_pages
 			parent::__construct($___instance_config);
 
 			$this->heading_title           = $this->__('General Options');
-			$this->sub_heading_description = $this->__('General configuration options.');
+			$this->sub_heading_description = sprintf($this->__('%1$s general configuration options.'),
+			                                         esc_html($this->___instance_config->plugin_name));
 		}
 
 		/**

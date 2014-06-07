@@ -159,9 +159,8 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function add_panel($panel, $sidebar = FALSE, $active = FALSE)
 		{
-			$this->check_arg_types($this->___instance_config->core_ns_prefix.'\\menu_pages\\panels\\panel',
-			                       'boolean', 'boolean', func_get_args());
-			// Validation.
+			$this->check_arg_types($this->___instance_config->core_ns_prefix.'\\menu_pages\\panels\\panel', 'boolean', 'boolean', func_get_args());
+
 			if(empty($panel->slug))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#slug_missing', get_defined_vars(),
@@ -172,74 +171,111 @@ namespace websharks_core_v000000_dev\menu_pages
 					$this->method(__FUNCTION__).'#heading_title_missing', get_defined_vars(),
 					$this->__('Panel has no `heading_title`. Check panel configuration.')
 				);
-			// Exclusion?
 			if($this->apply_filters('exclude_panel_by_slug', FALSE, $panel->slug))
 				return; // Filters can exclude panels.
 
 			if($sidebar) // This panel is for the sidebar?
 			{
-				$panel_index = ($this->sidebar_panels) ? count($this->sidebar_panels) - 1 : 0;
+				$panel_index = ($this->sidebar_panels)
+					? count($this->sidebar_panels) - 1 : 0;
 
-				$states                  = $this->get_sidebar_panel_states();
-				$active_by_default_class = ( // Should this panel be active by default?
+				$states    = $this->get_sidebar_panel_states();
+				$is_active = ( // Should this panel be active by default?
 					($active && !in_array($panel->slug, $states['inactive'], TRUE))
-					|| in_array($panel->slug, $states['active'], TRUE)
-				) ? ' active-by-default' : '';
+					|| in_array($panel->slug, $states['active'], TRUE)) ? TRUE : FALSE;
 			}
 			else // Otherwise, this is a content panel (default functionality).
 			{
-				$panel_index = ($this->content_panels) ? count($this->content_panels) - 1 : 0;
+				$panel_index = ($this->content_panels)
+					? count($this->content_panels) - 1 : 0;
 
-				$states                  = $this->get_content_panel_states();
-				$active_by_default_class = ( // Should this panel be active by default?
+				$states    = $this->get_content_panel_states();
+				$is_active = ( // Should this panel be active by default?
 					($active && !in_array($panel->slug, $states['inactive'], TRUE))
-					|| in_array($panel->slug, $states['active'], TRUE)
-				) ? ' active-by-default' : '';
+					|| in_array($panel->slug, $states['active'], TRUE)) ? TRUE : FALSE;
 			}
-			// Common classes/attributes.
-			$common_classes = array('panel', 'panel--'.esc_attr($this->©string->with_dashes($panel->slug)).esc_attr($active_by_default_class));
-			$common_attrs   = 'data-panel-slug="'.esc_attr($panel->slug).'" data-panel-index="'.esc_attr($panel_index).'"';
+			$class_id = 'panel--'.$this->©string->with_dashes($panel->slug);
 
-			// Wrapper and container divs.
-			$markup = '<div class="'.esc_attr(implode(' ', $common_classes)).' wrapper" '.$common_attrs.'>';
-			$markup .= '<div class="'.esc_attr(implode(' ', $common_classes)).' container" '.$common_attrs.'>';
+			$markup = '<div class="panel panel-default '.esc_attr($class_id).'"'.
+			          ' data-panel-slug="'.esc_attr($panel->slug).'" data-panel-index="'.esc_attr($panel_index).'"'.
+			          '>';
 
-			// Header for this panel.
-			$markup .= '<h3 class="'.esc_attr(implode(' ', $common_classes)).' heading-title" '.$common_attrs.'>'.
-			           '<a class="'.esc_attr(implode(' ', $common_classes)).' heading-title-a" '.$common_attrs.' href="#'.esc_attr($panel->slug).'" name="'.esc_attr($panel->slug).'">'.
-			           $panel->heading_title.
+			$markup .= '<div class="panel-heading">';
+			$markup .= '<h4 class="panel-title">'.
+			           '<a class="block-display no-text-decor cursor-pointer" name="'.esc_attr($panel->slug).'"'.
+			           ' data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'collapse').'"'.
+			           ' href="#'.esc_attr($class_id).'">'.$panel->heading_title.
+			           (($is_active) ? ' <i class="fa fa-caret-up pull-right"></i>'
+				           : ' <i class="fa fa-caret-down pull-right"></i>').
 			           '</a>'.
-			           '</h3>';
+			           '</h4>';
+			$markup .= '</div>';
 
-			// Content for this panel.
-			$markup .= '<div class="'.esc_attr(implode(' ', $common_classes)).' content" '.$common_attrs.'>';
+			$markup .= '<div id="'.esc_attr($class_id).'"'.
+			           ' class="panel-collapse collapse'.(($is_active) ? ' in' : '').'">';
+			$markup .= '<div class="panel-body clearfix">';
 
-			// Additional docs (optional).
 			if($panel->documentation)
-				$markup .= '<div class="'.esc_attr(implode(' ', $common_classes)).' docs" '.$common_attrs.'>'.
+			{
+				$markup .= '<button class="btn btn-default btn-sm pull-right l-margin"'.
+				           ' data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'modal').'"'.
+				           ' data-target="#'.esc_attr($class_id.'--documentation-modal-window').'">'.
+				           $this->__('Documentation').
+				           '</button>';
+
+				$markup .= '<div id="'.esc_attr($class_id.'--documentation-modal-window').'" class="modal fade">';
+				$markup .= '<div class="modal-dialog">';
+				$markup .= '<div class="modal-content">';
+
+				$markup .= '<div class="modal-header">';
+				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'modal').'">&times;</button>';
+				$markup .= '<h4 class="modal-title">'.$this->__('Documentation').'</h4>';
+				$markup .= '</div>';
+
+				$markup .= '<div class="modal-body">'.
 				           $panel->documentation.
-				           '<div class="clear"></div>'.
 				           '</div>';
 
-			// YouTube® video playlist (optional).
-			if($panel->yt_playlist)
-				$markup .= '<div class="'.esc_attr(implode(' ', $common_classes)).' video" '.$common_attrs.'>'.
-				           $this->©video->yt_playlist_iframe_tag(
-					           $panel->yt_playlist,
-					           (($sidebar) ? array('height' => '152px') : array()),
-					           array_merge($common_classes, array('video')),
-					           $common_attrs
-				           ).
-				           '<div class="clear"></div>'.
+				$markup .= '</div>';
+				$markup .= '</div>';
+				$markup .= '</div>';
+			}
+			if($panel->yt_playlist && $sidebar)
+			{
+				$markup .= '<div class="center-block">'.
+				           $this->©video->yt_playlist_iframe_tag($panel->yt_playlist, array('height' => '200px')).
+				           '</div>';
+			}
+			else if($panel->yt_playlist)
+			{
+				$markup .= '<button class="btn btn-default btn-sm pull-right l-margin"'.
+				           ' data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'modal').'"'.
+				           ' data-target="#'.esc_attr($class_id.'--yt-playlist-modal-window').'">'.
+				           $this->__('Video Tutorial').
+				           '</button>';
+
+				$markup .= '<div id="'.esc_attr($class_id.'--yt-playlist-modal-window').'" class="modal fade">';
+				$markup .= '<div class="modal-dialog">';
+				$markup .= '<div class="modal-content">';
+
+				$markup .= '<div class="modal-header">';
+				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'modal').'" aria-hidden="true">&times;</button>';
+				$markup .= '<h4 class="modal-title">'.$this->__('Video Tutorial').'</h4>';
+				$markup .= '</div>';
+
+				$markup .= '<div class="modal-body center-block">'.
+				           $this->©video->yt_playlist_iframe_tag($panel->yt_playlist).
 				           '</div>';
 
-			// Panel content body.
+				$markup .= '</div>';
+				$markup .= '</div>';
+				$markup .= '</div>';
+			}
 			$markup .= $panel->content_body;
 
-			// Panel footer.
-			$markup .= '<div class="clear"></div>';
 			$markup .= '</div>';
 			$markup .= '</div>';
+
 			$markup .= '</div>';
 
 			if($sidebar) // Add markup.
@@ -304,32 +340,50 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_header()
 		{
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
-
 			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->themes()), TRUE))
 				$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
 			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
 			$classes[] = $this->___instance_config->core_prefix_with_dashes.$current_menu_pages_theme;
 
+			$classes[] = trim($this->___instance_config->plugin_prefix_with_dashes, '-');
+			$classes[] = $this->___instance_config->plugin_prefix_with_dashes.$current_menu_pages_theme;
+
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
+
+			$classes[] = 'menu-page'; // Simple `menu-page` class.
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page';
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page';
-
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page--'.$this->©string->with_dashes($this->slug);
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page--'.$this->©string->with_dashes($this->slug);
 
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">';
-			echo '<div class="menu-page wrapper">';
-			echo '<div class="menu-page container">';
+			echo '<div class="wrapper">';
+			echo '<div class="wrap">';
 
-			echo '<div class="menu-page controls">';
-			$this->display_header_controls();
-			echo '<div class="clear"></div>';
+			echo '<div class="container-fluid">';
+
+			echo '<div class="row b-margin">';
+			echo '<div class="col-md-12">';
+
+			echo '<div class="row">';
+
+			echo '<div class="col-md-8">';
+			echo '<h2 class="no-margin no-padding"><img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/favicon-24x24.png')).'" alt="" /> '.$this->heading_title.'</h2>';
+			echo '<div>'.$this->sub_heading_description.'</div>';
 			echo '</div>';
 
-			echo '<h1 class="menu-page heading-title"><img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/favicon-24x24.png')).'" alt="" /> '.$this->heading_title.'</h1>';
-			echo '<div class="menu-page sub-heading-description">'.$this->sub_heading_description.'</div>';
+			echo '<div class="col-md-4 hidden-sm hidden-xs">';
+			$this->display_header_controls();
+			echo '</div>';
+
+			echo '</div>';
+
+			echo '</div>';
+			echo '</div>';
+
+			echo '<div class="row">';
 		}
 
 		/**
@@ -339,27 +393,31 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_header_controls()
 		{
-			echo '<button class="controls toggle-all-content-panels">'.
-			     $this->__('Toggle All Control Panels').
+			echo '<button class="toggle-all-content-panels btn btn-default pull-right l-margin">'.
+			     '<i class="fa fa-caret-up"></i> '.$this->__('Toggle All Panels').' <i class="fa fa-caret-down"></i>'.
 			     '</button>';
 
-			echo '<button class="controls choose-theme">'.
-			     $this->__('Choose Admin Theme').
-			     '</button>';
-
-			echo '<form method="post" class="controls update-theme">';
+			echo '<form method="post" class="update-theme pull-right">';
 			echo $this->©action->hidden_inputs_for_call('©menu_pages.®update_theme', $this::private_type);
-			echo '<input type="hidden" name="'.esc_attr($this->©action->input_name_for_call_arg(1)).'" class="theme" />';
+			echo '<input type="hidden" class="selected-theme" name="'.esc_attr($this->©action->input_name_for_call_arg(1)).'" />';
 
+			echo '<div class="btn-group">';
+
+			echo '<button class="btn btn-default dropdown-toggle" data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'dropdown').'">'.
+			     '<i class="fa fa-cubes"></i> '.$this->__('Admin Themes').' <span class="caret"></span>'.
+			     '</button>';
+
+			echo '<ul class="dropdown-menu" role="menu">';
 			$current_theme = $this->©options->get('menu_pages.theme');
-
-			echo '<ul class="controls theme-options">';
 			foreach($this->©styles->themes() as $_theme => $_theme_file)
-				echo '<li'.(($_theme === $current_theme) ? ' class="current"' : '').' data-theme="'.esc_attr($_theme).'">'.
-				     esc_html(ucwords(str_replace('-', ' ', $_theme))).
+				echo '<li data-theme="'.esc_attr($_theme).'"'.selected($_theme, $current_theme, FALSE).'>'.
+				     '<a href="#">'.(($_theme === $current_theme) ? '<i class="fa fa-check-square-o"></i> ' : '').
+				     esc_html(ucwords(str_replace('-', ' ', $_theme))).'</a>'.
 				     '</li>';
 			unset($_theme, $_theme_file);
 			echo '</ul>';
+
+			echo '</div>';
 
 			echo '</form>';
 		}
@@ -371,7 +429,10 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_footer()
 		{
-			echo '<div class="clear"></div>';
+			echo '</div>';
+
+			echo '</div>';
+
 			echo '</div>';
 			echo '</div>';
 			echo '</div>';
@@ -384,12 +445,9 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_content_header()
 		{
-			echo '<div class="content wrapper">';
-			echo '<div class="content container">';
-
+			echo '<div class="col-md-8">';
 			$this->display_before_content_panels();
-
-			echo '<div class="content panels">';
+			echo '<div class="content-panels">';
 		}
 
 		/**
@@ -562,12 +620,8 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_content_footer()
 		{
-			echo '<div class="clear"></div>';
 			echo '</div>';
-
 			$this->display_after_content_panels();
-
-			echo '</div>';
 			echo '</div>';
 		}
 
@@ -578,12 +632,9 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_sidebar_header()
 		{
-			echo '<div class="sidebar wrapper">';
-			echo '<div class="sidebar container">';
-
+			echo '<div class="col-md-4 hidden-sm hidden-xs">';
 			$this->display_before_sidebar_panels();
-
-			echo '<div class="sidebar panels">';
+			echo '<div class="sidebar-panels">';
 		}
 
 		/**
@@ -773,12 +824,8 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_sidebar_footer()
 		{
-			echo '<div class="clear"></div>';
 			echo '</div>';
-
 			$this->display_after_sidebar_panels();
-
-			echo '</div>';
 			echo '</div>';
 		}
 	}

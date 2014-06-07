@@ -34,10 +34,10 @@ $exception = $this->data->exception;
 <body class="<?php echo esc_attr($this->stand_alone_body_classes()); ?>">
 
 <div class="<?php echo esc_attr($this->stand_alone_wrapper_classes()); ?>">
-	<div class="<?php echo esc_attr($this->stand_alone_container_classes()); ?>">
+	<div class="<?php echo esc_attr($this->stand_alone_wrap_classes()); ?>">
 
 		<div class="header wrapper">
-			<div class="header container">
+			<div class="header wrap">
 
 				<?php echo $this->stand_alone_header(); ?>
 
@@ -45,7 +45,7 @@ $exception = $this->data->exception;
 		</div>
 
 		<div class="content wrapper">
-			<div class="content container">
+			<div class="content wrap">
 
 				<!-- BEGIN: Content Body -->
 
@@ -53,10 +53,10 @@ $exception = $this->data->exception;
 
 				<h1><?php echo $this->_x('Uncaught Exception'); ?></h1>
 
-				<h3 class="marginize-top-x2">
+				<h3>
 					<?php echo $this->_x('Request failed w/ exception code:') ?>
 				</h3>
-				<p style="margin:0;">
+				<p class="no-margin">
 					<code style="background:#FDFB76;"><?php echo esc_html($exception->getCode()); ?></code>
 				</p>
 
@@ -66,7 +66,7 @@ $exception = $this->data->exception;
 						<?php echo sprintf($this->__('Exception occurred at line # <code>%1$s</code> in: <code>%2$s</code>.'), esc_html($exception->getLine()), esc_html($exception->getFile())); ?>
 					</p>
 
-					<hr class="marginize-x2" />
+					<hr />
 
 					<h3>
 						<?php echo $this->__('Exception Message (Please Read)'); ?>
@@ -74,7 +74,7 @@ $exception = $this->data->exception;
 					<small><?php echo $this->__('The following is displayed in <a href="http://codex.wordpress.org/Editing_wp-config.php#Debug">WP_DEBUG_DISPLAY</a> mode; and for all super administrators of the site.'); ?></small>
 					<pre><?php echo esc_html($exception->getMessage()); ?></pre>
 
-					<hr class="marginize-x2" />
+					<hr />
 
 					<h3>
 						<?php echo $this->__('Stack Trace (For Debugging Purposes)'); ?>
@@ -83,7 +83,7 @@ $exception = $this->data->exception;
 					<pre><?php echo esc_html($exception->getTraceAsString()); ?></pre>
 
 					<?php if(isset($exception->data)): ?>
-						<hr class="marginize-x2" />
+						<hr />
 						<h3>
 							<?php echo $this->__('Additional Data (For Debugging Purposes)'); ?>
 						</h3>
@@ -93,7 +93,7 @@ $exception = $this->data->exception;
 
 				<?php endif; ?>
 
-				<hr class="marginize-x2" />
+				<hr />
 
 				<p class="float-half-left marginize">
 					<?php echo sprintf($this->_x('If problems persist, please <a href="%1$s">contact support</a> for assistance.'), $this->©options->get('support.url')) ?>
@@ -103,15 +103,13 @@ $exception = $this->data->exception;
 					<a href="<?php echo esc_attr($this->©url->to_wp_home_uri()); ?>"><?php echo esc_html(get_bloginfo('name')); ?></a> »
 				</p>
 
-				<div class="clear"></div>
-
 				<!-- / END: Content Body -->
 
 			</div>
 		</div>
 
 		<div class="footer wrapper">
-			<div class="footer container">
+			<div class="footer wrap">
 
 				<?php echo $this->stand_alone_footer(); ?>
 

@@ -22,7 +22,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 	 *
 	 * @assert ($GLOBALS[__NAMESPACE__])
 	 */
-	class quick_start extends panel
+	class quick_start_video extends panel
 	{
 		/**
 		 * Constructor.
@@ -38,11 +38,11 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 		{
 			parent::__construct($___instance_config, $menu_page);
 
-			$this->heading_title = $this->__('Documentation &amp; Quick Start Guide');
+			$this->heading_title = $this->__('Quick Start Video');
 
-			$this->content_body = // Coming soon.
+			$yt_playlist = $this->©options->get('menu_pages.panels.videos.yt_playlist');
 
-				'';
+			if($yt_playlist) $this->content_body = $this->©video->yt_playlist_iframe_tag($yt_playlist);
 		}
 	}
 }

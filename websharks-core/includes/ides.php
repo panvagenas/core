@@ -39,12 +39,6 @@ namespace # Global namespace.
 	function websharks_core($version = ''){} // A dummy function.
 	class websharks_core extends \websharks_core_v000000_dev\api{}
 
-	// Related to WebSharks™ Core deps.
-	class websharks_core__deps extends \deps_websharks_core_v000000_dev{}
-	class websharks_core__deps_x extends \deps_x_websharks_core_v000000_dev{}
-	class websharks_core__deps_x_stand_alone extends \deps_x_stand_alone_websharks_core_v000000_dev{}
-	class deps_x_stand_alone_websharks_core_v000000_dev extends \deps_x_websharks_core_v000000_dev{}
-
 	// A complete list of all WebSharks™ Core class aliases.
 	class websharks_core__actions extends \websharks_core_v000000_dev\actions{}
 	class websharks_core__api extends \websharks_core_v000000_dev\api{}
@@ -64,6 +58,10 @@ namespace # Global namespace.
 	class websharks_core__db_cache extends \websharks_core_v000000_dev\db_cache{}
 	class websharks_core__db_tables extends \websharks_core_v000000_dev\db_tables{}
 	class websharks_core__db_utils extends \websharks_core_v000000_dev\db_utils{}
+	class websharks_core__deps extends \deps_websharks_core_v000000_dev{}
+	class websharks_core__deps_x extends \deps_x_websharks_core_v000000_dev{}
+	class websharks_core__deps_x_stand_alone extends \deps_x_stand_alone_websharks_core_v000000_dev{}
+	class deps_x_stand_alone_websharks_core_v000000_dev extends \deps_x_websharks_core_v000000_dev{}
 	class websharks_core__diagnostics extends \websharks_core_v000000_dev\diagnostics{}
 	class websharks_core__dirs extends \websharks_core_v000000_dev\dirs{}
 	class websharks_core__dirs_files extends \websharks_core_v000000_dev\dirs_files{}
@@ -96,8 +94,8 @@ namespace # Global namespace.
 	class websharks_core__objects extends \websharks_core_v000000_dev\objects{}
 	class websharks_core__objects_os extends \websharks_core_v000000_dev\objects_os{}
 	class websharks_core__options extends \websharks_core_v000000_dev\options{}
-	class websharks_core__php extends \websharks_core_v000000_dev\php{}
 	class websharks_core__packages extends \websharks_core_v000000_dev\packages{}
+	class websharks_core__php extends \websharks_core_v000000_dev\php{}
 	class websharks_core__plugins extends \websharks_core_v000000_dev\plugins{}
 	class websharks_core__posts extends \websharks_core_v000000_dev\posts{}
 	class websharks_core__replicator extends \websharks_core_v000000_dev\replicator{}
@@ -113,9 +111,27 @@ namespace # Global namespace.
 	class websharks_core__videos extends \websharks_core_v000000_dev\videos{}
 	class websharks_core__xml extends \websharks_core_v000000_dev\xml{}
 
+	// Menu page classes.
+	class websharks_core__menu_pages__general_options extends \websharks_core_v000000_dev\menu_pages\general_options{}
 	class websharks_core__menu_pages__menu_page extends \websharks_core_v000000_dev\menu_pages\menu_page{}
+	class websharks_core__menu_pages__quick_start extends \websharks_core_v000000_dev\menu_pages\quick_start{}
+	class websharks_core__menu_pages__update_sync extends \websharks_core_v000000_dev\menu_pages\update_sync{}
+
+	// Menu page panel classes.
+	class websharks_core__menu_pages__panels__community_forum extends \websharks_core_v000000_dev\menu_pages\panels\community_forum{}
+	class websharks_core__menu_pages__panels__donations extends \websharks_core_v000000_dev\menu_pages\panels\donations{}
+	class websharks_core__menu_pages__panels__email_updates extends \websharks_core_v000000_dev\menu_pages\panels\email_updates{}
+	class websharks_core__menu_pages__panels__news_kb extends \websharks_core_v000000_dev\menu_pages\panels\news_kb{}
 	class websharks_core__menu_pages__panels__panel extends \websharks_core_v000000_dev\menu_pages\panels\panel{}
-	class websharks_core__packages__package extends \websharks_core_v000000_dev\packages\package{}
+	class websharks_core__menu_pages__panels__pro_upgrade extends \websharks_core_v000000_dev\menu_pages\panels\pro_upgrade{}
+	class websharks_core__menu_pages__panels__quick_start_video extends \websharks_core_v000000_dev\menu_pages\panels\quick_start_video{}
+	class websharks_core__menu_pages__panels__update extends \websharks_core_v000000_dev\menu_pages\panels\update{}
+	class websharks_core__menu_pages__panels__videos extends \websharks_core_v000000_dev\menu_pages\panels\videos{}
+
+	// Package classes.
 	class websharks_core__packages__dependency extends \websharks_core_v000000_dev\packages\dependency{}
+	class websharks_core__packages__package extends \websharks_core_v000000_dev\packages\package{}
+
+	// Shortcode classes.
 	class websharks_core__shortcodes__shortcode extends \websharks_core_v000000_dev\shortcodes\shortcode{}
 }

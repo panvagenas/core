@@ -33,6 +33,8 @@ namespace websharks_core_v000000_dev
 		 * @return string IFRAME URL to a YouTube® video.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
+		 *
+		 * @see https://developers.google.com/youtube/player_parameters
 		 */
 		public function yt_iframe_url($video, $args = array())
 		{
@@ -40,7 +42,9 @@ namespace websharks_core_v000000_dev
 
 			$url      = $this->©url->current_scheme().'://www.youtube.com/embed/'.urlencode($video);
 			$defaults = array(
+				'fs'          => 1,
 				'rel'         => 0,
+				'controls'    => 2,
 				'enablejsapi' => 1,
 				'playerapiid' => $video,
 				'origin'      => $this->©url->current_host()
@@ -70,20 +74,21 @@ namespace websharks_core_v000000_dev
 			$this->check_arg_types('string:!empty', 'array', 'array', 'string', func_get_args());
 
 			$defaults = array(
-				'width'  => '98%',
-				'height' => '98%'
+				'width'  => '100%',
+				'height' => '350px'
 			);
 			$args     = array_merge($defaults, $args);
 			$args     = $this->©string->ify_deep($args);
 
-			return '<iframe type="text/html" frameborder="0"'.
+			return '<iframe type="text/html" frameborder="0" allowfullscreen="true"'.
 
 			       ' src="'.esc_attr($this->yt_iframe_url($video, $args)).'"'.
 
 			       (($classes) ? ' class="'.esc_attr(implode(' ', $classes)).'"' : '').
 
-			       ' style="width:'.esc_attr($args['width']).'; height:'.esc_attr($args['height']).';'.
-			       ' padding:1%; background:#CCCCCC; border-radius:3px;"'.
+			       ' style="width:'.esc_attr($args['width']).';'.
+			       ' height:'.esc_attr($args['height']).';'.
+			       ' border:0; margin:0; padding:0;"'.
 
 			       (($attrs) ? ' '.$attrs : '').
 			       '></iframe>';
@@ -98,6 +103,8 @@ namespace websharks_core_v000000_dev
 		 * @return string IFRAME URL to a YouTube® video playlist.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
+		 *
+		 * @see https://developers.google.com/youtube/player_parameters
 		 */
 		public function yt_playlist_iframe_url($playlist, $args = array())
 		{
@@ -106,12 +113,13 @@ namespace websharks_core_v000000_dev
 			$url      = $this->©url->current_scheme().'://www.youtube.com/embed';
 			$playlist = 'PL'.preg_replace('/^PL/', '', $playlist);
 			$defaults = array(
+				'fs'          => 1,
 				'rel'         => 0,
+				'controls'    => 2,
 				'enablejsapi' => 1,
 				'playerapiid' => $playlist,
 				'origin'      => $this->©url->current_host(),
-				'listType'    => 'playlist',
-				'list'        => $playlist
+				'listType'    => 'playlist', 'list' => $playlist
 			);
 			$args     = array_merge($defaults, $args);
 			$args     = $this->©string->ify_deep($args);
@@ -138,20 +146,21 @@ namespace websharks_core_v000000_dev
 			$this->check_arg_types('string:!empty', 'array', 'array', 'string', func_get_args());
 
 			$defaults = array(
-				'width'  => '98%',
-				'height' => '98%'
+				'width'  => '100%',
+				'height' => '350px'
 			);
 			$args     = array_merge($defaults, $args);
 			$args     = $this->©string->ify_deep($args);
 
-			return '<iframe type="text/html" frameborder="0"'.
+			return '<iframe type="text/html" frameborder="0" allowfullscreen="true"'.
 
 			       ' src="'.esc_attr($this->yt_playlist_iframe_url($playlist, $args)).'"'.
 
 			       (($classes) ? ' class="'.esc_attr(implode(' ', $classes)).'"' : '').
 
-			       ' style="width:'.esc_attr($args['width']).'; height:'.esc_attr($args['height']).';'.
-			       ' padding:1%; background:#CCCCCC; border-radius:3px;"'.
+			       ' style="width:'.esc_attr($args['width']).';'.
+			       ' height:'.esc_attr($args['height']).';'.
+			       ' border:0; margin:0; padding:0;"'.
 
 			       (($attrs) ? ' '.$attrs : '').
 			       '></iframe>';

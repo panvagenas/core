@@ -43,11 +43,10 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 			$this->yt_playlist = $this->©options->get('menu_pages.panels.videos.yt_playlist');
 
 			$this->content_body = // Video tutorials (w/ embedded playlist).
-
-				'<div style="text-align:center;">'.
-				sprintf($this->__('<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">More Great Video Tutorials</a></p>'),
-				        esc_attr($this->©url->to_plugin_site_uri('/videos/'))).
-				'</div>';
+				'<p class="text-center no-b-margin">'.
+				sprintf($this->__('<a class="btn btn-default width-100" href="%1$s" target="_blank">More Great Video Tutorials <i class="fa fa-external-link"></i></a>'),
+				        esc_attr($this->©url->to_plugin_site_uri('/videos/')), esc_html($this->___instance_config->plugin_name)).
+				'</p>';
 		}
 	}
 }

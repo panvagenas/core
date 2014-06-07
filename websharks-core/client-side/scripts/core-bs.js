@@ -926,7 +926,7 @@
     if (this.isShown && this.options.backdrop) {
       var doAnimate = $.support.transition && animate
 
-      this.$backdrop = $('<div class="wsc modal-backdrop ' + animate + '" />')
+      this.$backdrop = $('<div class="wsc-modal-backdrop ' + animate + '" />')
         .appendTo(document.body)
 
       this.$element.on('click.dismiss.wsc-bs.modal', $.proxy(function (e) {

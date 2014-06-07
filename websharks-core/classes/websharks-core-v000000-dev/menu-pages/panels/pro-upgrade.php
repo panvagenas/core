@@ -38,18 +38,19 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 		{
 			parent::__construct($___instance_config, $menu_page);
 
-			$this->heading_title = $this->__('Pro Upgrade');
+			$this->heading_title = $this->__('Pro Upgrade').'<em>!</em>';
 
 			$this->content_body = // Pro upgrade.
 
-				'<div style="text-align:center;">'.
-				sprintf($this->__('<p style="margin:0;">%1$s Pro is a recommended upgrade. <a href="%2$s" target="_blank" rel="xlink">Click here</a> to learn more.</p>'),
-				        esc_html($this->___instance_config->plugin_name), esc_attr($this->©url->to_plugin_site_uri('/pro/'))).
-				'</div>'.
+				'<p class="text-center">'.
+				sprintf($this->__('<a href="%1$s" target="_blank"><strong>%2$s Pro</strong></a> is a recommended upgrade. Enhance your site! <a href="%1$s" target="_blank">Click here <i class="fa fa-external-link"></i></a> to learn more about this amazing software.'),
+				        esc_attr($this->©url->to_plugin_site_uri('/pro/')), esc_html($this->___instance_config->plugin_name)).
+				'</p>'.
 
-				'<div style="text-align:center; margin-top:5px;">'.
-				'<p style="margin:0;"><a href="'.esc_attr($this->©url->to_plugin_site_uri('/pro/')).'" target="_blank"><img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/pro-upgrade-160x80.png')).'" style="width:160px; height:80px;" alt="" /></a></p>'.
-				'</div>';
+				'<p class="text-center no-b-margin">'.
+				sprintf($this->__('<a class="btn btn-primary width-100" href="%1$s" target="_blank">Upgrade Now <i class="fa fa-external-link"></i></a>'),
+				        esc_attr($this->©url->to_plugin_site_uri('/pro/')), esc_html($this->___instance_config->plugin_name)).
+				'</p>';
 		}
 	}
 }

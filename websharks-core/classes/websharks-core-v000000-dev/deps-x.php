@@ -2625,7 +2625,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		echo '<style type="text/css">';
 		$div_notice = 'div.websharks-core-deps-notice';
 		echo $div_notice.'.wrapper { background:#FBF6DD url(\''.$this->icons['plugin'].'\') no-repeat right top; border:1px solid #C1B98E; border-radius:5px; }';
-		echo $div_notice.' div.container { padding:25px; }';
+		echo $div_notice.' div.wrap { padding:25px; }';
 		echo '</style>';
 
 		echo '<style type="text/css">';
@@ -2660,7 +2660,7 @@ final class deps_x_websharks_core_v000000_dev #!stand-alone!# // MUST remain PHP
 		// Produce HTML output now (using styles/icons from above).
 
 		echo '<div class="websharks-core-deps-notice wrapper updated fade">';
-		echo '<div class="container">';
+		echo '<div class="wrap">';
 
 		echo '<h2 class="heading">'.
 		     $this->__('Dependency Scan by').

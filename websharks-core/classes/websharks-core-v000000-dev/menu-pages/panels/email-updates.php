@@ -47,14 +47,13 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 				'<form'.
 				' method="post"'.
 				' target="_blank"'.
-				' class="email-updates"'.
 				' action="'.esc_attr($this->©options->get('menu_pages.panels.email_updates.action_url')).'"'.
 				'>'.
 
-				'<div>'.
-				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/email-64x64.png')).'" style="width:64px; height:64px; float:right; margin:0 0 0 10px;" alt="" />'.
-				$this->__('<p style="margin:0;">Get the latest news &amp; knowledge base articles.</p>').
-				'</div>'.
+				'<p>'. // Brief description.
+				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/email-64x64.png')).'" class="pull-right l-margin" style="width:64px; height:64px;" alt="" />'.
+				sprintf($this->__('Get all the latest news &amp; knowledge base articles from %1$s'), esc_html($this->___instance_config->plugin_name)).
+				'</p>'.
 
 				$form_fields->construct_field_markup(
 					$form_fields->value($this->©user->first_name),
@@ -90,12 +89,12 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 						'name' => 'subscribe'
 					)
 				).
-				'<div style="text-align:center;">'.
-				sprintf($this->__('<p style="margin:0;"><a href="%1$s" target="_blank" rel="xlink">we respect your privacy</a></p>'),
-				        esc_attr($this->©url->to_plugin_site_uri('/privacy/'))).
-				'</div>'.
+				'<p class="text-center no-b-margin">'.
+				sprintf($this->__('<a href="%1$s" target="_blank">%2$s Privacy Policy <i class="fa fa-external-link"></i></a>'),
+				        esc_attr($this->©url->to_plugin_site_uri('/privacy/')), esc_html($this->___instance_config->plugin_name)).
+				'</p>';
 
-				'</form>';
+			'</form>';
 		}
 	}
 }

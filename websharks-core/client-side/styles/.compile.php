@@ -33,8 +33,9 @@ namespace websharks_core_dev_utilities
 
 		ob_start(); // Begin compilation.
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-resets.min.css')."\n";
-		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core.min.css')."\n";
+		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-utilities.min.css')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css')."\n";
+		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core.min.css')."\n";
 		file_put_contents($core->©dir->n_seps_up(__FILE__).'/core-libs.min.css', trim(ob_get_clean()));
 
 		$core->©file->delete($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css');
@@ -153,6 +154,8 @@ namespace websharks_core_dev_utilities
 
 			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+(?:html|body)\s+{/i', '.'.$core_prefix_with_dashes.$slug.' {', $css);
 			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+.modal\-open\s+{/i', '.'.$core_prefix_with_dashes.'modal-open {', $css);
+			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+.modal\-backdrop\s+{/i', '.'.$core_prefix_with_dashes.'modal-backdrop {', $css);
+			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+.modal\-backdrop\.in\s+{/i', '.'.$core_prefix_with_dashes.'modal-backdrop.in {', $css);
 
 			$css = font_face_tokenizer($css, $font_face_tokenizer['tokens']);
 			$css = keyframes_tokenizer($css, $keyframes_tokenizer['tokens']);
