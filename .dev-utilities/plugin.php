@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin file.
+ * Plugin Loader
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}

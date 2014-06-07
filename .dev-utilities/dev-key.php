@@ -1,6 +1,6 @@
 <?php
 /**
- * Dev Key.
+ * WebSharks™ Dev Key
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -15,18 +15,6 @@ namespace websharks_core_dev_utilities
 	// Allow command line usage always.
 
 	if(strcasecmp(PHP_SAPI, 'cli') === 0)
-		/** @var boolean */
-		define('___DEV_KEY_OK', TRUE);
-
-	// Allow localhost server development to pass.
-
-	else if(!empty($_SERVER['SERVER_ADDR']) && $_SERVER['SERVER_ADDR'] === '127.0.0.1')
-		/** @var boolean */
-		define('___DEV_KEY_OK', TRUE);
-
-	// Allow remote IPs matching an authorized XDebug IDE.
-
-	else if(!empty($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] === ini_get('xdebug.remote_host'))
 		/** @var boolean */
 		define('___DEV_KEY_OK', TRUE);
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Debugger.
+ * WebSharks™ Core Debugger
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}

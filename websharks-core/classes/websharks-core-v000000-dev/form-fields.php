@@ -1,6 +1,6 @@
 <?php
 /**
- * Form Fields.
+ * Form Fields
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
@@ -18,7 +18,7 @@ namespace websharks_core_v000000_dev
 		exit('Do NOT access this file directly: '.basename(__FILE__));
 
 	/**
-	 * Form Fields.
+	 * Form Fields
 	 *
 	 * @package WebSharks\Core
 	 * @since 120318

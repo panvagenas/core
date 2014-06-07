@@ -1,6 +1,6 @@
 <?php
 /**
- * WebSharks™ Core (Loader).
+ * WebSharks™ Core Loader
  *
  * Copyright: © 2012 (coded in the USA)
  * {@link http://www.websharks-inc.com WebSharks™}
