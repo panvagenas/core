@@ -26,7 +26,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 	{
 		/**
 		 * @var string Slug for this panel.
-		 * @note This is always set to the base name of the class.
+		 * @note Set to the basename of the class w/ dashes.
 		 */
 		public $slug = '';
 
@@ -78,6 +78,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 			$this->check_arg_types('', $this->___instance_config->core_ns_prefix.'\\menu_pages\\menu_page', func_get_args());
 
 			$this->slug      = $this->___instance_config->ns_class_basename;
+			$this->slug      = $this->©string->with_dashes($this->slug);
 			$this->menu_page = $menu_page;
 		}
 	}

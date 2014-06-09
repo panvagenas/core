@@ -9,226 +9,217 @@
  * @since 120318
  */
 
-(function($w) // Begin extension closure.
+(function($) // Begin extension closure.
 {
-	'use strict'; // Standards.
+	'use strict'; // Strict standards.
 
-	/**
-	 * @type {Object} WebSharks™ Core.
-	 */
-	$w.$$websharks_core = $w.$$websharks_core || {};
-	if(typeof $w.$$websharks_core.$menu_pages === 'function')
-		return; // Extension already exists.
+	if($websharks_core.___did_menu_pages)
+		return; // Already did these.
 
-	/**
-	 * @constructor Extension constructor & prototype definitions.
-	 */
-	$w.$$websharks_core.$menu_pages = function(){this.setup_initialize.apply(this, arguments);};
-	$w.$$websharks_core.$menu_pages.prototype = new $w.$$websharks_core.$('websharks_core', 'menu_pages');
-	$w.$$websharks_core.$menu_pages.prototype.constructor = $w.$$websharks_core.$menu_pages;
-	$w.$$websharks_core.$menu_pages.prototype.setup_initialize = function()
-	{
-		var $$ = this, $ = jQuery; // $Quickies.
+	$.each($websharks_core.$.___plugin_root_ns_stubs,
+	       function(plugin_root_ns_stub_index, plugin_root_ns_stub)
+	       {
+		       var extension // Extension definition.
+			       = $websharks_core.$.extension_class(plugin_root_ns_stub, 'menu_pages');
+		       window['$' + plugin_root_ns_stub].$menu_pages = new extension();
+		       var _ = window['$' + plugin_root_ns_stub].$menu_pages;
 
-		$(document)// Handles document ready state event (DOM ready).
-			.ready(function() // Setup/initialization routines.
+		       _.toggling_all_panels = false;
+
+		       _.on_dom_ready = function()
+		       {
+			       var $menu_page = _.$menu_page();
+			       var $content_panels = _.$content_panels();
+			       var $sidebar_panels = _.$sidebar_panels();
+			       var $content_sidebar_panels = _.$content_sidebar_panels();
+
+			       $('#wpbody').addClass(_.instance_config('core_prefix_with_dashes') +
+			                             _.closest_theme_class_to($menu_page))
+				       .css({'margin-left': '-20px', 'padding-left': '20px', 'min-height': screen.height + 'px'});
+
+			       $menu_page.find('.toggle-all-panels')
+				       .on('click', function()
+				           {
+					           _.toggling_all_panels = true;
+					           var $this = $(this), last_action = $this.data('last-action');
+					           var this_action = last_action === 'show' ? 'hide' : 'show';
+
+					           $this.data('last-action', this_action), $content_sidebar_panels.find('> .panel-collapse')
+						           .wscCollapse({toggle: false}).wscCollapse(this_action);
+
+					           setTimeout(function() // Wait for transitions to complete.
+					                      {
+						                      _.toggling_all_panels = false, // Now update panels state.
+							                      update_content_panels_state(), update_sidebar_panels_state();
+					                      }, 2000);
+				           });
+
+			       $menu_page.find('form.update-theme ul > li')
+				       .on('click', function()
+				           {
+					           $menu_page.find('form.update-theme')
+						           .find('input.selected-theme').val($(this).data('theme'))
+						           .end().submit();
+				           });
+
+			       var update_content_panels_state = function()
 			       {
-				       var div = {}; // Start by initializing a few variables.
+				       if(_.toggling_all_panels)
+					       return; // Ignore this scenario.
 
-				       div.menu_page = 'div.' + $$.plugin_css_class() + '--menu-page';
-				       div.menu_page_wrapper = div.menu_page + ' div.menu-page.wrapper';
+				       var panels_active = [], panels_inactive = [];
 
-				       div.header_controls = div.menu_page_wrapper + ' div.menu-page.controls';
+				       $content_panels.each(function()
+				                            {
+					                            var $this = $(this);
+					                            if($this.find('> .panel-collapse').hasClass('in'))
+						                            panels_active.push($this.data('panel-slug'));
+					                            else panels_inactive.push($this.data('panel-slug'));
+				                            });
+				       _.post('©menu_pages__' + _.is_plugin_menu_page('', true) + '.®update_content_panels_state',
+				              _.___private_type, [panels_active, panels_inactive]);
+				       console.log('Updating content panels state.');
+			       };
+			       $content_panels.find('> .panel-collapse').on('shown.wsc-bs.collapse hidden.wsc-bs.collapse', update_content_panels_state);
 
-				       div.content_wrapper = div.menu_page + ' div.content.wrapper';
-				       div.content_panels = div.content_wrapper + ' div.panels';
+			       var update_sidebar_panels_state = function()
+			       {
+				       if(_.toggling_all_panels)
+					       return; // Ignore this scenario.
 
-				       div.sidebar_wrapper = div.menu_page + ' div.sidebar.wrapper';
-				       div.sidebar_panels = div.sidebar_wrapper + ' div.panels';
+				       var panels_active = [], panels_inactive = [];
 
-				       // Setup/initialize header controls.
+				       $sidebar_panels.each(function()
+				                            {
+					                            var $this = $(this);
+					                            if($this.find('> .panel-collapse').hasClass('in'))
+						                            panels_active.push($this.data('panel-slug'));
+					                            else panels_inactive.push($this.data('panel-slug'));
+				                            });
+				       _.post('©menu_pages__' + _.is_plugin_menu_page('', true) + '.®update_sidebar_panels_state',
+				              _.___private_type, [panels_active, panels_inactive]);
+				       console.log('Updating sidebar panels state.');
+			       };
+			       $sidebar_panels.find('> .panel-collapse').on('shown.wsc-bs.collapse hidden.wsc-bs.collapse', update_sidebar_panels_state);
 
-				       $(div.header_controls + ' button.toggle-all-content-panels')
-					       .button({icons: {primary: 'ui-icon-triangle-1-s', secondary: 'ui-icon-triangle-1-n'}})
-					       .click(function()
-					              {
-						              $(div.content_panels).toggles({}, {toggleAll: true});
-						              return false;
-					              });
+			       var update_content_panels_order = function()
+			       {
+				       var panels_order = [];
 
-				       $(div.header_controls + ' button.choose-theme')
-					       .button({icons: {secondary: 'ui-icon-circle-triangle-s'}})
-					       .click(function()
-					              {
-						              $(div.header_controls + ' form.update-theme')
-							              .toggle().position
-						              ({
-							               collision: 'none',
-							               my       : 'right top',
-							               at       : 'right bottom',
-							               offset   : '-5 0',
-							               of       : this
-						               });
-						              return false;
-					              });
-
-				       $(div.header_controls + ' ul.theme-options li')
-					       .click(function()
-					              {
-						              $(div.header_controls + ' form.update-theme')
-							              .find('input.theme').val($(this).data('theme')).end()
-							              .submit();
-					              });
-
-				       // Setup/initialize docs.
-
-				       $(div.content_wrapper + ' div.panel.content div.docs')
+				       $menu_page.find('.content-panels > .panel')
 					       .each(function()
 					             {
 						             var $this = $(this);
-
-						             $this.before('<a class="docs-toggle" href="#">' + $$.__('ready__docs__button_label') + '</a>').prev('a.docs-toggle')
-							             .button({icons: {primary: 'ui-icon-info'}})
-							             .click(function()
-							                    {
-								                    $this.dialog('open');
-								                    return false;
-							                    });
-						             $this.dialog({
-							                          title      : $$.__('ready__docs__dialog_title'),
-							                          dialogClass: $$.ui_dialogue_classes_for($this),
-							                          width      : 853,
-							                          autoOpen   : false,
-							                          modal      : true
-						                          });
+						             panels_order.push($this.data('panel-slug'));
 					             });
+				       _.post('©menu_pages__' + _.is_plugin_menu_page('', true) + '.®update_content_panels_order',
+				              _.___private_type, [panels_order]);
+				       console.log('Updating content panels order.');
+			       };
+			       $menu_page.find('.content-panels')
+				       .sortable({
+					                 items : '.panel',
+					                 // $(.sidebar-panels).children(.panel)
+					                 // $(.sidebar-panels).children(.panel).find(handle)
+					                 handle: '> .panel-heading > .panel-title .cursor-move'
+				                 });
+			       $menu_page.find('.content-panels').on('sortupdate', update_content_panels_order);
 
-				       // Setup/initialize video buttons.
+			       var update_sidebar_panels_order = function()
+			       {
+				       var panels_order = [];
 
-				       $(div.content_wrapper + ' div.panel.content div.video')
+				       $menu_page.find('.sidebar-panels > .panel')
 					       .each(function()
 					             {
 						             var $this = $(this);
-
-						             $this.before('<a class="video-toggle" href="#">' + $$.__('ready__video__button_label') + '</a>').prev('a.video-toggle')
-							             .button({icons: {primary: 'ui-icon-video'}})
-							             .click(function()
-							                    {
-								                    $this.dialog('open');
-								                    return false;
-							                    });
-						             $this.dialog({
-							                          title      : $$.__('ready__video__dialog_title'),
-							                          dialogClass: $$.ui_dialogue_classes_for($this),
-							                          width      : 853,
-							                          height     : 480,
-							                          autoOpen   : false,
-							                          modal      : true
-						                          });
+						             panels_order.push($this.data('panel-slug'));
 					             });
+				       _.post('©menu_pages__' + _.is_plugin_menu_page('', true) + '.®update_sidebar_panels_order',
+				              _.___private_type, [panels_order]);
+				       console.log('Updating sidebar panels order.');
+			       };
+			       $menu_page.find('.sidebar-panels')
+				       .sortable({
+					                 items : '.panel',
+					                 // $(.sidebar-panels).children(.panel)
+					                 // $(.sidebar-panels).children(.panel).find(handle)
+					                 handle: '> .panel-heading > .panel-title .cursor-move'
+				                 });
+			       $menu_page.find('.sidebar-panels').on('sortupdate', update_sidebar_panels_order);
+		       };
 
-				       // Setup/initialize content toggles.
+		       _.on_win_load = function()
+		       {
+			       var $menu_page = _.$menu_page();
 
-				       $(div.content_panels).toggles
-				       ({
-					        isActive: function()
-					        {
-						        if('#' + $$.get_query_var('content_panel_slug') === this.hash)
-						        {
-							        $.scrollTo(this, {offset: {top: -50, left: 0}, duration: 500});
-							        return true;
-						        }
-						        else return false;
-					        },
-					        onToggle: function(states)
-					        {
-						        var panels_active = [], panels_inactive = [];
-						        var current_menu_page = $$.is_plugin_menu_page();
+			       var content_panel_slug = _.get_query_var('content_panel_slug');
+			       var sidebar_panel_slug = _.get_query_var('sidebar_panel_slug');
+			       var $content_panel, $sidebar_panel; // Initialize.
 
-						        $.each(states.active, function(){ panels_active.push($(this).data('panel-slug')); });
-						        $.each(states.inactive, function(){ panels_inactive.push($(this).data('panel-slug')); });
+			       if(content_panel_slug // Focusing on a specific content panel?
+			          && ($content_panel = $menu_page.find('.content-panels #panel--' + content_panel_slug + '.panel-collapse')).length)
+			       {
+				       var scroll_to_content_panel = function()
+				       {
+					       $.scrollTo($content_panel.prev('.panel-heading'), {offset: {top: -50, left: 0}, duration: 500});
+				       };
+				       if($content_panel.hasClass('in')) scroll_to_content_panel(); // Expanded already.
+				       else $content_panel.one('shown.wsc-bs.collapse', scroll_to_content_panel),
+					       $content_panel.wscCollapse({toggle: false}).wscCollapse('show');
+			       }
+			       if(sidebar_panel_slug // Focusing on a specific sidebar panel?
+			          && ($sidebar_panel = $menu_page.find('.sidebar-panels #panel--' + sidebar_panel_slug + '.panel-collapse')).length)
+			       {
+				       var scroll_to_sidebar_panel = function()
+				       {
+					       if(!content_panel_slug) // Only if we are NOT also scrolling to a content panel.
+						       $.scrollTo($sidebar_panel.prev('.panel-heading'), {offset: {top: -50, left: 0}, duration: 500});
+				       };
+				       if($sidebar_panel.hasClass('in')) scroll_to_sidebar_panel(); // Expanded already.
+				       else $sidebar_panel.one('shown.wsc-bs.collapse', scroll_to_sidebar_panel),
+					       $sidebar_panel.wscCollapse({toggle: false}).wscCollapse('show');
+			       }
+		       };
 
-						        $$.post('©menu_pages__' + current_menu_page + '.®update_content_panels_state', $$.___private_type, [panels_active, panels_inactive]);
-					        }
-				        })
-					       .sortable // Make them sortable.
-				       ({
-					        axis                : 'y',
-					        forcePlaceholderSize: true,
-					        handle              : '> div > h3',
-					        placeholder         : 'ui-state-highlight',
-					        stop                : function(event, ui)
-					        {
-						        // IE doesn't register the blur when sorting,
-						        // so trigger focusout handlers to remove .ui-state-focus
-						        ui.item.children('> div > h3').triggerHandler('focusout');
+		       _.$menu_page = function()
+		       {
+			       if(_.cache.$menu_page)
+				       return _.cache.$menu_page;
 
-						        var panels_order = [];
-						        var current_menu_page = $$.is_plugin_menu_page();
+			       return (_.cache.$menu_page // Current menu page.
+			               = $('.' + _.instance_config('core_ns_stub_with_dashes') + '.menu-page'));
+		       };
 
-						        $(div.content_panels + ' div.panel.wrapper')
-							        .each(function()
-							              {
-								              panels_order.push($(this).data('panel-slug'));
-							              });
+		       _.$content_panels = function()
+		       {
+			       if(_.cache.$content_panels)
+				       return _.cache.$content_panels;
 
-						        $$.post('©menu_pages__' + current_menu_page + '.®update_content_panels_order', $$.___private_type, [panels_order]);
-					        }
-				        });
+			       return (_.cache.$content_panels = _.$menu_page()
+				       .find('.content-panels > .panel'));
+		       };
 
-				       // Setup/initialize sidebar toggles.
+		       _.$sidebar_panels = function()
+		       {
+			       if(_.cache.$sidebar_panels)
+				       return _.cache.$sidebar_panels;
 
-				       $(div.sidebar_panels).toggles
-				       ({
-					        isActive: function()
-					        {
-						        return ('#' + $$.get_query_var('sidebar_panel_slug') === this.hash);
-					        },
-					        onToggle: function(states)
-					        {
-						        var panels_active = [], panels_inactive = [];
-						        var current_menu_page = $$.is_plugin_menu_page();
+			       return (_.cache.$sidebar_panels = _.$menu_page()
+				       .find('.sidebar-panels > .panel'));
+		       };
 
-						        $.each(states.active, function(){ panels_active.push($(this).data('panel-slug')); });
-						        $.each(states.inactive, function(){ panels_inactive.push($(this).data('panel-slug')); });
+		       _.$content_sidebar_panels = function()
+		       {
+			       if(_.cache.$content_sidebar_panels)
+				       return _.cache.$content_sidebar_panels;
 
-						        $$.post('©menu_pages__' + current_menu_page + '.®update_sidebar_panels_state', $$.___private_type, [panels_active, panels_inactive]);
-					        }
-				        })
-					       .sortable // Make them sortable.
-				       ({
-					        axis                : 'y',
-					        forcePlaceholderSize: true,
-					        handle              : '> div > h3',
-					        placeholder         : 'ui-state-highlight',
-					        stop                : function(event, ui)
-					        {
-						        // IE doesn't register the blur when sorting,
-						        // so trigger focusout handlers to remove .ui-state-focus
-						        ui.item.find('> div > h3').triggerHandler('focusout');
+			       return (_.cache.$content_sidebar_panels = _.$menu_page()
+				       .find('.content-panels > .panel, .sidebar-panels > .panel'));
+		       };
 
-						        var panels_order = [];
-						        var current_menu_page = $$.is_plugin_menu_page();
+		       $(document).on('ready', _.on_dom_ready), $(window).on('load', _.on_win_load);
+	       });
+	$websharks_core.___did_menu_pages = true;
 
-						        $(div.sidebar_panels + ' div.panel.wrapper')
-							        .each(function()
-							              {
-								              panels_order.push($(this).data('panel-slug'));
-							              });
-
-						        $$.post('©menu_pages__' + current_menu_page + '.®update_sidebar_panels_order', $$.___private_type, [panels_order]);
-					        }
-				        });
-				       // Prepare UI forms.
-				       $$.prepare_ui_forms();
-
-				       // Make menu page visible (it's hidden initially via CSS).
-				       $(div.menu_page).css({visibility: 'visible'});
-			       });
-	};
-	/**
-	 * @type {Object} Creating an instance of this extension.
-	 */
-	$w.$websharks_core.$menu_pages = new $w.$$websharks_core.$menu_pages();
-
-})(this); // End extension closure.
+})(jQuery); // End extension closure.

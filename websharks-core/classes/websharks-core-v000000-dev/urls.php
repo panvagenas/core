@@ -2080,9 +2080,6 @@ namespace websharks_core_v000000_dev
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$name` is empty. The name of the variable we're adding.
 		 * @throws exception If `$url_uri_query_fragment` is malformed.
-		 *
-		 * @assert ('name', 'value', '') === '#!name=value'
-		 * @assert ('name', 'value', '#!name=old-value&something=else&name=another-old-value') === '#!name=new-value&something=else'
 		 */
 		public function add_query_hash($name, $value, $url_uri_query_fragment)
 		{
@@ -2092,9 +2089,9 @@ namespace websharks_core_v000000_dev
 
 			if($parts['fragment'] && $parts['fragment'][0] === '!')
 				$vars = $this->©vars->parse_query(ltrim($parts['fragment'], '!'));
-			else $vars = array(); // No vars; or it's an anchor (which we'll ditch here).
+			else $vars = array(); // No vars; or it's an anchor.
 
-			$vars[$name]       = (string)$value;
+			$vars[$name]       = (string)$value; // Force string.
 			$parts['fragment'] = '!'.$this->©vars->build_query($vars);
 
 			return $this->unparse($parts, 0); // Back together again.

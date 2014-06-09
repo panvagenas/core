@@ -209,6 +209,18 @@ Width/height utility classes.
 /*
 Opacity utility classes.
 */
+.wsc .transparent
+{
+	opacity : 0.1 !important;
+}
+.wsc .transparent-hover
+{
+	opacity : 0.1 !important;
+}
+.wsc .transparent-hover:hover
+{
+	opacity : 1.0 !important;
+}
 .wsc .translucent
 {
 	opacity : 0.5 !important;
@@ -267,6 +279,10 @@ Cursor utility classes.
 .wsc .cursor-pointer
 {
 	cursor : pointer !important;
+}
+.wsc .cursor-move
+{
+	cursor : move !important;
 }
 
 /*

@@ -60,171 +60,195 @@ namespace websharks_core_v000000_dev
 		 * Default (core-driven) menu pages.
 		 *
 		 * @return array Default (core-driven) menu pages.
+		 *
+		 * @see add() for further details about how to add menu pages.
 		 */
 		public function default_menu_pages()
 		{
-			$doc_title      = $this->___instance_config->plugin_name;
-			$main_menu_slug = $this->___instance_config->plugin_root_ns_stub;
+			$main_page_slug // A standard in the core.
+				= $this->___instance_config->plugin_root_ns_stub_with_dashes;
 
-			$default_menu_pages = array(
-
-				$main_menu_slug       => array(
-					'doc_title'    => $doc_title,
-					'menu_title'   => $this->___instance_config->plugin_name,
-					'cap_required' => $this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_page__'.$main_menu_slug),
-					'displayer'    => array($this, '©menu_pages__quick_start.display'),
-					'icon'         => $this->©url->to_template_dir_file('/client-side/images/favicon-16x16.png')
+			return array(
+				$main_page_slug     => array(
+					'menu_title' => $this->___instance_config->plugin_name,
+					'icon'       => $this->©url->to_template_dir_file('/client-side/images/favicon-16x16.png')
 				),
-
-				'___'.$main_menu_slug => array(
-					'doc_title'    => $doc_title,
-					'menu_title'   => $this->__('Quick-Start Guide'),
-					'cap_required' => $this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_page__'.$main_menu_slug),
-					'displayer'    => array($this, '©menu_pages__quick_start.display'),
-					'is_under'     => $main_menu_slug
+				'-'.$main_page_slug => array(
+					'is_under_slug' => $main_page_slug,
+					'menu_title'    => $this->__('Quick-Start Guide'),
 				),
-
-				'general_options'     => array(
-					'doc_title'    => $doc_title,
-					'menu_title'   => $this->__('General Options'),
-					'cap_required' => $this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_page__general_options'),
-					'displayer'    => array($this, '©menu_pages__general_options.display'),
-					'is_under'     => $main_menu_slug
+				'general_options'   => array(
+					'is_under_slug' => $main_page_slug,
+					'menu_title'    => $this->__('General Options'),
 				)
 			);
-			return $default_menu_pages;
 		}
 
 		/**
 		 * Is this an administrative page for the current plugin?
 		 *
-		 * @param string|array $slug_s Optional. By default, we simply check to see if this is an administrative page for the current plugin.
-		 *    If this is a string (NOT empty), we'll also check if it's a specific page (for the current plugin), matching: `$slug_s`.
-		 *    If this is an array, we'll check if it's any page (for the current plugin), in the array of: `$slug_s`.
+		 * @param string|array $slugs Optional. By default, we simply check to see if this is an administrative page for the current plugin.
+		 *    If this is a string (NOT empty), we'll also check if it's a specific page (for the current plugin) matching: `$slugs`.
+		 *    If this is an array, we'll check if it's any page (for the current plugin) in the array of: `$slugs`.
 		 *    If this is an array, the array can also contain wildcard patterns (optional).
 		 *
-		 * @note The value of `$slug_s`, whether it be a string or an array, should attempt to match ONLY the page slug itself, and NOT the full prefixed value.
+		 * @note The value of `$slugs`, whether it be a string or an array, should attempt to match ONLY the page slug itself; NOT the full prefixed value.
 		 *    Each page name for the current plugin is dynamically prefixed with `$this->___instance_config->plugin_root_ns_stub.'__[page_slug]`.
-		 *    The prefix should be excluded from `$slug_s` values. In other words, we're only testing for `[page_slug]` here.
+		 *    The prefix should be excluded from `$slugs` values. In other words, we're only testing for `[page_slug]` here.
 		 *
-		 * @return string|boolean A string with the `[page slug]` value, if this an administrative page for the current plugin;
-		 *    matching a possible `$slug_s` string|array value. Otherwise, this returns FALSE by default.
+		 * @param boolean      $return_slug_class_basename Optional. Defaults to a `FALSE` value.
+		 *    If this is `TRUE`, instead of returning the slug (with dashes) we return the associated
+		 *    menu page class basename (with underscores).
+		 *
+		 * @return string A string with the `[page slug]` value; IF this an administrative page for the current plugin.
+		 *    Or, if `$return_slug_class_basename` is `TRUE`; the slug's class basename.
+		 *    Otherwise, this returns an empty string by default.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () === FALSE
 		 */
-		public function is_plugin_page($slug_s = array())
+		public function is_plugin_page($slugs = array(), $return_slug_class_basename = FALSE)
 		{
-			$this->check_arg_types(array('string', 'array'), func_get_args());
+			$this->check_arg_types(array('string', 'array'), 'boolean', func_get_args());
 
-			if(is_admin() && ($current_page = $this->©vars->_GET('page')) && $this->©string->is_not_empty($current_page))
+			if(is_admin() && $this->©string->¤is_not_empty($current_page = $this->©vars->_GET('page'))
+			   && preg_match('/^'.preg_quote($this->___instance_config->plugin_root_ns_stub_with_dashes, '/').'(?:\-\-(?P<slug>.+))?$/', $current_page, $page)
+			) // This regex pattern matches the plugin's root namespace stub with or without an additional sub-menu slug.
 			{
-				if(preg_match('/^'.preg_quote($this->___instance_config->plugin_root_ns_stub, '/').'(?:__(?P<slug>.+))?$/', $current_page, $_page))
-				{
-					$this->©string->is_not_empty_or($_page['slug'], $this->___instance_config->plugin_root_ns_stub, TRUE);
+				$page['slug'] = // Default value is the current plugin's root namespace stub.
+					$this->©string->is_not_empty_or($page['slug'], $this->___instance_config->plugin_root_ns_stub_with_dashes);
 
-					if(!$slug_s) // Not looking for anything in particular?
-						return $_page['slug'];
+				if($return_slug_class_basename) // If so, convert this into a string.
+					if($page['slug'] === $this->___instance_config->plugin_root_ns_stub_with_dashes)
+						$slug_class_basename = 'main_page'; // Convert slug to it's class.
+					else $slug_class_basename = $this->©string->with_underscores($page['slug']);
 
-					else if(is_string($slug_s) && $_page['slug'] === $slug_s)
-						return $_page['slug'];
-
-					else if(is_array($slug_s) && $this->©string->in_wildcard_patterns($_page['slug'], $slug_s))
-						return $_page['slug'];
-				}
-				unset($_page); // Housekeeping.
+				if(!$slugs // Don't care which slug?
+				   || (is_string($slugs) && $page['slug'] === $slugs)
+				   || (is_array($slugs) && $this->©string->in_wildcard_patterns($page['slug'], $slugs))
+				) return $return_slug_class_basename && !empty($slug_class_basename)
+					? $slug_class_basename : $page['slug'];
 			}
-			return FALSE; // Default return value.
+			return ''; // Default return value.
 		}
 
 		/**
 		 * Adds an array of menu page configurations.
 		 *
-		 * @param array $menu_pages An array of menu page configurations.
+		 * @param array $menu_pages An associative array of configurations.
+		 *    Each array key is the intended menu page slug (with dashes); and each of these
+		 *    slugs MUST correlate with a menu page class that will serve as the menu page displayer.
+		 *    e.g. the slug `general_options` correlates with `©menu_pages__general_options`.
+		 *
+		 *    The slug itself is required; i.e. the associative array key.
+		 *    Additional configuration keys listed below; where only `menu_title` is required.
+		 *
+		 *    - `menu_title` The title to use in the menu itself (required).
+		 *
+		 *    - `doc_title` (optional) The title to use in the browser's title bar.
+		 *          If empty, this will default to the plugin's name.
+		 *
+		 *    - `cap_required` (optional) The WP capability required to access this menu page.
+		 *          If empty, the core will use it's capability mapper (see source code below).
+		 *
+		 *    - `icon` (optional) The URL to an icon; or a data URI may also be accepted. See {@link add_menu_page()}
+		 *          in the WordPress core for further details on this. Valid only for main menu pages.
+		 *
+		 *    - `is_under_slug` (optional) Indicates a child sub-menu page of another primary menu page.
+		 *
+		 * @note Associative array keys with leading|trailing dashes are trimmed before use.
+		 *    The ability to use leading dashes specifically, allows for sub-menu items to be added in duplicate;
+		 *    i.e. in a case where a sub-menu item should simply be a pointer back to the primary menu link itself.
+		 *    If you prefix a sub-menu item's key with a dash, the slug is NOT prefixed with `is_under_slug`.
+		 *
+		 *    A clearer example to help illustrate the way in which this actually works...
+		 *
+		 *    * `[key=my-plugin]` Main Menu (slug will be: `my-plugin`)
+		 *
+		 *       * `[key=-my-plugin]` Quick Start Guide (slug also: `my-plugin`)
+		 *         `[is_under_slug=my-plugin]`
+		 *
+		 *       * `[key=--my-plugin]` Another Symlink (slug also: `my-plugin`)
+		 *         `[is_under_slug=my-plugin]`
 		 *
 		 * @return null Nothing. Simply adds each of the menu pages defined in the configuration array.
 		 *
 		 * @throws exception If invalid types are passed through the arguments list.
 		 * @throws exception If the array of `$menu_pages` is empty, or contains an invalid configuration set.
-		 *
-		 * @wp-admin-assert // This assertion is difficult to test, because it requires administrative privileges (and the admin files must also be loaded).
-		 * $menu_pages = array(array('doc_title' => 'Doc Page', 'menu_title' => 'Menu Title', 'cap_required' => 'install_plugins', 'icon' => 'about:blank', 'displayer' => array($this->object, '__return_false')));
-		 *    ($menu_pages) === NULL
-		 *
-		 * @assert $menu_pages = array(array('doc_title' => 'Doc Page'));
-		 *    ($menu_pages) throws exception
-		 *
-		 * @assert $menu_pages = array();
-		 *    ($menu_pages) throws exception
 		 */
 		public function add($menu_pages)
 		{
 			$this->check_arg_types('array:!empty', func_get_args());
 
-			foreach($menu_pages as $_slug => $_menu_page) // Add each of these menu pages.
+			foreach($menu_pages as $_menu_page_slug_key => $_menu_page) // Iterate menu pages.
 			{
-				if($this->©string->is_not_empty($_slug) && is_array($_menu_page)
-				   && $this->©strings->are_not_empty($_menu_page['doc_title'], $_menu_page['menu_title'], $_menu_page['cap_required'])
-				   && $this->©array->is_not_empty($_menu_page['displayer'])
-				) // Have everything we need? Else throw an exception.
+				if($this->©string->is_not_empty($_menu_page_slug_key) // MUST have slug & menu page title.
+				   && $this->©array->is_not_empty($_menu_page) && $this->©string->is_not_empty($_menu_page['menu_title'])
+				) // Have everything we need? If not, throw an exception down below.
 				{
-					if($this->©string->is_not_empty($_menu_page['is_under'])) // A sub-menu page?
-					{
-						// This looks for a preceding triple `___`, in the `$_slug`.
-						// We use this to indicate an identical slug/key, which should be used again, for a sub-menu page.
-						// This makes it possible to add a duplicate menu page, as a sub-item, which represents the main menu.
-						// If this is NOT done explicitly, WordPress® does it automatically, using the main menu title.
-						if(strpos($_slug, '___') === 0)
-							$_slug = (string)substr($_slug, 3);
-						else $_slug = $_menu_page['is_under'].'__'.$_slug;
+					$_menu_page['slug'] = $_menu_page_slug_key = $this->©string->with_dashes($_menu_page_slug_key);
+					$_menu_page['slug'] = trim($_menu_page['slug'], '-');
 
-						add_submenu_page($_menu_page['is_under'], $_menu_page['doc_title'], $_menu_page['menu_title'], $_menu_page['cap_required'], $_slug, $_menu_page['displayer']);
+					if($_menu_page['slug'] === $this->___instance_config->plugin_root_ns_stub_with_dashes)
+						$_menu_page['displayer'] = array($this, '©menu_pages__main_page.display'); // Special case handler.
+					else $_menu_page['displayer'] = array($this, '©menu_pages__'.$this->©string->with_underscores($_menu_page['slug']).'.display');
+
+					if(!$this->©string->is_not_empty($_menu_page['doc_title']))
+						$_menu_page['doc_title'] = $this->___instance_config->plugin_name;
+
+					if(!$this->©string->is_not_empty($_menu_page['cap_required']))
+						$_menu_page['cap_required'] = // We can work this out dynamically.
+							$this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns,
+							                  'menu_pages__'.$this->©string->with_underscores($_menu_page['slug']));
+
+					if($this->©string->is_not_empty($_menu_page['is_under_slug'])) // Sub-menu page?
+					{
+						$_menu_page['is_under_slug'] // This is a slug too.
+							= $this->©string->with_dashes($_menu_page['is_under_slug']);
+
+						if(strpos($_menu_page_slug_key, '-') !== 0) // A leading dash prevents a prefix.
+							$_menu_page['submenu_slug'] = $_menu_page['is_under_slug'].'--'.$_menu_page['slug'];
+						else $_menu_page['submenu_slug'] = $_menu_page['slug']; // Allow a duplicate (i.e. a symlink).
+
+						add_submenu_page($_menu_page['is_under_slug'], $_menu_page['doc_title'], $_menu_page['menu_title'], $_menu_page['cap_required'], $_menu_page['submenu_slug'], $_menu_page['displayer']);
 					}
-					else add_menu_page($_menu_page['doc_title'], $_menu_page['menu_title'], $_menu_page['cap_required'], $_slug, $_menu_page['displayer'], $this->©string->isset_or($_menu_page['icon'], ''));
+					else add_menu_page($_menu_page['doc_title'], $_menu_page['menu_title'], $_menu_page['cap_required'], $_menu_page['slug'], $_menu_page['displayer'], $this->©string->isset_or($_menu_page['icon'], ''));
 				}
 				else throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_menu_page_config', get_defined_vars(),
 					sprintf($this->__('Invalid menu page configuration: %1$s'), $this->©var->dump($_menu_page))
 				);
 			}
-			unset($_slug, $_menu_page); // A little housekeeping.
+			unset($_menu_page_slug_key, $_menu_page); // A little housekeeping.
 		}
 
 		/**
 		 * Builds a URL leading to a menu page, for the current plugin.
 		 *
-		 * @param string $slug Optional slug.
+		 * @param string $slug Optional slug (with dashes).
 		 *    A slug indicating a specific page we need to build a URL to.
 		 *    If empty, the URL will lead to the main plugin page.
 		 *
-		 * @param string $content_panel_slug Optional panel slug.
+		 * @param string $content_panel_slug Optional panel slug (with dashes).
 		 *    A specific content panel slug to display upon reaching the menu page.
 		 *
-		 * @param string $sidebar_panel_slug Optional panel slug.
+		 * @param string $sidebar_panel_slug Optional panel slug (with dashes).
 		 *    A specific sidebar panel slug to display upon reaching the menu page.
 		 *
 		 * @return string A full URL leading to a menu page, for the current plugin.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
-		 *
-		 * @assert () matches '/\?page\=websharks_core$/'
-		 * @assert ('slug') matches '/\?page\=websharks_core__slug$/'
-		 * @assert ('slug', 'content_panel') matches '/\?page\=websharks_core__slug#\!content_panel_slug\=content_panel$/'
-		 * @assert ('slug', '', 'sidebar_panel') matches '/\?page\=websharks_core__slug#\!sidebar_panel_slug\=sidebar_panel$/'
-		 * @assert ('slug', 'content_panel', 'sidebar_panel') matches '/\?page\=websharks_core__slug#\!content_panel_slug\=content_panel&sidebar_panel_slug\=sidebar_panel$/'
 		 */
 		public function url($slug = '', $content_panel_slug = '', $sidebar_panel_slug = '')
 		{
 			$this->check_arg_types('string', 'string', 'string', func_get_args());
 
-			$page_arg = array('page' => $this->___instance_config->plugin_root_ns_stub.(($slug) ? '__'.$slug : ''));
+			$page_arg = array('page' => $this->___instance_config->plugin_root_ns_stub_with_dashes.(($slug) ? '--'.$slug : ''));
 			$url      = add_query_arg(urlencode_deep($page_arg), $this->©url->to_wp_self_admin_uri('/admin.php'));
 
-			if($content_panel_slug) // A specific content panel slug?
+			if($content_panel_slug) // A specific slug? e.g. `#!content_panel_slug=quick-start-video`.
 				$url = $this->©url->add_query_hash('content_panel_slug', $content_panel_slug, $url);
 
-			if($sidebar_panel_slug) // A specific sidebar panel slug?
+			if($sidebar_panel_slug) // A specific slug? e.g. `#!sidebar_panel_slug=pro-upgrade`.
 				$url = $this->©url->add_query_hash('sidebar_panel_slug', $sidebar_panel_slug, $url);
 
 			return $url;

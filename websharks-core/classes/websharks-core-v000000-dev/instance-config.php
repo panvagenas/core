@@ -536,6 +536,37 @@ namespace websharks_core_v000000_dev
 			 *    This is the `class` only.
 			 */
 			public $ns_class_basename = ''; // e.g. `class`
+
+			/**
+			 * Instance config properties for JavaScript libs.
+			 *
+			 * @param boolean $exclude_core Optional; defaults to a FALSE value. If TRUE, this routine will exclude all core-specific config vars.
+			 *    Since JS plugin extensions depend on the core itself, there's no reason for plugins to load them again.
+			 *
+			 * @return \stdClass A new standard class object instance. This will contain only the essentials.
+			 */
+			public function for_js($exclude_core = FALSE)
+			{
+				$for_js = new \stdClass;
+				foreach($this as $_key => $_value)
+				{
+					if((!$exclude_core // Not excluding core?
+					    && in_array($_key, array('core_name', 'core_site',
+					                             'core_prefix', 'core_prefix_with_dashes',
+					                             'core_ns', 'core_ns_with_dashes',
+					                             'core_ns_stub', 'core_ns_stub_with_dashes'), TRUE))
+
+					   || in_array($_key, array('plugin_name', 'plugin_site',
+					                            'plugin_var_ns', 'plugin_var_ns_with_dashes',
+					                            'plugin_prefix', 'plugin_prefix_with_dashes',
+					                            'plugin_root_ns', 'plugin_root_ns_with_dashes',
+					                            'plugin_root_ns_stub', 'plugin_root_ns_stub_with_dashes'), TRUE)
+					) $for_js->{$_key} = $_value;
+				}
+				unset($_key, $_value);
+
+				return $for_js;
+			}
 		}
 
 		# --------------------------------------------------------------------------------------------------------------------------------

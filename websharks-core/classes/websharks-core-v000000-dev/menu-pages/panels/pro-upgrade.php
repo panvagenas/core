@@ -43,7 +43,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 			$this->content_body = // Pro upgrade.
 
 				'<p class="text-center">'.
-				sprintf($this->__('<a href="%1$s" target="_blank"><strong>%2$s Pro</strong></a> is a recommended upgrade. Enhance your site! <a href="%1$s" target="_blank">Click here <i class="fa fa-external-link"></i></a> to learn more about this amazing software.'),
+				sprintf($this->__('<a href="%1$s" target="_blank"><strong>%2$s Pro</strong></a> is a recommended upgrade. Enhance your site! <a href="%1$s" target="_blank">Click here <i class="fa fa-external-link"></i></a> to learn more about this <strong>amazing software</strong>.'),
 				        esc_attr($this->©url->to_plugin_site_uri('/pro/')), esc_html($this->___instance_config->plugin_name)).
 				'</p>'.
 

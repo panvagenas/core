@@ -38,7 +38,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 		{
 			parent::__construct($___instance_config, $menu_page);
 
-			$this->heading_title = $this->__('Updates Via Email');
+			$this->heading_title = $this->__('Updates Via Email').'<em>!</em>';
 
 			$form_fields = $this->©form_fields(); // Object instance.
 
@@ -55,46 +55,78 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 				sprintf($this->__('Get all the latest news &amp; knowledge base articles from %1$s'), esc_html($this->___instance_config->plugin_name)).
 				'</p>'.
 
-				$form_fields->construct_field_markup(
+				'<div class="form-group">'.
+				'<div class="input-group">'.
+				'<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>'.
+				$form_fields->markup(
 					$form_fields->value($this->©user->first_name),
 					array(
-						'required' => TRUE,
-						'type'     => 'text',
-						'name'     => 'FNAME',
-						'label'    => $this->__('First Name')
+						'required'    => TRUE,
+						'type'        => 'text',
+						'name'        => 'FNAME',
+						'placeholder' => $this->__('First Name')
 					)
 				).
-				$form_fields->construct_field_markup(
+				'</div>'.
+				'</div>'.
+
+				'<div class="form-group">'.
+				'<div class="input-group">'.
+				'<span class="input-group-addon"><i class="fa fa-level-up fa-rotate-90 fa-fw"></i></span>'.
+				$form_fields->markup(
 					$form_fields->value($this->©user->last_name),
 					array(
-						'required' => TRUE,
-						'type'     => 'text',
-						'name'     => 'LNAME',
-						'label'    => $this->__('Last Name')
+						'required'    => TRUE,
+						'type'        => 'text',
+						'name'        => 'LNAME',
+						'placeholder' => $this->__('Last Name')
 					)
 				).
-				$form_fields->construct_field_markup(
+				'</div>'.
+				'</div>'.
+
+				'<div class="form-group">'.
+				'<div class="input-group">'.
+				'<span class="input-group-addon"><i class="fa fa-envelope fa-fw"></i></span>'.
+				$form_fields->markup(
 					$form_fields->value($this->©user->email),
 					array(
-						'required' => TRUE,
-						'type'     => 'email',
-						'name'     => 'EMAIL',
-						'label'    => $this->__('Email Address')
+						'required'    => TRUE,
+						'type'        => 'email',
+						'name'        => 'EMAIL',
+						'placeholder' => $this->__('Email Address')
 					)
 				).
-				$form_fields->construct_field_markup(
-					$form_fields->¤value($this->__('Subscribe')),
+				'</div>'.
+				'</div>'.
+
+				'<div class="form-group">'.
+				'<div class="input-group">'.
+				'<span class="input-group-addon"><i class="fa fa-envelope fa-fw"></i></span>'.
+				$form_fields->markup(
+					$form_fields->value($this->©user->email),
+					array(
+						'required'    => TRUE,
+						'type'        => 'password',
+						'name'        => 'EMAIL',
+						'confirm' => TRUE,
+						'placeholder' => $this->__('Email Address')
+					)
+				).
+				'</div>'.
+				'</div>'.
+
+				'<div class="form-group no-b-margin">'.
+				$form_fields->markup(
+					$this->__('Subscribe').' <i class="fa fa-external-link"></i>',
 					array(
 						'type' => 'submit',
 						'name' => 'subscribe'
 					)
 				).
-				'<p class="text-center no-b-margin">'.
-				sprintf($this->__('<a href="%1$s" target="_blank">%2$s Privacy Policy <i class="fa fa-external-link"></i></a>'),
-				        esc_attr($this->©url->to_plugin_site_uri('/privacy/')), esc_html($this->___instance_config->plugin_name)).
-				'</p>';
+				'</div>'.
 
-			'</form>';
+				'</form>';
 		}
 	}
 }

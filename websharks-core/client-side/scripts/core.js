@@ -13,37 +13,240 @@
  * @since 120318
  */
 
+/* ----------------------------------------------------------------------------------------------------------------------------------------
+ * This is phase one; WebSharks™ Core class definition.
+ * ------------------------------------------------------------------------------------------------------------------------------------- */
+
 (function($) // Begin WebSharks™ Core closure.
 {
-	'use strict'; // Standards.
+	'use strict'; // Strict standards.
 
 	/**
-	 * @type {Object} WebSharks™ Core.
+	 * @type {Object} Core class definition.
 	 */
-	window.$$websharks_core = $$websharks_core || {};
-	if(typeof $$websharks_core.$ === 'function')
+	window.$$websharks_core = window.$$websharks_core || {};
+	if(typeof $$websharks_core.$$ === 'function')
 		return; // Core already exists.
 
 	/**
 	 * @constructor WebSharks™ Core constructor.
+	 *
+	 * @note This is called by the WebSharks™ Core constructor.
+	 *    It sets up dynamic property values available only at runtime.
+	 *
+	 * @param {String} [plugin_root_ns_stub] Plugin's root namespace stub.
+	 *    Optional. Defaults to the core itself; bypass with an empty string.
+	 *
+	 * @param {String} [extension] The name of the extension to generate.
+	 *    Optional; defaults to a value of `$`; i.e. the default extension namespace.
+	 *
+	 * @class $$websharks_core.$$
 	 */
-	$$websharks_core.$ = function(){this.core_constructor.apply(this, arguments);};
+	$$websharks_core.$$ = function(plugin_root_ns_stub, extension)
+	{
+		var core_ns_stub = 'websharks_core'; // Must hard code this here.
+
+		if(typeof plugin_root_ns_stub !== 'string' || !plugin_root_ns_stub)
+			plugin_root_ns_stub = core_ns_stub;
+
+		if(typeof extension !== 'string' || !extension)
+			extension = '$'; // Default extension namespace.
+
+		/**
+		 * @type {Object} All `is...()` type checks.
+		 */
+		this.___is_type_checks = {
+			'string'       : 'is_string',
+			'!string'      : 'is_string',
+			'string:!empty': 'is_string',
+
+			'boolean'       : 'is_boolean',
+			'!boolean'      : 'is_boolean',
+			'boolean:!empty': 'is_boolean',
+
+			'bool'       : 'is_boolean',
+			'!bool'      : 'is_boolean',
+			'bool:!empty': 'is_boolean',
+
+			'integer'       : 'is_integer',
+			'!integer'      : 'is_integer',
+			'integer:!empty': 'is_integer',
+
+			'float'       : 'is_float',
+			'!float'      : 'is_float',
+			'float:!empty': 'is_float',
+
+			'number'       : 'is_number',
+			'!number'      : 'is_number',
+			'number:!empty': 'is_number',
+
+			'numeric'       : 'is_numeric',
+			'!numeric'      : 'is_numeric',
+			'numeric:!empty': 'is_numeric',
+
+			'array'       : 'is_array',
+			'!array'      : 'is_array',
+			'array:!empty': 'is_array',
+
+			'function'       : 'is_function',
+			'!function'      : 'is_function',
+			'function:!empty': 'is_function',
+
+			'xml'       : 'is_xml',
+			'!xml'      : 'is_xml',
+			'xml:!empty': 'is_xml',
+
+			'object'       : 'is_object',
+			'!object'      : 'is_object',
+			'object:!empty': 'is_object',
+
+			'null'       : 'is_null',
+			'!null'      : 'is_null',
+			'null:!empty': 'is_null',
+
+			'undefined'       : 'is_undefined',
+			'!undefined'      : 'is_undefined',
+			'undefined:!empty': 'is_undefined'
+		};
+
+		/**
+		 * @type {String} Represents a `public` type.
+		 */
+		this.___public_type = '___public_type___';
+
+		/**
+		 * @type {String} Represents a `protected` type.
+		 */
+		this.___protected_type = '___protected_type___';
+
+		/**
+		 * @type {String} Represents a `private` type.
+		 */
+		this.___private_type = '___private_type___';
+
+		/**
+		 * @type {Object} Instance cache.
+		 */
+		this.cache = {}; // Initialize object cache.
+
+		/**
+		 * @type {Object} Current plugin root namespace stubs.
+		 */
+		this.___plugin_root_ns_stubs = [];
+
+		// Build the dynamic `___plugin_root_ns_stubs` property.
+		// Only the core's default `$` extension has this array.
+
+		if(plugin_root_ns_stub === core_ns_stub && extension === '$')
+			if(typeof window['$' + core_ns_stub + '___plugin_root_ns_stubs'] === 'object')
+				if(window['$' + core_ns_stub + '___plugin_root_ns_stubs'] instanceof Array)
+					this.___plugin_root_ns_stubs = window['$' + core_ns_stub + '___plugin_root_ns_stubs'];
+
+		/**
+		 * @type {Object} Current instance configuration.
+		 */
+		this.___instance_config = {plugin_js_extension_ns: extension};
+
+		// Build the dynamic `___instance_config` property.
+
+		if(typeof window['$' + core_ns_stub + '___instance_config'] === 'object')
+			$.extend(this.___instance_config, window['$' + core_ns_stub + '___instance_config']);
+
+		if(typeof window['$' + plugin_root_ns_stub + '___instance_config'] === 'object')
+			$.extend(this.___instance_config, window['$' + plugin_root_ns_stub + '___instance_config']);
+
+		/**
+		 * @type {Object} Current translations.
+		 */
+		this.___i18n = {}; // Initialize.
+
+		// Build the dynamic `___i18n` property.
+
+		if(typeof window['$' + core_ns_stub + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + core_ns_stub + '___i18n']);
+
+		if(typeof window['$' + core_ns_stub + '__' + extension + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + core_ns_stub + '__' + extension + '___i18n']);
+
+		// Build the dynamic `___i18n` property; allow plugins to override.
+
+		if(typeof window['$' + plugin_root_ns_stub + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + plugin_root_ns_stub + '___i18n']);
+
+		if(typeof window['$' + plugin_root_ns_stub + '__' + extension + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + plugin_root_ns_stub + '__' + extension + '___i18n']);
+
+		/**
+		 * @type {Object} Current verifiers.
+		 */
+		this.___verifiers = {}; // Initialize.
+
+		// Build the dynamic `___verifiers` property.
+
+		if(typeof window['$' + plugin_root_ns_stub + '___verifiers'] === 'object')
+			$.extend(this.___verifiers, window['$' + plugin_root_ns_stub + '___verifiers']);
+
+		if(typeof window['$' + plugin_root_ns_stub + '__' + extension + '___verifiers'] === 'object')
+			$.extend(this.___verifiers, window['$' + plugin_root_ns_stub + '__' + extension + '___verifiers']);
+	};
 
 	/**
-	 * @type {Object} Current instance configuration.
+	 * Builds a new extension of the core prototype.
+	 *
+	 * @param {String} plugin_root_ns_stub Plugin's root namespace stub.
+	 *    Optional. Defaults to the core itself; bypass with an empty string.
+	 *
+	 * @param {String} extension The name of the extension to generate (required).
+	 *
+	 * @return $$websharks_core.$$ Extension class (required); extends core prototype.
+	 *    The class will NOT be instantiated here. That's for the caller to handle.
+	 *
+	 * ``` // Example usage.
+	 * window.$plugin = window.$plugin || {}; // Initialize.
+	 * var extension = $websharks_core.$.extension('plugin', 'extension');
+	 * $plugin.$extension = new extension();
+	 * ```
+	 *
+	 * @note Class for a plugin extension is stored as follows: `$$plugin.$$extension`.
+	 * @note Class for a core extension is stored as follows: `$$websharks_core.$$extension`.
 	 */
-	$$websharks_core.$.prototype.___instance_config = {};
+	$$websharks_core.$$.prototype.extension_class = function(plugin_root_ns_stub, extension)
+	{
+		this.check_arg_types('string', 'string:!empty', arguments, 2);
+
+		if(!this.is_default_core_extension()) // Only the core may call this.
+			throw this.sprintf(this.__('core_only_failure'), 'extension_class');
+
+		if(plugin_root_ns_stub && plugin_root_ns_stub !== this.instance_config('core_ns_stub'))
+		{
+			window['$$' + plugin_root_ns_stub] = window['$$' + plugin_root_ns_stub] || {};
+			window['$$' + plugin_root_ns_stub]['$$' + extension] = function(){}; // Class constructor.
+			window['$$' + plugin_root_ns_stub]['$$' + extension].prototype = new $$websharks_core.$$(plugin_root_ns_stub, extension);
+			window['$$' + plugin_root_ns_stub]['$$' + extension].prototype.constructor = window['$$' + plugin_root_ns_stub]['$$' + extension];
+
+			return window['$$' + plugin_root_ns_stub]['$$' + extension]; // e.g. `$$plugin.$$extension`.
+		}
+		else if(extension !== '$') // The core itself. No need for another global variable in this case.
+		{
+			$$websharks_core['$$' + extension] = function(){}; // Class constructor.
+			$$websharks_core['$$' + extension].prototype = new $$websharks_core.$$('', extension);
+			$$websharks_core['$$' + extension].prototype.constructor = $$websharks_core['$$' + extension];
+
+			return $$websharks_core['$$' + extension]; // e.g. `$$websharks_core.$$extension`.
+		}
+		throw 'extension === $'; // This should not happen.
+	};
 
 	/**
 	 * Get instance configuration property.
 	 *
-	 * @param key {String} Key to get.
+	 * @param {String} key Key to get.
 	 *
 	 * @return {String|Array|Object|Number|Boolean}
 	 */
-	$$websharks_core.$.prototype.instance_config = function(key)
+	$$websharks_core.$$.prototype.instance_config = function(key)
 	{
-		if(!this.empty(typeof this.___instance_config[key]))
+		if(typeof this.___instance_config[key] === 'string')
 			return this.___instance_config[key];
 
 		throw this.sprintf(this.__('instance_config__failure'), key);
@@ -56,7 +259,7 @@
 	 *
 	 * @returns {String}
 	 */
-	$$websharks_core.$.prototype.sprintf = function()
+	$$websharks_core.$$.prototype.sprintf = function()
 	{
 		return $$websharks_core.sprintf.apply(window, arguments);
 	};
@@ -68,24 +271,19 @@
 	 *
 	 * @returns {String}
 	 */
-	$$websharks_core.$.prototype.vsprintf = function()
+	$$websharks_core.$$.prototype.vsprintf = function()
 	{
 		return $$websharks_core.vsprintf.apply(window, arguments);
 	};
 
 	/**
-	 * @type {Object} Current verifiers.
-	 */
-	$$websharks_core.$.prototype.___verifiers = {};
-
-	/**
 	 * Get string verifier property.
 	 *
-	 * @param key {String} Key to get.
+	 * @param {String} key Key to get.
 	 *
 	 * @return {String}
 	 */
-	$$websharks_core.$.prototype.verifier = function(key)
+	$$websharks_core.$$.prototype.verifier = function(key)
 	{
 		if(typeof this.___verifiers[key] === 'string')
 			return this.___verifiers[key];
@@ -94,18 +292,13 @@
 	};
 
 	/**
-	 * @type {Object} Current translations.
-	 */
-	$$websharks_core.$.prototype.___i18n = {};
-
-	/**
 	 * Get i18n string translation property.
 	 *
-	 * @param key {String} Key to get.
+	 * @param {String} key Key to get.
 	 *
 	 * @return {String}
 	 */
-	$$websharks_core.$.prototype.__ = function(key)
+	$$websharks_core.$$.prototype.__ = function(key)
 	{
 		if(typeof this.___i18n[key] === 'string')
 			return this.___i18n[key];
@@ -114,122 +307,13 @@
 	};
 
 	/**
-	 * @type {Object} All `is...()` type checks.
-	 */
-	$$websharks_core.$.prototype.___is_type_checks = {
-		'string'       : 'is_string',
-		'!string'      : 'is_string',
-		'string:!empty': 'is_string',
-
-		'boolean'       : 'is_boolean',
-		'!boolean'      : 'is_boolean',
-		'boolean:!empty': 'is_boolean',
-
-		'bool'       : 'is_boolean',
-		'!bool'      : 'is_boolean',
-		'bool:!empty': 'is_boolean',
-
-		'integer'       : 'is_integer',
-		'!integer'      : 'is_integer',
-		'integer:!empty': 'is_integer',
-
-		'float'       : 'is_float',
-		'!float'      : 'is_float',
-		'float:!empty': 'is_float',
-
-		'number'       : 'is_number',
-		'!number'      : 'is_number',
-		'number:!empty': 'is_number',
-
-		'numeric'       : 'is_numeric',
-		'!numeric'      : 'is_numeric',
-		'numeric:!empty': 'is_numeric',
-
-		'array'       : 'is_array',
-		'!array'      : 'is_array',
-		'array:!empty': 'is_array',
-
-		'function'       : 'is_function',
-		'!function'      : 'is_function',
-		'function:!empty': 'is_function',
-
-		'xml'       : 'is_xml',
-		'!xml'      : 'is_xml',
-		'xml:!empty': 'is_xml',
-
-		'object'       : 'is_object',
-		'!object'      : 'is_object',
-		'object:!empty': 'is_object',
-
-		'null'       : 'is_null',
-		'!null'      : 'is_null',
-		'null:!empty': 'is_null',
-
-		'undefined'       : 'is_undefined',
-		'!undefined'      : 'is_undefined',
-		'undefined:!empty': 'is_undefined'
-	};
-
-	/**
-	 * @type {String} Represents a `public` type.
-	 */
-	$$websharks_core.$.prototype.___public_type = '___public_type___';
-
-	/**
-	 * @type {String} Represents a `protected` type.
-	 */
-	$$websharks_core.$.prototype.___protected_type = '___protected_type___';
-
-	/**
-	 * @type {String} Represents a `private` type.
-	 */
-	$$websharks_core.$.prototype.___private_type = '___private_type___';
-
-	/**
-	 * WebSharks™ Core constructor.
-	 *
-	 * @note This is called by the WebSharks™ Core constructor.
-	 *    It sets up dynamic property values available only at runtime.
-	 *
-	 * @param plugin_root_ns_stub {String} Optional plugin root namespace stub.
-	 * @param extension {String} Optional plugin extension name (if creating new extensions).
-	 */
-	$$websharks_core.$.prototype.core_constructor = function(plugin_root_ns_stub, extension)
-	{
-		this.check_arg_types('string', 'string', arguments, 0);
-
-		var core_ns_stub = 'websharks_core'; // Hard-coded.
-
-		// Set dynamic `___i18n` property.
-
-		this.___i18n = $.extend({}, this.___i18n, window['$' + core_ns_stub + '___i18n']);
-		if(!this.empty(plugin_root_ns_stub) && typeof window['$' + plugin_root_ns_stub + '___i18n'] === 'object')
-			$.extend(this.___i18n, window['$' + plugin_root_ns_stub + '___i18n']);
-
-		if(!this.empty(plugin_root_ns_stub, extension) && typeof window['$' + plugin_root_ns_stub + '__' + extension + '___i18n'] === 'object')
-			$.extend(this.___i18n, window['$' + plugin_root_ns_stub + '__' + extension + '___i18n']);
-
-		// Set dynamic `___instance_config` property.
-
-		this.___instance_config = window['$' + core_ns_stub + '__current_plugin___instance_config'];
-		if(!this.empty(plugin_root_ns_stub) && typeof window['$' + plugin_root_ns_stub + '___instance_config'] === 'object')
-			this.___instance_config = window['$' + plugin_root_ns_stub + '___instance_config'];
-
-		// Set dynamic `___verifiers` property.
-
-		this.___verifiers = window['$' + core_ns_stub + '__current_plugin___verifiers'];
-		if(!this.empty(plugin_root_ns_stub) && typeof window['$' + plugin_root_ns_stub + '___verifiers'] === 'object')
-			this.___verifiers = window['$' + plugin_root_ns_stub + '___verifiers'];
-	};
-
-	/**
 	 * Test for string type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_string = function(v)
+	$$websharks_core.$$.prototype.is_string = function(v)
 	{
 		return (typeof v === 'string');
 	};
@@ -237,11 +321,11 @@
 	/**
 	 * Test for boolean type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_boolean = function(v)
+	$$websharks_core.$$.prototype.is_boolean = function(v)
 	{
 		return (typeof v === 'boolean');
 	};
@@ -249,11 +333,11 @@
 	/**
 	 * Test for integer type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_integer = function(v)
+	$$websharks_core.$$.prototype.is_integer = function(v)
 	{
 		return (typeof v === 'number' && !isNaN(v) && String(v).indexOf('.') === -1);
 	};
@@ -261,11 +345,11 @@
 	/**
 	 * Test for float type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_float = function(v)
+	$$websharks_core.$$.prototype.is_float = function(v)
 	{
 		return (typeof v === 'number' && !isNaN(v) && String(v).indexOf('.') !== -1);
 	};
@@ -273,11 +357,11 @@
 	/**
 	 * Test for number type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_number = function(v)
+	$$websharks_core.$$.prototype.is_number = function(v)
 	{
 		return (typeof v === 'number' && !isNaN(v));
 	};
@@ -285,11 +369,11 @@
 	/**
 	 * Test for numeric type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_numeric = function(v)
+	$$websharks_core.$$.prototype.is_numeric = function(v)
 	{
 		return ((typeof(v) === 'number' || typeof(v) === 'string') && v !== '' && !isNaN(v));
 	};
@@ -297,11 +381,11 @@
 	/**
 	 * Test for array type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_array = function(v)
+	$$websharks_core.$$.prototype.is_array = function(v)
 	{
 		return (v instanceof Array);
 	};
@@ -309,11 +393,11 @@
 	/**
 	 * Test for function type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_function = function(v)
+	$$websharks_core.$$.prototype.is_function = function(v)
 	{
 		return (typeof v === 'function');
 	};
@@ -321,11 +405,11 @@
 	/**
 	 * Test for XML type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_xml = function(v)
+	$$websharks_core.$$.prototype.is_xml = function(v)
 	{
 		return (typeof v === 'xml');
 	};
@@ -333,11 +417,11 @@
 	/**
 	 * Test for object type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_object = function(v)
+	$$websharks_core.$$.prototype.is_object = function(v)
 	{
 		return (typeof v === 'object');
 	};
@@ -345,11 +429,11 @@
 	/**
 	 * Test for NULL type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_null = function(v)
+	$$websharks_core.$$.prototype.is_null = function(v)
 	{
 		return (typeof v === 'null');
 	};
@@ -357,90 +441,107 @@
 	/**
 	 * Test for undefined type.
 	 *
-	 * @param v {*}
+	 * @param {*} v
 	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.is_undefined = function(v)
+	$$websharks_core.$$.prototype.is_undefined = function(v)
 	{
 		return (typeof v === 'undefined');
 	};
 
 	/**
-	 * Is a value set?
+	 * JavaScript equivalent to PHP's `isset()` function.
 	 *
-	 * @return {Boolean}
+	 * @note Like PHP, this accepts a variable-length list of arguments.
+	 *
+	 * @return {Boolean} False if any of the arguments are `undefined` or `null`.
+	 *    i.e. Only returns true if all of the arguments ARE set.
 	 */
-	$$websharks_core.$.prototype.isset = function()
+	$$websharks_core.$$.prototype.isset = function()
 	{
-		var undefined_var; // Undefined value.
-		for(var _i = 0; _i < arguments.length; _i++) // noinspection JSUnusedAssignment
-			if(arguments[_i] === undefined_var || arguments[_i] === null)
+		for(var _i = 0; _i < arguments.length; _i++)
+			if(arguments[_i] === undefined || arguments[_i] === null)
 				return false;
 		return true;
 	};
 
 	/**
-	 * Is a value empty?
+	 * JavaScript equivalent to PHP's `empty()` function.
 	 *
-	 * @return {Boolean}
+	 * This is NOT a substitute for `typeof` checks.
+	 * We do NOT consider the string `undefined` to be empty.
+	 *    Use `if(typeof X === 'undefined')` please.
+	 *
+	 * @note Unlike PHP, this accepts a variable-length list of arguments.
+	 *
+	 * @return {Boolean} True if any of the arguments are empty.
+	 *    i.e. False if all arguments are NOT empty.
 	 */
-	$$websharks_core.$.prototype.empty = function()
+	$$websharks_core.$$.prototype.empty = function()
 	{
 		empty: // Main iteration loop.
 			for(var _i = 0, _p; _i < arguments.length; _i++)
 			{
-				if(arguments[_i] === '' || arguments[_i] === 0 || arguments[_i] === '0' || arguments[_i] === null || arguments[_i] === false)
-					return true;
+				if(arguments[_i] === '' || arguments[_i] === 0 || arguments[_i] === '0'
+				   || arguments[_i] === null || arguments[_i] === false) return true;
 
 				else if(typeof arguments[_i] === 'undefined')
-					return true;
+				// Note that we do NOT consider the string `undefined` to be empty.
+					return true; // An undefined data value type.
 
 				else if(arguments[_i] instanceof Array && !arguments[_i].length)
-					return true;
+					return true; // An empty array.
 
 				else if(typeof arguments[_i] == 'object')
 				{
 					for(_p in arguments[_i])
 						continue empty;
-					return true;
+					return true; // Object empty.
 				}
 			}
 		return false;
 	};
 
 	/**
+	 * The default WebSharks™ Core extension?
+	 *
+	 * @return {Boolean} True if this is the default WebSharks™ Core extension.
+	 */
+	$$websharks_core.$$.prototype.is_default_core_extension = function()
+	{
+		return (this.instance_config('plugin_root_ns') === this.instance_config('core_ns')
+		        && this.instance_config('plugin_js_extension_ns') === '$');
+	};
+
+	/**
 	 * Quotes regex meta characters.
 	 *
-	 * @param string {String}
-	 * @param delimiter {String}
+	 * @param {String} string
+	 * @param [delimiter] {String|undefined}
 	 *
 	 * @return {String}
 	 */
-	$$websharks_core.$.prototype.preg_quote = function(string, delimiter)
+	$$websharks_core.$$.prototype.preg_quote = function(string, delimiter)
 	{
 		this.check_arg_types('string', 'string', arguments, 1);
 
-		delimiter = !this.empty(delimiter) ? delimiter : ''; // Force string value.
-
-		var metaChars = ['.', '\\', '+', '*', '?', '[', '^', ']', '$', '(', ')', '{', '}', '=', '!', '<', '>', '|', ':', '-'];
-		var regex = new RegExp('([\\' + metaChars.join('\\') + delimiter + '])', 'g');
-
-		return string.replace(regex, '\\$1');
+		delimiter = delimiter ? '\\' + delimiter : ''; // Make this is a string value.
+		return string.replace(new RegExp('[.\\\\+*?[\\^\\]$(){}=!<>|:\\-' + delimiter + ']', 'g'), '\\$&');
 	};
 
 	/**
 	 * Escapes HTML special chars.
 	 *
-	 * @param string {String}
+	 * @param {String} string
 	 *
 	 * @return {String}
 	 */
-	$$websharks_core.$.prototype.esc_html = $$websharks_core.$.prototype.esc_attr = function(string)
+	$$websharks_core.$$.prototype.esc_html = $$websharks_core.$$.prototype.esc_attr = function(string)
 	{
 		this.check_arg_types('string', arguments, 1);
 
-		if(string.match(/[&<>"']/))
+		if(/[&<>"']/.test(string))
 		{
 			string = string.replace(/&/g, '&amp;');
 			string = string.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -452,11 +553,11 @@
 	/**
 	 * Escapes variables for use in jQuery™ attribute selectors.
 	 *
-	 * @param string {String}
+	 * @param {String} string
 	 *
 	 * @return {String}
 	 */
-	$$websharks_core.$.prototype.esc_jquery_attr = function(string)
+	$$websharks_core.$$.prototype.esc_jq_attr = function(string)
 	{
 		this.check_arg_types('string', arguments, 1);
 
@@ -464,113 +565,92 @@
 	};
 
 	/**
-	 * Gets the plugin CSS class name (for current plugin).
+	 * Dashes replace non-alphanumeric chars.
 	 *
-	 * @return {String} CSS class name.
+	 * @param {String} string Any input string value.
 	 *
-	 * @TODO Check this return value.
+	 * @return {String} Dashes replace non-alphanumeric chars.
+	 *    Escape characters `\` are converted into double dashes.
 	 */
-	$$websharks_core.$.prototype.plugin_css_class = function()
+	$$websharks_core.$$.prototype.with_dashes = function(string)
 	{
-		return this.instance_config('plugin_root_ns_stub_with_dashes');
+		this.check_arg_types('string', arguments, 1);
+
+		string = string.replace(/\\/g, '--');
+		string = string.replace(/[^a-z0-9]/gi, '-');
+
+		return string; // With underscores.
 	};
 
 	/**
-	 * Gets closest UI theme CSS class (for current plugin).
+	 * Underscores replace non-alphanumeric chars.
+	 *
+	 * @param {String} string Any input string value.
+	 *
+	 * @return {String} Underscores replace non-alphanumeric chars.
+	 *    Escape characters `\` are converted into double underscores.
+	 */
+	$$websharks_core.$$.prototype.with_underscores = function(string)
+	{
+		this.check_arg_types('string', arguments, 1);
+
+		string = string.replace(/\\/g, '__');
+		string = string.replace(/[^a-z0-9]/gi, '_');
+
+		return string; // With underscores.
+	};
+
+	/**
+	 * Gets closest theme CSS class (for current plugin).
 	 *
 	 * @note The search begins with `to` (and may also end at `to`, if it contains a theme CSS class).
-	 *    The search continues with jQuery™ `parents()`; the search will fail if no parents have a UI theme class.
+	 *    The search continues with jQuery™ `parents()`; the search will fail if no parents have a theme class.
 	 *
-	 * @param object {Node|Object|String} The object to start from.
-	 * @param include_ui_class {Boolean} Include UI class too?
+	 * @param {Node|Object|String} object The object to start from.
+	 * @param {Boolean} [strip_plugin_theme_prefix] Strip plugin/theme prefixes?
+	 *    This argument is optional; it defaults to a value of `true`.
 	 *
-	 * @return {String} CSS class name.
-	 *
-	 * @TODO Check this return value.
+	 * @return {String} CSS class name. The full class name; including the plugin root namespace stub.
 	 */
-	$$websharks_core.$.prototype.closest_ui_theme_css_class_to = function(object, include_ui_class)
+	$$websharks_core.$$.prototype.closest_theme_class_to = function(object, strip_plugin_theme_prefix)
 	{
 		this.check_arg_types(['object', 'string:!empty'], 'boolean', arguments, 1);
+		if(!this.isset(strip_plugin_theme_prefix)) strip_plugin_theme_prefix = true;
 
-		var _this = this, theme_css_class = ''; // Initialize string.
+		var theme_class = '', // Initialize working variables.
+			plugin_root_ns_stub_with_dashes = this.instance_config('plugin_root_ns_stub_with_dashes');
 
-		$(object).add($(object).parents('.' + this.plugin_css_class()))
+		$(object).add($(object).parents('.' + plugin_root_ns_stub_with_dashes))
 			.each(function() // Begin iterations (we have two here).
 			      {
-				      var classes = $(this).attr('class');
-
-				      $.each(classes.split(/\s+/), function(_i, _class)
+				      $.each(String($(this).attr('class')).split(/\s+/), function(_i, _class)
 				      {
-					      if(_class.indexOf('ui-theme-') === 0)
-					      {
-						      theme_css_class = _class;
-						      return false; // Breaks loop.
-					      }
-					      return true; // Default return value.
+					      if(_class.indexOf(plugin_root_ns_stub_with_dashes + '--theme--') === 0)
+						      theme_class = _class;
+					      return (theme_class) ? false : true;
 				      });
-				      if(!_this.empty(theme_css_class))
-					      return false; // Breaks loop.
-				      return true; // Default return value.
+				      return (theme_class) ? false : true;
 			      });
-		if(!this.empty(theme_css_class))
-			return (include_ui_class) ? 'ui ' + theme_css_class : theme_css_class;
-
-		return ''; // Default return value.
+		return strip_plugin_theme_prefix && theme_class
+			? theme_class.replace(plugin_root_ns_stub_with_dashes + '--theme--', '')
+			: theme_class;
 	};
 
 	/**
-	 * Prepares jQuery™ UI forms.
-	 *
-	 * @TODO Check this function.
+	 * Prepare forms; i.e. add a few JS enhancements.
 	 */
-	$$websharks_core.$.prototype.prepare_ui_forms = function()
+	$$websharks_core.$$.prototype.enhance_forms = function()
 	{
-		var _this = this, ui_form = '.' + this.plugin_css_class() + ' form.ui-form';
+		var _ = this; // Initialize working variables.
+		var core_prefix_with_dashes = _.instance_config('core_prefix_with_dashes');
+		var plugin_root_ns_stub_with_dashes = _.instance_config('plugin_root_ns_stub_with_dashes');
+		var $forms = $('.' + plugin_root_ns_stub_with_dashes + ' form');
 
-		// Attach focus handlers to form field containers.
-
-		$(ui_form + ' .ui-form-field-container')
-			.focusin(function(){ $(this).addClass('ui-state-highlight').removeClass('ui-state-default'); })
-			.focusout(function(){ $(this).addClass('ui-state-default').removeClass('ui-state-highlight'); });
-		// Buttonize `input|button` `type="submit|reset|button"` elements.
-
-		$(ui_form + ' input[type="submit"], ' + ui_form + ' input[type="reset"], ' + ui_form + ' input[type="button"], ' +
-		  ui_form + ' button[type="submit"], ' + ui_form + ' button[type="reset"], ' + ui_form + ' button[type="button"]')
-			.button({icons: {primary: 'ui-icon-grip-dotted-vertical', secondary: 'ui-icon-grip-dotted-vertical'}});
-
-		// Chrome & Safari autofills.
-
-		if($.browser.webkit) // Chrome & Safari autofills.
-		{
-			var autofill = {interval_time: 100, intervals: 0, max_intervals: 50};
-
-			autofill.interval = setInterval((autofill.handler = function()
-			{
-				autofill.intervals++; // Increments counter.
-
-				if((!('fields' in autofill) || !autofill.fields.length)
-				   && (autofill.fields = $(ui_form + ' input:-webkit-autofill')).length)
-				{
-					clearInterval(autofill.interval);
-					autofill.fields.each(function() // Replace.
-					                     {
-						                     var $this = $(this);
-						                     var clone = $this.clone(true);
-						                     $this.after(clone).remove();
-					                     });
-				}
-				if(autofill.intervals > autofill.max_intervals)
-					clearInterval(autofill.interval);
-
-			}), autofill.interval_time);
-
-			setTimeout(autofill.handler, 50);
-		}
 		// Password strength/mismatch indicators.
 
 		var password_strength_mismatch_status = function(password1, password2)
 		{
-			_this.check_arg_types('string', 'string', arguments, 2);
+			_.check_arg_types('string', 'string', arguments, 2);
 
 			var score = 0; // Initialize score.
 
@@ -581,13 +661,13 @@
 			else if(password1.length < 6)
 				return 'short';
 
-			if(password1.match(/[0-9]/))
+			if(/[0-9]/.test(password1))
 				score += 10;
-			if(password1.match(/[a-z]/))
+			if(/[a-z]/.test(password1))
 				score += 10;
-			if(password1.match(/[A-Z]/))
+			if(/[A-Z]/.test(password1))
 				score += 10;
-			if(password1.match(/[^0-9a-zA-Z]/))
+			if(/[^0-9a-zA-Z]/.test(password1))
 				score = (score === 30) ? score + 20 : score + 10;
 
 			if(score < 30) return 'weak';
@@ -595,131 +675,158 @@
 
 			return 'strong'; // Default return value.
 		};
-		$(ui_form + ' .ui-form-field.ui-form-field-type-password.ui-form-field-confirm')
+		$forms.find(':input[type="password"][data-confirm="true"]')
 			.each(function() // Handles password strength/mismatch indicators.
 			      {
-				      var $field1 = $(this), $field2 = $field1.next('.ui-form-field.ui-form-field-type-password');
-				      var $field_container1 = $('.ui-form-field-container', $field1), $field_container2 = $('.ui-form-field-container', $field2);
-				      var $password1 = $('input[type="password"]', $field_container1), $password2 = $('input[type="password"]', $field_container2);
+				      var progress_bar_status = {
+					      'empty'   : '', // n/a
+					      'short'   : 'danger',
+					      'weak'    : 'warning',
+					      'good'    : 'info',
+					      'strong'  : 'success',
+					      'mismatch': 'danger'
+				      };
+				      var $password1 = $(this), $password2 = $password1.next(':input[type="password"][data-confirm!="true"]');
+				      var $progress = $('<div class="progress"><div class="width-100"></div></div>'), $progress_bar = $progress.find('> div');
+				      $password2.addClass('em-t-margin'), $progress.insertAfter($password2), $progress.addClass('em-t-margin');
 
-				      var strength_mismatch_indicator_classes = ['ui-form-field-strength-mismatch-indicator', 'ui-widget', 'ui-widget-content', 'ui-corner-all'];
-				      $field_container2.after('<div class="' + strength_mismatch_indicator_classes.join(' ') + '"></div>'); // Adds the indicator.
-				      var $strength_mismatch_indicator = $('.' + strength_mismatch_indicator_classes.join('.'), $field2);
+				      $password1.add($password2).keyup(function() // Handles `keyup` events & initialization.
+				                                       {
+					                                       var strength_mismatch_status // `empty`, `short`, `weak`, `good`, `strong`, or `mismatch`.
+						                                       = password_strength_mismatch_status($.trim(String($password1.val())), $.trim(String($password2.val())));
 
-				      $password1.add($password2)
-					      .keyup(function() // Handles `keyup` events.
-					             {
-						             var strength_mismatch_status = password_strength_mismatch_status($.trim(String($password1.val())), $.trim(String($password2.val())));
-						             $strength_mismatch_indicator.attr('class', strength_mismatch_indicator_classes.join(' ') + ' ' + strength_mismatch_status)
-							             .html(_this.__('password_strength_mismatch_status__' + strength_mismatch_status));
-					             }).trigger('keyup');
+					                                       if(strength_mismatch_status === 'empty' || !progress_bar_status[strength_mismatch_status])
+						                                       $progress_bar.attr('class', 'width-100'); // Disable the bar itself in this case.
+					                                       else $progress_bar.attr('class', 'progress-bar progress-bar-' + progress_bar_status[strength_mismatch_status] + ' width-100');
+
+					                                       $progress_bar.html(_.__('password_strength_status__' + strength_mismatch_status));
+				                                       })
+					      .trigger('keyup'); // Trigger immediately.
 			      });
-		// Form field validation.
+		// Form field validation handlers.
+		// Here we position validation errors when/if the DOM includes them (i.e. from the server-side).
+		// We also attach an onsubmit form field validation handler too (i.e. client-side JavaScript validation).
 
-		$(ui_form)// Convert response errors for each form, into form field validation-errors.
-			.each(function() // Iteration over each UI form (one at a time).
-			      {
-				      var $form = $(this), $response_errors = $form.prevAll('.responses.errors');
+		$forms.each(function() // Iteration over each form.
+		            {
+			            var $form = $(this), $response_errors = $form.prevAll('.responses.errors');
 
-				      $('ul li[data-form-field-code]', $response_errors)// Only those w/ a form-field-code.
-					      .each(function() // Iterate over each error that includes a form-field-code.
-					            {
-						            var $this = $(this), form_field_code, $input, $response_validation_errors;
+			            $response_errors.find('> ul > li[data-form-field-code]')// Those w/ a form-field-code.
+				            .each(function() // Iterate over each error that includes a form-field-code.
+				                  {
+					                  var $this = $(this), form_field_code, $input,
+						                  $closest_form_group, $validation_errors, $closest_form_group_collapse,
+						                  closest_form_group_collapse_target_id, $closest_form_group_collapse_target;
 
-						            if(_this.empty(form_field_code = $this.attr('data-form-field-code')))
-							            return; // No code for this error (continue loop).
+					                  if(!(form_field_code = $this.attr('data-form-field-code')))
+						                  throw '!data-form-field-code'; // Should not occur.
 
-						            if(!($input = $(':input[name="' + _this.esc_jquery_attr(form_field_code) + '"],' +
-						                            ' :input[name$="' + _this.esc_jquery_attr('[' + form_field_code + ']') + '"],' +
-						                            ' :input[name$="' + _this.esc_jquery_attr('[' + form_field_code + '][]') + '"]',
-						                            $form).first()).length) // First in this form.
-							            return; // Unable to locate form field w/ code.
+					                  if(!($input = $form.find(':input[name="' + _.esc_jq_attr(form_field_code) + '"],' +
+					                                           ' :input[name$="' + _.esc_jq_attr('[' + form_field_code + ']') + '"],' +
+					                                           ' :input[name$="' + _.esc_jq_attr('[' + form_field_code + '][]') + '"]')
+							                  .first()).length) // First in this form.
+						                  throw '!$input.length'; // Should not occur.
 
-						            if(($response_validation_errors = $('.response.validation-errors', $input.closest('.ui-form-field'))).length)
-						            {
-							            $this.clone().appendTo($('ul', $response_validation_errors));
-							            $this.remove(); // Remove original error.
-						            }
-						            else // We need to create a new set of response validation errors (none exist yet).
-						            {
-							            $response_validation_errors = $(// Creates validation errors.
-								            '<div class="responses validation-errors ui-widget ui-corner-bottom ui-state-error">' +
-								            '<ul></ul>' + // Empty here (we'll append `$this` error below).
-								            '</div>'
-							            );
-							            $this.clone().appendTo($('ul', $response_validation_errors));
-							            $this.remove(); // Remove original error.
+					                  if(!($closest_form_group = $input.closest('.form-group')).length)
+						                  throw '!$closest_form_group.length'; // Should not occur.
 
-							            $input.closest('.ui-form-field-container').after($response_validation_errors)
-								            // If it's inside an accordion, let's make sure the accordion is open.
-								            .closest('.ui-accordion-content').prev('.ui-accordion-header.ui-state-default').click();
-						            }
-					            });
-				      if($('ul:empty', $response_errors).length) // Don't leave completely empty.
-					      $('ul', $response_errors).append('<li><span class="ui-icon ui-icon-alert"></span>'
-					                                       + _this.__('validate_ui_form__check_issues_below') + '</li>');
-			      });
-		$(ui_form).attr({'novalidate': 'novalidate'})// Disables HTML 5 validation via browser.
-			.submit(function() // This uses our own form field validation handler instead of the browser's.
-			        {
-				        return _this.validate_ui_form(this);
-			        });
+					                  if(($validation_errors = $closest_form_group.find('.validation-errors')).length)
+					                  {
+						                  $this.clone().appendTo($validation_errors.find('> ul'));
+						                  $this.remove(); // Remove original error.
+					                  }
+					                  else // We need to create a new set of response validation errors (none exist yet).
+					                  {
+						                  $validation_errors = $(// Validation errors.
+							                  '<div class="validation-errors">' +
+							                  '<ul></ul>' + // Empty for now.
+							                  '</div>'
+						                  ); // Now add the <li> tags.
+						                  $this.clone().appendTo($validation_errors.find('> ul'));
+						                  $this.remove(); // Remove original error.
+
+						                  $closest_form_group.append($validation_errors); // Add validation errors.
+
+						                  // If it's wrapped into a collapsible; let's be sure to `show` the collapse.
+						                  if(($closest_form_group_collapse = $closest_form_group.closest('.collapse')).length)
+							                  if((closest_form_group_collapse_target_id = $closest_form_group_collapse.attr('id')))
+								                  if(($closest_form_group_collapse_target = $closest_form_group_collapse.parentsUntil('.' + plugin_root_ns_stub_with_dashes + '.wrapper')
+										                  .find('[data-toggle="' + _.esc_jq_attr(core_prefix_with_dashes) + 'collapse"][href="#' + _.esc_jq_attr(closest_form_group_collapse_target_id) + '"],' +
+								                              '[data-toggle="' + _.esc_jq_attr(core_prefix_with_dashes) + 'collapse"][data-target="' + _.esc_jq_attr(closest_form_group_collapse_target_id) + '"]')).length)
+									                  $closest_form_group_collapse_target.wscCollapse({toggle: false}).wscCollapse('show');
+					                  }
+				                  }); // Don't leave the response errors completely empty.
+			            $response_errors.find('> ul:empty').append('<li><i class="fa fa-exclamation-triangle"></i> ' + _.__('validate_form__check_issues_below') + '</li>');
+		            });
+		$forms.attr({'novalidate': 'novalidate'})// Disables HTML 5 validation via browser.
+			.on('submit', function() // This uses our own form field validation handler instead of the browser's.
+			    {
+				    return _.validate_form(this);
+			    });
 	};
 
 	/**
 	 * Validates form fields (VERY complex).
 	 *
+	 * @note This function may ONLY be called upon the core itself.
+	 *
 	 * @note This is an EXTREMELY COMPLEX routine that should NOT be modified without serious consideration.
 	 *    See standards here: \websharks_core_v000000_dev\form_fields in the WebSharks™ Core.
 	 *
-	 * @param context {Node|Object|String}
+	 * @param {Node|Object|String} context
 	 *
 	 * @return {Boolean}
 	 *
-	 * @TODO Check this function.
+	 * @TODO Style the validation-errors.
+	 * @TODO Style the progress bar element for password strengths.
+	 * @TODO Style the background color for menu pages.
 	 */
-	$$websharks_core.$.prototype.validate_ui_form = function(context)
+	$$websharks_core.$$.prototype.validate_form = function(context)
 	{
-		this.check_arg_types('object', arguments, 1);
+		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
-		var _this = this; // Self reference.
-		var confirmation_errors = {}, unique_value_errors = {};
-		var required_minimum_errors = {}, rc_required_minimum_errors = {};
-		var validation_errors = {};
+		var _ = this; // Self reference.
+		var confirmation_errors = {}, unique_value_errors = {},
+			required_minimum_errors = {}, rc_required_minimum_errors = {}, validation_errors = {};
+		var core_prefix_with_dashes = _.instance_config('core_prefix_with_dashes');
+		var plugin_root_ns_stub_with_dashes = _.instance_config('plugin_root_ns_stub_with_dashes');
 
 		$('div.validation-errors', context).remove(); // Remove any existing errors.
 
-		$('.ui-form-field.ui-form-field-confirm', context)// Validation routine (for field confirmations).
+		$(':input[data-confirm="true"]', context)// Validation routine (for field confirmations).
 			.each(function() // Checks form fields that request user confirmation (e.g. we look for mismatched fields).
 			      {
-				      var $field1 = $(':input', this).first();
-				      var $field2 = $(':input', $(this).next('.ui-form-field')).first();
+				      var $this = $(this), $field1 = $this,
+					      $field2 = $field1.next(':input[data-confirm!="true"]');
 
-				      if(!_this.empty($field1.attr('readonly')) || !_this.empty($field2.attr('readonly')))
+				      if(!$field1.length || !$field2.length)
+					      throw '!$field1.length || !$field2.length';
+
+				      if($field1.attr('readonly') || $field2.attr('readonly'))
 					      return; // One of these is NOT even enabled (do nothing in this case).
 
-				      if(!_this.empty($field1.attr('disabled')) || !_this.empty($field2.attr('disabled')))
+				      if($field1.attr('disabled') || $field2.attr('disabled'))
 					      return; // One of these is NOT even enabled (do nothing in this case).
 
 				      var id = $field1.attr('id');
-				      if(_this.empty(id) || !_this.is_string(id))
+				      if(!id || !_.is_string(id))
 					      return; // Must have an ID.
-				      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
+				      else id = id.replace(/\-{3}[0-9]+$/, '');
 
 				      confirmation_errors[id] = confirmation_errors[id] || [];
 
 				      var name = $field1.attr('name');
-				      if(_this.empty(name) || !_this.is_string(name))
+				      if(!name || !_.is_string(name))
 					      return; // Must have a name.
 
 				      var tag_name = $field1.prop('tagName');
-				      if(_this.empty(tag_name) || !_this.is_string(tag_name))
+				      if(!tag_name || !_.is_string(tag_name))
 					      return; // Must have a tag name.
 				      else tag_name = tag_name.toLowerCase();
 
 				      var type = $field1.attr('type'); // May need this below (for input tags).
 				      if(tag_name === 'input') // Must have a type for input tags.
-					      if(_this.empty(type) || !_this.is_string(type))
+					      if(!type || !_.is_string(type))
 						      return; // Must have a type.
 					      else type = type.toLowerCase();
 
@@ -732,43 +839,43 @@
 				      // NOTE: It's possible for either of these values to be empty (perfectly OK).
 
 				      var field1_value = $field1.val(); // Possible array.
-				      if(_this.is_number(field1_value)) field1_value = String(field1_value); // Force numeric string.
-				      if(_this.is_string(field1_value)) field1_value = $.trim(field1_value); // Trim string value.
+				      if(_.is_number(field1_value)) field1_value = String(field1_value); // Force numeric string.
+				      if(_.is_string(field1_value)) field1_value = $.trim(field1_value); // Trim string value.
 
 				      var field2_value = $field2.val(); // Possible array.
-				      if(_this.is_number(field2_value)) field2_value = String(field2_value); // Force numeric string.
-				      if(_this.is_string(field2_value)) field2_value = $.trim(field2_value); // Trim string value.
+				      if(_.is_number(field2_value)) field2_value = String(field2_value); // Force numeric string.
+				      if(_.is_string(field2_value)) field2_value = $.trim(field2_value); // Trim string value.
 
 				      if(field1_value !== field2_value) // Values are a mismatch?
-					      confirmation_errors[id].push(_this.__('validate_ui_form__mismatch_fields'));
+					      confirmation_errors[id].push(_.__('validate_form__mismatch_fields'));
 			      });
 		$(':input[data-unique]', context)// Validation routine (for fields that MUST be unique).
 			.each(function() // Checks form fields that require unique values (this relies upon callbacks).
 			      {
 				      var $this = $(this); // jQuery object instance.
 
-				      if(!_this.empty($this.attr('readonly')) || !_this.empty($this.attr('disabled')))
+				      if($this.attr('readonly') || $this.attr('disabled'))
 					      return; // It's NOT even enabled (or it's read-only).
 
 				      var id = $this.attr('id');
-				      if(_this.empty(id) || !_this.is_string(id))
+				      if(!id || !_.is_string(id))
 					      return; // Must have an ID.
-				      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
+				      else id = id.replace(/\-{3}[0-9]+$/, '');
 
 				      unique_value_errors[id] = unique_value_errors[id] || [];
 
 				      var name = $this.attr('name');
-				      if(_this.empty(name) || !_this.is_string(name))
+				      if(!name || !_.is_string(name))
 					      return; // Must have a name.
 
 				      var tag_name = $this.prop('tagName');
-				      if(_this.empty(tag_name) || !_this.is_string(tag_name))
+				      if(!tag_name || !_.is_string(tag_name))
 					      return; // Must have a tag name.
 				      else tag_name = tag_name.toLowerCase();
 
 				      var type = $this.attr('type'); // May need this below (for input tags).
 				      if(tag_name === 'input') // Must have a type for input tags.
-					      if(_this.empty(type) || !_this.is_string(type))
+					      if(!type || !_.is_string(type))
 						      return; // Must have a type.
 					      else type = type.toLowerCase();
 
@@ -780,44 +887,44 @@
 					      return; // Exclude (these are NEVER checked for a unique value).
 
 				      var callback = $this.attr('data-unique-callback'); // Need this below.
-				      if(_this.empty(callback) || !_this.is_string(callback) || typeof window[callback] !== 'function')
+				      if(!callback || !_.is_string(callback) || typeof window[callback] !== 'function')
 					      return; // Must have a type.
 
 				      var value = $this.val(); // Possible array.
-				      if(_this.is_number(value)) value = String(value); // Force numeric string.
-				      if(_this.is_string(value)) value = $.trim(value); // Trim string value.
+				      if(_.is_number(value)) value = String(value); // Force numeric string.
+				      if(_.is_string(value)) value = $.trim(value); // Trim string value.
 
-				      if(!_this.empty(value) && _this.is_string(value) && !window[callback](value))
-					      unique_value_errors[id].push(_this.__('validate_ui_form__unique_field'));
+				      if(value && _.is_string(value) && !window[callback](value))
+					      unique_value_errors[id].push(_.__('validate_form__unique_field'));
 			      });
 		$(':input[data-required]', context)// Validation routine (for required fields).
 			.each(function() // Checks each `data-required` form field (some tag names are handled differently).
 			      {
 				      var $this = $(this); // jQuery object instance.
 
-				      if(!_this.empty($this.attr('readonly')) || !_this.empty($this.attr('disabled')))
+				      if($this.attr('readonly') || $this.attr('disabled'))
 					      return; // It's NOT even enabled (or it's read-only).
 
 				      var id = $this.attr('id');
-				      if(_this.empty(id) || !_this.is_string(id))
+				      if(!id || !_.is_string(id))
 					      return; // Must have an ID.
-				      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
+				      else id = id.replace(/\-{3}[0-9]+$/, '');
 
 				      required_minimum_errors[id] = required_minimum_errors[id] || [];
 				      rc_required_minimum_errors[id] = rc_required_minimum_errors[id] || [];
 
 				      var name = $this.attr('name');
-				      if(_this.empty(name) || !_this.is_string(name))
+				      if(!name || !_.is_string(name))
 					      return; // Must have a name.
 
 				      var tag_name = $this.prop('tagName');
-				      if(_this.empty(tag_name) || !_this.is_string(tag_name))
+				      if(!tag_name || !_.is_string(tag_name))
 					      return; // Must have a tag name.
 				      else tag_name = tag_name.toLowerCase();
 
 				      var type = $this.attr('type'); // May need this below (for input tags).
 				      if(tag_name === 'input') // Must have a type for input tags.
-					      if(_this.empty(type) || !_this.is_string(type))
+					      if(!type || !_.is_string(type))
 						      return; // Must have a type.
 					      else type = type.toLowerCase();
 
@@ -829,8 +936,8 @@
 					      return; // Exclude (these are NEVER required).
 
 				      var value = $this.val(); // Possible array.
-				      if(_this.is_number(value)) value = String(value); // Force numeric string.
-				      if(_this.is_string(value)) value = $.trim(value); // Trim string value.
+				      if(_.is_number(value)) value = String(value); // Force numeric string.
+				      if(_.is_string(value)) value = $.trim(value); // Trim string value.
 
 				      var validation_minimum, validation_min_max_type, validation_abs_minimum = null;
 				      var _i, files, checked; // For files/radios/checkboxes below.
@@ -839,28 +946,28 @@
 				      {
 					      case 'select': // We also check for multiple selections (i.e. `multiple="multiple"`).
 
-						      if(!_this.empty($this.attr('multiple'))) // This field allows multiple selections?
+						      if($this.attr('multiple')) // This field allows multiple selections?
 						      {
 							      if($this.attr('data-validation-name-0')) // Has validators?
 							      {
 								      for(_i = 0; _i <= 24; _i++) // Iterate validation patterns.
 								      {
 									      validation_minimum = $this.attr('data-validation-minimum-' + _i);
-									      validation_minimum = (_this.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
+									      validation_minimum = (_.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
 									      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
-									      if(validation_min_max_type === 'array_length' && _this.isset(validation_minimum) && validation_minimum > 1)
-										      if(!_this.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
+									      if(validation_min_max_type === 'array_length' && _.isset(validation_minimum) && validation_minimum > 1)
+										      if(!_.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
 											      validation_abs_minimum = validation_minimum;
 								      }
-								      if(_this.isset(validation_abs_minimum) && (!_this.is_array(value) || value.length < validation_abs_minimum))
-									      required_minimum_errors[id].push(_this.sprintf(_this.__('validate_ui_form__required_select_at_least'), validation_abs_minimum));
+								      if(_.isset(validation_abs_minimum) && (!_.is_array(value) || value.length < validation_abs_minimum))
+									      required_minimum_errors[id].push(_.sprintf(_.__('validate_form__required_select_at_least'), validation_abs_minimum));
 							      }
-							      if(_this.empty(required_minimum_errors[id]) && (!_this.is_array(value) || value.length < 1))
-								      required_minimum_errors[id].push(_this.__('validate_ui_form__required_select_at_least_one'));
+							      if(!required_minimum_errors[id].length && (!_.is_array(value) || value.length < 1))
+								      required_minimum_errors[id].push(_.__('validate_form__required_select_at_least_one'));
 						      }
-						      else if(!_this.is_string(value) || value.length < 1)
-							      required_minimum_errors[id].push(_this.__('validate_ui_form__required_field'));
+						      else if(!_.is_string(value) || value.length < 1)
+							      required_minimum_errors[id].push(_.__('validate_form__required_field'));
 
 						      break; // Break switch handler.
 
@@ -870,7 +977,7 @@
 						      {
 							      case 'file': // Handle file uploads.
 
-								      if(!_this.empty($this.attr('multiple'))) // Allows multiple files?
+								      if($this.attr('multiple')) // Allows multiple files?
 								      {
 									      files = $this.prop('files'); // List of files (object: FileList).
 
@@ -879,77 +986,77 @@
 										      for(_i = 0; _i <= 24; _i++) // Iterate validation patterns.
 										      {
 											      validation_minimum = $this.attr('data-validation-minimum-' + _i);
-											      validation_minimum = (_this.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
+											      validation_minimum = (_.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
 											      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
-											      if(validation_min_max_type === 'array_length' && _this.isset(validation_minimum) && validation_minimum > 1)
-												      if(!_this.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
+											      if(validation_min_max_type === 'array_length' && _.isset(validation_minimum) && validation_minimum > 1)
+												      if(!_.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
 													      validation_abs_minimum = validation_minimum;
 										      }
-										      if(_this.isset(validation_abs_minimum) && (!(files instanceof FileList) || files.length < validation_abs_minimum))
-											      required_minimum_errors[id].push(_this.sprintf(_this.__('validate_ui_form__required_file_at_least'), validation_abs_minimum));
+										      if(_.isset(validation_abs_minimum) && (!(files instanceof FileList) || files.length < validation_abs_minimum))
+											      required_minimum_errors[id].push(_.sprintf(_.__('validate_form__required_file_at_least'), validation_abs_minimum));
 									      }
-									      if(_this.empty(required_minimum_errors[id]) && (!(files instanceof FileList) || files.length < 1))
-										      required_minimum_errors[id].push(_this.__('validate_ui_form__required_file_at_least_one'));
+									      if(!required_minimum_errors[id].length && (!(files instanceof FileList) || files.length < 1))
+										      required_minimum_errors[id].push(_.__('validate_form__required_file_at_least_one'));
 								      }
-								      else if(!_this.is_string(value) || value.length < 1)
-									      required_minimum_errors[id].push(_this.__('validate_ui_form__required_file'));
+								      else if(!_.is_string(value) || value.length < 1)
+									      required_minimum_errors[id].push(_.__('validate_form__required_file'));
 
 								      break; // Break switch handler.
 
 							      case 'radio': // Radio button(s).
 
-								      checked = $('input[id^="' + _this.esc_jquery_attr(id) + '"]:checked', context).length;
+								      checked = $('input[id^="' + _.esc_jq_attr(id) + '"]:checked', context).length;
 
 								      if(checked < 1) // MUST have at least one checked radio.
 								      {
-									      if(_this.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-										      required_minimum_errors[id].push(_this.__('validate_ui_form__required_radio'));
-									      rc_required_minimum_errors[id].push(_this.__('validate_ui_form__required_radio'));
+									      if(!rc_required_minimum_errors[id].length) // Only ONE error for each group.
+										      required_minimum_errors[id].push(_.__('validate_form__required_radio'));
+									      rc_required_minimum_errors[id].push(_.__('validate_form__required_radio'));
 								      }
 								      break; // Break switch handler.
 
 							      case 'checkbox': // Checkbox(es).
 
-								      checked = $('input[id^="' + _this.esc_jquery_attr(id) + '"]:checked', context).length;
+								      checked = $('input[id^="' + _.esc_jq_attr(id) + '"]:checked', context).length;
 
-								      if($('input[id^="' + _this.esc_jquery_attr(id) + '"]', context).length > 1) // Multiple?
+								      if($('input[id^="' + _.esc_jq_attr(id) + '"]', context).length > 1)
 								      {
 									      if($this.attr('data-validation-name-0')) // Has validators?
 									      {
 										      for(_i = 0; _i <= 24; _i++) // Iterate validation patterns.
 										      {
 											      validation_minimum = $this.attr('data-validation-minimum-' + _i);
-											      validation_minimum = (_this.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
+											      validation_minimum = (_.is_numeric(validation_minimum)) ? Number(validation_minimum) : null;
 											      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
-											      if(validation_min_max_type === 'array_length' && _this.isset(validation_minimum) && validation_minimum > 1)
-												      if(!_this.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
+											      if(validation_min_max_type === 'array_length' && _.isset(validation_minimum) && validation_minimum > 1)
+												      if(!_.isset(validation_abs_minimum) || validation_minimum < validation_abs_minimum)
 													      validation_abs_minimum = validation_minimum;
 										      }
-										      if(_this.isset(validation_abs_minimum) && checked < validation_abs_minimum)
+										      if(_.isset(validation_abs_minimum) && checked < validation_abs_minimum)
 										      {
-											      if(_this.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-												      required_minimum_errors[id].push(_this.sprintf(_this.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
-											      rc_required_minimum_errors[id].push(_this.sprintf(_this.__('validate_ui_form__required_check_at_least'), validation_abs_minimum));
+											      if(!rc_required_minimum_errors[id].length) // Only ONE error for each group.
+												      required_minimum_errors[id].push(_.sprintf(_.__('validate_form__required_check_at_least'), validation_abs_minimum));
+											      rc_required_minimum_errors[id].push(_.sprintf(_.__('validate_form__required_check_at_least'), validation_abs_minimum));
 										      }
 									      }
-									      if(_this.empty(required_minimum_errors[id]) && checked < 1)
+									      if(!required_minimum_errors[id].length && checked < 1)
 									      {
-										      if(_this.empty(rc_required_minimum_errors[id])) // Only ONE error for each group.
-											      required_minimum_errors[id].push(_this.__('validate_ui_form__required_check_at_least_one'));
-										      rc_required_minimum_errors[id].push(_this.__('validate_ui_form__required_check_at_least_one'));
+										      if(!rc_required_minimum_errors[id].length) // Only ONE error for each group.
+											      required_minimum_errors[id].push(_.__('validate_form__required_check_at_least_one'));
+										      rc_required_minimum_errors[id].push(_.__('validate_form__required_check_at_least_one'));
 									      }
 								      }
 								      else if(checked < 1) // A single checkbox.
-									      required_minimum_errors[id].push(_this.__('validate_ui_form__required_checkbox'));
+									      required_minimum_errors[id].push(_.__('validate_form__required_checkbox'));
 
 								      break; // Break switch handler.
 
 							      default: // All other input types (default handler).
 
-								      if(!_this.is_string(value) || value.length < 1)
-									      required_minimum_errors[id].push(_this.__('validate_ui_form__required_field'));
+								      if(!_.is_string(value) || value.length < 1)
+									      required_minimum_errors[id].push(_.__('validate_form__required_field'));
 
 								      break; // Break switch handler.
 						      }
@@ -957,8 +1064,8 @@
 
 					      default: // Everything else (including textarea fields).
 
-						      if(!_this.is_string(value) || value.length < 1)
-							      required_minimum_errors[id].push(_this.__('validate_ui_form__required_field'));
+						      if(!_.is_string(value) || value.length < 1)
+							      required_minimum_errors[id].push(_.__('validate_form__required_field'));
 
 						      break; // Break switch handler.
 				      }
@@ -968,28 +1075,28 @@
 			      {
 				      var $this = $(this); // jQuery object instance.
 
-				      if(!_this.empty($this.attr('readonly')) || !_this.empty($this.attr('disabled')))
+				      if($this.attr('readonly') || $this.attr('disabled'))
 					      return; // It's NOT even enabled (or it's read-only).
 
 				      var id = $this.attr('id');
-				      if(_this.empty(id) || !_this.is_string(id))
+				      if(!id || !_.is_string(id))
 					      return; // Must have an ID.
-				      else id = id.replace(/(.)\-{3}[0-9]+$/, '$1');
+				      else id = id.replace(/\-{3}[0-9]+$/, '');
 
 				      validation_errors[id] = validation_errors[id] || [];
 
 				      var name = $this.attr('name');
-				      if(_this.empty(name) || !_this.is_string(name))
+				      if(!name || !_.is_string(name))
 					      return; // Must have a name.
 
 				      var tag_name = $this.prop('tagName');
-				      if(_this.empty(tag_name) || !_this.is_string(tag_name))
+				      if(!tag_name || !_.is_string(tag_name))
 					      return; // Must have a tag name.
 				      else tag_name = tag_name.toLowerCase();
 
 				      var type = $this.attr('type'); // May need this below (for input tags).
 				      if(tag_name === 'input') // Must have a type for input tags.
-					      if(_this.empty(type) || !_this.is_string(type))
+					      if(!type || !_.is_string(type))
 						      return; // Must have a type.
 					      else type = type.toLowerCase();
 
@@ -1001,14 +1108,14 @@
 					      return; // Exclude (these are NEVER validated here).
 
 				      var value = $this.val(); // Possible array.
-				      if(_this.is_number(value)) value = String(value); // Force numeric string.
-				      if(_this.is_string(value)) value = $.trim(value); // Trim the value.
+				      if(_.is_number(value)) value = String(value); // Force numeric string.
+				      if(_.is_string(value)) value = $.trim(value); // Trim the value.
 
-				      if(_this.empty(typeof value) || _this.empty(typeof value.length) || !value.length)
-					      if(!_this.isset($this.attr('data-required'))) return; // Empty (but NOT required).
+				      if(typeof value === 'undefined' || typeof value.length === 'undefined' || !value.length)
+					      if(!_.isset($this.attr('data-required'))) return; // Empty (but NOT required).
 					      else // This value is required and it is NOT defined. We need to stop here.
 					      {
-						      validation_errors[id].push(_this.__('validate_ui_form__required_field'));
+						      validation_errors[id].push(_.__('validate_form__required_field'));
 						      return; // We CANNOT validate this any further.
 					      }
 				      var validation_description_prefix, validation_name, validation_regex;
@@ -1019,27 +1126,27 @@
 
 				      for(id_validation_errors = [], rc_id_validation_errors = [], _i = 0; _i <= 24; _i++)
 				      {
-					      if(!_this.empty(id_validation_errors))
-						      validation_description_prefix = _this.__('validate_ui_form__or_validation_description_prefix');
-					      else validation_description_prefix = _this.__('validate_ui_form__validation_description_prefix');
+					      if(id_validation_errors.length)
+						      validation_description_prefix = _.__('validate_form__or_validation_description_prefix');
+					      else validation_description_prefix = _.__('validate_form__validation_description_prefix');
 
 					      validation_name = $this.attr('data-validation-name-' + _i);
-					      if(_this.empty(validation_name) || !_this.is_string(validation_name))
+					      if(!validation_name || !_.is_string(validation_name))
 						      continue; // Must have a validation name.
 
 					      validation_description = $this.attr('data-validation-description-' + _i);
-					      if(_this.empty(validation_description) || !_this.is_string(validation_description))
+					      if(!validation_description || !_.is_string(validation_description))
 						      continue; // Must have a validation description.
 
 					      validation_regex = $this.attr('data-validation-regex-' + _i);
-					      if(_this.empty(validation_regex) || !_this.is_string(validation_regex))
+					      if(!validation_regex || !_.is_string(validation_regex))
 						      validation_regex = '/[\\s\\S]*/';
 
 					      validation_minimum = $this.attr('data-validation-minimum-' + _i);
-					      validation_minimum = (_this.isset(validation_minimum)) ? Number(validation_minimum) : null;
+					      validation_minimum = (_.isset(validation_minimum)) ? Number(validation_minimum) : null;
 
 					      validation_maximum = $this.attr('data-validation-maximum-' + _i);
-					      validation_maximum = (_this.isset(validation_maximum)) ? Number(validation_maximum) : null;
+					      validation_maximum = (_.isset(validation_maximum)) ? Number(validation_maximum) : null;
 
 					      validation_min_max_type = $this.attr('data-validation-min-max-type-' + _i);
 
@@ -1053,7 +1160,7 @@
 					      regex_flags = validation_regex.substr(regex_end + 1);
 					      regex = new RegExp(regex_pattern, regex_flags);
 
-					      if(_this.empty(typeof id_validation_errors[_i])) // Still no error?
+					      if(typeof id_validation_errors[_i] === 'undefined') // Still no error?
 						      switch(tag_name) // Perform regex validations (based on tag name).
 						      {
 							      case 'input': // This includes several type checks.
@@ -1062,17 +1169,17 @@
 								      {
 									      case 'file': // Deal with file uploads.
 
-										      if(!_this.empty($this.attr('multiple')) && (files = $this.prop('files')) instanceof FileList)
+										      if($this.attr('multiple') && (files = $this.prop('files')) instanceof FileList)
 										      {
-											      for(__i = 0; __i < files.length; __i++) if(!_this.is_string(files[__i].name) || !files[__i].name.match(regex))
+											      for(__i = 0; __i < files.length; __i++) if(!_.is_string(files[__i].name) || !regex.test(files[__i].name))
 											      {
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      break; // No need to check any further.
 											      }
 										      } // Else look for a single file.
-										      else if(_this.empty($this.attr('multiple')))
+										      else if(!$this.attr('multiple'))
 										      {
-											      if(!_this.is_string(value) || !value.match(regex)) // Regex validation.
+											      if(!_.is_string(value) || !regex.test(value)) // Regex validation.
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1081,7 +1188,7 @@
 
 										      if($.inArray(type, ['radio', 'checkbox']) === -1) // Exclusions w/ predefined values.
 										      {
-											      if(!_this.is_string(value) || !value.match(regex)) // Regex validation.
+											      if(!_.is_string(value) || !regex.test(value)) // Regex validation.
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1092,12 +1199,12 @@
 
 								      if(tag_name !== 'select') // Exclusions w/ predefined values.
 								      {
-									      if(!_this.is_string(value) || !value.match(regex)) // Regex validation.
+									      if(!_.is_string(value) || !regex.test(value)) // Regex validation.
 										      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 								      }
 								      break; // Break switch handler.
 						      }
-					      if(_this.empty(typeof id_validation_errors[_i]) && (_this.isset(validation_minimum) || _this.isset(validation_maximum)))
+					      if(typeof id_validation_errors[_i] === 'undefined' && (_.isset(validation_minimum) || _.isset(validation_maximum)))
 						      switch(validation_min_max_type) // Handle this based on min/max type.
 						      {
 							      case 'numeric_value': // Against min/max numeric value.
@@ -1111,10 +1218,10 @@
 											      default: // All other types (excluding files/radios/checkboxes).
 												      if($.inArray(type, ['file', 'radio', 'checkbox']) === -1) // Exclusions w/ predefined and/or non-numeric values.
 												      {
-													      if(_this.isset(validation_minimum) && (!_this.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
+													      if(_.isset(validation_minimum) && (!_.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-													      else if(_this.isset(validation_maximum) && (!_this.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
+													      else if(_.isset(validation_maximum) && (!_.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      }
 												      break; // Break switch handler.
@@ -1125,10 +1232,10 @@
 
 										      if(tag_name !== 'select') // Exclusions w/ predefined values.
 										      {
-											      if(_this.isset(validation_minimum) && (!_this.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
+											      if(_.isset(validation_minimum) && (!_.is_string(value) || !value.length || isNaN(value) || Number(value) < validation_minimum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-											      else if(_this.isset(validation_maximum) && (!_this.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
+											      else if(_.isset(validation_maximum) && (!_.is_string(value) || !value.length || isNaN(value) || Number(value) > validation_maximum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1149,10 +1256,10 @@
 												      {
 													      for(size = 0, __i = 0; __i < files.length; __i++) size += files[__i].size;
 
-													      if(_this.isset(validation_minimum) && size < validation_minimum)
+													      if(_.isset(validation_minimum) && size < validation_minimum)
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-													      else if(_this.isset(validation_maximum) && size > validation_maximum)
+													      else if(_.isset(validation_maximum) && size > validation_maximum)
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      }
 												      break; // Break switch handler.
@@ -1172,10 +1279,10 @@
 											      default: // All other types (excluding files/radios/checkboxes).
 												      if($.inArray(type, ['file', 'radio', 'checkbox']) === -1) // Exclusions w/ predefined and/or n/a values.
 												      {
-													      if(_this.isset(validation_minimum) && (!_this.is_string(value) || value.length < validation_minimum))
+													      if(_.isset(validation_minimum) && (!_.is_string(value) || value.length < validation_minimum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-													      else if(_this.isset(validation_maximum) && (!_this.is_string(value) || value.length > validation_maximum))
+													      else if(_.isset(validation_maximum) && (!_.is_string(value) || value.length > validation_maximum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      }
 												      break; // Break switch handler.
@@ -1186,10 +1293,10 @@
 
 										      if(tag_name !== 'select') // Exclusions w/ predefined values.
 										      {
-											      if(_this.isset(validation_minimum) && (!_this.is_string(value) || value.length < validation_minimum))
+											      if(_.isset(validation_minimum) && (!_.is_string(value) || value.length < validation_minimum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-											      else if(_this.isset(validation_maximum) && (!_this.is_string(value) || value.length > validation_maximum))
+											      else if(_.isset(validation_maximum) && (!_.is_string(value) || value.length > validation_maximum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1202,12 +1309,12 @@
 								      {
 									      case 'select': // Select menus w/ multiple options possible.
 
-										      if(!_this.empty($this.attr('multiple')))
+										      if($this.attr('multiple')) // Multiple?
 										      {
-											      if(_this.isset(validation_minimum) && (!_this.is_array(value) || value.length < validation_minimum))
+											      if(_.isset(validation_minimum) && (!_.is_array(value) || value.length < validation_minimum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-											      else if(_this.isset(validation_maximum) && (!_this.is_array(value) || value.length > validation_maximum))
+											      else if(_.isset(validation_maximum) && (!_.is_array(value) || value.length > validation_maximum))
 												      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 										      }
 										      break; // Break switch handler.
@@ -1218,33 +1325,33 @@
 										      {
 											      case 'file': // Handle file uploads w/ multiple files possible.
 
-												      if(!_this.empty($this.attr('multiple'))) // Multiple files possible?
+												      if($this.attr('multiple')) // Multiple files possible?
 												      {
 													      files = $this.prop('files'); // List of files (object: FileList).
 
-													      if(_this.isset(validation_minimum) && (!(files instanceof FileList) || files.length < validation_minimum))
+													      if(_.isset(validation_minimum) && (!(files instanceof FileList) || files.length < validation_minimum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 
-													      else if(_this.isset(validation_maximum) && (!(files instanceof FileList) || files.length > validation_maximum))
+													      else if(_.isset(validation_maximum) && (!(files instanceof FileList) || files.length > validation_maximum))
 														      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 												      }
 												      break; // Break switch handler.
 
 											      case 'checkbox': // Checkboxes (more than one).
 
-												      if($('input[id^="' + _this.esc_jquery_attr(id) + '"]', context).length > 1) // Multiple?
+												      if($('input[id^="' + _.esc_jq_attr(id) + '"]', context).length > 1) // Multiple?
 												      {
-													      checked = $('input[id^="' + _this.esc_jquery_attr(id) + '"]:checked', context).length;
+													      checked = $('input[id^="' + _.esc_jq_attr(id) + '"]:checked', context).length;
 
-													      if(_this.isset(validation_minimum) && checked < validation_minimum)
+													      if(_.isset(validation_minimum) && checked < validation_minimum)
 													      {
-														      if(_this.empty(rc_id_validation_errors)) // Only ONE error for each group.
+														      if(!rc_id_validation_errors.length) // Only ONE error for each group.
 															      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 														      rc_id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 													      }
-													      else if(_this.isset(validation_maximum) && checked > validation_maximum)
+													      else if(_.isset(validation_maximum) && checked > validation_maximum)
 													      {
-														      if(_this.empty(rc_id_validation_errors)) // Only ONE error for each group.
+														      if(!rc_id_validation_errors.length) // Only ONE error for each group.
 															      id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 														      rc_id_validation_errors[_i] = validation_description_prefix + ' ' + validation_description;
 													      }
@@ -1255,13 +1362,15 @@
 								      }
 								      break; // Break switch handler.
 						      }
-					      if(_this.empty(typeof id_validation_errors[_i]) && _this.empty(typeof rc_id_validation_errors[_i]))
-					      // If this one passes, it negates all existing validation errors (e.g. OR logic).
+					      if(typeof id_validation_errors[_i] === 'undefined' && typeof rc_id_validation_errors[_i] === 'undefined')
+					      // If this one passes it negates all existing validation errors (e.g. OR logic).
 						      id_validation_errors = [], rc_id_validation_errors = [];
 				      }
 				      validation_errors[id] = validation_errors[id].concat(id_validation_errors);
 			      });
-		var id, errors = {}, $id, errors_exist, scroll_to_errors = true;
+		var id, errors = {}, errors_exist, scrolled_to_errors = false;
+		var $input, $closest_form_group, $validation_errors, $closest_form_group_collapse,
+			closest_form_group_collapse_target_id, $closest_form_group_collapse_target;
 
 		for(id in confirmation_errors) if(confirmation_errors.hasOwnProperty(id))
 			errors[id] = errors[id] || [], errors[id] = errors[id].concat(confirmation_errors[id]);
@@ -1277,43 +1386,50 @@
 
 		for(id in errors) // Iterate all errors (from all of the routines above).
 		{
-			if(!errors.hasOwnProperty(id) || this.empty(errors[id]))
+			if(!errors.hasOwnProperty(id) || !errors[id].length)
 				continue; // No errors in this entry.
-
 			errors_exist = true; // We DO have errors.
 
-			if(!($id = $('#' + id, context)).length)
-				$id = $('#' + id + '---0', context); // Try radios/checkboxes.
+			if(!($input = $('#' + id, context)).length)
+				$input = $('#' + id + '---0', context); // Radios/checkboxes.
+			if(!$input.length) throw '!$input.length'; // Should not occur.
 
-			if(scroll_to_errors && !(scroll_to_errors = false))// No need to do it again.
-				$.scrollTo($id, {offset: {top: -50, left: 0}, duration: 500});
+			if(!($closest_form_group = $input.closest('.form-group')).length)
+				throw '!$closest_form_group.length'; // Should not occur.
 
-			$id.closest('.ui-form-field-container').after(
-				'<div class="responses validation-errors ui-widget ui-corner-bottom ui-state-error">' +
+			if(!scrolled_to_errors && (scrolled_to_errors = true)) // Once.
+				$.scrollTo($input, {offset: {top: -50, left: 0}, duration: 500});
+
+			$validation_errors = $(// Creates validation errors.
+				'<div class="validation-errors">' +
 				'<ul>' + // Includes an error icon prefix, for each list item we display.
-
-				'<li><span class="ui-icon ui-icon-alert"></span>' +
-				errors[id].join('</li><li><span class="ui-icon ui-icon-alert"></span>') +
+				'<li><i class="fa fa-exclamation-triangle"> ' +
+				errors[id].join('</li><li><i class="fa fa-exclamation-triangle"> ') +
 				'</li>' +
-
 				'</ul>' +
 				'</div>'
-			) // If it's inside an accordion, let's make sure the accordion is open.
-				.closest('.ui-accordion-content').prev('.ui-accordion-header.ui-state-default').click();
-		}
-		if(errors_exist) return false; // Prevents form from being submitted w/ errors.
+			); // The <li> tags are build dynamically.
+			$closest_form_group.append($validation_errors); // Validation errors.
 
-		return true; // Default return value.
+			// If it's wrapped into a collapsible; let's be sure to `show` the collapse.
+			if(($closest_form_group_collapse = $closest_form_group.closest('.collapse')).length)
+				if((closest_form_group_collapse_target_id = $closest_form_group_collapse.attr('id')))
+					if(($closest_form_group_collapse_target = $closest_form_group_collapse.parentsUntil('.' + plugin_root_ns_stub_with_dashes + '.wrapper')
+							.find('[data-toggle="' + _.esc_jq_attr(core_prefix_with_dashes) + 'collapse"][href="#' + _.esc_jq_attr(closest_form_group_collapse_target_id) + '"],' +
+					            '[data-toggle="' + _.esc_jq_attr(core_prefix_with_dashes) + 'collapse"][data-target="' + _.esc_jq_attr(closest_form_group_collapse_target_id) + '"]')).length)
+						$closest_form_group_collapse_target.wscCollapse({toggle: false}).wscCollapse('show');
+		}
+		return errors_exist ? false : true; // Prevents form from being submitted w/ errors.
 	};
 
 	/**
 	 * Gets a query string variable value.
 	 *
-	 * @param query_var {String}
+	 * @param {String} query_var Query var to get the value for.
 	 *
-	 * @return {String}
+	 * @return {String} Query var value; else an empty string.
 	 */
-	$$websharks_core.$.prototype.get_query_var = function(query_var)
+	$$websharks_core.$$.prototype.get_query_var = function(query_var)
 	{
 		this.check_arg_types('string:!empty', arguments, 1);
 
@@ -1336,46 +1452,62 @@
 	/**
 	 * Test for WordPress® administrative areas.
 	 *
-	 * @return {Boolean}
+	 * @return {Boolean} True if we are in an administrative area of the site.
 	 */
-	$$websharks_core.$.prototype.is_admin = function()
+	$$websharks_core.$$.prototype.is_admin = function()
 	{
-		return location.href.match(/\/wp\-admin(?:[\/?#]|$)/) ? true : false;
+		return /\/wp\-admin(?:[\/?#]|$)/.test(location.href);
 	};
 
 	/**
-	 * Is this a WordPress® menu page, for the current plugin?
+	 * Is this a WordPress® menu page for the current plugin?
 	 *
-	 * @param slugs {String|Array}
+	 * @param {String|Array} [slugs] Optional. A string or array of possible slugs.
+	 *    Unlike our PHP version of this function, this one does NOT support wildcards.
 	 *
-	 * @return {String|Boolean}
+	 * @param {Boolean} [return_slug_class_basename] Optional. Defaults to a `false` value.
+	 *    If this is `true`, instead of returning the slug (with dashes) we return the associated
+	 *    menu page class basename (with underscores).
+	 *
+	 * @return {String} An empty string if NOT a plugin menu page.
+	 *
+	 * @see-php See \websharks_core_v000000_dev\menu_pages\is_plugin_page
 	 */
-	$$websharks_core.$.prototype.is_plugin_menu_page = function(slugs)
+	$$websharks_core.$$.prototype.is_plugin_menu_page = function(slugs, return_slug_class_basename)
 	{
-		this.check_arg_types(['string:!empty', 'array:!empty'], arguments, 0);
+		this.check_arg_types(['string', 'array'], 'boolean', arguments, 0);
 
-		var current_page, matches, page_slug; // Initialize.
-		var regex = new RegExp('^' + this.preg_quote(this.instance_config('plugin_root_ns_stub')) + '(?:__(.+))?$');
+		var current_page, matches, slug, slug_class_basename; // Initialize.
+		var plugin_root_ns_stub_with_dashes = this.instance_config('plugin_root_ns_stub_with_dashes');
+		var preg_quote_plugin_root_ns_stub_with_dashes = this.preg_quote(plugin_root_ns_stub_with_dashes);
+		var regex = new RegExp('^' + preg_quote_plugin_root_ns_stub_with_dashes + '(?:\\-\\-(.+))?$');
 
-		if(this.is_admin() && !this.empty(current_page = this.get_query_var('page'))
-		   && (matches = regex.exec(current_page)).length)
+		if(this.is_admin() && (current_page = this.get_query_var('page'))
+		   && (matches = regex.exec(current_page)) && matches.length)
 		{
-			page_slug = (matches.length >= 2 && !this.empty(matches[1]))
-				? matches[1] : this.instance_config('plugin_root_ns_stub');
+			slug = (matches.length >= 2 && matches[1])
+				? matches[1] : plugin_root_ns_stub_with_dashes;
 
-			if(this.empty(slugs)) return page_slug;
-			if(this.is_string(slugs) && page_slug === slugs) return page_slug;
-			if(this.is_array(slugs) && $.inArray(page_slug, slugs) !== -1) return page_slug;
+			if(return_slug_class_basename) // If so, convert this into a string.
+				if(slug === plugin_root_ns_stub_with_dashes) // The plugin's main page?
+					slug_class_basename = 'main_page'; // Convert slug to it's class.
+				else slug_class_basename = this.with_underscores(slug);
+
+			if(this.empty(slugs)// Don't care which slug?
+			   || (this.is_string(slugs) && slug === slugs)
+			   || (this.is_array(slugs) && $.inArray(slug, slugs) !== -1))
+				return return_slug_class_basename && slug_class_basename
+					? slug_class_basename : slug;
 		}
-		return false;
+		return ''; // Empty.
 	};
 
 	/**
 	 * Selects a DOM element.
 	 *
-	 * @param object {Node|Object|String}
+	 * @param {Node|Object|String} object
 	 */
-	$$websharks_core.$.prototype.select_all = function(object)
+	$$websharks_core.$$.prototype.select_all = function(object)
 	{
 		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
@@ -1391,9 +1523,9 @@
 	/**
 	 * Opens source code for a DOM element, in a new window.
 	 *
-	 * @param object {Node|Object|String}
+	 * @param {Node|Object|String} object
 	 */
-	$$websharks_core.$.prototype.view_source = function(object)
+	$$websharks_core.$$.prototype.view_source = function(object)
 	{
 		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
@@ -1421,41 +1553,40 @@
 	/**
 	 * Opens a new window.
 	 *
-	 * @param url {String}
-	 * @param width {Number}
-	 * @param height {Number}
-	 * @param name {String}
+	 * @param {String} url The URL to open in a new window.
+	 * @param {Number} [width] Width of the new window.
+	 * @param {Number} [height] Height of the new window.
+	 * @param {String} [name] Name for the new window.
 	 *
-	 * @return {Object}
+	 * @return {Object}|null A window handle on success.
 	 */
-	$$websharks_core.$.prototype.win_open = function(url, width, height, name)
+	$$websharks_core.$$.prototype.win_open = function(url, width, height, name)
 	{
 		this.check_arg_types('string', 'integer', 'integer', 'string', arguments, 1);
 
-		width = (!this.empty(width)) ? width : 1000, height = (!this.empty(height)) ? height : 700, name = (!this.empty(name)) ? name : '_win_open';
+		width = (width) ? width : 1000, height = (height) ? height : 700, name = (name) ? name : '_win_open';
 		var win, params = 'scrollbars=yes,resizable=yes,centerscreen=yes,modal=yes,width=' + width + ',height=' + height + ',top=' + ((screen.height - height) / 2) + ',screenY=' + ((screen.height - height) / 2) + ',left=' + ((screen.width - width) / 2) + ',screenX=' + ((screen.width - width) / 2);
 
 		if(!(win = open(url, name, params)))
 			alert(this.__('win_open__turn_off_popup_blockers'));
 		else win.blur(), win.focus();
 
-		return win; // Window handle.
+		return win; // Window handle (or null on failure).
 	};
 
 	/**
 	 * JavaScript equivalent to PHP's `mt_rand()` function.
 	 *
-	 * @param min {Number}
-	 * @param max {Number}
+	 * @param {Number} [min] Minimum random number to start from.
+	 * @param {Number} [max] Maximum random number to go up to.
 	 *
-	 * @return {Number}
+	 * @return {Number} Random number.
 	 */
-	$$websharks_core.$.prototype.mt_rand = function(min, max)
+	$$websharks_core.$$.prototype.mt_rand = function(min, max)
 	{
 		this.check_arg_types('integer', 'integer', arguments, 0);
 
-		min = (this.isset(min)) ? min : 0;
-		max = (this.isset(max)) ? max : 2147483647;
+		min = min ? min : 0, max = max ? max : 2147483647;
 
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	};
@@ -1463,13 +1594,13 @@
 	/**
 	 * Adds a query string argument onto a URL.
 	 *
-	 * @param name {String}
-	 * @param value {String}
-	 * @param url {String}
+	 * @param {String} name Query arg key name.
+	 * @param {String} value Query arg value.
+	 * @param {String} url URL to add the query arg to.
 	 *
-	 * @return {String}
+	 * @return {String} URL w/ query arg appended onto it.
 	 */
-	$$websharks_core.$.prototype.add_query_arg = function(name, value, url)
+	$$websharks_core.$$.prototype.add_query_arg = function(name, value, url)
 	{
 		this.check_arg_types('string:!empty', 'string', 'string', arguments, 3);
 
@@ -1482,12 +1613,12 @@
 	/**
 	 * Gets verifier for an AJAX action call.
 	 *
-	 * @param call {String}
-	 * @param type {String}
+	 * @param {String} call Call action.
+	 * @param {String} type Call action type.
 	 *
-	 * @return {String}
+	 * @return {String} Verifier for the call action.
 	 */
-	$$websharks_core.$.prototype.get_call_verifier = function(call, type)
+	$$websharks_core.$$.prototype.get_call_verifier = function(call, type)
 	{
 		this.check_arg_types('string:!empty', 'string:!empty', arguments, 2);
 
@@ -1497,20 +1628,20 @@
 	/**
 	 * Makes an AJAX call.
 	 *
-	 * @param method {String}
-	 * @param call {String}
-	 * @param type {String}
-	 * @param args {Array}
-	 * @param ajax {Object}
+	 * @param {String} method HTTP request method; i.e. `GET` or `POST`.
+	 * @param {String} call Call action.
+	 * @param {String} type Call action type.
+	 * @param {Array} [args] Call action arguments.
+	 * @param {Object} [ajax] Any additional AJAX args.
 	 */
-	$$websharks_core.$.prototype.ajax = function(method, call, type, args, ajax)
+	$$websharks_core.$$.prototype.ajax = function(method, call, type, args, ajax)
 	{
 		this.check_arg_types('string:!empty', 'string:!empty', 'string:!empty', 'array', 'object', arguments, 3);
 
 		var url = this.instance_config('wp_load_url');
 		var plugin_var_ns = this.instance_config('plugin_var_ns');
 
-		ajax = (!this.empty(ajax)) ? ajax : {};
+		ajax = (ajax) ? ajax : {};
 		ajax.type = method, ajax.url = url, ajax.data = {};
 
 		ajax.data[plugin_var_ns + '[a][s]'] = 'ajax';
@@ -1518,20 +1649,27 @@
 		ajax.data[plugin_var_ns + '[a][t]'] = type;
 		ajax.data[plugin_var_ns + '[a][v]'] = this.get_call_verifier(call, type);
 
-		if(!this.empty(args)) ajax.data[plugin_var_ns + '[a][a]'] = JSON.stringify(args);
+		if(args && args.length) // Has arguments?
+			ajax.data[plugin_var_ns + '[a][a]'] = JSON.stringify(args);
 
+		if(!(ajax.complete instanceof Array))
+			ajax.complete = (ajax.complete) ? [ajax.complete] : [];
+		ajax.complete.push(function(jqXHR, status)
+		                   {
+			                   if(status !== 'success') console.log(jqXHR);
+		                   });
 		$.ajax(ajax);
 	};
 
 	/**
 	 * Makes an AJAX call via the GET method.
 	 *
-	 * @param call {String}
-	 * @param type {String}
-	 * @param args {Array}
-	 * @param ajax {Object}
+	 * @param {String} call Call action.
+	 * @param {String} type Call action type.
+	 * @param {Array} [args] Call action arguments.
+	 * @param {Object} [ajax] Any additional AJAX args.
 	 */
-	$$websharks_core.$.prototype.get = function(call, type, args, ajax)
+	$$websharks_core.$$.prototype.get = function(call, type, args, ajax)
 	{
 		this.check_arg_types('string:!empty', 'string:!empty', 'array', 'object', arguments, 2);
 
@@ -1542,12 +1680,12 @@
 	/**
 	 * Makes an AJAX call via the POST method.
 	 *
-	 * @param call {String}
-	 * @param type {String}
-	 * @param args {Array}
-	 * @param ajax {Object}
+	 * @param {String} call Call action.
+	 * @param {String} type Call action type.
+	 * @param {Array} [args] Call action arguments.
+	 * @param {Object} [ajax] Any additional AJAX args.
 	 */
-	$$websharks_core.$.prototype.post = function(call, type, args, ajax)
+	$$websharks_core.$$.prototype.post = function(call, type, args, ajax)
 	{
 		this.check_arg_types('string:!empty', 'string:!empty', 'array', 'object', arguments, 2);
 
@@ -1558,15 +1696,20 @@
 	/**
 	 * Checks argument types.
 	 *
+	 * @note This accepts a variable-length list of arguments.
+	 *    Each argument can be a string or an array containing the type hint(s).
+	 *    The last argument should always be the number of required arguments.
+	 *    The next-to-last argument should contain the `arguments` themselves.
+	 *    i.e. <http://wsharks.com/1kOAjip>
+	 *
 	 * @return {Boolean}
 	 */
-	$$websharks_core.$.prototype.check_arg_types = function()
+	$$websharks_core.$$.prototype.check_arg_types = function()
 	{
 		var _arg_type_hints__args__required_args = $.makeArray(arguments);
 
 		var required_args = Number(_arg_type_hints__args__required_args.pop());
 		var args = $.makeArray(_arg_type_hints__args__required_args.pop());
-
 		var arg_type_hints = _arg_type_hints__args__required_args;
 
 		var total_args = args.length;
@@ -1786,7 +1929,7 @@
 					}
 			}
 
-		if(!this.empty(problem)) // We have a problem!
+		if(problem) // We have a problem!
 		{
 			position = problem.position + 1;
 
@@ -1804,9 +1947,55 @@
 		}
 		return true; // Default return value (no problem).
 	};
-	/**
-	 * @type {Object} WebSharks™ Core instance.
-	 */
-	window.$websharks_core = new $$websharks_core.$();
+})(jQuery); // End WebSharks™ Core closure.
 
+/* ----------------------------------------------------------------------------------------------------------------------------------------
+ * This is phase two; the core initializes itself here.
+ * ------------------------------------------------------------------------------------------------------------------------------------- */
+
+(function($) // Begin WebSharks™ Core closure.
+{
+	'use strict'; // Strict standards.
+
+	/**
+	 * @type {Object} Core class instance.
+	 */
+	window.$websharks_core = window.$websharks_core || {};
+	if(typeof $websharks_core.$ === 'object')
+		return; // Core already exists.
+
+	/**
+	 * @type {$$websharks_core.$$} Core.
+	 */
+	$websharks_core.$ = new $$websharks_core.$$();
+
+	/*
+	 * Globals for each plugin; i.e. object containers.
+	 */
+	if(!$websharks_core.___did_globals) // Only if not done already.
+	{
+		$.each($websharks_core.$.___plugin_root_ns_stubs,
+		       function(plugin_root_ns_stub_index, plugin_root_ns_stub)
+		       {
+			       window['$' + plugin_root_ns_stub] = window['$' + plugin_root_ns_stub] || {};
+		       });
+		$websharks_core.___did_globals = true;
+	}
+	/*
+	 * Core enhances forms for all plugins; one time only.
+	 */
+	if(!$websharks_core.___did_enhance_forms) // Only if not done already.
+	{
+		$.each($websharks_core.$.___plugin_root_ns_stubs,
+		       function(plugin_root_ns_stub_index, plugin_root_ns_stub)
+		       {
+			       var extension // Extension definition.
+				       = $websharks_core.$.extension_class(plugin_root_ns_stub, 'enhance_forms');
+			       window['$' + plugin_root_ns_stub].$enhance_forms = new extension();
+			       var _ = window['$' + plugin_root_ns_stub].$enhance_forms;
+
+			       $(document).on('ready', _.enhance_forms.bind(_));
+		       });
+		$websharks_core.___did_enhance_forms = true;
+	}
 })(jQuery); // End WebSharks™ Core closure.

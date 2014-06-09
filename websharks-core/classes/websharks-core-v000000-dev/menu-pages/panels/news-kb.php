@@ -60,7 +60,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 						'</a>'.
 						'</p>'.
 
-						'<p class="font-80 no-b-margin">'.
+						'<p class="opacity-fade font-80 no-b-margin">'.
 						$this->©string->excerpt($_item['excerpt'], 185).
 						'</p>'.
 

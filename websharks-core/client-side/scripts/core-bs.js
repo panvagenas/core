@@ -512,6 +512,10 @@
 
     this.transitioning = 1
 
+    this.$element.prev('.panel-heading')
+	    .find('> .panel-title i.fa-caret-down')
+	    .removeClass('fa-caret-down').addClass('fa-caret-up')
+
     var complete = function () {
       this.$element
         .removeClass('collapsing')
@@ -550,6 +554,10 @@
       .removeClass('in')
 
     this.transitioning = 1
+
+    this.$element.prev('.panel-heading')
+	    .find('> .panel-title i.fa-caret-up')
+	    .removeClass('fa-caret-up').addClass('fa-caret-down')
 
     var complete = function () {
       this.transitioning = 0
@@ -602,7 +610,8 @@
   // =================
 
   $(document).on('click.wsc-bs.collapse.data-wsc-api', '.wsc [data-toggle=wsc-collapse]', function (e) {
-    var $this   = $(this), href
+    e.preventDefault();
+	 var $this   = $(this), href
     var target  = $this.attr('data-target')
         || e.preventDefault()
         || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') //strip for ie7

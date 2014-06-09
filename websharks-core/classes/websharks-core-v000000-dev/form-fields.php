@@ -8,9 +8,6 @@
  * @author JasWSInc
  * @package WebSharks\Core
  * @since 120318
- *
- * @TODO Update icons used by this class. Done; needs implementation.
- * Remove the `class_prefix` property in this class.
  */
 namespace websharks_core_v000000_dev
 {
@@ -42,20 +39,13 @@ namespace websharks_core_v000000_dev
 		public $name_prefix = '';
 
 		/**
-		 * @var string Empty by default.
-		 *
-		 * @note This can be overridden on a per-field basis.
-		 */
-		public $class_prefix = '';
-
-		/**
 		 * @var string Common CSS classes.
 		 *
 		 * @note This can be supplemented on a per-field basis.
-		 *    Each field can add their own additional common classes.
+		 *    Each form field can add their own additional classes.
 		 *
-		 * @note Common classes, are common to ALL fields in this instance.
-		 *    If a specific field overrides this value, we will use the per-field specification,
+		 * @note Common classes are common to ALL fields in this instance.
+		 *    If a specific field sets the `classes` option we will use the per-field specification;
 		 *    but then we append any globally common classes onto the end of that per-field value.
 		 *    Therefore, these CANNOT be completely overridden on a per-field basis.
 		 */
@@ -67,8 +57,8 @@ namespace websharks_core_v000000_dev
 		 * @note This can be supplemented on a per-field basis.
 		 *    Each field can add their own additional common attributes.
 		 *
-		 * @note Common attributes, are common to ALL fields in this instance.
-		 *    If a specific field overrides this value, we will use the per-field specification,
+		 * @note Common attributes are common to ALL fields in this instance.
+		 *    If a specific field sets the `attrs` option we will use the per-field specification;
 		 *    but then we append any globally common attributes onto the end of that per-field value.
 		 *    Therefore, these CANNOT be completely overridden on a per-field basis.
 		 */
@@ -80,12 +70,8 @@ namespace websharks_core_v000000_dev
 		 * @note This can be overridden on a per-field basis.
 		 *
 		 * @note This is used in `select` fields that allow `multiple` option selections;
-		 *    and also for checkbox`[]` options, sent to the server as arrays.
+		 *    and also for checkbox`[]` options sent to the server as arrays.
 		 *    Update markers pad these arrays with an `___update` index.
-		 *
-		 *    In these two cases, it is a good idea to pad the arrays with an update marker,
-		 *    just in case NO selection is made by a user (e.g. to ensure something is always sent back to the server).
-		 *    This makes it possible to detect empty arrays on the server side.
 		 */
 		public $use_update_markers = FALSE;
 
@@ -102,8 +88,8 @@ namespace websharks_core_v000000_dev
 			'name'                => '',
 
 			// Common, but optional.
-			'label'               => '',
 			'title'               => '',
+			'placeholder'         => '',
 			'tabindex'            => 0,
 
 			// If empty, we establish this dynamically.
@@ -120,13 +106,6 @@ namespace websharks_core_v000000_dev
 			// Does NOT work with radio buttons or checkboxes.
 			// Use: `checked_value`, `checked_by_default`.
 
-			// Details.
-			'details'             => '',
-			'extra_details'       => '',
-
-			// Icon for this field, if applicable.
-			'icon'                => '',
-
 			// Requirements.
 			'unique'              => FALSE,
 			'unique_callback_js'  => '',
@@ -135,11 +114,13 @@ namespace websharks_core_v000000_dev
 			'maxlength'           => 0,
 
 			// Validation patterns.
+			// Each pattern MUST have a `name`, `description` & `regex` pattern (none can be empty).
+			// Each pattern may optionally specify a `minimum`, `maximum` configuration based on `min_max_type`.
+			//    Where `min_max_type` is one of: `array_length`, `string_length`, `numeric_value`, `file_size`.
 			'validation_patterns' => array(),
 
 			// For types: `input|textarea`.
 			'confirm'             => FALSE,
-			'confirmation_label'  => '',
 
 			// For type: `textarea`.
 			'cols'                => 50,
@@ -165,13 +146,8 @@ namespace websharks_core_v000000_dev
 			'move_to_dir'         => '',
 
 			// For type: `radio|checkbox`.
-			'check_label'         => '',
 			'checked_value'       => '1',
 			'checked_by_default'  => FALSE,
-
-			// For type: `radios|checkboxes`.
-			'block_rcs'           => FALSE,
-			'scrolling_block_rcs' => FALSE,
 
 			// Other statuses.
 			'readonly'            => FALSE,
@@ -180,9 +156,7 @@ namespace websharks_core_v000000_dev
 			// Other/misc specs.
 			'spellcheck'          => TRUE,
 			'autocomplete'        => FALSE,
-			'mono'                => FALSE,
 			'use_button_tag'      => TRUE,
-			'div_wrapper_classes' => '',
 
 			// Option update marker.
 			'use_update_marker'   => FALSE,
@@ -193,21 +167,18 @@ namespace websharks_core_v000000_dev
 			// Field name prefix.
 			'name_prefix'         => '',
 
-			// Class prefix.
-			'class_prefix'        => '',
+			// Custom classes.
+			'classes'             => '',
 
-			// Custom/common classes.
-			'common_classes'      => '',
-
-			// Custom/common attributes.
-			'common_attrs'        => ''
+			// Custom attributes.
+			'attrs'               => ''
 		);
 
 		/**
 		 * @var array All possible field types.
 		 *
 		 * @note If this list is updated, we will also need to update
-		 *    the `core.js` validation routines (in many cases).
+		 *    the `core.js` validation routines in many cases.
 		 */
 		public $types = array(
 			'tel',
@@ -263,6 +234,25 @@ namespace websharks_core_v000000_dev
 		);
 
 		/**
+		 * @var array Form control `input` types.
+		 */
+		public $form_control_input_types = array(
+			'tel',
+			'url',
+			'text',
+			'file',
+			'email',
+			'number',
+			'search',
+			'password',
+			'color',
+			'range',
+			'date',
+			'datetime',
+			'datetime-local'
+		);
+
+		/**
 		 * @var array Field types that serve as buttons.
 		 */
 		public $button_types = array(
@@ -274,7 +264,7 @@ namespace websharks_core_v000000_dev
 
 		/**
 		 * @var array Field types that include a single checked value.
-		 *    Note that `radios` and `checkboxes` use options, and NOT a single checked value.
+		 *    Note that `radios` and `checkboxes` use options; NOT a single checked value.
 		 */
 		public $single_check_types = array(
 			'radio',
@@ -283,7 +273,7 @@ namespace websharks_core_v000000_dev
 
 		/**
 		 * @var array Field types that include multiple checked values.
-		 *    Note that `radios` and `checkboxes` use options, and NOT checked values.
+		 *    Note that `radios` and `checkboxes` use options; NOT checked values.
 		 */
 		public $multi_check_types = array(
 			'radios',
@@ -298,34 +288,6 @@ namespace websharks_core_v000000_dev
 			'radios',
 			'checkboxes',
 			'select'
-		);
-
-		/**
-		 * @var array Field types that include an icon.
-		 */
-		public $types_with_icons = array(
-			'tel',
-			'url',
-			'text',
-			'email',
-			'number',
-			'search',
-			'password',
-			'select'
-		);
-
-		/**
-		 * @var array Defaults icons, by field type.
-		 */
-		public $default_icons_by_type = array(
-			'tel'      => 'fa fa-phone',
-			'url'      => 'fa fa-link',
-			'text'     => 'fa fa-keyboard-o',
-			'email'    => 'fa fa-envelope-o',
-			'number'   => 'fa fa-keyboard-o',
-			'search'   => 'fa fa-search',
-			'password' => 'fa fa-key',
-			'select'   => 'fa fa-list-alt'
 		);
 
 		/**
@@ -387,11 +349,8 @@ namespace websharks_core_v000000_dev
 
 			if($properties) $this->set_properties($properties);
 
-			$this->defaults['class_prefix']      = $this->class_prefix;
 			$this->defaults['name_prefix']       = $this->name_prefix;
 			$this->defaults['id_prefix']         = $this->id_prefix;
-			$this->defaults['common_classes']    = $this->common_classes;
-			$this->defaults['common_attrs']      = $this->common_attrs;
 			$this->defaults['use_update_marker'] = $this->use_update_markers;
 
 			if($this->for_call) // For a specific call action?
@@ -402,84 +361,36 @@ namespace websharks_core_v000000_dev
 		 * Builds HTML markup for a form field.
 		 *
 		 * @param null|string (or scalar)|array $field_value The current value(s) for this field.
-		 *    If there is NO current value, set this to NULL; so that default values are considered properly.
-		 *    That is, default values are only implemented, if `$value` is currently NULL.
+		 *    If there is NO current value, set this to NULL so that default values are considered properly.
+		 *    That is, default values are only implemented if `$value` is currently NULL.
 		 *
 		 * @note The current `$field_value` will be piped through `$this->value()` and/or `$this->values()`.
-		 *    In other words, we convert the `$field_value` into a NULL/string/array, depending upon the `type` of form field.
-		 *    The current `call` action will also considered, if this instance is associated with one.
-		 *    See: `$this->value()` and `$this->values()` for further details.
+		 *    In other words, we convert the `$field_value` into a NULL/string/array; depending upon the `type` of form field.
+		 *    The current `call` action will also be considered if this instance is associated with one.
+		 *    See: {@link value()} and {@link values()} for further details.
 		 *
 		 * @param array                         $field Field configuration options.
 		 *
-		 * @return string HTML markup for a form field, compatible with jQuery™ UI themes.
+		 * @return string HTML markup for a form field, compatible with core themes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
 		 * @throws exception If invalid types are found in the configuration array.
-		 *    Each configuration option MUST have a value type matching it's default counterpart, as defined by this routine.
+		 *    Each configuration option MUST have a value type matching it's default counterpart as defined by this routine.
 		 *
 		 * @throws exception If required config options are missing.
 		 */
-		public function construct_field_markup($field_value, $field)
+		public function markup($field_value, $field)
 		{
 			$this->check_arg_types(array('null', 'scalar', 'array'), 'array:!empty', func_get_args());
 
-			$value                                  = $this->value($field_value); // String (or NULL by default).
-			$values                                 = $this->values($field_value); // Array (or NULL by default).
-			$field                                  = $this->standardize_field_config($field_value, $field); // Merge w/ defaults and standardize.
+			$value  = $this->value($field_value); // String (or NULL by default).
+			$values = $this->values($field_value); // Array (or NULL by default).
+
+			$field                                  = $this->check_config($field_value, $field);
 			$this->generated_fields[$field['code']] = $field; // Indexed by code.
 			$html                                   = ''; // Initialize string value.
 
-			if($field['type'] !== 'hidden')
-				$html .= '<div'.
-				         ' class="'.esc_attr($field['id_prefix'].$field['id'].' '.$field['class_prefix'].'form-field-wrapper '.$field['class_prefix'].'form-field-type-'.$field['type'].(($field['confirm']) ? ' '.$field['class_prefix'].'form-field-confirm' : '').' '.$field['class_prefix'].'form-field').
-				         (($field['block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['class_prefix'].'form-field-type-block-rcs') : '').
-				         (($field['scrolling_block_rcs'] && in_array($field['type'], $this->multi_check_types, TRUE)) ? ' '.esc_attr($field['class_prefix'].'form-field-type-scrolling-block-rcs') : '').
-				         esc_attr($field['div_wrapper_classes'].$field['common_classes']).'"'.
-				         $field['common_attrs'].
-				         '>';
-
-			if($field['label'] && $field['type'] !== 'hidden')
-			{
-				$html .= '<label'.
-				         ((in_array($field['type'], $this->multi_check_types, TRUE)) ? '' : ' for="'.esc_attr($field['id_prefix'].$field['id']).'"').
-				         ' class="'.esc_attr($field['class_prefix'].'form-field-label'.$field['common_classes']).'"'.
-				         ' title="'.esc_attr($field['label']).'"'.
-				         $field['common_attrs'].
-				         '>'.
-
-				         (($field['label'] && $field['required'])
-					         ? $field['label'].' '.$this->_x('*', 'form-field-required-marker')
-					         : $field['label']).
-
-				         '</label>';
-			}
-			if($field['details'] && $field['type'] !== 'hidden')
-			{
-				$html .= '<div'.
-				         ' class="'.esc_attr($field['class_prefix'].'form-field-details'.$field['common_classes']).'"'.
-				         $field['common_attrs'].
-				         '>'.
-
-				         $field['details'].
-
-				         '</div>';
-			}
-			if($field['type'] !== 'hidden')
-				$html .= '<div'.
-				         ' class="'.esc_attr($field['class_prefix'].'form-field-wrap '.$field['class_prefix'].'state-default '.$field['class_prefix'].'corner-all'.$field['common_classes']).'"'.
-				         $field['common_attrs'].
-				         '>';
-
-			if(in_array($field['type'], $this->types_with_icons, TRUE) && $field['type'] !== 'hidden')
-			{
-				$html .= '<span'.
-				         ' class="'.esc_attr($field['class_prefix'].'form-field-icon '.$field['class_prefix'].'icon '.$field['class_prefix'].$field['icon'].$field['common_classes']).'"'.
-				         $field['common_attrs'].
-				         '>'.
-				         '</span>';
-			}
 			if(in_array($field['type'], $this->types_with_options, TRUE) && $field['type'] === 'select')
 			{
 				if($field['multiple'] && $field['use_update_marker'])
@@ -493,45 +404,40 @@ namespace websharks_core_v000000_dev
 				$html .= '<select'.
 				         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
 				         ' name="'.esc_attr($field['name_prefix'].$field['name'].(($field['multiple']) ? '[]' : '')).'"'.
-				         ' class="'.esc_attr($field['class_prefix'].'form-field-tag '.$field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
+				         ' class="form-control'.esc_attr($field['classes']).'"'.
 
 				         (($field['multiple']) ? ' multiple="multiple" size="'.esc_attr((string)$field['size']).'"' : '').
 
+				         (($field['confirm']) ? ' data-confirm="'.esc_attr('true').'"' : '').
 				         (($field['required']) ? ' data-required="'.esc_attr('true').'"' : '').
 				         (($field['validation_patterns']) ? ' '.$this->validation_attrs($field['validation_patterns']) : '').
 
-				         (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
 				         (($field['title']) ? ' title="'.esc_attr($field['title']).'"' : '').
+				         (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
 
 				         ((!$field['autocomplete']) ? ' autocomplete="off"' : '').
 
 				         (($field['readonly']) ? ' readonly="readonly"' : '').
 				         (($field['disabled']) ? ' disabled="disabled"' : '').
 
-				         $field['common_attrs'].
+				         $field['attrs']. // Custom attributes.
 				         '>';
 				foreach($field['options'] as $_key => $_option)
 				{
-					if(is_array($_option) && $this->©strings->are_set($_option['label'], $_option['value']))
-					{
-						$html .= '<option'.
-						         ' id="'.esc_attr($field['id_prefix'].$field['id']).'---'.esc_attr($_key).'"'.
-						         ' class="'.esc_attr(trim($field['common_classes'])).'"'.
-						         ' value="'.esc_attr($_option['value']).'"'.
+					$html .= '<option'.
+					         ' id="'.esc_attr($field['id_prefix'].$field['id']).'---'.esc_attr($_key).'"'.
+					         ' value="'.esc_attr($_option['value']).'"'.
 
-						         (((!$field['multiple'] && is_string($value) && $value === $_option['value'])
-						           || (!$field['multiple'] && !isset($value) && $_option['is_default'])
-						           || ($field['multiple'] && is_array($values) && in_array($_option['value'], $values, TRUE))
-						           || ($field['multiple'] && !isset($values) && $_option['is_default']))
-							         ? ' selected="selected"' : '').
+					         (((!$field['multiple'] && is_string($value) && $value === $_option['value'])
+					           || (!$field['multiple'] && !isset($value) && $_option['is_default'])
+					           || ($field['multiple'] && is_array($values) && in_array($_option['value'], $values, TRUE))
+					           || ($field['multiple'] && !isset($values) && $_option['is_default']))
+						         ? ' selected="selected"' : '').
+					         '">'.
 
-						         $field['common_attrs'].
-						         '">'.
+					         $_option['label'].
 
-						         $_option['label'].
-
-						         '</option>';
-					}
+					         '</option>';
 				}
 				unset($_key, $_option);
 
@@ -550,41 +456,36 @@ namespace websharks_core_v000000_dev
 				}
 				foreach($field['options'] as $_key => $_option)
 				{
-					if(is_array($_option) && $this->©strings->are_set($_option['label'], $_option['value']))
-					{
-						$html .= '<label'.
-						         ' class="'.esc_attr($field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
-						         $field['common_attrs'].
-						         '>'.
+					$html .= '<label'. // For each radio/checkbox.
+					         (($field['classes']) ? ' class="'.esc_attr(trim($field['classes'])).'"' : '').
+					         '>'. // Classes apply to the label in a set of radios/checkboxes.
 
-						         '<input'.
-						         ' type="'.esc_attr(rtrim($field['type'], 'es')).'"'.
-						         ' id="'.esc_attr($field['id_prefix'].$field['id']).'---'.esc_attr($_key).'"'.
-						         ' name="'.esc_attr($field['name_prefix'].$field['name'].(($field['type'] === 'checkboxes') ? '[]' : '')).'"'.
-						         ' class="'.esc_attr($field['class_prefix'].'form-field-tag'.$field['common_classes']).'"'.
-						         ' value="'.esc_attr($_option['value']).'"'.
+					         '<input'.
+					         ' type="'.esc_attr(rtrim($field['type'], 'es')).'"'.
+					         ' id="'.esc_attr($field['id_prefix'].$field['id']).'---'.esc_attr($_key).'"'.
+					         ' name="'.esc_attr($field['name_prefix'].$field['name'].(($field['type'] === 'checkboxes') ? '[]' : '')).'"'.
+					         ' value="'.esc_attr($_option['value']).'"'.
 
-						         ((($field['type'] === 'radios' && is_string($value) && $value === $_option['value'])
-						           || ($field['type'] === 'radios' && !isset($value) && $_option['is_default'])
-						           || ($field['type'] === 'checkboxes' && is_array($values) && in_array($_option['value'], $values, TRUE))
-						           || ($field['type'] === 'checkboxes' && !isset($values) && $_option['is_default']))
-							         ? ' checked="checked"' : '').
+					         ((($field['type'] === 'radios' && is_string($value) && $value === $_option['value'])
+					           || ($field['type'] === 'radios' && !isset($value) && $_option['is_default'])
+					           || ($field['type'] === 'checkboxes' && is_array($values) && in_array($_option['value'], $values, TRUE))
+					           || ($field['type'] === 'checkboxes' && !isset($values) && $_option['is_default']))
+						         ? ' checked="checked"' : '').
 
-						         (($field['required']) ? ' data-required="'.esc_attr('true').'"' : '').
-						         (($field['validation_patterns']) ? ' '.$this->validation_attrs($field['validation_patterns']) : '').
+					         (($field['required']) ? ' data-required="'.esc_attr('true').'"' : '').
+					         (($field['validation_patterns']) ? ' '.$this->validation_attrs($field['validation_patterns']) : '').
 
-						         (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
+					         (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
 
-						         (($field['readonly']) ? ' readonly="readonly"' : '').
-						         (($field['disabled']) ? ' disabled="disabled"' : '').
+					         (($field['readonly']) ? ' readonly="readonly"' : '').
+					         (($field['disabled']) ? ' disabled="disabled"' : '').
 
-						         $field['common_attrs'].
-						         ' />'.
+					         $field['attrs']. // Custom attributes.
+					         ' />'.
 
-						         ' '.$_option['label'].
+					         ' '.$_option['label'].
 
-						         '</label>';
-					}
+					         '</label>';
 				}
 				unset($_key, $_option);
 			}
@@ -593,16 +494,17 @@ namespace websharks_core_v000000_dev
 				$html .= '<textarea'.
 				         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
 				         ' name="'.esc_attr($field['name_prefix'].$field['name']).'"'.
+				         ' class="'.esc_attr('form-control'.$field['classes']).'"'.
 
-				         ' class="'.esc_attr($field['class_prefix'].'form-field-tag '.$field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
-
+				         (($field['confirm']) ? ' data-confirm="'.esc_attr('true').'"' : '').
 				         (($field['required']) ? ' data-required="'.esc_attr('true').'"' : '').
 				         (($field['maxlength']) ? ' maxlength="'.esc_attr((string)$field['maxlength']).'"' : '').
 				         (($field['unique']) ? ' data-unique="'.esc_attr('true').'" data-unique-callback="'.esc_attr($field['unique_callback_js']).'"' : '').
 				         (($field['validation_patterns']) ? ' '.$this->validation_attrs($field['validation_patterns']) : '').
 
-				         (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
 				         (($field['title']) ? ' title="'.esc_attr($field['title']).'"' : '').
+				         (($field['placeholder']) ? ' placeholder="'.esc_attr($field['placeholder']).'"' : '').
+				         (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
 
 				         ((!$field['spellcheck']) ? ' spellcheck="false"' : '').
 				         ((!$field['autocomplete']) ? ' autocomplete="off"' : '').
@@ -615,7 +517,7 @@ namespace websharks_core_v000000_dev
 				         ' cols="'.esc_attr((string)$field['cols']).'"'.
 				         ' rows="'.esc_attr((string)$field['rows']).'"'.
 
-				         $field['common_attrs'].
+				         $field['attrs']. // Custom attributes.
 				         '>'.
 
 				         ((!isset($value)) ? esc_html($field['default_value']) : esc_html((string)$value)).
@@ -627,17 +529,18 @@ namespace websharks_core_v000000_dev
 				$html .= '<button'.
 				         ' type="'.esc_attr($field['type']).'"'.
 				         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
-				         ' class="'.esc_attr($field['class_prefix'].'form-field-tag-button '.$field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
+				         (($field['type'] === 'image') ? ' class="'.esc_attr(trim($field['classes'])).'"'
+					         : ' class="btn'.((strpos($field['classes'], 'btn-') !== FALSE) ? '' : (($field['type'] === 'submit')
+						         ? ' btn-primary width-100' : ' btn-default width-100')).
+					           esc_attr($field['classes'])).'"'.
 
-				         ((!isset($value)) ? ' value="'.esc_attr($field['default_value']).'"' : ' value="'.esc_attr((string)$value).'"').
-
-				         (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
 				         (($field['title']) ? ' title="'.esc_attr($field['title']).'"' : '').
+				         (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
 
 				         (($field['readonly']) ? ' readonly="readonly"' : '').
 				         (($field['disabled']) ? ' disabled="disabled"' : '').
 
-				         $field['common_attrs'].
+				         $field['attrs']. // Custom attributes.
 				         '>'.
 
 				         ((!isset($value)) ? $field['default_value'] : (string)$value).
@@ -660,7 +563,7 @@ namespace websharks_core_v000000_dev
 				         ' type="'.esc_attr($field['type']).'"'.
 				         ' id="'.esc_attr($field['id_prefix'].$field['id']).'"'.
 				         ((in_array($field['type'], $this->button_types, TRUE)) ? '' : ' name="'.esc_attr($field['name_prefix'].$field['name'].(($field['type'] === 'file' && $field['multiple']) ? '[]' : '')).'"').
-				         (($field['type'] === 'hidden') ? '' : ' class="'.esc_attr($field['class_prefix'].'form-field-'.((in_array($field['type'], $this->button_types, TRUE)) ? 'tag-button' : 'tag').' '.$field['class_prefix'].'corner-all').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"').
+				         (($field['type'] === 'hidden' || !in_array($field['type'], $this->form_control_input_types, TRUE)) ? '' : ' class="form-control'.esc_attr($field['classes']).'"').
 
 				         (($field['type'] === 'file') ? '' // Exclude (NOT possible to define a value for files).
 					         : ((in_array($field['type'], $this->single_check_types, TRUE)) ? ' value="'.esc_attr($field['checked_value']).'"'
@@ -676,14 +579,16 @@ namespace websharks_core_v000000_dev
 				         (($field['multiple'] && $field['type'] === 'file') ? ' multiple="multiple"' : '').
 
 				         ((in_array($field['type'], $this->button_types, TRUE)) ? '' // Exclude.
-					         : (($field['required']) ? ' data-required="'.esc_attr('true').'"' : '').
+					         : (($field['confirm']) ? ' data-confirm="'.esc_attr('true').'"' : '').
+					           (($field['required']) ? ' data-required="'.esc_attr('true').'"' : '').
 					           (($field['maxlength'] && !in_array($field['type'], array_merge($this->single_check_types, array('file')), TRUE)) ? ' maxlength="'.esc_attr((string)$field['maxlength']).'"' : '').
 					           (($field['unique'] && !in_array($field['type'], array_merge($this->single_check_types, array('file')), TRUE)) ? ' data-unique="'.esc_attr('true').'" data-unique-callback="'.esc_attr($field['unique_callback_js']).'"' : '').
 					           (($field['validation_patterns']) ? ' '.$this->validation_attrs($field['validation_patterns']) : '')).
 
 				         (($field['type'] === 'hidden') ? '' // Exclude.
-					         : (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '').
-					           (($field['title']) ? ' title="'.esc_attr($field['title']).'"' : '')).
+					         : (($field['title']) ? ' title="'.esc_attr($field['title']).'"' : '').
+					           (($field['placeholder']) ? ' placeholder="'.esc_attr($field['placeholder']).'"' : '').
+					           (($field['tabindex']) ? ' tabindex="'.esc_attr((string)$field['tabindex']).'"' : '')).
 
 				         ((in_array($field['type'], array_merge($this->button_types, $this->single_check_types, array('file', 'hidden')), TRUE)) ? '' // Exclude.
 					         : ((!$field['autocomplete']) ? ' autocomplete="off"' : '').
@@ -692,60 +597,28 @@ namespace websharks_core_v000000_dev
 				         (($field['readonly']) ? ' readonly="readonly"' : '').
 				         (($field['disabled']) ? ' disabled="disabled"' : '').
 
-				         $field['common_attrs'].
-				         ' />'.
-
-				         ((in_array($field['type'], $this->single_check_types, TRUE)) ?
-
-					         '<label'.
-					         ' for="'.esc_attr($field['id_prefix'].$field['id']).'"'.
-					         ' class="'.esc_attr($field['class_prefix'].'form-field-check-label').(($field['mono']) ? ' '.esc_attr($field['class_prefix'].'form-field-mono') : '').esc_attr($field['common_classes']).'"'.
-					         $field['common_attrs'].
-					         '>'.
-
-					         ' '.$field['check_label'].
-
-					         '</label>'
-
-					         : '');
+				         $field['attrs']. // Custom attributes.
+				         ' />';
 			}
-			else throw $this->©exception($this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
-			                             sprintf($this->__('Invalid form field type: `%1$s`.'), $field['type']));
-
-			if($field['type'] !== 'hidden') // Close wrap?
-				$html .= '</div>'; // Closes wrap div tag now.
-
-			if($field['extra_details'] && $field['type'] !== 'hidden')
-			{
-				$html .= '<div'.
-				         ' class="'.esc_attr($field['class_prefix'].'form-field-extra-details'.$field['common_classes']).'"'.
-				         $field['common_attrs'].
-				         '>'.
-
-				         $field['extra_details'].
-
-				         '</div>';
-			}
-			if($field['type'] !== 'hidden') // Close wrapper?
-				$html .= '</div>'; // Closes wrapper dive tag now.
+			else throw $this->©exception($this->method(__FUNCTION__).'#invalid_type', get_defined_vars(), sprintf($this->__('Invalid form field type: `%1$s`.'), $field['type']));
 
 			if($field['confirm'] && in_array($field['type'], $this->confirmable_types, TRUE))
 			{
-				$field_clone                        = $field; // Clone.
+				$field_clone = $field; // Clone.
+
+				if($field['placeholder']) // Confirm placeholder.
+					$field_clone['placeholder'] = $this->_x('again to confirm...');
+				$field_clone['name_prefix']         = 'c_'.$field_clone['name_prefix'];
+				$field_clone['id_prefix']           = 'c-'.$field_clone['id_prefix'];
+				$field_clone['code']                = 'c_'.$field_clone['code'];
 				$field_clone['confirm']             = FALSE; // Confirm ONE time only.
 				$field_clone['unique']              = FALSE; // No unique enforcements.
 				$field_clone['unique_callback_js']  = ''; // No unique enforcements.
 				$field_clone['unique_callback_php'] = NULL; // No unique enforcements.
 				$field_clone['required']            = FALSE; // No required enforcements.
 				$field_clone['maxlength']           = 0; // No maxlength enforcements.
-				$field_clone['name_prefix']         = 'c_'.$field_clone['name_prefix']; // Prefix.
-				$field_clone['code']                = 'c_'.$field_clone['code']; // Prefix.
-				$field_clone['id_prefix']           = 'c-'.$field_clone['id_prefix']; // Prefix.
-				$field_clone['label']               = $field_clone['details'] = $field_clone['extra_details'] = ''; // Empty these.
-				if($field_clone['confirmation_label']) // Has a confirmation label for this scenario?
-					$field_clone['label'] = $field_clone['confirmation_label'];
 
-				$html .= $this->construct_field_markup($field_value, $field_clone);
+				$html .= $this->markup($field_value, $field_clone);
 			}
 			return $html; // HTML markup.
 		}
@@ -803,7 +676,7 @@ namespace websharks_core_v000000_dev
 				if(isset($field_values[$_key])) $_value = $field_values[$_key];
 				if(is_array($_value)) unset($_value['___update'], $_value['___file_info']);
 
-				$_field = $this->standardize_field_config($_value, $_field); // Standardize.
+				$_field = $this->check_config($_value, $_field); // Standardize.
 
 				if(!$_field['required'] || !$args['enforce_required_fields']) continue;
 				if($_field['readonly'] && !$args['validate_readonly_fields']) continue;
@@ -836,7 +709,7 @@ namespace websharks_core_v000000_dev
 
 							unset($_validation_pattern, $_validation_abs_minimum); // A bit of housekeeping here.
 						}
-						else if(!is_string($_value) || !strlen($_value))
+						else if(!is_string($_value) || !isset($_value[0])) // Must have at least one char in the string.
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
 							             $this->_x('This is a required field.'));
 
@@ -863,7 +736,7 @@ namespace websharks_core_v000000_dev
 
 							unset($_validation_pattern, $_validation_abs_minimum); // A bit of housekeeping here.
 						}
-						else if(!is_string($_value) || !strlen($_value))
+						else if(!is_string($_value) || !isset($_value[0])) // Must have at least one char in the string.
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
 							             $this->_x('A file MUST be selected please.'));
 
@@ -872,7 +745,7 @@ namespace websharks_core_v000000_dev
 					case 'radio': // Single radio button (not common).
 					case 'radios': // Multiple radio buttons.
 
-						if(!is_string($_value) || !strlen($_value))
+						if(!is_string($_value) || !isset($_value[0])) // Must have at least one char in the string.
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
 							             $this->_x('Please choose one of the available options.'));
 
@@ -880,7 +753,7 @@ namespace websharks_core_v000000_dev
 
 					case 'checkbox': // A single checkbox (string).
 
-						if(!is_string($_value) || !strlen($_value))
+						if(!is_string($_value) || !isset($_value[0])) // Must have at least one char in the string.
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
 							             $this->_x('This box MUST be checked please.'));
 
@@ -909,7 +782,7 @@ namespace websharks_core_v000000_dev
 
 					default: // Everything else (including textarea fields).
 
-						if(!is_string($_value) || !strlen($_value))
+						if(!is_string($_value) || !isset($_value[0])) // Must have at least one char in the string.
 							$errors->add($this->method(__FUNCTION__).'#'.$_field['code'], array('form_field_code' => $_field['code']),
 							             $this->_x('This is a required field.'));
 
@@ -935,7 +808,7 @@ namespace websharks_core_v000000_dev
 					else if(is_string($_value) && $this->©array->is($field_values['___file_info'][$_key]))
 						$_file_info = $field_values['___file_info'][$_key];
 
-				$_field = $this->standardize_field_config($_value, $_field); // Standardize.
+				$_field = $this->check_config($_value, $_field); // Standardize.
 
 				// Catch invalid data types. These should always trigger an error.
 
@@ -971,7 +844,7 @@ namespace websharks_core_v000000_dev
 				// Catch any other NULL, empty and/or invalid values. Stop here?
 
 				if(!isset($_value) || (!is_string($_value) && !is_array($_value))
-				   || (is_string($_value) && !strlen($_value)) || (is_array($_value) && !$_value)
+				   || (is_string($_value) && !isset($_value[0])) || (is_array($_value) && !$_value)
 				) if(!$_field['required'] || !$args['enforce_required_fields']) continue;
 				else // This warrants an error. This field value is invalid or missing.
 				{
@@ -988,7 +861,9 @@ namespace websharks_core_v000000_dev
 						$_validation_description_prefix = $this->_x('<strong>OR:</strong>');
 					else $_validation_description_prefix = $this->_x('<strong>REQUIRES:</strong>');
 
-					if(!is_array($_error_data = $errors->get_data($this->method(__FUNCTION__).'#vp_'.$_field['code'])) || $_error_data['validation_pattern_name'] !== $_validation_pattern['name'])
+					if(!is_array($_error_data = $errors->get_data($this->method(__FUNCTION__).'#vp_'.$_field['code']))
+					   || $_error_data['validation_pattern_name'] !== $_validation_pattern['name']
+					)
 						switch($_field['type']) // Based on field type.
 						{
 							case 'file': // Handle file upload selections.
@@ -1027,7 +902,9 @@ namespace websharks_core_v000000_dev
 								}
 								break; // Break switch handler.
 						}
-					if(!is_array($_error_data = $errors->get_data($this->method(__FUNCTION__).'#vp_'.$_field['code'])) || $_error_data['validation_pattern_name'] !== $_validation_pattern['name'])
+					if(!is_array($_error_data = $errors->get_data($this->method(__FUNCTION__).'#vp_'.$_field['code']))
+					   || $_error_data['validation_pattern_name'] !== $_validation_pattern['name']
+					)
 						if(isset($_validation_pattern['minimum']) || isset($_validation_pattern['maximum']))
 							switch($_validation_pattern['min_max_type']) // Handle this based on min/max type.
 							{
@@ -1084,7 +961,9 @@ namespace websharks_core_v000000_dev
 													}
 													else $__size += $_file_info[$__key]['size']; // Of all files.
 
-													if(!is_array($_error_data = $errors->get_data($this->method(__FUNCTION__).'#vp_'.$_field['code'])) || $_error_data['validation_pattern_name'] !== $_validation_pattern['name'])
+													if(!is_array($_error_data = $errors->get_data($this->method(__FUNCTION__).'#vp_'.$_field['code']))
+													   || $_error_data['validation_pattern_name'] !== $_validation_pattern['name']
+													)
 														if(isset($_validation_pattern['minimum']) && (!is_numeric($__size) || $__size < $_validation_pattern['minimum']))
 															$errors->add($this->method(__FUNCTION__).'#vp_'.$_field['code'],
 															             array('form_field_code' => $_field['code'], 'validation_pattern_name' => $_validation_pattern['name']),
@@ -1176,7 +1055,7 @@ namespace websharks_core_v000000_dev
 									break; // Break switch handler.
 							}
 					if(is_array($_error_data = $errors->get_data($this->method(__FUNCTION__).'#vp_'.$_field['code'])) && $_error_data['validation_pattern_name'] !== $_validation_pattern['name'])
-						$errors->remove($this->method(__FUNCTION__).'#vp_'.$_field['code']); // If this one passes, it negates all existing validation pattern errors.
+						$errors->remove($this->method(__FUNCTION__).'#vp_'.$_field['code']); // If this one passes it negates all existing validation pattern errors.
 				}
 				unset($_validation_pattern, $_validation_description_prefix, $_error_data); // Housekeeping.
 
@@ -1415,7 +1294,6 @@ namespace websharks_core_v000000_dev
 				          ((isset($_validation_pattern['minimum'])) ? ' data-validation-minimum-'.$_i.'="'.esc_attr((string)$_validation_pattern['minimum']).'"' : '').
 				          ((isset($_validation_pattern['maximum'])) ? ' data-validation-maximum-'.$_i.'="'.esc_attr((string)$_validation_pattern['maximum']).'"' : '').
 				          ((isset($_validation_pattern['min_max_type'])) ? ' data-validation-min-max-type-'.$_i.'="'.esc_attr($_validation_pattern['min_max_type']).'"' : '');
-
 			unset($_i, $_validation_pattern); // Just a little housekeeping.
 
 			return $attrs; // Return all attributes now.
@@ -1425,24 +1303,24 @@ namespace websharks_core_v000000_dev
 		 * Checks a field's configuration options.
 		 *
 		 * @param null|string (or scalar)|array $field_value The current value(s) for this field.
-		 *    If there is NO current value, set this to NULL; so that default values are considered properly.
-		 *    That is, default values are only implemented, if `$value` is currently NULL.
+		 *    If there is NO current value, set this to NULL so default values are considered properly.
+		 *    That is, default values are only implemented if `$value` is currently NULL.
 		 *
 		 * @note The current `$field_value` will be piped through {@link value()} and/or {@link values()}.
-		 *    In other words, we convert the `$field_value` into a NULL/string/array, depending upon the `type` of form field.
-		 *    The current `call` action will also considered, if this instance is associated with one.
+		 *    In other words, we convert the `$field_value` into a NULL/string/array; depending upon the `type` of form field.
+		 *    The current `call` action will also considered if this instance is associated with one.
 		 *    See: {@link value()} and {@link values()} for further details.
 		 *
 		 * @param array                         $field The array of field configuration options.
 		 *
-		 * @return array A fully validated, and completely standardized configuration array.
+		 * @return array A fully validated and completely standardized configuration array.
 		 *    Otherwise, we throw an exception on any type of validation failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If invalid types are found in the configuration array.
 		 * @throws exception If required config options are missing.
 		 */
-		public function standardize_field_config($field_value, $field)
+		public function check_config($field_value, $field)
 		{
 			$this->check_arg_types(array('null', 'scalar', 'array'), 'array:!empty', func_get_args());
 
@@ -1528,15 +1406,6 @@ namespace websharks_core_v000000_dev
 					$this->__('Form field. Invalid configuration (invalid `id_prefix`.`id`).').
 					' '.sprintf($this->__('Got: `%1$s`.'), $field['id_prefix'].$field['id'])
 				);
-			// Handle field icons.
-
-			if(in_array($field['type'], $this->types_with_icons, TRUE) && !$field['icon'])
-				if(!empty($this->default_icons_by_type[$field['type']]))
-					$field['icon'] = $this->default_icons_by_type[$field['type']];
-				else throw $this->©exception(
-					$this->method(__FUNCTION__).'#icon_missing', get_defined_vars(),
-					$this->__('Form field. Invalid configuration (missing `icon`).')
-				);
 			// Handle field options.
 
 			$field['options'] = array_values($field['options']);
@@ -1577,7 +1446,6 @@ namespace websharks_core_v000000_dev
 			foreach($field['validation_patterns'] as &$_validation_pattern)
 			{
 				$_validation_pattern = array_merge($_validation_pattern_defaults, (array)$_validation_pattern);
-
 				if((!$this->©strings->are_not_empty($_validation_pattern['name'], $_validation_pattern['description'], $_validation_pattern['regex']))
 				   || (!is_null($_validation_pattern['minimum']) && !is_numeric($_validation_pattern['minimum']))
 				   || (!is_null($_validation_pattern['maximum']) && !is_numeric($_validation_pattern['maximum']))
@@ -1591,26 +1459,19 @@ namespace websharks_core_v000000_dev
 
 			// Handle field titles.
 
-			if(!$field['title'] && $field['label']) $field['title'] = $field['label'];
+			if(!$field['title'] && $field['placeholder']) $field['title'] = rtrim($field['placeholder'], '.');
 			else if(!$field['title'] && in_array($field['type'], $this->button_types, TRUE) && is_string($value))
-				$field['title'] = $value; // Use button value.
+				$field['title'] = trim(strip_tags($value)); // Use button value.
 
 			// Handle common classes.
 
-			if($field['common_classes']) $field['common_classes'] = ' '.$field['common_classes'];
-			if($this->common_classes && trim($field['common_classes']) !== $this->common_classes)
-				$field['common_classes'] .= ' '.$this->common_classes;
+			if(($field['classes'] = trim($field['classes']))) $field['classes'] = ' '.$field['classes'];
+			if($this->common_classes) $field['classes'] .= ' '.$this->common_classes;
 
 			// Handle common attributes.
 
-			if($field['common_attrs']) $field['common_attrs'] = ' '.$field['common_attrs'];
-			if($this->common_attrs && trim($field['common_attrs']) !== $this->common_attrs)
-				$field['common_attrs'] .= ' '.$this->common_attrs;
-
-			// Handle div wrapper classes.
-
-			if($field['div_wrapper_classes']) // Add padding to these.
-				$field['div_wrapper_classes'] = ' '.$field['div_wrapper_classes'];
+			if(($field['attrs'] = trim($field['attrs']))) $field['attrs'] = ' '.$field['attrs'];
+			if($this->common_attrs) $field['attrs'] .= ' '.$this->common_attrs;
 
 			return $field; // Standardized now.
 		}

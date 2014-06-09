@@ -259,8 +259,8 @@ namespace websharks_core_v000000_dev
 		 * @property \websharks_core_v000000_dev\menu_pages\menu_page                     $©menu_pages__menu_page
 		 * @method \websharks_core_v000000_dev\menu_pages\menu_page ©menu_pages__menu_page()
 		 *
-		 * @property \websharks_core_v000000_dev\menu_pages\quick_start                   $©menu_pages__quick_start
-		 * @method \websharks_core_v000000_dev\menu_pages\quick_start ©menu_pages__quick_start()
+		 * @property \websharks_core_v000000_dev\menu_pages\main_page                   $©menu_pages__main_page
+		 * @method \websharks_core_v000000_dev\menu_pages\main_page ©menu_pages__main_page()
 		 *
 		 * @property \websharks_core_v000000_dev\menu_pages\update_sync                   $©menu_pages__update_sync
 		 * @method \websharks_core_v000000_dev\menu_pages\update_sync ©menu_pages__update_sync()

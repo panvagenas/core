@@ -49,17 +49,17 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 				' target="_blank"'.
 				' action="'.esc_attr($this->©url->to_plugin_site_uri('/donate/')).'"'.
 				'>'.
-				$form_fields->construct_field_markup(
+
+				'<div class="form-group">'.
+				'<div class="input-group select-input-group">'.
+				'<span class="input-group-addon"><i class="fa fa-heart fa-fw"></i></span>'.
+				$form_fields->markup(
 					$form_fields->¤value(NULL),
 					array(
 						'required' => TRUE,
 						'type'     => 'select',
 						'name'     => 'amount',
 						'options'  => array(
-							array(
-								'label' => $this->__('— Choose Donation Amount —'),
-								'value' => ''
-							),
 							array(
 								'label' => $this->__('$5.00 USD'),
 								'value' => '5.00'
@@ -115,13 +115,19 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 						)
 					)
 				).
-				$form_fields->construct_field_markup(
-					$form_fields->¤value($this->__('Donate')),
+				'</div>'.
+				'</div>'.
+
+				'<div class="form-group no-b-margin">'.
+				$form_fields->markup(
+					'<i class="fa fa-gift"></i> '.$this->__('Donate').' <i class="fa fa-external-link"></i>',
 					array(
 						'type' => 'submit',
 						'name' => 'donate'
 					)
 				).
+				'</div>'.
+
 				'</form>';
 		}
 	}

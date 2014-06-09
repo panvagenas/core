@@ -22,7 +22,7 @@ namespace websharks_core_v000000_dev\menu_pages
 	 *
 	 * @assert ($GLOBALS[__NAMESPACE__])
 	 */
-	class quick_start extends menu_page
+	class main_page extends menu_page
 	{
 		/**
 		 * Constructor.
@@ -36,7 +36,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			parent::__construct($___instance_config);
 
 			$this->heading_title           = $this->__('Quick-Start Guide');
-			$this->sub_heading_description = sprintf($this->__('A quick overview &amp; a few tips about %1$s.'),
+			$this->sub_heading_description = sprintf($this->__('Quick overview &amp; a few tips regarding %1$s'),
 			                                         esc_html($this->___instance_config->plugin_name));
 		}
 

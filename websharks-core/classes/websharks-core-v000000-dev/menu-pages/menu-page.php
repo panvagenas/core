@@ -26,7 +26,7 @@ namespace websharks_core_v000000_dev\menu_pages
 	{
 		/**
 		 * @var string Slug for this menu page.
-		 * @note This is always set to the base name of the class.
+		 * @note Set to the basename of the class w/ dashes.
 		 */
 		public $slug = '';
 
@@ -84,7 +84,7 @@ namespace websharks_core_v000000_dev\menu_pages
 		 * @var null|\websharks_core_v000000_dev\form_fields Instance of form fields class, for option updates.
 		 * @note Set only if `$updates_options` is TRUE.
 		 */
-		public $option_fields; // Defaults to a NULL value.
+		public $option_form_fields; // Defaults to a NULL value.
 
 		/**
 		 * Constructor.
@@ -98,16 +98,11 @@ namespace websharks_core_v000000_dev\menu_pages
 			parent::__construct($___instance_config);
 
 			$this->slug = $this->___instance_config->ns_class_basename;
+			$this->slug = $this->©string->with_dashes($this->slug);
 
-			$this->©db_cache->purge(); // Purge DB cache.
-			// A menu page indicates data may change in some way.
-
-			// Creates a `©form_fields` instance (for menu pages that update options).
-			// A single class instance can be used by ALL panels loaded into the menu page.
-
-			if($this->updates_options) // Does this menu page update options?
+			if($this->updates_options) // This updates options?
 			{
-				$this->option_fields = $this->©form_fields(
+				$this->option_form_fields = $this->©form_fields(
 					array(
 						'for_call'           => '©menu_pages.®update_options',
 						'name_prefix'        => $this->©action->input_name_for_call_arg(1),
@@ -194,25 +189,30 @@ namespace websharks_core_v000000_dev\menu_pages
 					($active && !in_array($panel->slug, $states['inactive'], TRUE))
 					|| in_array($panel->slug, $states['active'], TRUE)) ? TRUE : FALSE;
 			}
-			$class_id = 'panel--'.$this->©string->with_dashes($panel->slug);
+			$class_id = 'panel--'.$panel->slug;
 
-			$markup = '<div class="panel panel-default '.esc_attr($class_id).'"'.
+			$markup = '<div id="'.esc_attr($class_id).'" class="panel panel-default '.esc_attr($class_id).'"'.
 			          ' data-panel-slug="'.esc_attr($panel->slug).'" data-panel-index="'.esc_attr($panel_index).'"'.
 			          '>';
 
 			$markup .= '<div class="panel-heading">';
 			$markup .= '<h4 class="panel-title">'.
-			           '<a class="block-display no-text-decor cursor-pointer" name="'.esc_attr($panel->slug).'"'.
+			           (($is_active) ? // Carets; controlled further via JavaScript.
+				           ' <i class="fa fa-caret-up fa-fw pull-right" style="margin-right:-10px;"></i>'
+				           : ' <i class="fa fa-caret-down fa-fw pull-right" style="margin-right:-10px;"></i>').
+
+			           '<span class="opacity-fade cursor-move pull-left em-r-margin">'.
+			           '<i class="fa fa-ellipsis-v" style="margin-right:1px;"></i><i class="fa fa-ellipsis-v"></i>'.
+			           '</span>'.
+
+			           '<a href="#" class="block-display no-text-decor cursor-pointer" name="'.esc_attr($panel->slug).'"'.
 			           ' data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'collapse').'"'.
-			           ' href="#'.esc_attr($class_id).'">'.$panel->heading_title.
-			           (($is_active) ? ' <i class="fa fa-caret-up pull-right"></i>'
-				           : ' <i class="fa fa-caret-down pull-right"></i>').
+			           ' data-target="#'.esc_attr($class_id.' > .panel-collapse').'">'.$panel->heading_title.
 			           '</a>'.
 			           '</h4>';
 			$markup .= '</div>';
 
-			$markup .= '<div id="'.esc_attr($class_id).'"'.
-			           ' class="panel-collapse collapse'.(($is_active) ? ' in' : '').'">';
+			$markup .= '<div class="panel-collapse collapse'.(($is_active) ? ' in' : '').'">';
 			$markup .= '<div class="panel-body clearfix">';
 
 			if($panel->documentation)
@@ -350,16 +350,24 @@ namespace websharks_core_v000000_dev\menu_pages
 			$classes[] = $this->___instance_config->plugin_prefix_with_dashes.$current_menu_pages_theme;
 
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--theme--'.$current_menu_pages_theme;
+
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--theme--'.$current_menu_pages_theme;
 
 			$classes[] = 'menu-page'; // Simple `menu-page` class.
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page';
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page';
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page--'.$this->©string->with_dashes($this->slug);
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page--'.$this->©string->with_dashes($this->slug);
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page--'.$this->slug;
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page--'.$this->slug;
+
+			$classes[] = 'wrapper'; // Simple `wrapper` class.
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--wrapper';
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--wrapper';
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--wrapper--'.$this->slug;
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--wrapper--'.$this->slug;
 
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">';
-			echo '<div class="wrapper">';
 			echo '<div class="wrap">';
 
 			echo '<div class="container-fluid">';
@@ -393,8 +401,8 @@ namespace websharks_core_v000000_dev\menu_pages
 		 */
 		public function display_header_controls()
 		{
-			echo '<button class="toggle-all-content-panels btn btn-default pull-right l-margin">'.
-			     '<i class="fa fa-caret-up"></i> '.$this->__('Toggle All Panels').' <i class="fa fa-caret-down"></i>'.
+			echo '<button class="toggle-all-panels btn btn-default pull-right l-margin">'.
+			     '<i class="fa fa-caret-up"></i> '.$this->__('Toggle All').' <i class="fa fa-caret-down"></i>'.
 			     '</button>';
 
 			echo '<form method="post" class="update-theme pull-right">';
@@ -404,7 +412,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			echo '<div class="btn-group">';
 
 			echo '<button class="btn btn-default dropdown-toggle" data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'dropdown').'">'.
-			     '<i class="fa fa-cubes"></i> '.$this->__('Admin Themes').' <span class="caret"></span>'.
+			     '<i class="fa fa-wordpress"></i> '.$this->__('Admin Theme').' <span class="caret"></span>'.
 			     '</button>';
 
 			echo '<ul class="dropdown-menu" role="menu">';
@@ -433,7 +441,6 @@ namespace websharks_core_v000000_dev\menu_pages
 
 			echo '</div>';
 
-			echo '</div>';
 			echo '</div>';
 			echo '</div>';
 		}
@@ -599,14 +606,13 @@ namespace websharks_core_v000000_dev\menu_pages
 		{
 			if($this->updates_options)
 			{
-				$form_fields = $this->option_fields;
-
-				echo $form_fields->construct_field_markup(
-					$form_fields->¤value($this->__('Save All Options')),
+				echo '<hr />'; // Divider w/ margins.
+				echo $this->option_form_fields->markup(
+					$this->__('Save All Options').' <i class="fa fa-save"></i>',
 					array(
-						'type'                => 'submit',
-						'name'                => 'update_options',
-						'div_wrapper_classes' => 'form-submit update-options'
+						'type'    => 'submit',
+						'name'    => '[update_options]',
+						'classes' => 'btn-primary btn-lg width-100'
 					)
 				);
 				echo '</form>';
@@ -719,7 +725,7 @@ namespace websharks_core_v000000_dev\menu_pages
 
 			$order = $this->©options->get('menu_pages.panels.order');
 
-			$global_order = $this->©array->isset_or($order['global']['sidebar_panels'], array());
+			$global_order = $this->©array->isset_or($order['---global']['sidebar_panels'], array());
 
 			// Reverse prepend each slug in the new order.
 			foreach(array_reverse($new_order) as $_panel_slug)
@@ -730,7 +736,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			$global_order = array_unique($global_order);
 
 			$order[$this->slug]['sidebar_panels'] = $new_order;
-			$order['global']['sidebar_panels']    = $global_order;
+			$order['---global']['sidebar_panels'] = $global_order;
 
 			$this->©options->update(array('menu_pages.panels.order' => $order));
 
@@ -748,7 +754,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			$order = $this->©options->get('menu_pages.panels.order');
 
 			if($this->sidebar_panels_share_global_order)
-				return $this->©array->isset_or($order['global']['sidebar_panels'], array());
+				return $this->©array->isset_or($order['---global']['sidebar_panels'], array());
 			else return $this->©array->isset_or($order[$this->slug]['sidebar_panels'], array());
 		}
 
@@ -769,19 +775,19 @@ namespace websharks_core_v000000_dev\menu_pages
 
 			$state = $this->©options->get('menu_pages.panels.state');
 
-			$global_active = $this->©array->isset_or($state['global']['sidebar_panels']['active'], array());
+			$global_active = $this->©array->isset_or($state['---global']['sidebar_panels']['active'], array());
 			$global_active = array_unique(array_merge($global_active, $new_active));
 			$global_active = array_diff($global_active, $new_inactive);
 
-			$global_inactive = $this->©array->isset_or($state['global']['sidebar_panels']['inactive'], array());
+			$global_inactive = $this->©array->isset_or($state['---global']['sidebar_panels']['inactive'], array());
 			$global_inactive = array_unique(array_merge($global_inactive, $new_inactive));
 			$global_inactive = array_diff($global_inactive, $new_active);
 
 			$state[$this->slug]['sidebar_panels']['active'] = array_diff($new_active, $new_inactive);
-			$state['global']['sidebar_panels']['active']    = array_diff($global_active, $global_inactive);
+			$state['---global']['sidebar_panels']['active'] = array_diff($global_active, $global_inactive);
 
 			$state[$this->slug]['sidebar_panels']['inactive'] = array_diff($new_inactive, $new_active);
-			$state['global']['sidebar_panels']['inactive']    = array_diff($global_inactive, $global_active);
+			$state['---global']['sidebar_panels']['inactive'] = array_diff($global_inactive, $global_active);
 
 			$this->©options->update(array('menu_pages.panels.state' => $state));
 
@@ -791,15 +797,15 @@ namespace websharks_core_v000000_dev\menu_pages
 		/**
 		 * Gets active/inactive states, for sidebar panels in this menu page.
 		 *
-		 * @return array Two array elements, `active` and `inactive`, both arrays containing panel slugs.
-		 *    Possible for this to return empty arrays, if panels currently have only a default state.
+		 * @return array Two array elements, `active` and `inactive`; both arrays containing panel slugs.
+		 *    Possible for this to return empty arrays if panels currently have only a default state.
 		 */
 		public function get_sidebar_panel_states()
 		{
 			$state = $this->©options->get('menu_pages.panels.state');
 
 			if($this->sidebar_panels_share_global_state)
-				$state = $this->©array->isset_or($state['global']['sidebar_panels'], array());
+				$state = $this->©array->isset_or($state['---global']['sidebar_panels'], array());
 			else $state = $this->©array->isset_or($state[$this->slug]['sidebar_panels'], array());
 
 			return array(

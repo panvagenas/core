@@ -23,7 +23,7 @@ namespace websharks_core_dev_utilities
 	{
 		$core = core(); // WebSharks™ Core.
 
-		ob_start(); // Begin compilation.
+		ob_start(); // Begin JavaScript compilation.
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-sprintf.min.js')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-jq-scrollto.min.js')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-bs.min.js')."\n";

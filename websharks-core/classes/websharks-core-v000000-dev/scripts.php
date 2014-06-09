@@ -66,7 +66,13 @@ namespace websharks_core_v000000_dev
 			$scripts_to_register = array(); // Initialize scripts.
 
 			// Core libs; available in all contexts.
-
+			/*
+			 * @TODO This currently does not support multiple instances of the core.
+			 * A possible solution would be to check the previously registered version
+			 * and re-register if this is a newer version. However, this may cause an issue
+			 * when there were plugins that already create inline data for the core libs.
+			 * @TODO This problem exists for CSS libs also.
+			 */
 			if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
 				$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes] = array(
 					'deps'     => array('jquery'), // jQuery dependency only; we compile others.
@@ -74,50 +80,73 @@ namespace websharks_core_v000000_dev
 					'ver'      => $this->___instance_config->core_version_with_dashes,
 
 					'localize' => array( // Array of WebSharks™ Core JavaScript translations.
+					                     /*
+					                      * NOTE: It is very important that we namespace all translations.
+					                      *    Our core JavaScript class will merge ALL translations into a single object.
+					                      *    So while all of these are fine; if plugins (or other core extensions) add a new
+					                      *    set of translation entries they MUST follow the standard we set below.
+					                      *
+					                      * CORE STANDARD: Each translation entry should start with it's associated method name;
+					                      *    (i.e. the class method using the translation entry); followed by a
+					                      *    double underscore; e.g. `method__translation_key`.
+					                      *
+					                      *    If a particular translation key is used across multiple methods in the core;
+					                      *    the core reserves the right to use a name of it's choosing.
+					                      *
+					                      *    Core extensions (such as the `menu_pages` extension); MUST prefix each translation key
+					                      *    with the extension name; e.g. `menu_pages__method__translation_key`. This goes for plugins too.
+					                      *
+					                      * PLUGIN STANDARD: All plugins extending the core should prefix each translation entry with a
+					                      *    leading underscore; e.g. `_extension__method__translation_key`. Plugins need to be sure
+					                      *    that all of their own translation keys are unique across all of their extensions.
+					                      *
+					                      *    Plugins are also allowed to override any existing translation keys in the core;
+					                      *    including in any core extensions. Hopefully not necessary, but permissible.
+					                      */
+					                     'instance_config__failure'                        => $this->__('Could NOT get instance config value for key: `%1$s`.'),
+					                     'verifier__failure'                               => $this->__('Could NOT get verifier for key: `%1$s`.'),
+					                     '____failure'                                     => $this->__('Could NOT get translation string for key: `%1$s`.'),
+					                     'core_only_failure'                               => $this->__('Only the core may call upon: `%1$s`.'),
 
-					                     'instance_config__failure'                           => $this->__('Could NOT get instance config value for key: `%1$s`.'),
-					                     'verifier__failure'                                  => $this->__('Could NOT get verifier for key: `%1$s`.'),
-					                     '____failure'                                        => $this->__('Could NOT get translation string for key: `%1$s`.'),
+					                     'view_source__doc_title'                          => $this->_x('Source'),
+					                     'win_open__turn_off_popup_blockers'               => $this->_x('Please turn off all popup blockers and try again.'),
+					                     'ajax__invalid_type'                              => $this->__('Invalid `type`. Expecting `$$.___public_type|$$.___protected_type|$$.___private_type`.'),
 
-					                     'view_source__doc_title'                             => $this->_x('Source'),
-					                     'win_open__turn_off_popup_blockers'                  => $this->_x('Please turn off all popup blockers and try again.'),
-					                     'ajax__invalid_type'                                 => $this->__('Invalid `type`. Expecting `$$.___public_type|$$.___protected_type|$$.___private_type`.'),
+					                     'check_arg_types__empty'                          => $this->__('empty'),
+					                     'check_arg_types__caller'                         => $this->__('caller'),
 
-					                     'check_arg_types__empty'                             => $this->__('empty'),
-					                     'check_arg_types__caller'                            => $this->__('caller'),
+					                     'validate_form__required_field'                   => $this->_x('This is a required field.'),
+					                     'validate_form__mismatch_fields'                  => $this->_x('Mismatch (please check these fields).'),
+					                     'validate_form__unique_field'                     => $this->_x('Please try again (this value MUST be unique please).'),
 
-					                     'validate_ui_form__required_field'                   => $this->_x('This is a required field.'),
-					                     'validate_ui_form__mismatch_fields'                  => $this->_x('Mismatch (please check these fields).'),
-					                     'validate_ui_form__unique_field'                     => $this->_x('Please try again (this value MUST be unique please).'),
+					                     'validate_form__required_select_at_least_one'     => $this->_x('Please select at least 1 option.'),
+					                     'validate_form__required_select_at_least'         => $this->_x('Please select at least %1$s options.'),
 
-					                     'validate_ui_form__required_select_at_least_one'     => $this->_x('Please select at least 1 option.'),
-					                     'validate_ui_form__required_select_at_least'         => $this->_x('Please select at least %1$s options.'),
+					                     'validate_form__required_file'                    => $this->_x('A file MUST be selected please.'),
+					                     'validate_form__required_file_at_least_one'       => $this->_x('Please select at least one file.'),
+					                     'validate_form__required_file_at_least'           => $this->_x('Please select at least %1$s files.'),
 
-					                     'validate_ui_form__required_file'                    => $this->_x('A file MUST be selected please.'),
-					                     'validate_ui_form__required_file_at_least_one'       => $this->_x('Please select at least one file.'),
-					                     'validate_ui_form__required_file_at_least'           => $this->_x('Please select at least %1$s files.'),
+					                     'validate_form__required_radio'                   => $this->_x('Please choose one of the available options.'),
 
-					                     'validate_ui_form__required_radio'                   => $this->_x('Please choose one of the available options.'),
+					                     'validate_form__required_checkbox'                => $this->_x('This box MUST be checked please.'),
+					                     'validate_form__required_check_at_least_one'      => $this->_x('Please check at least one box.'),
+					                     'validate_form__required_check_at_least'          => $this->_x('Please check at least %1$s boxes.'),
 
-					                     'validate_ui_form__required_checkbox'                => $this->_x('This box MUST be checked please.'),
-					                     'validate_ui_form__required_check_at_least_one'      => $this->_x('Please check at least one box.'),
-					                     'validate_ui_form__required_check_at_least'          => $this->_x('Please check at least %1$s boxes.'),
+					                     'validate_form__validation_description_prefix'    => $this->_x('<strong>REQUIRES:</strong>'),
+					                     'validate_form__or_validation_description_prefix' => $this->_x('<strong>OR:</strong>'),
 
-					                     'validate_ui_form__validation_description_prefix'    => $this->_x('<strong>REQUIRES:</strong>'),
-					                     'validate_ui_form__or_validation_description_prefix' => $this->_x('<strong>OR:</strong>'),
+					                     'validate_form__check_issues_below'               => $this->_x('<strong>ERROR:</strong> please check the issues below.'),
 
-					                     'validate_ui_form__check_issues_below'               => $this->_x('<strong>ERROR:</strong> please check the issues below.'),
+					                     'check_arg_types__diff_object_type'               => $this->__('[a different object type]'),
+					                     'check_arg_types__missing_args'                   => $this->__('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
+					                     'check_arg_types__invalid_arg'                    => $this->__('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
 
-					                     'check_arg_types__diff_object_type'                  => $this->__('[a different object type]'),
-					                     'check_arg_types__missing_args'                      => $this->__('Missing required argument(s); `%1$s` requires `%2$s`, `%3$s` given.'),
-					                     'check_arg_types__invalid_arg'                       => $this->__('Argument #%1$s passed to `%2$s` requires `%3$s`, %4$s`%5$s` given.'),
-
-					                     'password_strength_mismatch_status__empty'           => $this->_x('password strength indicator'),
-					                     'password_strength_mismatch_status__short'           => $this->_x('too short (6 character minimum)'),
-					                     'password_strength_mismatch_status__weak'            => $this->_x('very weak (mix lowercase, uppercase, numbers & symbols)'),
-					                     'password_strength_mismatch_status__good'            => $this->_x('good (reasonably strong)'),
-					                     'password_strength_mismatch_status__strong'          => $this->_x('very strong'),
-					                     'password_strength_mismatch_status__mismatch'        => $this->_x('mismatch')
+					                     'password_strength_status__empty'                 => $this->_x('password strength indicator'),
+					                     'password_strength_status__short'                 => $this->_x('too short (6 character minimum)'),
+					                     'password_strength_status__weak'                  => $this->_x('very weak (mix lowercase, uppercase, numbers & symbols)'),
+					                     'password_strength_status__good'                  => $this->_x('good (reasonably strong)'),
+					                     'password_strength_status__strong'                => $this->_x('very strong'),
+					                     'password_strength_status__mismatch'              => $this->_x('mismatch')
 					)
 				);
 			// Front-side components; available in all contexts.
@@ -156,7 +185,7 @@ namespace websharks_core_v000000_dev
 
 			// Menu page components; only if applicable.
 
-			if(($is_plugin_page = $this->©menu_page->is_plugin_page())) // Menu page scripts.
+			if(($is_plugin_page = $this->©menu_page->is_plugin_page()))
 			{
 				$this->menu_page_components = $this->menu_page_components();
 
@@ -170,24 +199,16 @@ namespace websharks_core_v000000_dev
 
 				if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
 					$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
-						'deps'     => array($this->___instance_config->core_ns_stub_with_dashes, 'jquery-html5-sortable'),
-						'url'      => $this->©url->to_core_dir_file('/client-side/scripts/menu-pages/menu-pages.min.js'),
-						'ver'      => $this->___instance_config->core_version_with_dashes,
-
-						'localize' => array( // WebSharks™ Core translations.
-
-						                     'ready__docs__button_label'  => $this->__('Docs'),
-						                     'ready__docs__dialog_title'  => $this->__('Documentation'),
-
-						                     'ready__video__button_label' => $this->__('Video'),
-						                     'ready__video__dialog_title' => $this->__('YouTube® Video Playlist'),
-						)
+						'deps' => array($this->___instance_config->core_ns_stub_with_dashes, 'jquery-html5-sortable'),
+						'url'  => $this->©url->to_core_dir_file('/client-side/scripts/menu-pages/menu-pages.min.js'),
+						'ver'  => $this->___instance_config->core_version_with_dashes
 					);
 			}
 			if($scripts_to_register) $this->register($scripts_to_register);
 
 			// Add data separately, as this might change for each plugin the core processes.
 
+			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_plugin_root_ns_stubs_for_core_inline_data());
 			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_instance_config_for_core_inline_data());
 			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_verifiers_for_core_inline_data());
 
@@ -237,6 +258,30 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
+		 * Builds plugin root namespace stubs for core inline data.
+		 *
+		 * @return string Plugin root namespace stubs for core inline data.
+		 */
+		protected function _build_plugin_root_ns_stubs_for_core_inline_data()
+		{
+			if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
+
+			// Initialize the array of all plugin root namespace stubs for the core.
+
+			if(empty($GLOBALS[$this->___instance_config->core_ns_stub.'_scripts_initialized_plugin_root_ns_stubs'])
+			   && ($GLOBALS[$this->___instance_config->core_ns_stub.'_scripts_initialized_plugin_root_ns_stubs'] = TRUE)
+			) $data = 'var $'.$this->___instance_config->core_ns_stub.'___plugin_root_ns_stubs = [];';
+
+			// Plugin plugin root namespace stub; which is possibly the core also.
+
+			$data = !empty($data) ? $data."\n" : ''; // Appending?
+			$data .= '$'.$this->___instance_config->core_ns_stub.'___plugin_root_ns_stubs.push'.
+			         '(\''.$this->©string->esc_js_sq($this->___instance_config->plugin_root_ns_stub).'\');';
+
+			return ($this->cache[__FUNCTION__] = $data);
+		}
+
+		/**
 		 * Builds instance config for core inline data.
 		 *
 		 * @return string Instance config for core inline data.
@@ -245,25 +290,32 @@ namespace websharks_core_v000000_dev
 		{
 			if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
 
-			$data = 'var $'.$this->___instance_config->plugin_root_ns_stub.'___instance_config = {';
+			// Core instance config; for the core itself.
 
-			$data .= $this->©object->to_js($this->___instance_config, FALSE).','; // Include all properties.
+			if(empty($GLOBALS[$this->___instance_config->core_ns_stub.'_scripts_loaded_core_instance_config'])
+			   && ($GLOBALS[$this->___instance_config->core_ns_stub.'_scripts_loaded_core_instance_config'] = TRUE)
+			) // Notice the call below pulls an instance from the core itself; i.e. `core()->___instance_config->for_js()`.
+			{
+				$data = 'var $'.$this->___instance_config->core_ns_stub.'___instance_config = {';
 
-			// Some additional JavaScript instance config properties. These require additional server-side processing.
+				$data .= $this->©object->to_js(core()->___instance_config->for_js(), FALSE).',';
+				$data .= "'wp_load_url':'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_file($this->©file->wp_load()))."',";
+				$data .= "'core_dir_url':'".$this->©string->esc_js_sq($this->©url->to_core_dir_file())."',";
 
-			$data .= "'wp_load_url':'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_file($this->©file->wp_load()))."',";
-			$data .= "'core_dir_url':'".$this->©string->esc_js_sq($this->©url->to_core_dir_file())."',";
+				$data = rtrim($data, ',').'};'; // Trim and close curly bracket.
+			}
+			// Plugin instance config; which is possibly the core also.
 
+			$data = !empty($data) ? $data."\n" : ''; // Appending?
+			$data .= 'var $'.$this->___instance_config->plugin_root_ns_stub.'___instance_config = {';
+
+			$data .= $this->©object->to_js($this->___instance_config->for_js(TRUE), FALSE).',';
 			$data .= "'plugin_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_dir_file())."',";
 			$data .= "'plugin_data_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_data_dir_file())."',";
 			$data .= "'plugin_pro_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_pro_dir_file())."',";
-
 			$data .= "'has_pro':".(($this->©plugin->has_pro()) ? 'true' : 'false').",";
 
 			$data = rtrim($data, ',').'};'; // Trim and close curly bracket.
-
-			$data .= 'var $'.$this->___instance_config->core_ns_stub.'__current_plugin___instance_config = '.
-			         '$'.$this->___instance_config->plugin_root_ns_stub.'___instance_config;';
 
 			return ($this->cache[__FUNCTION__] = $data);
 		}
@@ -279,20 +331,17 @@ namespace websharks_core_v000000_dev
 
 			$data = 'var $'.$this->___instance_config->plugin_root_ns_stub.'___verifiers = {';
 
-			if(is_admin() && ($current_menu_page_class = $current_menu_page_slug = $this->©menu_pages->is_plugin_page()))
+			if(is_admin() && ($current_menu_page_slug_class_basename = $this->©menu_pages->is_plugin_page('', TRUE)))
 			{
 				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages.®update_theme', $this::private_type).',';
-				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_class.'.®update_content_panels_order', $this::private_type).',';
-				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_class.'.®update_content_panels_state', $this::private_type).',';
-				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_class.'.®update_sidebar_panels_order', $this::private_type).',';
-				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_class.'.®update_sidebar_panels_state', $this::private_type).',';
+				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_slug_class_basename.'.®update_content_panels_order', $this::private_type).',';
+				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_slug_class_basename.'.®update_content_panels_state', $this::private_type).',';
+				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_slug_class_basename.'.®update_sidebar_panels_order', $this::private_type).',';
+				$data .= $this->©action->ajax_verifier_property_for_call('©menu_pages__'.$current_menu_page_slug_class_basename.'.®update_sidebar_panels_state', $this::private_type).',';
 			}
 			$data .= $this->build_verifiers_for_core_inline_data(); // Make this easy for class extenders.
 
 			$data = rtrim($data, ',').'};'; // Trim and close curly bracket.
-
-			$data .= 'var $'.$this->___instance_config->core_ns_stub.'__current_plugin___verifiers = '.
-			         '$'.$this->___instance_config->plugin_root_ns_stub.'___verifiers;';
 
 			return ($this->cache[__FUNCTION__] = $data);
 		}

@@ -20,3 +20,43 @@ Wrapper styles.
 {
 	background : none;
 }
+
+/*
+Fix <select> fields inside input groups on WebKit.
+*/
+@media (-webkit-min-device-pixel-ratio : 0)
+{
+	.wsc .input-group.select-input-group
+	{
+		position : relative;
+	}
+	.wsc .input-group.select-input-group:after
+	{
+		font-size   : 1.2em;
+		content     : "\f0d7";
+		font-family : wsc-FontAwesome;
+		cursor      : pointer;
+
+		z-index     : 2;
+		top         : .5em;
+		right       : .5em;
+		position    : absolute;
+	}
+	.wsc .input-group.select-input-group select
+	{
+		-webkit-appearance : none;
+		cursor             : pointer;
+	}
+}
+
+/*
+Sortable placeholders.
+*/
+.wsc .sortable-placeholder
+{
+	height        : 35px;
+	opacity       : 0.5;
+	border-radius : 5px;
+	border        : 1px dashed;
+	margin-bottom : 15px;
+}

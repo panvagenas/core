@@ -113,8 +113,8 @@ namespace # Global namespace.
 
 	// Menu page classes.
 	class websharks_core__menu_pages__general_options extends \websharks_core_v000000_dev\menu_pages\general_options{}
+	class websharks_core__menu_pages__main_page extends \websharks_core_v000000_dev\menu_pages\main_page{}
 	class websharks_core__menu_pages__menu_page extends \websharks_core_v000000_dev\menu_pages\menu_page{}
-	class websharks_core__menu_pages__quick_start extends \websharks_core_v000000_dev\menu_pages\quick_start{}
 	class websharks_core__menu_pages__update_sync extends \websharks_core_v000000_dev\menu_pages\update_sync{}
 
 	// Menu page panel classes.

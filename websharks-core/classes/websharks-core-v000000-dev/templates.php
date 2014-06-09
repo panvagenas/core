@@ -317,14 +317,17 @@ namespace websharks_core_v000000_dev
 			$classes[] = $this->___instance_config->plugin_prefix_with_dashes.$this->theme;
 
 			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--theme--'.$this->theme;
+
 			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--theme--'.$this->theme;
 
 			$classes[] = 'wrapper'; // Simple wrapper class.
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-wrapper';
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-wrapper';
-			$classes[] = $for.'-wrapper'; // This one is the same (but without the leading prefix).
-			$classes[] = $for.'-'.$this->©file->to_css_class(basename($this->file)).'-wrapper';
-			$classes[] = $this->©file->to_css_class(basename($this->file)).'-wrapper';
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--'.$for.'--wrapper';
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--'.$for.'--wrapper';
+			$classes[] = $for.'--wrapper'; // This one is the same (but without the leading prefix).
+			$classes[] = $for.'--'.$this->©file->to_css_class(basename($this->file)).'--wrapper';
+			$classes[] = $this->©file->to_css_class(basename($this->file)).'--wrapper';
 
 			$others  = ($others) ? (array)$others : array();
 			$classes = array_unique(array_merge($classes, $others));
@@ -352,11 +355,11 @@ namespace websharks_core_v000000_dev
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
 			$classes[] = 'wrap'; // Simple wrap class.
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-wrap';
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-wrap';
-			$classes[] = $for.'-wrap'; // This one is the same (but without the leading prefix).
-			$classes[] = $for.'-'.$this->©file->to_css_class(basename($this->file)).'-wrap';
-			$classes[] = $this->©file->to_css_class(basename($this->file)).'-wrap';
+			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--'.$for.'--wrap';
+			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--'.$for.'--wrap';
+			$classes[] = $for.'--wrap'; // This one is the same (but without the leading prefix).
+			$classes[] = $for.'--'.$this->©file->to_css_class(basename($this->file)).'--wrap';
+			$classes[] = $this->©file->to_css_class(basename($this->file)).'--wrap';
 
 			$others  = ($others) ? (array)$others : array();
 			$classes = array_unique(array_merge($classes, $others));
