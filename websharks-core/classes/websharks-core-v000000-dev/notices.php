@@ -159,11 +159,11 @@ namespace websharks_core_v000000_dev
 			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->themes()), TRUE))
 				$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
-			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
-			$classes[] = $this->___instance_config->core_prefix_with_dashes.$current_menu_pages_theme;
+			$classes[] = $this->___instance_config->core_ns_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes;
 
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--t--'.$this->theme;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--t--'.$this->theme;
 
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">'.
 

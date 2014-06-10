@@ -40,9 +40,10 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 
 			$this->heading_title = $this->__('Quick Start Video');
 
-			$yt_playlist = $this->©options->get('menu_pages.panels.videos.yt_playlist');
-
-			if($yt_playlist) $this->content_body = $this->©video->yt_playlist_iframe_tag($yt_playlist);
+			// @TODO Fix this back up.
+			//$yt_playlist = $this->©options->get('menu_pages.panels.videos.yt_playlist');
+			$this->yt_playlist = $this->©options->get('menu_pages.panels.videos.yt_playlist');
+			//if($yt_playlist) $this->content_body = $this->©video->yt_playlist_iframe_tag($yt_playlist);
 		}
 	}
 }

@@ -206,7 +206,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			           '</span>'.
 
 			           '<a href="#" class="block-display no-text-decor cursor-pointer" name="'.esc_attr($panel->slug).'"'.
-			           ' data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'collapse').'"'.
+			           ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-collapse').'"'.
 			           ' data-target="#'.esc_attr($class_id.' > .panel-collapse').'">'.$panel->heading_title.
 			           '</a>'.
 			           '</h4>';
@@ -218,7 +218,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			if($panel->documentation)
 			{
 				$markup .= '<button class="btn btn-default btn-sm pull-right l-margin"'.
-				           ' data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'modal').'"'.
+				           ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'"'.
 				           ' data-target="#'.esc_attr($class_id.'--documentation-modal-window').'">'.
 				           $this->__('Documentation').
 				           '</button>';
@@ -228,7 +228,7 @@ namespace websharks_core_v000000_dev\menu_pages
 				$markup .= '<div class="modal-content">';
 
 				$markup .= '<div class="modal-header">';
-				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'modal').'">&times;</button>';
+				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'">&times;</button>';
 				$markup .= '<h4 class="modal-title">'.$this->__('Documentation').'</h4>';
 				$markup .= '</div>';
 
@@ -249,7 +249,7 @@ namespace websharks_core_v000000_dev\menu_pages
 			else if($panel->yt_playlist)
 			{
 				$markup .= '<button class="btn btn-default btn-sm pull-right l-margin"'.
-				           ' data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'modal').'"'.
+				           ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'"'.
 				           ' data-target="#'.esc_attr($class_id.'--yt-playlist-modal-window').'">'.
 				           $this->__('Video Tutorial').
 				           '</button>';
@@ -259,7 +259,7 @@ namespace websharks_core_v000000_dev\menu_pages
 				$markup .= '<div class="modal-content">';
 
 				$markup .= '<div class="modal-header">';
-				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'modal').'" aria-hidden="true">&times;</button>';
+				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'" aria-hidden="true">&times;</button>';
 				$markup .= '<h4 class="modal-title">'.$this->__('Video Tutorial').'</h4>';
 				$markup .= '</div>';
 
@@ -343,29 +343,23 @@ namespace websharks_core_v000000_dev\menu_pages
 			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->themes()), TRUE))
 				$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
-			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
-			$classes[] = $this->___instance_config->core_prefix_with_dashes.$current_menu_pages_theme;
+			$classes[] = $this->___instance_config->core_ns_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes;
 
-			$classes[] = trim($this->___instance_config->plugin_prefix_with_dashes, '-');
-			$classes[] = $this->___instance_config->plugin_prefix_with_dashes.$current_menu_pages_theme;
-
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--theme--'.$current_menu_pages_theme;
-
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--theme--'.$current_menu_pages_theme;
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--t--'.$current_menu_pages_theme;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--t--'.$current_menu_pages_theme;
 
 			$classes[] = 'menu-page'; // Simple `menu-page` class.
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page';
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page';
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-page--'.$this->slug;
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--menu-page--'.$this->slug;
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--menu-page';
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--menu-page';
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--menu-page--'.$this->slug;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--menu-page--'.$this->slug;
 
 			$classes[] = 'wrapper'; // Simple `wrapper` class.
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--wrapper';
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--wrapper';
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--wrapper--'.$this->slug;
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--wrapper--'.$this->slug;
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--wrapper';
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--wrapper';
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--wrapper--'.$this->slug;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--wrapper--'.$this->slug;
 
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">';
 			echo '<div class="wrap">';
@@ -411,7 +405,7 @@ namespace websharks_core_v000000_dev\menu_pages
 
 			echo '<div class="btn-group">';
 
-			echo '<button class="btn btn-default dropdown-toggle" data-toggle="'.esc_attr($this->___instance_config->core_prefix_with_dashes.'dropdown').'">'.
+			echo '<button class="btn btn-default dropdown-toggle" data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-dropdown').'">'.
 			     '<i class="fa fa-wordpress"></i> '.$this->__('Admin Theme').' <span class="caret"></span>'.
 			     '</button>';
 

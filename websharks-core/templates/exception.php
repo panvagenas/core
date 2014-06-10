@@ -17,6 +17,8 @@ namespace websharks_core_v000000_dev;
  * @note The current plugin instance is available through the special keyword: `$this`.
  * @var $this templates|framework Template instance (extends framework).
  * @var $exception exception Exception class instance.
+ *
+ * @TODO Restyle this template.
  */
 if(!defined('WPINC'))
 	exit('Do NOT access this file directly: '.basename(__FILE__));

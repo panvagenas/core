@@ -269,18 +269,12 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
-			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
-			$classes[] = $this->___instance_config->core_prefix_with_dashes.$this->theme;
-
-			$classes[] = trim($this->___instance_config->plugin_prefix_with_dashes, '-');
-			$classes[] = $this->___instance_config->plugin_prefix_with_dashes.$this->theme;
-
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
+			$classes[] = $this->___instance_config->core_ns_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes;
 
 			$classes[] = 'body'; // Simple body class.
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'-'.$for.'-body';
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'-'.$for.'-body';
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'-'.$for.'-body';
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'-'.$for.'-body';
 			$classes[] = $for.'-body'; // This one is the same (but without the leading prefix).
 			$classes[] = $for.'-'.$this->©file->to_css_class(basename($this->file)).'-body';
 			$classes[] = $this->©file->to_css_class(basename($this->file)).'-body';
@@ -310,21 +304,15 @@ namespace websharks_core_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
-			$classes[] = trim($this->___instance_config->core_prefix_with_dashes, '-');
-			$classes[] = $this->___instance_config->core_prefix_with_dashes.$this->theme;
+			$classes[] = $this->___instance_config->core_ns_with_dashes;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes;
 
-			$classes[] = trim($this->___instance_config->plugin_prefix_with_dashes, '-');
-			$classes[] = $this->___instance_config->plugin_prefix_with_dashes.$this->theme;
-
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes;
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--theme--'.$this->theme;
-
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--theme--'.$this->theme;
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--t--'.$this->theme;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--t--'.$this->theme;
 
 			$classes[] = 'wrapper'; // Simple wrapper class.
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--'.$for.'--wrapper';
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--'.$for.'--wrapper';
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--'.$for.'--wrapper';
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--'.$for.'--wrapper';
 			$classes[] = $for.'--wrapper'; // This one is the same (but without the leading prefix).
 			$classes[] = $for.'--'.$this->©file->to_css_class(basename($this->file)).'--wrapper';
 			$classes[] = $this->©file->to_css_class(basename($this->file)).'--wrapper';
@@ -355,8 +343,8 @@ namespace websharks_core_v000000_dev
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
 			$classes[] = 'wrap'; // Simple wrap class.
-			$classes[] = $this->___instance_config->core_ns_stub_with_dashes.'--'.$for.'--wrap';
-			$classes[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--'.$for.'--wrap';
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--'.$for.'--wrap';
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--'.$for.'--wrap';
 			$classes[] = $for.'--wrap'; // This one is the same (but without the leading prefix).
 			$classes[] = $for.'--'.$this->©file->to_css_class(basename($this->file)).'--wrap';
 			$classes[] = $this->©file->to_css_class(basename($this->file)).'--wrap';
@@ -385,7 +373,7 @@ namespace websharks_core_v000000_dev
 
 			ob_start(); // Open output buffer.
 
-			$this->©styles->print_styles($this->©styles->contextual_components($this->___instance_config->core_prefix_with_dashes.$this->theme));
+			$this->©styles->print_styles($this->©styles->contextual_components($this->___instance_config->core_ns_with_dashes.'--'.$this->theme));
 			echo '<style type="text/css">html{'.$this->©options->get('templates.stand_alone.bg_style').'}</style>'."\n";
 			echo $this->©php->evaluate($this->©options->get('templates.stand_alone.styles'))."\n";
 

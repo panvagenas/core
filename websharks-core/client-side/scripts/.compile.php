@@ -26,7 +26,8 @@ namespace websharks_core_dev_utilities
 		ob_start(); // Open a PHP output buffer.
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-sprintf.min.js')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-jq-scrollto.min.js')."\n";
-		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-bs.min.js')."\n";
+		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-jq-sortable.min.js')."\n";
+		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-jq-bs.min.js')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core.min.js')."\n";
 		file_put_contents(dirname(__FILE__).'/core-libs.min.js', trim(ob_get_clean()));
 	}

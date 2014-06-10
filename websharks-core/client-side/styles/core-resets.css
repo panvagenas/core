@@ -17,8 +17,8 @@
 <https://developer.mozilla.org/en-US/docs/Web/CSS/inherit> */
 /* noinspection ALL */
 
-.wsc,
-.wsc *
+.websharks-core-v000000-dev,
+.websharks-core-v000000-dev *
 {
 	margin              : 0;
 	padding             : 0;
@@ -84,7 +84,7 @@
 
 /* Parent Styles from which to Inherit */
 
-.wsc
+.websharks-core-v000000-dev
 {
 	cursor          : auto;
 
@@ -114,103 +114,103 @@
 /* Block & Inline Elements
 <https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements> */
 
-.wsc address,
-.wsc article,
-.wsc aside,
-.wsc audio,
-.wsc blockquote,
-.wsc canvas,
-.wsc dd,
-.wsc div,
-.wsc dl,
-.wsc fieldset,
-.wsc figcaption,
-.wsc figure,
-.wsc footer,
-.wsc form,
-.wsc h1,
-.wsc h2,
-.wsc h3,
-.wsc h4,
-.wsc h5,
-.wsc h6,
-.wsc header,
-.wsc hgroup,
-.wsc hr,
-.wsc noscript,
-.wsc ol,
-.wsc output,
-.wsc p,
-.wsc pre,
-.wsc section,
-.wsc table,
-.wsc tfoot,
-.wsc ul,
-.wsc video
+.websharks-core-v000000-dev address,
+.websharks-core-v000000-dev article,
+.websharks-core-v000000-dev aside,
+.websharks-core-v000000-dev audio,
+.websharks-core-v000000-dev blockquote,
+.websharks-core-v000000-dev canvas,
+.websharks-core-v000000-dev dd,
+.websharks-core-v000000-dev div,
+.websharks-core-v000000-dev dl,
+.websharks-core-v000000-dev fieldset,
+.websharks-core-v000000-dev figcaption,
+.websharks-core-v000000-dev figure,
+.websharks-core-v000000-dev footer,
+.websharks-core-v000000-dev form,
+.websharks-core-v000000-dev h1,
+.websharks-core-v000000-dev h2,
+.websharks-core-v000000-dev h3,
+.websharks-core-v000000-dev h4,
+.websharks-core-v000000-dev h5,
+.websharks-core-v000000-dev h6,
+.websharks-core-v000000-dev header,
+.websharks-core-v000000-dev hgroup,
+.websharks-core-v000000-dev hr,
+.websharks-core-v000000-dev noscript,
+.websharks-core-v000000-dev ol,
+.websharks-core-v000000-dev output,
+.websharks-core-v000000-dev p,
+.websharks-core-v000000-dev pre,
+.websharks-core-v000000-dev section,
+.websharks-core-v000000-dev table,
+.websharks-core-v000000-dev tfoot,
+.websharks-core-v000000-dev ul,
+.websharks-core-v000000-dev video
 {
 	display : block;
 }
-.wsc b,
-.wsc big,
-.wsc i,
-.wsc small,
-.wsc tt,
-.wsc abbr,
-.wsc acronym,
-.wsc cite,
-.wsc code,
-.wsc dfn,
-.wsc em,
-.wsc kbd,
-.wsc strong,
-.wsc samp,
-.wsc var,
-.wsc a,
-.wsc bdo,
-.wsc br,
-.wsc img,
-.wsc map,
-.wsc object,
-.wsc q,
-.wsc script,
-.wsc span,
-.wsc sub,
-.wsc sup,
-.wsc button,
-.wsc input,
-.wsc label,
-.wsc select,
-.wsc textarea
+.websharks-core-v000000-dev b,
+.websharks-core-v000000-dev big,
+.websharks-core-v000000-dev i,
+.websharks-core-v000000-dev small,
+.websharks-core-v000000-dev tt,
+.websharks-core-v000000-dev abbr,
+.websharks-core-v000000-dev acronym,
+.websharks-core-v000000-dev cite,
+.websharks-core-v000000-dev code,
+.websharks-core-v000000-dev dfn,
+.websharks-core-v000000-dev em,
+.websharks-core-v000000-dev kbd,
+.websharks-core-v000000-dev strong,
+.websharks-core-v000000-dev samp,
+.websharks-core-v000000-dev var,
+.websharks-core-v000000-dev a,
+.websharks-core-v000000-dev bdo,
+.websharks-core-v000000-dev br,
+.websharks-core-v000000-dev img,
+.websharks-core-v000000-dev map,
+.websharks-core-v000000-dev object,
+.websharks-core-v000000-dev q,
+.websharks-core-v000000-dev script,
+.websharks-core-v000000-dev span,
+.websharks-core-v000000-dev sub,
+.websharks-core-v000000-dev sup,
+.websharks-core-v000000-dev button,
+.websharks-core-v000000-dev input,
+.websharks-core-v000000-dev label,
+.websharks-core-v000000-dev select,
+.websharks-core-v000000-dev textarea
 {
 	display : inline;
 }
 
 /* Preformatted Tags */
 
-.wsc pre,
-.wsc select
+.websharks-core-v000000-dev pre,
+.websharks-core-v000000-dev select
 {
 	white-space : pre;
 }
 
 /* Monospace Tags */
 
-.wsc tt, code
+.websharks-core-v000000-dev tt, code
 {
 	font-family : monospace;
 }
 
 /* Quotes */
 
-.wsc q,
-.wsc blockquote
+.websharks-core-v000000-dev q,
+.websharks-core-v000000-dev blockquote
 {
 	quotes : none;
 }
-.wsc q:before,
-.wsc q:after,
-.wsc blockquote:before,
-.wsc blockquote:after
+.websharks-core-v000000-dev q:before,
+.websharks-core-v000000-dev q:after,
+.websharks-core-v000000-dev blockquote:before,
+.websharks-core-v000000-dev blockquote:after
 {
 	content : '';
 	content : none;
@@ -218,7 +218,7 @@
 
 /* Images */
 
-.wsc img
+.websharks-core-v000000-dev img
 {
 	vertical-align : bottom;
 }

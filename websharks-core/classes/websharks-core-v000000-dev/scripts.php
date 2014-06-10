@@ -66,15 +66,8 @@ namespace websharks_core_v000000_dev
 			$scripts_to_register = array(); // Initialize scripts.
 
 			// Core libs; available in all contexts.
-			/*
-			 * @TODO This currently does not support multiple instances of the core.
-			 * A possible solution would be to check the previously registered version
-			 * and re-register if this is a newer version. However, this may cause an issue
-			 * when there were plugins that already create inline data for the core libs.
-			 * @TODO This problem exists for CSS libs also.
-			 */
-			if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes, 'registered'))
-				$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes] = array(
+			if(!wp_script_is($this->___instance_config->core_ns_with_dashes, 'registered'))
+				$scripts_to_register[$this->___instance_config->core_ns_with_dashes] = array(
 					'deps'     => array('jquery'), // jQuery dependency only; we compile others.
 					'url'      => $this->©url->to_core_dir_file('/client-side/scripts/core-libs.min.js'),
 					'ver'      => $this->___instance_config->core_version_with_dashes,
@@ -155,16 +148,16 @@ namespace websharks_core_v000000_dev
 
 			if(($front_side_file = $this->©file->template('/client-side/scripts/front-side.min.js', TRUE)))
 			{
-				$this->front_side_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side';
+				$this->front_side_components[] = $this->___instance_config->plugin_root_ns_with_dashes.'--front-side';
 
-				$scripts_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side'] = array(
-					'deps' => array($this->___instance_config->core_ns_stub_with_dashes),
+				$scripts_to_register[$this->___instance_config->plugin_root_ns_with_dashes.'--front-side'] = array(
+					'deps' => array($this->___instance_config->core_ns_with_dashes),
 					'url'  => $this->©url->to_wp_abs_dir_file($front_side_file),
 					'ver'  => $this->___instance_config->plugin_version_with_dashes
 				);
 			}
 			else $this->front_side_components = // Running w/ core only; no separate front-side scripts.
-				array_merge($this->front_side_components, array($this->___instance_config->core_ns_stub_with_dashes));
+				array_merge($this->front_side_components, array($this->___instance_config->core_ns_with_dashes));
 
 			// Stand-alone components; available in all contexts (depends on front-side).
 
@@ -172,10 +165,10 @@ namespace websharks_core_v000000_dev
 
 			if(($stand_alone_file = $this->©file->template('client-side/scripts/stand-alone.min.js', TRUE)))
 			{
-				$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone';
+				$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone';
 
-				$scripts_to_register[$this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone'] = array(
-					'deps' => $this->front_side_components,
+				$scripts_to_register[$this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone'] = array(
+					'deps' => $this->front_side_components, // Includes the core already.
 					'url'  => $this->©url->to_wp_abs_dir_file($stand_alone_file),
 					'ver'  => $this->___instance_config->plugin_version_with_dashes
 				);
@@ -187,19 +180,12 @@ namespace websharks_core_v000000_dev
 
 			if(($is_plugin_page = $this->©menu_page->is_plugin_page()))
 			{
-				$this->menu_page_components = $this->menu_page_components();
+				$this->menu_page_components   = $this->menu_page_components();
+				$this->menu_page_components[] = $this->___instance_config->core_ns_with_dashes.'--menu-pages';
 
-				if(!wp_script_is('jquery-html5-sortable', 'registered'))
-					$scripts_to_register['jquery-html5-sortable'] = array(
-						'deps' => array('jquery'), // jQuery dependency only.
-						'url'  => $this->©url->to_core_dir_file('/client-side/scripts/jq-sortable.min.js'),
-						'ver'  => $this->___instance_config->core_version_with_dashes
-					);
-				$this->menu_page_components[] = $this->___instance_config->core_ns_stub_with_dashes.'--menu-pages';
-
-				if(!wp_script_is($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', 'registered'))
-					$scripts_to_register[$this->___instance_config->core_ns_stub_with_dashes.'--menu-pages'] = array(
-						'deps' => array($this->___instance_config->core_ns_stub_with_dashes, 'jquery-html5-sortable'),
+				if(!wp_script_is($this->___instance_config->core_ns_with_dashes.'--menu-pages', 'registered'))
+					$scripts_to_register[$this->___instance_config->core_ns_with_dashes.'--menu-pages'] = array(
+						'deps' => array($this->___instance_config->core_ns_with_dashes),
 						'url'  => $this->©url->to_core_dir_file('/client-side/scripts/menu-pages/menu-pages.min.js'),
 						'ver'  => $this->___instance_config->core_version_with_dashes
 					);
@@ -208,17 +194,17 @@ namespace websharks_core_v000000_dev
 
 			// Add data separately, as this might change for each plugin the core processes.
 
-			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_plugin_root_ns_stubs_for_core_inline_data());
-			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_instance_config_for_core_inline_data());
-			$this->add_data($this->___instance_config->core_ns_stub_with_dashes, $this->_build_verifiers_for_core_inline_data());
+			$this->add_data($this->___instance_config->core_ns_with_dashes, $this->_build_plugin_root_namespaces_for_core_inline_data());
+			$this->add_data($this->___instance_config->core_ns_with_dashes, $this->_build_instance_config_for_core_inline_data());
+			$this->add_data($this->___instance_config->core_ns_with_dashes, $this->_build_verifiers_for_core_inline_data());
 
-			if(in_array($this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side', $this->front_side_components, TRUE))
-				$this->add_data($this->___instance_config->plugin_root_ns_stub_with_dashes.'--front-side', $this->build_front_side_inline_data());
+			if(in_array($this->___instance_config->plugin_root_ns_with_dashes.'--front-side', $this->front_side_components, TRUE))
+				$this->add_data($this->___instance_config->plugin_root_ns_with_dashes.'--front-side', $this->build_front_side_inline_data());
 
-			if(in_array($this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone', $this->stand_alone_components, TRUE))
-				$this->add_data($this->___instance_config->plugin_root_ns_stub_with_dashes.'--stand-alone', $this->build_stand_alone_inline_data());
+			if(in_array($this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone', $this->stand_alone_components, TRUE))
+				$this->add_data($this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone', $this->build_stand_alone_inline_data());
 
-			if($is_plugin_page) $this->add_data($this->___instance_config->core_ns_stub_with_dashes.'--menu-pages', $this->build_menu_page_inline_data());
+			if($is_plugin_page) $this->add_data($this->___instance_config->core_ns_with_dashes.'--menu-pages', $this->build_menu_page_inline_data());
 		}
 
 		/**
@@ -258,25 +244,25 @@ namespace websharks_core_v000000_dev
 		}
 
 		/**
-		 * Builds plugin root namespace stubs for core inline data.
+		 * Builds plugin root namespaces for core inline data.
 		 *
-		 * @return string Plugin root namespace stubs for core inline data.
+		 * @return string Plugin root namespaces for core inline data.
 		 */
-		protected function _build_plugin_root_ns_stubs_for_core_inline_data()
+		protected function _build_plugin_root_namespaces_for_core_inline_data()
 		{
 			if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
 
-			// Initialize the array of all plugin root namespace stubs for the core.
+			// Initialize the array of all plugin root namespaces for the core.
 
-			if(empty($GLOBALS[$this->___instance_config->core_ns_stub.'_scripts_initialized_plugin_root_ns_stubs'])
-			   && ($GLOBALS[$this->___instance_config->core_ns_stub.'_scripts_initialized_plugin_root_ns_stubs'] = TRUE)
-			) $data = 'var $'.$this->___instance_config->core_ns_stub.'___plugin_root_ns_stubs = [];';
+			if(empty($GLOBALS[$this->___instance_config->core_ns.'_scripts_initialized_plugin_root_namespaces'])
+			   && ($GLOBALS[$this->___instance_config->core_ns.'_scripts_initialized_plugin_root_namespaces'] = TRUE)
+			) $data = 'var $'.$this->___instance_config->core_ns.'___plugin_root_namespaces = [];';
 
-			// Plugin plugin root namespace stub; which is possibly the core also.
+			// Plugin plugin root namespace; which is possibly the core also.
 
 			$data = !empty($data) ? $data."\n" : ''; // Appending?
-			$data .= '$'.$this->___instance_config->core_ns_stub.'___plugin_root_ns_stubs.push'.
-			         '(\''.$this->©string->esc_js_sq($this->___instance_config->plugin_root_ns_stub).'\');';
+			$data .= '$'.$this->___instance_config->core_ns.'___plugin_root_namespaces.push'.
+			         '(\''.$this->©string->esc_js_sq($this->___instance_config->plugin_root_ns).'\');';
 
 			return ($this->cache[__FUNCTION__] = $data);
 		}
@@ -292,11 +278,11 @@ namespace websharks_core_v000000_dev
 
 			// Core instance config; for the core itself.
 
-			if(empty($GLOBALS[$this->___instance_config->core_ns_stub.'_scripts_loaded_core_instance_config'])
-			   && ($GLOBALS[$this->___instance_config->core_ns_stub.'_scripts_loaded_core_instance_config'] = TRUE)
+			if(empty($GLOBALS[$this->___instance_config->core_ns.'_scripts_loaded_core_instance_config'])
+			   && ($GLOBALS[$this->___instance_config->core_ns.'_scripts_loaded_core_instance_config'] = TRUE)
 			) // Notice the call below pulls an instance from the core itself; i.e. `core()->___instance_config->for_js()`.
 			{
-				$data = 'var $'.$this->___instance_config->core_ns_stub.'___instance_config = {';
+				$data = 'var $'.$this->___instance_config->core_ns.'___instance_config = {';
 
 				$data .= $this->©object->to_js(core()->___instance_config->for_js(), FALSE).',';
 				$data .= "'wp_load_url':'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_file($this->©file->wp_load()))."',";
@@ -307,7 +293,7 @@ namespace websharks_core_v000000_dev
 			// Plugin instance config; which is possibly the core also.
 
 			$data = !empty($data) ? $data."\n" : ''; // Appending?
-			$data .= 'var $'.$this->___instance_config->plugin_root_ns_stub.'___instance_config = {';
+			$data .= 'var $'.$this->___instance_config->plugin_root_ns.'___instance_config = {';
 
 			$data .= $this->©object->to_js($this->___instance_config->for_js(TRUE), FALSE).',';
 			$data .= "'plugin_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_dir_file())."',";
@@ -329,7 +315,7 @@ namespace websharks_core_v000000_dev
 		{
 			if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
 
-			$data = 'var $'.$this->___instance_config->plugin_root_ns_stub.'___verifiers = {';
+			$data = 'var $'.$this->___instance_config->plugin_root_ns.'___verifiers = {';
 
 			if(is_admin() && ($current_menu_page_slug_class_basename = $this->©menu_pages->is_plugin_page('', TRUE)))
 			{

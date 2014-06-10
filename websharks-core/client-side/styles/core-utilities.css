@@ -18,28 +18,28 @@ Responsive inline helpers.
 */
 @media (max-width : 767px)
 {
-	.wsc .i-hidden-xs
+	.websharks-core-v000000-dev .i-hidden-xs
 	{
 		display : none !important;
 	}
 }
 @media (min-width : 768px) and (max-width : 991px)
 {
-	.wsc .i-hidden-sm
+	.websharks-core-v000000-dev .i-hidden-sm
 	{
 		display : none !important;
 	}
 }
 @media (min-width : 992px) and (max-width : 1199px)
 {
-	.wsc .i-hidden-md
+	.websharks-core-v000000-dev .i-hidden-md
 	{
 		display : none !important;
 	}
 }
 @media (min-width : 1200px)
 {
-	.wsc .i-hidden-lg
+	.websharks-core-v000000-dev .i-hidden-lg
 	{
 		display : none !important;
 	}
@@ -48,7 +48,7 @@ Responsive inline helpers.
 /*
 Color utility classes.
 */
-.wsc .color-inherit
+.websharks-core-v000000-dev .color-inherit
 {
 	color : inherit !important;
 }
@@ -56,7 +56,7 @@ Color utility classes.
 /*
 Background utility classes.
 */
-.wsc .no-bg
+.websharks-core-v000000-dev .no-bg
 {
 	background : none !important;
 }
@@ -64,23 +64,23 @@ Background utility classes.
 /*
 Border utility classes.
 */
-.wsc .no-border
+.websharks-core-v000000-dev .no-border
 {
 	border : 0 !important;
 }
-.wsc .dotted-border
+.websharks-core-v000000-dev .dotted-border
 {
 	border-style : dotted !important;
 }
-.wsc .dashed-border
+.websharks-core-v000000-dev .dashed-border
 {
 	border-style : dashed !important;
 }
-.wsc .border-radius
+.websharks-core-v000000-dev .border-radius
 {
 	border-radius : 4px !important;
 }
-.wsc .border-radius-circular
+.websharks-core-v000000-dev .border-radius-circular
 {
 	border-radius : 50% !important;
 }
@@ -88,19 +88,19 @@ Border utility classes.
 /*
 Shadow utility classes.
 */
-.wsc .box-shadow
+.websharks-core-v000000-dev .box-shadow
 {
 	box-shadow : 0 0 2px 0 rgba(0, 0, 0, 0.5) !important;
 }
-.wsc .perspective-box-shadow
+.websharks-core-v000000-dev .perspective-box-shadow
 {
 	box-shadow : 0 6px 2px -4px rgba(0, 0, 0, 0.7) !important;
 }
-.wsc .perspective-box-shadows
+.websharks-core-v000000-dev .perspective-box-shadows
 {
 	box-shadow : 0 0 2px 0 rgba(0, 0, 0, 0.5), 0 6px 2px -4px rgba(0, 0, 0, 0.7) !important;
 }
-.wsc .text-shadow
+.websharks-core-v000000-dev .text-shadow
 {
 	text-shadow : 0 1px 1px rgba(0, 0, 0, 0.5) !important;
 }
@@ -108,42 +108,42 @@ Shadow utility classes.
 /*
 Text utility classes.
 */
-.wsc .text-wrap
+.websharks-core-v000000-dev .text-wrap
 {
 	white-space : normal !important;
 	word-wrap   : normal !important;
 	word-break  : normal !important;
 }
-.wsc .text-no-wrap
+.websharks-core-v000000-dev .text-no-wrap
 {
 	white-space : pre !important;
 	word-wrap   : normal !important;
 	word-break  : normal !important;
 }
-.wsc .text-ellipsis
+.websharks-core-v000000-dev .text-ellipsis
 {
 	overflow      : hidden !important;
 	white-space   : nowrap !important;
 	text-overflow : ellipsis !important;
 }
-.wsc .no-text-decor
+.websharks-core-v000000-dev .no-text-decor
 {
 	text-decoration : none !important;
 }
-.wsc .dotted-text-decor
+.websharks-core-v000000-dev .dotted-text-decor
 {
 	text-decoration : none !important;
 	border-bottom   : dotted 1px !important;
 }
-.wsc .text-upper
+.websharks-core-v000000-dev .text-upper
 {
 	text-transform : uppercase !important;
 }
-.wsc .text-lower
+.websharks-core-v000000-dev .text-lower
 {
 	text-transform : lowercase !important;
 }
-.wsc .text-small-caps
+.websharks-core-v000000-dev .text-small-caps
 {
 	font-variant : small-caps !important;
 }
@@ -151,13 +151,13 @@ Text utility classes.
 /*
 Alignment utility classes.
 */
-.wsc .center
+.websharks-core-v000000-dev .center
 {
 	display      : block !important;
 	margin-left  : auto !important;
 	margin-right : auto !important;
 }
-.wsc .va-middle
+.websharks-core-v000000-dev .va-middle
 {
 	vertical-align : middle !important;
 }
@@ -165,23 +165,23 @@ Alignment utility classes.
 /*
 Position utility classes.
 */
-.wsc .pos-absolute
+.websharks-core-v000000-dev .pos-absolute
 {
 	position : absolute !important;
 }
-.wsc .pos-relative
+.websharks-core-v000000-dev .pos-relative
 {
 	position : relative !important;
 }
-.wsc .z-index-1
+.websharks-core-v000000-dev .z-index-1
 {
 	z-index : 1 !important;
 }
-.wsc .z-index-2
+.websharks-core-v000000-dev .z-index-2
 {
 	z-index : 2 !important;
 }
-.wsc .z-index-top
+.websharks-core-v000000-dev .z-index-top
 {
 	z-index : 1032 !important;
 }
@@ -189,23 +189,23 @@ Position utility classes.
 /*
 Display utility classes.
 */
-.wsc .block-display
+.websharks-core-v000000-dev .block-display
 {
 	display : block !important;
 }
-.wsc .inline-display
+.websharks-core-v000000-dev .inline-display
 {
 	display : inline !important;
 }
-.wsc .inline-block
+.websharks-core-v000000-dev .inline-block
 {
 	display : inline-block !important;
 }
-.wsc .table-display
+.websharks-core-v000000-dev .table-display
 {
 	display : table !important;
 }
-.wsc .no-initial-display
+.websharks-core-v000000-dev .no-initial-display
 {
 	display : none;
 }
@@ -213,11 +213,11 @@ Display utility classes.
 /*
 Width/height utility classes.
 */
-.wsc .width-100
+.websharks-core-v000000-dev .width-100
 {
 	width : 100% !important;
 }
-.wsc .height-100
+.websharks-core-v000000-dev .height-100
 {
 	height : 100% !important;
 }
@@ -225,39 +225,39 @@ Width/height utility classes.
 /*
 Opacity utility classes.
 */
-.wsc .transparent
+.websharks-core-v000000-dev .transparent
 {
 	opacity : 0.1 !important;
 }
-.wsc .transparent-hover
+.websharks-core-v000000-dev .transparent-hover
 {
 	opacity : 0.1 !important;
 }
-.wsc .transparent-hover:hover
+.websharks-core-v000000-dev .transparent-hover:hover
 {
 	opacity : 1.0 !important;
 }
-.wsc .translucent
+.websharks-core-v000000-dev .translucent
 {
 	opacity : 0.5 !important;
 }
-.wsc .translucent-hover
+.websharks-core-v000000-dev .translucent-hover
 {
 	opacity : 0.5 !important;
 }
-.wsc .translucent-hover:hover
+.websharks-core-v000000-dev .translucent-hover:hover
 {
 	opacity : 1.0 !important;
 }
-.wsc .opacity-fade
+.websharks-core-v000000-dev .opacity-fade
 {
 	opacity : 0.7 !important;
 }
-.wsc .opacity-fade-hover
+.websharks-core-v000000-dev .opacity-fade-hover
 {
 	opacity : 0.7 !important;
 }
-.wsc .opacity-fade-hover:hover
+.websharks-core-v000000-dev .opacity-fade-hover:hover
 {
 	opacity : 1.0 !important;
 }
@@ -265,17 +265,17 @@ Opacity utility classes.
 /*
 Overflow utility classes.
 */
-.wsc .no-overflow
+.websharks-core-v000000-dev .no-overflow
 {
 	max-width : 100% !important;
 	overflow  : hidden !important;
 }
-.wsc .no-x-overflow
+.websharks-core-v000000-dev .no-x-overflow
 {
 	max-width  : 100% !important;
 	overflow-x : hidden !important;
 }
-.wsc .auto-y-overflow
+.websharks-core-v000000-dev .auto-y-overflow
 {
 	max-height : 100% !important;
 	overflow-y : auto !important;
@@ -284,7 +284,7 @@ Overflow utility classes.
 /*
 Outline utility classes.
 */
-.wsc .no-outline
+.websharks-core-v000000-dev .no-outline
 {
 	outline : none !important;
 }
@@ -292,11 +292,11 @@ Outline utility classes.
 /*
 Cursor utility classes.
 */
-.wsc .cursor-pointer
+.websharks-core-v000000-dev .cursor-pointer
 {
 	cursor : pointer !important;
 }
-.wsc .cursor-move
+.websharks-core-v000000-dev .cursor-move
 {
 	cursor : move !important;
 }
@@ -304,7 +304,7 @@ Cursor utility classes.
 /*
 Selection utility classes.
 */
-.wsc .no-select
+.websharks-core-v000000-dev .no-select
 {
 	-webkit-user-select : none !important;
 	-moz-user-select    : none !important;
@@ -314,7 +314,7 @@ Selection utility classes.
 /*
 Spacer utility classes.
 */
-.wsc .spacer
+.websharks-core-v000000-dev .spacer
 {
 	display : inline-block !important;
 	margin  : 0 10px 0 10px !important;
@@ -323,15 +323,15 @@ Spacer utility classes.
 /*
 Clearing utility classes.
 */
-.wsc .clear
+.websharks-core-v000000-dev .clear
 {
 	clear : both !important;
 }
-.wsc .clear-r
+.websharks-core-v000000-dev .clear-r
 {
 	clear : right !important;
 }
-.wsc .clear-l
+.websharks-core-v000000-dev .clear-l
 {
 	clear : left !important;
 }
@@ -339,95 +339,95 @@ Clearing utility classes.
 /*
 Font size utility classes.
 */
-.wsc .font-10
+.websharks-core-v000000-dev .font-10
 {
 	font-size : 10% !important;
 }
-.wsc .font-20
+.websharks-core-v000000-dev .font-20
 {
 	font-size : 20% !important;
 }
-.wsc .font-30
+.websharks-core-v000000-dev .font-30
 {
 	font-size : 30% !important;
 }
-.wsc .font-40
+.websharks-core-v000000-dev .font-40
 {
 	font-size : 40% !important;
 }
-.wsc .font-50
+.websharks-core-v000000-dev .font-50
 {
 	font-size : 50% !important;
 }
-.wsc .font-60
+.websharks-core-v000000-dev .font-60
 {
 	font-size : 60% !important;
 }
-.wsc .font-70
+.websharks-core-v000000-dev .font-70
 {
 	font-size : 70% !important;
 }
-.wsc .font-80
+.websharks-core-v000000-dev .font-80
 {
 	font-size : 80% !important;
 }
-.wsc .font-90
+.websharks-core-v000000-dev .font-90
 {
 	font-size : 90% !important;
 }
-.wsc .font-100
+.websharks-core-v000000-dev .font-100
 {
 	font-size : 100% !important;
 }
-.wsc .font-110
+.websharks-core-v000000-dev .font-110
 {
 	font-size : 110% !important;
 }
-.wsc .font-120
+.websharks-core-v000000-dev .font-120
 {
 	font-size : 120% !important;
 }
-.wsc .font-130
+.websharks-core-v000000-dev .font-130
 {
 	font-size : 130% !important;
 }
-.wsc .font-140
+.websharks-core-v000000-dev .font-140
 {
 	font-size : 140% !important;
 }
-.wsc .font-150
+.websharks-core-v000000-dev .font-150
 {
 	font-size : 150% !important;
 }
-.wsc .font-160
+.websharks-core-v000000-dev .font-160
 {
 	font-size : 160% !important;
 }
-.wsc .font-170
+.websharks-core-v000000-dev .font-170
 {
 	font-size : 170% !important;
 }
-.wsc .font-180
+.websharks-core-v000000-dev .font-180
 {
 	font-size : 180% !important;
 }
-.wsc .font-190
+.websharks-core-v000000-dev .font-190
 {
 	font-size : 190% !important;
 }
-.wsc .font-200
+.websharks-core-v000000-dev .font-200
 {
 	font-size : 200% !important;
 }
-.wsc .font-300
+.websharks-core-v000000-dev .font-300
 {
 	font-size : 300% !important;
 }
-.wsc .font-400
+.websharks-core-v000000-dev .font-400
 {
 	font-size : 400% !important;
 }
-.wsc .font-500
+.websharks-core-v000000-dev .font-500
 {
 	font-size : 500% !important;
 }
@@ -435,47 +435,47 @@ Font size utility classes.
 /*
 Font weight utility classes.
 */
-.wsc .font-weight-lighter
+.websharks-core-v000000-dev .font-weight-lighter
 {
 	font-weight : lighter !important;
 }
-.wsc .font-weight-100
+.websharks-core-v000000-dev .font-weight-100
 {
 	font-weight : 100 !important;
 }
-.wsc .font-weight-200
+.websharks-core-v000000-dev .font-weight-200
 {
 	font-weight : 200 !important;
 }
-.wsc .font-weight-300
+.websharks-core-v000000-dev .font-weight-300
 {
 	font-weight : 300 !important;
 }
-.wsc .font-weight-400, .wsc .font-weight-normal
+.websharks-core-v000000-dev .font-weight-400, .websharks-core-v000000-dev .font-weight-normal
 {
 	font-weight : 400 !important;
 }
-.wsc .font-weight-500
+.websharks-core-v000000-dev .font-weight-500
 {
 	font-weight : 500 !important;
 }
-.wsc .font-weight-600
+.websharks-core-v000000-dev .font-weight-600
 {
 	font-weight : 600 !important;
 }
-.wsc .font-weight-700, .wsc .font-weight-bold
+.websharks-core-v000000-dev .font-weight-700, .websharks-core-v000000-dev .font-weight-bold
 {
 	font-weight : 700 !important;
 }
-.wsc .font-weight-800
+.websharks-core-v000000-dev .font-weight-800
 {
 	font-weight : 800 !important;
 }
-.wsc .font-weight-900
+.websharks-core-v000000-dev .font-weight-900
 {
 	font-weight : 900 !important;
 }
-.wsc .font-weight-bolder
+.websharks-core-v000000-dev .font-weight-bolder
 {
 	font-weight : bolder !important;
 }
@@ -483,122 +483,122 @@ Font weight utility classes.
 /*
 Margin utility classes.
 */
-.wsc .margin
+.websharks-core-v000000-dev .margin
 {
 	margin : 15px !important;
 }
-.wsc .margin-sm
+.websharks-core-v000000-dev .margin-sm
 {
 	margin : 10px !important;
 }
-.wsc .em-margin
+.websharks-core-v000000-dev .em-margin
 {
 	margin : 0.5em !important;
 }
-.wsc .no-margin
+.websharks-core-v000000-dev .no-margin
 {
 	margin : 0 !important;
 }
-.wsc .t-margin
+.websharks-core-v000000-dev .t-margin
 {
 	margin-top : 15px !important;
 }
-.wsc .t-margin-sm
+.websharks-core-v000000-dev .t-margin-sm
 {
 	margin-top : 10px !important;
 }
-.wsc .em-t-margin
+.websharks-core-v000000-dev .em-t-margin
 {
 	margin-top : 0.5em !important;
 }
-.wsc .no-t-margin
+.websharks-core-v000000-dev .no-t-margin
 {
 	margin-top : 0 !important;
 }
-.wsc .r-margin
+.websharks-core-v000000-dev .r-margin
 {
 	margin-right : 15px !important;
 }
-.wsc .r-margin-sm
+.websharks-core-v000000-dev .r-margin-sm
 {
 	margin-right : 10px !important;
 }
-.wsc .em-r-margin
+.websharks-core-v000000-dev .em-r-margin
 {
 	margin-right : 0.5em !important;
 }
-.wsc .no-r-margin
+.websharks-core-v000000-dev .no-r-margin
 {
 	margin-right : 0 !important;
 }
-.wsc .b-margin
+.websharks-core-v000000-dev .b-margin
 {
 	margin-bottom : 15px !important;
 }
-.wsc .b-margin-sm
+.websharks-core-v000000-dev .b-margin-sm
 {
 	margin-bottom : 10px !important;
 }
-.wsc .em-b-margin
+.websharks-core-v000000-dev .em-b-margin
 {
 	margin-bottom : 0.5em !important;
 }
-.wsc .no-b-margin
+.websharks-core-v000000-dev .no-b-margin
 {
 	margin-bottom : 0 !important;
 }
-.wsc .l-margin
+.websharks-core-v000000-dev .l-margin
 {
 	margin-left : 15px !important;
 }
-.wsc .l-margin-sm
+.websharks-core-v000000-dev .l-margin-sm
 {
 	margin-left : 10px !important;
 }
-.wsc .em-l-margin
+.websharks-core-v000000-dev .em-l-margin
 {
 	margin-left : 0.5em !important;
 }
-.wsc .no-l-margin
+.websharks-core-v000000-dev .no-l-margin
 {
 	margin-left : 0 !important;
 }
-.wsc .x-margin
+.websharks-core-v000000-dev .x-margin
 {
 	margin-left  : 15px !important;
 	margin-right : 15px !important;
 }
-.wsc .x-margin-sm
+.websharks-core-v000000-dev .x-margin-sm
 {
 	margin-left  : 10px !important;
 	margin-right : 10px !important;
 }
-.wsc .em-x-margin
+.websharks-core-v000000-dev .em-x-margin
 {
 	margin-left  : 0.5em !important;
 	margin-right : 0.5em !important;
 }
-.wsc .no-x-margin
+.websharks-core-v000000-dev .no-x-margin
 {
 	margin-left  : 0 !important;
 	margin-right : 0 !important;
 }
-.wsc .y-margin, .wsc .y-margin-lis li
+.websharks-core-v000000-dev .y-margin, .websharks-core-v000000-dev .y-margin-lis li
 {
 	margin-top    : 15px !important;
 	margin-bottom : 15px !important;
 }
-.wsc .y-margin-sm, .wsc .y-margin-lis-sm li
+.websharks-core-v000000-dev .y-margin-sm, .websharks-core-v000000-dev .y-margin-lis-sm li
 {
 	margin-top    : 10px !important;
 	margin-bottom : 10px !important;
 }
-.wsc .em-y-margin, .wsc .em-y-margin-lis li
+.websharks-core-v000000-dev .em-y-margin, .websharks-core-v000000-dev .em-y-margin-lis li
 {
 	margin-top    : 0.5em !important;
 	margin-bottom : 0.5em !important;
 }
-.wsc .no-y-margin
+.websharks-core-v000000-dev .no-y-margin
 {
 	margin-top    : 0 !important;
 	margin-bottom : 0 !important;
@@ -607,122 +607,122 @@ Margin utility classes.
 /*
 Padding utility classes.
 */
-.wsc .padding
+.websharks-core-v000000-dev .padding
 {
 	padding : 15px !important;
 }
-.wsc .padding-sm
+.websharks-core-v000000-dev .padding-sm
 {
 	padding : 10px !important;
 }
-.wsc .em-padding
+.websharks-core-v000000-dev .em-padding
 {
 	padding : 0.5em !important;
 }
-.wsc .no-padding
+.websharks-core-v000000-dev .no-padding
 {
 	padding : 0 !important;
 }
-.wsc .t-padding
+.websharks-core-v000000-dev .t-padding
 {
 	padding-top : 15px !important;
 }
-.wsc .t-padding-sm
+.websharks-core-v000000-dev .t-padding-sm
 {
 	padding-top : 10px !important;
 }
-.wsc .em-t-padding
+.websharks-core-v000000-dev .em-t-padding
 {
 	padding-top : 0.5em !important;
 }
-.wsc .no-t-padding
+.websharks-core-v000000-dev .no-t-padding
 {
 	padding-top : 0 !important;
 }
-.wsc .r-padding
+.websharks-core-v000000-dev .r-padding
 {
 	padding-right : 15px !important;
 }
-.wsc .r-padding-sm
+.websharks-core-v000000-dev .r-padding-sm
 {
 	padding-right : 10px !important;
 }
-.wsc .em-r-padding
+.websharks-core-v000000-dev .em-r-padding
 {
 	padding-right : 0.5em !important;
 }
-.wsc .no-r-padding
+.websharks-core-v000000-dev .no-r-padding
 {
 	padding-right : 0 !important;
 }
-.wsc .b-padding
+.websharks-core-v000000-dev .b-padding
 {
 	padding-bottom : 15px !important;
 }
-.wsc .b-padding-sm
+.websharks-core-v000000-dev .b-padding-sm
 {
 	padding-bottom : 10px !important;
 }
-.wsc .em-b-padding
+.websharks-core-v000000-dev .em-b-padding
 {
 	padding-bottom : 0.5em !important;
 }
-.wsc .no-b-padding
+.websharks-core-v000000-dev .no-b-padding
 {
 	padding-bottom : 0 !important;
 }
-.wsc .l-padding
+.websharks-core-v000000-dev .l-padding
 {
 	padding-left : 15px !important;
 }
-.wsc .l-padding-sm
+.websharks-core-v000000-dev .l-padding-sm
 {
 	padding-left : 10px !important;
 }
-.wsc .em-l-padding
+.websharks-core-v000000-dev .em-l-padding
 {
 	padding-left : 0.5em !important;
 }
-.wsc .no-l-padding
+.websharks-core-v000000-dev .no-l-padding
 {
 	padding-left : 0 !important;
 }
-.wsc .x-padding
+.websharks-core-v000000-dev .x-padding
 {
 	padding-left  : 15px !important;
 	padding-right : 15px !important;
 }
-.wsc .x-padding-sm
+.websharks-core-v000000-dev .x-padding-sm
 {
 	padding-left  : 10px !important;
 	padding-right : 10px !important;
 }
-.wsc .em-x-padding
+.websharks-core-v000000-dev .em-x-padding
 {
 	padding-left  : 0.5em !important;
 	padding-right : 0.5em !important;
 }
-.wsc .no-x-padding
+.websharks-core-v000000-dev .no-x-padding
 {
 	padding-left  : 0 !important;
 	padding-right : 0 !important;
 }
-.wsc .y-padding
+.websharks-core-v000000-dev .y-padding
 {
 	padding-top    : 15px !important;
 	padding-bottom : 15px !important;
 }
-.wsc .y-padding-sm
+.websharks-core-v000000-dev .y-padding-sm
 {
 	padding-top    : 10px !important;
 	padding-bottom : 10px !important;
 }
-.wsc .em-y-padding
+.websharks-core-v000000-dev .em-y-padding
 {
 	padding-top    : 0.5em !important;
 	padding-bottom : 0.5em !important;
 }
-.wsc .no-y-padding
+.websharks-core-v000000-dev .no-y-padding
 {
 	padding-top    : 0 !important;
 	padding-bottom : 0 !important;

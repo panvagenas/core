@@ -13,16 +13,17 @@
 {
 	'use strict'; // Strict standards.
 
+	var $websharks_core = $websharks_core_v000000_dev;
 	if($websharks_core.___did_menu_pages)
 		return; // Already did these.
 
-	$.each($websharks_core.$.___plugin_root_ns_stubs,
-	       function(plugin_root_ns_stub_index, plugin_root_ns_stub)
+	$.each($websharks_core.$.___plugin_root_namespaces,
+	       function(plugin_root_ns_index, plugin_root_ns)
 	       {
 		       var extension // Extension definition.
-			       = $websharks_core.$.extension_class(plugin_root_ns_stub, 'menu_pages');
-		       window['$' + plugin_root_ns_stub].$menu_pages = new extension();
-		       var _ = window['$' + plugin_root_ns_stub].$menu_pages;
+			       = $websharks_core.$.extension_class(plugin_root_ns, 'menu_pages');
+		       window['$' + plugin_root_ns].$menu_pages = new extension();
+		       var _ = window['$' + plugin_root_ns].$menu_pages;
 
 		       _.toggling_all_panels = false;
 
@@ -33,8 +34,7 @@
 			       var $sidebar_panels = _.$sidebar_panels();
 			       var $content_sidebar_panels = _.$content_sidebar_panels();
 
-			       $('#wpbody').addClass(_.instance_config('core_prefix_with_dashes') +
-			                             _.closest_theme_class_to($menu_page))
+			       $('#wpbody').addClass(_.closest_theme_class_to($menu_page))
 				       .css({'margin-left': '-20px', 'padding-left': '20px', 'min-height': screen.height + 'px'});
 
 			       $menu_page.find('.toggle-all-panels')
@@ -45,7 +45,7 @@
 					           var this_action = last_action === 'show' ? 'hide' : 'show';
 
 					           $this.data('last-action', this_action), $content_sidebar_panels.find('> .panel-collapse')
-						           .wscCollapse({toggle: false}).wscCollapse(this_action);
+						           [_.core('collapse')]({toggle: false})[_.core('collapse')](this_action);
 
 					           setTimeout(function() // Wait for transitions to complete.
 					                      {
@@ -117,12 +117,12 @@
 				       console.log('Updating content panels order.');
 			       };
 			       $menu_page.find('.content-panels')
-				       .sortable({
-					                 items : '.panel',
-					                 // $(.sidebar-panels).children(.panel)
-					                 // $(.sidebar-panels).children(.panel).find(handle)
-					                 handle: '> .panel-heading > .panel-title .cursor-move'
-				                 });
+				       [_.core('sortable')]({
+					                            items : '.panel',
+					                            // $(.sidebar-panels).children(.panel)
+					                            // $(.sidebar-panels).children(.panel).find(handle)
+					                            handle: '> .panel-heading > .panel-title .cursor-move'
+				                            });
 			       $menu_page.find('.content-panels').on('sortupdate', update_content_panels_order);
 
 			       var update_sidebar_panels_order = function()
@@ -140,12 +140,12 @@
 				       console.log('Updating sidebar panels order.');
 			       };
 			       $menu_page.find('.sidebar-panels')
-				       .sortable({
-					                 items : '.panel',
-					                 // $(.sidebar-panels).children(.panel)
-					                 // $(.sidebar-panels).children(.panel).find(handle)
-					                 handle: '> .panel-heading > .panel-title .cursor-move'
-				                 });
+				       [_.core('sortable')]({
+					                            items : '.panel',
+					                            // $(.sidebar-panels).children(.panel)
+					                            // $(.sidebar-panels).children(.panel).find(handle)
+					                            handle: '> .panel-heading > .panel-title .cursor-move'
+				                            });
 			       $menu_page.find('.sidebar-panels').on('sortupdate', update_sidebar_panels_order);
 		       };
 
@@ -162,11 +162,11 @@
 			       {
 				       var scroll_to_content_panel = function()
 				       {
-					       $.scrollTo($content_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
+					       $[_.core('scrollTo')]($content_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
 				       };
 				       if($content_panel.hasClass('in')) scroll_to_content_panel(); // Expanded already.
 				       else $content_panel.one('shown.wsc-bs.collapse', scroll_to_content_panel),
-					       $content_panel.wscCollapse({toggle: false}).wscCollapse('show');
+					       $content_panel[_.core('collapse')]({toggle: false})[_.core('collapse')]('show');
 			       }
 			       if(sidebar_panel_slug // Focusing on a specific sidebar panel?
 			          && ($sidebar_panel = $menu_page.find('.sidebar-panels #panel--' + sidebar_panel_slug + '.panel-collapse')).length)
@@ -174,11 +174,11 @@
 				       var scroll_to_sidebar_panel = function()
 				       {
 					       if(!content_panel_slug) // Only if we are NOT also scrolling to a content panel.
-						       $.scrollTo($sidebar_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
+						       $[_.core('scrollTo')]($sidebar_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
 				       };
 				       if($sidebar_panel.hasClass('in')) scroll_to_sidebar_panel(); // Expanded already.
 				       else $sidebar_panel.one('shown.wsc-bs.collapse', scroll_to_sidebar_panel),
-					       $sidebar_panel.wscCollapse({toggle: false}).wscCollapse('show');
+					       $sidebar_panel[_.core('collapse')]({toggle: false})[_.core('collapse')]('show');
 			       }
 		       };
 
@@ -188,7 +188,7 @@
 				       return _.cache.$menu_page;
 
 			       return (_.cache.$menu_page // Current menu page.
-			               = $('.' + _.instance_config('core_ns_stub_with_dashes') + '.menu-page'));
+			               = $('.' + _.instance_config('plugin_root_ns_with_dashes') + '.menu-page'));
 		       };
 
 		       _.$content_panels = function()

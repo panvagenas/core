@@ -24,7 +24,8 @@
 	/**
 	 * @type {Object} Core class definition.
 	 */
-	window.$$websharks_core = window.$$websharks_core || {};
+	window.$$websharks_core_v000000_dev = window.$$websharks_core_v000000_dev || {};
+	var $$websharks_core = window.$$websharks_core_v000000_dev;
 	if(typeof $$websharks_core.$$ === 'function')
 		return; // Core already exists.
 
@@ -34,7 +35,7 @@
 	 * @note This is called by the WebSharks™ Core constructor.
 	 *    It sets up dynamic property values available only at runtime.
 	 *
-	 * @param {String} [plugin_root_ns_stub] Plugin's root namespace stub.
+	 * @param {String} [plugin_root_ns] Plugin's root namespace.
 	 *    Optional. Defaults to the core itself; bypass with an empty string.
 	 *
 	 * @param {String} [extension] The name of the extension to generate.
@@ -42,12 +43,11 @@
 	 *
 	 * @class $$websharks_core.$$
 	 */
-	$$websharks_core.$$ = function(plugin_root_ns_stub, extension)
+	$$websharks_core.$$ = function(plugin_root_ns, extension)
 	{
-		var core_ns_stub = 'websharks_core'; // Must hard code this here.
-
-		if(typeof plugin_root_ns_stub !== 'string' || !plugin_root_ns_stub)
-			plugin_root_ns_stub = core_ns_stub;
+		var core_ns = 'websharks_core_v000000_dev'; // Must hard code.
+		if(typeof plugin_root_ns !== 'string' || !plugin_root_ns)
+			plugin_root_ns = core_ns; // The core itself.
 
 		if(typeof extension !== 'string' || !extension)
 			extension = '$'; // Default extension namespace.
@@ -130,17 +130,17 @@
 		this.cache = {}; // Initialize object cache.
 
 		/**
-		 * @type {Object} Current plugin root namespace stubs.
+		 * @type {Object} Current plugin root namespaces.
 		 */
-		this.___plugin_root_ns_stubs = [];
+		this.___plugin_root_namespaces = [];
 
-		// Build the dynamic `___plugin_root_ns_stubs` property.
+		// Build the dynamic `___plugin_root_namespaces` property.
 		// Only the core's default `$` extension has this array.
 
-		if(plugin_root_ns_stub === core_ns_stub && extension === '$')
-			if(typeof window['$' + core_ns_stub + '___plugin_root_ns_stubs'] === 'object')
-				if(window['$' + core_ns_stub + '___plugin_root_ns_stubs'] instanceof Array)
-					this.___plugin_root_ns_stubs = window['$' + core_ns_stub + '___plugin_root_ns_stubs'];
+		if(plugin_root_ns === core_ns && extension === '$')
+			if(typeof window['$' + core_ns + '___plugin_root_namespaces'] === 'object')
+				if(window['$' + core_ns + '___plugin_root_namespaces'] instanceof Array)
+					this.___plugin_root_namespaces = window['$' + core_ns + '___plugin_root_namespaces'];
 
 		/**
 		 * @type {Object} Current instance configuration.
@@ -149,11 +149,11 @@
 
 		// Build the dynamic `___instance_config` property.
 
-		if(typeof window['$' + core_ns_stub + '___instance_config'] === 'object')
-			$.extend(this.___instance_config, window['$' + core_ns_stub + '___instance_config']);
+		if(typeof window['$' + core_ns + '___instance_config'] === 'object')
+			$.extend(this.___instance_config, window['$' + core_ns + '___instance_config']);
 
-		if(typeof window['$' + plugin_root_ns_stub + '___instance_config'] === 'object')
-			$.extend(this.___instance_config, window['$' + plugin_root_ns_stub + '___instance_config']);
+		if(typeof window['$' + plugin_root_ns + '___instance_config'] === 'object')
+			$.extend(this.___instance_config, window['$' + plugin_root_ns + '___instance_config']);
 
 		/**
 		 * @type {Object} Current translations.
@@ -162,19 +162,19 @@
 
 		// Build the dynamic `___i18n` property.
 
-		if(typeof window['$' + core_ns_stub + '___i18n'] === 'object')
-			$.extend(this.___i18n, window['$' + core_ns_stub + '___i18n']);
+		if(typeof window['$' + core_ns + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + core_ns + '___i18n']);
 
-		if(typeof window['$' + core_ns_stub + '__' + extension + '___i18n'] === 'object')
-			$.extend(this.___i18n, window['$' + core_ns_stub + '__' + extension + '___i18n']);
+		if(typeof window['$' + core_ns + '__' + extension + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + core_ns + '__' + extension + '___i18n']);
 
 		// Build the dynamic `___i18n` property; allow plugins to override.
 
-		if(typeof window['$' + plugin_root_ns_stub + '___i18n'] === 'object')
-			$.extend(this.___i18n, window['$' + plugin_root_ns_stub + '___i18n']);
+		if(typeof window['$' + plugin_root_ns + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + plugin_root_ns + '___i18n']);
 
-		if(typeof window['$' + plugin_root_ns_stub + '__' + extension + '___i18n'] === 'object')
-			$.extend(this.___i18n, window['$' + plugin_root_ns_stub + '__' + extension + '___i18n']);
+		if(typeof window['$' + plugin_root_ns + '__' + extension + '___i18n'] === 'object')
+			$.extend(this.___i18n, window['$' + plugin_root_ns + '__' + extension + '___i18n']);
 
 		/**
 		 * @type {Object} Current verifiers.
@@ -183,17 +183,17 @@
 
 		// Build the dynamic `___verifiers` property.
 
-		if(typeof window['$' + plugin_root_ns_stub + '___verifiers'] === 'object')
-			$.extend(this.___verifiers, window['$' + plugin_root_ns_stub + '___verifiers']);
+		if(typeof window['$' + plugin_root_ns + '___verifiers'] === 'object')
+			$.extend(this.___verifiers, window['$' + plugin_root_ns + '___verifiers']);
 
-		if(typeof window['$' + plugin_root_ns_stub + '__' + extension + '___verifiers'] === 'object')
-			$.extend(this.___verifiers, window['$' + plugin_root_ns_stub + '__' + extension + '___verifiers']);
+		if(typeof window['$' + plugin_root_ns + '__' + extension + '___verifiers'] === 'object')
+			$.extend(this.___verifiers, window['$' + plugin_root_ns + '__' + extension + '___verifiers']);
 	};
 
 	/**
 	 * Builds a new extension of the core prototype.
 	 *
-	 * @param {String} plugin_root_ns_stub Plugin's root namespace stub.
+	 * @param {String} plugin_root_ns Plugin's root namespace.
 	 *    Optional. Defaults to the core itself; bypass with an empty string.
 	 *
 	 * @param {String} extension The name of the extension to generate (required).
@@ -202,29 +202,27 @@
 	 *    The class will NOT be instantiated here. That's for the caller to handle.
 	 *
 	 * ``` // Example usage.
-	 * window.$plugin = window.$plugin || {}; // Initialize.
-	 * var extension = $websharks_core.$.extension('plugin', 'extension');
-	 * $plugin.$extension = new extension();
+	 * var extension = $websharks_core.$.extension('plugin_root_ns', 'extension');
+	 * $plugin_root_ns.$extension = new extension();
 	 * ```
-	 *
 	 * @note Class for a plugin extension is stored as follows: `$$plugin.$$extension`.
 	 * @note Class for a core extension is stored as follows: `$$websharks_core.$$extension`.
 	 */
-	$$websharks_core.$$.prototype.extension_class = function(plugin_root_ns_stub, extension)
+	$$websharks_core.$$.prototype.extension_class = function(plugin_root_ns, extension)
 	{
 		this.check_arg_types('string', 'string:!empty', arguments, 2);
 
 		if(!this.is_default_core_extension()) // Only the core may call this.
 			throw this.sprintf(this.__('core_only_failure'), 'extension_class');
 
-		if(plugin_root_ns_stub && plugin_root_ns_stub !== this.instance_config('core_ns_stub'))
+		if(plugin_root_ns && plugin_root_ns !== this.instance_config('core_ns'))
 		{
-			window['$$' + plugin_root_ns_stub] = window['$$' + plugin_root_ns_stub] || {};
-			window['$$' + plugin_root_ns_stub]['$$' + extension] = function(){}; // Class constructor.
-			window['$$' + plugin_root_ns_stub]['$$' + extension].prototype = new $$websharks_core.$$(plugin_root_ns_stub, extension);
-			window['$$' + plugin_root_ns_stub]['$$' + extension].prototype.constructor = window['$$' + plugin_root_ns_stub]['$$' + extension];
+			window['$$' + plugin_root_ns] = window['$$' + plugin_root_ns] || {};
+			window['$$' + plugin_root_ns]['$$' + extension] = function(){}; // Class constructor.
+			window['$$' + plugin_root_ns]['$$' + extension].prototype = new $$websharks_core.$$(plugin_root_ns, extension);
+			window['$$' + plugin_root_ns]['$$' + extension].prototype.constructor = window['$$' + plugin_root_ns]['$$' + extension];
 
-			return window['$$' + plugin_root_ns_stub]['$$' + extension]; // e.g. `$$plugin.$$extension`.
+			return window['$$' + plugin_root_ns]['$$' + extension]; // e.g. `$$plugin.$$extension`.
 		}
 		else if(extension !== '$') // The core itself. No need for another global variable in this case.
 		{
@@ -253,6 +251,18 @@
 	};
 
 	/**
+	 * Constructs a core namespace-prefixed string.
+	 *
+	 * @param {String} string String to prefix.
+	 *
+	 * @return {String} Prefixed string.
+	 */
+	$$websharks_core.$$.prototype.core = function(string)
+	{
+		return this.instance_config('core_ns') + '.' + string;
+	};
+
+	/**
 	 * JavaScript equivalent to PHP's `sprintf()` function.
 	 *
 	 * @see http://cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.js
@@ -261,7 +271,7 @@
 	 */
 	$$websharks_core.$$.prototype.sprintf = function()
 	{
-		return $$websharks_core.sprintf.apply(window, arguments);
+		return window[this.core('sprintf')].apply(window, arguments);
 	};
 
 	/**
@@ -273,7 +283,7 @@
 	 */
 	$$websharks_core.$$.prototype.vsprintf = function()
 	{
-		return $$websharks_core.vsprintf.apply(window, arguments);
+		return window[this.core('vsprintf')].apply(window, arguments);
 	};
 
 	/**
@@ -607,33 +617,31 @@
 	 *    The search continues with jQuery™ `parents()`; the search will fail if no parents have a theme class.
 	 *
 	 * @param {Node|Object|String} object The object to start from.
-	 * @param {Boolean} [strip_plugin_theme_prefix] Strip plugin/theme prefixes?
-	 *    This argument is optional; it defaults to a value of `true`.
 	 *
-	 * @return {String} CSS class name. The full class name; including the plugin root namespace stub.
+	 * @return {String} CSS class name. The full class name; including the plugin's root namespace.
 	 */
-	$$websharks_core.$$.prototype.closest_theme_class_to = function(object, strip_plugin_theme_prefix)
+	$$websharks_core.$$.prototype.closest_theme_class_to = function(object)
 	{
-		this.check_arg_types(['object', 'string:!empty'], 'boolean', arguments, 1);
-		if(!this.isset(strip_plugin_theme_prefix)) strip_plugin_theme_prefix = true;
+		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
 		var theme_class = '', // Initialize working variables.
-			plugin_root_ns_stub_with_dashes = this.instance_config('plugin_root_ns_stub_with_dashes');
+			core_ns_with_dashes = this.instance_config('core_ns_with_dashes'),
+			plugin_root_ns_with_dashes = this.instance_config('plugin_root_ns_with_dashes');
 
-		$(object).add($(object).parents('.' + plugin_root_ns_stub_with_dashes))
+		$(object).add($(object).parents('.' + plugin_root_ns_with_dashes))
 			.each(function() // Begin iterations (we have two here).
 			      {
 				      $.each(String($(this).attr('class')).split(/\s+/), function(_i, _class)
 				      {
-					      if(_class.indexOf(plugin_root_ns_stub_with_dashes + '--theme--') === 0)
-						      theme_class = _class;
+					      if(_class.indexOf(plugin_root_ns_with_dashes + '--t--') === 0)
+						      theme_class = _class.replace(plugin_root_ns_with_dashes + '--t--', '');
 					      return (theme_class) ? false : true;
 				      });
 				      return (theme_class) ? false : true;
 			      });
-		return strip_plugin_theme_prefix && theme_class
-			? theme_class.replace(plugin_root_ns_stub_with_dashes + '--theme--', '')
-			: theme_class;
+		if(theme_class) // Found a theme?
+			return core_ns_with_dashes + '--t--' + theme_class + ' ' + plugin_root_ns_with_dashes + '--t--' + theme_class;
+		return ''; // Default (empty string on failure).
 	};
 
 	/**
@@ -641,10 +649,8 @@
 	 */
 	$$websharks_core.$$.prototype.enhance_forms = function()
 	{
-		var _ = this; // Initialize working variables.
-		var core_prefix_with_dashes = _.instance_config('core_prefix_with_dashes');
-		var plugin_root_ns_stub_with_dashes = _.instance_config('plugin_root_ns_stub_with_dashes');
-		var $forms = $('.' + plugin_root_ns_stub_with_dashes + ' form');
+		var _ = this, // Initialize working variables.
+			$forms = $('.' + _.instance_config('plugin_root_ns_with_dashes') + ' form');
 
 		// Password strength/mismatch indicators.
 
@@ -780,8 +786,6 @@
 		var _ = this; // Self reference.
 		var confirmation_errors = {}, unique_value_errors = {},
 			required_minimum_errors = {}, rc_required_minimum_errors = {}, validation_errors = {};
-		var core_prefix_with_dashes = _.instance_config('core_prefix_with_dashes');
-		var plugin_root_ns_stub_with_dashes = _.instance_config('plugin_root_ns_stub_with_dashes');
 
 		$('div.validation-errors', context).remove(); // Remove any existing errors.
 
@@ -1403,8 +1407,8 @@
 			else $closest_form_group.append($validation_errors); // Validation errors.
 		}
 		if(errors_exist) // If errors exist, scroll to them now.
-			$.scrollTo($('.validation-errors', context).closest('.form-group'),
-			           {offset: {top: -100, left: 0}, duration: 500});
+			$[_.core('scrollTo')]($('.validation-errors', context).closest('.form-group'),
+			                      {offset: {top: -100, left: 0}, duration: 500});
 
 		return errors_exist ? false : true; // Prevents form from being submitted w/ errors.
 	};
@@ -1498,7 +1502,7 @@
 	{
 		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
-		$(object).parents('.collapse').wscCollapse({toggle: false}).wscCollapse('show');
+		$(object).parents('.collapse')[this.core('collapse')]({toggle: false})[this.core('collapse')]('show');
 	};
 
 	/**
@@ -1959,7 +1963,9 @@
 	/**
 	 * @type {Object} Core class instance.
 	 */
-	window.$websharks_core = window.$websharks_core || {};
+	window.$websharks_core_v000000_dev = window.$websharks_core_v000000_dev || {};
+	var $$websharks_core = $$websharks_core_v000000_dev;
+	var $websharks_core = $websharks_core_v000000_dev;
 	if(typeof $websharks_core.$ === 'object')
 		return; // Core already exists.
 
@@ -1973,10 +1979,10 @@
 	 */
 	if(!$websharks_core.___did_globals) // Only if not done already.
 	{
-		$.each($websharks_core.$.___plugin_root_ns_stubs,
-		       function(plugin_root_ns_stub_index, plugin_root_ns_stub)
+		$.each($websharks_core.$.___plugin_root_namespaces,
+		       function(plugin_root_ns_index, plugin_root_ns)
 		       {
-			       window['$' + plugin_root_ns_stub] = window['$' + plugin_root_ns_stub] || {};
+			       window['$' + plugin_root_ns] = window['$' + plugin_root_ns] || {};
 		       });
 		$websharks_core.___did_globals = true;
 	}
@@ -1985,13 +1991,13 @@
 	 */
 	if(!$websharks_core.___did_enhance_forms) // Only if not done already.
 	{
-		$.each($websharks_core.$.___plugin_root_ns_stubs,
-		       function(plugin_root_ns_stub_index, plugin_root_ns_stub)
+		$.each($websharks_core.$.___plugin_root_namespaces,
+		       function(plugin_root_ns_index, plugin_root_ns)
 		       {
 			       var extension // Extension definition.
-				       = $websharks_core.$.extension_class(plugin_root_ns_stub, 'enhance_forms');
-			       window['$' + plugin_root_ns_stub].$enhance_forms = new extension();
-			       var _ = window['$' + plugin_root_ns_stub].$enhance_forms;
+				       = $websharks_core.$.extension_class(plugin_root_ns, 'enhance_forms');
+			       window['$' + plugin_root_ns].$enhance_forms = new extension();
+			       var _ = window['$' + plugin_root_ns].$enhance_forms;
 
 			       $(document).on('ready', _.enhance_forms.bind(_));
 		       });

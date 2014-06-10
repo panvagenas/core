@@ -16,7 +16,7 @@
 /*
 Wrapper styles.
 */
-.wsc.wrapper
+.websharks-core-v000000-dev.wrapper
 {
 	background : none;
 }
@@ -24,11 +24,11 @@ Wrapper styles.
 /*
 Confirmation input groups.
 */
-.wsc .input-group.confirm-input-group .form-control[data-confirm]
+.websharks-core-v000000-dev .input-group.confirm-input-group .form-control[data-confirm]
 {
 	border-radius : 0 4px 0 0 !important;
 }
-.wsc .input-group.confirm-input-group .form-control:not([data-confirm])
+.websharks-core-v000000-dev .input-group.confirm-input-group .form-control:not([data-confirm])
 {
 	border-top    : 0 !important;
 	border-radius : 0 0 4px 0 !important;
@@ -39,11 +39,11 @@ Fix <select> fields inside input groups on WebKit.
 */
 @media (-webkit-min-device-pixel-ratio : 0)
 {
-	.wsc .input-group.select-input-group
+	.websharks-core-v000000-dev .input-group.select-input-group
 	{
 		position : relative;
 	}
-	.wsc .input-group.select-input-group:after
+	.websharks-core-v000000-dev .input-group.select-input-group:after
 	{
 		font-size   : 1.2em;
 		content     : "\f0d7";
@@ -55,7 +55,7 @@ Fix <select> fields inside input groups on WebKit.
 		right       : .5em;
 		position    : absolute;
 	}
-	.wsc .input-group.select-input-group select
+	.websharks-core-v000000-dev .input-group.select-input-group select
 	{
 		-webkit-appearance : none;
 		cursor             : pointer;
@@ -65,7 +65,7 @@ Fix <select> fields inside input groups on WebKit.
 /*
 Validation errors.
 */
-.wsc .form-group .validation-errors
+.websharks-core-v000000-dev .form-group .validation-errors
 {
 	border-top              : 0 !important;
 	border-top-left-radius  : 0 !important;
@@ -75,7 +75,7 @@ Validation errors.
 /*
 Sortable placeholders.
 */
-.wsc .sortable-placeholder
+.websharks-core-v000000-dev .sortable-placeholder
 {
 	height        : 35px;
 	opacity       : 0.5;

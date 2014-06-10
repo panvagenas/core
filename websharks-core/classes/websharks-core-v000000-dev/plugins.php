@@ -401,7 +401,7 @@ namespace websharks_core_v000000_dev
 
 			$components = $this->©styles->front_side_components;
 			if($theme && in_array($theme, array_keys($this->©styles->themes()), TRUE))
-				$components[] = $this->___instance_config->core_prefix_with_dashes.$theme;
+				$components[] = $this->___instance_config->core_ns_with_dashes.'--'.$theme;
 			// A specific theme will be enqueued or dequeued (depending on `$needs`).
 
 			if($needs) // Enqueue or dequeue.
@@ -428,7 +428,7 @@ namespace websharks_core_v000000_dev
 
 			$components = $this->©styles->stand_alone_components;
 			if($theme && in_array($theme, array_keys($this->©styles->themes()), TRUE))
-				$components[] = $this->___instance_config->core_prefix_with_dashes.$theme;
+				$components[] = $this->___instance_config->core_ns_with_dashes.'--'.$theme;
 			// A specific theme will be enqueued or dequeued (depending on `$needs`).
 
 			if($needs) // Enqueue or dequeue.

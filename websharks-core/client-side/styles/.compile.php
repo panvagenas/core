@@ -20,6 +20,7 @@ namespace websharks_core_dev_utilities
 {
 	require_once dirname(dirname(dirname(dirname(__FILE__)))).'/.dev-utilities/core.php';
 	compile(!empty($GLOBALS['argv'][1]) && $GLOBALS['argv'][1] === 'all');
+	compile('all'); // To recompile all; or pass `all` via CLI.
 
 	/*
 	 * Compile
@@ -45,8 +46,8 @@ namespace websharks_core_dev_utilities
 	 */
 	function compile_font_awesome()
 	{
-		$core                    = core(); // WebSharks™ Core.
-		$core_prefix_with_dashes = $core->___instance_config->core_prefix_with_dashes;
+		$core                = core(); // WebSharks™ Core.
+		$core_ns_with_dashes = $core->___instance_config->core_ns_with_dashes;
 
 		$file     = $core->©dir->n_seps_up(__FILE__).'/core-fa.css';
 		$min_file = $core->©dir->n_seps_up(__FILE__).'/core-fa.min.css';
@@ -59,7 +60,7 @@ namespace websharks_core_dev_utilities
 		$css = file_get_contents('http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
 		$css = str_replace('../fonts/', '//netdna.bootstrapcdn.com/font-awesome/4.1.0/fonts/', $css);
 		$css = preg_replace('/@(?:[\w\-]+?\-)?viewport\s*(\{(?:[^{}]|(?1))*?\})/is', '', $css);
-		$css = str_replace('FontAwesome', $core_prefix_with_dashes.'FontAwesome', $css);
+		$css = str_replace('FontAwesome', $core_ns_with_dashes.'-FontAwesome', $css);
 
 		$imports             = array(); // Initialize array of @imports.
 		$css                 = preg_replace_callback('/^@import\W[^;]*;/i', function ($m) use (&$imports)
@@ -68,7 +69,7 @@ namespace websharks_core_dev_utilities
 			return ''; // Remove.
 		}, $css); // Move to top.
 		$css                 = implode("\n", $imports)."\n".
-		                       '.'.trim($core_prefix_with_dashes, '-').'{'."\n".
+		                       '.'.$core_ns_with_dashes.'{'."\n".
 		                       ' '.trim($css)."\n".
 		                       '}';
 		$font_face_tokenizer = font_face_tokenizer($css);
@@ -111,13 +112,13 @@ namespace websharks_core_dev_utilities
 		  'yeti'      => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css',
 		  'darkly'    => 'http://netdna.bootstrapcdn.com/bootswatch/3.1.1/darkly/bootstrap.min.css',
 		);
-		foreach($themes as $slug => $url)
+		foreach($themes as $theme => $url)
 		{
-			$core                    = core(); // WebSharks™ Core.
-			$core_prefix_with_dashes = $core->___instance_config->core_prefix_with_dashes;
+			$core                = core(); // WebSharks™ Core.
+			$core_ns_with_dashes = $core->___instance_config->core_ns_with_dashes;
 
-			$file     = $core->©dir->n_seps_up(__FILE__, 3).'/templates/client-side/styles/themes/'.$slug.'/theme.css';
-			$min_file = $core->©dir->n_seps_up(__FILE__, 3).'/templates/client-side/styles/themes/'.$slug.'/theme.min.css';
+			$file     = $core->©dir->n_seps_up(__FILE__, 3).'/templates/client-side/styles/themes/'.$theme.'/theme.css';
+			$min_file = $core->©dir->n_seps_up(__FILE__, 3).'/templates/client-side/styles/themes/'.$theme.'/theme.min.css';
 
 			$file_dir     = $core->©dir->n_seps_up($file);
 			$min_file_dir = $core->©dir->n_seps_up($min_file);
@@ -125,10 +126,10 @@ namespace websharks_core_dev_utilities
 			if(!is_dir($min_file_dir)) mkdir($min_file_dir, 0755, TRUE);
 
 			$css = file_get_contents($url);
-			$css = preg_replace('/\.dropdown\-backdrop\b/', '.'.$core_prefix_with_dashes.'dropdown-backdrop', $css);
-			$css = preg_replace('/\[data\-dismiss\=(["\'])?/', '[data-dismiss=${1}'.$core_prefix_with_dashes, $css);
-			$css = preg_replace('/\[data\-toggle\=(["\'])?/', '[data-toggle=${1}'.$core_prefix_with_dashes, $css);
-			$css = preg_replace('/\[data\-spy\=(["\'])?/', '[data-spy=${1}'.$core_prefix_with_dashes, $css);
+			$css = preg_replace('/\.dropdown\-backdrop\b/', '.'.$core_ns_with_dashes.'-dropdown-backdrop', $css);
+			$css = preg_replace('/\[data\-dismiss\=(["\'])?/', '[data-dismiss=${1}'.$core_ns_with_dashes.'-', $css);
+			$css = preg_replace('/\[data\-toggle\=(["\'])?/', '[data-toggle=${1}'.$core_ns_with_dashes.'-', $css);
+			$css = preg_replace('/\[data\-spy\=(["\'])?/', '[data-spy=${1}'.$core_ns_with_dashes.'-', $css);
 			$css = str_replace('../fonts/', '//netdna.bootstrapcdn.com/bootswatch/3.1.1/fonts/', $css);
 			$css = preg_replace('/@(?:[\w\-]+?\-)?viewport\s*(\{(?:[^{}]|(?1))*?\})/is', '', $css);
 
@@ -139,25 +140,23 @@ namespace websharks_core_dev_utilities
 				return ''; // Remove.
 			}, $css); // Move to top.
 			$css                 = implode("\n", $imports)."\n".
-			                       '.'.$core_prefix_with_dashes.$slug.'{'."\n".
+			                       '.'.$core_ns_with_dashes.'--t--'.$theme.'{'."\n".
 			                       ' '.trim($css)."\n".
 			                       '}';
-			$font_face_tokenizer = font_face_tokenizer($css);
-			$css                 = $font_face_tokenizer['css'];
-			$keyframes_tokenizer = keyframes_tokenizer($css);
-			$css                 = $keyframes_tokenizer['css'];
+			$font_face_tokenizer = font_face_tokenizer($css, NULL, $theme);
+			$css                 = $font_face_tokenizer['css']; // w/tokens.
+			$keyframes_tokenizer = keyframes_tokenizer($css, NULL, $theme);
+			$css                 = $keyframes_tokenizer['css']; // w/tokens.
 
 			file_put_contents($file, $css); // Save to file & Sassify.
 			$core->©command->sass('--scss '.escapeshellarg($file).' '.escapeshellarg($file));
 			$css = file_get_contents($file);
 
-			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+(?:html|body)\s+{/i', '.'.$core_prefix_with_dashes.$slug.' {', $css);
-			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+.modal\-open\s+{/i', '.'.$core_prefix_with_dashes.'modal-open {', $css);
-			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+.modal\-backdrop\s+{/i', '.'.$core_prefix_with_dashes.'modal-backdrop {', $css);
-			$css = preg_replace('/'.preg_quote('.'.$core_prefix_with_dashes.$slug, '/').'\s+.modal\-backdrop\.in\s+{/i', '.'.$core_prefix_with_dashes.'modal-backdrop.in {', $css);
+			$css = preg_replace('/'.preg_quote('.'.$core_ns_with_dashes.'--t--'.$theme, '/').'\s+(?:html|body)\s+{/i',
+			                    '.'.$core_ns_with_dashes.'--t--'.$theme.' {', $css); // Correct nesting here.
 
-			$css = font_face_tokenizer($css, $font_face_tokenizer['tokens']);
-			$css = keyframes_tokenizer($css, $keyframes_tokenizer['tokens']);
+			$css = font_face_tokenizer($css, $font_face_tokenizer['tokens'], $theme);
+			$css = keyframes_tokenizer($css, $keyframes_tokenizer['tokens'], $theme);
 
 			file_put_contents($file, $css); // Save to file & compress.
 			$core->©command->yuic('--type="css" -o '.escapeshellarg($min_file).' '.escapeshellarg($file));
@@ -168,7 +167,7 @@ namespace websharks_core_dev_utilities
 	/*
 	 * Tokenizers / Utilities
 	 */
-	function font_face_tokenizer($css, $tokens = NULL)
+	function font_face_tokenizer($css, $tokens = NULL, $theme = '')
 	{
 		if(is_array($tokens)) // Untokenize.
 		{
@@ -191,7 +190,7 @@ namespace websharks_core_dev_utilities
 		}
 	}
 
-	function keyframes_tokenizer($css, $tokens = NULL)
+	function keyframes_tokenizer($css, $tokens = NULL, $theme = '')
 	{
 		if(is_array($tokens)) // Untokenize.
 		{
@@ -204,13 +203,13 @@ namespace websharks_core_dev_utilities
 		}
 		else // Else we need to tokenize (default behavior).
 		{
-			$core                    = core(); // WebSharks™ Core.
-			$tokens                  = array(); // Initialize the array of tokens.
-			$animations              = array(); // Initialize the array of CSS animations.
-			$core_prefix_with_dashes = $core->___instance_config->core_prefix_with_dashes;
-			$css                     = preg_replace_callback('/(?P<keyframes>@(?:[\w\-]+?\-)?keyframes)\s*(?P<animation>[\w\-]+)\s*(?P<brackets>\{(?:[^{}]|(?&brackets))*?\})/is', function ($m) use (&$tokens, &$animations, $core_prefix_with_dashes)
+			$core                = core(); // WebSharks™ Core.
+			$tokens              = array(); // Initialize tokens.
+			$animations          = array(); // Initialize CSS animations.
+			$core_ns_with_dashes = $core->___instance_config->core_ns_with_dashes;
+			$css                 = preg_replace_callback('/(?P<keyframes>@(?:[\w\-]+?\-)?keyframes)\s*(?P<animation>[\w\-]+)\s*(?P<brackets>\{(?:[^{}]|(?&brackets))*?\})/is', function ($m) use (&$tokens, &$animations, $core_ns_with_dashes, $theme)
 			{
-				$animations[$m['animation']] = $core_prefix_with_dashes.$m['animation'];
+				$animations[$m['animation']] = $core_ns_with_dashes.(($theme) ? '--t--'.$theme : '').'-'.$m['animation'];
 				$tokens[]                    = $m['keyframes'].' '.$animations[$m['animation']].' '.$m['brackets'];
 				return '@keyframes _ { content: "token-'.(count($tokens) - 1).'"; }';
 			}, $css);
