@@ -19,26 +19,25 @@
 namespace websharks_core_dev_utilities
 {
 	require_once dirname(dirname(dirname(dirname(__FILE__)))).'/.dev-utilities/core.php';
-	core()->©env->prep_for_cli_dev_procedure();
-	compile_all(); // Run compiler.
+	compile(!empty($GLOBALS['argv'][1]) && $GLOBALS['argv'][1] === 'all');
 
 	/*
-	 * Compile All
+	 * Compile
 	 */
-	function compile_all()
+	function compile($all = FALSE)
 	{
-		$core = core(); // WebSharks™ Core.
-		compile_font_awesome();
-		compile_bootstrap_themes();
+		$core = core(); // Core.
+		$core->©env->prep_for_cli_dev_procedure();
 
-		ob_start(); // Begin compilation.
+		if($all) compile_font_awesome();
+		if($all) compile_bootstrap_themes();
+
+		ob_start(); // Open a PHP output buffer.
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-resets.min.css')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-utilities.min.css')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core.min.css')."\n";
 		file_put_contents($core->©dir->n_seps_up(__FILE__).'/core-libs.min.css', trim(ob_get_clean()));
-
-		$core->©file->delete($core->©dir->n_seps_up(__FILE__).'/core-fa.min.css');
 	}
 
 	/*

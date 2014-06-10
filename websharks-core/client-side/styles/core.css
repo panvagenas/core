@@ -22,6 +22,19 @@ Wrapper styles.
 }
 
 /*
+Confirmation input groups.
+*/
+.wsc .input-group.confirm-input-group .form-control[data-confirm]
+{
+	border-radius : 0 4px 0 0 !important;
+}
+.wsc .input-group.confirm-input-group .form-control:not([data-confirm])
+{
+	border-top    : 0 !important;
+	border-radius : 0 0 4px 0 !important;
+}
+
+/*
 Fix <select> fields inside input groups on WebKit.
 */
 @media (-webkit-min-device-pixel-ratio : 0)
@@ -47,6 +60,16 @@ Fix <select> fields inside input groups on WebKit.
 		-webkit-appearance : none;
 		cursor             : pointer;
 	}
+}
+
+/*
+Validation errors.
+*/
+.wsc .form-group .validation-errors
+{
+	border-top              : 0 !important;
+	border-top-left-radius  : 0 !important;
+	border-top-right-radius : 0 !important;
 }
 
 /*

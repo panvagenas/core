@@ -684,24 +684,26 @@
 					      'weak'    : 'warning',
 					      'good'    : 'info',
 					      'strong'  : 'success',
-					      'mismatch': 'danger'
+					      'mismatch': 'warning'
 				      };
 				      var $password1 = $(this), $password2 = $password1.next(':input[type="password"][data-confirm!="true"]');
-				      var $progress = $('<div class="progress"><div class="width-100"></div></div>'), $progress_bar = $progress.find('> div');
-				      $password2.addClass('em-t-margin'), $progress.insertAfter($password2), $progress.addClass('em-t-margin');
+				      var $progress = $('<div class="progress clear em-t-margin text-center"><div class="width-100"></div></div>');
+				      var $progress_bar = $progress.find('> div');
 
-				      $password1.add($password2).keyup(function() // Handles `keyup` events & initialization.
-				                                       {
-					                                       var strength_mismatch_status // `empty`, `short`, `weak`, `good`, `strong`, or `mismatch`.
-						                                       = password_strength_mismatch_status($.trim(String($password1.val())), $.trim(String($password2.val())));
+				      $password2.closest('.form-group').append($progress),
+					      $password1.add($password2).keyup(function() // Handles `keyup` events & initialization.
+					                                       {
+						                                       var strength_mismatch_status // `empty`, `short`, `weak`, `good`, `strong`, or `mismatch`.
+							                                       = password_strength_mismatch_status($.trim(String($password1.val())), $.trim(String($password2.val())));
 
-					                                       if(strength_mismatch_status === 'empty' || !progress_bar_status[strength_mismatch_status])
-						                                       $progress_bar.attr('class', 'width-100'); // Disable the bar itself in this case.
-					                                       else $progress_bar.attr('class', 'progress-bar progress-bar-' + progress_bar_status[strength_mismatch_status] + ' width-100');
+						                                       if(strength_mismatch_status === 'empty') // Fields empty.
+							                                       $progress_bar.attr('class', 'progress-bar no-bg color-inherit width-100')
+								                                       .html(_.__('password_strength_status__' + strength_mismatch_status));
 
-					                                       $progress_bar.html(_.__('password_strength_status__' + strength_mismatch_status));
-				                                       })
-					      .trigger('keyup'); // Trigger immediately.
+						                                       else $progress_bar.attr('class', 'progress-bar progress-bar-' + progress_bar_status[strength_mismatch_status] + ' width-100')
+							                                       .html(_.__('password_strength_status__' + strength_mismatch_status));
+					                                       })
+						      .trigger('keyup'); // Trigger immediately.
 			      });
 		// Form field validation handlers.
 		// Here we position validation errors when/if the DOM includes them (i.e. from the server-side).
@@ -714,9 +716,8 @@
 			            $response_errors.find('> ul > li[data-form-field-code]')// Those w/ a form-field-code.
 				            .each(function() // Iterate over each error that includes a form-field-code.
 				                  {
-					                  var $this = $(this), form_field_code, $input,
-						                  $closest_form_group, $validation_errors, $closest_form_group_collapse,
-						                  closest_form_group_collapse_target_id, $closest_form_group_collapse_target;
+					                  var $this = $(this), form_field_code,
+						                  $input, $closest_form_group, $validation_errors;
 
 					                  if(!(form_field_code = $this.attr('data-form-field-code')))
 						                  throw '!data-form-field-code'; // Should not occur.
@@ -738,22 +739,17 @@
 					                  else // We need to create a new set of response validation errors (none exist yet).
 					                  {
 						                  $validation_errors = $(// Validation errors.
-							                  '<div class="validation-errors">' +
+							                  '<div class="validation-errors alert alert-danger em-x-margin em-padding font-90">' +
 							                  '<ul></ul>' + // Empty for now.
 							                  '</div>'
 						                  ); // Now add the <li> tags.
 						                  $this.clone().appendTo($validation_errors.find('> ul'));
 						                  $this.remove(); // Remove original error.
 
-						                  $closest_form_group.append($validation_errors); // Add validation errors.
-
-						                  // If it's wrapped into a collapsible; let's be sure to `show` the collapse.
-						                  if(($closest_form_group_collapse = $closest_form_group.closest('.collapse')).length)
-							                  if((closest_form_group_collapse_target_id = $closest_form_group_collapse.attr('id')))
-								                  if(($closest_form_group_collapse_target = $closest_form_group_collapse.parentsUntil('.' + plugin_root_ns_stub_with_dashes + '.wrapper')
-										                  .find('[data-toggle="' + _.esc_jq_attr(core_prefix_with_dashes) + 'collapse"][href="#' + _.esc_jq_attr(closest_form_group_collapse_target_id) + '"],' +
-								                              '[data-toggle="' + _.esc_jq_attr(core_prefix_with_dashes) + 'collapse"][data-target="' + _.esc_jq_attr(closest_form_group_collapse_target_id) + '"]')).length)
-									                  $closest_form_group_collapse_target.wscCollapse({toggle: false}).wscCollapse('show');
+						                  _.expand_collapsible_parents_of($closest_form_group); // Visible.
+						                  if($closest_form_group.has('.input-group').length === 1) // Has an input group?
+							                  $closest_form_group.find('.input-group').after($validation_errors); // Validation errors.
+						                  else $closest_form_group.append($validation_errors); // Validation errors.
 					                  }
 				                  }); // Don't leave the response errors completely empty.
 			            $response_errors.find('> ul:empty').append('<li><i class="fa fa-exclamation-triangle"></i> ' + _.__('validate_form__check_issues_below') + '</li>');
@@ -776,10 +772,6 @@
 	 * @param {Node|Object|String} context
 	 *
 	 * @return {Boolean}
-	 *
-	 * @TODO Style the validation-errors.
-	 * @TODO Style the progress bar element for password strengths.
-	 * @TODO Style the background color for menu pages.
 	 */
 	$$websharks_core.$$.prototype.validate_form = function(context)
 	{
@@ -1368,9 +1360,7 @@
 				      }
 				      validation_errors[id] = validation_errors[id].concat(id_validation_errors);
 			      });
-		var id, errors = {}, errors_exist, scrolled_to_errors = false;
-		var $input, $closest_form_group, $validation_errors, $closest_form_group_collapse,
-			closest_form_group_collapse_target_id, $closest_form_group_collapse_target;
+		var id, errors = {}, errors_exist, $input, $closest_form_group, $validation_errors;
 
 		for(id in confirmation_errors) if(confirmation_errors.hasOwnProperty(id))
 			errors[id] = errors[id] || [], errors[id] = errors[id].concat(confirmation_errors[id]);
@@ -1397,28 +1387,25 @@
 			if(!($closest_form_group = $input.closest('.form-group')).length)
 				throw '!$closest_form_group.length'; // Should not occur.
 
-			if(!scrolled_to_errors && (scrolled_to_errors = true)) // Once.
-				$.scrollTo($input, {offset: {top: -50, left: 0}, duration: 500});
-
 			$validation_errors = $(// Creates validation errors.
-				'<div class="validation-errors">' +
+				'<div class="validation-errors alert alert-danger em-x-margin em-padding font-90">' +
 				'<ul>' + // Includes an error icon prefix, for each list item we display.
-				'<li><i class="fa fa-exclamation-triangle"> ' +
-				errors[id].join('</li><li><i class="fa fa-exclamation-triangle"> ') +
+				'<li><i class="fa fa-exclamation-triangle"></i> ' +
+				errors[id].join('</li><li><i class="fa fa-exclamation-triangle"></i> ') +
 				'</li>' +
 				'</ul>' +
 				'</div>'
-			); // The <li> tags are build dynamically.
-			$closest_form_group.append($validation_errors); // Validation errors.
+			); // The <li> tags are built dynamically.
 
-			// If it's wrapped into a collapsible; let's be sure to `show` the collapse.
-			if(($closest_form_group_collapse = $closest_form_group.closest('.collapse')).length)
-				if((closest_form_group_collapse_target_id = $closest_form_group_collapse.attr('id')))
-					if(($closest_form_group_collapse_target = $closest_form_group_collapse.parentsUntil('.' + plugin_root_ns_stub_with_dashes + '.wrapper')
-							.find('[data-toggle="' + _.esc_jq_attr(core_prefix_with_dashes) + 'collapse"][href="#' + _.esc_jq_attr(closest_form_group_collapse_target_id) + '"],' +
-					            '[data-toggle="' + _.esc_jq_attr(core_prefix_with_dashes) + 'collapse"][data-target="' + _.esc_jq_attr(closest_form_group_collapse_target_id) + '"]')).length)
-						$closest_form_group_collapse_target.wscCollapse({toggle: false}).wscCollapse('show');
+			_.expand_collapsible_parents_of($closest_form_group); // Visible.
+			if($closest_form_group.has('.input-group').length === 1) // Has an input group?
+				$closest_form_group.find('.input-group').after($validation_errors); // Validation errors.
+			else $closest_form_group.append($validation_errors); // Validation errors.
 		}
+		if(errors_exist) // If errors exist, scroll to them now.
+			$.scrollTo($('.validation-errors', context).closest('.form-group'),
+			           {offset: {top: -100, left: 0}, duration: 500});
+
 		return errors_exist ? false : true; // Prevents form from being submitted w/ errors.
 	};
 
@@ -1500,6 +1487,18 @@
 					? slug_class_basename : slug;
 		}
 		return ''; // Empty.
+	};
+
+	/**
+	 * Expand all collapsibles wrapping a given object.
+	 *
+	 * @param {Node|Object|String} object
+	 */
+	$$websharks_core.$$.prototype.expand_collapsible_parents_of = function(object)
+	{
+		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
+
+		$(object).parents('.collapse').wscCollapse({toggle: false}).wscCollapse('show');
 	};
 
 	/**

@@ -13,17 +13,17 @@
 namespace websharks_core_dev_utilities
 {
 	require_once dirname(dirname(dirname(dirname(__FILE__)))).'/.dev-utilities/core.php';
-	core()->©env->prep_for_cli_dev_procedure();
-	compile_all(); // Run compiler.
+	compile(!empty($GLOBALS['argv'][1]) && $GLOBALS['argv'][1] === 'all');
 
 	/*
-	 * Compile All
+	 * Compile
 	 */
-	function compile_all()
+	function compile($all = FALSE)
 	{
-		$core = core(); // WebSharks™ Core.
+		$core = core(); // Core.
+		$core->©env->prep_for_cli_dev_procedure();
 
-		ob_start(); // Begin JavaScript compilation.
+		ob_start(); // Open a PHP output buffer.
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-sprintf.min.js')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-jq-scrollto.min.js')."\n";
 		echo file_get_contents($core->©dir->n_seps_up(__FILE__).'/core-bs.min.js')."\n";

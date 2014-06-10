@@ -46,6 +46,22 @@ Responsive inline helpers.
 }
 
 /*
+Color utility classes.
+*/
+.wsc .color-inherit
+{
+	color : inherit !important;
+}
+
+/*
+Background utility classes.
+*/
+.wsc .no-bg
+{
+	background : none !important;
+}
+
+/*
 Border utility classes.
 */
 .wsc .no-border

@@ -143,7 +143,7 @@ namespace websharks_core_v000000_dev
 
 					                     'password_strength_status__empty'                 => $this->_x('password strength indicator'),
 					                     'password_strength_status__short'                 => $this->_x('too short (6 character minimum)'),
-					                     'password_strength_status__weak'                  => $this->_x('very weak (mix lowercase, uppercase, numbers & symbols)'),
+					                     'password_strength_status__weak'                  => $this->_x('weak (mix caSe, numbers & symbols)'),
 					                     'password_strength_status__good'                  => $this->_x('good (reasonably strong)'),
 					                     'password_strength_status__strong'                => $this->_x('very strong'),
 					                     'password_strength_status__mismatch'              => $this->_x('mismatch')

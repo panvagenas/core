@@ -162,7 +162,7 @@
 			       {
 				       var scroll_to_content_panel = function()
 				       {
-					       $.scrollTo($content_panel.prev('.panel-heading'), {offset: {top: -50, left: 0}, duration: 500});
+					       $.scrollTo($content_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
 				       };
 				       if($content_panel.hasClass('in')) scroll_to_content_panel(); // Expanded already.
 				       else $content_panel.one('shown.wsc-bs.collapse', scroll_to_content_panel),
@@ -174,7 +174,7 @@
 				       var scroll_to_sidebar_panel = function()
 				       {
 					       if(!content_panel_slug) // Only if we are NOT also scrolling to a content panel.
-						       $.scrollTo($sidebar_panel.prev('.panel-heading'), {offset: {top: -50, left: 0}, duration: 500});
+						       $.scrollTo($sidebar_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
 				       };
 				       if($sidebar_panel.hasClass('in')) scroll_to_sidebar_panel(); // Expanded already.
 				       else $sidebar_panel.one('shown.wsc-bs.collapse', scroll_to_sidebar_panel),

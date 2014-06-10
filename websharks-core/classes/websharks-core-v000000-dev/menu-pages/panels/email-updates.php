@@ -64,7 +64,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 						'required'    => TRUE,
 						'type'        => 'text',
 						'name'        => 'FNAME',
-						'placeholder' => $this->__('First Name')
+						'placeholder' => $this->__('first name...')
 					)
 				).
 				'</div>'.
@@ -79,7 +79,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 						'required'    => TRUE,
 						'type'        => 'text',
 						'name'        => 'LNAME',
-						'placeholder' => $this->__('Last Name')
+						'placeholder' => $this->__('last name...')
 					)
 				).
 				'</div>'.
@@ -94,23 +94,7 @@ namespace websharks_core_v000000_dev\menu_pages\panels
 						'required'    => TRUE,
 						'type'        => 'email',
 						'name'        => 'EMAIL',
-						'placeholder' => $this->__('Email Address')
-					)
-				).
-				'</div>'.
-				'</div>'.
-
-				'<div class="form-group">'.
-				'<div class="input-group">'.
-				'<span class="input-group-addon"><i class="fa fa-envelope fa-fw"></i></span>'.
-				$form_fields->markup(
-					$form_fields->value($this->©user->email),
-					array(
-						'required'    => TRUE,
-						'type'        => 'password',
-						'name'        => 'EMAIL',
-						'confirm' => TRUE,
-						'placeholder' => $this->__('Email Address')
+						'placeholder' => $this->__('email address...')
 					)
 				).
 				'</div>'.
