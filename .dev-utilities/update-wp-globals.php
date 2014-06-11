@@ -7,7 +7,7 @@
  *
  * @author JasWSInc
  */
-namespace websharks_core_dev_utilities
+namespace wsc_dev_utilities
 {
 	/*
 	 * Check Dev Key for authorization.

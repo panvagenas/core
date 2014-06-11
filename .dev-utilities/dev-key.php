@@ -7,7 +7,7 @@
  *
  * @author JasWSInc
  */
-namespace websharks_core_dev_utilities
+namespace wsc_dev_utilities
 {
 	if(defined('___DEV_KEY_OK'))
 		return; // Already OK.

@@ -7,7 +7,7 @@
  *
  * @author JasWSInc
  */
-namespace websharks_core_dev_utilities
+namespace wsc_dev_utilities
 {
 	/**
 	 * @var boolean Marker.
@@ -22,7 +22,7 @@ namespace websharks_core_dev_utilities
 	/*
 	 * Load the WebSharks™ Core w/ WordPress®.
 	 */
-	require_once dirname(dirname(__FILE__)).'/websharks-core/stub.php';
+	require_once dirname(dirname(__FILE__)).'/core/stub.php';
 
 	/**
 	 * WebSharks™ Core framework instance.
@@ -31,7 +31,7 @@ namespace websharks_core_dev_utilities
 	 *    WARNING: This function will NOT automatically load a specific version for you.
 	 *       The version that you specify MUST already be loaded up.
 	 *
-	 * @return \websharks_core__framework WebSharks™ Core framework instance.
+	 * @return \wsc__framework WebSharks™ Core framework instance.
 	 */
 	function core($version = '')
 	{
@@ -40,10 +40,10 @@ namespace websharks_core_dev_utilities
 		{
 			${'/'}     = DIRECTORY_SEPARATOR;
 			$stub_file = dirname(dirname(__FILE__)).
-			             ${'/'}.'websharks-core'.${'/'}.'stub.php';
+			             ${'/'}.'core'.${'/'}.'stub.php';
 		}
 		if(!$version) return $GLOBALS[$GLOBALS[$stub_file]['core_ns']];
 
-		return $GLOBALS[\websharks_core__stub::$core_ns_stub_v.\websharks_core__stub::with_underscores((string)$version)];
+		return $GLOBALS[\wsc__stub::$core_ns_stub_v.\wsc__stub::with_underscores((string)$version)];
 	}
 }

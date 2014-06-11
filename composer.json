@@ -15,14 +15,14 @@
 		"websharks/composer": ">=000000"
 	},
 
-	"homepage"   : "http://github.com/WebSharks/Core",
+	"homepage"   : "http://github.com/websharks/core",
 	"description": "WebSharks™ Core framework for WordPress® plugin development.",
 	"keywords"   : ["websharks", "websharks core", "wordpress", "wordpress plugins"],
 
 	"license": "GPL-3.0+",
 	"support": {
 		"email" : "websharks@websharks-inc.com",
-		"source": "http://github.com/WebSharks/Core"
+		"source": "http://github.com/websharks/core"
 	},
 
 	"authors": [

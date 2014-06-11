@@ -2,7 +2,7 @@
 
 #### The WebSharks™ Core framework (for WordPress®)
 
-The WebSharks™ Core can be bundled into plugins created for WordPress®. It is most often distributed as a single GZIP compressed [PHP Archive](http://www.php.net/manual/en/intro.phar.php) file; found inside `/websharks-core.php.phar`. This file not only contains the entire WebSharks™ Core; but it is also a [webPhar-compatible archive](http://php.net/manual/en/phar.webphar.php) capable of serving both static and dynamic content through popular web servers like Apache®, Litespeed™, Windows® IIS; and other Apache-compatible web servers.
+The WebSharks™ Core can be bundled into plugins created for WordPress®. It is most often distributed as a single GZIP compressed [PHP Archive](http://www.php.net/manual/en/intro.phar.php) file; found inside `/wsc.php.phar`. This file not only contains the entire WebSharks™ Core; but it is also a [webPhar-compatible archive](http://php.net/manual/en/phar.webphar.php) capable of serving both static and dynamic content through popular web servers like Apache®, Litespeed™, Windows® IIS; and other Apache-compatible web servers.
 
 
 #### Incorporating the WebSharks™ Core into a plugin for WordPress®
@@ -11,14 +11,14 @@ The WebSharks™ Core can be bundled into plugins created for WordPress®. It is
 
 ###### Option #1. Using a GZIP compressed PHP Archive (recommended for small plugins).
 
-Redistribute your plugin with this single file (`/websharks-core.php.phar`); which can be obtained from the repo here at GitHub™. To make use of the WebSharks™ Core, add these lines of PHP code to files that depend on the WebSharks™ Core.
+Redistribute your plugin with this single file (`/wsc.php.phar`); which can be obtained from the repo here at GitHub™. To make use of the WebSharks™ Core, add these lines of PHP code to files that depend on the WebSharks™ Core.
 
 ```php
 <?php
 // The WebSharks™ Core.
-require_once 'websharks-core.php.phar';
+require_once 'wsc.php.phar';
 ```
-*It is important to note that while the `websharks-core.php.phar` file is rather large; including the file in a PHP script does NOT actually include the entire PHP Archive; because the `websharks-core.php.phar` file halts the PHP compiler after the initial PHP Archive stub is loaded into your scripts. In other words, it is perfectly safe (and efficient) to include `websharks-core.php.phar` in your plugin files.*
+*It is important to note that while the `wsc.php.phar` file is rather large; including the file in a PHP script does NOT actually include the entire PHP Archive; because the `wsc.php.phar` file halts the PHP compiler after the initial PHP Archive stub is loaded into your scripts. In other words, it is perfectly safe (and efficient) to include `wsc.php.phar` in your plugin files.*
 
 *WebSharks™ Core class methods/properties that you access in your PHP scripts will be autoloaded by the WebSharks™ Core (only as needed; and this occurs automatically at runtime) — keeping your application highly effecient at all times. The WebSharks™ Core uses PHP's SPL Autoload functionality to accomplish this dynamically for you.*
 
@@ -26,14 +26,14 @@ require_once 'websharks-core.php.phar';
 
 ###### Option #2. Bundling the entire WebSharks™ Core (full directory — for better performance/compatibility).
 
-Download the full directory structure from the repo here at GitHub™ (use ZIP download option). You will need to bundle the entire `websharks-core/` directory into your plugin; including it right along with all of the other files that make up your plugin. To make use of the WebSharks™ Core, add these lines of PHP code to files that depend on the WebSharks™ Core.
+Download the full directory structure from the repo here at GitHub™ (use ZIP download option). You will need to bundle the entire `core/` directory into your plugin; including it right along with all of the other files that make up your plugin. To make use of the WebSharks™ Core, add these lines of PHP code to files that depend on the WebSharks™ Core.
 
 ```php
 <?php
 // The WebSharks™ Core.
-require_once 'websharks-core/stub.php';
+require_once 'core/stub.php';
 ```
-*While the `websharks-core/` directory is rather large; including the `stub.php` in a PHP script does NOT actually include the entire class structure of the WebSharks™ Core. WebSharks™ Core class methods/properties that you access in your PHP scripts will be autoloaded by the WebSharks™ Core (only as needed; and this occurs automatically at runtime) — keeping your application highly effecient at all times. The WebSharks™ Core uses PHP's SPL Autoload functionality to accomplish this dynamically for you.*
+*While the `core/` directory is rather large; including the `stub.php` in a PHP script does NOT actually include the entire class structure of the WebSharks™ Core. WebSharks™ Core class methods/properties that you access in your PHP scripts will be autoloaded by the WebSharks™ Core (only as needed; and this occurs automatically at runtime) — keeping your application highly effecient at all times. The WebSharks™ Core uses PHP's SPL Autoload functionality to accomplish this dynamically for you.*
 
 ----
 
@@ -42,25 +42,31 @@ require_once 'websharks-core/stub.php';
 ```php
 <?php
 // The WebSharks™ Core.
-require_once 'websharks-core/stub.php';
+require_once 'core/stub.php';
 
 // Example usage...
-echo websharks_core()->©var->dump(
-		websharks_core()->©classes->get_details()
+echo wsc()->©var->dump(
+		wsc()->©classes->get_details()
 	);
 
 // Or create a shorter reference variable if you like.
-// But, please do NOT override $GLOBALS['websharks_core'].
+// BUT, please do NOT override $GLOBALS['wsc'].
 
 // This is OK :-)
-$ws_core = websharks_core();
-echo $ws_core->©var->dump(
-		$ws_core->©classes->get_details()
+global $wsc;
+echo $wsc->©var->dump(
+		$wsc->©classes->get_details()
+	);
+
+// This is OK :-)
+$core = wsc();
+echo $core->©var->dump(
+		$core->©classes->get_details()
 	);
 
 // This is BAD!
-$GLOBALS['websharks_core'] = websharks_core();
-// Please do NOT override the `$websharks_core` global reference.
+$GLOBALS['wsc'] = wsc();
+// Do NOT override the `$wsc` global reference.
 ```
 
 ----
@@ -90,14 +96,14 @@ Now create this directory and file: `/wp-content/plugins/rocketship/classes/rock
 namespace rocketship;
 
 // Include your bundled copy of the WebSharks™ Core.
-// Assuming: `/wp-content/plugins/rocketship/websharks-core.php.phar`.
-require_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
+// Assuming: `/wp-content/plugins/rocketship/wsc.php.phar`.
+require_once dirname(dirname(dirname(__FILE__))).'/wsc.php.phar';
 
-class framework extends \websharks_core__framework
+class framework extends \wsc__framework
 {
 	// This will serve as the base class for your plugin.
 	// If you wanted to use a specific version of the WebSharks™ Core, you would do this.
-	# class framework extends \websharks_core_v000000_dev\framework
+	# class framework extends \wsc_v000000_dev\framework
 }
 
 $GLOBALS[__NAMESPACE__] = new framework(
@@ -131,7 +137,7 @@ echo rocketship()->©var->dump(
 	);
 
 // Or create a shorter reference variable if you like.
-// But, please do NOT override $GLOBALS['rocketship'].
+// BUT, please do NOT override $GLOBALS['rocketship'].
 
 // This is OK :-)
 $rs = rocketship();
@@ -181,7 +187,7 @@ The WebSharks™ Core makes plugin development SUPER easy. Everything from insta
 
 #### Digging Deeper into the WebSharks™ Core can be FUN :-)
 
-Let's say you're navigating the WebSharks™ Core source code and you find it has a cool class file `/websharks-core/classes/strings.php`; with several methods you'd like to use. If you've built your plugin on the WebSharks™ Core; all of those methods are alreay available in your plugin. To call upon the `strings` class in your plugin, you simply use the `©` symbol (representing a dynamic class). It's a copyright symbol, but the WebSharks™ Core associates this symbol with dynamic class instances (singletons). It can also instantiate new class instances; but we'll get into that later.
+Let's say you're navigating the WebSharks™ Core source code and you find it has a cool class file `/core/classes/wsc-v000000-dev/strings.php`; with several methods you'd like to use. If you've built your plugin on the WebSharks™ Core; all of those methods are alreay available in your plugin. To call upon the `strings` class in your plugin, you simply use the `©` symbol (representing a dynamic class). It's a copyright symbol, but the WebSharks™ Core associates this symbol with dynamic class instances (singletons). It can also instantiate new class instances; but we'll get into that later.
 
 ###### Calling a method in the `strings` class.
 ```php
@@ -241,7 +247,7 @@ if($rs->string->is_not_empty($a))
 else throw $rs->exception('code', $a, '$a is empty!');
 ```
 
-If you like this approach better, please feel free to use it. Even if you're not going to use it, you might find value in this approach (from a site owner's perspective); because it might be helpful if you need to offer code samples; providing ways for a site owner to interact with your plugin quite easily. This is PERFECT for that kind of thing, because it's a simpler/cleaner syntax.
+If you like this approach better, please feel free to use it. Even if you're not going to use it, you might find value in this approach (from a site owner's perspective); because it might be helpful if you need to offer code samples; providing ways for a site owner to interact with your plugin quite easily. This is PERFECT for that kind of thing, since it's a more static & simpler/cleaner syntax.
 
 ----
 
@@ -281,7 +287,7 @@ Create this file in your plugin directory: `/wp-content/plugins/rocketship/class
 <?php
 namespace rocketship;
 
-class strings extends \websharks_core__strings
+class strings extends \wsc__strings
 {
     public function write_lines() // My new class member.
         {
@@ -341,11 +347,11 @@ And, it works out BEAUTIFULLY! It reduces the amount of code that is required to
 
 #### What If I Build MANY plugins — some powered by different versions of the WebSharks™ Core?
 
-If you want to be more specific about which version of the WebSharks™ Core that your plugin uses, you should extend a specific version and not just extend the `websharks_core__framework`; which is a more generalized reference.
+If you want to be more specific about which version of the WebSharks™ Core that your plugin uses, you should extend a specific version and not just extend the `wsc__framework`; which is a more generalized reference.
 
 ```php
 <?php
-class framework extends \websharks_core_v000000_dev\framework // Specific version!
+class framework extends \wsc_v000000_dev\framework // Specific version!
 {
 }
 ```
@@ -357,10 +363,10 @@ Here is a full example to help provide some additional clarity on this.
 namespace rocketship;
 
 // Include your bundled copy of the WebSharks™ Core.
-// Assuming: `/wp-content/plugins/rocketship/websharks-core.php.phar`.
-require_once dirname(dirname(dirname(__FILE__))).'/websharks-core.php.phar';
+// Assuming: `/wp-content/plugins/rocketship/wsc.php.phar`.
+require_once dirname(dirname(dirname(__FILE__))).'/wsc.php.phar';
 
-class framework extends \websharks_core_v000000_dev\framework // Specific version!
+class framework extends \wsc_v000000_dev\framework // Specific version!
 {
 	// This will serve as the base class for your plugin.
 }
@@ -397,4 +403,4 @@ We appreciate your interest in the WebSharks™ Core. However, it's STILL in dev
 
 #### UPDATE ... the Codex is now available online, but remains in a beta state.
 
-See <http://websharks.github.io/Core/codex/index.html>
+See <http://websharks.github.io/core/codex/index.html>

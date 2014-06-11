@@ -1,0 +1,85 @@
+/*!
+ * WebSharks™ Core; copyright: © 2012 (coded in the USA)
+ * GPL license <https://github.com/websharks/core>
+ */
+/**
+ * WebSharks™ Core Styles
+ *
+ * Copyright: © 2012 (coded in the USA)
+ * {@link http://www.websharks-inc.com WebSharks™}
+ *
+ * @author JasWSInc
+ * @package WebSharks\Core
+ * @since 120318
+ */
+
+/*
+Wrapper styles.
+*/
+.wsc-v000000-dev.wrapper
+{
+	background : none;
+}
+
+/*
+Confirmation input groups.
+*/
+.wsc-v000000-dev .input-group.confirm-input-group .form-control[data-confirm]
+{
+	border-radius : 0 4px 0 0 !important;
+}
+.wsc-v000000-dev .input-group.confirm-input-group .form-control:not([data-confirm])
+{
+	border-top    : 0 !important;
+	border-radius : 0 0 4px 0 !important;
+}
+
+/*
+Fix <select> fields inside input groups on WebKit.
+*/
+@media (-webkit-min-device-pixel-ratio : 0)
+{
+	.wsc-v000000-dev .input-group.select-input-group
+	{
+		position : relative;
+	}
+	.wsc-v000000-dev .input-group.select-input-group:after
+	{
+		font-size   : 1.2em;
+		content     : "\f0d7";
+		font-family : wsc-FontAwesome;
+		cursor      : pointer;
+
+		z-index     : 2;
+		top         : .5em;
+		right       : .5em;
+		position    : absolute;
+	}
+	.wsc-v000000-dev .input-group.select-input-group select
+	{
+		-webkit-appearance : none;
+		cursor             : pointer;
+	}
+}
+
+/*
+Validation errors.
+*/
+.wsc-v000000-dev .form-group .validation-errors
+{
+	border-top              : 0 !important;
+	border-top-left-radius  : 0 !important;
+	border-top-right-radius : 0 !important;
+}
+
+/*
+Sortable placeholders.
+*/
+.wsc-v000000-dev .sortable-placeholder
+{
+	height        : 35px;
+	opacity       : 0.5;
+	border-radius : 5px;
+	border        : 1px dashed;
+	margin-bottom : 15px;
+}

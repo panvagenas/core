@@ -4,7 +4,7 @@
          bootstrap="./unit-test-bs.php" strict="true" verbose="true" backupGlobals="false" backupStaticAttributes="false">
 	<testsuites>
 		<testsuite name="Classes">
-			<directory>../websharks-core/classes/*/.~unit-tests</directory>
+			<directory>../core/classes/*/.~unit-tests</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>
