@@ -140,6 +140,12 @@ echo rocketship()->©var->dump(
 // BUT, please do NOT override $GLOBALS['rocketship'].
 
 // This is OK :-)
+global $rocketship;
+echo $rocketship->©var->dump(
+		$rocketship->©classes->get_details()
+	);
+
+// This is OK :-)
 $rs = rocketship();
 echo $rs->©var->dump(
 		$rs->©classes->get_details()
