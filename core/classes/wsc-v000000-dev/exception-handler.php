@@ -215,7 +215,7 @@ namespace wsc_v000000_dev
 					}
 				// General fallback; i.e. early exceptions, command-line, other non-browser devices.
 
-				if(static::$plugin->©env->is_browser() && !headers_sent())
+				if(!static::$plugin->©env->is_cli() && !headers_sent())
 					static::$plugin->©headers->clean_status_type(500, 'text/plain', TRUE);
 
 				echo sprintf(static::$plugin->_x('Exception Code: %1$s'), static::$exception->getCode());

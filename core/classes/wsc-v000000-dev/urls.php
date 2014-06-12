@@ -1794,17 +1794,15 @@ namespace wsc_v000000_dev
 				$last_http_debug_log = $this->last_http_debug_log();
 
 				// Generate errors.
-				$errors = $this->©errors(
-					$this->method(__FUNCTION__), get_defined_vars(), $response->get_error_message()
+				$errors = $this->©error(
+					$this->method(__FUNCTION__), get_defined_vars(),
+					$response->get_error_message()
 				);
-
 				// Returning errors?
-				if($return_errors)
-					return $errors;
+				if($return_errors) return $errors;
 
 				// Should return NULL on connection error?
-				else if($return_array || $return_xml_object)
-					return NULL;
+				else if($return_array || $return_xml_object) return NULL;
 
 				return ''; // String (default behavior).
 			}
@@ -2111,7 +2109,7 @@ namespace wsc_v000000_dev
 		 *
 		 * @param string  $sig_var Optional signature name. Defaults to `_sig`. The name of the signature variable.
 		 *
-		 * @return boolean TRUE if the signature is OK, else FALSE.
+		 * @return boolean TRUE if the signature is OK.
 		 */
 		public function query_sig_ok($url_uri_query_fragment, $check_time = FALSE, $exp_secs = 10, $sig_var = '_sig')
 		{
@@ -2218,6 +2216,23 @@ namespace wsc_v000000_dev
 		}
 
 		/**
+		 * Pre-parsed WordPress root URL parts.
+		 *
+		 * @return array An array of pre-parsed WordPress root URL parts.
+		 */
+		public function wp_root_parts()
+		{
+			if(!isset($this->static[__FUNCTION__]))
+				$this->static[__FUNCTION__] = array(
+					'wp_home_parts'         => $this->must_parse($this->to_wp_home_uri()),
+					'wp_site_parts'         => $this->must_parse($this->to_wp_site_uri()),
+					'wp_network_home_parts' => $this->must_parse($this->to_wp_network_home_uri()),
+					'wp_network_site_parts' => $this->must_parse($this->to_wp_network_site_uri()),
+				);
+			return $this->static[__FUNCTION__];
+		}
+
+		/**
 		 * Checks to see if a URL/URI leads to a WordPress® root URL.
 		 *
 		 * @param string       $url_uri_query_fragment A full URL; or a partial URI;
@@ -2231,7 +2246,7 @@ namespace wsc_v000000_dev
 		 *    Set this to {@link fw_constants::network_site_type}, to test against the WordPress® `network_site_url('/')`.
 		 *    This can also be set to an array to test for multiple/specific types.
 		 *
-		 * @return boolean TRUE if the URL or URI leads to a WordPress® root URL, else FALSE.
+		 * @return boolean TRUE if the URL or URI leads to a WordPress® root URL.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$type` is empty.
@@ -2246,37 +2261,30 @@ namespace wsc_v000000_dev
 			if(!($parts = $this->parse($url_uri_query_fragment)))
 				return FALSE; // Not possible to check.
 
-			if(!isset($this->static[__FUNCTION__]))
-				$this->static[__FUNCTION__] = array(
-					'wp_home_parts'         => $this->must_parse($this->to_wp_home_uri()),
-					'wp_site_parts'         => $this->must_parse($this->to_wp_site_uri()),
-					'wp_network_home_parts' => $this->must_parse($this->to_wp_network_home_uri()),
-					'wp_network_site_parts' => $this->must_parse($this->to_wp_network_site_uri()),
-				);
-			$static =& $this->static[__FUNCTION__]; // A shorter reference.
+			$wp_root_parts = $this->wp_root_parts(); // WP root parts.
 
 			if($any_type || in_array($this::home_type, $type, TRUE))
 			{
-				if(!$parts['host'] || strcasecmp($parts['host'], $static['wp_home_parts']['host']) === 0)
-					if($parts['path'] === $static['wp_home_parts']['path'])
+				if(!$parts['host'] || strcasecmp($parts['host'], $wp_root_parts['wp_home_parts']['host']) === 0)
+					if($parts['path'] === $wp_root_parts['wp_home_parts']['path'])
 						return TRUE;
 			}
 			if($any_type || in_array($this::site_type, $type, TRUE))
 			{
-				if(!$parts['host'] || strcasecmp($parts['host'], $static['wp_site_parts']['host']) === 0)
-					if($parts['path'] === $static['wp_site_parts']['path'])
+				if(!$parts['host'] || strcasecmp($parts['host'], $wp_root_parts['wp_site_parts']['host']) === 0)
+					if($parts['path'] === $wp_root_parts['wp_site_parts']['path'])
 						return TRUE;
 			}
 			if(is_multisite() && ($any_type || in_array($this::network_home_type, $type, TRUE)))
 			{
-				if(!$parts['host'] || strcasecmp($parts['host'], $static['wp_network_home_parts']['host']) === 0)
-					if($parts['path'] === $static['wp_network_home_parts']['path'])
+				if(!$parts['host'] || strcasecmp($parts['host'], $wp_root_parts['wp_network_home_parts']['host']) === 0)
+					if($parts['path'] === $wp_root_parts['wp_network_home_parts']['path'])
 						return TRUE;
 			}
 			if(is_multisite() && ($any_type || in_array($this::network_site_type, $type, TRUE)))
 			{
-				if(!$parts['host'] || strcasecmp($parts['host'], $static['wp_network_site_parts']['host']) === 0)
-					if($parts['path'] === $static['wp_network_site_parts']['path'])
+				if(!$parts['host'] || strcasecmp($parts['host'], $wp_root_parts['wp_network_site_parts']['host']) === 0)
+					if($parts['path'] === $wp_root_parts['wp_network_site_parts']['path'])
 						return TRUE;
 			}
 			return FALSE; // Default return value.

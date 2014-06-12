@@ -22,6 +22,18 @@ Wrapper styles.
 }
 
 /*
+Bootstrap tweaks/enhancements.
+*/
+.wsc-v000000-dev .modal .modal-dialog
+{
+	margin-top : 50px;
+}
+.wsc-v000000-dev li > p:last-child
+{
+	margin-bottom : 0;
+}
+
+/*
 Confirmation input groups.
 */
 .wsc-v000000-dev .input-group.confirm-input-group .form-control[data-confirm]
@@ -47,7 +59,7 @@ Fix <select> fields inside input groups on WebKit.
 	{
 		font-size   : 1.2em;
 		content     : "\f0d7";
-		font-family : wsc-FontAwesome;
+		font-family : wsc-v000000-dev-FontAwesome;
 		cursor      : pointer;
 
 		z-index     : 2;
@@ -60,6 +72,15 @@ Fix <select> fields inside input groups on WebKit.
 		-webkit-appearance : none;
 		cursor             : pointer;
 	}
+}
+
+/*
+Fix <input type="file"> fields inside input groups.
+*/
+.wsc-v000000-dev .input-group > input[type='file']
+{
+	padding-top  : .5em;
+	padding-left : .5em;
 }
 
 /*

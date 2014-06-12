@@ -32,29 +32,11 @@ namespace wsc_v000000_dev
 		 * @param mixed $var A variable by reference (no NOTICE).
 		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @return boolean TRUE if the variable `(isset() && is_string())`, else FALSE.
+		 * @return boolean TRUE if the variable `(isset() && is_string())`.
 		 */
 		public function is(&$var)
 		{
-			if(isset($var) && is_string($var))
-				return TRUE;
-
-			return FALSE;
-		}
-
-		/**
-		 * Same as `$this->is()`, but this allows an expression.
-		 *
-		 * @param mixed $var A variable (or an expression).
-		 *
-		 * @return boolean See `$this->is()` for further details.
-		 */
-		public function ¤is($var)
-		{
-			if(isset($var) && is_string($var))
-				return TRUE;
-
-			return FALSE;
+			return is_string($var);
 		}
 
 		/**
@@ -65,14 +47,11 @@ namespace wsc_v000000_dev
 		 * @param mixed $var A variable by reference (no NOTICE).
 		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @return boolean TRUE if the variable is `(!empty() && is_string())`, else FALSE.
+		 * @return boolean TRUE if the variable is `(!empty() && is_string())`.
 		 */
 		public function is_not_empty(&$var)
 		{
-			if(!empty($var) && is_string($var))
-				return TRUE;
-
-			return FALSE;
+			return !empty($var) && is_string($var);
 		}
 
 		/**
@@ -84,10 +63,7 @@ namespace wsc_v000000_dev
 		 */
 		public function ¤is_not_empty($var)
 		{
-			if(!empty($var) && is_string($var))
-				return TRUE;
-
-			return FALSE;
+			return !empty($var) && is_string($var);
 		}
 
 		/**
@@ -221,14 +197,13 @@ namespace wsc_v000000_dev
 		 * @param mixed $z
 		 * @params-variable-length
 		 *
-		 * @return boolean TRUE if all arguments are strings, else FALSE.
+		 * @return boolean TRUE if all arguments are strings.
 		 */
 		public function are_set(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg) || !is_string($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -236,16 +211,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_set()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_set()` for further details.
 		 */
-		public function ¤are_set($a)
+		public function ¤are_set($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg) || !is_string($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -287,14 +264,13 @@ namespace wsc_v000000_dev
 		 * @param mixed $z
 		 * @params-variable-length
 		 *
-		 * @return boolean TRUE if all arguments are strings, and they're NOT empty, else FALSE.
+		 * @return boolean TRUE if all arguments are strings, and they're NOT empty.
 		 */
 		public function are_not_empty(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(empty($_arg) || !is_string($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -302,16 +278,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_not_empty()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_empty()` for further details.
 		 */
-		public function ¤are_not_empty($a)
+		public function ¤are_not_empty($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(empty($_arg) || !is_string($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -372,24 +350,24 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->are_not_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(empty($_arg) || !is_string($_arg))
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
 		/**
 		 * Same as `$this->are_not_empty_in()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_empty_in()` for further details.
 		 */
-		public function ¤are_not_empty_in($a)
+		public function ¤are_not_empty_in($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 			{
@@ -398,13 +376,10 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->¤are_not_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(empty($_arg) || !is_string($_arg))
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
@@ -452,7 +427,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(!empty($_arg) && is_string($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return '';
 		}
@@ -460,16 +434,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->not_empty_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return string See `$this->not_empty_coalesce()` for further details.
 		 */
-		public function ¤not_empty_coalesce($a)
+		public function ¤not_empty_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!empty($_arg) && is_string($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return '';
 		}
@@ -518,7 +494,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(isset($_arg) && is_string($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return '';
 		}
@@ -526,16 +501,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->isset_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return string See `$this->isset_coalesce()` for further details.
 		 */
-		public function ¤isset_coalesce($a)
+		public function ¤isset_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(isset($_arg) && is_string($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return '';
 		}
@@ -551,10 +528,7 @@ namespace wsc_v000000_dev
 		 */
 		public function is_true($var)
 		{
-			if(!is_scalar($var))
-				return FALSE;
-
-			return (filter_var($var, FILTER_VALIDATE_BOOLEAN)) ? TRUE : FALSE;
+			return is_scalar($var) && filter_var($var, FILTER_VALIDATE_BOOLEAN);
 		}
 
 		/**
@@ -568,7 +542,7 @@ namespace wsc_v000000_dev
 		 */
 		public function is_false($var)
 		{
-			return (!$this->is_true($var)) ? TRUE : FALSE;
+			return !$this->is_true($var);
 		}
 
 		/**
@@ -584,7 +558,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			return (strpos($string, '<') !== FALSE && preg_match('/\<[^<>]+\>/', $string)) ? TRUE : FALSE;
+			return strpos($string, '<') !== FALSE && preg_match('/\<[^<>]+\>/', $string);
 		}
 
 		/**
@@ -598,7 +572,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			return (preg_match(stub::$regex_valid_userland_name, $string)) ? TRUE : FALSE;
+			return isset($string[0]) && preg_match(stub::$regex_valid_userland_name, $string);
 		}
 
 		/**
@@ -614,7 +588,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			return (preg_match(stub::$regex_valid_version, $string)) ? TRUE : FALSE;
+			return isset($string[0]) && preg_match(stub::$regex_valid_version, $string);
 		}
 
 		/**
@@ -630,7 +604,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			return (preg_match(stub::$regex_valid_plugin_version, $string)) ? TRUE : FALSE;
+			return isset($string[0]) && preg_match(stub::$regex_valid_plugin_version, $string);
 		}
 
 		/**
@@ -646,7 +620,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			return (preg_match(stub::$regex_valid_dev_version, $string)) ? TRUE : FALSE;
+			return isset($string[0]) && preg_match(stub::$regex_valid_dev_version, $string);
 		}
 
 		/**
@@ -662,7 +636,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			return (preg_match(stub::$regex_valid_plugin_dev_version, $string)) ? TRUE : FALSE;
+			return isset($string[0]) && preg_match(stub::$regex_valid_plugin_dev_version, $string);
 		}
 
 		/**
@@ -678,7 +652,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			return (preg_match(stub::$regex_valid_stable_version, $string)) ? TRUE : FALSE;
+			return isset($string[0]) && preg_match(stub::$regex_valid_stable_version, $string);
 		}
 
 		/**
@@ -694,7 +668,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			return (preg_match(stub::$regex_valid_plugin_stable_version, $string)) ? TRUE : FALSE;
+			return isset($string[0]) && preg_match(stub::$regex_valid_plugin_stable_version, $string);
 		}
 
 		/**
@@ -724,22 +698,6 @@ namespace wsc_v000000_dev
 		}
 
 		/**
-		 * Forces an initial string value (NOT a deep scan).
-		 *
-		 * @param !object $value Anything but an object.
-		 *
-		 * @return string Stringified value. This forces an initial string value at all times.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 */
-		public function ify($value)
-		{
-			$this->check_arg_types('!object', func_get_args());
-
-			return (string)$value;
-		}
-
-		/**
 		 * Forces string values deeply.
 		 *
 		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
@@ -758,8 +716,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->ify_deep($_value);
-				unset($_value);
-
 				return $value;
 			}
 			return (string)$value;
@@ -790,8 +746,6 @@ namespace wsc_v000000_dev
 					$chars .= str_repeat(chr((integer)$_key), (integer)$_count);
 				else $chars .= str_repeat((string)$_key, (integer)$_count);
 			}
-			unset($_key, $_count); // Housekeeping.
-
 			return $chars; // Ex: aabbcdeffgg...
 		}
 
@@ -814,7 +768,7 @@ namespace wsc_v000000_dev
 		 *
 		 * @param boolean $___recursion Internal use only.
 		 *
-		 * @return boolean|array TRUE if regular expression finds a match, else FALSE.
+		 * @return boolean|array TRUE if regular expression finds a match.
 		 *    If `$collect_key_props` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
 		 *       else an empty array if no matches are found in the search for keys/properties.
 		 *
@@ -883,7 +837,7 @@ namespace wsc_v000000_dev
 		 *
 		 * @param boolean $___recursion Internal use only.
 		 *
-		 * @return boolean|array TRUE if any string as a regex pattern finds a match, else FALSE.
+		 * @return boolean|array TRUE if any string as a regex pattern finds a match.
 		 *    If `$collect_key_props` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
 		 *       else an empty array if no matches are found in the search for keys/properties.
 		 *
@@ -962,7 +916,7 @@ namespace wsc_v000000_dev
 		 *
 		 * @param boolean      $___recursion Internal use only. Tracks recursion in this routine.
 		 *
-		 * @return boolean|array TRUE if wildcard pattern finds a match, else FALSE.
+		 * @return boolean|array TRUE if wildcard pattern finds a match.
 		 *    If `$collect_key_props` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
 		 *       else an empty array if no matches are found in the search for keys/properties.
 		 *
@@ -1051,7 +1005,7 @@ namespace wsc_v000000_dev
 		 *
 		 * @param boolean      $___recursion Internal use only. Tracks recursion in this routine.
 		 *
-		 * @return boolean|array TRUE if any wildcard pattern finds a match, else FALSE.
+		 * @return boolean|array TRUE if any wildcard pattern finds a match.
 		 *    If `$collect_key_props` is TRUE, this will return an array instead (i.e. containing all matching keys/properties);
 		 *       else an empty array if no matches are found in the search for keys/properties.
 		 *
@@ -1157,8 +1111,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->esc_dq_deep($_value, $times, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			return str_replace('"', str_repeat('\\', abs($times)).'"', (string)$value);
@@ -1209,8 +1161,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->esc_sq_deep($_value, $times, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			return str_replace("'", str_repeat('\\', abs($times))."'", (string)$value);
@@ -1265,8 +1215,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->esc_js_sq_deep($_value, $times, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			$value = str_replace(array("\r\n", "\r", '"'), array("\n", "\n", '%%!dq!%%'), (string)$value);
@@ -1320,8 +1268,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->esc_refs_deep($_value, $times, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			return str_replace(array('\\', '$'), array(str_repeat('\\', abs($times)).'\\', str_repeat('\\', abs($times)).'$'), (string)$value);
@@ -1385,8 +1331,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->esc_sql_deep($_value, $convert_nulls_no_esc, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			if(is_null($value) && $convert_nulls_no_esc)
@@ -1443,8 +1387,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->excerpt_deep($_value, $max_length, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			else if(strlen($value = strip_tags((string)$value)) > $max_length)
@@ -1495,8 +1437,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->esc_shortcodes_deep($_value, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			if(empty($GLOBALS['shortcode_tags']) || !is_array($GLOBALS['shortcode_tags']))
@@ -1551,8 +1491,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->preg_quote_deep($_value, $delimiter, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			return preg_quote((string)$value, $delimiter);
@@ -1610,8 +1548,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->trim_deep($_value, $chars, $extra_chars, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			$chars = (strlen($chars)) ? $chars : " \r\n\t\0\x0B";
@@ -1644,11 +1580,9 @@ namespace wsc_v000000_dev
 
 			if(is_array($value) || is_object($value))
 			{
-				foreach($value as &$_value) // Recursion.
+				foreach($value as &$_value)
 					$_value = $this->strip_deep($_value, TRUE);
-				unset($_value); // Housekeeping.
-
-				return $value; // Array or object value.
+				return $value;
 			}
 			return stripslashes((string)$value);
 		}
@@ -1677,11 +1611,9 @@ namespace wsc_v000000_dev
 
 			if(is_array($value) || is_object($value))
 			{
-				foreach($value as &$_value) // Recursion.
+				foreach($value as &$_value)
 					$_value = $this->slash_deep($_value, TRUE);
-				unset($_value); // Housekeeping.
-
-				return $value; // Array or object value.
+				return $value;
 			}
 			return addslashes((string)$value);
 		}
@@ -1786,13 +1718,11 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->trim_content_deep($_value, $chars, $extra_chars, TRUE);
-				unset($_value);
-
 				return $this->trim_deep($value, $chars, $extra_chars);
 			}
-			if(!isset($this->static[__FUNCTION__.'_whitespace']))
+			if(!isset($this->static[__FUNCTION__.'__whitespace']))
 				$this->static[__FUNCTION__.'_whitespace'] = implode('|', array_keys($this->html_whitespace));
-			$whitespace =& $this->static[__FUNCTION__.'_whitespace']; // Shorter reference.
+			$whitespace =& $this->static[__FUNCTION__.'__whitespace']; // Shorter reference.
 
 			$value = preg_replace('/^(?:'.$whitespace.')+|(?:'.$whitespace.')+$/', '', (string)$value);
 
@@ -1886,11 +1816,9 @@ namespace wsc_v000000_dev
 
 			if(is_array($value) || is_object($value))
 			{
-				foreach($value as &$_value) // Recursion.
+				foreach($value as &$_value)
 					$_value = $this->trim_qts_deep($_value, $trim_dsq, TRUE);
-				unset($_value); // Housekeeping.
-
-				return $value; // Array or object value.
+				return $value;
 			}
 			$qts = implode('|', array_keys($this->quote_entities_w_variations));
 			$qts = ($trim_dsq) ? $qts.'|"|\'' : $qts;
@@ -2010,13 +1938,11 @@ namespace wsc_v000000_dev
 
 			if(is_array($value) || is_object($value))
 			{
-				foreach($value as &$_value) // Recursion.
+				foreach($value as &$_value)
 					$_value = $this->replace_once_deep($needle, $replace, $_value, $case_insensitive, TRUE);
-				unset($_value); // Housekeeping.
-
-				return $value; // Array or object.
+				return $value;
 			}
-			$value = (string)$value; // Force string value.
+			$value = (string)$value; // Force string.
 
 			if($case_insensitive) // Case insensitive scenario?
 				$strpos = 'stripos'; // Use `stripos()`.
@@ -2033,8 +1959,6 @@ namespace wsc_v000000_dev
 							$_replace = (isset($replace[$_key])) ? (string)$replace[$_key] : '';
 							$value    = substr_replace($value, $_replace, $_strpos, $_length);
 						}
-					unset($_key, $_needle, $_strpos, $_length, $_replace);
-
 					return $value; // String value.
 				}
 				else // Optimized for `$replace` string.
@@ -2047,8 +1971,6 @@ namespace wsc_v000000_dev
 							$_length = strlen($_needle);
 							$value   = substr_replace($value, $replace, $_strpos, $_length);
 						}
-					unset($_needle, $_strpos, $_length);
-
 					return $value; // String value.
 				}
 			}
@@ -2066,8 +1988,6 @@ namespace wsc_v000000_dev
 
 					$value = substr_replace($value, $_replace, $_strpos, $_length);
 				}
-				unset($_strpos, $_length, $_replace);
-
 				return $value; // String value.
 			}
 		}
@@ -2412,10 +2332,8 @@ namespace wsc_v000000_dev
 
 			if(is_array($value) || is_object($value))
 			{
-				foreach($value as &$_value) // Recursion.
+				foreach($value as &$_value)
 					$_value = $this->strip_leading_indents_deep($_value, $leading_at_line, $add_leading_chars, TRUE);
-				unset($_value); // Housekeeping.
-
 				return $value;
 			}
 			$string          = trim((string)$value, "\r\n");
@@ -2471,10 +2389,8 @@ namespace wsc_v000000_dev
 
 			if(is_array($value) || is_object($value))
 			{
-				foreach($value as &$_value) // Recursion.
+				foreach($value as &$_value)
 					$_value = $this->strip_2_kb_chars_deep($_value, TRUE);
-				unset($_value); // Housekeeping.
-
 				return $value;
 			}
 			return preg_replace('/[^0-9a-z\s\'"`\-\^\/[\]{}()\\\\.,;_~!@#$%&*+=|:?<>]/i', '', remove_accents((string)$value));
@@ -2562,6 +2478,7 @@ namespace wsc_v000000_dev
 		 *    was NOT base64 encoded to begin with. Helps prevent accidental data corruption.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
+		 * @throws exception If the call to `base64_decode()` fails.
 		 */
 		public function base64_url_safe_decode($base64_url_safe, $url_unsafe_chars = array('+', '/'), $url_safe_chars = array('-', '_'), $trim_padding_chars = '=')
 		{
@@ -2572,8 +2489,10 @@ namespace wsc_v000000_dev
 			$string = str_replace($url_safe_chars, $url_unsafe_chars, $string);
 
 			if(!is_string($string = base64_decode($string, TRUE)))
-				return ($original = $base64_url_safe);
-
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#failure', get_defined_vars(),
+					$this->__('Base64 decoding failed (`$string` is NOT a string).')
+				);
 			return $string;
 		}
 
@@ -2619,8 +2538,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->urldecode_ur_chars_deep($_value, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			return str_replace(array('%2D', '%2E', '%5F', '%7E'), array('-', '.', '_', '~'), (string)$value);
@@ -2666,8 +2583,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->wrap_deep($_value, $beginning, $end, $wrap_0b_strings, $convert_nulls_no_wrap, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			if(is_null($value) && $convert_nulls_no_wrap)
@@ -2708,11 +2623,9 @@ namespace wsc_v000000_dev
 
 			if(is_array($value) || is_object($value))
 			{
-				foreach($value as &$_value) // Recursion.
+				foreach($value as &$_value)
 					$_value = $this->wordwrap_deep($_value, $width, $break, $cut, TRUE);
-				unset($_value); // Housekeeping.
-
-				return $value; // Array or object value.
+				return $value;
 			}
 			return wordwrap((string)$value, $width, $break, $cut);
 		}
@@ -2722,16 +2635,13 @@ namespace wsc_v000000_dev
 		 *
 		 * @param string $string An input string to test against.
 		 *
-		 * @return boolean TRUE if the string is UTF-8, else FALSE.
+		 * @return boolean TRUE if the string is UTF-8.
 		 */
 		public function is_utf8($string)
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			if(!strlen($string) || seems_utf8($string))
-				return TRUE;
-
-			return FALSE;
+			return (isset($string[0]) && seems_utf8($string));
 		}
 
 		/**
@@ -2782,8 +2692,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->to_utf8_deep($_value, $detection_order, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			if(!$this->is_utf8($value = (string)$value))
@@ -2837,8 +2745,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->to_hex_deep($_value, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			if(strlen($value = (string)$value))
@@ -2897,9 +2803,7 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->fnm_case_deep($_value, TRUE);
-				unset($_value); // Housekeeping.
-
-				return $value; // Array/object value.
+				return $value;
 			}
 			if(strlen($value = (string)$value))
 			{
@@ -2951,25 +2855,6 @@ namespace wsc_v000000_dev
 				unset($_stream_wrapper, $_win_drive_letter, $_aA_value, $_sq_brackets_open, $_i); // Housekeeping.
 			}
 			return $value; // String as `[aA][bB]`.
-		}
-
-		/**
-		 * Adds double quotes to invalid JSON property names.
-		 *
-		 * @note This comes in handy when we're dealing with APIs that do things wrong.
-		 *    Or perhaps they just simply JavaScript objects w/o the double quotes.
-		 *
-		 * @param string $json JSON (or JavaScript object as string).
-		 *
-		 * @return string The original `$json` code w/ double-quoted property names.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 */
-		public function json_dq_property_names($json)
-		{
-			$this->check_arg_types('string', func_get_args());
-
-			return preg_replace('/([{,])\s*([^"]+?)\s*:/', '$1"$2":', $json);
 		}
 
 		/**

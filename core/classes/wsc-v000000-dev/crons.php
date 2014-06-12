@@ -180,7 +180,7 @@ namespace wsc_v000000_dev
 		 * @param boolean $confirmation Defaults to FALSE. Set this to TRUE as a confirmation.
 		 *    If this is FALSE, nothing will happen; and this method returns FALSE.
 		 *
-		 * @return boolean TRUE if successfully installed, else FALSE.
+		 * @return boolean TRUE if successfully installed.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -202,7 +202,7 @@ namespace wsc_v000000_dev
 		 * @param boolean $confirmation Defaults to FALSE. Set this to TRUE as a confirmation.
 		 *    If this is FALSE, nothing will happen; and this method returns FALSE.
 		 *
-		 * @return boolean TRUE if successfully uninstalled, else FALSE.
+		 * @return boolean TRUE if successfully uninstalled.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */

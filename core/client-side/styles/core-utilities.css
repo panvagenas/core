@@ -114,6 +114,12 @@ Text utility classes.
 	word-wrap   : normal !important;
 	word-break  : normal !important;
 }
+.wsc-v000000-dev .text-wrap-break
+{
+	white-space : normal !important;
+	word-wrap   : break-word !important;
+	word-break  : break-all !important;
+}
 .wsc-v000000-dev .text-no-wrap
 {
 	white-space : pre !important;
@@ -278,6 +284,21 @@ Overflow utility classes.
 .wsc-v000000-dev .auto-y-overflow
 {
 	max-height : 100% !important;
+	overflow-y : auto !important;
+}
+.wsc-v000000-dev .scroll-y-overflow-200-max
+{
+	max-height : 200px !important;
+	overflow-y : auto !important;
+}
+.wsc-v000000-dev .scroll-y-overflow-300-max
+{
+	max-height : 300px !important;
+	overflow-y : auto !important;
+}
+.wsc-v000000-dev .scroll-y-overflow-400-max
+{
+	max-height : 400px !important;
 	overflow-y : auto !important;
 }
 

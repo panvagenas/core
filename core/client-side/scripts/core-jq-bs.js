@@ -2,25 +2,25 @@
  * Bootstrap v3.1.1 (namespaced by WebSharks, Inc.); copyright 2011-2014 Twitter, Inc.
  * MIT license <https://github.com/twbs/bootstrap/blob/master/LICENSE>
  */
-/*
- * Namespaced by WebSharks, Inc. as follows...
- *    - replace bs. with [wsc_dashes]-bs.
- *    - replace data-api with data-[wsc_dashes]-api
- *    - replace $.fn.x with $.fn[[wsc].x]
- *    - replace data-x="x" with data-x="[wsc_dashes]-x"
- *    - exclude `.wsc` in dropdown plugin.
- *    - prefix selectors w/ `.[wsc_dashes]`.
- *    - plus other minor tweaks to collapse().
- *    - plus other misc. tweaks.
+/* Namespaced by WebSharks, Inc. as follows...
+ *    - replace `bs.` with `[core]-bs`.
+ *    - replace `data-api` with `data-[core]-api`
+ *    - replace `$.fn.x` with `$.fn[[core].x]`
+ *    - replace `data-x="x"` with `data-x="[core]-x"`
+ *    - exclude `.[core]` in dropdown plugin.
+ *    - prefix selectors w/ `.[core]`.
+ *    - plus other minor tweaks to `collapse()`.
+ *    - plus other minor tweaks to `modal()`.
+ *    - plus a few other misc. tweaks.
  *
  * @note To see ALL of the changes please run a diff against this file.
  * <http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.js>
  */
-(function($, wsc, wsc_dashes)
+(function($, core)
 {
-	if(typeof $[wsc + '.bs'] !== 'function')
+	if(typeof $[core + '->bs'] !== 'function')
 	{
-		$[wsc + '.bs'] = function(){};
+		$[core + '->bs'] = function(){};
 
 		/* ========================================================================
 		 * Bootstrap: transition.js v3.1.1
@@ -56,7 +56,7 @@
 		  }
 
 		  // http://blog.alexmaccaw.com/css-transitions
-			$.fn[wsc + '.emulateTransitionEnd'] = function (duration) {
+			$.fn[core + '->emulateTransitionEnd'] = function (duration) {
 		    var called = false, $el = this
 		    $(this).one($.support.transition.end, function () { called = true })
 		    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
@@ -84,7 +84,7 @@
 		  // ALERT CLASS DEFINITION
 		  // ======================
 
-		  var dismiss = '[data-dismiss="' + wsc_dashes + '-alert"]'
+		  var dismiss = '[data-dismiss="' + core + '-alert"]'
 		  var Alert   = function (el) {
 		    $(el).on('click', dismiss, this.close)
 		  }
@@ -106,52 +106,52 @@
 		      $parent = $this.hasClass('alert') ? $this : $this.parent()
 		    }
 
-		    $parent.trigger(e = $.Event('close.' + wsc_dashes + '-bs.alert'))
+		    $parent.trigger(e = $.Event('close.' + core + '-bs.alert'))
 
 		    if (e.isDefaultPrevented()) return
 
 		    $parent.removeClass('in')
 
 		    function removeElement() {
-		      $parent.trigger('closed.' + wsc_dashes + '-bs.alert').remove()
+		      $parent.trigger('closed.' + core + '-bs.alert').remove()
 		    }
 
 		    $.support.transition && $parent.hasClass('fade') ?
 		      $parent
 		        .one($.support.transition.end, removeElement)
-		        [wsc + '.emulateTransitionEnd'](150) :
+		        [core + '->emulateTransitionEnd'](150) :
 		      removeElement()
 		  }
 
 		  // ALERT PLUGIN DEFINITION
 		  // =======================
 
-		  var old = $.fn[wsc + '.alert']
+		  var old = $.fn[core + '->alert']
 
-		  $.fn[wsc + '.alert'] = function (option) {
+		  $.fn[core + '->alert'] = function (option) {
 		    return this.each(function () {
 		      var $this = $(this)
-		      var data  = $this.data(wsc_dashes + '-bs.alert')
+		      var data  = $this.data(core + '-bs.alert')
 
-		      if (!data) $this.data(wsc_dashes + '-bs.alert', (data = new Alert(this)))
+		      if (!data) $this.data(core + '-bs.alert', (data = new Alert(this)))
 		      if (typeof option == 'string') data[option].call($this)
 		    })
 		  }
 
-		  $.fn[wsc + '.alert'].Constructor = Alert
+		  $.fn[core + '->alert'].Constructor = Alert
 
 		  // ALERT NO CONFLICT
 		  // =================
 
-		  $.fn[wsc + '.alert'].noConflict = function () {
-		    $.fn[wsc + '.alert'] = old
+		  $.fn[core + '->alert'].noConflict = function () {
+		    $.fn[core + '->alert'] = old
 		    return this
 		  }
 
 		  // ALERT DATA-API
 		  // ==============
 
-		  $(document).on('click.' + wsc_dashes + '-bs.alert.data-' + wsc_dashes + '-api', '.' + wsc_dashes + ' ' + dismiss, Alert.prototype.close)
+		  $(document).on('click.' + core + '-bs.alert.data-' + core + '-api', '.' + core + ' ' + dismiss, Alert.prototype.close)
 
 		}(jQuery);
 
@@ -205,7 +205,7 @@
 
 		  Button.prototype.toggle = function () {
 		    var changed = true
-		    var $parent = this.$element.closest('[data-toggle="' + wsc_dashes + '-buttons"]')
+		    var $parent = this.$element.closest('[data-toggle="' + core + '-buttons"]')
 
 		    if ($parent.length) {
 		      var $input = this.$element.find('input')
@@ -222,38 +222,38 @@
 		  // BUTTON PLUGIN DEFINITION
 		  // ========================
 
-		  var old = $.fn[wsc + '.button']
+		  var old = $.fn[core + '->button']
 
-		  $.fn[wsc + '.button'] = function (option) {
+		  $.fn[core + '->button'] = function (option) {
 		    return this.each(function () {
 		      var $this   = $(this)
-		      var data    = $this.data(wsc_dashes + '-bs.button')
+		      var data    = $this.data(core + '-bs.button')
 		      var options = typeof option == 'object' && option
 
-		      if (!data) $this.data(wsc_dashes + '-bs.button', (data = new Button(this, options)))
+		      if (!data) $this.data(core + '-bs.button', (data = new Button(this, options)))
 
 		      if (option == 'toggle') data.toggle()
 		      else if (option) data.setState(option)
 		    })
 		  }
 
-		  $.fn[wsc + '.button'].Constructor = Button
+		  $.fn[core + '->button'].Constructor = Button
 
 		  // BUTTON NO CONFLICT
 		  // ==================
 
-		  $.fn[wsc + '.button'].noConflict = function () {
-		    $.fn[wsc + '.button'] = old
+		  $.fn[core + '->button'].noConflict = function () {
+		    $.fn[core + '->button'] = old
 		    return this
 		  }
 
 		  // BUTTON DATA-API
 		  // ===============
 
-		  $(document).on('click.' + wsc_dashes + '-bs.button.data-' + wsc_dashes + '-api', '.' + wsc_dashes + ' [data-toggle^=' + wsc_dashes + '-button]', function (e) {
+		  $(document).on('click.' + core + '-bs.button.data-' + core + '-api', '.' + core + ' [data-toggle^=' + core + '-button]', function (e) {
 		    var $btn = $(e.target)
 		    if (!$btn.hasClass('btn')) $btn = $btn.closest('.btn')
-		    $btn[wsc + '.button']('toggle')
+		    $btn[core + '->button']('toggle')
 		    e.preventDefault()
 		  })
 
@@ -319,7 +319,7 @@
 
 		    if (pos > (this.$items.length - 1) || pos < 0) return
 
-		    if (this.sliding)       return this.$element.one('slid.' + wsc_dashes + '-bs.carousel', function () { that.to(pos) })
+		    if (this.sliding)       return this.$element.one('slid.' + core + '-bs.carousel', function () { that.to(pos) })
 		    if (activeIndex == pos) return this.pause().cycle()
 
 		    return this.slide(pos > activeIndex ? 'next' : 'prev', $(this.$items[pos]))
@@ -363,7 +363,7 @@
 
 		    if ($next.hasClass('active')) return this.sliding = false
 
-		    var e = $.Event('slide.' + wsc_dashes + '-bs.carousel', { relatedTarget: $next[0], direction: direction })
+		    var e = $.Event('slide.' + core + '-bs.carousel', { relatedTarget: $next[0], direction: direction })
 		    this.$element.trigger(e)
 		    if (e.isDefaultPrevented()) return
 
@@ -373,7 +373,7 @@
 
 		    if (this.$indicators.length) {
 		      this.$indicators.find('.active').removeClass('active')
-		      this.$element.one('slid.' + wsc_dashes + '-bs.carousel', function () {
+		      this.$element.one('slid.' + core + '-bs.carousel', function () {
 		        var $nextIndicator = $(that.$indicators.children()[that.getActiveIndex()])
 		        $nextIndicator && $nextIndicator.addClass('active')
 		      })
@@ -389,14 +389,14 @@
 		          $next.removeClass([type, direction].join(' ')).addClass('active')
 		          $active.removeClass(['active', direction].join(' '))
 		          that.sliding = false
-		          setTimeout(function () { that.$element.trigger('slid.' + wsc_dashes + '-bs.carousel') }, 0)
+		          setTimeout(function () { that.$element.trigger('slid.' + core + '-bs.carousel') }, 0)
 		        })
-		        [wsc + '.emulateTransitionEnd']($active.css('transition-duration').slice(0, -1) * 1000)
+		        [core + '->emulateTransitionEnd']($active.css('transition-duration').slice(0, -1) * 1000)
 		    } else {
 		      $active.removeClass('active')
 		      $next.addClass('active')
 		      this.sliding = false
-		      this.$element.trigger('slid.' + wsc_dashes + '-bs.carousel')
+		      this.$element.trigger('slid.' + core + '-bs.carousel')
 		    }
 
 		    isCycling && this.cycle()
@@ -407,55 +407,55 @@
 		  // CAROUSEL PLUGIN DEFINITION
 		  // ==========================
 
-		  var old = $.fn[wsc + '.carousel']
+		  var old = $.fn[core + '->carousel']
 
-		  $.fn[wsc + '.carousel'] = function (option) {
+		  $.fn[core + '->carousel'] = function (option) {
 		    return this.each(function () {
 		      var $this   = $(this)
-		      var data    = $this.data(wsc_dashes + '-bs.carousel')
+		      var data    = $this.data(core + '-bs.carousel')
 		      var options = $.extend({}, Carousel.DEFAULTS, $this.data(), typeof option == 'object' && option)
 		      var action  = typeof option == 'string' ? option : options.slide
 
-		      if (!data) $this.data(wsc_dashes + '-bs.carousel', (data = new Carousel(this, options)))
+		      if (!data) $this.data(core + '-bs.carousel', (data = new Carousel(this, options)))
 		      if (typeof option == 'number') data.to(option)
 		      else if (action) data[action]()
 		      else if (options.interval) data.pause().cycle()
 		    })
 		  }
 
-		  $.fn[wsc + '.carousel'].Constructor = Carousel
+		  $.fn[core + '->carousel'].Constructor = Carousel
 
 		  // CAROUSEL NO CONFLICT
 		  // ====================
 
-		  $.fn[wsc + '.carousel'].noConflict = function () {
-		    $.fn[wsc + '.carousel'] = old
+		  $.fn[core + '->carousel'].noConflict = function () {
+		    $.fn[core + '->carousel'] = old
 		    return this
 		  }
 
 		  // CAROUSEL DATA-API
 		  // =================
 
-		  $(document).on('click.' + wsc_dashes + '-bs.carousel.data-' + wsc_dashes + '-api', '.' + wsc_dashes + ' [data-' + wsc_dashes + '-slide], .' + wsc_dashes + ' [data-' + wsc_dashes + '-slide-to]', function (e) {
+		  $(document).on('click.' + core + '-bs.carousel.data-' + core + '-api', '.' + core + ' [data-' + core + '-slide], .' + core + ' [data-' + core + '-slide-to]', function (e) {
 		    var $this   = $(this), href
 		    var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
 		    var options = $.extend({}, $target.data(), $this.data())
 		    var slideIndex = $this.attr('data-slide-to')
 		    if (slideIndex) options.interval = false
 
-		    $target[wsc + '.carousel'](options)
+		    $target[core + '->carousel'](options)
 
 		    if (slideIndex = $this.attr('data-slide-to')) {
-		      $target.data(wsc_dashes + '-bs.carousel').to(slideIndex)
+		      $target.data(core + '-bs.carousel').to(slideIndex)
 		    }
 
 		    e.preventDefault()
 		  })
 
 		  $(window).on('load', function () {
-		    $('[data-ride="' + wsc_dashes + '-carousel"]').each(function () {
+		    $('[data-ride="' + core + '-carousel"]').each(function () {
 		      var $carousel = $(this)
-		      $carousel[wsc + '.carousel']($carousel.data())
+		      $carousel[core + '->carousel']($carousel.data())
 		    })
 		  })
 
@@ -496,17 +496,17 @@
 		  Collapse.prototype.show = function () {
 		    if (this.transitioning || this.$element.hasClass('in')) return
 
-		    var startEvent = $.Event('show.' + wsc_dashes + '-bs.collapse')
+		    var startEvent = $.Event('show.' + core + '-bs.collapse')
 		    this.$element.trigger(startEvent)
 		    if (startEvent.isDefaultPrevented()) return
 
 		    var actives = this.$parent && this.$parent.find('> .panel > .in')
 
 		    if (actives && actives.length) {
-		      var hasData = actives.data(wsc_dashes + '-bs.collapse')
+		      var hasData = actives.data(core + '-bs.collapse')
 		      if (hasData && hasData.transitioning) return
-		      actives[wsc + '.collapse']('hide')
-		      hasData || actives.data(wsc_dashes + '-bs.collapse', null)
+		      actives[core + '->collapse']('hide')
+		      hasData || actives.data(core + '-bs.collapse', null)
 		    }
 
 		    var dimension = this.dimension()
@@ -528,7 +528,7 @@
 		        .addClass('collapse in')
 		        [dimension]('auto')
 		      this.transitioning = 0
-		      this.$element.trigger('shown.' + wsc_dashes + '-bs.collapse')
+		      this.$element.trigger('shown.' + core + '-bs.collapse')
 		    }
 
 		    if (!$.support.transition) return complete.call(this)
@@ -537,14 +537,14 @@
 
 		    this.$element
 		      .one($.support.transition.end, $.proxy(complete, this))
-		      [wsc + '.emulateTransitionEnd'](350)
+		      [core + '->emulateTransitionEnd'](350)
 		      [dimension](this.$element[0][scrollSize])
 		  }
 
 		  Collapse.prototype.hide = function () {
 		    if (this.transitioning || !this.$element.hasClass('in')) return
 
-		    var startEvent = $.Event('hide.' + wsc_dashes + '-bs.collapse')
+		    var startEvent = $.Event('hide.' + core + '-bs.collapse')
 		    this.$element.trigger(startEvent)
 		    if (startEvent.isDefaultPrevented()) return
 
@@ -568,7 +568,7 @@
 		    var complete = function () {
 		      this.transitioning = 0
 		      this.$element
-		        .trigger('hidden.' + wsc_dashes + '-bs.collapse')
+		        .trigger('hidden.' + core + '-bs.collapse')
 		        .removeClass('collapsing')
 		        .addClass('collapse')
 		    }
@@ -578,7 +578,7 @@
 		    this.$element
 		      [dimension](0)
 		      .one($.support.transition.end, $.proxy(complete, this))
-		      [wsc + '.emulateTransitionEnd'](350)
+		      [core + '->emulateTransitionEnd'](350)
 		  }
 
 		  Collapse.prototype.toggle = function () {
@@ -588,50 +588,50 @@
 		  // COLLAPSE PLUGIN DEFINITION
 		  // ==========================
 
-		  var old = $.fn[wsc + '.collapse']
+		  var old = $.fn[core + '->collapse']
 
-		  $.fn[wsc + '.collapse'] = function (option) {
+		  $.fn[core + '->collapse'] = function (option) {
 		    return this.each(function () {
 		      var $this   = $(this)
-		      var data    = $this.data(wsc_dashes + '-bs.collapse')
+		      var data    = $this.data(core + '-bs.collapse')
 		      var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
 
 		      if (!data && options.toggle && option == 'show') option = !option
-		      if (!data) $this.data(wsc_dashes + '-bs.collapse', (data = new Collapse(this, options)))
+		      if (!data) $this.data(core + '-bs.collapse', (data = new Collapse(this, options)))
 		      if (typeof option == 'string') data[option]()
 		    })
 		  }
 
-		  $.fn[wsc + '.collapse'].Constructor = Collapse
+		  $.fn[core + '->collapse'].Constructor = Collapse
 
 		  // COLLAPSE NO CONFLICT
 		  // ====================
 
-		  $.fn[wsc + '.collapse'].noConflict = function () {
-		    $.fn[wsc + '.collapse'] = old
+		  $.fn[core + '->collapse'].noConflict = function () {
+		    $.fn[core + '->collapse'] = old
 		    return this
 		  }
 
 		  // COLLAPSE DATA-API
 		  // =================
 
-		  $(document).on('click.' + wsc_dashes + '-bs.collapse.data-' + wsc_dashes + '-api', '.' + wsc_dashes + ' [data-toggle=' + wsc_dashes + '-collapse]', function (e) {
+		  $(document).on('click.' + core + '-bs.collapse.data-' + core + '-api', '.' + core + ' [data-toggle=' + core + '-collapse]', function (e) {
 		    e.preventDefault();
 			 var $this   = $(this), href
 		    var target  = $this.attr('data-target')
 		        || e.preventDefault()
 		        || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') //strip for ie7
 		    var $target = $(target)
-		    var data    = $target.data(wsc_dashes + '-bs.collapse')
+		    var data    = $target.data(core + '-bs.collapse')
 		    var option  = data ? 'toggle' : $this.data()
 		    var parent  = $this.attr('data-parent')
 		    var $parent = parent && $(parent)
 
 		    if (!data || !data.transitioning) {
-		      if ($parent) $parent.find('[data-toggle=' + wsc_dashes + '-collapse][data-parent="' + parent + '"]').not($this).addClass('collapsed')
+		      if ($parent) $parent.find('[data-toggle=' + core + '-collapse][data-parent="' + parent + '"]').not($this).addClass('collapsed')
 		      $this[$target.hasClass('in') ? 'addClass' : 'removeClass']('collapsed')
 		    }
-		    $target[wsc + '.collapse'](option)
+		    $target[core + '->collapse'](option)
 		  })
 
 		}(jQuery);
@@ -650,10 +650,10 @@
 		  // DROPDOWN CLASS DEFINITION
 		  // =========================
 
-		  var backdrop = '.' + wsc_dashes + '-dropdown-backdrop'
-		  var toggle   = '[data-toggle=' + wsc_dashes + '-dropdown]'
+		  var backdrop = '.' + core + '-dropdown-backdrop'
+		  var toggle   = '[data-toggle=' + core + '-dropdown]'
 		  var Dropdown = function (element) {
-		    $(element).on('click.' + wsc_dashes + '-bs.dropdown', this.toggle)
+		    $(element).on('click.' + core + '-bs.dropdown', this.toggle)
 		  }
 
 		  Dropdown.prototype.toggle = function (e) {
@@ -673,13 +673,13 @@
 		      }
 
 		      var relatedTarget = { relatedTarget: this }
-		      $parent.trigger(e = $.Event('show.' + wsc_dashes + '-bs.dropdown', relatedTarget))
+		      $parent.trigger(e = $.Event('show.' + core + '-bs.dropdown', relatedTarget))
 
 		      if (e.isDefaultPrevented()) return
 
 		      $parent
 		        .toggleClass('open')
-		        .trigger('shown.' + wsc_dashes + '-bs.dropdown', relatedTarget)
+		        .trigger('shown.' + core + '-bs.dropdown', relatedTarget)
 
 		      $this.focus()
 		    }
@@ -720,14 +720,14 @@
 		  }
 
 		  function clearMenus(e) {
-		    $('.' + wsc_dashes + ' ' + backdrop).remove()
-		    $('.' + wsc_dashes + ' ' + toggle).each(function () {
+		    $('.' + core + ' ' + backdrop).remove()
+		    $('.' + core + ' ' + toggle).each(function () {
 		      var $parent = getParent($(this))
 		      var relatedTarget = { relatedTarget: this }
 		      if (!$parent.hasClass('open')) return
-		      $parent.trigger(e = $.Event('hide.' + wsc_dashes + '-bs.dropdown', relatedTarget))
+		      $parent.trigger(e = $.Event('hide.' + core + '-bs.dropdown', relatedTarget))
 		      if (e.isDefaultPrevented()) return
-		      $parent.removeClass('open').trigger('hidden.' + wsc_dashes + '-bs.dropdown', relatedTarget)
+		      $parent.removeClass('open').trigger('hidden.' + core + '-bs.dropdown', relatedTarget)
 		    })
 		  }
 
@@ -747,25 +747,25 @@
 		  // DROPDOWN PLUGIN DEFINITION
 		  // ==========================
 
-		  var old = $.fn[wsc + '.dropdown']
+		  var old = $.fn[core + '->dropdown']
 
-		  $.fn[wsc + '.dropdown'] = function (option) {
+		  $.fn[core + '->dropdown'] = function (option) {
 		    return this.each(function () {
 		      var $this = $(this)
-		      var data  = $this.data(wsc_dashes + '-bs.dropdown')
+		      var data  = $this.data(core + '-bs.dropdown')
 
-		      if (!data) $this.data(wsc_dashes + '-bs.dropdown', (data = new Dropdown(this)))
+		      if (!data) $this.data(core + '-bs.dropdown', (data = new Dropdown(this)))
 		      if (typeof option == 'string') data[option].call($this)
 		    })
 		  }
 
-		  $.fn[wsc + '.dropdown'].Constructor = Dropdown
+		  $.fn[core + '->dropdown'].Constructor = Dropdown
 
 		  // DROPDOWN NO CONFLICT
 		  // ====================
 
-		  $.fn[wsc + '.dropdown'].noConflict = function () {
-		    $.fn[wsc + '.dropdown'] = old
+		  $.fn[core + '->dropdown'].noConflict = function () {
+		    $.fn[core + '->dropdown'] = old
 		    return this
 		  }
 
@@ -773,15 +773,15 @@
 		  // ===================================
 
 		  $(document)
-		    .on('click.' + wsc_dashes + '-bs.dropdown.data-' + wsc_dashes + '-api', clearMenus)
-		    .on('click.' + wsc_dashes + '-bs.dropdown.data-' + wsc_dashes + '-api', '.' + wsc_dashes + ' .dropdown form', function (e) { e.stopPropagation() })
-		    .on('click.' + wsc_dashes + '-bs.dropdown.data-' + wsc_dashes + '-api', '.' + wsc_dashes + ' ' + toggle, Dropdown.prototype.toggle)
-		    .on('keydown.' + wsc_dashes + '-bs.dropdown.data-' + wsc_dashes + '-api', '.' + wsc_dashes + ' ' + toggle + ', .' + wsc_dashes + ' [role=menu], .' + wsc_dashes + ' [role=listbox]', Dropdown.prototype.keydown)
+		    .on('click.' + core + '-bs.dropdown.data-' + core + '-api', clearMenus)
+		    .on('click.' + core + '-bs.dropdown.data-' + core + '-api', '.' + core + ' .dropdown form', function (e) { e.stopPropagation() })
+		    .on('click.' + core + '-bs.dropdown.data-' + core + '-api', '.' + core + ' ' + toggle, Dropdown.prototype.toggle)
+		    .on('keydown.' + core + '-bs.dropdown.data-' + core + '-api', '.' + core + ' ' + toggle + ', .' + core + ' [role=menu], .' + core + ' [role=listbox]', Dropdown.prototype.keydown)
 
 			$(window).on('load', function(){
 				if(typeof $.fn.dropdown === 'function' && typeof $.fn.dropdown.Constructor.prototype.keydown === 'function' && typeof $.fn.emulateTransitionEnd === 'function') {
-					$(document).off('keydown.bs.dropdown.data-api') // Reattach native Bootstrap; excluding `.wsc` this time whenever we query for `role=menu` & `role=listbox`.
-						.on('keydown.bs.dropdown.data-api', '[data-toggle=dropdown], [role=menu]:not(.' + wsc_dashes + ' [role=menu]), [role=listbox]:not(.' + wsc_dashes + ' [role=listbox])', $.fn.dropdown.Constructor.prototype.keydown)
+					$(document).off('keydown.bs.dropdown.data-api') // Reattach native Bootstrap; excluding `.core` this time whenever we query for `role=menu` & `role=listbox`.
+						.on('keydown.bs.dropdown.data-api', '[data-toggle=dropdown], [role=menu]:not(.' + core + ' [role=menu]), [role=listbox]:not(.' + core + ' [role=listbox])', $.fn.dropdown.Constructor.prototype.keydown)
 				}
 			})
 
@@ -811,7 +811,7 @@
 		      this.$element
 		        .find('.modal-content')
 		        .load(this.options.remote, $.proxy(function () {
-		          this.$element.trigger('loaded.' + wsc_dashes + '-bs.modal')
+		          this.$element.trigger('loaded.' + core + '-bs.modal')
 		        }, this))
 		    }
 		  }
@@ -828,7 +828,7 @@
 
 		  Modal.prototype.show = function (_relatedTarget) {
 		    var that = this
-		    var e    = $.Event('show.' + wsc_dashes + '-bs.modal', { relatedTarget: _relatedTarget })
+		    var e    = $.Event('show.' + core + '-bs.modal', { relatedTarget: _relatedTarget })
 
 		    this.$element.trigger(e)
 
@@ -838,7 +838,7 @@
 
 		    this.escape()
 
-		    this.$element.on('click.dismiss.' + wsc_dashes + '-bs.modal', '[data-dismiss="' + wsc_dashes + '-modal"]', $.proxy(this.hide, this))
+		    this.$element.on('click.dismiss.' + core + '-bs.modal', '[data-dismiss="' + core + '-modal"]', $.proxy(this.hide, this))
 
 		    this.backdrop(function () {
 		      var transition = $.support.transition && that.$element.hasClass('fade')
@@ -861,14 +861,14 @@
 
 		      that.enforceFocus()
 
-		      var e = $.Event('shown.' + wsc_dashes + '-bs.modal', { relatedTarget: _relatedTarget })
+		      var e = $.Event('shown.' + core + '-bs.modal', { relatedTarget: _relatedTarget })
 
 		      transition ?
 		        that.$element.find('.modal-dialog') // wait for modal to slide in
 		          .one($.support.transition.end, function () {
 		            that.$element.focus().trigger(e)
 		          })
-		          [wsc + '.emulateTransitionEnd'](300) :
+		          [core + '->emulateTransitionEnd'](300) :
 		        that.$element.focus().trigger(e)
 		    })
 		  }
@@ -876,7 +876,7 @@
 		  Modal.prototype.hide = function (e) {
 		    if (e) e.preventDefault()
 
-		    e = $.Event('hide.' + wsc_dashes + '-bs.modal')
+		    e = $.Event('hide.' + core + '-bs.modal')
 
 		    this.$element.trigger(e)
 
@@ -886,24 +886,24 @@
 
 		    this.escape()
 
-		    $(document).off('focusin.' + wsc_dashes + '-bs.modal')
+		    $(document).off('focusin.' + core + '-bs.modal')
 
 		    this.$element
 		      .removeClass('in')
 		      .attr('aria-hidden', true)
-		      .off('click.dismiss.' + wsc_dashes + '-bs.modal')
+		      .off('click.dismiss.' + core + '-bs.modal')
 
 		    $.support.transition && this.$element.hasClass('fade') ?
 		      this.$element
 		        .one($.support.transition.end, $.proxy(this.hideModal, this))
-		        [wsc + '.emulateTransitionEnd'](300) :
+		        [core + '->emulateTransitionEnd'](300) :
 		      this.hideModal()
 		  }
 
 		  Modal.prototype.enforceFocus = function () {
 		    $(document)
-		      .off('focusin.' + wsc_dashes + '-bs.modal') // guard against infinite focus loop
-		      .on('focusin.' + wsc_dashes + '-bs.modal', $.proxy(function (e) {
+		      .off('focusin.' + core + '-bs.modal') // guard against infinite focus loop
+		      .on('focusin.' + core + '-bs.modal', $.proxy(function (e) {
 		        if (this.$element[0] !== e.target && !this.$element.has(e.target).length) {
 		          this.$element.focus()
 		        }
@@ -912,11 +912,11 @@
 
 		  Modal.prototype.escape = function () {
 		    if (this.isShown && this.options.keyboard) {
-		      this.$element.on('keyup.dismiss.' + wsc_dashes + '-bs.modal', $.proxy(function (e) {
+		      this.$element.on('keyup.dismiss.' + core + '-bs.modal', $.proxy(function (e) {
 		        e.which == 27 && this.hide()
 		      }, this))
 		    } else if (!this.isShown) {
-		      this.$element.off('keyup.dismiss.' + wsc_dashes + '-bs.modal')
+		      this.$element.off('keyup.dismiss.' + core + '-bs.modal')
 		    }
 		  }
 
@@ -925,7 +925,7 @@
 		    this.$element.hide()
 		    this.backdrop(function () {
 		      that.removeBackdrop()
-		      that.$element.trigger('hidden.' + wsc_dashes + '-bs.modal')
+		      that.$element.trigger('hidden.' + core + '-bs.modal')
 		    })
 		  }
 
@@ -940,10 +940,10 @@
 		    if (this.isShown && this.options.backdrop) {
 		      var doAnimate = $.support.transition && animate
 
-		      this.$backdrop = $('<div class="' + wsc_dashes + '-modal-backdrop ' + animate + '" />')
+		      this.$backdrop = $('<div class="' + core + '-modal-backdrop ' + animate + '" />')
 		        .appendTo(document.body)
 
-		      this.$element.on('click.dismiss.' + wsc_dashes + '-bs.modal', $.proxy(function (e) {
+		      this.$element.on('click.dismiss.' + core + '-bs.modal', $.proxy(function (e) {
 		        if (e.target !== e.currentTarget) return
 		        this.options.backdrop == 'static'
 		          ? this.$element[0].focus.call(this.$element[0])
@@ -959,7 +959,7 @@
 		      doAnimate ?
 		        this.$backdrop
 		          .one($.support.transition.end, callback)
-		          [wsc + '.emulateTransitionEnd'](150) :
+		          [core + '->emulateTransitionEnd'](150) :
 		        callback()
 
 		    } else if (!this.isShown && this.$backdrop) {
@@ -968,7 +968,7 @@
 		      $.support.transition && this.$element.hasClass('fade') ?
 		        this.$backdrop
 		          .one($.support.transition.end, callback)
-		          [wsc + '.emulateTransitionEnd'](150) :
+		          [core + '->emulateTransitionEnd'](150) :
 		        callback()
 
 		    } else if (callback) {
@@ -979,57 +979,57 @@
 		  // MODAL PLUGIN DEFINITION
 		  // =======================
 
-		  var old = $.fn[wsc + '.modal']
+		  var old = $.fn[core + '->modal']
 
-		  $.fn[wsc + '.modal'] = function (option, _relatedTarget) {
+		  $.fn[core + '->modal'] = function (option, _relatedTarget) {
 		    return this.each(function () {
 		      var $this   = $(this)
-		      var data    = $this.data(wsc_dashes + '-bs.modal')
+		      var data    = $this.data(core + '-bs.modal')
 		      var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
 
-		      if (!data) $this.data(wsc_dashes + '-bs.modal', (data = new Modal(this, options)))
+		      if (!data) $this.data(core + '-bs.modal', (data = new Modal(this, options)))
 		      if (typeof option == 'string') data[option](_relatedTarget)
 		      else if (options.show) data.show(_relatedTarget)
 		    })
 		  }
 
-		  $.fn[wsc + '.modal'].Constructor = Modal
+		  $.fn[core + '->modal'].Constructor = Modal
 
 		  // MODAL NO CONFLICT
 		  // =================
 
-		  $.fn[wsc + '.modal'].noConflict = function () {
-		    $.fn[wsc + '.modal'] = old
+		  $.fn[core + '->modal'].noConflict = function () {
+		    $.fn[core + '->modal'] = old
 		    return this
 		  }
 
 		  // MODAL DATA-API
 		  // ==============
 
-		  $(document).on('click.' + wsc_dashes + '-bs.modal.data-' + wsc_dashes + '-api', '.' + wsc_dashes + ' [data-toggle="' + wsc_dashes + '-modal"]', function (e) {
+		  $(document).on('click.' + core + '-bs.modal.data-' + core + '-api', '.' + core + ' [data-toggle="' + core + '-modal"]', function (e) {
 		    var $this   = $(this)
 		    var href    = $this.attr('href')
 		    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
-		    var option  = $target.data(wsc_dashes + '-bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+		    var option  = $target.data(core + '-bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
 
 		    if ($this.is('a')) e.preventDefault()
 
 		    $target
-		      [wsc + '.modal'](option, this)
+		      [core + '->modal'](option, this)
 		      .one('hide', function () {
 		        $this.is(':visible') && $this.focus()
 		      })
 		  })
 
 		  $(document)
-		    .on('show.' + wsc_dashes + '-bs.modal', '.' + wsc_dashes + ' .modal', function () { $(document.body).addClass(wsc_dashes + '-modal-open') })
-		    .on('hidden.' + wsc_dashes + '-bs.modal', '.' + wsc_dashes + ' .modal', function () { $(document.body).removeClass(wsc_dashes + '-modal-open') })
+		    .on('show.' + core + '-bs.modal', '.' + core + ' .modal', function () { $(document.body).addClass(core + '-modal-open') })
+		    .on('hidden.' + core + '-bs.modal', '.' + core + ' .modal', function () { $(document.body).removeClass(core + '-modal-open') })
 
 			$(document).on('ready', function(){
-				var modalStyles = '.' + wsc_dashes + '-modal-open{overflow:hidden}';
-				modalStyles += '.' + wsc_dashes + '-modal-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:1040;background-color:#000}'+
-					'.' + wsc_dashes + '-modal-backdrop.fade{opacity:0;filter:alpha(opacity=0)}'+
-					'.' + wsc_dashes + '-modal-backdrop.in{opacity:.5;filter:alpha(opacity=50)}';
+				var modalStyles = '.' + core + '-modal-open{overflow:hidden}';
+				modalStyles += '.' + core + '-modal-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:1040;background-color:#000}'+
+					'.' + core + '-modal-backdrop.fade{opacity:0;filter:alpha(opacity=0)}'+
+					'.' + core + '-modal-backdrop.in{opacity:.5;filter:alpha(opacity=50)}';
 				$('body').append('<style type="text/css">'+modalStyles+'</style>');
 			});
 
@@ -1130,7 +1130,7 @@
 
 		  Tooltip.prototype.enter = function (obj) {
 		    var self = obj instanceof this.constructor ?
-		      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data(wsc_dashes + '-bs.' + this.type)
+		      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data(core + '-bs.' + this.type)
 
 		    clearTimeout(self.timeout)
 
@@ -1145,7 +1145,7 @@
 
 		  Tooltip.prototype.leave = function (obj) {
 		    var self = obj instanceof this.constructor ?
-		      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data(wsc_dashes + '-bs.' + this.type)
+		      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data(core + '-bs.' + this.type)
 
 		    clearTimeout(self.timeout)
 
@@ -1159,7 +1159,7 @@
 		  }
 
 		  Tooltip.prototype.show = function () {
-		    var e = $.Event('show.' + wsc_dashes + '-bs.' + this.type)
+		    var e = $.Event('show.' + core + '-bs.' + this.type)
 
 		    if (this.hasContent() && this.enabled) {
 		      this.$element.trigger(e)
@@ -1218,13 +1218,13 @@
 		      this.hoverState = null
 
 		      var complete = function() {
-		        that.$element.trigger('shown.' + wsc_dashes + '-bs.' + that.type)
+		        that.$element.trigger('shown.' + core + '-bs.' + that.type)
 		      }
 
 		      $.support.transition && this.$tip.hasClass('fade') ?
 		        $tip
 		          .one($.support.transition.end, complete)
-		          [wsc + '.emulateTransitionEnd'](150) :
+		          [core + '->emulateTransitionEnd'](150) :
 		        complete()
 		    }
 		  }
@@ -1304,11 +1304,11 @@
 		  Tooltip.prototype.hide = function () {
 		    var that = this
 		    var $tip = this.tip()
-		    var e    = $.Event('hide.' + wsc_dashes + '-bs.' + this.type)
+		    var e    = $.Event('hide.' + core + '-bs.' + this.type)
 
 		    function complete() {
 		      if (that.hoverState != 'in') $tip.detach()
-		      that.$element.trigger('hidden.' + wsc_dashes + '-bs.' + that.type)
+		      that.$element.trigger('hidden.' + core + '-bs.' + that.type)
 		    }
 
 		    this.$element.trigger(e)
@@ -1320,7 +1320,7 @@
 		    $.support.transition && this.$tip.hasClass('fade') ?
 		      $tip
 		        .one($.support.transition.end, complete)
-		        [wsc + '.emulateTransitionEnd'](150) :
+		        [core + '->emulateTransitionEnd'](150) :
 		      complete()
 
 		    this.hoverState = null
@@ -1394,39 +1394,39 @@
 		  }
 
 		  Tooltip.prototype.toggle = function (e) {
-		    var self = e ? $(e.currentTarget)[this.type](this.getDelegateOptions()).data(wsc_dashes + '-bs.' + this.type) : this
+		    var self = e ? $(e.currentTarget)[this.type](this.getDelegateOptions()).data(core + '-bs.' + this.type) : this
 		    self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
 		  }
 
 		  Tooltip.prototype.destroy = function () {
 		    clearTimeout(this.timeout)
-		    this.hide().$element.off('.' + this.type).removeData(wsc_dashes + '-bs.' + this.type)
+		    this.hide().$element.off('.' + this.type).removeData(core + '-bs.' + this.type)
 		  }
 
 		  // TOOLTIP PLUGIN DEFINITION
 		  // =========================
 
-		  var old = $.fn[wsc + '.tooltip']
+		  var old = $.fn[core + '->tooltip']
 
-		  $.fn[wsc + '.tooltip'] = function (option) {
+		  $.fn[core + '->tooltip'] = function (option) {
 		    return this.each(function () {
 		      var $this   = $(this)
-		      var data    = $this.data(wsc_dashes + '-bs.tooltip')
+		      var data    = $this.data(core + '-bs.tooltip')
 		      var options = typeof option == 'object' && option
 
 		      if (!data && option == 'destroy') return
-		      if (!data) $this.data(wsc_dashes + '-bs.tooltip', (data = new Tooltip(this, options)))
+		      if (!data) $this.data(core + '-bs.tooltip', (data = new Tooltip(this, options)))
 		      if (typeof option == 'string') data[option]()
 		    })
 		  }
 
-		  $.fn[wsc + '.tooltip'].Constructor = Tooltip
+		  $.fn[core + '->tooltip'].Constructor = Tooltip
 
 		  // TOOLTIP NO CONFLICT
 		  // ===================
 
-		  $.fn[wsc + '.tooltip'].noConflict = function () {
-		    $.fn[wsc + '.tooltip'] = old
+		  $.fn[core + '->tooltip'].noConflict = function () {
+		    $.fn[core + '->tooltip'] = old
 		    return this
 		  }
 
@@ -1450,9 +1450,9 @@
 		    this.init('popover', element, options)
 		  }
 
-		  if (!$.fn[wsc + '.tooltip']) throw new Error('Popover requires the tooltip extension.')
+		  if (!$.fn[core + '->tooltip']) throw new Error('Popover requires the tooltip extension.')
 
-		  Popover.DEFAULTS = $.extend({}, $.fn[wsc + '.tooltip'].Constructor.DEFAULTS, {
+		  Popover.DEFAULTS = $.extend({}, $.fn[core + '->tooltip'].Constructor.DEFAULTS, {
 		    placement: 'right',
 		    trigger: 'click',
 		    content: '',
@@ -1462,7 +1462,7 @@
 		  // NOTE: POPOVER EXTENDS tooltip.js
 		  // ================================
 
-		  Popover.prototype = $.extend({}, $.fn[wsc + '.tooltip'].Constructor.prototype)
+		  Popover.prototype = $.extend({}, $.fn[core + '->tooltip'].Constructor.prototype)
 
 		  Popover.prototype.constructor = Popover
 
@@ -1513,27 +1513,27 @@
 		  // POPOVER PLUGIN DEFINITION
 		  // =========================
 
-		  var old = $.fn[wsc + '.popover']
+		  var old = $.fn[core + '->popover']
 
-		  $.fn[wsc + '.popover'] = function (option) {
+		  $.fn[core + '->popover'] = function (option) {
 		    return this.each(function () {
 		      var $this   = $(this)
-		      var data    = $this.data(wsc_dashes + '-bs.popover')
+		      var data    = $this.data(core + '-bs.popover')
 		      var options = typeof option == 'object' && option
 
 		      if (!data && option == 'destroy') return
-		      if (!data) $this.data(wsc_dashes + '-bs.popover', (data = new Popover(this, options)))
+		      if (!data) $this.data(core + '-bs.popover', (data = new Popover(this, options)))
 		      if (typeof option == 'string') data[option]()
 		    })
 		  }
 
-		  $.fn[wsc + '.popover'].Constructor = Popover
+		  $.fn[core + '->popover'].Constructor = Popover
 
 		  // POPOVER NO CONFLICT
 		  // ===================
 
-		  $.fn[wsc + '.popover'].noConflict = function () {
-		    $.fn[wsc + '.popover'] = old
+		  $.fn[core + '->popover'].noConflict = function () {
+		    $.fn[core + '->popover'] = old
 		    return this
 		  }
 
@@ -1570,7 +1570,7 @@
 		    if ($this.parent('li').hasClass('active')) return
 
 		    var previous = $ul.find('.active:last a')[0]
-		    var e        = $.Event('show.' + wsc_dashes + '-bs.tab', {
+		    var e        = $.Event('show.' + core + '-bs.tab', {
 		      relatedTarget: previous
 		    })
 
@@ -1583,7 +1583,7 @@
 		    this.activate($this.parent('li'), $ul)
 		    this.activate($target, $target.parent(), function () {
 		      $this.trigger({
-		        type: 'shown.' + wsc_dashes + '-bs.tab',
+		        type: 'shown.' + core + '-bs.tab',
 		        relatedTarget: previous
 		      })
 		    })
@@ -1620,7 +1620,7 @@
 		    transition ?
 		      $active
 		        .one($.support.transition.end, next)
-		        [wsc + '.emulateTransitionEnd'](150) :
+		        [core + '->emulateTransitionEnd'](150) :
 		      next()
 
 		    $active.removeClass('in')
@@ -1629,34 +1629,34 @@
 		  // TAB PLUGIN DEFINITION
 		  // =====================
 
-		  var old = $.fn[wsc + '.tab']
+		  var old = $.fn[core + '->tab']
 
-		  $.fn[wsc + '.tab'] = function ( option ) {
+		  $.fn[core + '->tab'] = function ( option ) {
 		    return this.each(function () {
 		      var $this = $(this)
-		      var data  = $this.data(wsc_dashes + '-bs.tab')
+		      var data  = $this.data(core + '-bs.tab')
 
-		      if (!data) $this.data(wsc_dashes + '-bs.tab', (data = new Tab(this)))
+		      if (!data) $this.data(core + '-bs.tab', (data = new Tab(this)))
 		      if (typeof option == 'string') data[option]()
 		    })
 		  }
 
-		  $.fn[wsc + '.tab'].Constructor = Tab
+		  $.fn[core + '->tab'].Constructor = Tab
 
 		  // TAB NO CONFLICT
 		  // ===============
 
-		  $.fn[wsc + '.tab'].noConflict = function () {
-		    $.fn[wsc + '.tab'] = old
+		  $.fn[core + '->tab'].noConflict = function () {
+		    $.fn[core + '->tab'] = old
 		    return this
 		  }
 
 		  // TAB DATA-API
 		  // ============
 
-		  $(document).on('click.' + wsc_dashes + '-bs.tab.data-' + wsc_dashes + '-api', '.' + wsc_dashes + ' [data-toggle="' + wsc_dashes + '-tab"], .' + wsc_dashes + ' [data-toggle="' + wsc_dashes + '-pill"]', function (e) {
+		  $(document).on('click.' + core + '-bs.tab.data-' + core + '-api', '.' + core + ' [data-toggle="' + core + '-tab"], .' + core + ' [data-toggle="' + core + '-pill"]', function (e) {
 		    e.preventDefault()
-		    $(this)[wsc + '.tab']('show')
+		    $(this)[core + '->tab']('show')
 		  })
 
 		}(jQuery);
@@ -1678,8 +1678,8 @@
 		  var Affix = function (element, options) {
 		    this.options = $.extend({}, Affix.DEFAULTS, options)
 		    this.$window = $(window)
-		      .on('scroll.' + wsc_dashes + '-bs.affix.data-' + wsc_dashes + '-api', $.proxy(this.checkPosition, this))
-		      .on('click.' + wsc_dashes + '-bs.affix.data-' + wsc_dashes + '-api',  $.proxy(this.checkPositionWithEventLoop, this))
+		      .on('scroll.' + core + '-bs.affix.data-' + core + '-api', $.proxy(this.checkPosition, this))
+		      .on('click.' + core + '-bs.affix.data-' + core + '-api',  $.proxy(this.checkPositionWithEventLoop, this))
 
 		    this.$element     = $(element)
 		    this.affixed      =
@@ -1731,7 +1731,7 @@
 		    if (this.unpin) this.$element.css('top', '')
 
 		    var affixType = 'affix' + (affix ? '-' + affix : '')
-		    var e         = $.Event(affixType + '.' + wsc_dashes + '-bs.affix')
+		    var e         = $.Event(affixType + '.' + core + '-bs.affix')
 
 		    this.$element.trigger(e)
 
@@ -1753,26 +1753,26 @@
 		  // AFFIX PLUGIN DEFINITION
 		  // =======================
 
-		  var old = $.fn[wsc + '.affix']
+		  var old = $.fn[core + '->affix']
 
-		  $.fn[wsc + '.affix'] = function (option) {
+		  $.fn[core + '->affix'] = function (option) {
 		    return this.each(function () {
 		      var $this   = $(this)
-		      var data    = $this.data(wsc_dashes + '-bs.affix')
+		      var data    = $this.data(core + '-bs.affix')
 		      var options = typeof option == 'object' && option
 
-		      if (!data) $this.data(wsc_dashes + '-bs.affix', (data = new Affix(this, options)))
+		      if (!data) $this.data(core + '-bs.affix', (data = new Affix(this, options)))
 		      if (typeof option == 'string') data[option]()
 		    })
 		  }
 
-		  $.fn[wsc + '.affix'].Constructor = Affix
+		  $.fn[core + '->affix'].Constructor = Affix
 
 		  // AFFIX NO CONFLICT
 		  // =================
 
-		  $.fn[wsc + '.affix'].noConflict = function () {
-		    $.fn[wsc + '.affix'] = old
+		  $.fn[core + '->affix'].noConflict = function () {
+		    $.fn[core + '->affix'] = old
 		    return this
 		  }
 
@@ -1780,7 +1780,7 @@
 		  // ==============
 
 		  $(window).on('load', function () {
-		    $('.' + wsc_dashes + ' [data-spy="' + wsc_dashes + '-affix"]').each(function () {
+		    $('.' + core + ' [data-spy="' + core + '-affix"]').each(function () {
 		      var $spy = $(this)
 		      var data = $spy.data()
 
@@ -1789,10 +1789,10 @@
 		      if (data.offsetBottom) data.offset.bottom = data.offsetBottom
 		      if (data.offsetTop)    data.offset.top    = data.offsetTop
 
-		      $spy[wsc + '.affix'](data)
+		      $spy[core + '->affix'](data)
 		    })
 		  })
 
 		}(jQuery);
 	}
-})(jQuery, 'wsc_v000000_dev', 'wsc-v000000-dev');
+})(jQuery, 'wsc-v000000-dev');

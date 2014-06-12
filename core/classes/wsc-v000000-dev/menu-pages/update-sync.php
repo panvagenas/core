@@ -36,7 +36,7 @@ namespace wsc_v000000_dev\menu_pages
 			parent::__construct($___instance_config);
 
 			$this->heading_title           = $this->__('Plugin Updater');
-			$this->sub_heading_description = $this->__('Update to the latest version.');
+			$this->sub_heading_description = $this->__('Update to the latest version. It\'s quick &amp; easy<em>!</em>');
 		}
 
 		/**
@@ -45,6 +45,9 @@ namespace wsc_v000000_dev\menu_pages
 		public function display_content_panels()
 		{
 			$this->add_content_panel($this->©menu_pages__panels__update($this), TRUE);
+
+			if($this->©plugin->has_pro()) // Allow for pro updates too.
+				$this->add_content_panel($this->©menu_pages__panels__update_sync_pro($this));
 
 			parent::display_content_panels();
 		}

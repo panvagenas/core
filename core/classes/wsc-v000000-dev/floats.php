@@ -36,25 +36,7 @@ namespace wsc_v000000_dev
 		 */
 		public function is(&$var)
 		{
-			if(isset($var) && is_float($var))
-				return TRUE;
-
-			return FALSE;
-		}
-
-		/**
-		 * Same as `$this->is()`, but this allows an expression.
-		 *
-		 * @param mixed $var A variable (or an expression).
-		 *
-		 * @return boolean See `$this->is()` for further details.
-		 */
-		public function ¤is($var)
-		{
-			if(isset($var) && is_float($var))
-				return TRUE;
-
-			return FALSE;
+			return is_float($var);
 		}
 
 		/**
@@ -69,10 +51,7 @@ namespace wsc_v000000_dev
 		 */
 		public function is_not_empty(&$var)
 		{
-			if(!empty($var) && is_float($var))
-				return TRUE;
-
-			return FALSE;
+			return !empty($var) && is_float($var);
 		}
 
 		/**
@@ -84,10 +63,7 @@ namespace wsc_v000000_dev
 		 */
 		public function ¤is_not_empty($var)
 		{
-			if(!empty($var) && is_float($var))
-				return TRUE;
-
-			return FALSE;
+			return !empty($var) && is_float($var);
 		}
 
 		/**
@@ -228,7 +204,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg) || !is_float($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -236,16 +211,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_set()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_set()` for further details.
 		 */
-		public function ¤are_set($a)
+		public function ¤are_set($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg) || !is_float($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -294,7 +271,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(empty($_arg) || !is_float($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -302,16 +278,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_not_empty()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_empty()` for further details.
 		 */
-		public function ¤are_not_empty($a)
+		public function ¤are_not_empty($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(empty($_arg) || !is_float($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -372,24 +350,24 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->are_not_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(empty($_arg) || !is_float($_arg))
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
 		/**
 		 * Same as `$this->are_not_empty_in()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_empty_in()` for further details.
 		 */
-		public function ¤are_not_empty_in($a)
+		public function ¤are_not_empty_in($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 			{
@@ -398,13 +376,10 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->¤are_not_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(empty($_arg) || !is_float($_arg))
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
@@ -452,7 +427,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(!empty($_arg) && is_float($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return 0.0;
 		}
@@ -460,16 +434,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->not_empty_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->not_empty_coalesce()` for further details.
 		 */
-		public function ¤not_empty_coalesce($a)
+		public function ¤not_empty_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!empty($_arg) && is_float($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return 0.0;
 		}
@@ -518,7 +494,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(isset($_arg) && is_float($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return 0.0;
 		}
@@ -526,16 +501,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->isset_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->isset_coalesce()` for further details.
 		 */
-		public function ¤isset_coalesce($a)
+		public function ¤isset_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(isset($_arg) && is_float($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return 0.0;
 		}
@@ -579,8 +556,6 @@ namespace wsc_v000000_dev
 			{
 				foreach($value as &$_value)
 					$_value = $this->ify_deep($_value);
-				unset($_value);
-
 				return $value;
 			}
 			return (float)$value;

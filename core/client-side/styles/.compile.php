@@ -20,7 +20,7 @@ namespace wsc_dev_utilities
 {
 	require_once dirname(dirname(dirname(dirname(__FILE__)))).'/.dev-utilities/core.php';
 	compile(!empty($GLOBALS['argv'][1]) && $GLOBALS['argv'][1] === 'all');
-	compile('all'); // To recompile all; or pass `all` via CLI.
+	#compile('all'); // To recompile all; or pass `all` via CLI.
 
 	/*
 	 * Compile

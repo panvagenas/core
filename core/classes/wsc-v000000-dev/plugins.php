@@ -214,7 +214,7 @@ namespace wsc_v000000_dev
 		{
 			$this->©notice->enqueue( // Pro add-on needs to be synchronized with current version.
 				'<p>'.$this->__('Your pro add-on MUST be updated now to keep all software running smoothly.').
-				' '.sprintf($this->__('Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update_sync', 'update_sync_pro')).
+				' '.sprintf($this->__('Please <a href="%1$s">click here</a> to update automatically.'), $this->©menu_page->url('update-sync', 'update-sync-pro')).
 				'</p>'
 			);
 		}
@@ -246,7 +246,7 @@ namespace wsc_v000000_dev
 				$transient->checked[$this->___instance_config->plugin_dir_file_basename]  = $this->___instance_config->plugin_version;
 				$transient->response[$this->___instance_config->plugin_dir_file_basename] = (object)array(
 					'id'          => 0, 'slug' => $this->___instance_config->plugin_dir_basename,
-					'url'         => $this->©menu_page->url('update_sync'),
+					'url'         => $this->©menu_page->url('update-sync'),
 					'new_version' => $plugin_update_version,
 					'package'     => $plugin_update_zip
 				);
@@ -262,7 +262,7 @@ namespace wsc_v000000_dev
 				$transient->checked[$this->___instance_config->plugin_pro_dir_file_basename]  = $this->___instance_config->plugin_version;
 				$transient->response[$this->___instance_config->plugin_pro_dir_file_basename] = (object)array(
 					'id'          => 0, 'slug' => $this->___instance_config->plugin_pro_dir_basename,
-					'url'         => $this->©menu_page->url('update_sync'),
+					'url'         => $this->©menu_page->url('update-sync'),
 					'new_version' => $plugin_pro_update_version,
 					'package'     => $plugin_pro_update_zip
 				);

@@ -36,25 +36,7 @@ namespace wsc_v000000_dev
 		 */
 		public function is(&$var)
 		{
-			if(isset($var) && is_object($var))
-				return TRUE;
-
-			return FALSE;
-		}
-
-		/**
-		 * Same as `$this->is()`, but this allows an expression.
-		 *
-		 * @param mixed $var A variable (or an expression).
-		 *
-		 * @return boolean See `$this->is()` for further details.
-		 */
-		public function ¤is($var)
-		{
-			if(isset($var) && is_object($var))
-				return TRUE;
-
-			return FALSE;
+			return is_object($var);
 		}
 
 		/**
@@ -65,17 +47,14 @@ namespace wsc_v000000_dev
 		 * @param mixed $var A variable by reference (no NOTICE).
 		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @return boolean TRUE if the variable is `(!empty() && is_object() && NOT ass empty)`, else FALSE.
+		 * @return boolean TRUE if the variable is `(!empty() && is_object() && NOT ass empty)`.
 		 *
 		 * @note PHP does NOT consider any object `empty()`, so we have an additional layer of functionality here.
 		 *    An object is ass empty (assumed empty), if it has NO public properties/methods (static or otherwise).
 		 */
 		public function is_not_ass_empty(&$var)
 		{
-			if($this->©object_os->is_not_ass_empty($var))
-				return TRUE;
-
-			return FALSE;
+			return $this->©object_os->is_not_ass_empty($var);
 		}
 
 		/**
@@ -87,10 +66,7 @@ namespace wsc_v000000_dev
 		 */
 		public function ¤is_not_ass_empty($var)
 		{
-			if($this->©object_os->¤is_not_ass_empty($var))
-				return TRUE;
-
-			return FALSE;
+			return $this->©object_os->¤is_not_ass_empty($var);
 		}
 
 		/**
@@ -242,7 +218,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg) || !is_object($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -250,16 +225,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_set()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_set()` for further details.
 		 */
-		public function ¤are_set($a)
+		public function ¤are_set($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg) || !is_object($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -304,7 +281,7 @@ namespace wsc_v000000_dev
 		 * @param mixed $z
 		 * @params-variable-length
 		 *
-		 * @return boolean TRUE if all arguments are objects, and they're NOT ass empty, else FALSE.
+		 * @return boolean TRUE if all arguments are objects, and they're NOT ass empty.
 		 *
 		 * @note PHP does NOT consider any object `empty()`, so we have an additional layer of functionality here.
 		 *    An object is ass empty (assumed empty), if it has NO public properties/methods (static or otherwise).
@@ -314,7 +291,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(!$this->©object_os->is_not_ass_empty($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -322,16 +298,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_not_ass_empty()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_ass_empty()` for further details.
 		 */
-		public function ¤are_not_ass_empty($a)
+		public function ¤are_not_ass_empty($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!$this->©object_os->¤is_not_ass_empty($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -388,7 +366,7 @@ namespace wsc_v000000_dev
 		 */
 		public function are_not_ass_empty_in(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 		{
-			$in_object = '.objects.are_not_ass_empty_in.in-object.b';
+			$in_object = '.objects.are_not_ass_empty_in.in-object.b'; // Cannot use a constant here; MUST be passed by reference.
 			// Recursion identifier (while inside an object).
 
 			foreach(func_get_args() as $_arg)
@@ -398,7 +376,6 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->are_not_ass_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(is_object($_arg))
 				{
@@ -408,25 +385,24 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->are_not_ass_empty_in($__arg, $in_object))
 							return FALSE;
-					unset($__arg);
 				}
 				else if($b !== $in_object)
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
 		/**
 		 * Same as `$this->are_not_ass_empty_in()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
-		 * @param mixed $b Recursion identifier (while inside an object).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_ass_empty_in()` for further details.
 		 */
-		public function ¤are_not_ass_empty_in($a, $b)
+		public function ¤are_not_ass_empty_in($a, $b = NULL, $c = NULL)
 		{
 			$in_object = '.objects.¤are_not_ass_empty_in.in-object.b';
 			// Recursion identifier (while inside an object).
@@ -438,7 +414,6 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->are_not_ass_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(is_object($_arg))
 				{
@@ -448,13 +423,10 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->¤are_not_ass_empty_in($__arg, $in_object))
 							return FALSE;
-					unset($__arg);
 				}
 				else if($b !== $in_object)
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
@@ -508,7 +480,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if($this->©object_os->is_not_ass_empty($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return new \stdClass();
 		}
@@ -516,16 +487,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->not_ass_empty_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return object See `$this->not_ass_empty_coalesce()` for further details.
 		 */
-		public function ¤not_ass_empty_coalesce($a)
+		public function ¤not_ass_empty_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if($this->©object_os->¤is_not_ass_empty($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return new \stdClass();
 		}
@@ -574,7 +547,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(isset($_arg) && is_object($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return new \stdClass();
 		}
@@ -582,16 +554,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->isset_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->isset_coalesce()` for further details.
 		 */
-		public function ¤isset_coalesce($a)
+		public function ¤isset_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(isset($_arg) && is_object($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return new \stdClass();
 		}
@@ -653,8 +627,6 @@ namespace wsc_v000000_dev
 
 				foreach($value as &$_value)
 					$_value = $this->ify_deep($_value, $include_scalars_resources);
-				unset($_value);
-
 				return $value;
 			}
 			if($include_scalars_resources)
@@ -685,7 +657,7 @@ namespace wsc_v000000_dev
 
 			$js = $this->©var->to_js($object); // Produces a JavaScript object `{}`.
 
-			return (!$encapsulate) ? ltrim(rtrim($js, '}'), '{') : $js;
+			return !$encapsulate ? ltrim(rtrim($js, '}'), '{') : $js;
 		}
 	}
 }

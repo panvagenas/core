@@ -68,7 +68,7 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * @var boolean Defaults to FALSE. Does this menu page update options?
-		 *    When TRUE, each menu page is wrapped with a form tag that calls `©menu_pages.®update_options`.
+		 *    When TRUE, each menu page is wrapped with a form tag that calls `©options.®update`.
 		 *    In addition, `$this->option_fields` will be populated, for easy access to a `©form_fields` instance.
 		 *    In addition, each menu page will have a `Save All Options` button.
 		 *
@@ -104,7 +104,7 @@ namespace wsc_v000000_dev\menu_pages
 			{
 				$this->option_form_fields = $this->©form_fields(
 					array(
-						'for_call'           => '©menu_pages.®update_options',
+						'for_call'           => '©options.®update',
 						'name_prefix'        => $this->©action->input_name_for_call_arg(1),
 						'use_update_markers' => TRUE
 					)
@@ -117,8 +117,6 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @attaches-to WordPress® `add_menu_page` or `add_submenu_page` handlers.
 		 * @hook-priority Irrelevant. This is handled internally by WordPress®.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display()
 		{
@@ -147,8 +145,6 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @param boolean      $active Defaults to FALSE. TRUE if this is an active panel (e.g. it should be open by default).
 		 *
-		 * @return null Nothing. Simply adds to the array of `$this->(content|sidebar)_panels`.
-		 *
 		 * @throws \wsc_v000000_dev\exception If invalid types are passed through arguments list.
 		 * @throws \wsc_v000000_dev\exception If `$panel->slug` or `$panel->heading_title` are empty.
 		 */
@@ -168,6 +164,10 @@ namespace wsc_v000000_dev\menu_pages
 				);
 			if($this->apply_filters('exclude_panel_by_slug', FALSE, $panel->slug))
 				return; // Filters can exclude panels.
+
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns,
+			                                                'menu_pages__panel__'.$this->©string->with_underscores($panel->slug)))
+			) return; // Do NOT include; use lacks permission.
 
 			if($sidebar) // This panel is for the sidebar?
 			{
@@ -290,8 +290,6 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @param boolean      $active Defaults to FALSE. TRUE if this is an active panel (e.g. it should be open by default).
 		 *
-		 * @return null Nothing. Simply adds to the array of `$this->content_panels`.
-		 *
 		 * @throws \wsc_v000000_dev\exception If invalid types are passed through arguments list.
 		 * @throws \wsc_v000000_dev\exception If `$panel_slug`, `$panel_heading_title` or `$panel_content_body` are empty.
 		 *
@@ -309,8 +307,6 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @param boolean      $active Defaults to FALSE. TRUE if this is an active panel (e.g. it should be open by default).
 		 *
-		 * @return null Nothing. Simply adds to the array of `$this->sidebar_panels`.
-		 *
 		 * @throws \wsc_v000000_dev\exception If invalid types are passed through arguments list.
 		 * @throws \wsc_v000000_dev\exception If `$panel_slug`, `$panel_heading_title` or `$panel_content_body` are empty.
 		 *
@@ -326,8 +322,6 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @extenders Can be overridden by class extenders (e.g. by each menu page),
 		 *    so that custom notices could be displayed in certain cases.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_notices()
 		{
@@ -335,8 +329,6 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup for a menu page header.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_header()
 		{
@@ -362,7 +354,7 @@ namespace wsc_v000000_dev\menu_pages
 			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--wrapper--'.$this->slug;
 
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">';
-			echo '<div class="wrap">';
+			echo '<div class="inner-wrap">';
 
 			echo '<div class="container-fluid">';
 
@@ -371,12 +363,12 @@ namespace wsc_v000000_dev\menu_pages
 
 			echo '<div class="row">';
 
-			echo '<div class="col-md-8">';
-			echo '<h2 class="no-margin no-padding"><img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/favicon-24x24.png')).'" alt="" /> '.$this->heading_title.'</h2>';
+			echo '<div class="col-md-7">';
+			echo '<h2 class="no-margin no-padding"><img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/icon-24x24.png')).'" alt="" /> '.$this->heading_title.'</h2>';
 			echo '<div>'.$this->sub_heading_description.'</div>';
 			echo '</div>';
 
-			echo '<div class="col-md-4 hidden-sm hidden-xs">';
+			echo '<div class="col-md-5 hidden-sm hidden-xs">';
 			$this->display_header_controls();
 			echo '</div>';
 
@@ -390,26 +382,177 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup for controls in a menu page header.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_header_controls()
 		{
-			echo '<button class="toggle-all-panels btn btn-default pull-right l-margin">'.
-			     '<i class="fa fa-caret-up"></i> '.$this->__('Toggle All').' <i class="fa fa-caret-down"></i>'.
+			$this->display_header_control__restore_default_options();
+			$this->display_header_control__import_export_options();
+			$this->display_header_control__update_theme();
+			$this->display_header_control__toggle_all_panels();
+		}
+
+		/**
+		 * Displays HTML markup that presents a button to restore default options.
+		 */
+		public function display_header_control__restore_default_options()
+		{
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_pages__restore_default_options')))
+				return; // Do NOT display here; use lacks permission.
+
+			echo '<button type="button" class="btn btn-warning pull-right l-margin" title="'.esc_attr($this->__('Restore Default Plugin Options')).'"'.
+			     ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'" data-target=".menu-page .restore-default-options.modal">'.
+			     '<i class="fa fa-history"></i>'.
 			     '</button>';
 
-			echo '<form method="post" class="update-theme pull-right">';
-			echo $this->©action->hidden_inputs_for_call('©menu_pages.®update_theme', $this::private_type);
-			echo '<input type="hidden" class="selected-theme" name="'.esc_attr($this->©action->input_name_for_call_arg(1)).'" />';
+			echo '<div class="restore-default-options modal">'.
+			     '<div class="modal-dialog">'.
+			     '<div class="modal-content">';
 
-			echo '<div class="btn-group">';
+			echo '<div class="modal-header">';
 
-			echo '<button class="btn btn-default dropdown-toggle" data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-dropdown').'">'.
+			echo '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'">&times;</button>';
+			echo '<h4 class="modal-title">'.$this->__('Restore Default Plugin Options?').'</h4>';
+
+			echo '</div>';
+
+			echo '<div class="modal-body">';
+
+			echo '<p class="clearfix">'.
+			     '<i class="fa fa-history fa-5x pull-right l-margin"></i>'.
+			     $this->__('This will <strong>delete</strong> ALL of your existing configuration options; and then restore the default options that came with the software.').
+			     ' '.$this->__('Are you absolutely sure that\'s what you want to do?').
+			     '</p>';
+
+			echo '<div class="row t-margin">';
+			echo '<div class="col-md-6">';
+			echo '<button type="button" class="btn btn-danger pull-left" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'">'.
+			     '<i class="fa fa-times-circle"></i> '.$this->__('No, Cancel').
+			     '</button>';
+			echo '</div>';
+
+			echo '<div class="col-md-6">';
+			$form_fields = $this->©form_fields(array('for_call' => '©options.®restore_defaults'));
+			echo '<form method="post" class="pull-right">'.$this->©action->hidden_inputs_for_call('©options.®restore_defaults', $this::private_type).
+			     '<input type="hidden" name="'.esc_attr($this->©action->input_name_for_call_arg(1)).'" value="1" />';
+
+			echo '<div class="form-group no-b-margin">'.
+			     $form_fields->markup($this->__('Yes, Restore').' <i class="fa fa-history"></i>', array('type' => 'submit', 'name' => 'restore')).
+			     '</div>';
+
+			echo '</form>';
+			echo '</div>';
+			echo '</div>';
+
+			echo '</div>';
+
+			echo '</div>'.
+			     '</div>'.
+			     '</div>';
+		}
+
+		/**
+		 * Displays HTML markup that presents a button to restore default options.
+		 */
+		public function display_header_control__import_export_options()
+		{
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_pages__import_export_options')))
+				return; // Do NOT display here; use lacks permission.
+
+			echo '<button type="button" class="btn btn-primary pull-right l-margin" title="'.esc_attr($this->__('Import/Export Plugin Options')).'"'.
+			     ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'" data-target=".menu-page .import-export-options.modal">'.
+			     '<i class="fa fa-gears"></i>'.
+			     '</button>';
+
+			echo '<div class="modal import-export-options">'.
+			     '<div class="modal-dialog">'.
+			     '<div class="modal-content">';
+
+			echo '<div class="modal-header">'.
+			     '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'">&times;</button>'.
+			     '<h4 class="modal-title">'.$this->__('Import/Export Plugin Options?').'</h4>'.
+			     '</div>';
+
+			echo '<div class="modal-body">';
+
+			echo '<p class="clearfix">'.
+			     '<i class="fa fa-gears fa-5x pull-right l-margin"></i>'.
+			     sprintf($this->__('If you\'re using %1$s on multiple sites, import/export can be a HUGE time-saver.'), esc_html($this->___instance_config->plugin_name)).
+			     ' '.sprintf($this->__('Configure the plugin just once (on one installation); then export your <code>%1$s.json</code> configuration file for use as a starting point on new sites in the future.'), esc_html($this->___instance_config->plugin_root_ns_with_dashes)).
+			     '</p>';
+
+			echo '<ul class="nav nav-tabs">'.
+			     '<li class="active"><a href="#" data-target=".menu-page .import-export-options .tab-pane.import" data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-tab').'">'.$this->__('Import').'</a></li>'.
+			     '<li><a href="#" data-target=".menu-page .import-export-options .tab-pane.export" data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-tab').'">'.$this->__('Export').'</a></li>'.
+			     '</ul>';
+
+			echo '<div class="tab-content">';
+
+			echo '<div class="tab-pane active import">';
+
+			echo '<p class="em-t-margin">'.
+			     sprintf($this->__('Import a previously downloaded copy of your <code>%1$s.json</code> configuration file.'), esc_html($this->___instance_config->plugin_root_ns_with_dashes)).
+			     $this->__(' Select the file from your computer and click the button to upload &amp; import.').
+			     '</p>';
+
+			$form_fields = $this->©form_fields(array('for_call' => '©options.®import'));
+			echo '<form method="post" enctype="multipart/form-data">'.$this->©action->hidden_inputs_for_call('©options.®import', $this::private_type);
+
+			echo '<div class="form-group">'.
+			     '<div class="input-group">'.
+			     '<span class="input-group-addon"><i class="fa fa-paperclip fa-fw"></i></span>'.
+			     $form_fields->markup(NULL, $this->©options->import_json_form_field_config).
+			     '</div>'.
+			     '</div>';
+
+			echo '<div class="form-group no-b-margin">'.
+			     $form_fields->markup($this->__('Upload &amp; Import').' <i class="fa fa-upload"></i>', array('type' => 'submit', 'name' => 'import')).
+			     '</div>';
+
+			echo '</form>';
+
+			echo '</div>';
+
+			echo '<div class="tab-pane export">';
+
+			echo '<p class="em-t-margin">'.
+			     sprintf($this->__('Click this button to export &amp; download the <code>%1$s.json</code> configuration file that contains your currently configured setings for %2$s.'), esc_html($this->___instance_config->plugin_root_ns_with_dashes), esc_html($this->___instance_config->plugin_name)).
+			     '</p>';
+
+			$form_fields = $this->©form_fields(array('for_call' => '©options.®export'));
+			echo '<form method="post">'.$this->©action->hidden_inputs_for_call('©options.®export', $this::private_type);
+
+			echo '<div class="form-group no-b-margin">'.
+			     $form_fields->markup($this->__('Export &amp; Download').' <i class="fa fa-download"></i>', array('type' => 'submit', 'name' => 'export')).
+			     '</div>';
+
+			echo '</form>';
+
+			echo '</div>';
+
+			echo '</div>';
+
+			echo '</div>';
+
+			echo '</div>'.
+			     '</div>'.
+			     '</div>';
+		}
+
+		/**
+		 * Displays HTML markup to provide a way to update the current menu pages theme.
+		 */
+		public function display_header_control__update_theme()
+		{
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_pages__update_theme')))
+				return; // Do NOT display here; use lacks permission.
+
+			echo '<div class="update-theme btn-group pull-right l-margin" title="'.esc_attr($this->__('Choose an Administrative Theme')).'">';
+
+			echo '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-dropdown').'">'.
 			     '<i class="fa fa-wordpress"></i> '.$this->__('Admin Theme').' <span class="caret"></span>'.
 			     '</button>';
 
-			echo '<ul class="dropdown-menu" role="menu">';
+			echo '<ul class="dropdown-menu">';
 			$current_theme = $this->©options->get('menu_pages.theme');
 			foreach($this->©styles->themes() as $_theme => $_theme_file)
 				echo '<li data-theme="'.esc_attr($_theme).'"'.selected($_theme, $current_theme, FALSE).'>'.
@@ -419,15 +562,29 @@ namespace wsc_v000000_dev\menu_pages
 			unset($_theme, $_theme_file);
 			echo '</ul>';
 
-			echo '</div>';
-
+			$form_fields = $this->©form_fields(array('for_call' => '©menu_pages.®update_theme'));
+			echo '<form method="post">'.$this->©action->hidden_inputs_for_call('©menu_pages.®update_theme', $this::private_type).
+			     '<input type="hidden" class="selected-theme" name="'.esc_attr($this->©action->input_name_for_call_arg(1)).'" />';
 			echo '</form>';
+
+			echo '</div>';
+		}
+
+		/**
+		 * Displays HTML markup providing a way to toggle all panels on/off; and save the selected state.
+		 */
+		public function display_header_control__toggle_all_panels()
+		{
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_pages__toggle_all_panels')))
+				return; // Do NOT display here; use lacks permission.
+
+			echo '<button type="button" class="toggle-all-panels btn btn-default pull-right" title="'.esc_attr($this->__('Toggle All Panels On/Off')).'">'.
+			     '<i class="fa fa-caret-up"></i> '.$this->__('Toggle All').' <i class="fa fa-caret-down"></i>'.
+			     '</button>';
 		}
 
 		/**
 		 * Displays HTML markup for a menu page footer.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_footer()
 		{
@@ -441,8 +598,6 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup for a menu page content header.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_content_header()
 		{
@@ -453,16 +608,18 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup before content panels, for this menu page.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_before_content_panels()
 		{
 			if($this->updates_options)
 			{
 				echo '<form method="post" class="update-options">';
-				echo $this->©action->hidden_inputs_for_call('©menu_pages.®update_options', $this::private_type);
+				echo $this->©action->hidden_inputs_for_call('©options.®update', $this::private_type);
+				echo $this->©action->get_call_responses_for('©options.®update');
 			}
+			echo $this->©action->get_call_responses_for('©options.®import');
+			echo $this->©action->get_call_responses_for('©options.®export');
+			echo $this->©action->get_call_responses_for('©options.®restore_defaults');
 		}
 
 		/**
@@ -470,8 +627,6 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @extenders Should be overridden by class extenders (e.g. by each menu page),
 		 *    so that custom content panels can be displayed by this routine.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_content_panels()
 		{
@@ -483,8 +638,6 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @extenders Should be called upon by class extenders (e.g. by each menu page),
 		 *    so that custom content panels can be displayed by this routine.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_content_panels_in_order()
 		{
@@ -518,8 +671,6 @@ namespace wsc_v000000_dev\menu_pages
 		 * Updates the order of content panels, for this menu page.
 		 *
 		 * @param array $new_order An array of content panel slugs for this menu page, in a specific order.
-		 *
-		 * @return null Nothing. Simply updates the order of content panels, for this menu page.
 		 *
 		 * @throws \wsc_v000000_dev\exception If invalid types are passed through arguments list.
 		 */
@@ -556,8 +707,6 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @param array $new_inactive An array of content panel slugs for this menu page, which are inactive.
 		 *
-		 * @return null Nothing. Simply updates the state of content panels, for this menu page.
-		 *
 		 * @throws \wsc_v000000_dev\exception If invalid types are passed through arguments list.
 		 */
 		public function ®update_content_panels_state($new_active, $new_inactive)
@@ -593,8 +742,6 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup after content panels, for this menu page.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_after_content_panels()
 		{
@@ -602,7 +749,7 @@ namespace wsc_v000000_dev\menu_pages
 			{
 				echo '<hr />'; // Divider w/ margins.
 				echo $this->option_form_fields->markup(
-					$this->__('Save All Options').' <i class="fa fa-save"></i>',
+					'<i class="fa fa-save"></i> '.$this->__('Save All Options'),
 					array(
 						'type'    => 'submit',
 						'name'    => '[update_options]',
@@ -615,8 +762,6 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup for a menu page content footer.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_content_footer()
 		{
@@ -627,8 +772,6 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup for a menu page sidebar header.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_sidebar_header()
 		{
@@ -639,8 +782,6 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup before sidebar panels, for this menu page.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_before_sidebar_panels()
 		{
@@ -651,14 +792,11 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @extenders Can be overridden by class extenders (i.e. by each menu page),
 		 *    so that custom sidebar panels can be displayed by this routine.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_sidebar_panels()
 		{
 			if(!$this->©plugin->has_pro())
 				$this->add_sidebar_panel($this->©menu_pages__panels__pro_upgrade($this), TRUE);
-
 			$this->add_sidebar_panel($this->©menu_pages__panels__email_updates($this));
 			$this->add_sidebar_panel($this->©menu_pages__panels__news_kb($this));
 			$this->add_sidebar_panel($this->©menu_pages__panels__community_forum($this));
@@ -673,8 +811,6 @@ namespace wsc_v000000_dev\menu_pages
 		 *
 		 * @extenders Should be called upon by class extenders (e.g. by each menu page),
 		 *    so that custom sidebar panels can be displayed by this routine.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_sidebar_panels_in_order()
 		{
@@ -701,15 +837,13 @@ namespace wsc_v000000_dev\menu_pages
 						echo $_panel_markup;
 					}
 			}
-			unset($_panel_slug, $_panel_markup); // Housekeeping.
+			unset($_panel_slug, $_panel_markup);
 		}
 
 		/**
 		 * Updates the order of sidebar panels, for this menu page.
 		 *
 		 * @param array $new_order An array of sidebar panel slugs for this menu page, in a specific order.
-		 *
-		 * @return null Nothing. Simply updates the order of sidebar panels, for this menu page.
 		 *
 		 * @throws \wsc_v000000_dev\exception If invalid types are passed through arguments list.
 		 */
@@ -758,8 +892,6 @@ namespace wsc_v000000_dev\menu_pages
 		 * @param array $new_active An array of sidebar panel slugs for this menu page, which are active.
 		 *
 		 * @param array $new_inactive An array of sidebar panel slugs for this menu page, which are inactive.
-		 *
-		 * @return null Nothing. Simply updates the state of sidebar panels, for this menu page.
 		 *
 		 * @throws \wsc_v000000_dev\exception If invalid types are passed through arguments list.
 		 */
@@ -810,8 +942,6 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup after sidebar panels, for this menu page.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_after_sidebar_panels()
 		{
@@ -819,8 +949,6 @@ namespace wsc_v000000_dev\menu_pages
 
 		/**
 		 * Displays HTML markup for a menu page sidebar footer.
-		 *
-		 * @return null Nothing.
 		 */
 		public function display_sidebar_footer()
 		{

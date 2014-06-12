@@ -101,6 +101,20 @@ if(!class_exists('wsc_v000000_dev')) // Core stub class (for this verison).
 		public static $core_prefix_with_dashes = 'wsc-';
 
 		/**
+		 * WebSharks™ Core capability requirement.
+		 *
+		 * @var string WebSharks™ Core capability.
+		 */
+		public static $core_cap = 'administrator';
+
+		/**
+		 * WebSharks™ Core prefix capability requirement.
+		 *
+		 * @var string WebSharks™ Core capability w/ dashes.
+		 */
+		public static $core_cap_with_dashes = 'administrator';
+
+		/**
 		 * WebSharks™ Core stub.
 		 *
 		 * @var string WebSharks™ Core stub.
@@ -1188,7 +1202,7 @@ if(!class_exists('wsc_v000000_dev')) // Core stub class (for this verison).
 		 * Is the current User-Agent a browser?
 		 * This checks only for the most common browser engines.
 		 *
-		 * @return boolean TRUE if the current User-Agent is a browser, else FALSE.
+		 * @return boolean TRUE if the current User-Agent is a browser.
 		 */
 		public static function is_browser()
 		{
@@ -1440,6 +1454,18 @@ if(!class_exists('wsc_v000000_dev')) // Core stub class (for this verison).
 		 *       4. No double underscores `__`.
 		 */
 		public static $regex_valid_plugin_var_ns = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
+
+		/**
+		 * @var string Plugin capability validation pattern.
+		 *
+		 * @note Requirements are as follows:
+		 *
+		 *       1. Lowercase alphanumerics and/or underscores `_` only.
+		 *       2. CANNOT start or end with an underscore `_`.
+		 *       3. MUST start with a letter `[a-z]`.
+		 *       4. No double underscores `__`.
+		 */
+		public static $regex_valid_plugin_cap = '/^(?:[a-z](?:[a-z0-9]|_(?!_))*[a-z0-9]|[a-z])$/';
 
 		/**
 		 * @var string Plugin namespace\class path validation pattern.

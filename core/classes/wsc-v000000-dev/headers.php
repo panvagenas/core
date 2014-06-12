@@ -103,5 +103,32 @@ namespace wsc_v000000_dev
 				);
 			header('Content-Encoding:'.((isset($encoding[0])) ? ' '.$encoding : ''));
 		}
+
+		/**
+		 * Sets `Content-Disposition` header.
+		 *
+		 * @param string $disposition Type of content-disposition.
+		 * @param string $filename If `$disposition` is `attachment`; a file basename.
+		 *    This is applicable ONLY if with `Content-Disposition: attachment`.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 * @throws exception If headers have already been sent (i.e. output was already started).
+		 *    Actually, PHP triggers this warning by itself. Just something to be aware of.
+		 */
+		public function content_disposition($disposition, $filename = '')
+		{
+			$this->check_arg_types('string', func_get_args());
+
+			if(headers_sent())
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#headers_sent_already', get_defined_vars(),
+					$this->__('Doing it wrong! Headers have already been sent. Please check hook priorities.')
+				);
+			if($disposition === 'attachment' && $filename)
+				$filename = '; filename="'.$this->©string->esc_dq($filename).'"; filename*=UTF-8\'\''.rawurlencode($filename);
+			else $filename = ''; // Not applicable in other scenarios.
+
+			header('Content-Disposition: '.$disposition.$filename);
+		}
 	}
 }

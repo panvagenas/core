@@ -63,11 +63,12 @@ namespace wsc_v000000_dev
 		{
 			$main_page_slug // A standard in the core.
 				= $this->___instance_config->plugin_root_ns_stub_with_dashes;
+			// We want the menu page slug to come out the same in all versions.
 
 			return array(
 				$main_page_slug     => array(
 					'menu_title' => $this->___instance_config->plugin_name,
-					'icon'       => $this->©url->to_template_dir_file('/client-side/images/favicon-16x16.png')
+					'icon'       => $this->©url->to_template_dir_file('/client-side/images/icon-16x16.png')
 				),
 				'-'.$main_page_slug => array(
 					'is_under_slug' => $main_page_slug,
@@ -76,6 +77,10 @@ namespace wsc_v000000_dev
 				'general_options'   => array(
 					'is_under_slug' => $main_page_slug,
 					'menu_title'    => $this->__('General Options'),
+				),
+				'update_sync'       => array(
+					'is_under_slug' => $main_page_slug,
+					'menu_title'    => $this->__('Plugin Updater'),
 				)
 			);
 		}
@@ -171,18 +176,21 @@ namespace wsc_v000000_dev
 		 * @throws exception If invalid types are passed through the arguments list.
 		 * @throws exception If the array of `$menu_pages` is empty, or contains an invalid configuration set.
 		 */
-		public function add($menu_pages)
+		public function add($menu_pages) // This makes the addition of menu pages super easy!
 		{
-			$this->check_arg_types('array:!empty', func_get_args());
+			$this->check_arg_types('array:!empty', func_get_args()); // Must have an array here.
 
-			foreach($menu_pages as $_menu_page_slug_key => $_menu_page) // Iterate menu pages.
+			foreach($menu_pages as $_menu_page_slug_key => $_menu_page) // Iterate configs.
 			{
 				if($this->©string->is_not_empty($_menu_page_slug_key) // MUST have slug & menu page title.
 				   && $this->©array->is_not_empty($_menu_page) && $this->©string->is_not_empty($_menu_page['menu_title'])
 				) // Have everything we need? If not, throw an exception down below.
 				{
 					$_menu_page['slug'] = $_menu_page_slug_key = $this->©string->with_dashes($_menu_page_slug_key);
-					$_menu_page['slug'] = trim($_menu_page['slug'], '-');
+					$_menu_page['slug'] = trim($_menu_page['slug'], '-'); // Cleanup prefixed dupes.
+
+					if($_menu_page['slug'] === 'update-sync' && $this->©env->disallows_file_mods())
+						continue; // Do NOT offer automatic updates when this is enabled please.
 
 					if($_menu_page['slug'] === $this->___instance_config->plugin_root_ns_stub_with_dashes)
 						$_menu_page['displayer'] = array($this, '©menu_pages__main_page.display'); // Special case handler.
@@ -247,15 +255,14 @@ namespace wsc_v000000_dev
 			if($sidebar_panel_slug) // A specific slug? e.g. `#!sidebar_panel_slug=pro-upgrade`.
 				$url = $this->©url->add_query_hash('sidebar_panel_slug', $sidebar_panel_slug, $url);
 
-			return $url;
+			return $url; // URL leading to a specific menu page.
 		}
 
 		/**
 		 * Updates the administrative theme for all menu pages.
+		 *    This is a registered action handler.
 		 *
 		 * @param string $new_theme The new theme that's been selected for use.
-		 *
-		 * @return null Nothing. Simply updates the administrative theme for all menu pages.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -264,31 +271,6 @@ namespace wsc_v000000_dev
 			$this->check_arg_types('string', func_get_args());
 
 			$this->©options->update(array('menu_pages.theme' => $new_theme));
-
-			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
-		}
-
-		/**
-		 * Updates current options with one or more new option values.
-		 *
-		 * @note It's fine to force an update by calling this method without any arguments.
-		 *
-		 * @param array $new_options Optional. An associative array of option values to update, with each of their new values.
-		 *    This array does NOT need to contain all of the current options. Only those which should be updated.
-		 *
-		 * @return null Nothing. Simply updates current options with one or more new option values.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 */
-		public function ®update_options($new_options = array())
-		{
-			$this->check_arg_types('array', func_get_args());
-
-			$this->©options->update($new_options, TRUE);
-
-			$this->©notice->enqueue( // Displays in plugin pages only.
-				array('notice'   => $this->__('<p>Options saved successfully.</p>'),
-				      'on_pages' => array($this->___instance_config->plugin_root_ns_stub.'*')));
 
 			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
 		}

@@ -289,6 +289,9 @@ namespace wsc_v000000_dev
 		 * @property \wsc_v000000_dev\menu_pages\panels\update                 $©menu_pages__panels__update
 		 * @method \wsc_v000000_dev\menu_pages\panels\update ©menu_pages__panels__update()
 		 *
+		 * @property \wsc_v000000_dev\menu_pages\panels\update_sync_pro        $©menu_pages__panels__update_sync_pro
+		 * @method \wsc_v000000_dev\menu_pages\panels\update_sync_pro ©menu_pages__panels__update_sync_pro()
+		 *
 		 * @property \wsc_v000000_dev\menu_pages\panels\videos                 $©menu_pages__panels__videos
 		 * @method \wsc_v000000_dev\menu_pages\panels\videos ©menu_pages__panels__videos()
 		 *
@@ -784,21 +787,25 @@ namespace wsc_v000000_dev
 			 *    An array MUST contain the following elements:
 			 *       • `(string)$___instance_config['plugin_name']` — Name of current plugin.
 			 *       • `(string)$___instance_config['plugin_var_ns']` — Plugin variable namespace.
+			 *       • `(string)$___instance_config['plugin_cap']` — Capability required to manage the plugin.
 			 *       • `(string)$___instance_config['plugin_root_ns']` — Root namespace of current plugin.
 			 *       • `(string)$___instance_config['plugin_version']` — Version of current plugin.
 			 *       • `(string)$___instance_config['plugin_dir']` — Current plugin directory.
 			 *       • `(string)$___instance_config['plugin_site']` — Plugin site URL (http://).
 			 *
 			 * @throws \exception If there is a missing and/or invalid `$___instance_config`.
-			 * @throws \exception If there are NOT 6 configuration elements in an `$__instance_config` array.
+			 * @throws \exception If there are NOT 7 configuration elements in an `$__instance_config` array.
 			 *
-			 * @throws \exception If the plugin's root namespace does NOT match this regex pattern validation.
+			 * @throws \exception If the plugin's root namespace does NOT match this regex validation pattern.
 			 *    See: {@link stub::$regex_valid_plugin_root_ns}
 			 *
-			 * @throws \exception If the plugin's variable namespace does NOT match this regex pattern validation.
+			 * @throws \exception If the plugin's variable namespace does NOT match this regex validation pattern.
 			 *    See: {@link stub::$regex_valid_plugin_var_ns}
 			 *
-			 * @throws \exception If the plugin's version does NOT match this regex pattern validation.
+			 * @throws \exception If the plugin's capability does NOT match this regex validation pattern.
+			 *    See: {@link stub::$regex_valid_plugin_cap}
+			 *
+			 * @throws \exception If the plugin's version does NOT match this regex validation pattern.
 			 *    See: {@link stub::$regex_valid_plugin_version}
 			 *
 			 * @throws \exception If the plugin's directory is missing (e.g. the plugin's directory MUST actually exist).
@@ -807,10 +814,10 @@ namespace wsc_v000000_dev
 			 *
 			 * @throws \exception If the plugin's site URL is NOT valid (MUST start with `http://.+`).
 			 *
-			 * @throws \exception If the namespace\class path does NOT match this regex pattern validation.
+			 * @throws \exception If the namespace\class path does NOT match this regex validation pattern.
 			 *    See: {@link stub::$regex_valid_plugin_ns_class}
 			 *
-			 * @throws \exception If the core namespace does NOT match this regex pattern validation.
+			 * @throws \exception If the core namespace does NOT match this regex validation pattern.
 			 *    See: {@link stub::$regex_valid_core_ns_version}
 			 *
 			 * @public A magic/overload constructor MUST always remain public.
@@ -845,7 +852,7 @@ namespace wsc_v000000_dev
 					}
 					$this->___instance_config = clone $___parent_instance_config;
 				}
-				else if(is_array($___instance_config) && count($___instance_config) === 6
+				else if(is_array($___instance_config) && count($___instance_config) === 7
 
 				        && !empty($___instance_config['plugin_name']) && is_string($___instance_config['plugin_name'])
 
@@ -857,6 +864,9 @@ namespace wsc_v000000_dev
 
 				        && !empty($___instance_config['plugin_version']) && is_string($___instance_config['plugin_version'])
 				        && preg_match(stub::$regex_valid_plugin_version, $___instance_config['plugin_version'])
+
+				        && !empty($___instance_config['plugin_cap']) && is_string($___instance_config['plugin_cap'])
+				        && preg_match(stub::$regex_valid_plugin_cap, $___instance_config['plugin_cap'])
 
 				        && !empty($___instance_config['plugin_dir']) && is_string($___instance_config['plugin_dir'])
 				        && is_dir($___instance_config['plugin_dir'] = stub::n_dir_seps($___instance_config['plugin_dir']))
@@ -976,6 +986,10 @@ namespace wsc_v000000_dev
 						$this->___instance_config->plugin_prefix             = $this->___instance_config->core_prefix;
 						$this->___instance_config->plugin_prefix_with_dashes = $this->___instance_config->core_prefix_with_dashes;
 					}
+					// Based on `plugin_cap` (used for a default set of access controls).
+					$this->___instance_config->plugin_cap             = $this->___instance_config->plugin_cap;
+					$this->___instance_config->plugin_cap_with_dashes = stub::with_dashes($this->___instance_config->plugin_cap);
+
 					// Based on plugin's root `namespace` (via `plugin_root_ns`).
 					$this->___instance_config->plugin_root_ns             = $this->___instance_config->plugin_root_ns;
 					$this->___instance_config->plugin_root_ns_prefix      = '\\'.$this->___instance_config->plugin_root_ns;
@@ -1205,8 +1219,6 @@ namespace wsc_v000000_dev
 			 *    This allows the core `__get()` method to make a final attempt at resolving the value of `$property`.
 			 *
 			 * @note This method should NOT rely directly or indirectly on any other magic/overload properties.
-			 *
-			 * @TODO Optimize this further.
 			 */
 			public function __get($property)
 			{
@@ -1342,8 +1354,6 @@ namespace wsc_v000000_dev
 			 *    This allows the core `__call()` method to make a final attempt at resolving the value of `$method`.
 			 *
 			 * @note This method should NOT rely directly or indirectly on any other magic/overload methods.
-			 *
-			 * @TODO Optimize this further.
 			 */
 			public function __call($method, $args)
 			{
@@ -2396,6 +2406,7 @@ namespace wsc_v000000_dev
 		$GLOBALS[stub::$core_ns] = new framework(
 			array('plugin_root_ns' => stub::$core_ns,
 			      'plugin_var_ns'  => stub::$core_ns,
+			      'plugin_cap'     => stub::$core_cap,
 			      'plugin_name'    => stub::$core_name,
 			      'plugin_site'    => stub::$core_site,
 			      'plugin_version' => stub::$core_version,

@@ -259,7 +259,9 @@
 	 */
 	$$wsc.$$.prototype.core = function(string)
 	{
-		return this.instance_config('core_ns') + '.' + string;
+		if(!this.cache.core_ns_with_dashes) // Prevent a 2nd function call each time.
+			this.cache.core_ns_with_dashes = this.instance_config('core_ns_with_dashes');
+		return this.cache.core_ns_with_dashes + string;
 	};
 
 	/**
@@ -271,7 +273,7 @@
 	 */
 	$$wsc.$$.prototype.sprintf = function()
 	{
-		return window[this.core('sprintf')].apply(window, arguments);
+		return window[this.core('->sprintf')].apply(window, arguments);
 	};
 
 	/**
@@ -283,7 +285,7 @@
 	 */
 	$$wsc.$$.prototype.vsprintf = function()
 	{
-		return window[this.core('vsprintf')].apply(window, arguments);
+		return window[this.core('->vsprintf')].apply(window, arguments);
 	};
 
 	/**
@@ -611,6 +613,41 @@
 	};
 
 	/**
+	 * Platform detection (no longer available in jQuery).
+	 *
+	 * @returns {Object} An object with a possible property matching one or more
+	 *    of the following user agents: `chrome`, `webkit`, `opera`, `msie`, and/or `mozilla`.
+	 */
+	$$wsc.$$.prototype.browser = function()
+	{
+		if(this.cache.browser)
+			return this.cache.browser;
+
+		var ua_match = function()
+		{
+			var ua = navigator.userAgent.toLowerCase();
+			var match = /(chrome)[ \/]([\w.]+)/.exec(ua) ||
+			            /(webkit)[ \/]([\w.]+)/.exec(ua) ||
+			            /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+			            /(msie) ([\w.]+)/.exec(ua) ||
+			            ua.indexOf('compatible') === -1 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
+			            []; // Default to an empty array; i.e. failure to detect browser.
+			return {browser: match[1] || '', version: match[2] || '0'};
+		};
+		var matched = ua_match();
+		this.cache.browser = {};
+		if(matched.browser)
+		{
+			this.cache.browser[matched.browser] = true;
+			this.cache.browser.version = matched.version;
+		}
+		if(this.cache.browser.chrome) this.cache.browser.webkit = true;
+		else if(this.cache.browser.webkit) this.cache.browser.safari = true;
+
+		return this.cache.browser;
+	};
+
+	/**
 	 * Gets closest theme CSS class (for current plugin).
 	 *
 	 * @note The search begins with `to` (and may also end at `to`, if it contains a theme CSS class).
@@ -652,6 +689,41 @@
 		var _ = this, // Initialize working variables.
 			$forms = $('.' + _.instance_config('plugin_root_ns_with_dashes') + ' form');
 
+		// Chrome & Safari autofills.
+
+		if(_.browser().webkit) // Is this a webkit browser?
+		{
+			var autofill = {interval_time: 100, intervals: 0, max_intervals: 50};
+
+			autofill.interval = setInterval((autofill.handler = function()
+			{
+				autofill.intervals++; // Increments counter.
+
+				if((!autofill.$fields || !autofill.$fields.length)
+				   && (autofill.$fields = $forms.find('input:-webkit-autofill').filter('[autocomplete="off"]')).length)
+				{
+					clearInterval(autofill.interval), autofill.$fields
+						.each(function() // Do our best to disable autofill here.
+						      {
+							      var $this = $(this), $clone = $this.clone(true);
+							      var value = $clone.val(), initial_value = $clone.data('initial-value');
+
+							      if(value && initial_value !== undefined && initial_value === '')
+								      $clone.val(''); // Remove autofilled value.
+
+							      if($clone.attr('type') === 'password') // Use text w/ security.
+								      $clone.attr('type', 'text').css({'-webkit-text-security': 'disc'});
+
+							      $this.after($clone).remove();
+						      });
+				}
+				if(autofill.intervals > autofill.max_intervals)
+					clearInterval(autofill.interval);
+
+			}), autofill.interval_time);
+
+			setTimeout(autofill.handler, 50);
+		}
 		// Password strength/mismatch indicators.
 
 		var password_strength_mismatch_status = function(password1, password2)
@@ -726,16 +798,16 @@
 						                  $input, $closest_form_group, $validation_errors;
 
 					                  if(!(form_field_code = $this.attr('data-form-field-code')))
-						                  throw '!data-form-field-code'; // Should not occur.
+						                  return; // Leave error in its current location.
 
 					                  if(!($input = $form.find(':input[name="' + _.esc_jq_attr(form_field_code) + '"],' +
-					                                           ' :input[name$="' + _.esc_jq_attr('[' + form_field_code + ']') + '"],' +
-					                                           ' :input[name$="' + _.esc_jq_attr('[' + form_field_code + '][]') + '"]')
+					                                           ':input[name$="' + _.esc_jq_attr('[' + form_field_code + ']') + '"],' +
+					                                           ':input[name$="' + _.esc_jq_attr('[' + form_field_code + '][]') + '"]')
 							                  .first()).length) // First in this form.
-						                  throw '!$input.length'; // Should not occur.
+						                  return; // Leave error in its current location.
 
 					                  if(!($closest_form_group = $input.closest('.form-group')).length)
-						                  throw '!$closest_form_group.length'; // Should not occur.
+						                  return; // Leave error in its current location.
 
 					                  if(($validation_errors = $closest_form_group.find('.validation-errors')).length)
 					                  {
@@ -1407,8 +1479,8 @@
 			else $closest_form_group.append($validation_errors); // Validation errors.
 		}
 		if(errors_exist) // If errors exist, scroll to them now.
-			$[_.core('scrollTo')]($('.validation-errors', context).closest('.form-group'),
-			                      {offset: {top: -100, left: 0}, duration: 500});
+			$[_.core('->scrollTo')]($('.validation-errors', context).closest('.form-group'),
+			                        {offset: {top: -100, left: 0}, duration: 500});
 
 		return errors_exist ? false : true; // Prevents form from being submitted w/ errors.
 	};
@@ -1502,7 +1574,9 @@
 	{
 		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
-		$(object).parents('.collapse')[this.core('collapse')]({toggle: false})[this.core('collapse')]('show');
+		$(object).parents('.collapse') // Expands all parents.
+			[this.core('->collapse')]({toggle: false})
+			[this.core('->collapse')]('show');
 	};
 
 	/**

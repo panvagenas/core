@@ -32,29 +32,11 @@ namespace wsc_v000000_dev
 		 * @param mixed $var A variable by reference (no NOTICE).
 		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @return boolean TRUE if the variable `(isset() && is_array())`, else FALSE.
+		 * @return boolean TRUE if the variable `(isset() && is_array())`.
 		 */
 		public function is(&$var)
 		{
-			if(isset($var) && is_array($var))
-				return TRUE;
-
-			return FALSE;
-		}
-
-		/**
-		 * Same as `$this->is()`, but this allows an expression.
-		 *
-		 * @param mixed $var A variable (or an expression).
-		 *
-		 * @return boolean See `$this->is()` for further details.
-		 */
-		public function ¤is($var)
-		{
-			if(isset($var) && is_array($var))
-				return TRUE;
-
-			return FALSE;
+			return is_array($var);
 		}
 
 		/**
@@ -65,14 +47,11 @@ namespace wsc_v000000_dev
 		 * @param mixed $var A variable by reference (no NOTICE).
 		 *    If `$var` is NOT already set, it will be set to NULL by PHP, as a result of passing it by reference.
 		 *
-		 * @return boolean TRUE if the variable is `(!empty() && is_array())`, else FALSE.
+		 * @return boolean TRUE if the variable is `(!empty() && is_array())`.
 		 */
 		public function is_not_empty(&$var)
 		{
-			if(!empty($var) && is_array($var))
-				return TRUE;
-
-			return FALSE;
+			return !empty($var) && is_array($var);
 		}
 
 		/**
@@ -84,10 +63,7 @@ namespace wsc_v000000_dev
 		 */
 		public function ¤is_not_empty($var)
 		{
-			if(!empty($var) && is_array($var))
-				return TRUE;
-
-			return FALSE;
+			return !empty($var) && is_array($var);
 		}
 
 		/**
@@ -221,14 +197,13 @@ namespace wsc_v000000_dev
 		 * @param mixed $z
 		 * @params-variable-length
 		 *
-		 * @return boolean TRUE if all arguments are arrays, else FALSE.
+		 * @return boolean TRUE if all arguments are arrays.
 		 */
 		public function are_set(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg) || !is_array($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -236,16 +211,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_set()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_set()` for further details.
 		 */
-		public function ¤are_set($a)
+		public function ¤are_set($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg) || !is_array($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -294,7 +271,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(empty($_arg) || !is_array($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -302,16 +278,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_not_empty()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_empty()` for further details.
 		 */
-		public function ¤are_not_empty($a)
+		public function ¤are_not_empty($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(empty($_arg) || !is_array($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -358,52 +336,49 @@ namespace wsc_v000000_dev
 		 * @param mixed $z
 		 * @params-variable-length
 		 *
-		 * @return boolean TRUE if all arguments are arrays, or objects containing arrays; and NONE of the arrays scanned deeply are empty; else FALSE.
+		 * @return boolean TRUE if all arguments are arrays; or objects containing arrays; and NONE of the arrays scanned deeply are empty.
 		 *    Can have multidimensional arrays/objects containing arrays.
 		 *    Can have arrays with any nested value type; e.g. it's NOT an empty array.
 		 *    Can have empty objects; e.g. we consider these containers.
 		 */
 		public function are_not_empty_in(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 		{
-			$in_array = '.arrays.are_not_empty_in.in-array.b';
+			$in_array = '.arrays.are_not_empty_in.in-array.b'; // Cannot use a constant here; MUST be passed by reference.
 			// Recursion identifier (while inside an array).
 
 			foreach(func_get_args() as $_arg)
 			{
 				if(is_array($_arg))
 				{
-					if(empty($_arg))
-						return FALSE;
+					if(empty($_arg)) return FALSE;
 
 					foreach($_arg as $__arg)
 						if(!$this->are_not_empty_in($__arg, $in_array))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(is_object($_arg))
 				{
 					foreach($_arg as $__arg)
 						if(!$this->are_not_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if($b !== $in_array)
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
 		/**
 		 * Same as `$this->are_not_empty_in()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
-		 * @param mixed $b // Recursion identifier (while inside an array).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_empty_in()` for further details.
 		 */
-		public function ¤are_not_empty_in($a, $b = NULL)
+		public function ¤are_not_empty_in($a, $b = NULL, $c = NULL)
 		{
 			$in_array = '.arrays.¤are_not_empty_in.in-array.b';
 			// Recursion identifier (while inside an array).
@@ -412,26 +387,21 @@ namespace wsc_v000000_dev
 			{
 				if(is_array($_arg))
 				{
-					if(empty($_arg))
-						return FALSE;
+					if(empty($_arg)) return FALSE;
 
 					foreach($_arg as $__arg)
 						if(!$this->¤are_not_empty_in($__arg, $in_array))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(is_object($_arg))
 				{
 					foreach($_arg as $__arg)
 						if(!$this->¤are_not_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if($b !== $in_array)
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
@@ -479,7 +449,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(!empty($_arg) && is_array($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return array();
 		}
@@ -487,16 +456,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->not_empty_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return array See `$this->not_empty_coalesce()` for further details.
 		 */
-		public function ¤not_empty_coalesce($a)
+		public function ¤not_empty_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!empty($_arg) && is_array($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return array();
 		}
@@ -553,16 +524,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->isset_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return array See `$this->isset_coalesce()` for further details.
 		 */
-		public function ¤isset_coalesce($a)
+		public function ¤isset_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(isset($_arg) && is_array($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return array();
 		}
@@ -642,8 +615,6 @@ namespace wsc_v000000_dev
 							$value[$_key] = $_value;
 						}
 					}
-				unset($_key, $_value);
-
 				return $value;
 			}
 			return (array)$value;
@@ -710,12 +681,10 @@ namespace wsc_v000000_dev
 								$value[$_key] = $_value;
 							}
 						}
-					unset($_key, $_value);
+					unset($_key, $_value); // Housekeeping.
 				}
 				foreach($value as &$_value)
 					$_value = $this->ify_deep($_value, $include_protected_private_properties, $include_scalars_resources, TRUE);
-				unset($_value);
-
 				return $value;
 			}
 			if($include_scalars_resources)
@@ -856,8 +825,6 @@ namespace wsc_v000000_dev
 				if(is_array($_value) || is_object($_value))
 					unset($array[$_key]);
 			}
-			unset($_key, $_value);
-
 			return $array;
 		}
 
@@ -892,8 +859,6 @@ namespace wsc_v000000_dev
 					$lc_keys[$_key] = $this->lc_keys_deep($_value, TRUE);
 				else $lc_keys[$_key] = $_value;
 			}
-			unset($_key, $_value);
-
 			return $lc_keys;
 		}
 
@@ -926,8 +891,6 @@ namespace wsc_v000000_dev
 				if(is_array($_value))
 					$_value = $this->ksort_deep($_value, $flags, TRUE);
 			}
-			unset($_value);
-
 			return $array;
 		}
 
@@ -957,8 +920,6 @@ namespace wsc_v000000_dev
 				else if(is_array($_value))
 					$_value = $this->remove_numeric_keys_deep($_value, TRUE);
 			}
-			unset($_key, $_value);
-
 			return $array;
 		}
 
@@ -984,12 +945,8 @@ namespace wsc_v000000_dev
 			{
 				if(is_array($_value))
 					$_value = $this->remove_empty_values_deep($_value, TRUE);
-
-				if(empty($_value))
-					unset ($array[$_key]);
+				if(empty($_value)) unset($array[$_key]);
 			}
-			unset($_key, $_value);
-
 			return $array;
 		}
 
@@ -1015,12 +972,8 @@ namespace wsc_v000000_dev
 			{
 				if(is_array($_value))
 					$_value = $this->remove_nulls_deep($_value, TRUE);
-
-				else if(is_null($_value))
-					unset ($array[$_key]);
+				else if(is_null($_value)) unset($array[$_key]);
 			}
-			unset($_key, $_value);
-
 			return $array;
 		}
 
@@ -1046,12 +999,9 @@ namespace wsc_v000000_dev
 			{
 				if(is_array($_value))
 					$_value = $this->remove_0b_strings_deep($_value, TRUE);
-
-				else if(is_string($_value) && !strlen($_value))
-					unset ($array[$_key]);
+				else if(is_string($_value) && !isset($_value[0]))
+					unset($array[$_key]);
 			}
-			unset($_key, $_value);
-
 			return $array;
 		}
 
@@ -1087,8 +1037,6 @@ namespace wsc_v000000_dev
 				if(!is_resource($_value))
 					$_value = unserialize($_value);
 			}
-			unset($_value);
-
 			return $array;
 		}
 
@@ -1152,8 +1100,6 @@ namespace wsc_v000000_dev
 				   && ($_key_elements = $this->compile_key_elements_deep($_value, $keys, $preserve_keys, $search_dimensions, $___current_dimension + 1))
 				) $key_elements = array_merge($key_elements, $_key_elements);
 			}
-			unset($_key, $_value, $_key_elements);
-
 			return $key_elements;
 		}
 

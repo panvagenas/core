@@ -46,6 +46,13 @@ namespace wsc_v000000_dev
 		public $options = array();
 
 		/**
+		 * A form field configuration array for a JSON options import file.
+		 *
+		 * @var array Set dynamically by class constructor.
+		 */
+		public $import_json_form_field_config = array();
+
+		/**
 		 * Constructor.
 		 *
 		 * @param object|array $___instance_config Required at all times.
@@ -55,6 +62,17 @@ namespace wsc_v000000_dev
 		public function __construct($___instance_config)
 		{
 			parent::__construct($___instance_config);
+
+			$this->import_json_form_field_config // Form field configuration.
+				= array('type'                => 'file', 'required' => TRUE,
+				        'name'                => $this->©action->input_name_for_call_arg(1),
+				        'validation_patterns' => array(array('name'         => 'json_file',
+				                                             'description'  => 'A valid `.json` file.',
+				                                             'minimum'      => 1, // 1 byte please :-)
+				                                             'maximum'      => 10485760, // 10 MB.
+				                                             'min_max_type' => 'file_size',
+				                                             'regex'        => '/\.json$/i')),
+				        'move_to_dir'         => $this->©dir->temp());
 
 			$defaults   = array(
 				'encryption.key'                             => '',
@@ -561,12 +579,94 @@ namespace wsc_v000000_dev
 		}
 
 		/**
+		 * Substitutes site-specific option values with replacement codes (and reverse).
+		 *
+		 * @note This is a recursive scan running deeply into multiple dimensions of arrays/objects.
+		 * @note This routine will usually NOT include private, protected or static properties of an object class.
+		 *    However, private/protected properties *will* be included, if the current scope allows access to these private/protected properties.
+		 *    Static properties are NEVER considered by this routine, because static properties are NOT iterated by `foreach()`.
+		 *
+		 * @param mixed   $value An input value to run substitutions on.
+		 * @param boolean $fill_reverse Fill/reverse replacement codes? Default is `FALSE`.
+		 *    By default, we substitute site-specific values with replacement codes.
+		 *
+		 * @param boolean $___recursion Internal use only.
+		 *
+		 * @return mixed Output `$value` after having done substitutions (deeply).
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 */
+		public function substitute_deep($value, $fill_reverse = FALSE, $___recursion = FALSE)
+		{
+			if(!$___recursion) // Only for the initial caller.
+				$this->check_arg_types('', 'boolean', 'boolean', func_get_args());
+
+			if(is_array($value) || is_object($value))
+			{
+				foreach($value as $_key_prop => &$_value)
+					$_value = $this->substitute_deep($_value, $fill_reverse, TRUE);
+				return $value; // Nothing more to do here.
+			}
+			if(!is_string($value) || !isset($value[0]))
+				return $value; // Nothing to do.
+
+			// Establish working variables.
+
+			$is_multisite  = is_multisite();
+			$wp_root_parts = $this->©url->wp_root_parts();
+			if($is_multisite) // Grab multisite specifics here.
+			{
+				$current_blog_host_path = rtrim($GLOBALS['current_blog']->domain.$GLOBALS['current_blog']->path, '/');
+				$current_site_host_path = rtrim($GLOBALS['current_site']->domain.$GLOBALS['current_site']->path, '/');
+			}
+			// Do substitutions now. Either fill; or do replacement codes.
+
+			if($fill_reverse) // Fill replacement codes back in w/ site-specific values.
+			{
+				if($is_multisite && isset($current_blog_host_path, $current_site_host_path))
+				{
+					$value = str_replace('%%current_blog_host_path%%', $current_blog_host_path, $value);
+					$value = str_replace('%%current_site_host_path%%', $current_site_host_path, $value);
+				}
+				else // Convert what were network config values into single-site config values.
+				{
+					$value = str_replace('%%current_blog_host_path%%', $wp_root_parts['wp_site_parts']['host'], $value);
+					$value = str_replace('%%current_site_host_path%%', $wp_root_parts['wp_site_parts']['host'], $value);
+				}
+				$value = str_replace('%%home_host%%', $wp_root_parts['wp_home_parts']['host'], $value);
+				$value = str_replace('%%site_host%%', $wp_root_parts['wp_site_parts']['host'], $value);
+
+				$value = str_replace('%%network_home_host%%', $wp_root_parts['wp_network_home_parts']['host'], $value);
+				$value = str_replace('%%network_site_host%%', $wp_root_parts['wp_network_site_parts']['host'], $value);
+
+				$value = str_replace('%%current_host%%', $this->©url->current_host(), $value); // For good measure.
+			}
+			else // Substitute site-specific values with replacement codes; for replacement on import later.
+			{
+				if($is_multisite && isset($current_blog_host_path, $current_site_host_path))
+				{
+					$value = preg_replace('/\b'.preg_quote($current_blog_host_path, '/').'\b/i', '%%current_blog_host_path%%', $value);
+					$value = preg_replace('/\b'.preg_quote($current_site_host_path, '/').'\b/i', '%%current_site_host_path%%', $value);
+				}
+				$value = preg_replace('/\b'.preg_quote($wp_root_parts['wp_home_parts']['host'], '/').'\b/i', '%%home_host%%', $value);
+				$value = preg_replace('/\b'.preg_quote($wp_root_parts['wp_site_parts']['host'], '/').'\b/i', '%%site_host%%', $value);
+
+				$value = preg_replace('/\b'.preg_quote($wp_root_parts['wp_network_home_parts']['host'], '/').'\b/i', '%%network_home_host%%', $value);
+				$value = preg_replace('/\b'.preg_quote($wp_root_parts['wp_network_site_parts']['host'], '/').'\b/i', '%%network_site_host%%', $value);
+
+				$value = preg_replace('/\b'.preg_quote($this->©url->current_host(), '/').'\b/i', '%%current_host%%', $value); // For good measure.
+			}
+			return $value; // All set now.
+		}
+
+		/**
 		 * Deletes all existing options from the database.
 		 *
 		 * @param boolean $confirmation Defaults to FALSE. Set this to TRUE as a confirmation.
 		 *    If this is FALSE, nothing will happen (i.e. nothing will be deleted).
 		 *
-		 * @return array The current array of options (i.e. the defaults only).
+		 * @return array The current array of options (i.e. the defaults only) on success.
+		 *    On failure this returns an empty array.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 *
@@ -577,12 +677,107 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('boolean', func_get_args());
 
-			if($confirmation) // Do we have confirmation?
+			if($confirmation) // Have confirmation?
 			{
 				$this->options = $this->defaults;
 				delete_option($this->___instance_config->plugin_root_ns_stub.'__options');
+				return $this->options; // Default options.
 			}
-			return $this->options; // Defaults.
+			return array(); // Failure (no confirmation).
+		}
+
+		/**
+		 * Updates current options with one or more new option values.
+		 *
+		 * @note It's fine to force an update by calling this method without any arguments.
+		 *
+		 * @param array $new_options Optional. An associative array of option values to update, with each of their new values.
+		 *    This array does NOT need to contain all of the current options. Only those which should be updated.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 */
+		public function ®update($new_options = array())
+		{
+			$this->check_arg_types('array', func_get_args());
+
+			$this->update($new_options, TRUE);
+
+			$successes = $this->©success(
+				$this->method(__FUNCTION__).'#success', get_defined_vars(),
+				sprintf($this->__('Options saved successfully. Great<em>!</em>'))
+			);
+			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
+		}
+
+		/**
+		 * Restores default option values; i.e. deletes all existing options configured by the site owner.
+		 *
+		 * @param string|boolean $confirmation Must have confirmation that a restoration is desired!
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 */
+		public function ®restore_defaults($confirmation)
+		{
+			$this->check_arg_types(array('string', 'boolean'), func_get_args());
+
+			if(($confirmation = $this->©string->is_true($confirmation)) && $this->delete($confirmation))
+				$successes = $this->©success(
+					$this->method(__FUNCTION__).'#success', get_defined_vars(),
+					sprintf($this->__('Default options restored successfully. Ah, a fresh start<em>!</em>'))
+				);
+			else $errors = $this->©error(
+				$this->method(__FUNCTION__).'#error', get_defined_vars(),
+				sprintf($this->__('Default options NOT restored. Missing required confirmation.'))
+			);
+			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
+		}
+
+		/**
+		 * Imports a new set of plugin configuration options.
+		 *
+		 * @throws exception If invalid types are passed through arguments list.
+		 */
+		public function ®import($file, $___file_info)
+		{
+			$this->check_arg_types('string', 'array', func_get_args());
+
+			$field_values = array(0 => $file, '___file_info' => $___file_info);
+			$fields       = array($this->import_json_form_field_config);
+			$file_path    = $fields[0]['move_to_dir'].'/'.$file;
+
+			if($this->©errors->exist_in($validation = $this->©form_fields->validate($field_values, $fields)))
+				$errors = $validation; // Validation errors exist in this case.
+
+			else if(!is_file($file_path) || !is_readable($file_path)
+			        || !($file_contents = file_get_contents($file_path))
+			        || !is_array($new_options = json_decode($file_contents, TRUE))
+			        || !($new_options = $this->substitute_deep($new_options, TRUE))
+			        || !$this->update($new_options) // And update!
+			) $errors = $this->©error(
+					$this->method(__FUNCTION__).'#read_failure', get_defined_vars(),
+					sprintf($this->__('Import failure. Unable to read: `%1$s`.'), $file_path)
+				);
+			else $successes = $this->©success(
+				$this->method(__FUNCTION__).'#success', get_defined_vars(),
+				$this->__('Options imported successfully. Wow, that was easy<em>!</em>')
+			);
+			$this->©action->set_call_data_for($this->dynamic_call(__FUNCTION__), get_defined_vars());
+		}
+
+		/**
+		 * Exports the currently configured options.
+		 */
+		public function ®export()
+		{
+			$this->©env->prep_for_file_download();
+			$this->©header->clean_status_type(200, 'application/json', TRUE);
+			$this->©header->content_disposition('attachment', $this->___instance_config->plugin_root_ns_with_dashes.'.json');
+
+			$options_for_export = $this->options; // Currently configured options.
+			$options_for_export = $this->substitute_deep($options_for_export);
+			unset($options_for_export['crons.config']); // Ditch these.
+
+			exit(json_encode($options_for_export));
 		}
 
 		/**
@@ -591,7 +786,7 @@ namespace wsc_v000000_dev
 		 * @param boolean $confirmation Defaults to FALSE. Set this to TRUE as a confirmation.
 		 *    If this is FALSE, nothing will happen; and this method returns FALSE.
 		 *
-		 * @return boolean TRUE if successfully installed, else FALSE.
+		 * @return boolean TRUE if successfully installed.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -613,7 +808,7 @@ namespace wsc_v000000_dev
 		 * @param boolean $confirmation Defaults to FALSE. Set this to TRUE as a confirmation.
 		 *    If this is FALSE, nothing will happen; and this method returns FALSE.
 		 *
-		 * @return boolean TRUE if successfully uninstalled, else FALSE.
+		 * @return boolean TRUE if successfully uninstalled.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */

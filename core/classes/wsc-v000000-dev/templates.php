@@ -143,7 +143,7 @@ namespace wsc_v000000_dev
 		}
 
 		/**
-		 * CSS front-side wrap classes.
+		 * CSS front-side inner wrap classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -151,13 +151,13 @@ namespace wsc_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS front-side wrap classes.
+		 * @return string|array CSS front-side inner wrap classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function front_side_wrap_classes($others = array(), $format = self::space_sep_string)
+		public function front_side_inner_wrap_classes($others = array(), $format = self::space_sep_string)
 		{
-			return $this->wrap_classes_for('front-side', $others, $format);
+			return $this->inner_wrap_classes_for('front-side', $others, $format);
 		}
 
 		/**
@@ -197,7 +197,7 @@ namespace wsc_v000000_dev
 		}
 
 		/**
-		 * CSS stand-alone wrap classes.
+		 * CSS stand-alone inner wrap classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -205,13 +205,13 @@ namespace wsc_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS stand-alone wrap classes.
+		 * @return string|array CSS stand-alone inner wrap classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function stand_alone_wrap_classes($others = array(), $format = self::space_sep_string)
+		public function stand_alone_inner_wrap_classes($others = array(), $format = self::space_sep_string)
 		{
-			return $this->wrap_classes_for('stand-alone', $others, $format);
+			return $this->inner_wrap_classes_for('stand-alone', $others, $format);
 		}
 
 		/**
@@ -233,7 +233,7 @@ namespace wsc_v000000_dev
 		}
 
 		/**
-		 * CSS email wrap classes.
+		 * CSS email inner wrap classes.
 		 *
 		 * @param string|array $others Optional. Defaults to an empty array.
 		 *    Any additional classes that should be included.
@@ -241,13 +241,13 @@ namespace wsc_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS email wrap classes.
+		 * @return string|array CSS email inner wrap classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function email_wrap_classes($others = array(), $format = self::space_sep_string)
+		public function email_inner_wrap_classes($others = array(), $format = self::space_sep_string)
 		{
-			return $this->wrap_classes_for('email', $others, $format);
+			return $this->inner_wrap_classes_for('email', $others, $format);
 		}
 
 		/**
@@ -324,7 +324,7 @@ namespace wsc_v000000_dev
 		}
 
 		/**
-		 * CSS wrap classes.
+		 * CSS inner wrap classes.
 		 *
 		 * @param string       $for A class prefix.
 		 *
@@ -334,20 +334,20 @@ namespace wsc_v000000_dev
 		 * @param string       $format Return value format. Defaults to {@link fw_constants::space_sep_string}.
 		 *    Can also be set to {@link fw_constants::array_n} (for a numerically indexed array).
 		 *
-		 * @return string|array CSS wrap classes.
+		 * @return string|array CSS inner wrap classes.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function wrap_classes_for($for, $others = array(), $format = self::space_sep_string)
+		public function inner_wrap_classes_for($for, $others = array(), $format = self::space_sep_string)
 		{
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
-			$classes[] = 'wrap'; // Simple wrap class.
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--'.$for.'--wrap';
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--'.$for.'--wrap';
-			$classes[] = $for.'--wrap'; // This one is the same (but without the leading prefix).
-			$classes[] = $for.'--'.$this->©file->to_css_class(basename($this->file)).'--wrap';
-			$classes[] = $this->©file->to_css_class(basename($this->file)).'--wrap';
+			$classes[] = 'inner-wrap'; // Simple wrap class.
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--'.$for.'--inner-wrap';
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--'.$for.'--inner-wrap';
+			$classes[] = $for.'--inner-wrap'; // This one is the same (but without the leading prefix).
+			$classes[] = $for.'--'.$this->©file->to_css_class(basename($this->file)).'--inner-wrap';
+			$classes[] = $this->©file->to_css_class(basename($this->file)).'--inner-wrap';
 
 			$others  = ($others) ? (array)$others : array();
 			$classes = array_unique(array_merge($classes, $others));
@@ -539,19 +539,19 @@ namespace wsc_v000000_dev
 
 			if($this->has_errors()) // Do we have errors?
 				$responses .= // Errors (as HTML markup). Also w/ a specific icon.
-					'<div class="responses errors alert alert-danger">'.
+					'<div class="responses errors alert alert-danger em-padding">'.
 					'<ul>'.$this->errors->get_messages_as_list_items('', 0, '<i class="fa fa-exclamation-triangle"></i> ').'</ul>'.
 					'</div>';
 
 			if($this->has_successes()) // Do we have successes?
 				$responses .= // Successes (as HTML markup). Also w/ a specific icon.
-					'<div class="responses successes alert alert-success">'.
+					'<div class="responses successes alert alert-success em-padding">'.
 					'<ul>'.$this->successes->get_messages_as_list_items('', 0, '<i class="fa fa-thumbs-o-up"></i> ').'</ul>'.
 					'</div>';
 
 			if($this->has_messages()) // Do we have messages?
 				$responses .= // Messages (as HTML markup). Also w/ a specific icon.
-					'<div class="responses messages alert alert-info">'.
+					'<div class="responses messages alert alert-info em-padding">'.
 					'<ul>'.$this->messages->get_messages_as_list_items('', 0, '<i class="fa fa-comments-o"></i> ').'</ul>'.
 					'</div>';
 

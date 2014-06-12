@@ -155,14 +155,13 @@ namespace wsc_v000000_dev
 		 * @param mixed $z
 		 * @params-variable-length
 		 *
-		 * @return boolean TRUE if all arguments are set, else FALSE.
+		 * @return boolean TRUE if all arguments are set.
 		 */
 		public function are_set(&$a, &$b = NULL, &$c = NULL, &$d = NULL, &$e = NULL, &$f = NULL, &$g = NULL, &$h = NULL, &$i = NULL, &$j = NULL, &$k = NULL, &$l = NULL, &$m = NULL, &$n = NULL, &$o = NULL, &$p = NULL, &$q = NULL, &$r = NULL, &$s = NULL, &$t = NULL, &$u = NULL, &$v = NULL, &$w = NULL, &$x = NULL, &$y = NULL, &$z = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -170,16 +169,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_set()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_set()` for further details.
 		 */
-		public function ¤are_set($a)
+		public function ¤are_set($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!isset($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -221,7 +222,7 @@ namespace wsc_v000000_dev
 		 * @param mixed $z
 		 * @params-variable-length
 		 *
-		 * @return boolean TRUE if all arguments are NOT empty, else FALSE.
+		 * @return boolean TRUE if all arguments are NOT empty.
 		 *
 		 * @note Objects are never considered `empty()` by PHP.
 		 */
@@ -230,7 +231,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(empty($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -238,16 +238,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->are_not_empty()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_empty()` for further details.
 		 */
-		public function ¤are_not_empty($a)
+		public function ¤are_not_empty($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(empty($_arg))
 					return FALSE;
-			unset($_arg);
 
 			return TRUE;
 		}
@@ -313,24 +315,24 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->are_not_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(empty($_arg))
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
 		/**
 		 * Same as `$this->are_not_empty_in()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->are_not_empty_in()` for further details.
 		 */
-		public function ¤are_not_empty_in($a)
+		public function ¤are_not_empty_in($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 			{
@@ -342,13 +344,10 @@ namespace wsc_v000000_dev
 					foreach($_arg as $__arg)
 						if(!$this->¤are_not_empty_in($__arg))
 							return FALSE;
-					unset($__arg);
 				}
 				else if(empty($_arg))
 					return FALSE;
 			}
-			unset($_arg);
-
 			return TRUE;
 		}
 
@@ -398,7 +397,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(!empty($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return NULL;
 		}
@@ -406,16 +404,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->not_empty_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->not_empty_coalesce()` for further details.
 		 */
-		public function ¤not_empty_coalesce($a)
+		public function ¤not_empty_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(!empty($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return NULL;
 		}
@@ -464,7 +464,6 @@ namespace wsc_v000000_dev
 			foreach(func_get_args() as $_arg)
 				if(isset($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return NULL;
 		}
@@ -472,16 +471,18 @@ namespace wsc_v000000_dev
 		/**
 		 * Same as `$this->isset_coalesce()`, but this allows expressions.
 		 *
-		 * @param mixed $a At least one variable (or an expression).
+		 * @param mixed $a
+		 * @param mixed $b
+		 * @param mixed $c
+		 * @params-variable-length
 		 *
 		 * @return boolean See `$this->isset_coalesce()` for further details.
 		 */
-		public function ¤isset_coalesce($a)
+		public function ¤isset_coalesce($a, $b = NULL, $c = NULL)
 		{
 			foreach(func_get_args() as $_arg)
 				if(isset($_arg))
 					return $_arg;
-			unset($_arg);
 
 			return NULL;
 		}
@@ -764,7 +765,7 @@ namespace wsc_v000000_dev
 				}
 				return (array)$_SESSION;
 			}
-			return (isset($key)) ? NULL : array();
+			return isset($key) ? NULL : array();
 		}
 
 		/**
@@ -789,7 +790,7 @@ namespace wsc_v000000_dev
 				}
 				return (array)$_FILES;
 			}
-			return (isset($key)) ? NULL : array();
+			return isset($key) ? NULL : array();
 		}
 
 		/**
@@ -897,7 +898,7 @@ namespace wsc_v000000_dev
 						$keychain[$___depth][$_key] = TRUE;
 						$array[$_key]               = array();
 					}
-					$this->_merge_FILES_deeply_into($array[$_key], $file_info_key, $_scalar_or_nested_array_value, TRUE);
+					$this->_merge_FILES_deeply_into($array[$_key], $file_info_key, $_scalar_or_nested_array_value, $___depth + 1, TRUE);
 					if(empty($array[$_key]) && isset($keychain[$___depth][$_key])) unset($array[$_key]);
 				}
 				else // Here's where everything comes together.
@@ -946,7 +947,7 @@ namespace wsc_v000000_dev
 				}
 				return (array)$_SERVER;
 			}
-			return (isset($key)) ? NULL : array();
+			return isset($key) ? NULL : array();
 		}
 
 		/**
@@ -1302,7 +1303,6 @@ namespace wsc_v000000_dev
 			}
 			if($echo === $this::do_echo)
 				echo $var_dump."\n"; // With a trailing line break.
-
 			return $var_dump; // We ALWAYS return the value of `$var_dump`.
 		}
 	}

@@ -543,7 +543,17 @@ namespace wsc_v000000_dev
 		 */
 		public function uses_fancy_permalinks()
 		{
-			return (get_option('permalink_structure')) ? TRUE : FALSE;
+			return get_option('permalink_structure') ? TRUE : FALSE;
+		}
+
+		/**
+		 * Is this WordPress® installation disallowing files mods?
+		 *
+		 * @return boolean TRUE if this WordPress® installation disallowing files mods.
+		 */
+		public function disallows_file_mods()
+		{
+			return defined('DISALLOW_FILE_MODS') && DISALLOW_FILE_MODS;
 		}
 
 		/**
@@ -645,6 +655,17 @@ namespace wsc_v000000_dev
 			$this->ignore_user_abort();
 			$this->maximize_time_memory_limits();
 			$this->increase_db_wait_timeout(900);
+		}
+
+		/**
+		 * Preps for a file to be downloaded from the server.
+		 */
+		public function prep_for_file_download()
+		{
+			$this->ob_end_clean();
+			$this->©headers->no_cache();
+			$this->©env->disable_gzip();
+			$this->maximize_time_memory_limits();
 		}
 
 		/**

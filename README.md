@@ -110,6 +110,7 @@ $GLOBALS[__NAMESPACE__] = new framework(
 	array(
 	     'plugin_root_ns' => __NAMESPACE__, // The root namespace (e.g. `rocketship`).
 	     'plugin_var_ns'  => 'rs', // A shorter namespace alias (or the same as `plugin_root_ns` if you like).
+	     'plugin_cap'     => 'administrator', // The WordPress capability (or role) required to manage plugin options.
 	     'plugin_name'    => 'RocketShip™', // The name of your plugin (feel free to dress this up please).
 	     'plugin_version' => '130310', // The current version of your plugin (must be in `YYMMDD` format).
 	     'plugin_site'    => 'http://www.example.com/rocketship-plugin', // URL to site about your plugin.
@@ -381,6 +382,7 @@ $GLOBALS[__NAMESPACE__] = new framework(
 	array(
 	     'plugin_root_ns' => __NAMESPACE__, // The root namespace (e.g. `rocketship`).
 	     'plugin_var_ns'  => 'rs', // A shorter namespace alias (or the same as `plugin_root_ns` if you like).
+	     'plugin_cap'     => 'administrator', // The WordPress capability (or role) required to manage plugin options.
 	     'plugin_name'    => 'RocketShip™', // The name of your plugin (feel free to dress this up please).
 	     'plugin_version' => '130310', // The current version of your plugin (must be in `YYMMDD` format).
 	     'plugin_site'    => 'http://www.example.com/rocketship-plugin', // URL to site about your plugin.

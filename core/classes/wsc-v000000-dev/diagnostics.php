@@ -441,7 +441,7 @@ namespace wsc_v000000_dev
 						$all_messages .= // With attributes.
 							'<li data-code="'.esc_attr($_code).'"'.
 							(($_form_field_code) ? ' data-form-field-code="'.esc_attr($_form_field_code).'"' : '').'>'.
-							$prefix.$this->©markdown->parse((($wordwrap > 0) ? wordwrap($_message, $wordwrap) : $_message)).
+							$this->©markdown->parse((($wordwrap > 0) ? $prefix.wordwrap($_message, $wordwrap) : $prefix.$_message)).
 							'</li>';
 					unset($_data, $_form_field_code, $_message); // Housekeeping.
 				}
@@ -462,7 +462,7 @@ namespace wsc_v000000_dev
 					$messages .= // With attributes.
 						'<li data-code="'.esc_attr($code).'"'.
 						(($_form_field_code) ? ' data-form-field-code="'.esc_attr($_form_field_code).'"' : '').'>'.
-						$prefix.$this->©markdown->parse((($wordwrap > 0) ? wordwrap($_message, $wordwrap) : $_message)).
+						$this->©markdown->parse((($wordwrap > 0) ? $prefix.wordwrap($_message, $wordwrap) : $prefix.$_message)).
 						'</li>';
 				unset($_message); // Housekeeping.
 			}

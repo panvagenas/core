@@ -124,7 +124,7 @@ if(!class_exists('deps_wsc_v000000_dev'))
 		 * @param boolean $confirmation Defaults to FALSE. Set this to TRUE as a confirmation.
 		 *    If this is FALSE, nothing will happen; and this method returns FALSE.
 		 *
-		 * @return boolean TRUE if successfully uninstalled, else FALSE.
+		 * @return boolean TRUE if successfully uninstalled.
 		 *
 		 * @see deps_x_wsc_v000000_dev::___uninstall___()
 		 *

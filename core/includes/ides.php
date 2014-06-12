@@ -126,6 +126,7 @@ namespace # Global namespace.
 	class wsc__menu_pages__panels__pro_upgrade extends \wsc_v000000_dev\menu_pages\panels\pro_upgrade{}
 	class wsc__menu_pages__panels__quick_start_video extends \wsc_v000000_dev\menu_pages\panels\quick_start_video{}
 	class wsc__menu_pages__panels__update extends \wsc_v000000_dev\menu_pages\panels\update{}
+	class wsc__menu_pages__panels__update_sync_pro extends \wsc_v000000_dev\menu_pages\panels\update_sync_pro{}
 	class wsc__menu_pages__panels__videos extends \wsc_v000000_dev\menu_pages\panels\videos{}
 
 	// Package classes.

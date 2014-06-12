@@ -30,7 +30,7 @@ namespace wsc_v000000_dev
 		 * @param string|array $notice The notice itself (i.e. a string message).
 		 *    Or, an array with notice configuration parameters.
 		 *
-		 * @return boolean TRUE if the notice was enqueued, else FALSE.
+		 * @return boolean TRUE if the notice was enqueued.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -77,7 +77,7 @@ namespace wsc_v000000_dev
 		 * @param string|array $notice The notice itself (i.e. a string message).
 		 *    Or, an array with notice configuration parameters.
 		 *
-		 * @return boolean TRUE if the notice was enqueued, else FALSE.
+		 * @return boolean TRUE if the notice was enqueued.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -98,7 +98,7 @@ namespace wsc_v000000_dev
 		 * @param string|array $notice The notice itself (i.e. a string message).
 		 *    Or, an array with notice configuration parameters.
 		 *
-		 * @return boolean TRUE if the notice is displayed, else FALSE.
+		 * @return boolean TRUE if the notice is displayed.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -133,14 +133,14 @@ namespace wsc_v000000_dev
 					if(isset($notice['notice'][0]) && ctype_upper($notice['notice'][0]))
 						$notice['notice'][0] = strtolower($notice['notice'][0]);
 
-					$notice['notice'] = '<p>'.$icon.'<strong>'.$this->___instance_config->plugin_name.' '.$this->__('says...').'</strong> '.$notice['notice'];
+					$notice['notice'] = '<p class="no-t-margin">'.$icon.'<strong>'.$this->___instance_config->plugin_name.' '.$this->__('says...').'</strong> '.$notice['notice'];
 				}
 				else // It doesn't start with a `<p>` tag, so we'll do the best we can here.
 				{
 					if(isset($notice['notice'][0]) && ctype_upper($notice['notice'][0]))
 						$notice['notice'][0] = strtolower($notice['notice'][0]);
 
-					$notice['notice'] = '<p>'.$icon.'<strong>'.$this->___instance_config->plugin_name.' '.$this->__('says...').'</strong></p>'.$notice['notice'];
+					$notice['notice'] = '<p class="no-t-margin">'.$icon.'<strong>'.$this->___instance_config->plugin_name.' '.$this->__('says...').'</strong></p>'.$notice['notice'];
 				}
 			}
 			if($notice['allow_dismissals']) // Allowing dismissals?
@@ -162,22 +162,18 @@ namespace wsc_v000000_dev
 			$classes[] = $this->___instance_config->core_ns_with_dashes;
 			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes;
 
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--t--'.$this->theme;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--t--'.$this->theme;
+			$classes[] = $this->___instance_config->core_ns_with_dashes.'--t--'.$current_menu_pages_theme;
+			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--t--'.$current_menu_pages_theme;
 
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">'.
-
-			     '<div class="notice fade clearfix'.
-			     ' '.(($notice['error']) ? 'error' : 'updated').
-			     ' alert alert-'.(($notice['error']) ? 'danger' : 'info').'"'.
+			     '<div class="notice no-l-margin t-margin em-padding clearfix'. // WP `fade` class clashes w/ Bootstrap.
+			     ' '.(($notice['error']) ? 'error' : 'updated').' alert alert-'.(($notice['error']) ? 'danger' : 'info').'"'.
 			     '>'. // With WordPress® styles (and also w/ UI theme styles).
 
 			     $notice['notice']. // HTML markup.
 
 			     '</div>'.
-
 			     '</div>';
-
 			return TRUE; // Notice displayed indicator.
 		}
 
@@ -188,7 +184,7 @@ namespace wsc_v000000_dev
 		 *
 		 * @note Notices are removed from the queue by this routine (automatically).
 		 *
-		 * @return boolean TRUE if any notices are displayed, else FALSE.
+		 * @return boolean TRUE if any notices are displayed.
 		 *
 		 * @attaches-to `all_admin_notices` action hook.
 		 * @hook-priority Default is fine.
@@ -230,7 +226,7 @@ namespace wsc_v000000_dev
 									$_has_been_dismissed = TRUE;
 
 								else if($current_dismissal === $_notice['checksum'])
-									$_has_been_dismissed = TRUE; // Dismissing right now.
+									$_has_been_dismissed = TRUE; // Dismissing now.
 							}
 							if(!empty($_notice['notice']) && !$_has_been_dismissed) // Should display?
 							{
@@ -300,7 +296,7 @@ namespace wsc_v000000_dev
 		 * @param boolean $confirmation Defaults to FALSE. Set this to TRUE as a confirmation.
 		 *    If this is FALSE, nothing will happen; and this method returns FALSE.
 		 *
-		 * @return boolean TRUE if successfully installed, else FALSE.
+		 * @return boolean TRUE if successfully installed.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
@@ -320,7 +316,7 @@ namespace wsc_v000000_dev
 		 * @param boolean $confirmation Defaults to FALSE. Set this to TRUE as a confirmation.
 		 *    If this is FALSE, nothing will happen; and this method returns FALSE.
 		 *
-		 * @return boolean TRUE if successfully uninstalled, else FALSE.
+		 * @return boolean TRUE if successfully uninstalled.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */

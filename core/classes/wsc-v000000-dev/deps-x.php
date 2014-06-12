@@ -2085,9 +2085,9 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 			update_option(
 				'wsc__deps__last_ok', array(
 					'wsc_v000000_dev' => TRUE,
-					'php_version'                => $php_version,
-					'wp_version'                 => $wp_version,
-					'time'                       => time()
+					'php_version'     => $php_version,
+					'wp_version'      => $wp_version,
+					'time'            => time()
 				)
 			);
 		}
@@ -2096,9 +2096,9 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 			update_option(
 				'wsc__deps__last_ok', array(
 					'wsc_v000000_dev' => FALSE,
-					'php_version'                => '',
-					'wp_version'                 => '',
-					'time'                       => 0
+					'php_version'     => '',
+					'wp_version'      => '',
+					'time'            => 0
 				)
 			);
 		}
@@ -2417,10 +2417,10 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 		echo 'p.auto-fix-success a, p.auto-fix-error a { color:#FFFFFF; }';
 		echo '</style>';
 
-		$icon['error']   = '<img src="'.$this->icons['error'].'" class="icon" alt="Error" />';
-		$icon['warning'] = '<img src="'.$this->icons['warning'].'" class="icon" alt="Warning" />';
-		$icon['notice']  = '<img src="'.$this->icons['notice'].'" class="icon" alt="Notice" />';
-		$icon['pass']    = '<img src="'.$this->icons['pass'].'" class="icon" alt="Pass" />';
+		$icon['error']   = '<img src="'.$this->icons['error'].'" class="icon" alt="" />';
+		$icon['warning'] = '<img src="'.$this->icons['warning'].'" class="icon" alt="" />';
+		$icon['notice']  = '<img src="'.$this->icons['notice'].'" class="icon" alt="" />';
+		$icon['pass']    = '<img src="'.$this->icons['pass'].'" class="icon" alt="" />';
 
 		echo '</head>';
 
@@ -2428,6 +2428,7 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 
 		echo '<body>';
 		echo '<div class="wrapper">';
+		echo '<div class="inner-wrap">';
 
 		echo '<h1>'.
 		     $this->__('Dependency Scan by').
@@ -2464,6 +2465,7 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 
 			unset($_test_https);
 		}
+		echo '</div>';
 		echo '</div>';
 		echo '</h1>';
 
@@ -2625,7 +2627,7 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 		echo '<style type="text/css">';
 		$div_notice = 'div.wsc-deps-notice';
 		echo $div_notice.'.wrapper { background:#FBF6DD url(\''.$this->icons['plugin'].'\') no-repeat right top; border:1px solid #C1B98E; border-radius:5px; }';
-		echo $div_notice.' div.wrap { padding:25px; }';
+		echo $div_notice.' div.inner-wrap { padding:25px; }';
 		echo '</style>';
 
 		echo '<style type="text/css">';
@@ -2652,15 +2654,15 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 		echo $div_notice.' p.auto-fix-success a, p.auto-fix-error a { color:#FFFFFF; }';
 		echo '</style>';
 
-		$icon['error']   = '<img src="'.$this->icons['error'].'" class="icon" alt="Error" />';
-		$icon['warning'] = '<img src="'.$this->icons['warning'].'" class="icon" alt="Warning" />';
-		$icon['notice']  = '<img src="'.$this->icons['notice'].'" class="icon" alt="Notice" />';
-		$icon['pass']    = '<img src="'.$this->icons['pass'].'" class="icon" alt="Pass" />';
+		$icon['error']   = '<img src="'.$this->icons['error'].'" class="icon" alt="" />';
+		$icon['warning'] = '<img src="'.$this->icons['warning'].'" class="icon" alt="" />';
+		$icon['notice']  = '<img src="'.$this->icons['notice'].'" class="icon" alt="" />';
+		$icon['pass']    = '<img src="'.$this->icons['pass'].'" class="icon" alt="" />';
 
 		// Produce HTML output now (using styles/icons from above).
 
 		echo '<div class="wsc-deps-notice wrapper updated fade">';
-		echo '<div class="wrap">';
+		echo '<div class="inner-wrap">';
 
 		echo '<h2 class="heading">'.
 		     $this->__('Dependency Scan by').
@@ -2691,7 +2693,6 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 				     ))
 			     : '').
 		     '</h3>';
-
 		// Display all of the current issues.
 
 		foreach($this->check['issues'] as $_key => $_issue)
@@ -2781,6 +2782,42 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 	# --------------------------------------------------------------------------------------------------------------------------------------
 	# Miscellaneous utility methods (many taken from parts of the WebSharks™ Core).
 	# --------------------------------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Dashes replace non-alphanumeric chars.
+	 *
+	 * @return string {@inheritdoc}
+	 *
+	 * @see wsc_v000000_dev::with_dashes()
+	 * @inheritdoc wsc_v000000_dev::with_dashes()
+	 */
+	public function with_dashes($string)
+	{
+		if(!is_string($string))
+			throw new exception( // Fail here; detected invalid arguments.
+				sprintf($this->__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
+		$string = str_replace('\\', '--', $string);
+		return preg_replace('/[^a-z0-9]/i', '-', $string);
+	}
+
+	/**
+	 * Underscores replace non-alphanumeric chars.
+	 *
+	 * @return string {@inheritdoc}
+	 *
+	 * @see wsc_v000000_dev::with_underscores()
+	 * @inheritdoc wsc_v000000_dev::with_underscores()
+	 */
+	public function with_underscores($string)
+	{
+		if(!is_string($string))
+			throw new exception( // Fail here; detected invalid arguments.
+				sprintf($this->__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
+		$string = str_replace('\\', '__', $string);
+		return preg_replace('/[^a-z0-9]/i', '_', $string);
+	}
 
 	/**
 	 * Acquires the currently installed version of Apache.
@@ -3211,7 +3248,7 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 	 * @param boolean $confirmation Defaults to FALSE. Set this to TRUE as a confirmation.
 	 *    If this is FALSE, nothing will happen; and this method returns FALSE.
 	 *
-	 * @return boolean TRUE if successfully uninstalled, else FALSE.
+	 * @return boolean TRUE if successfully uninstalled.
 	 *
 	 * @see deps_wsc_v000000_dev::___uninstall___()
 	 *

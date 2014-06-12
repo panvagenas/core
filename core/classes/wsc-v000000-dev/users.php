@@ -359,7 +359,7 @@ namespace wsc_v000000_dev
 		/**
 		 * Does this user have an ID?
 		 *
-		 * @return boolean TRUE if this user has an ID, else FALSE.
+		 * @return boolean TRUE if this user has an ID.
 		 *
 		 * @note Any user with an ID, will by definition,
 		 *    also have these non-empty properties:
@@ -377,7 +377,7 @@ namespace wsc_v000000_dev
 		/**
 		 * Does this user have an email address?
 		 *
-		 * @return boolean TRUE if this user has an email address, else FALSE.
+		 * @return boolean TRUE if this user has an email address.
 		 *
 		 * @note This is really just for internal standards. It's called upon by `is_populated()`.
 		 *
@@ -437,7 +437,7 @@ namespace wsc_v000000_dev
 		/**
 		 * Is this the current user?
 		 *
-		 * @return boolean TRUE if this is the current user, else FALSE.
+		 * @return boolean TRUE if this is the current user.
 		 */
 		public function is_current()
 		{
@@ -447,7 +447,7 @@ namespace wsc_v000000_dev
 		/**
 		 * Instantiated with `$this->args['by']`, `$this->args['value']`?
 		 *
-		 * @return boolean TRUE if this was instantiated with `$this->args['by']`, `$this->args['value']`, else FALSE.
+		 * @return boolean TRUE if this was instantiated with `$this->args['by']`, `$this->args['value']`.
 		 */
 		public function has_args_by_value()
 		{
@@ -457,7 +457,7 @@ namespace wsc_v000000_dev
 		/**
 		 * Is this a super administrator?
 		 *
-		 * @return boolean TRUE if this is a super administrator, else FALSE.
+		 * @return boolean TRUE if this is a super administrator.
 		 */
 		public function is_super_admin()
 		{

@@ -45,7 +45,7 @@
 					           var this_action = last_action === 'show' ? 'hide' : 'show';
 
 					           $this.data('last-action', this_action), $content_sidebar_panels.find('> .panel-collapse')
-						           [_.core('collapse')]({toggle: false})[_.core('collapse')](this_action);
+						           [_.core('->collapse')]({toggle: false})[_.core('->collapse')](this_action);
 
 					           setTimeout(function() // Wait for transitions to complete.
 					                      {
@@ -54,12 +54,12 @@
 					                      }, 2000);
 				           });
 
-			       $menu_page.find('form.update-theme ul > li')
+			       $menu_page.find('.update-theme ul > li')
 				       .on('click', function()
 				           {
-					           $menu_page.find('form.update-theme')
+					           $menu_page.find('.update-theme')
 						           .find('input.selected-theme').val($(this).data('theme'))
-						           .end().submit();
+						           .closest('form').submit();
 				           });
 
 			       var update_content_panels_state = function()
@@ -80,7 +80,9 @@
 				              _.___private_type, [panels_active, panels_inactive]);
 				       console.log('Updating content panels state.');
 			       };
-			       $content_panels.find('> .panel-collapse').on('shown.wsc-bs.collapse hidden.wsc-bs.collapse', update_content_panels_state);
+			       $content_panels.find('> .panel-collapse')
+				       .on('shown.' + _.core('-bs') + '.collapse', update_content_panels_state)
+				       .on('hidden.' + _.core('-bs') + '.collapse', update_content_panels_state);
 
 			       var update_sidebar_panels_state = function()
 			       {
@@ -100,7 +102,9 @@
 				              _.___private_type, [panels_active, panels_inactive]);
 				       console.log('Updating sidebar panels state.');
 			       };
-			       $sidebar_panels.find('> .panel-collapse').on('shown.wsc-bs.collapse hidden.wsc-bs.collapse', update_sidebar_panels_state);
+			       $sidebar_panels.find('> .panel-collapse')
+				       .on('shown.' + _.core('-bs') + '.collapse', update_sidebar_panels_state)
+				       .on('hidden.' + _.core('-bs') + '.collapse', update_sidebar_panels_state);
 
 			       var update_content_panels_order = function()
 			       {
@@ -117,12 +121,12 @@
 				       console.log('Updating content panels order.');
 			       };
 			       $menu_page.find('.content-panels')
-				       [_.core('sortable')]({
-					                            items : '.panel',
-					                            // $(.sidebar-panels).children(.panel)
-					                            // $(.sidebar-panels).children(.panel).find(handle)
-					                            handle: '> .panel-heading > .panel-title .cursor-move'
-				                            });
+				       [_.core('->sortable')]({
+					                              items : '.panel',
+					                              // $(.sidebar-panels).children(.panel)
+					                              // $(.sidebar-panels).children(.panel).find(handle)
+					                              handle: '> .panel-heading > .panel-title .cursor-move'
+				                              });
 			       $menu_page.find('.content-panels').on('sortupdate', update_content_panels_order);
 
 			       var update_sidebar_panels_order = function()
@@ -140,12 +144,12 @@
 				       console.log('Updating sidebar panels order.');
 			       };
 			       $menu_page.find('.sidebar-panels')
-				       [_.core('sortable')]({
-					                            items : '.panel',
-					                            // $(.sidebar-panels).children(.panel)
-					                            // $(.sidebar-panels).children(.panel).find(handle)
-					                            handle: '> .panel-heading > .panel-title .cursor-move'
-				                            });
+				       [_.core('->sortable')]({
+					                              items : '.panel',
+					                              // $(.sidebar-panels).children(.panel)
+					                              // $(.sidebar-panels).children(.panel).find(handle)
+					                              handle: '> .panel-heading > .panel-title .cursor-move'
+				                              });
 			       $menu_page.find('.sidebar-panels').on('sortupdate', update_sidebar_panels_order);
 		       };
 
@@ -162,11 +166,11 @@
 			       {
 				       var scroll_to_content_panel = function()
 				       {
-					       $[_.core('scrollTo')]($content_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
+					       $[_.core('->scrollTo')]($content_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
 				       };
 				       if($content_panel.hasClass('in')) scroll_to_content_panel(); // Expanded already.
-				       else $content_panel.one('shown.wsc-bs.collapse', scroll_to_content_panel),
-					       $content_panel[_.core('collapse')]({toggle: false})[_.core('collapse')]('show');
+				       else $content_panel.one('shown.' + _.core('-bs') + '.collapse', scroll_to_content_panel),
+					       $content_panel[_.core('->collapse')]({toggle: false})[_.core('->collapse')]('show');
 			       }
 			       if(sidebar_panel_slug // Focusing on a specific sidebar panel?
 			          && ($sidebar_panel = $menu_page.find('.sidebar-panels #panel--' + sidebar_panel_slug + '.panel-collapse')).length)
@@ -174,11 +178,11 @@
 				       var scroll_to_sidebar_panel = function()
 				       {
 					       if(!content_panel_slug) // Only if we are NOT also scrolling to a content panel.
-						       $[_.core('scrollTo')]($sidebar_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
+						       $[_.core('->scrollTo')]($sidebar_panel.prev('.panel-heading'), {offset: {top: -100, left: 0}, duration: 500});
 				       };
 				       if($sidebar_panel.hasClass('in')) scroll_to_sidebar_panel(); // Expanded already.
-				       else $sidebar_panel.one('shown.wsc-bs.collapse', scroll_to_sidebar_panel),
-					       $sidebar_panel[_.core('collapse')]({toggle: false})[_.core('collapse')]('show');
+				       else $sidebar_panel.one('shown.' + _.core('-bs') + '.collapse', scroll_to_sidebar_panel),
+					       $sidebar_panel[_.core('->collapse')]({toggle: false})[_.core('->collapse')]('show');
 			       }
 		       };
 

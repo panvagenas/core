@@ -150,7 +150,12 @@ namespace wsc_v000000_dev
 			$args = $this->©array->is_not_empty_or($action['a'], array());
 
 			ksort($args, SORT_NUMERIC); // Make sure arguments are ordered by key.
-
+			if(isset($args['___file_info'])) // `___file_info` into last position always.
+			{
+				$___file_info = $args['___file_info'];
+				unset($args['___file_info']);
+				$args[] = $___file_info;
+			}
 			$verifier = $this->©string->is_not_empty_or($action['v'], '');
 
 			if($this->©strings->are_not_empty($call, $type, $verifier))
@@ -183,8 +188,13 @@ namespace wsc_v000000_dev
 				$action['a'] = json_decode($action['a'], TRUE);
 			$args = $this->©array->is_not_empty_or($action['a'], array());
 
-			ksort($args, SORT_NUMERIC); // Ordered by key.
-
+			ksort($args, SORT_NUMERIC); // Make sure arguments are ordered by key.
+			if(isset($args['___file_info'])) // `___file_info` into last position always.
+			{
+				$___file_info = $args['___file_info'];
+				unset($args['___file_info']);
+				$args[] = $___file_info;
+			}
 			$verifier = $this->©string->is_not_empty_or($action['v'], '');
 
 			if($this->©strings->are_not_empty($call, $type, $verifier))
@@ -900,19 +910,19 @@ namespace wsc_v000000_dev
 
 			if(($errors = $this->has_call_data_errors_for($call, $group)))
 				$responses .= // Errors (as HTML markup). Also w/ a specific icon.
-					'<div class="responses errors alert alert-danger">'.
+					'<div class="responses errors alert alert-danger em-padding">'.
 					'<ul>'.$errors->get_messages_as_list_items('', 0, '<i class="fa fa-exclamation-triangle"></i> ').'</ul>'.
 					'</div>';
 
 			if(($successes = $this->has_call_data_successes_for($call, $group)))
 				$responses .= // Successes (as HTML markup). Also w/ a specific icon.
-					'<div class="responses successes alert alert-success">'.
+					'<div class="responses successes alert alert-success em-padding">'.
 					'<ul>'.$successes->get_messages_as_list_items('', 0, '<i class="fa fa-thumbs-o-up"></i> ').'</ul>'.
 					'</div>';
 
 			if(($messages = $this->has_call_data_messages_for($call, $group)))
 				$responses .= // Messages (as HTML markup). Also w/ a specific icon.
-					'<div class="responses messages alert alert-info">'.
+					'<div class="responses messages alert alert-info em-padding">'.
 					'<ul>'.$messages->get_messages_as_list_items('', 0, '<i class="fa fa-comments-o"></i> ').'</ul>'.
 					'</div>';
 
