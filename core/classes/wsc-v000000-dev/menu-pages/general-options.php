@@ -27,18 +27,18 @@ namespace wsc_v000000_dev\menu_pages
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's ``$instance``,
+		 *    or a new ``$instance`` array.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
 			$this->updates_options = TRUE;
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$this->heading_title           = $this->__('General Options');
 			$this->sub_heading_description = sprintf($this->__('%1$s general configuration options.'),
-			                                         esc_html($this->___instance_config->plugin_name));
+			                                         esc_html($this->instance->plugin_name));
 		}
 
 		/**

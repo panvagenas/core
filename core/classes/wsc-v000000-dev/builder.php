@@ -146,9 +146,9 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor (initiates build).
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @param string       $plugin_dir Optional. Defaults to an empty string.
 		 *    By default, we build the WebSharks™ Core. If supplied, we will build a specific plugin.
@@ -185,13 +185,13 @@ namespace wsc_v000000_dev
 		 * @throws exception If any parameter values are invalid; based on extensive validation in this class.
 		 * @throws exception If a build fails for any reason. See: `build()` method for further details.
 		 */
-		public function __construct($___instance_config, $plugin_dir = '', $plugin_name = '', $plugin_root_ns = '', $distros_dir = '', $downloads_dir = '',
+		public function __construct($instance, $plugin_dir = '', $plugin_name = '', $plugin_root_ns = '', $distros_dir = '', $downloads_dir = '',
 		                            $version = '', $requires_at_least_apache_version = '', $tested_up_to_apache_version = '',
 		                            $requires_at_least_php_version = '', $tested_up_to_php_version = '',
 		                            $requires_at_least_wp_version = '', $tested_up_to_wp_version = '',
 		                            $use_core_type = '', $build_from_core_version = '')
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$this->check_arg_types('', 'string', 'string', 'string', 'string', 'string',
 			                       'string', 'string', 'string', 'string', 'string',
@@ -210,8 +210,8 @@ namespace wsc_v000000_dev
 				);
 			// Construct object properties.
 
-			$this->core_repo_dir = $this->___instance_config->local_core_repo_dir;
-			$this->core_dir      = $this->___instance_config->core_dir;
+			$this->core_repo_dir = $this->instance->local_core_repo_dir;
+			$this->core_dir      = $this->instance->core_dir;
 
 			$this->plugin_dir      = ($plugin_dir) ? $this->©dir->n_seps($plugin_dir) : '';
 			$this->plugin_repo_dir = ($plugin_dir) ? $this->©dir->n_seps_up($plugin_dir) : '';
@@ -400,11 +400,11 @@ namespace wsc_v000000_dev
 				);
 			// Validate core version that we're supposed to be building from.
 
-			if($this->build_from_core_version !== $this->___instance_config->core_version)
+			if($this->build_from_core_version !== $this->instance->core_version)
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_build_from_core_version', get_defined_vars(),
 					sprintf($this->__('Building from incorrect core version: `%1$s`.'), $this->build_from_core_version).
-					' '.sprintf($this->__('This is version `%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name)
+					' '.sprintf($this->__('This is version `%1$s` of the %2$s.'), $this->instance->core_version, $this->instance->core_name)
 				);
 			// Determine starting branches; also check for uncommitted changes and/or untracked files.
 
@@ -459,7 +459,7 @@ namespace wsc_v000000_dev
 			);
 			$successes->add($this->method(__FUNCTION__).'#starting_branch_core', get_defined_vars(),
 			                sprintf($this->__('Building from %1$s branch: `%2$s` (version: `%3$s`) w/ class file: `%4$s`.'),
-			                        $this->___instance_config->core_name, $this->starting_branches['core'], $this->___instance_config->core_version, $this->©dir->n_seps(__FILE__))
+			                        $this->instance->core_name, $this->starting_branches['core'], $this->instance->core_version, $this->©dir->n_seps(__FILE__))
 			);
 			if($this->plugin_dir) // Building a plugin.
 			{
@@ -483,7 +483,7 @@ namespace wsc_v000000_dev
 				);
 				// WebSharks™ Core replication.
 
-				$_new_core_dir = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes;
+				$_new_core_dir = $this->plugin_dir.'/'.$this->instance->core_ns_stub_with_dashes;
 
 				$this->©dir->delete($_new_core_dir); // In case it already exists.
 				$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
@@ -499,17 +499,17 @@ namespace wsc_v000000_dev
 					$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 				}
 				$successes->add($this->method(__FUNCTION__).'#new_core_dir_replication_into_plugin_dir', get_defined_vars(),
-				                sprintf($this->__('The %1$s has been temporarily replicated into this plugin directory location: `%2$s`.'), $this->___instance_config->core_name, $_new_core_dir).
-				                ' '.sprintf($this->__('Every file in the entire plugin repo directory has now been updated to use `v%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name).
-				                (($this->use_core_type === 'directory') ? ' '.sprintf($this->__('The temporary %1$s directory has been added to the list of version controlled files in this plugin repo (but only temporarily; for distro creation momentarily).'), $this->___instance_config->core_name)
-					                : ' '.sprintf($this->__('The temporary %1$s directory has been deleted; and also removed from the list of version controlled files in this repo. It will be excluded from the final distro.'), $this->___instance_config->core_name))
+				                sprintf($this->__('The %1$s has been temporarily replicated into this plugin directory location: `%2$s`.'), $this->instance->core_name, $_new_core_dir).
+				                ' '.sprintf($this->__('Every file in the entire plugin repo directory has now been updated to use `v%1$s` of the %2$s.'), $this->instance->core_version, $this->instance->core_name).
+				                (($this->use_core_type === 'directory') ? ' '.sprintf($this->__('The temporary %1$s directory has been added to the list of version controlled files in this plugin repo (but only temporarily; for distro creation momentarily).'), $this->instance->core_name)
+					                : ' '.sprintf($this->__('The temporary %1$s directory has been deleted; and also removed from the list of version controlled files in this repo. It will be excluded from the final distro.'), $this->instance->core_name))
 				);
 				if($this->use_core_type !== 'directory') unset($_new_core_dir); // Housekeeping.
 
 				if($this->use_core_type !== 'submodule') // WebSharks™ Core stub file?
 				{
 					$_core_stub     = $this->core_dir.'/stub.php';
-					$_new_core_stub = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php';
+					$_new_core_stub = $this->plugin_dir.'/'.$this->instance->core_ns_stub_with_dashes.'.php';
 
 					$this->©file->delete($_new_core_stub); // In case it already exists.
 					$this->©command->git('rm --cached --ignore-unmatch '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
@@ -518,17 +518,17 @@ namespace wsc_v000000_dev
 					$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_stub), $this->plugin_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_stub_added_to_plugin_dir', get_defined_vars(),
-					                sprintf($this->__('The %1$s stub has been added to the plugin directory here: `%2$s`.'), $this->___instance_config->core_name, $_new_core_stub).
-					                ' '.sprintf($this->__('The %1$s stub has also been added to the list of version controlled files in this plugin repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir).
-					                ' '.sprintf($this->__('The %1$s stub will remain in the plugin repo. This unifies the way in which plugins include the %1$s. Making it possible for a plugin to utilize different types of %1$s distributions — without modification.'), $this->___instance_config->core_name).
-					                ' '.sprintf($this->__('While a plugin\'s repo will NOT include the entire %1$s (that\'s what the distro is for); leaving the stub behind (in the repo) allows a plugin to function, so long as the %1$s is available somewhere on the site; in one form or another.'), $this->___instance_config->core_name)
+					                sprintf($this->__('The %1$s stub has been added to the plugin directory here: `%2$s`.'), $this->instance->core_name, $_new_core_stub).
+					                ' '.sprintf($this->__('The %1$s stub has also been added to the list of version controlled files in this plugin repo: `%2$s`.'), $this->instance->core_name, $this->plugin_repo_dir).
+					                ' '.sprintf($this->__('The %1$s stub will remain in the plugin repo. This unifies the way in which plugins include the %1$s. Making it possible for a plugin to utilize different types of %1$s distributions — without modification.'), $this->instance->core_name).
+					                ' '.sprintf($this->__('While a plugin\'s repo will NOT include the entire %1$s (that\'s what the distro is for); leaving the stub behind (in the repo) allows a plugin to function, so long as the %1$s is available somewhere on the site; in one form or another.'), $this->instance->core_name)
 					);
 					unset($_core_stub, $_new_core_stub); // Housekeeping.
 				}
 				if($this->use_core_type === 'phar') // Bundle WebSharks™ Core PHP archive (e.g. the PHAR file)?
 				{
-					$_core_phar                = $this->core_repo_dir.'/.~'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
-					$_new_core_phar            = $this->plugin_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
+					$_core_phar                = $this->core_repo_dir.'/.~'.$this->instance->core_ns_stub_with_dashes.'.php.phar';
+					$_new_core_phar            = $this->plugin_dir.'/'.$this->instance->core_ns_stub_with_dashes.'.php.phar';
 					$_plugin_dir_htaccess_file = $this->plugin_dir.'/.htaccess';
 
 					$this->©file->delete($_new_core_phar); // In case it already exists.
@@ -546,7 +546,7 @@ namespace wsc_v000000_dev
 					$this->©command->git('add --intent-to-add '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_phar_added_to_plugin_dir', get_defined_vars(),
-					                sprintf($this->__('The %1$s PHAR file for `v%2$s`; has been copied to: `%3$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version, $_new_core_phar).
+					                sprintf($this->__('The %1$s PHAR file for `v%2$s`; has been copied to: `%3$s`.'), $this->instance->core_name, $this->instance->core_version, $_new_core_phar).
 					                ' '.sprintf($this->__('This file (a compressed PHP Archive); has been added to the list of version controlled files in this plugin repo: `%1$s` (but only temporarily; for distro creation momentarily).'), $this->plugin_repo_dir)
 					);
 					unset($_core_phar, $_plugin_dir_htaccess_file); // Housekeeping.
@@ -638,7 +638,7 @@ namespace wsc_v000000_dev
 				                ' '.sprintf($this->__('Tested up to Apache version: `%1$s`.'), $this->tested_up_to_apache_version).
 				                ' '.sprintf($this->__('Plugin requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_version).
 				                ' '.sprintf($this->__('Tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_version).
-				                ' '.sprintf($this->__('Uses %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
+				                ' '.sprintf($this->__('Uses %1$s: `v%2$s`.'), $this->instance->core_name, $this->instance->core_version).
 				                ' '.sprintf($this->__('Plugin requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_version).
 				                ' '.sprintf($this->__('Plugin tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_version)
 				);
@@ -687,8 +687,8 @@ namespace wsc_v000000_dev
 					$this->©command->git('rm -r --cached '.escapeshellarg($_new_core_dir.'/'), $this->plugin_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_dir_deletion', get_defined_vars(),
-					                ' '.sprintf($this->__('The temporary %1$s directory: `%2$s`; has been deleted from the plugin directory.'), $this->___instance_config->core_name, $_new_core_dir).
-					                ' '.sprintf($this->__('The temporary %1$s directory was also removed from the list of version controlled files in this repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir)
+					                ' '.sprintf($this->__('The temporary %1$s directory: `%2$s`; has been deleted from the plugin directory.'), $this->instance->core_name, $_new_core_dir).
+					                ' '.sprintf($this->__('The temporary %1$s directory was also removed from the list of version controlled files in this repo: `%2$s`.'), $this->instance->core_name, $this->plugin_repo_dir)
 					);
 					unset($_new_core_dir); // Housekeeping.
 				}
@@ -700,8 +700,8 @@ namespace wsc_v000000_dev
 					$this->©command->git('rm --cached '.escapeshellarg($_new_core_phar), $this->plugin_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_phar_deletion', get_defined_vars(),
-					                ' '.sprintf($this->__('The temporary %1$s PHAR file: `%2$s`; has been deleted from the plugin directory.'), $this->___instance_config->core_name, $_new_core_phar).
-					                ' '.sprintf($this->__('The temporary %1$s PHAR file was also removed from the list of version controlled files in this repo: `%2$s`.'), $this->___instance_config->core_name, $this->plugin_repo_dir)
+					                ' '.sprintf($this->__('The temporary %1$s PHAR file: `%2$s`; has been deleted from the plugin directory.'), $this->instance->core_name, $_new_core_phar).
+					                ' '.sprintf($this->__('The temporary %1$s PHAR file was also removed from the list of version controlled files in this repo: `%2$s`.'), $this->instance->core_name, $this->plugin_repo_dir)
 					);
 					unset($_new_core_phar); // Housekeeping.
 				}
@@ -729,7 +729,7 @@ namespace wsc_v000000_dev
 					);
 					// WebSharks™ Core replication.
 
-					$_new_pro_core_dir = $this->plugin_pro_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes;
+					$_new_pro_core_dir = $this->plugin_pro_dir.'/'.$this->instance->core_ns_stub_with_dashes;
 
 					$this->©dir->delete($_new_pro_core_dir); // In case it already exists.
 					$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_pro_core_dir.'/'), $this->plugin_pro_repo_dir);
@@ -739,9 +739,9 @@ namespace wsc_v000000_dev
 					$this->©dir->delete($_new_pro_core_dir); // Remove it immediately.
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_dir_replication_into_plugin_pro_dir', get_defined_vars(),
-					                sprintf($this->__('The %1$s has been temporarily replicated into this plugin pro directory: `%2$s`.'), $this->___instance_config->core_name, $_new_pro_core_dir).
-					                ' '.sprintf($this->__('Every file in the entire plugin pro repo directory has now been updated to use `v%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name).
-					                ' '.sprintf($this->__('The temporary %1$s was deleted from the plugin pro directory immediately after processing: `%2$s`.'), $this->___instance_config->core_name, $_new_pro_core_dir)
+					                sprintf($this->__('The %1$s has been temporarily replicated into this plugin pro directory: `%2$s`.'), $this->instance->core_name, $_new_pro_core_dir).
+					                ' '.sprintf($this->__('Every file in the entire plugin pro repo directory has now been updated to use `v%1$s` of the %2$s.'), $this->instance->core_version, $this->instance->core_name).
+					                ' '.sprintf($this->__('The temporary %1$s was deleted from the plugin pro directory immediately after processing: `%2$s`.'), $this->instance->core_name, $_new_pro_core_dir)
 					);
 					unset($_new_pro_core_dir); // Housekeeping.
 
@@ -834,7 +834,7 @@ namespace wsc_v000000_dev
 					                ' '.sprintf($this->__('Pro add-on tested up to Apache version: `%1$s`.'), $this->tested_up_to_apache_version).
 					                ' '.sprintf($this->__('Pro add-on requires at least PHP version: `%1$s`.'), $this->requires_at_least_php_version).
 					                ' '.sprintf($this->__('Pro add-on tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_version).
-					                ' '.sprintf($this->__('Uses %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
+					                ' '.sprintf($this->__('Uses %1$s: `v%2$s`.'), $this->instance->core_name, $this->instance->core_version).
 					                ' '.sprintf($this->__('Pro add-on requires at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_version).
 					                ' '.sprintf($this->__('Pro add-on tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_version)
 					);
@@ -898,7 +898,7 @@ namespace wsc_v000000_dev
 				{
 					// WebSharks™ Core replication.
 
-					$_new_extras_core_dir = $this->plugin_extras_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes;
+					$_new_extras_core_dir = $this->plugin_extras_dir.'/'.$this->instance->core_ns_stub_with_dashes;
 
 					$this->©dir->delete($_new_extras_core_dir); // In case it already exists.
 					$this->©command->git('rm -r --cached --ignore-unmatch '.escapeshellarg($_new_extras_core_dir.'/'), $this->plugin_repo_dir);
@@ -908,15 +908,15 @@ namespace wsc_v000000_dev
 					$this->©dir->delete($_new_extras_core_dir); // Remove it immediately.
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_dir_replication_into_plugin_extras_dir', get_defined_vars(),
-					                sprintf($this->__('The %1$s has been temporarily replicated into this plugin extras directory: `%2$s`.'), $this->___instance_config->core_name, $_new_extras_core_dir).
-					                ' '.sprintf($this->__('Every file in the entire plugin extras directory has now been updated to use `v%1$s` of the %2$s.'), $this->___instance_config->core_version, $this->___instance_config->core_name).
-					                ' '.sprintf($this->__('The temporary %1$s was deleted from the plugin extras directory immediately after processing: `%2$s`.'), $this->___instance_config->core_name, $_new_extras_core_dir)
+					                sprintf($this->__('The %1$s has been temporarily replicated into this plugin extras directory: `%2$s`.'), $this->instance->core_name, $_new_extras_core_dir).
+					                ' '.sprintf($this->__('Every file in the entire plugin extras directory has now been updated to use `v%1$s` of the %2$s.'), $this->instance->core_version, $this->instance->core_name).
+					                ' '.sprintf($this->__('The temporary %1$s was deleted from the plugin extras directory immediately after processing: `%2$s`.'), $this->instance->core_name, $_new_extras_core_dir)
 					);
 					unset($_new_extras_core_dir); // Housekeeping.
 
 					// Update various extra files w/ version numbers and other requirements.
 
-					$_core_deps_x_file               = $this->core_dir.'/classes/'.$this->___instance_config->core_ns_with_dashes.'/deps-x.php';
+					$_core_deps_x_file               = $this->core_dir.'/classes/'.$this->instance->core_ns_with_dashes.'/deps-x.php';
 					$_new_server_scanner_file        = $this->plugin_extras_dir.'/'.basename($this->plugin_dir).'-server-scanner.php';
 					$_new_server_scanner_plugin_dirs = basename($this->plugin_dir).(($this->plugin_pro_dir) ? ','.basename($this->plugin_pro_dir) : '');
 
@@ -951,7 +951,7 @@ namespace wsc_v000000_dev
 					                ' '.sprintf($this->__('Extras version: `%1$s`.'), $this->version).
 					                ' '.sprintf($this->__('Extras require at least PHP version: `%1$s`.'), $this->requires_at_least_php_version).
 					                ' '.sprintf($this->__('Extras tested up to PHP version: `%1$s`.'), $this->tested_up_to_php_version).
-					                ' '.sprintf($this->__('Extras using %1$s: `v%2$s`.'), $this->___instance_config->core_name, $this->___instance_config->core_version).
+					                ' '.sprintf($this->__('Extras using %1$s: `v%2$s`.'), $this->instance->core_name, $this->instance->core_version).
 					                ' '.sprintf($this->__('Extras require at least WordPress® version: `%1$s`.'), $this->requires_at_least_wp_version).
 					                ' '.sprintf($this->__('Extras tested up to WordPress® version: `%1$s`.'), $this->tested_up_to_wp_version).
 					                ' '.sprintf($this->__('New server scanner file (now under verion control in the plugin repo): `%1$s`.'), $_new_server_scanner_file)
@@ -1006,7 +1006,7 @@ namespace wsc_v000000_dev
 
 			else // We will either build a new WebSharks™ Core (or rebuild this one).
 			{
-				$is_new       = ($this->___instance_config->core_version !== $this->version);
+				$is_new       = ($this->instance->core_version !== $this->version);
 				$building     = ($is_new) ? $this->__('building') : $this->__('rebuilding');
 				$build        = ($is_new) ? $this->__('build') : $this->__('rebuild');
 				$ucfirst_core = ($is_new) ? $this->__('New core') : $this->__('Core');
@@ -1020,7 +1020,7 @@ namespace wsc_v000000_dev
 				                     escapeshellarg(sprintf($this->__('Auto-commit; before %1$s %2$score.'), $building, $new_space)), $this->core_repo_dir);
 
 				$successes->add($this->method(__FUNCTION__).'#before_building_'.$new_slug.'core', get_defined_vars(),
-				                sprintf($this->__('Restore point. All existing files (new and/or changed) on the starting branch: `%1$s`; have been added to the list of version controlled files in the %2$s repo directory: `%3$s`.'), $this->starting_branches['core'], $this->___instance_config->core_name, $this->core_repo_dir).
+				                sprintf($this->__('Restore point. All existing files (new and/or changed) on the starting branch: `%1$s`; have been added to the list of version controlled files in the %2$s repo directory: `%3$s`.'), $this->starting_branches['core'], $this->instance->core_name, $this->core_repo_dir).
 				                ' '.sprintf($this->__('A commit has been processed for all changes to the existing file structure%1$s.'), (($is_new) ? ' '.$this->__('(before new branch creation occurs)') : ''))
 				);
 				// Create a new branch for this version (and switch to this new branch).
@@ -1039,9 +1039,9 @@ namespace wsc_v000000_dev
 					$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_dir), $this->core_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#new_core_dir_replication', get_defined_vars(),
-					                sprintf($this->__('The %1$s has been temporarily replicated into this directory: `%2$s`.'), $this->___instance_config->core_name, $_this_core_dir).
-					                ' '.sprintf($this->__('This directory has also been added to the list of version controlled files in the %1$s repo (but only temporarily; for distro creation momentarily).'), $this->___instance_config->core_name).
-					                ' '.sprintf($this->__('This directory will be renamed later in this routine. It will override the existing %1$s on this new branch once we\'re done here.'), $this->___instance_config->core_name)
+					                sprintf($this->__('The %1$s has been temporarily replicated into this directory: `%2$s`.'), $this->instance->core_name, $_this_core_dir).
+					                ' '.sprintf($this->__('This directory has also been added to the list of version controlled files in the %1$s repo (but only temporarily; for distro creation momentarily).'), $this->instance->core_name).
+					                ' '.sprintf($this->__('This directory will be renamed later in this routine. It will override the existing %1$s on this new branch once we\'re done here.'), $this->instance->core_name)
 					);
 				}
 				else $_this_core_dir = $this->core_dir; // Use directory as-is.
@@ -1051,7 +1051,7 @@ namespace wsc_v000000_dev
 				$_this_core_stub_file   = $_this_core_dir.'/stub.php';
 				$_this_core_plugin_file = $_this_core_dir.'/plugin.php';
 				$_this_core_readme_file = $_this_core_dir.'/readme.txt';
-				$_this_core_deps_x_file = $_this_core_dir.'/classes/'.$this->___instance_config->core_ns_stub_v_with_dashes.$this->©string->with_dashes($this->version).'/deps-x.php';
+				$_this_core_deps_x_file = $_this_core_dir.'/classes/'.$this->instance->core_ns_stub_v_with_dashes.$this->©string->with_dashes($this->version).'/deps-x.php';
 
 				if(!is_file($_this_core_stub_file))
 					throw $this->©exception(
@@ -1166,8 +1166,8 @@ namespace wsc_v000000_dev
 
 				// Compress this core directory into a single PHP Archive.
 
-				$_this_core_phar                     = $this->core_repo_dir.'/.~'.$this->___instance_config->core_ns_stub_with_dashes.'.php.phar';
-				$_this_core_distro_temp_dir          = $this->©dir->temp().'/'.$this->___instance_config->core_ns_stub_with_dashes;
+				$_this_core_phar                     = $this->core_repo_dir.'/.~'.$this->instance->core_ns_stub_with_dashes.'.php.phar';
+				$_this_core_distro_temp_dir          = $this->©dir->temp().'/'.$this->instance->core_ns_stub_with_dashes;
 				$_this_core_distro_temp_dir_stub     = $_this_core_distro_temp_dir.'/stub.php';
 				$_this_core_distro_temp_dir_htaccess = $_this_core_distro_temp_dir.'/.htaccess';
 
@@ -1186,13 +1186,13 @@ namespace wsc_v000000_dev
 
 				$this->©dir->phar_to($_this_core_distro_temp_dir, $_this_core_phar,
 				                     $_this_core_distro_temp_dir_stub, TRUE, TRUE, array_keys($this->©files->compressable_mime_types()),
-				                     $this->___instance_config->core_ns_stub_v.$this->©string->with_underscores($this->version));
+				                     $this->instance->core_ns_stub_v.$this->©string->with_underscores($this->version));
 
 				$this->©dir->delete($_this_core_distro_temp_dir); // Remove temp directory now.
 
 				$successes->add($this->method(__FUNCTION__).'#'.$new_slug.'core_phar_built_for_'.$new_slug.'core_distro_temp_dir', get_defined_vars(),
-				                sprintf($this->__('A temporary distro copy of the %1$s has been compressed into a single PHP Archive file here: `%2$s`.'), $this->___instance_config->core_name, $_this_core_phar).
-				                ' '.sprintf($this->__('The temporary distro copy of the %1$s was successfully deleted after processing.'), $this->___instance_config->core_name)
+				                sprintf($this->__('A temporary distro copy of the %1$s has been compressed into a single PHP Archive file here: `%2$s`.'), $this->instance->core_name, $_this_core_phar).
+				                ' '.sprintf($this->__('The temporary distro copy of the %1$s was successfully deleted after processing.'), $this->instance->core_name)
 				);
 				unset($_this_core_phar, $_this_core_distro_temp_dir, $_this_core_distro_temp_dir_stub, $_this_core_distro_temp_dir_htaccess);
 
@@ -1207,13 +1207,13 @@ namespace wsc_v000000_dev
 					$this->©command->git('rm -r --cached '.escapeshellarg($this->core_dir.'/'), $this->core_repo_dir);
 
 					$this->©command->git('rm -r --cached '.escapeshellarg($_this_core_dir.'/'), $this->core_repo_dir);
-					$this->©dir->rename_to($_this_core_dir, ($_this_core_dir = $this->core_repo_dir.'/'.$this->___instance_config->core_ns_stub_with_dashes));
+					$this->©dir->rename_to($_this_core_dir, ($_this_core_dir = $this->core_repo_dir.'/'.$this->instance->core_ns_stub_with_dashes));
 					$this->©command->git('add --intent-to-add '.escapeshellarg($_this_core_dir.'/'), $this->core_repo_dir);
 
 					$successes->add($this->method(__FUNCTION__).'#after_new_core_dir', get_defined_vars(),
 					                sprintf($this->__('The old core directory has been deleted from this new branch: `%1$s`.'), $this->version).
 					                ' '.sprintf($this->__('The new temporary core directory was renamed to take its place here: `%1$s`'), $_this_core_dir).
-					                ' '.sprintf($this->__('This new core directory has been added to the list of version controlled files in the %1$s repo.'), $this->___instance_config->core_name)
+					                ' '.sprintf($this->__('This new core directory has been added to the list of version controlled files in the %1$s repo.'), $this->instance->core_name)
 					);
 				}
 				unset($_this_core_dir); // Final housekeeping.
@@ -1226,11 +1226,11 @@ namespace wsc_v000000_dev
 
 				if($is_new && $this->©string->is_plugin_stable_version($this->version))
 					$this->©command->git('tag --message '. // Tag this commit (after building).
-					                     escapeshellarg(sprintf($this->__('%1$s v%2$s.'), $this->___instance_config->core_name, $this->version)).
+					                     escapeshellarg(sprintf($this->__('%1$s v%2$s.'), $this->instance->core_name, $this->version)).
 					                     ' '.escapeshellarg($this->version), $this->core_repo_dir);
 
 				$successes->add($this->method(__FUNCTION__).'#commit_before_'.$new_slug.'core_build_complete', get_defined_vars(),
-				                sprintf($this->__('All files (new and/or changed) on %1$sbranch: `%2$s`; have been added to the list of version controlled files in the %3$s repo directory: `%4$s`.'), $new_space, $this->version, $this->___instance_config->core_name, $this->core_repo_dir).
+				                sprintf($this->__('All files (new and/or changed) on %1$sbranch: `%2$s`; have been added to the list of version controlled files in the %3$s repo directory: `%4$s`.'), $new_space, $this->version, $this->instance->core_name, $this->core_repo_dir).
 				                ' '.sprintf($this->__('Finale. A commit has been processed for all changes to the %1$sfile structure.'), $new_space).
 				                (($is_new && $this->©string->is_plugin_stable_version($this->version)) // A new stable release?
 					                ? ' '.sprintf($this->__('Tagged stable release as: `%1$s`.'), $this->version) : '')

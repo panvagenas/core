@@ -45,15 +45,15 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @throws exception If GMP extension is not loaded up.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			if(!extension_loaded('gmp'))
 				throw $this->©exception( // Should NOT happen.

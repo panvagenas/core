@@ -47,11 +47,11 @@ namespace wsc_v000000_dev
 				return FALSE; // Nothing to enqueue.
 
 			// Gather notices/dismissals.
-			if(!is_array($notices = get_option($this->___instance_config->plugin_root_ns_stub.'__notices')))
-				update_option($this->___instance_config->plugin_root_ns_stub.'__notices', ($notices = array()));
+			if(!is_array($notices = get_option($this->instance->plugin_root_ns_stub.'__notices')))
+				update_option($this->instance->plugin_root_ns_stub.'__notices', ($notices = array()));
 
-			if(!is_array($dismissals = get_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals')))
-				add_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals', ($dismissals = array()), '', 'no');
+			if(!is_array($dismissals = get_option($this->instance->plugin_root_ns_stub.'__notice__dismissals')))
+				add_option($this->instance->plugin_root_ns_stub.'__notice__dismissals', ($dismissals = array()), '', 'no');
 
 			// Standardize & add to array of enqueued notices.
 			$notice = $this->standardize($notice);
@@ -65,7 +65,7 @@ namespace wsc_v000000_dev
 			if(!$notice['allow_dismissals'] || !in_array($notice['checksum'], $dismissals, TRUE))
 			{
 				$notices[$notice['checksum']] = $notice;
-				update_option($this->___instance_config->plugin_root_ns_stub.'__notices', $notices);
+				update_option($this->instance->plugin_root_ns_stub.'__notices', $notices);
 				return TRUE;
 			}
 			return FALSE; // Default return value.
@@ -133,25 +133,25 @@ namespace wsc_v000000_dev
 					if(isset($notice['notice'][0]) && ctype_upper($notice['notice'][0]))
 						$notice['notice'][0] = strtolower($notice['notice'][0]);
 
-					$notice['notice'] = '<p class="no-t-margin">'.$icon.'<strong>'.$this->___instance_config->plugin_name.' '.$this->__('says...').'</strong> '.$notice['notice'];
+					$notice['notice'] = '<p class="no-t-margin">'.$icon.'<strong>'.$this->instance->plugin_name.' '.$this->__('says...').'</strong> '.$notice['notice'];
 				}
 				else // It doesn't start with a `<p>` tag, so we'll do the best we can here.
 				{
 					if(isset($notice['notice'][0]) && ctype_upper($notice['notice'][0]))
 						$notice['notice'][0] = strtolower($notice['notice'][0]);
 
-					$notice['notice'] = '<p class="no-t-margin">'.$icon.'<strong>'.$this->___instance_config->plugin_name.' '.$this->__('says...').'</strong></p>'.$notice['notice'];
+					$notice['notice'] = '<p class="no-t-margin">'.$icon.'<strong>'.$this->instance->plugin_name.' '.$this->__('says...').'</strong></p>'.$notice['notice'];
 				}
 			}
 			if($notice['allow_dismissals']) // Allowing dismissals?
 			{
-				if(!is_array($dismissals = get_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals')))
-					add_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals', ($dismissals = array()), '', 'no');
+				if(!is_array($dismissals = get_option($this->instance->plugin_root_ns_stub.'__notice__dismissals')))
+					add_option($this->instance->plugin_root_ns_stub.'__notice__dismissals', ($dismissals = array()), '', 'no');
 
 				if(in_array($notice['checksum'], $dismissals, TRUE))
 					return FALSE; // Already dismissed this notice.
 
-				$dismiss = array($this->___instance_config->plugin_root_ns_stub.'__notice__dismiss' => $notice['checksum']);
+				$dismiss = array($this->instance->plugin_root_ns_stub.'__notice__dismiss' => $notice['checksum']);
 				$dismiss = add_query_arg(urlencode_deep($dismiss), $this->©url->current_uri());
 
 				$notice['notice'] .= ' [ <a href="'.$dismiss.'">'.$this->__('dismiss this message').'</a> ]';
@@ -159,11 +159,11 @@ namespace wsc_v000000_dev
 			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->themes()), TRUE))
 				$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
-			$classes[] = $this->___instance_config->core_ns_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes;
+			$classes[] = $this->instance->core_ns_with_dashes;
+			$classes[] = $this->instance->plugin_root_ns_with_dashes;
 
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--t--'.$current_menu_pages_theme;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--t--'.$current_menu_pages_theme;
+			$classes[] = $this->instance->core_ns_with_dashes.'--t--'.$current_menu_pages_theme;
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'--t--'.$current_menu_pages_theme;
 
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">'.
 			     '<div class="notice no-l-margin t-margin em-padding clearfix'. // WP `fade` class clashes w/ Bootstrap.
@@ -199,14 +199,14 @@ namespace wsc_v000000_dev
 			$current_page = $this->©env->admin_page();
 
 			// Gather notices/dismissals.
-			if(!is_array($notices = get_option($this->___instance_config->plugin_root_ns_stub.'__notices')))
-				update_option($this->___instance_config->plugin_root_ns_stub.'__notices', ($notices = array()));
+			if(!is_array($notices = get_option($this->instance->plugin_root_ns_stub.'__notices')))
+				update_option($this->instance->plugin_root_ns_stub.'__notices', ($notices = array()));
 
-			if(!is_array($dismissals = get_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals')))
-				add_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals', ($dismissals = array()), '', 'no');
+			if(!is_array($dismissals = get_option($this->instance->plugin_root_ns_stub.'__notice__dismissals')))
+				add_option($this->instance->plugin_root_ns_stub.'__notice__dismissals', ($dismissals = array()), '', 'no');
 
 			// Possible dismissal via query string.
-			$current_dismissal = $this->©vars->_REQUEST($this->___instance_config->plugin_root_ns_stub.'__notice__dismiss');
+			$current_dismissal = $this->©vars->_REQUEST($this->instance->plugin_root_ns_stub.'__notice__dismiss');
 
 			// Initialize a few variables.
 			$notices_require_update = $dismissals_require_update = $notices_displayed = FALSE;
@@ -249,10 +249,10 @@ namespace wsc_v000000_dev
 			unset($_checksum, $_notice, $_has_been_dismissed); // Housekeeping.
 
 			if($notices_require_update)
-				update_option($this->___instance_config->plugin_root_ns_stub.'__notices', $notices);
+				update_option($this->instance->plugin_root_ns_stub.'__notices', $notices);
 
 			if($dismissals_require_update)
-				update_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals', array_unique($dismissals));
+				update_option($this->instance->plugin_root_ns_stub.'__notice__dismissals', array_unique($dismissals));
 
 			return ($notices_displayed) ? TRUE : FALSE;
 		}
@@ -327,8 +327,8 @@ namespace wsc_v000000_dev
 			if(!$confirmation)
 				return FALSE; // Added security.
 
-			delete_option($this->___instance_config->plugin_root_ns_stub.'__notices');
-			delete_option($this->___instance_config->plugin_root_ns_stub.'__notice__dismissals');
+			delete_option($this->instance->plugin_root_ns_stub.'__notices');
+			delete_option($this->instance->plugin_root_ns_stub.'__notice__dismissals');
 
 			return TRUE;
 		}

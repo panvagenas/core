@@ -578,7 +578,6 @@ namespace wsc_v000000_dev
 					$this->__('Compatibility issue. The `GLOB_BRACE` flag is NOT supported by this server.').
 					' '.$this->__('`GLOB_BRACE` is NOT compatible w/ Solaris and other non-GNU servers.')
 				);
-
 			$php_flags = 0; // Convert core flags into PHP flags.
 
 			if($flags & $this::glob_mark) $php_flags |= GLOB_MARK;
@@ -679,8 +678,6 @@ namespace wsc_v000000_dev
 
 				foreach($value as $_value)
 					$deleted_dirs_files += $this->delete_deep($_value, $min_mtime, $min_atime, $type, TRUE);
-				unset($_value); // Housekeeping.
-
 				return $deleted_dirs_files; // Total deletions.
 			}
 			if(!($value = (string)$value) || $value === '.' || $value === '..')

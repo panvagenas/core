@@ -49,11 +49,11 @@ namespace wsc_v000000_dev
 			require_once dirname(__FILE__).'/fw-constants.php';
 
 		# -----------------------------------------------------------------------------------------------------------------------------
-		# WebSharks™ Core instance config.
+		# WebSharks™ Core instance config class.
 		# -----------------------------------------------------------------------------------------------------------------------------
 
-		if(!class_exists('\\'.__NAMESPACE__.'\\instance_config'))
-			require_once dirname(__FILE__).'/instance-config.php';
+		if(!class_exists('\\'.__NAMESPACE__.'\\instance'))
+			require_once dirname(__FILE__).'/instance.php';
 
 		# -----------------------------------------------------------------------------------------------------------------------------
 		# WordPress® version (only if NOT already defined by WordPress®).
@@ -333,6 +333,12 @@ namespace wsc_v000000_dev
 		 * @method \wsc_v000000_dev\packages ©packages()
 		 * @method \wsc_v000000_dev\packages ©package()
 		 *
+		 * @method \wsc_v000000_dev\packages\package ©packages__package()
+		 * @method \wsc_v000000_dev\packages\package ©package__package()
+		 *
+		 * @method \wsc_v000000_dev\packages\dependency ©packages__dependency()
+		 * @method \wsc_v000000_dev\packages\dependency ©package__dependency()
+		 *
 		 * @property \wsc_v000000_dev\php                                      $©php
 		 * @method \wsc_v000000_dev\php ©php()
 		 *
@@ -400,7 +406,7 @@ namespace wsc_v000000_dev
 		 * @property \wsc_v000000_dev\xml                                      $©xml
 		 * @method \wsc_v000000_dev\xml ©xml()
 		 *
-		 * @property \wsc_v000000_dev\instance_config                          $___instance_config Public/magic read-only access.
+		 * @property \wsc_v000000_dev\instance                                 $instance Public/magic read-only access.
 		 */
 		class framework implements fw_constants // Base class for the WebSharks™ Core (and for plugins powered by it).
 		{
@@ -411,7 +417,7 @@ namespace wsc_v000000_dev
 			/**
 			 * Current instance configuration.
 			 *
-			 * @var instance_config Current instance config for `$this`.
+			 * @var instance Current instance config for `$this`.
 			 *    Defaults to NULL. Set by constructor.
 			 *
 			 * @by-constructor Set by class constructor.
@@ -422,12 +428,12 @@ namespace wsc_v000000_dev
 			 * @protected Accessible only to self & extenders.
 			 *    However, we DO allow public/magic read-only access.
 			 */
-			protected $___instance_config; // Defaults to a NULL value.
+			protected $instance; // Defaults to a NULL value.
 
 			/**
 			 * A global/static cache of all instance configurations.
 			 *
-			 * @var instance_config[] A global/static cache of all instance configurations.
+			 * @var instance[] A global/static cache of all instance configurations.
 			 *    Defaults to an empty array. Set by constructor.
 			 *
 			 * @by-constructor Set by class constructor.
@@ -437,7 +443,7 @@ namespace wsc_v000000_dev
 			 *
 			 * @protected Accessible only to self & extenders.
 			 */
-			protected static $___instance_config_cache = array();
+			protected static $instance_cache = array();
 
 			# --------------------------------------------------------------------------------------------------------------------------
 			# Dynamic class properties.
@@ -489,54 +495,56 @@ namespace wsc_v000000_dev
 			 * @see __isset()
 			 */
 			protected static $___dynamic_class_aliases = array(
-				'action'     => 'actions',
-				'array'      => 'arrays',
-				'boolean'    => 'booleans',
-				'build'      => 'builder',
-				'cap'        => 'caps',
-				'captcha'    => 'captchas',
-				'class'      => 'classes',
-				'command'    => 'commands',
-				'cookie'     => 'cookies',
-				'cron'       => 'crons',
-				'currency'   => 'currencies',
-				'date'       => 'dates',
-				'db_table'   => 'db_tables',
-				'db_util'    => 'db_utils',
-				'diagnostic' => 'diagnostics',
-				'dir'        => 'dirs',
-				'dir_file'   => 'dirs_files',
-				'error'      => 'errors',
-				'feed'       => 'feeds',
-				'file'       => 'files',
-				'float'      => 'floats',
-				'form'       => 'forms',
-				'form_field' => 'form_fields',
-				'function'   => 'functions',
-				'menu_page'  => 'menu_pages',
-				'message'    => 'messages',
-				'methods'    => 'functions',
-				'method'     => 'functions',
-				'header'     => 'headers',
-				'integer'    => 'integers',
-				'ip'         => 'ips',
-				'notice'     => 'notices',
-				'option'     => 'options',
-				'object_os'  => 'objects_os',
-				'object'     => 'objects',
-				'package'    => 'packages',
-				'plugin'     => 'plugins',
-				'post'       => 'posts',
-				'replicate'  => 'replicator',
-				'script'     => 'scripts',
-				'string'     => 'strings',
-				'style'      => 'styles',
-				'success'    => 'successes',
-				'template'   => 'templates',
-				'url'        => 'urls',
-				'user'       => 'users',
-				'var'        => 'vars',
-				'video'      => 'videos'
+				'action'              => 'actions',
+				'array'               => 'arrays',
+				'boolean'             => 'booleans',
+				'build'               => 'builder',
+				'cap'                 => 'caps',
+				'captcha'             => 'captchas',
+				'class'               => 'classes',
+				'command'             => 'commands',
+				'cookie'              => 'cookies',
+				'cron'                => 'crons',
+				'currency'            => 'currencies',
+				'date'                => 'dates',
+				'db_table'            => 'db_tables',
+				'db_util'             => 'db_utils',
+				'diagnostic'          => 'diagnostics',
+				'dir'                 => 'dirs',
+				'dir_file'            => 'dirs_files',
+				'error'               => 'errors',
+				'feed'                => 'feeds',
+				'file'                => 'files',
+				'float'               => 'floats',
+				'form'                => 'forms',
+				'form_field'          => 'form_fields',
+				'function'            => 'functions',
+				'menu_page'           => 'menu_pages',
+				'message'             => 'messages',
+				'methods'             => 'functions',
+				'method'              => 'functions',
+				'header'              => 'headers',
+				'integer'             => 'integers',
+				'ip'                  => 'ips',
+				'notice'              => 'notices',
+				'option'              => 'options',
+				'object_os'           => 'objects_os',
+				'object'              => 'objects',
+				'package'             => 'packages',
+				'package__package'    => 'packages__package',
+				'package__dependency' => 'packages__dependency',
+				'plugin'              => 'plugins',
+				'post'                => 'posts',
+				'replicate'           => 'replicator',
+				'script'              => 'scripts',
+				'string'              => 'strings',
+				'style'               => 'styles',
+				'success'             => 'successes',
+				'template'            => 'templates',
+				'url'                 => 'urls',
+				'user'                => 'users',
+				'var'                 => 'vars',
+				'video'               => 'videos'
 			);
 
 			/**
@@ -756,7 +764,7 @@ namespace wsc_v000000_dev
 			 * @see __call()
 			 * @see __isset()
 			 */
-			protected static $___read_only_properties = array('___instance_config');
+			protected static $___read_only_properties = array('instance');
 
 			/**
 			 * Read-only properties.
@@ -780,21 +788,21 @@ namespace wsc_v000000_dev
 			/**
 			 * Core class constructor.
 			 *
-			 * @param framework|array $___instance_config Required at all times.
-			 *    A framework class object instance containing a parent's `$___instance_config`.
-			 *    Or, a new `$___instance_config` array with the elements listed below.
+			 * @param framework|array $instance Required at all times.
+			 *    A framework class object instance containing a parent's `$instance`.
+			 *    Or, a new `$instance` array with the elements listed below.
 			 *
 			 *    An array MUST contain the following elements:
-			 *       • `(string)$___instance_config['plugin_name']` — Name of current plugin.
-			 *       • `(string)$___instance_config['plugin_var_ns']` — Plugin variable namespace.
-			 *       • `(string)$___instance_config['plugin_cap']` — Capability required to manage the plugin.
-			 *       • `(string)$___instance_config['plugin_root_ns']` — Root namespace of current plugin.
-			 *       • `(string)$___instance_config['plugin_version']` — Version of current plugin.
-			 *       • `(string)$___instance_config['plugin_dir']` — Current plugin directory.
-			 *       • `(string)$___instance_config['plugin_site']` — Plugin site URL (http://).
+			 *       • `(string)$instance['plugin_name']` — Name of current plugin.
+			 *       • `(string)$instance['plugin_var_ns']` — Plugin variable namespace.
+			 *       • `(string)$instance['plugin_cap']` — Capability required to manage the plugin.
+			 *       • `(string)$instance['plugin_root_ns']` — Root namespace of current plugin.
+			 *       • `(string)$instance['plugin_version']` — Version of current plugin.
+			 *       • `(string)$instance['plugin_dir']` — Current plugin directory.
+			 *       • `(string)$instance['plugin_site']` — Plugin site URL (http://).
 			 *
-			 * @throws \exception If there is a missing and/or invalid `$___instance_config`.
-			 * @throws \exception If there are NOT 7 configuration elements in an `$__instance_config` array.
+			 * @throws \exception If there is a missing and/or invalid `$instance`.
+			 * @throws \exception If there are NOT 7 configuration elements in an `$instance` array.
 			 *
 			 * @throws \exception If the plugin's root namespace does NOT match this regex validation pattern.
 			 *    See: {@link stub::$regex_valid_plugin_root_ns}
@@ -823,245 +831,245 @@ namespace wsc_v000000_dev
 			 * @public A magic/overload constructor MUST always remain public.
 			 *
 			 * @extenders If a class extender creates its own constructor,
-			 *    it MUST collect an `$___instance_config`, and it MUST call upon this core constructor using:
-			 *    `parent::__construct($___instance_config)`.
+			 *    it MUST collect an `$instance`, and it MUST call upon this core constructor using:
+			 *    `parent::__construct($instance)`.
 			 *
 			 * @note This should NOT rely directly or indirectly on any other core class objects.
 			 *    Any static properties/methods in the WebSharks™ Core stub will be fine to use though.
 			 *    In addition — once the object if fully constructed; we can use anything :-)
 			 */
-			public function __construct($___instance_config)
+			public function __construct($instance)
 			{
 				$this->hooks  =& static::___hooks();
 				$this->static =& static::___static();
 
-				if($___instance_config instanceof framework)
-					$___parent_instance_config = $___instance_config->___instance_config;
-				else $___parent_instance_config = NULL; // No parent config.
+				if($instance instanceof framework)
+					$parent_instance = $instance->instance;
+				else $parent_instance = NULL; // No parent config.
 
 				$ns_class = get_class($this); // Always NEED `$this` for cache entry.
 
-				if($___parent_instance_config) // Can we bypass validation in this case?
+				if($parent_instance) // Can we bypass validation in this case?
 				{
-					$cache_entry = $___parent_instance_config->plugin_root_ns.$ns_class;
+					$cache_entry = $parent_instance->plugin_root_ns.$ns_class;
 
-					if(isset(static::$___instance_config_cache[$cache_entry]))
+					if(isset(static::$instance_cache[$cache_entry]))
 					{
-						$this->___instance_config = static::$___instance_config_cache[$cache_entry];
+						$this->instance = static::$instance_cache[$cache_entry];
 						return; // Using cache. Nothing more to do here.
 					}
-					$this->___instance_config = clone $___parent_instance_config;
+					$this->instance = clone $parent_instance;
 				}
-				else if(is_array($___instance_config) && count($___instance_config) === 7
+				else if(is_array($instance) && count($instance) === 7
 
-				        && !empty($___instance_config['plugin_name']) && is_string($___instance_config['plugin_name'])
+				        && !empty($instance['plugin_name']) && is_string($instance['plugin_name'])
 
-				        && !empty($___instance_config['plugin_root_ns']) && is_string($___instance_config['plugin_root_ns'])
-				        && preg_match(stub::$regex_valid_plugin_root_ns, $___instance_config['plugin_root_ns'])
+				        && !empty($instance['plugin_root_ns']) && is_string($instance['plugin_root_ns'])
+				        && preg_match(stub::$regex_valid_plugin_root_ns, $instance['plugin_root_ns'])
 
-				        && !empty($___instance_config['plugin_var_ns']) && is_string($___instance_config['plugin_var_ns'])
-				        && preg_match(stub::$regex_valid_plugin_var_ns, $___instance_config['plugin_var_ns'])
+				        && !empty($instance['plugin_var_ns']) && is_string($instance['plugin_var_ns'])
+				        && preg_match(stub::$regex_valid_plugin_var_ns, $instance['plugin_var_ns'])
 
-				        && !empty($___instance_config['plugin_version']) && is_string($___instance_config['plugin_version'])
-				        && preg_match(stub::$regex_valid_plugin_version, $___instance_config['plugin_version'])
+				        && !empty($instance['plugin_version']) && is_string($instance['plugin_version'])
+				        && preg_match(stub::$regex_valid_plugin_version, $instance['plugin_version'])
 
-				        && !empty($___instance_config['plugin_cap']) && is_string($___instance_config['plugin_cap'])
-				        && preg_match(stub::$regex_valid_plugin_cap, $___instance_config['plugin_cap'])
+				        && !empty($instance['plugin_cap']) && is_string($instance['plugin_cap'])
+				        && preg_match(stub::$regex_valid_plugin_cap, $instance['plugin_cap'])
 
-				        && !empty($___instance_config['plugin_dir']) && is_string($___instance_config['plugin_dir'])
-				        && is_dir($___instance_config['plugin_dir'] = stub::n_dir_seps($___instance_config['plugin_dir']))
-				        && is_file($___instance_config['plugin_dir'].'/plugin.php') && is_dir($___instance_config['plugin_dir'].'/classes')
+				        && !empty($instance['plugin_dir']) && is_string($instance['plugin_dir'])
+				        && is_dir($instance['plugin_dir'] = stub::n_dir_seps($instance['plugin_dir']))
+				        && is_file($instance['plugin_dir'].'/plugin.php') && is_dir($instance['plugin_dir'].'/classes')
 
-				        && !empty($___instance_config['plugin_site']) && is_string($___instance_config['plugin_site'])
-				        && ($___instance_config['plugin_site'] = rtrim($___instance_config['plugin_site'], '/'))
-				        && preg_match('/^http\:\/\/.+/i', $___instance_config['plugin_site'])
+				        && !empty($instance['plugin_site']) && is_string($instance['plugin_site'])
+				        && ($instance['plugin_site'] = rtrim($instance['plugin_site'], '/'))
+				        && preg_match('/^http\:\/\/.+/i', $instance['plugin_site'])
 
-				) // A fully validated `$___instance_config` array (we'll convert to an object).
+				) // A fully validated `$instance` array (we'll convert to an object).
 				{
-					$cache_entry = $___instance_config['plugin_root_ns'].$ns_class;
+					$cache_entry = $instance['plugin_root_ns'].$ns_class;
 
-					if(isset(static::$___instance_config_cache[$cache_entry]))
+					if(isset(static::$instance_cache[$cache_entry]))
 					{
-						$this->___instance_config = static::$___instance_config_cache[$cache_entry];
+						$this->instance = static::$instance_cache[$cache_entry];
 						return; // Using cache (nothing more to do here).
 					}
-					$this->___instance_config = new instance_config($___instance_config);
+					$this->instance = new instance($instance);
 				}
-				else throw new \exception(sprintf(stub::__('Invalid `$___instance_config` to constructor: `%1$s`'), print_r($___instance_config, TRUE)));
+				else throw new \exception(sprintf(stub::__('Invalid `$instance` to constructor: `%1$s`'), print_r($instance, TRUE)));
 
 				// Mostly from core stub. These properties will NOT change from one class instance to another.
-				if(!$___parent_instance_config) // Only if we did NOT get a `$___parent_instance`.
+				if(!$parent_instance) // Only if we did NOT get a `$parent_instance`.
 				{
 					// Core name & core site; begins with `http://`.
-					$this->___instance_config->core_name = stub::$core_name;
-					$this->___instance_config->core_site = stub::$core_site;
+					$this->instance->core_name = stub::$core_name;
+					$this->instance->core_site = stub::$core_site;
 
 					// Core directories; mostly from stub.
-					$this->___instance_config->local_wp_dev_dir    = stub::$local_wp_dev_dir;
-					$this->___instance_config->local_core_repo_dir = stub::$local_core_repo_dir;
-					$this->___instance_config->core_dir            = stub::n_dir_seps_up(__FILE__, 3);
-					$this->___instance_config->core_classes_dir    = $this->___instance_config->core_dir.'/classes';
+					$this->instance->local_wp_dev_dir    = stub::$local_wp_dev_dir;
+					$this->instance->local_core_repo_dir = stub::$local_core_repo_dir;
+					$this->instance->core_dir            = stub::n_dir_seps_up(__FILE__, 3);
+					$this->instance->core_classes_dir    = $this->instance->core_dir.'/classes';
 
 					// Based on `stub::$core_prefix`.
-					$this->___instance_config->core_prefix             = stub::$core_prefix;
-					$this->___instance_config->core_prefix_with_dashes = stub::$core_prefix_with_dashes;
+					$this->instance->core_prefix             = stub::$core_prefix;
+					$this->instance->core_prefix_with_dashes = stub::$core_prefix_with_dashes;
 
 					// Based on `stub::$core_ns`.
-					$this->___instance_config->core_ns             = stub::$core_ns;
-					$this->___instance_config->core_ns_prefix      = stub::$core_ns_prefix;
-					$this->___instance_config->core_ns_with_dashes = stub::$core_ns_with_dashes;
+					$this->instance->core_ns             = stub::$core_ns;
+					$this->instance->core_ns_prefix      = stub::$core_ns_prefix;
+					$this->instance->core_ns_with_dashes = stub::$core_ns_with_dashes;
 
 					// Based on `stub::$core_ns_stub`.
-					$this->___instance_config->{stub::$core_ns_stub}    = stub::$core_ns_stub;
-					$this->___instance_config->core_ns_stub             = stub::$core_ns_stub;
-					$this->___instance_config->core_ns_stub_with_dashes = stub::$core_ns_stub_with_dashes;
+					$this->instance->{stub::$core_ns_stub}    = stub::$core_ns_stub;
+					$this->instance->core_ns_stub             = stub::$core_ns_stub;
+					$this->instance->core_ns_stub_with_dashes = stub::$core_ns_stub_with_dashes;
 
 					// Based on `stub::$core_ns_stub_v`.
-					$this->___instance_config->core_ns_stub_v             = stub::$core_ns_stub_v;
-					$this->___instance_config->core_ns_stub_v_with_dashes = stub::$core_ns_stub_v_with_dashes;
+					$this->instance->core_ns_stub_v             = stub::$core_ns_stub_v;
+					$this->instance->core_ns_stub_v_with_dashes = stub::$core_ns_stub_v_with_dashes;
 
 					// Based on `stub::$core_version`.
-					$this->___instance_config->core_version                  = stub::$core_version;
-					$this->___instance_config->core_version_with_underscores = stub::$core_version_with_underscores;
-					$this->___instance_config->core_version_with_dashes      = stub::$core_version_with_dashes;
+					$this->instance->core_version                  = stub::$core_version;
+					$this->instance->core_version_with_underscores = stub::$core_version_with_underscores;
+					$this->instance->core_version_with_dashes      = stub::$core_version_with_dashes;
 
 					// Check core `namespace` for validation issues.
-					if(!preg_match(stub::$regex_valid_core_ns_version, $this->___instance_config->core_ns))
+					if(!preg_match(stub::$regex_valid_core_ns_version, $this->instance->core_ns))
 						throw new \exception(sprintf(stub::__('Invalid core namespace: `%1$s`.'),
-						                             $this->___instance_config->core_ns));
+						                             $this->instance->core_ns));
 				}
 				// Check `namespace\sub_namespace\class` for validation issues.
-				if(!preg_match(stub::$regex_valid_plugin_ns_class, ($this->___instance_config->ns_class = $ns_class)))
+				if(!preg_match(stub::$regex_valid_plugin_ns_class, ($this->instance->ns_class = $ns_class)))
 					throw new \exception(sprintf(stub::__('Namespace\\class contains invalid chars: `%1$s`.'),
-					                             $this->___instance_config->ns_class));
+					                             $this->instance->ns_class));
 
 				// The `namespace\sub_namespace` for `$this` class.
-				$this->___instance_config->ns = substr($this->___instance_config->ns_class, 0, strrpos($this->___instance_config->ns_class, '\\'));
+				$this->instance->ns = substr($this->instance->ns_class, 0, strrpos($this->instance->ns_class, '\\'));
 
 				// The `sub_namespace\class` for `$this` class.
-				$this->___instance_config->sub_ns_class                  = ltrim(strstr($this->___instance_config->ns_class, '\\'), '\\');
-				$this->___instance_config->sub_ns_class_with_underscores = stub::with_underscores($this->___instance_config->sub_ns_class);
-				$this->___instance_config->sub_ns_class_with_dashes      = stub::with_dashes($this->___instance_config->sub_ns_class);
+				$this->instance->sub_ns_class                  = ltrim(strstr($this->instance->ns_class, '\\'), '\\');
+				$this->instance->sub_ns_class_with_underscores = stub::with_underscores($this->instance->sub_ns_class);
+				$this->instance->sub_ns_class_with_dashes      = stub::with_dashes($this->instance->sub_ns_class);
 
 				// The `namespace\sub_namespace\class` for `$this` class.
-				$this->___instance_config->ns_class_prefix           = '\\'.$this->___instance_config->ns_class;
-				$this->___instance_config->ns_class_with_underscores = stub::with_underscores($this->___instance_config->ns_class);
-				$this->___instance_config->ns_class_with_dashes      = stub::with_dashes($this->___instance_config->ns_class);
-				$this->___instance_config->ns_class_basename         = basename(str_replace('\\', '/', $this->___instance_config->ns_class));
+				$this->instance->ns_class_prefix           = '\\'.$this->instance->ns_class;
+				$this->instance->ns_class_with_underscores = stub::with_underscores($this->instance->ns_class);
+				$this->instance->ns_class_with_dashes      = stub::with_dashes($this->instance->ns_class);
+				$this->instance->ns_class_basename         = basename(str_replace('\\', '/', $this->instance->ns_class));
 
-				// Only if we're NOT in the same namespace as the `$___parent_instance`.
-				if(!$___parent_instance_config || $___parent_instance_config->ns !== $this->___instance_config->ns)
+				// Only if we're NOT in the same namespace as the `$parent_instance`.
+				if(!$parent_instance || $parent_instance->ns !== $this->instance->ns)
 				{
 					// The `namespace\sub_namespace` for `$this` class.
-					$this->___instance_config->ns_prefix           = '\\'.$this->___instance_config->ns;
-					$this->___instance_config->ns_with_underscores = stub::with_underscores($this->___instance_config->ns);
-					$this->___instance_config->ns_with_dashes      = stub::with_dashes($this->___instance_config->ns);
+					$this->instance->ns_prefix           = '\\'.$this->instance->ns;
+					$this->instance->ns_with_underscores = stub::with_underscores($this->instance->ns);
+					$this->instance->ns_with_dashes      = stub::with_dashes($this->instance->ns);
 
 					// The `namespace` for `$this` class.
-					$this->___instance_config->root_ns             = strstr($this->___instance_config->ns_class, '\\', TRUE);
-					$this->___instance_config->root_ns_prefix      = '\\'.$this->___instance_config->root_ns;
-					$this->___instance_config->root_ns_with_dashes = stub::with_dashes($this->___instance_config->root_ns);
+					$this->instance->root_ns             = strstr($this->instance->ns_class, '\\', TRUE);
+					$this->instance->root_ns_prefix      = '\\'.$this->instance->root_ns;
+					$this->instance->root_ns_with_dashes = stub::with_dashes($this->instance->root_ns);
 				}
 				// Based entirely on current plugin. These properties will NOT change from one class instance to another.
-				if(!$___parent_instance_config) // Only need this routine if we did NOT get a `$___parent_instance`.
+				if(!$parent_instance) // Only need this routine if we did NOT get a `$parent_instance`.
 				{
 					// Plugin name & plugin site; begins with `http://`.
-					$this->___instance_config->plugin_name = $this->___instance_config->plugin_name;
-					$this->___instance_config->plugin_site = $this->___instance_config->plugin_site;
+					$this->instance->plugin_name = $this->instance->plugin_name;
+					$this->instance->plugin_site = $this->instance->plugin_site;
 
 					// Based on `plugin_version`.
-					$this->___instance_config->plugin_version                  = $this->___instance_config->plugin_version;
-					$this->___instance_config->plugin_version_with_underscores = stub::with_underscores($this->___instance_config->plugin_version);
-					$this->___instance_config->plugin_version_with_dashes      = stub::with_dashes($this->___instance_config->plugin_version);
+					$this->instance->plugin_version                  = $this->instance->plugin_version;
+					$this->instance->plugin_version_with_underscores = stub::with_underscores($this->instance->plugin_version);
+					$this->instance->plugin_version_with_dashes      = stub::with_dashes($this->instance->plugin_version);
 
 					// Based on `plugin_var_ns` (which serves a few different purposes).
-					$this->___instance_config->plugin_var_ns             = $this->___instance_config->plugin_var_ns;
-					$this->___instance_config->plugin_var_ns_with_dashes = stub::with_dashes($this->___instance_config->plugin_var_ns);
+					$this->instance->plugin_var_ns             = $this->instance->plugin_var_ns;
+					$this->instance->plugin_var_ns_with_dashes = stub::with_dashes($this->instance->plugin_var_ns);
 
 					// Based on `plugin_var_ns` (which serves a few different purposes).
-					$this->___instance_config->plugin_prefix             = $this->___instance_config->plugin_var_ns.'_';
-					$this->___instance_config->plugin_prefix_with_dashes = stub::with_dashes($this->___instance_config->plugin_prefix);
-					if($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns)
+					$this->instance->plugin_prefix             = $this->instance->plugin_var_ns.'_';
+					$this->instance->plugin_prefix_with_dashes = stub::with_dashes($this->instance->plugin_prefix);
+					if($this->instance->plugin_root_ns === $this->instance->core_ns)
 					{
-						$this->___instance_config->plugin_prefix             = $this->___instance_config->core_prefix;
-						$this->___instance_config->plugin_prefix_with_dashes = $this->___instance_config->core_prefix_with_dashes;
+						$this->instance->plugin_prefix             = $this->instance->core_prefix;
+						$this->instance->plugin_prefix_with_dashes = $this->instance->core_prefix_with_dashes;
 					}
 					// Based on `plugin_cap` (used for a default set of access controls).
-					$this->___instance_config->plugin_cap             = $this->___instance_config->plugin_cap;
-					$this->___instance_config->plugin_cap_with_dashes = stub::with_dashes($this->___instance_config->plugin_cap);
+					$this->instance->plugin_cap             = $this->instance->plugin_cap;
+					$this->instance->plugin_cap_with_dashes = stub::with_dashes($this->instance->plugin_cap);
 
 					// Based on plugin's root `namespace` (via `plugin_root_ns`).
-					$this->___instance_config->plugin_root_ns             = $this->___instance_config->plugin_root_ns;
-					$this->___instance_config->plugin_root_ns_prefix      = '\\'.$this->___instance_config->plugin_root_ns;
-					$this->___instance_config->plugin_root_ns_with_dashes = stub::with_dashes($this->___instance_config->plugin_root_ns);
+					$this->instance->plugin_root_ns             = $this->instance->plugin_root_ns;
+					$this->instance->plugin_root_ns_prefix      = '\\'.$this->instance->plugin_root_ns;
+					$this->instance->plugin_root_ns_with_dashes = stub::with_dashes($this->instance->plugin_root_ns);
 
 					// Based on plugin's root `namespace` (via `plugin_root_ns`).
-					$this->___instance_config->plugin_root_ns_stub             = $this->___instance_config->plugin_root_ns;
-					$this->___instance_config->plugin_root_ns_stub_with_dashes = $this->___instance_config->plugin_root_ns_with_dashes;
-					if($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns)
+					$this->instance->plugin_root_ns_stub             = $this->instance->plugin_root_ns;
+					$this->instance->plugin_root_ns_stub_with_dashes = $this->instance->plugin_root_ns_with_dashes;
+					if($this->instance->plugin_root_ns === $this->instance->core_ns)
 					{
-						$this->___instance_config->plugin_root_ns_stub             = $this->___instance_config->core_ns_stub;
-						$this->___instance_config->plugin_root_ns_stub_with_dashes = $this->___instance_config->core_ns_stub_with_dashes;
+						$this->instance->plugin_root_ns_stub             = $this->instance->core_ns_stub;
+						$this->instance->plugin_root_ns_stub_with_dashes = $this->instance->core_ns_stub_with_dashes;
 					}
 					// Based on the plugin's directory (i.e. `plugin_dir`).
-					$this->___instance_config->plugin_dir               = $this->___instance_config->plugin_dir;
-					$this->___instance_config->plugin_dir_basename      = basename($this->___instance_config->plugin_dir);
-					$this->___instance_config->plugin_dir_file_basename = $this->___instance_config->plugin_dir_basename.'/plugin.php';
+					$this->instance->plugin_dir               = $this->instance->plugin_dir;
+					$this->instance->plugin_dir_basename      = basename($this->instance->plugin_dir);
+					$this->instance->plugin_dir_file_basename = $this->instance->plugin_dir_basename.'/plugin.php';
 
 					// Based on the plugin's directory (i.e. `plugin_dir`).
-					if($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns)
-						$this->___instance_config->plugin_data_dir = stub::get_temp_dir().'/'.$this->___instance_config->core_ns_stub_with_dashes.'-data';
-					else $this->___instance_config->plugin_data_dir = stub::n_dir_seps(WP_CONTENT_DIR).'/data/'.$this->___instance_config->plugin_dir_basename;
+					if($this->instance->plugin_root_ns === $this->instance->core_ns)
+						$this->instance->plugin_data_dir = stub::get_temp_dir().'/'.$this->instance->core_ns_stub_with_dashes.'-data';
+					else $this->instance->plugin_data_dir = stub::n_dir_seps(WP_CONTENT_DIR).'/data/'.$this->instance->plugin_dir_basename;
 
 					// Based on the plugin's directory (i.e. `plugin_dir`).
-					$this->___instance_config->plugin_data_dir = // Give filters a chance to modify this if they'd like to.
-						apply_filters($this->___instance_config->plugin_root_ns_stub.'__data_dir', $this->___instance_config->plugin_data_dir);
+					$this->instance->plugin_data_dir = // Give filters a chance to modify this if they'd like to.
+						apply_filters($this->instance->plugin_root_ns_stub.'__data_dir', $this->instance->plugin_data_dir);
 
 					// Based on the plugin's directory (i.e. `plugin_dir`).
-					$this->___instance_config->plugin_file           = $this->___instance_config->plugin_dir.'/plugin.php';
-					$this->___instance_config->plugin_classes_dir    = $this->___instance_config->plugin_dir.'/classes';
-					$this->___instance_config->plugin_api_class_file = $this->___instance_config->plugin_classes_dir.'/'.$this->___instance_config->plugin_root_ns_with_dashes.'.php';
+					$this->instance->plugin_file           = $this->instance->plugin_dir.'/plugin.php';
+					$this->instance->plugin_classes_dir    = $this->instance->plugin_dir.'/classes';
+					$this->instance->plugin_api_class_file = $this->instance->plugin_classes_dir.'/'.$this->instance->plugin_root_ns_with_dashes.'.php';
 
 					// Based on the current plugin; we establish properties for a pro add-on (optional).
-					$this->___instance_config->plugin_pro_var = $this->___instance_config->plugin_root_ns.'_pro';
+					$this->instance->plugin_pro_var = $this->instance->plugin_root_ns.'_pro';
 
-					$this->___instance_config->plugin_pro_dir = $this->___instance_config->plugin_dir.'-pro';
-					if(stripos($this->___instance_config->plugin_pro_dir, 'phar://') === 0) // In case of core.
-						$this->___instance_config->plugin_pro_dir = substr($this->___instance_config->plugin_pro_dir, 7);
-					$this->___instance_config->plugin_pro_dir_basename      = basename($this->___instance_config->plugin_pro_dir);
-					$this->___instance_config->plugin_pro_dir_file_basename = $this->___instance_config->plugin_pro_dir_basename.'/plugin.php';
+					$this->instance->plugin_pro_dir = $this->instance->plugin_dir.'-pro';
+					if(stripos($this->instance->plugin_pro_dir, 'phar://') === 0) // In case of core.
+						$this->instance->plugin_pro_dir = substr($this->instance->plugin_pro_dir, 7);
+					$this->instance->plugin_pro_dir_basename      = basename($this->instance->plugin_pro_dir);
+					$this->instance->plugin_pro_dir_file_basename = $this->instance->plugin_pro_dir_basename.'/plugin.php';
 
-					$this->___instance_config->plugin_pro_file        = $this->___instance_config->plugin_pro_dir.'/plugin.php';
-					$this->___instance_config->plugin_pro_classes_dir = $this->___instance_config->plugin_pro_dir.'/classes';
-					$this->___instance_config->plugin_pro_class_file  = $this->___instance_config->plugin_pro_classes_dir.'/'.$this->___instance_config->plugin_root_ns_with_dashes.'/pro.php';
+					$this->instance->plugin_pro_file        = $this->instance->plugin_pro_dir.'/plugin.php';
+					$this->instance->plugin_pro_classes_dir = $this->instance->plugin_pro_dir.'/classes';
+					$this->instance->plugin_pro_class_file  = $this->instance->plugin_pro_classes_dir.'/'.$this->instance->plugin_root_ns_with_dashes.'/pro.php';
 				}
 				// Based on `plugin_root_ns_stub`.
 				// Also on `namespace\sub_namespace\class` for `$this` class.
 				// Here we swap out the real root namespace, in favor of the plugin's root namespace.
 				// This is helpful when we need to build strings for hooks, filters, contextual slugs, and the like.
-				$this->___instance_config->plugin_stub_as_root_ns_class                  = // Extended classes (e.g. `_x`) are treated the same here.
-					$this->___instance_config->plugin_root_ns_stub.substr(preg_replace('/_x$/', '', $this->___instance_config->ns_class), ($root_ns_length = strlen($this->___instance_config->root_ns)));
-				$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores = stub::with_underscores($this->___instance_config->plugin_stub_as_root_ns_class);
-				$this->___instance_config->plugin_stub_as_root_ns_class_with_dashes      = stub::with_dashes($this->___instance_config->plugin_stub_as_root_ns_class);
+				$this->instance->plugin_stub_as_root_ns_class                  = // Extended classes (e.g. `_x`) are treated the same here.
+					$this->instance->plugin_root_ns_stub.substr(preg_replace('/_x$/', '', $this->instance->ns_class), ($root_ns_length = strlen($this->instance->root_ns)));
+				$this->instance->plugin_stub_as_root_ns_class_with_underscores = stub::with_underscores($this->instance->plugin_stub_as_root_ns_class);
+				$this->instance->plugin_stub_as_root_ns_class_with_dashes      = stub::with_dashes($this->instance->plugin_stub_as_root_ns_class);
 
 				// Based on `plugin_root_ns_stub`.
 				// Also on `namespace\sub_namespace` for `$this` class.
 				// Here we swap out the real root namespace, in favor of the plugin's root namespace.
 				// This is helpful when we need to build strings for hooks, filters, contextual slugs, and the like.
-				$this->___instance_config->plugin_stub_as_root_ns                  = $this->___instance_config->plugin_root_ns_stub.substr($this->___instance_config->ns, $root_ns_length);
-				$this->___instance_config->plugin_stub_as_root_ns_with_underscores = stub::with_underscores($this->___instance_config->plugin_stub_as_root_ns);
-				$this->___instance_config->plugin_stub_as_root_ns_with_dashes      = stub::with_dashes($this->___instance_config->plugin_stub_as_root_ns);
+				$this->instance->plugin_stub_as_root_ns                  = $this->instance->plugin_root_ns_stub.substr($this->instance->ns, $root_ns_length);
+				$this->instance->plugin_stub_as_root_ns_with_underscores = stub::with_underscores($this->instance->plugin_stub_as_root_ns);
+				$this->instance->plugin_stub_as_root_ns_with_dashes      = stub::with_dashes($this->instance->plugin_stub_as_root_ns);
 
-				// Now let's cache `$this->___instance_config` for easy re-use.
-				static::$___instance_config_cache[$cache_entry] = $this->___instance_config;
+				// Now let's cache `$this->instance` for easy re-use.
+				static::$instance_cache[$cache_entry] = $this->instance;
 
 				// Check global reference & load plugin (if applicable).
-				if(!isset($GLOBALS[$this->___instance_config->plugin_root_ns])
-				   || !($GLOBALS[$this->___instance_config->plugin_root_ns] instanceof framework)
+				if(!isset($GLOBALS[$this->instance->plugin_root_ns])
+				   || !($GLOBALS[$this->instance->plugin_root_ns] instanceof framework)
 				) // Create global reference & load plugin on first instance (if applicable).
 				{
-					$GLOBALS[$this->___instance_config->plugin_root_ns] = $this;
-					if($this->___instance_config->plugin_root_ns !== stub::$core_ns)
+					$GLOBALS[$this->instance->plugin_root_ns] = $this;
+					if($this->instance->plugin_root_ns !== stub::$core_ns)
 						$this->©plugin->load(); // Not the core (only load plugins).
 				}
 			}
@@ -1091,7 +1099,7 @@ namespace wsc_v000000_dev
 			{
 				$property    = (string)$property;
 				$blog_id     = (integer)$GLOBALS['blog_id'];
-				$cache_entry = $this->___instance_config->plugin_root_ns.'#'.$property;
+				$cache_entry = $this->instance->plugin_root_ns.'#'.$property;
 
 				if(isset(static::$___dynamic_class_reference_cache[$blog_id][$cache_entry]))
 					return TRUE; // It's a dynamic class reference that's set already.
@@ -1209,7 +1217,7 @@ namespace wsc_v000000_dev
 			 * @throws exception If `$property` CANNOT be defined in any way.
 			 *
 			 * @note It is intentionally NOT possible to pass additional arguments to an object constructor this way.
-			 *    Any class that needs to be constructed with more than an `$___instance_config`, cannot be instantiated here.
+			 *    Any class that needs to be constructed with more than an `$instance`, cannot be instantiated here.
 			 *    Instead see `__call()` to instantiate "new" dynamic object instances with `©`.
 			 *
 			 * @public Magic/overload methods must always remain public.
@@ -1224,7 +1232,7 @@ namespace wsc_v000000_dev
 			{
 				$property    = (string)$property;
 				$blog_id     = (integer)$GLOBALS['blog_id'];
-				$cache_entry = $this->___instance_config->plugin_root_ns.'#'.$property;
+				$cache_entry = $this->instance->plugin_root_ns.'#'.$property;
 
 				if(isset(static::$___dynamic_class_reference_cache[$blog_id][$cache_entry]) /* Cached already? */)
 					return static::$___dynamic_class_reference_cache[$blog_id][$cache_entry];
@@ -1252,12 +1260,12 @@ namespace wsc_v000000_dev
 					if($©strpos !== 0) // Assuming a fully qualified namespace has been given in this case.
 						$dyn_class_lookups[] = '\\'.$dyn_class; // So we only add the `\` prefix.
 
-					else // Otherwise try `$this->___instance_config->plugin_root_ns`, then `$this->___instance_config->core_ns`.
+					else // Otherwise try `$this->instance->plugin_root_ns`, then `$this->instance->core_ns`.
 					{
-						$dyn_class_lookups[] = $this->___instance_config->plugin_root_ns_prefix.'\\'.$dyn_class;
-						$dyn_class_lookups[] = $this->___instance_config->core_ns_prefix.'\\'.$dyn_class;
+						$dyn_class_lookups[] = $this->instance->plugin_root_ns_prefix.'\\'.$dyn_class;
+						$dyn_class_lookups[] = $this->instance->core_ns_prefix.'\\'.$dyn_class;
 					}
-					// Note... `$cache` entries are created for each `$this->___instance_config->plugin_root_ns.$property` combination.
+					// Note... `$cache` entries are created for each `$this->instance->plugin_root_ns.$property` combination.
 					// However, `$dyn_class_instances` may contain entries used under several different aliases (i.e. by more than one cache entry).
 					// Therefore, ALWAYS check for the existence of a class instance first, even if a cache entry for it is currently missing.
 					// In other words, the instance itself may already exist; and perhaps we just need a new cache entry to reference it.
@@ -1266,7 +1274,7 @@ namespace wsc_v000000_dev
 
 					foreach($dyn_class_lookups as $_dyn_class) // Iterate lookups.
 					{
-						$_dyn_class_entry = $this->___instance_config->plugin_root_ns.'#'.$_dyn_class;
+						$_dyn_class_entry = $this->instance->plugin_root_ns.'#'.$_dyn_class;
 
 						if(isset(static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]))
 							return (static::$___dynamic_class_reference_cache[$blog_id][$cache_entry] = static::$___dynamic_class_instance_cache[$blog_id][$_dyn_class_entry]);
@@ -1389,14 +1397,14 @@ namespace wsc_v000000_dev
 					if($©strpos !== 0) // Assuming a fully qualified namespace has been given in this case.
 						$dyn_class_lookups[] = '\\'.$dyn_class; // So we only add the `\` prefix.
 
-					else // Otherwise try `$this->___instance_config->plugin_root_ns`, then `$this->___instance_config->core_ns`.
+					else // Otherwise try `$this->instance->plugin_root_ns`, then `$this->instance->core_ns`.
 					{
-						$dyn_class_lookups[] = $this->___instance_config->plugin_root_ns_prefix.'\\'.$dyn_class;
-						$dyn_class_lookups[] = $this->___instance_config->core_ns_prefix.'\\'.$dyn_class;
+						$dyn_class_lookups[] = $this->instance->plugin_root_ns_prefix.'\\'.$dyn_class;
+						$dyn_class_lookups[] = $this->instance->core_ns_prefix.'\\'.$dyn_class;
 					}
 					// Regarding a standard in the WebSharks™ Core.
 					// When/if a class extender creates its own `__construct()` method,
-					// it MUST collect an `$___instance_config`, and it MUST call: `parent::__construct($___instance_config)`.
+					// it MUST collect an `$instance`, and it MUST call: `parent::__construct($instance)`.
 
 					foreach($dyn_class_lookups as $_dyn_class) // Now let's try to find the class.
 					{
@@ -1867,7 +1875,7 @@ namespace wsc_v000000_dev
 			/**
 			 * Sets properties on `$this` object instance.
 			 *
-			 * @param array $properties An associative array of object instance properties.
+			 * @param array|object $properties An associative array|object w/ object instance properties.
 			 *    Each property MUST already exist, and value types MUST match up.
 			 *
 			 * @throws exception If attempting to set a special property (e.g. `___*`).
@@ -1921,7 +1929,7 @@ namespace wsc_v000000_dev
 			{
 				$function = (string)$function; // Force string.
 
-				return $this->___instance_config->ns_class.'::'.$function;
+				return $this->instance->ns_class.'::'.$function;
 			}
 
 			/**
@@ -1940,7 +1948,7 @@ namespace wsc_v000000_dev
 			{
 				$function = (string)$function; // Force string.
 
-				return '©'.$this->___instance_config->sub_ns_class_with_underscores.'.'.$function;
+				return '©'.$this->instance->sub_ns_class_with_underscores.'.'.$function;
 			}
 
 			# --------------------------------------------------------------------------------------------------------------------------
@@ -2108,7 +2116,7 @@ namespace wsc_v000000_dev
 				$args     = (integer)$args;
 				$type     = (string)$type;
 
-				$plugin              = $GLOBALS[$this->___instance_config->plugin_root_ns];
+				$plugin              = $GLOBALS[$this->instance->plugin_root_ns];
 				$idx                 = spl_object_hash($plugin).$call.$priority;
 				$plugin->hooks[$idx] = compact('hook', 'call', 'priority', 'type');
 
@@ -2144,7 +2152,7 @@ namespace wsc_v000000_dev
 				$priority = (integer)$priority;
 				$type     = (string)$type;
 
-				$plugin = $GLOBALS[$this->___instance_config->plugin_root_ns];
+				$plugin = $GLOBALS[$this->instance->plugin_root_ns];
 				unset($plugin->hooks[spl_object_hash($plugin).$call.$priority]);
 
 				if($type === $this::filter_type)
@@ -2177,7 +2185,7 @@ namespace wsc_v000000_dev
 
 				$removals = 0; // Initialize.
 
-				foreach($GLOBALS[$this->___instance_config->plugin_root_ns]->hooks as $_idx => $_hook)
+				foreach($GLOBALS[$this->instance->plugin_root_ns]->hooks as $_idx => $_hook)
 					if((!$hook || $_hook['hook'] === $hook) && (!isset($priority) || $_hook['priority'] === $priority) && $_hook['type'] === $type)
 						if($this->___remove_hook($_hook['hook'], $_hook['call'], $_hook['priority'], $_hook['type']))
 							$removals++; // Increment removal counter.
@@ -2198,13 +2206,13 @@ namespace wsc_v000000_dev
 			 * regardless of which namespace `$this` class is actually in.
 			 *
 			 * For example, if a hook/filter is fired by `$this` class `wsc_v000000_dev\framework`,
-			 * the hook/filter slug is prefixed by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
+			 * the hook/filter slug is prefixed by: `$this->instance->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__framework__hook_filter_name`.
 			 *
 			 * In the case of a sub-namespace, it works the same way.
 			 * The actual root namespace is swapped out, in favor of the plugin's root namespace stub.
 			 * If a hook/filter is fired by `$this` class `wsc_v000000_dev\sub_namespace\class`,
-			 * the hook/filter slug is prefixed again by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
+			 * the hook/filter slug is prefixed again by: `$this->instance->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__sub_namespace__class__hook_filter_name`.
 			 *
 			 * @param string $hook Action hook name.
@@ -2219,7 +2227,7 @@ namespace wsc_v000000_dev
 			{
 				$args    = func_get_args();
 				$args[0] = (string)$args[0]; // Force string.
-				$args[0] = $this->___instance_config->plugin_stub_as_root_ns_class_with_underscores.'__'.$args[0];
+				$args[0] = $this->instance->plugin_stub_as_root_ns_class_with_underscores.'__'.$args[0];
 
 				return call_user_func_array('do_action', $args);
 			}
@@ -2236,13 +2244,13 @@ namespace wsc_v000000_dev
 			 * regardless of which namespace `$this` class is actually in.
 			 *
 			 * For example, if a hook/filter is fired by `$this` class `wsc_v000000_dev\framework`,
-			 * the hook/filter slug is prefixed by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
+			 * the hook/filter slug is prefixed by: `$this->instance->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__framework__hook_filter_name`.
 			 *
 			 * In the case of a sub-namespace, it works the same way.
 			 * The actual root namespace is swapped out, in favor of the plugin's root namespace stub.
 			 * If a hook/filter is fired by `$this` class `wsc_v000000_dev\sub_namespace\class`,
-			 * the hook/filter slug is prefixed again by: `$this->___instance_config->plugin_stub_as_root_ns_class_with_underscores`.
+			 * the hook/filter slug is prefixed again by: `$this->instance->plugin_stub_as_root_ns_class_with_underscores`.
 			 * Which will result in this hook/filter name: `plugin_root_ns_stub__sub_namespace__class__hook_filter_name`.
 			 *
 			 * @param string $hook Filter hook name.
@@ -2258,7 +2266,7 @@ namespace wsc_v000000_dev
 			{
 				$args    = func_get_args();
 				$args[0] = (string)$args[0]; // Force string.
-				$args[0] = $this->___instance_config->plugin_stub_as_root_ns_class_with_underscores.'__'.$args[0];
+				$args[0] = $this->instance->plugin_stub_as_root_ns_class_with_underscores.'__'.$args[0];
 
 				return call_user_func_array('apply_filters', $args);
 			}
@@ -2279,13 +2287,13 @@ namespace wsc_v000000_dev
 			 * regardless of which namespace `$this` class is actually in.
 			 *
 			 * For example, if a translation call is fired by `$this` class `wsc_v000000_dev\framework`,
-			 * the contextual slug prefix is: `$this->___instance_config->plugin_stub_as_root_ns_with_dashes`.
+			 * the contextual slug prefix is: `$this->instance->plugin_stub_as_root_ns_with_dashes`.
 			 * Which would result in this contextual slug: `plugin-root-ns-stub--(front|admin)-side`.
 			 *
 			 * In the case of a sub-namespace, it works the same way.
 			 * The actual root namespace is swapped out, in favor of the plugin's root namespace stub.
 			 * So if a translation call is fired by `$this` class `wsc_v000000_dev\sub_namespace\class`,
-			 * the contextual slug prefix is again: `$this->___instance_config->plugin_stub_as_root_ns_with_dashes`.
+			 * the contextual slug prefix is again: `$this->instance->plugin_stub_as_root_ns_with_dashes`.
 			 * Which would result in this contextual slug: `plugin-root-ns-stub--sub-namespace--(front|admin)-side`.
 			 *
 			 * @param string $string String to translate.
@@ -2302,9 +2310,9 @@ namespace wsc_v000000_dev
 			final public function __($string)
 			{
 				$string  = (string)$string; // Context is always ...`--admin-side`.
-				$context = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--admin-side';
+				$context = $this->instance->plugin_stub_as_root_ns_with_dashes.'--admin-side';
 
-				return _x($string, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
+				return _x($string, $context, $this->instance->plugin_root_ns_stub_with_dashes);
 			}
 
 			/**
@@ -2328,9 +2336,9 @@ namespace wsc_v000000_dev
 				$string_singular = (string)$string_singular;
 				$string_plural   = (string)$string_plural;
 				$numeric_value   = (string)$numeric_value;
-				$context         = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--admin-side';
+				$context         = $this->instance->plugin_stub_as_root_ns_with_dashes.'--admin-side';
 
-				return _nx($string_singular, $string_plural, $numeric_value, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
+				return _nx($string_singular, $string_plural, $numeric_value, $context, $this->instance->plugin_root_ns_stub_with_dashes);
 			}
 
 			/**
@@ -2354,10 +2362,10 @@ namespace wsc_v000000_dev
 			{
 				$string            = (string)$string;
 				$other_contextuals = (string)$other_contextuals;
-				$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--front-side'
+				$context           = $this->instance->plugin_stub_as_root_ns_with_dashes.'--front-side'
 				                     .(($other_contextuals) ? ' '.$other_contextuals : '');
 
-				return _x($string, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
+				return _x($string, $context, $this->instance->plugin_root_ns_stub_with_dashes);
 			}
 
 			/**
@@ -2385,10 +2393,10 @@ namespace wsc_v000000_dev
 				$string_plural     = (string)$string_plural;
 				$numeric_value     = (string)$numeric_value;
 				$other_contextuals = (string)$other_contextuals;
-				$context           = $this->___instance_config->plugin_stub_as_root_ns_with_dashes.'--front-side'.
+				$context           = $this->instance->plugin_stub_as_root_ns_with_dashes.'--front-side'.
 				                     (($other_contextuals) ? ' '.$other_contextuals : '');
 
-				return _nx($string_singular, $string_plural, $numeric_value, $context, $this->___instance_config->plugin_root_ns_stub_with_dashes);
+				return _nx($string_singular, $string_plural, $numeric_value, $context, $this->instance->plugin_root_ns_stub_with_dashes);
 			}
 		}
 
@@ -2417,8 +2425,8 @@ namespace wsc_v000000_dev
 		# -----------------------------------------------------------------------------------------------------------------------------
 
 		if(!isset($GLOBALS[stub::$core_ns_stub]) || !($GLOBALS[stub::$core_ns_stub] instanceof framework)
-		   || version_compare($GLOBALS[stub::$core_ns_stub]->___instance_config->core_version,
-		                      $GLOBALS[stub::$core_ns]->___instance_config->core_version, '<')
+		   || version_compare($GLOBALS[stub::$core_ns_stub]->instance->core_version,
+		                      $GLOBALS[stub::$core_ns]->instance->core_version, '<')
 		) $GLOBALS[stub::$core_ns_stub] = $GLOBALS[stub::$core_ns];
 
 		# -----------------------------------------------------------------------------------------------------------------------------

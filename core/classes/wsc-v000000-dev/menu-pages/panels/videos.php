@@ -27,16 +27,16 @@ namespace wsc_v000000_dev\menu_pages\panels
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's ``$instance``,
+		 *    or a new ``$instance`` array.
 		 *
 		 * @param \wsc_v000000_dev\menu_pages\menu_page
 		 *    $menu_page A menu page class instance.
 		 */
-		public function __construct($___instance_config, $menu_page)
+		public function __construct($instance, $menu_page)
 		{
-			parent::__construct($___instance_config, $menu_page);
+			parent::__construct($instance, $menu_page);
 
 			$this->heading_title = $this->__('Video Tutorials');
 
@@ -45,7 +45,7 @@ namespace wsc_v000000_dev\menu_pages\panels
 			$this->content_body = // Video tutorials (w/ embedded playlist).
 				'<p class="text-center no-b-margin">'.
 				sprintf($this->__('<a class="btn btn-default width-100" href="%1$s" target="_blank">More Great Video Tutorials <i class="fa fa-external-link"></i></a>'),
-				        esc_attr($this->©url->to_plugin_site_uri('/videos/')), esc_html($this->___instance_config->plugin_name)).
+				        esc_attr($this->©url->to_plugin_site_uri('/videos/')), esc_html($this->instance->plugin_name)).
 				'</p>';
 		}
 	}

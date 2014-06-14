@@ -27,16 +27,16 @@ namespace wsc_v000000_dev\menu_pages\panels
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's ``$instance``,
+		 *    or a new ``$instance`` array.
 		 *
 		 * @param \wsc_v000000_dev\menu_pages\menu_page
 		 *    $menu_page A menu page class instance.
 		 */
-		public function __construct($___instance_config, $menu_page)
+		public function __construct($instance, $menu_page)
 		{
-			parent::__construct($___instance_config, $menu_page);
+			parent::__construct($instance, $menu_page);
 
 			$this->heading_title = $this->__('Updates Via Email').'<em>!</em>';
 
@@ -52,7 +52,7 @@ namespace wsc_v000000_dev\menu_pages\panels
 
 				'<p>'. // Brief description.
 				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/email-64x64.png')).'" class="pull-right l-margin" style="width:64px; height:64px;" alt="" />'.
-				sprintf($this->__('Get all the latest news &amp; knowledge base articles from %1$s'), esc_html($this->___instance_config->plugin_name)).
+				sprintf($this->__('Get all the latest news &amp; knowledge base articles from %1$s'), esc_html($this->instance->plugin_name)).
 				'</p>'.
 
 				'<div class="form-group">'.

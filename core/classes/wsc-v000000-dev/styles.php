@@ -42,15 +42,15 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @throws exception If this class is instantiated before the `init` action hook.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			if(!did_action('init'))
 				throw $this->©exception(
@@ -62,17 +62,17 @@ namespace wsc_v000000_dev
 			$styles_to_register = array(); // Initialize styles.
 
 			// Core libs & themes; available in all contexts.
-			if(!wp_style_is($this->___instance_config->core_ns_with_dashes, 'registered'))
-				$styles_to_register[$this->___instance_config->core_ns_with_dashes] = array(
+			if(!wp_style_is($this->instance->core_ns_with_dashes, 'registered'))
+				$styles_to_register[$this->instance->core_ns_with_dashes] = array(
 					'url' => $this->©url->to_core_dir_file('/client-side/styles/core-libs.min.css'),
-					'ver' => $this->___instance_config->core_version_with_dashes
+					'ver' => $this->instance->core_version_with_dashes
 				);
 			foreach($themes as $_theme => $_theme_file)
 				if(!wp_style_is($_theme, 'registered'))
-					$styles_to_register[$this->___instance_config->core_ns_with_dashes.'--'.$_theme] = array(
-						'deps' => array($this->___instance_config->core_ns_with_dashes),
+					$styles_to_register[$this->instance->core_ns_with_dashes.'--'.$_theme] = array(
+						'deps' => array($this->instance->core_ns_with_dashes),
 						'url'  => $this->©url->to_wp_abs_dir_file($_theme_file),
-						'ver'  => $this->___instance_config->core_version_with_dashes
+						'ver'  => $this->instance->core_version_with_dashes
 					);
 			unset($_theme, $_theme_file); // A little housekeeping.
 
@@ -82,26 +82,26 @@ namespace wsc_v000000_dev
 
 			if(!in_array(($current_front_side_theme = $this->©options->get('styles.front_side.theme')), $theme_keys, TRUE))
 				$current_front_side_theme = $this->©options->get('styles.front_side.theme', TRUE);
-			$front_side_themes = array($this->___instance_config->core_ns_with_dashes.'--'.$current_front_side_theme);
+			$front_side_themes = array($this->instance->core_ns_with_dashes.'--'.$current_front_side_theme);
 
 			foreach($this->©options->get('styles.front_side.load_themes') as $_theme)
 				if(in_array($_theme, $theme_keys, TRUE)) // Let's make sure it's a valid theme.
-					$front_side_themes[] = $this->___instance_config->core_ns_with_dashes.'--'.$_theme;
+					$front_side_themes[] = $this->instance->core_ns_with_dashes.'--'.$_theme;
 			$front_side_themes = array_unique($front_side_themes);
 			unset($_theme); // Housekeeping.
 
 			if(($front_side_file = $this->©file->template('client-side/styles/front-side.min.css', TRUE)))
 			{
-				$this->front_side_components[] = $this->___instance_config->plugin_root_ns_with_dashes.'--front-side';
+				$this->front_side_components[] = $this->instance->plugin_root_ns_with_dashes.'--front-side';
 
-				$styles_to_register[$this->___instance_config->plugin_root_ns_with_dashes.'--front-side'] = array(
-					'deps' => array_merge(array($this->___instance_config->core_ns_with_dashes), $front_side_themes),
+				$styles_to_register[$this->instance->plugin_root_ns_with_dashes.'--front-side'] = array(
+					'deps' => array_merge(array($this->instance->core_ns_with_dashes), $front_side_themes),
 					'url'  => $this->©url->to_wp_abs_dir_file($front_side_file),
-					'ver'  => $this->___instance_config->plugin_version_with_dashes
+					'ver'  => $this->instance->plugin_version_with_dashes
 				);
 			}
 			else $this->front_side_components = // Running w/ core/themes only; no separate front-side styles.
-				array_merge($this->front_side_components, array($this->___instance_config->core_ns_with_dashes), $front_side_themes);
+				array_merge($this->front_side_components, array($this->instance->core_ns_with_dashes), $front_side_themes);
 
 			// Stand-alone components; available in all contexts (depends on front-side).
 
@@ -109,12 +109,12 @@ namespace wsc_v000000_dev
 
 			if(($stand_alone_file = $this->©file->template('client-side/styles/stand-alone.min.css', TRUE)))
 			{
-				$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone';
+				$this->stand_alone_components[] = $this->instance->plugin_root_ns_with_dashes.'--stand-alone';
 
-				$styles_to_register[$this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone'] = array(
+				$styles_to_register[$this->instance->plugin_root_ns_with_dashes.'--stand-alone'] = array(
 					'deps' => $this->front_side_components, // Includes the core already.
 					'url'  => $this->©url->to_wp_abs_dir_file($stand_alone_file),
-					'ver'  => $this->___instance_config->plugin_version_with_dashes
+					'ver'  => $this->instance->plugin_version_with_dashes
 				);
 			}
 			else $this->stand_alone_components = // No separate stand-alone styles.
@@ -129,14 +129,14 @@ namespace wsc_v000000_dev
 				if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), $theme_keys, TRUE))
 					$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
-				$this->menu_page_components[] = $this->___instance_config->core_ns_with_dashes.'--menu-pages';
+				$this->menu_page_components[] = $this->instance->core_ns_with_dashes.'--menu-pages';
 
 				// Only if NOT already registered by another WebSharks™ plugin (it should NOT be).
-				if(!wp_style_is($this->___instance_config->core_ns_with_dashes.'--menu-pages', 'registered'))
-					$styles_to_register[$this->___instance_config->core_ns_with_dashes.'--menu-pages'] = array(
-						'deps' => array($this->___instance_config->core_ns_with_dashes.'--'.$current_menu_pages_theme),
+				if(!wp_style_is($this->instance->core_ns_with_dashes.'--menu-pages', 'registered'))
+					$styles_to_register[$this->instance->core_ns_with_dashes.'--menu-pages'] = array(
+						'deps' => array($this->instance->core_ns_with_dashes.'--'.$current_menu_pages_theme),
 						'url'  => $this->©url->to_core_dir_file('/client-side/styles/menu-pages/menu-pages.min.css'),
-						'ver'  => $this->___instance_config->core_version_with_dashes
+						'ver'  => $this->instance->core_version_with_dashes
 					);
 			}
 			if($styles_to_register) $this->register($styles_to_register);

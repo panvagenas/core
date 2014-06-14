@@ -343,17 +343,17 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @param array        $properties Optional array of properties to set upon construction.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function __construct($___instance_config, $properties = array())
+		public function __construct($instance, $properties = array())
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$this->check_arg_types('', 'array', func_get_args());
 
@@ -1226,7 +1226,7 @@ namespace wsc_v000000_dev
 
 					if(!is_dir($_field['move_to_dir']) && is_writable($this->©dir->n_seps_up($_field['move_to_dir'])))
 					{
-						mkdir($_field['move_to_dir'], 0775); // NOT recursively.
+						mkdir($_field['move_to_dir'], 0755); // NOT recursively.
 						clearstatcache(); // Clear stat cache before checking again.
 
 						if(!is_dir($_field['move_to_dir']) || !is_writable($_field['move_to_dir']))

@@ -45,6 +45,9 @@ namespace wsc_v000000_dev
 			$this->load_api_classes();
 			$this->load_api_funcs();
 			$this->load_pro_class();
+			$this->load_packages();
+
+			// Prepares plugin hooks.
 			$this->©initializer->prepare_hooks();
 
 			// Completes loading sequence.
@@ -62,7 +65,7 @@ namespace wsc_v000000_dev
 
 			$this->cache[__FUNCTION__] = -1;
 
-			autoloader::add_classes_dir($this->___instance_config->plugin_classes_dir);
+			autoloader::add_classes_dir($this->instance->plugin_classes_dir);
 		}
 
 		/**
@@ -75,16 +78,16 @@ namespace wsc_v000000_dev
 
 			$this->cache[__FUNCTION__] = -1;
 
-			if(is_file($this->___instance_config->plugin_api_class_file))
-				require_once $this->___instance_config->plugin_api_class_file;
+			if(is_file($this->instance->plugin_api_class_file))
+				require_once $this->instance->plugin_api_class_file;
 
 			// Define `plugin_root_ns{}` in an API class file if you wish to override these defaults.
 
-			if(!class_exists('\\'.$this->___instance_config->plugin_root_ns))
-				$this->©php->¤eval('final class '.$this->___instance_config->plugin_root_ns.' extends \\'.$this->___instance_config->core_ns.'\\api{}');
+			if(!class_exists('\\'.$this->instance->plugin_root_ns))
+				$this->©php->¤eval('final class '.$this->instance->plugin_root_ns.' extends \\'.$this->instance->core_ns.'\\api{}');
 
-			if(!class_exists('\\'.$this->___instance_config->plugin_var_ns))
-				$this->©php->¤eval('class_alias(\'\\'.$this->___instance_config->plugin_root_ns.'\', \''.$this->___instance_config->plugin_var_ns.'\');');
+			if(!class_exists('\\'.$this->instance->plugin_var_ns))
+				$this->©php->¤eval('class_alias(\'\\'.$this->instance->plugin_root_ns.'\', \''.$this->instance->plugin_var_ns.'\');');
 		}
 
 		/**
@@ -99,14 +102,14 @@ namespace wsc_v000000_dev
 
 			// Define these in an API class file if you wish to override these defaults.
 
-			if(!$this->©function->is_possible('\\'.$this->___instance_config->plugin_root_ns))
-				$this->©php->¤eval('function '.$this->___instance_config->plugin_root_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
+			if(!$this->©function->is_possible('\\'.$this->instance->plugin_root_ns))
+				$this->©php->¤eval('function '.$this->instance->plugin_root_ns.'(){ return $GLOBALS[\''.$this->instance->plugin_root_ns.'\']; }');
 
-			if(!$this->©function->is_possible('\\'.$this->___instance_config->plugin_var_ns))
-				$this->©php->¤eval('function '.$this->___instance_config->plugin_var_ns.'(){ return $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']; }');
+			if(!$this->©function->is_possible('\\'.$this->instance->plugin_var_ns))
+				$this->©php->¤eval('function '.$this->instance->plugin_var_ns.'(){ return $GLOBALS[\''.$this->instance->plugin_root_ns.'\']; }');
 
-			if(!$this->©function->is_possible('\\'.$this->___instance_config->plugin_root_ns.'_uninstall'))
-				$this->©php->¤eval('function '.$this->___instance_config->plugin_root_ns.'_uninstall(){ $GLOBALS[\''.$this->___instance_config->plugin_root_ns.'\']->©installer->uninstall(); }');
+			if(!$this->©function->is_possible('\\'.$this->instance->plugin_root_ns.'_uninstall'))
+				$this->©php->¤eval('function '.$this->instance->plugin_root_ns.'_uninstall(){ $GLOBALS[\''.$this->instance->plugin_root_ns.'\']->©installer->uninstall(); }');
 		}
 
 		/**
@@ -119,20 +122,46 @@ namespace wsc_v000000_dev
 
 			$this->cache[__FUNCTION__] = -1;
 
-			if(is_file($this->___instance_config->plugin_pro_class_file)
-			   && in_array($this->___instance_config->plugin_pro_dir_file_basename, $this->active(), TRUE)
-			) // If pro add-on exists, it MUST be an active WordPress® plugin, like any other.
-			{
-				require_once $this->___instance_config->plugin_pro_class_file;
-				$pro_class = $this->___instance_config->plugin_root_ns_prefix.'\\pro';
+			if(!$this->has_pro_active()) return; // NOT active.
 
-				if(!empty($pro_class::${'for_plugin_version'}) && $this->___instance_config->plugin_version === $pro_class::${'for_plugin_version'})
-				{
-					$GLOBALS[$this->___instance_config->plugin_pro_var] = $GLOBALS[$this->___instance_config->plugin_root_ns];
-					autoloader::add_classes_dir($this->___instance_config->plugin_pro_classes_dir);
-				}
-				else $this->enqueue_update_sync_pro_notice(); // Pro add-on needs to be synchronized with current version.
+			if(($is_in_wp_debug_mode = $this->©env->is_in_wp_debug_mode()))
+				require_once $this->instance->plugin_pro_class_file;
+			else @include_once $this->instance->plugin_pro_class_file;
+
+			if(!class_exists($pro_class = $this->instance->plugin_root_ns_prefix.'\\pro')
+			   || empty($pro_class::${'for_plugin_version'}) || $pro_class::${'for_plugin_version'} !== $this->instance->plugin_version
+			) $this->enqueue_update_sync_pro_notice(); // Needs to be synchronized w/ framework.
+
+			else // Proceed. Create a pro variable reference & add its classes directory.
+			{
+				$GLOBALS[$this->instance->plugin_pro_var] = $GLOBALS[$this->instance->plugin_root_ns];
+				autoloader::add_classes_dir($this->instance->plugin_pro_classes_dir);
 			}
+		}
+
+		/**
+		 * Loads active plugin packages.
+		 */
+		public function load_packages()
+		{
+			if(isset($this->cache[__FUNCTION__]))
+				return; // Already attempted this once.
+
+			$this->cache[__FUNCTION__] = -1;
+
+			$packages_dir        = $this->©dir->packages();
+			$is_in_wp_debug_mode = $this->©env->is_in_wp_debug_mode();
+
+			foreach($this->©options->get('packages.active') as $_package_slug => $_package)
+			{
+				$_package      = $this->©packages__package($_package);
+				$_package_file = $packages_dir.'/'.$_package->slug.'/package.php';
+
+				if($is_in_wp_debug_mode)
+					require_once $_package_file;
+				else @include_once $_package_file;
+			}
+			unset($_package_slug, $_package, $_package_file); // Houskeeping.
 		}
 
 		/**
@@ -171,7 +200,7 @@ namespace wsc_v000000_dev
 			{
 				$this->cache[__FUNCTION__] = FALSE; // Initialize.
 				if(($last_active_version = $this->last_active_version())
-				   && version_compare($last_active_version, $this->___instance_config->plugin_version, '>=')
+				   && version_compare($last_active_version, $this->instance->plugin_version, '>=')
 				) $this->cache[__FUNCTION__] = TRUE;
 			}
 			return $this->cache[__FUNCTION__];
@@ -187,21 +216,28 @@ namespace wsc_v000000_dev
 		 */
 		public function last_active_version()
 		{
-			return (string)get_option($this->___instance_config->plugin_root_ns_stub.'__version');
+			return (string)get_option($this->instance->plugin_root_ns_stub.'__version');
+		}
+
+		/**
+		 * Checks to see if the current plugin has it's pro add-on active.
+		 *
+		 * @return boolean TRUE if the current plugin has it's pro add-on active.
+		 */
+		public function has_pro_active()
+		{
+			return in_array($this->instance->plugin_pro_dir_file_basename, $this->active(), TRUE);
 		}
 
 		/**
 		 * Checks to see if the current plugin has it's pro add-on loaded up.
 		 *
-		 * @return boolean TRUE if the current plugin has it's pro addon loaded up.
+		 * @return boolean TRUE if the current plugin has it's pro add-on loaded up.
 		 */
-		public function has_pro()
+		public function has_pro_loaded()
 		{
-			if(isset($GLOBALS[$this->___instance_config->plugin_pro_var])
-			   && $GLOBALS[$this->___instance_config->plugin_pro_var] instanceof framework
-			) return TRUE; // Yes, the current plugin is running it's pro version.
-
-			return FALSE; // Default return value.
+			return $this->has_pro_active() && isset($GLOBALS[$this->instance->plugin_pro_var])
+			       && $GLOBALS[$this->instance->plugin_pro_var] instanceof framework;
 		}
 
 		/**
@@ -235,33 +271,33 @@ namespace wsc_v000000_dev
 			if(!is_admin() || !$this->©env->is_admin_page('update.php'))
 				return $transient; // Nothing to do here.
 
-			$plugin_update_version = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_update_version');
-			$plugin_update_zip     = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_update_zip');
+			$plugin_update_version = $this->©vars->_REQUEST($this->instance->plugin_var_ns.'_update_version');
+			$plugin_update_zip     = $this->©vars->_REQUEST($this->instance->plugin_var_ns.'_update_zip');
 
 			if($this->©strings->are_not_empty($plugin_update_version, $plugin_update_zip))
 			{
 				if(!is_object($transient)) $transient = new \stdClass();
 
-				$transient->last_checked                                                  = time();
-				$transient->checked[$this->___instance_config->plugin_dir_file_basename]  = $this->___instance_config->plugin_version;
-				$transient->response[$this->___instance_config->plugin_dir_file_basename] = (object)array(
-					'id'          => 0, 'slug' => $this->___instance_config->plugin_dir_basename,
+				$transient->last_checked                                        = time();
+				$transient->checked[$this->instance->plugin_dir_file_basename]  = $this->instance->plugin_version;
+				$transient->response[$this->instance->plugin_dir_file_basename] = (object)array(
+					'id'          => 0, 'slug' => $this->instance->plugin_dir_basename,
 					'url'         => $this->©menu_page->url('update-sync'),
 					'new_version' => $plugin_update_version,
 					'package'     => $plugin_update_zip
 				);
 			}
-			$plugin_pro_update_version = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_pro_update_version');
-			$plugin_pro_update_zip     = $this->©vars->_REQUEST($this->___instance_config->plugin_var_ns.'_pro_update_zip');
+			$plugin_pro_update_version = $this->©vars->_REQUEST($this->instance->plugin_var_ns.'_pro_update_version');
+			$plugin_pro_update_zip     = $this->©vars->_REQUEST($this->instance->plugin_var_ns.'_pro_update_zip');
 
 			if($this->©strings->are_not_empty($plugin_pro_update_version, $plugin_pro_update_zip))
 			{
 				if(!is_object($transient)) $transient = new \stdClass();
 
-				$transient->last_checked                                                      = time();
-				$transient->checked[$this->___instance_config->plugin_pro_dir_file_basename]  = $this->___instance_config->plugin_version;
-				$transient->response[$this->___instance_config->plugin_pro_dir_file_basename] = (object)array(
-					'id'          => 0, 'slug' => $this->___instance_config->plugin_pro_dir_basename,
+				$transient->last_checked                                            = time();
+				$transient->checked[$this->instance->plugin_pro_dir_file_basename]  = $this->instance->plugin_version;
+				$transient->response[$this->instance->plugin_pro_dir_file_basename] = (object)array(
+					'id'          => 0, 'slug' => $this->instance->plugin_pro_dir_basename,
 					'url'         => $this->©menu_page->url('update-sync'),
 					'new_version' => $plugin_pro_update_version,
 					'package'     => $plugin_pro_update_zip
@@ -379,7 +415,7 @@ namespace wsc_v000000_dev
 		 */
 		public function is_core() // The WebSharks™ Core itself?
 		{
-			return ($this->___instance_config->plugin_root_ns === $this->___instance_config->core_ns);
+			return ($this->instance->plugin_root_ns === $this->instance->core_ns);
 		}
 
 		/**
@@ -396,12 +432,12 @@ namespace wsc_v000000_dev
 			$this->check_arg_types('boolean', 'string', func_get_args());
 
 			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__styles__front_side');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__front_side', $filter);
+			remove_all_filters($this->instance->plugin_root_ns_stub.'__styles__front_side');
+			add_filter($this->instance->plugin_root_ns_stub.'__styles__front_side', $filter);
 
 			$components = $this->©styles->front_side_components;
 			if($theme && in_array($theme, array_keys($this->©styles->themes()), TRUE))
-				$components[] = $this->___instance_config->core_ns_with_dashes.'--'.$theme;
+				$components[] = $this->instance->core_ns_with_dashes.'--'.$theme;
 			// A specific theme will be enqueued or dequeued (depending on `$needs`).
 
 			if($needs) // Enqueue or dequeue.
@@ -423,12 +459,12 @@ namespace wsc_v000000_dev
 			$this->check_arg_types('boolean', 'string', func_get_args());
 
 			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__styles__stand_alone');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__styles__stand_alone', $filter);
+			remove_all_filters($this->instance->plugin_root_ns_stub.'__styles__stand_alone');
+			add_filter($this->instance->plugin_root_ns_stub.'__styles__stand_alone', $filter);
 
 			$components = $this->©styles->stand_alone_components;
 			if($theme && in_array($theme, array_keys($this->©styles->themes()), TRUE))
-				$components[] = $this->___instance_config->core_ns_with_dashes.'--'.$theme;
+				$components[] = $this->instance->core_ns_with_dashes.'--'.$theme;
 			// A specific theme will be enqueued or dequeued (depending on `$needs`).
 
 			if($needs) // Enqueue or dequeue.
@@ -447,8 +483,8 @@ namespace wsc_v000000_dev
 			$this->check_arg_types('boolean', func_get_args());
 
 			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__front_side', $filter);
+			remove_all_filters($this->instance->plugin_root_ns_stub.'__scripts__front_side');
+			add_filter($this->instance->plugin_root_ns_stub.'__scripts__front_side', $filter);
 
 			if($needs) // Enqueue or dequeue (based on `$needs`).
 				$this->©scripts->enqueue($this->©scripts->front_side_components);
@@ -466,8 +502,8 @@ namespace wsc_v000000_dev
 			$this->check_arg_types('boolean', func_get_args());
 
 			$filter = ($needs) ? '__return_true' : '__return_false';
-			remove_all_filters($this->___instance_config->plugin_root_ns_stub.'__scripts__stand_alone');
-			add_filter($this->___instance_config->plugin_root_ns_stub.'__scripts__stand_alone', $filter);
+			remove_all_filters($this->instance->plugin_root_ns_stub.'__scripts__stand_alone');
+			add_filter($this->instance->plugin_root_ns_stub.'__scripts__stand_alone', $filter);
 
 			if($needs) // Enqueue or dequeue (based on `$needs`).
 				$this->©scripts->enqueue($this->©scripts->stand_alone_components);

@@ -107,8 +107,8 @@ namespace wsc_v000000_dev
 			return ($this->cache[__FUNCTION__]
 				= array_unique(array(
 					               'null', 'integer', '\\WP_User',
-					               $this->___instance_config->core_ns_prefix.'\\users',
-					               $this->___instance_config->plugin_root_ns_prefix.'\\users'
+					               $this->instance->core_ns_prefix.'\\users',
+					               $this->instance->plugin_root_ns_prefix.'\\users'
 				               )));
 		}
 

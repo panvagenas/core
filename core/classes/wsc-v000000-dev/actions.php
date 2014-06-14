@@ -54,26 +54,26 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @throws exception If a request contains an expired action key.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$_r = $this->©vars->_REQUEST(NULL, TRUE); // REQUEST (including files).
 
-			if($this->©array->is_not_empty($_r[$this->___instance_config->plugin_var_ns]['a']))
-				$this->action = $_r[$this->___instance_config->plugin_var_ns]['a'];
+			if($this->©array->is_not_empty($_r[$this->instance->plugin_var_ns]['a']))
+				$this->action = $_r[$this->instance->plugin_var_ns]['a'];
 
-			else if($this->©string->is_not_empty($_r[$this->___instance_config->plugin_var_ns.'_action']))
+			else if($this->©string->is_not_empty($_r[$this->instance->plugin_var_ns.'_action']))
 			{
-				if(strpos($_r[$this->___instance_config->plugin_var_ns.'_action'], '.key.') !== FALSE)
+				if(strpos($_r[$this->instance->plugin_var_ns.'_action'], '.key.') !== FALSE)
 				{
-					$action_key = $_r[$this->___instance_config->plugin_var_ns.'_action'];
+					$action_key = $_r[$this->instance->plugin_var_ns.'_action'];
 					$action     = $this->©db_utils->get_transient($action_key);
 
 					if(!$this->©array->is_not_empty($action))
@@ -84,7 +84,7 @@ namespace wsc_v000000_dev
 					$this->action = $action; // Define action property.
 				}
 				else // Treat the `action` as a slug (we construct an array from this).
-					$this->action = array('s' => $_r[$this->___instance_config->plugin_var_ns.'_action']);
+					$this->action = array('s' => $_r[$this->instance->plugin_var_ns.'_action']);
 			}
 		}
 
@@ -321,9 +321,9 @@ namespace wsc_v000000_dev
 			{
 				$action_key = str_replace(array('©', '®'), '', $call).'.key.'.md5(serialize($query_args['a']));
 				$this->©db_utils->set_transient($action_key, $query_args['a'], $action_key_expires_after);
-				$query_args = array($this->___instance_config->plugin_var_ns.'_action' => $action_key);
+				$query_args = array($this->instance->plugin_var_ns.'_action' => $action_key);
 			}
-			else $query_args = array($this->___instance_config->plugin_var_ns => $query_args);
+			else $query_args = array($this->instance->plugin_var_ns => $query_args);
 
 			return add_query_arg(urlencode_deep($query_args), $base);
 		}
@@ -384,10 +384,10 @@ namespace wsc_v000000_dev
 					$this->method(__FUNCTION__).'#invalid_call', get_defined_vars(),
 					sprintf($this->__('Invalid dynamic `$call` action: `%1$s`.'), $call)
 				);
-			$hidden_inputs = '<input type="hidden" name="'.esc_attr($this->___instance_config->plugin_var_ns.'[a][s]').'" value="call" />';
-			$hidden_inputs .= '<input type="hidden" name="'.esc_attr($this->___instance_config->plugin_var_ns.'[a][c]').'" value="'.esc_attr($call).'" />';
-			$hidden_inputs .= '<input type="hidden" name="'.esc_attr($this->___instance_config->plugin_var_ns.'[a][t]').'" value="'.esc_attr($type).'" />';
-			$hidden_inputs .= '<input type="hidden" name="'.esc_attr($this->___instance_config->plugin_var_ns.'[a][v]').'" value="'.esc_attr($this->get_call_verifier($call, $type, $expires_after)).'" />';
+			$hidden_inputs = '<input type="hidden" name="'.esc_attr($this->instance->plugin_var_ns.'[a][s]').'" value="call" />';
+			$hidden_inputs .= '<input type="hidden" name="'.esc_attr($this->instance->plugin_var_ns.'[a][c]').'" value="'.esc_attr($call).'" />';
+			$hidden_inputs .= '<input type="hidden" name="'.esc_attr($this->instance->plugin_var_ns.'[a][t]').'" value="'.esc_attr($type).'" />';
+			$hidden_inputs .= '<input type="hidden" name="'.esc_attr($this->instance->plugin_var_ns.'[a][v]').'" value="'.esc_attr($this->get_call_verifier($call, $type, $expires_after)).'" />';
 
 			return $hidden_inputs; // A hidden input fields.
 		}
@@ -406,7 +406,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('integer:!empty', func_get_args());
 
-			return $this->___instance_config->plugin_var_ns.'[a][a]['.($position - 1).']';
+			return $this->instance->plugin_var_ns.'[a][a]['.($position - 1).']';
 		}
 
 		/**

@@ -27,17 +27,17 @@ namespace wsc_v000000_dev\menu_pages
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's ``$instance``,
+		 *    or a new ``$instance`` array.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$this->heading_title           = $this->__('Quick-Start Guide');
 			$this->sub_heading_description = sprintf($this->__('Quick overview &amp; a few tips regarding %1$s'),
-			                                         esc_html($this->___instance_config->plugin_name));
+			                                         esc_html($this->instance->plugin_name));
 		}
 
 		/**

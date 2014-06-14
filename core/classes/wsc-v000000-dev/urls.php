@@ -1290,7 +1290,7 @@ namespace wsc_v000000_dev
 		 *    or only a query string, or only a fragment. Any of these can be parsed here.
 		 *
 		 * @param string $scheme Optional. To force a specific scheme (i.e. `//`, `http`, `https`).
-		 *    Note: `$this->___instance_config->plugin_site` will always have an `http` scheme by default.
+		 *    Note: `$this->instance->plugin_site` will always have an `http` scheme by default.
 		 *    This is a standard that is followed strictly by the WebSharks™ Core framework.
 		 *
 		 * @return string URL leading to a plugin site URI (directory/file).
@@ -1306,7 +1306,7 @@ namespace wsc_v000000_dev
 			if(substr($parts['path'], -1) !== '/' && !$this->©file->has_extension($parts['path']))
 				$parts['path'] = trailingslashit($parts['path']);
 
-			$url = $this->___instance_config->plugin_site.$this->unparse($parts);
+			$url = $this->instance->plugin_site.$this->unparse($parts);
 
 			return ($scheme) ? $this->set_scheme($url, $scheme) : $url;
 		}
@@ -1477,9 +1477,9 @@ namespace wsc_v000000_dev
 				$realpath = $this->©dir->n_seps($dir_file);
 			else $realpath = ''; // Not possible.
 
-			if(!$dir_file || strpos($dir_file.'/', $this->___instance_config->core_dir.'/') !== 0)
-				if(!$realpath || strpos($realpath.'/', $this->___instance_config->core_dir.'/') !== 0)
-					$dir_file = $this->___instance_config->core_dir.'/'.ltrim($dir_file, '/');
+			if(!$dir_file || strpos($dir_file.'/', $this->instance->core_dir.'/') !== 0)
+				if(!$realpath || strpos($realpath.'/', $this->instance->core_dir.'/') !== 0)
+					$dir_file = $this->instance->core_dir.'/'.ltrim($dir_file, '/');
 
 			return $this->to_wp_abs_dir_file($dir_file, $scheme);
 		}
@@ -1507,9 +1507,9 @@ namespace wsc_v000000_dev
 				$realpath = $this->©dir->n_seps($dir_file);
 			else $realpath = ''; // Not possible.
 
-			if(!$dir_file || strpos($dir_file.'/', $this->___instance_config->plugin_dir.'/') !== 0)
-				if(!$realpath || strpos($realpath.'/', $this->___instance_config->plugin_dir.'/') !== 0)
-					$dir_file = $this->___instance_config->plugin_dir.'/'.ltrim($dir_file, '/');
+			if(!$dir_file || strpos($dir_file.'/', $this->instance->plugin_dir.'/') !== 0)
+				if(!$realpath || strpos($realpath.'/', $this->instance->plugin_dir.'/') !== 0)
+					$dir_file = $this->instance->plugin_dir.'/'.ltrim($dir_file, '/');
 
 			return $this->to_wp_abs_dir_file($dir_file, $scheme);
 		}
@@ -1526,6 +1526,8 @@ namespace wsc_v000000_dev
 		 *    Else an empty string on any type of failure.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
+		 *
+		 * @TODO This should include a data directory 'type'?
 		 */
 		public function to_plugin_data_dir_file($dir_file = '', $scheme = '')
 		{
@@ -1537,9 +1539,9 @@ namespace wsc_v000000_dev
 				$realpath = $this->©dir->n_seps($dir_file);
 			else $realpath = ''; // Not possible.
 
-			if(!$dir_file || strpos($dir_file.'/', $this->___instance_config->plugin_data_dir.'/') !== 0)
-				if(!$realpath || strpos($realpath.'/', $this->___instance_config->plugin_data_dir.'/') !== 0)
-					$dir_file = $this->___instance_config->plugin_data_dir.'/'.ltrim($dir_file, '/');
+			if(!$dir_file || strpos($dir_file.'/', $this->instance->plugin_data_dir.'/') !== 0)
+				if(!$realpath || strpos($realpath.'/', $this->instance->plugin_data_dir.'/') !== 0)
+					$dir_file = $this->instance->plugin_data_dir.'/'.ltrim($dir_file, '/');
 
 			return $this->to_wp_abs_dir_file($dir_file, $scheme);
 		}
@@ -1567,9 +1569,9 @@ namespace wsc_v000000_dev
 				$realpath = $this->©dir->n_seps($dir_file);
 			else $realpath = ''; // Not possible.
 
-			if(!$dir_file || strpos($dir_file.'/', $this->___instance_config->plugin_pro_dir.'/') !== 0)
-				if(!$realpath || strpos($realpath.'/', $this->___instance_config->plugin_pro_dir.'/') !== 0)
-					$dir_file = $this->___instance_config->plugin_pro_dir.'/'.ltrim($dir_file, '/');
+			if(!$dir_file || strpos($dir_file.'/', $this->instance->plugin_pro_dir.'/') !== 0)
+				if(!$realpath || strpos($realpath.'/', $this->instance->plugin_pro_dir.'/') !== 0)
+					$dir_file = $this->instance->plugin_pro_dir.'/'.ltrim($dir_file, '/');
 
 			return $this->to_wp_abs_dir_file($dir_file, $scheme);
 		}
@@ -1599,7 +1601,7 @@ namespace wsc_v000000_dev
 			$plugin_site_credentials = $this->©plugin->get_site_credentials($username, $password, TRUE);
 
 			$plugin_site_post_vars = array('data' => array( // See: <http://git.io/tHGlQw> for API specs.
-			                                                'slug'     => $this->___instance_config->plugin_dir_basename, 'version' => 'latest-stable',
+			                                                'slug'     => $this->instance->plugin_dir_basename, 'version' => 'latest-stable',
 			                                                'username' => $plugin_site_credentials['username'], 'password' => $plugin_site_credentials['password']
 			));
 			$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/updater/update-sync.php'), $plugin_site_post_vars);
@@ -1609,11 +1611,11 @@ namespace wsc_v000000_dev
 			{
 				$update_args                                                             = array(
 					'action'   => 'upgrade-plugin',
-					'plugin'   => $this->___instance_config->plugin_dir_file_basename,
-					'_wpnonce' => wp_create_nonce('upgrade-plugin_'.$this->___instance_config->plugin_dir_file_basename)
+					'plugin'   => $this->instance->plugin_dir_file_basename,
+					'_wpnonce' => wp_create_nonce('upgrade-plugin_'.$this->instance->plugin_dir_file_basename)
 				);
-				$update_args[$this->___instance_config->plugin_var_ns.'_update_version'] = $plugin_site_response['version'];
-				$update_args[$this->___instance_config->plugin_var_ns.'_update_zip']     = $plugin_site_response['zip'];
+				$update_args[$this->instance->plugin_var_ns.'_update_version'] = $plugin_site_response['version'];
+				$update_args[$this->instance->plugin_var_ns.'_update_zip']     = $plugin_site_response['zip'];
 
 				return add_query_arg(urlencode_deep($update_args), $this->to_wp_self_admin_uri('/update.php'));
 			}
@@ -1654,7 +1656,7 @@ namespace wsc_v000000_dev
 			$plugin_site_credentials = $this->©plugin->get_site_credentials($username, $password, TRUE);
 
 			$plugin_site_post_vars = array('data' => array( // See: <http://git.io/tHGlQw> for API specs.
-			                                                'slug'     => $this->___instance_config->plugin_pro_dir_basename, 'version' => $this->___instance_config->plugin_version,
+			                                                'slug'     => $this->instance->plugin_pro_dir_basename, 'version' => $this->instance->plugin_version,
 			                                                'username' => $plugin_site_credentials['username'], 'password' => $plugin_site_credentials['password']
 			));
 			$plugin_site_response  = $this->remote($this->to_plugin_site_uri('/updater/update-sync.php'), $plugin_site_post_vars);
@@ -1664,11 +1666,11 @@ namespace wsc_v000000_dev
 			{
 				$update_args                                                                 = array(
 					'action'   => 'upgrade-plugin',
-					'plugin'   => $this->___instance_config->plugin_pro_dir_file_basename,
-					'_wpnonce' => wp_create_nonce('upgrade-plugin_'.$this->___instance_config->plugin_pro_dir_file_basename)
+					'plugin'   => $this->instance->plugin_pro_dir_file_basename,
+					'_wpnonce' => wp_create_nonce('upgrade-plugin_'.$this->instance->plugin_pro_dir_file_basename)
 				);
-				$update_args[$this->___instance_config->plugin_var_ns.'_pro_update_version'] = $plugin_site_response['version'];
-				$update_args[$this->___instance_config->plugin_var_ns.'_pro_update_zip']     = $plugin_site_response['zip'];
+				$update_args[$this->instance->plugin_var_ns.'_pro_update_version'] = $plugin_site_response['version'];
+				$update_args[$this->instance->plugin_var_ns.'_pro_update_zip']     = $plugin_site_response['zip'];
 
 				return add_query_arg(urlencode_deep($update_args), $this->to_wp_self_admin_uri('/update.php'));
 			}

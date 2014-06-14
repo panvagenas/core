@@ -25,15 +25,94 @@ namespace wsc_v000000_dev\packages
 	class package extends \wsc_v000000_dev\framework
 	{
 		/**
+		 * @var string Package title.
+		 */
+		public $title = '';
+
+		/**
+		 * @var string Package slug.
+		 */
+		public $slug = '';
+
+		/**
+		 * @var string Package author.
+		 */
+		public $author = '';
+
+		/**
+		 * @var string Package description.
+		 */
+		public $description = '';
+
+		/**
+		 * @var string Package version.
+		 */
+		public $version = '';
+
+		/**
+		 * @var dependency[] An array of dependencies.
+		 */
+		public $dependencies = array();
+
+		/**
+		 * @var string URL with more info on the package.
+		 */
+		public $info_url = '';
+
+		/**
+		 * @var string URL leading to an archive (i.e. ZIP file).
+		 */
+		public $archive_url = '';
+
+		/**
+		 * @var string URL (or data URI) leading to an icon file.
+		 */
+		public $icon_128x128 = '';
+
+		/**
+		 * @var string A description of any special requirements.
+		 */
+		public $requires = '';
+
+		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
+		 *
+		 * @param array        $properties An array of package properties.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance, $properties)
 		{
-			parent::__construct($___instance_config);
+			$this->check_arg_types('', array('array:!empty', 'object:!empty'), func_get_args());
+
+			parent::__construct($instance);
+
+			$this->set_properties($properties);
+			// @TODO option values are always stringified; which will cause a problem here.
+
+			foreach($this->dependencies as &$_dependency)
+				$_dependency = $this->©package__dependency($_dependency);
+			unset($_dependency); // Housekeeping.
+		}
+
+		public function install()
+		{
+			$package_dir = $this->©dir->packages($this->slug);
+
+			$packages_active              = $this->©options->get('packages.active');
+			$packages_active[$this->slug] = get_object_vars($this);
+			$this->©options->update(array('packages.active' => $packages_active));
+		}
+
+		public function uninstall()
+		{
+			$package_dir = $this->©dir->packages($this->slug);
+
+			$packages_active = $this->©options->get('packages.active');
+			unset($packages_active[$this->slug]);
+			$this->©options->update(array('packages.active' => $packages_active));
 		}
 	}
 }

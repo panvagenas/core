@@ -84,9 +84,9 @@ namespace wsc_v000000_dev
 
 			if(!$this->©plugin->is_core()) // Should we include a plugin's classes here too?
 			{
-				$ns_class[] = '\\'.$this->___instance_config->plugin_root_ns; // API class.
+				$ns_class[] = '\\'.$this->instance->plugin_root_ns; // API class.
 
-				foreach($this->©dir->iteration($this->___instance_config->plugin_classes_dir) as $_dir_file)
+				foreach($this->©dir->iteration($this->instance->plugin_classes_dir) as $_dir_file)
 					if($_dir_file->isFile()) // We're dealing only with class files here.
 					{
 						$_file_sub_path = $this->©dir->n_seps($_dir_file->getSubPathname());
@@ -100,19 +100,19 @@ namespace wsc_v000000_dev
 
 			# WebSharks™ Core classes (all plugins inherit these core classes).
 
-			$ns_class[] = '\\'.$this->___instance_config->core_ns_stub; // API class.
+			$ns_class[] = '\\'.$this->instance->core_ns_stub; // API class.
 
-			foreach($this->©dir->iteration($this->___instance_config->core_classes_dir) as $_dir_file)
+			foreach($this->©dir->iteration($this->instance->core_classes_dir) as $_dir_file)
 				if($_dir_file->isFile()) // We're dealing only with class files here.
 				{
 					$_file_sub_path = $this->©dir->n_seps($_dir_file->getSubPathname());
 					$_ns_class_path = '\\'.str_replace(array('/', '-'), array('\\', '_'), preg_replace('/\.php$/i', '', $_file_sub_path));
 
-					if($_ns_class_path === '\\'.$this->___instance_config->core_ns.'\\deps')
-						$_ns_class_path = '\\deps_'.$this->___instance_config->core_ns; // Special class (no namespace).
+					if($_ns_class_path === '\\'.$this->instance->core_ns.'\\deps')
+						$_ns_class_path = '\\deps_'.$this->instance->core_ns; // Special class (no namespace).
 
-					else if($_ns_class_path === '\\'.$this->___instance_config->core_ns.'\\deps_x')
-						$_ns_class_path = '\\deps_x_'.$this->___instance_config->core_ns; // Special class.
+					else if($_ns_class_path === '\\'.$this->instance->core_ns.'\\deps_x')
+						$_ns_class_path = '\\deps_x_'.$this->instance->core_ns; // Special class.
 
 					if(class_exists($_ns_class_path) || interface_exists($_ns_class_path) || ($this->©function->is_possible('trait_exists') && trait_exists($_ns_class_path)))
 						$ns_class[] = $_ns_class_path;

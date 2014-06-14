@@ -2221,7 +2221,7 @@ namespace wsc_v000000_dev
 
 			if($urlencode && stripos($value, '%%__query_string__%%') !== FALSE) // Query string.
 				$value = $str_replace_('%%__query_string__%%', // Wraps them into an array (using `plugin_var_ns`).
-				                       $this->©vars->build_query(array($this->___instance_config->plugin_var_ns => $___vars)), $value);
+				                       $this->©vars->build_query(array($this->instance->plugin_var_ns => $___vars)), $value);
 
 			$_iteration_counter = 1; // Check completion every 10th iteration to save time.
 
@@ -2252,7 +2252,7 @@ namespace wsc_v000000_dev
 						if(empty($m['key_delimiter'])) $m['key_delimiter'] = ' = ';
 
 						if($m['delimiter'] === '&' && !$m['include_keys']) // This indicates a query string.
-							return $_this->©vars->build_query(array($_this->___instance_config->plugin_var_ns => $values));
+							return $_this->©vars->build_query(array($_this->instance->plugin_var_ns => $values));
 
 						$m['delimiter']     = str_replace(array('\r', '\n', '\t'), array("\r", "\n", "\t"), $m['delimiter']);
 						$m['key_delimiter'] = str_replace(array('\r', '\n', '\t'), array("\r", "\n", "\t"), $m['key_delimiter']);

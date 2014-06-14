@@ -145,15 +145,15 @@
 		/**
 		 * @type {Object} Current instance configuration.
 		 */
-		this.___instance_config = {plugin_js_extension_ns: extension};
+		this.___instance = {plugin_js_extension_ns: extension};
 
-		// Build the dynamic `___instance_config` property.
+		// Build the dynamic `___instance` property.
 
-		if(typeof window['$' + core_ns + '___instance_config'] === 'object')
-			$.extend(this.___instance_config, window['$' + core_ns + '___instance_config']);
+		if(typeof window['$' + core_ns + '___instance'] === 'object')
+			$.extend(this.___instance, window['$' + core_ns + '___instance']);
 
-		if(typeof window['$' + plugin_root_ns + '___instance_config'] === 'object')
-			$.extend(this.___instance_config, window['$' + plugin_root_ns + '___instance_config']);
+		if(typeof window['$' + plugin_root_ns + '___instance'] === 'object')
+			$.extend(this.___instance, window['$' + plugin_root_ns + '___instance']);
 
 		/**
 		 * @type {Object} Current translations.
@@ -215,7 +215,7 @@
 		if(!this.is_default_core_extension()) // Only the core may call this.
 			throw this.sprintf(this.__('core_only_failure'), 'extension_class');
 
-		if(plugin_root_ns && plugin_root_ns !== this.instance_config('core_ns'))
+		if(plugin_root_ns && plugin_root_ns !== this.instance('core_ns'))
 		{
 			window['$$' + plugin_root_ns] = window['$$' + plugin_root_ns] || {};
 			window['$$' + plugin_root_ns]['$$' + extension] = function(){}; // Class constructor.
@@ -242,12 +242,12 @@
 	 *
 	 * @return {String|Array|Object|Number|Boolean}
 	 */
-	$$wsc.$$.prototype.instance_config = function(key)
+	$$wsc.$$.prototype.instance = function(key)
 	{
-		if(typeof this.___instance_config[key] === 'string')
-			return this.___instance_config[key];
+		if(typeof this.___instance[key] === 'string')
+			return this.___instance[key];
 
-		throw this.sprintf(this.__('instance_config__failure'), key);
+		throw this.sprintf(this.__('instance__failure'), key);
 	};
 
 	/**
@@ -260,7 +260,7 @@
 	$$wsc.$$.prototype.core = function(string)
 	{
 		if(!this.cache.core_ns_with_dashes) // Prevent a 2nd function call each time.
-			this.cache.core_ns_with_dashes = this.instance_config('core_ns_with_dashes');
+			this.cache.core_ns_with_dashes = this.instance('core_ns_with_dashes');
 		return this.cache.core_ns_with_dashes + string;
 	};
 
@@ -522,8 +522,8 @@
 	 */
 	$$wsc.$$.prototype.is_default_core_extension = function()
 	{
-		return (this.instance_config('plugin_root_ns') === this.instance_config('core_ns')
-		        && this.instance_config('plugin_js_extension_ns') === '$');
+		return (this.instance('plugin_root_ns') === this.instance('core_ns')
+		        && this.instance('plugin_js_extension_ns') === '$');
 	};
 
 	/**
@@ -662,8 +662,8 @@
 		this.check_arg_types(['object', 'string:!empty'], arguments, 1);
 
 		var theme_class = '', // Initialize working variables.
-			core_ns_with_dashes = this.instance_config('core_ns_with_dashes'),
-			plugin_root_ns_with_dashes = this.instance_config('plugin_root_ns_with_dashes');
+			core_ns_with_dashes = this.instance('core_ns_with_dashes'),
+			plugin_root_ns_with_dashes = this.instance('plugin_root_ns_with_dashes');
 
 		$(object).add($(object).parents('.' + plugin_root_ns_with_dashes))
 			.each(function() // Begin iterations (we have two here).
@@ -687,7 +687,7 @@
 	$$wsc.$$.prototype.enhance_forms = function()
 	{
 		var _ = this, // Initialize working variables.
-			$forms = $('.' + _.instance_config('plugin_root_ns_with_dashes') + ' form');
+			$forms = $('.' + _.instance('plugin_root_ns_with_dashes') + ' form');
 
 		// Chrome & Safari autofills.
 
@@ -1541,7 +1541,7 @@
 		this.check_arg_types(['string', 'array'], 'boolean', arguments, 0);
 
 		var current_page, matches, slug, slug_class_basename; // Initialize.
-		var plugin_root_ns_stub_with_dashes = this.instance_config('plugin_root_ns_stub_with_dashes');
+		var plugin_root_ns_stub_with_dashes = this.instance('plugin_root_ns_stub_with_dashes');
 		var preg_quote_plugin_root_ns_stub_with_dashes = this.preg_quote(plugin_root_ns_stub_with_dashes);
 		var regex = new RegExp('^' + preg_quote_plugin_root_ns_stub_with_dashes + '(?:\\-\\-(.+))?$');
 
@@ -1715,8 +1715,8 @@
 	{
 		this.check_arg_types('string:!empty', 'string:!empty', 'string:!empty', 'array', 'object', arguments, 3);
 
-		var url = this.instance_config('wp_load_url');
-		var plugin_var_ns = this.instance_config('plugin_var_ns');
+		var url = this.instance('wp_load_url');
+		var plugin_var_ns = this.instance('plugin_var_ns');
 
 		ajax = (ajax) ? ajax : {};
 		ajax.type = method, ajax.url = url, ajax.data = {};

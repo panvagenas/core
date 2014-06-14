@@ -48,15 +48,15 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @throws exception If this class is instantiated before the `init` action hook.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			if(!did_action('init'))
 				throw $this->©exception(
@@ -66,11 +66,11 @@ namespace wsc_v000000_dev
 			$scripts_to_register = array(); // Initialize scripts.
 
 			// Core libs; available in all contexts.
-			if(!wp_script_is($this->___instance_config->core_ns_with_dashes, 'registered'))
-				$scripts_to_register[$this->___instance_config->core_ns_with_dashes] = array(
+			if(!wp_script_is($this->instance->core_ns_with_dashes, 'registered'))
+				$scripts_to_register[$this->instance->core_ns_with_dashes] = array(
 					'deps'     => array('jquery'), // jQuery dependency only; we compile others.
 					'url'      => $this->©url->to_core_dir_file('/client-side/scripts/core-libs.min.js'),
-					'ver'      => $this->___instance_config->core_version_with_dashes,
+					'ver'      => $this->instance->core_version_with_dashes,
 
 					'localize' => array( // Array of WebSharks™ Core JavaScript translations.
 					                     /*
@@ -96,7 +96,7 @@ namespace wsc_v000000_dev
 					                      *    Plugins are also allowed to override any existing translation keys in the core;
 					                      *    including in any core extensions. Hopefully not necessary, but permissible.
 					                      */
-					                     'instance_config__failure'                        => $this->__('Could NOT get instance config value for key: `%1$s`.'),
+					                     'instance__failure'                               => $this->__('Could NOT get instance config value for key: `%1$s`.'),
 					                     'verifier__failure'                               => $this->__('Could NOT get verifier for key: `%1$s`.'),
 					                     '____failure'                                     => $this->__('Could NOT get translation string for key: `%1$s`.'),
 					                     'core_only_failure'                               => $this->__('Only the core may call upon: `%1$s`.'),
@@ -148,16 +148,16 @@ namespace wsc_v000000_dev
 
 			if(($front_side_file = $this->©file->template('/client-side/scripts/front-side.min.js', TRUE)))
 			{
-				$this->front_side_components[] = $this->___instance_config->plugin_root_ns_with_dashes.'--front-side';
+				$this->front_side_components[] = $this->instance->plugin_root_ns_with_dashes.'--front-side';
 
-				$scripts_to_register[$this->___instance_config->plugin_root_ns_with_dashes.'--front-side'] = array(
-					'deps' => array($this->___instance_config->core_ns_with_dashes),
+				$scripts_to_register[$this->instance->plugin_root_ns_with_dashes.'--front-side'] = array(
+					'deps' => array($this->instance->core_ns_with_dashes),
 					'url'  => $this->©url->to_wp_abs_dir_file($front_side_file),
-					'ver'  => $this->___instance_config->plugin_version_with_dashes
+					'ver'  => $this->instance->plugin_version_with_dashes
 				);
 			}
 			else $this->front_side_components = // Running w/ core only; no separate front-side scripts.
-				array_merge($this->front_side_components, array($this->___instance_config->core_ns_with_dashes));
+				array_merge($this->front_side_components, array($this->instance->core_ns_with_dashes));
 
 			// Stand-alone components; available in all contexts (depends on front-side).
 
@@ -165,12 +165,12 @@ namespace wsc_v000000_dev
 
 			if(($stand_alone_file = $this->©file->template('client-side/scripts/stand-alone.min.js', TRUE)))
 			{
-				$this->stand_alone_components[] = $this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone';
+				$this->stand_alone_components[] = $this->instance->plugin_root_ns_with_dashes.'--stand-alone';
 
-				$scripts_to_register[$this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone'] = array(
+				$scripts_to_register[$this->instance->plugin_root_ns_with_dashes.'--stand-alone'] = array(
 					'deps' => $this->front_side_components, // Includes the core already.
 					'url'  => $this->©url->to_wp_abs_dir_file($stand_alone_file),
-					'ver'  => $this->___instance_config->plugin_version_with_dashes
+					'ver'  => $this->instance->plugin_version_with_dashes
 				);
 			}
 			else $this->stand_alone_components = // No separate stand-alone scripts.
@@ -181,30 +181,30 @@ namespace wsc_v000000_dev
 			if(($is_plugin_page = $this->©menu_page->is_plugin_page()))
 			{
 				$this->menu_page_components   = $this->menu_page_components();
-				$this->menu_page_components[] = $this->___instance_config->core_ns_with_dashes.'--menu-pages';
+				$this->menu_page_components[] = $this->instance->core_ns_with_dashes.'--menu-pages';
 
-				if(!wp_script_is($this->___instance_config->core_ns_with_dashes.'--menu-pages', 'registered'))
-					$scripts_to_register[$this->___instance_config->core_ns_with_dashes.'--menu-pages'] = array(
-						'deps' => array($this->___instance_config->core_ns_with_dashes),
+				if(!wp_script_is($this->instance->core_ns_with_dashes.'--menu-pages', 'registered'))
+					$scripts_to_register[$this->instance->core_ns_with_dashes.'--menu-pages'] = array(
+						'deps' => array($this->instance->core_ns_with_dashes),
 						'url'  => $this->©url->to_core_dir_file('/client-side/scripts/menu-pages/menu-pages.min.js'),
-						'ver'  => $this->___instance_config->core_version_with_dashes
+						'ver'  => $this->instance->core_version_with_dashes
 					);
 			}
 			if($scripts_to_register) $this->register($scripts_to_register);
 
 			// Add data separately, as this might change for each plugin the core processes.
 
-			$this->add_data($this->___instance_config->core_ns_with_dashes, $this->_build_plugin_root_namespaces_for_core_inline_data());
-			$this->add_data($this->___instance_config->core_ns_with_dashes, $this->_build_instance_config_for_core_inline_data());
-			$this->add_data($this->___instance_config->core_ns_with_dashes, $this->_build_verifiers_for_core_inline_data());
+			$this->add_data($this->instance->core_ns_with_dashes, $this->_build_plugin_root_namespaces_for_core_inline_data());
+			$this->add_data($this->instance->core_ns_with_dashes, $this->_build_instance_for_core_inline_data());
+			$this->add_data($this->instance->core_ns_with_dashes, $this->_build_verifiers_for_core_inline_data());
 
-			if(in_array($this->___instance_config->plugin_root_ns_with_dashes.'--front-side', $this->front_side_components, TRUE))
-				$this->add_data($this->___instance_config->plugin_root_ns_with_dashes.'--front-side', $this->build_front_side_inline_data());
+			if(in_array($this->instance->plugin_root_ns_with_dashes.'--front-side', $this->front_side_components, TRUE))
+				$this->add_data($this->instance->plugin_root_ns_with_dashes.'--front-side', $this->build_front_side_inline_data());
 
-			if(in_array($this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone', $this->stand_alone_components, TRUE))
-				$this->add_data($this->___instance_config->plugin_root_ns_with_dashes.'--stand-alone', $this->build_stand_alone_inline_data());
+			if(in_array($this->instance->plugin_root_ns_with_dashes.'--stand-alone', $this->stand_alone_components, TRUE))
+				$this->add_data($this->instance->plugin_root_ns_with_dashes.'--stand-alone', $this->build_stand_alone_inline_data());
 
-			if($is_plugin_page) $this->add_data($this->___instance_config->core_ns_with_dashes.'--menu-pages', $this->build_menu_page_inline_data());
+			if($is_plugin_page) $this->add_data($this->instance->core_ns_with_dashes.'--menu-pages', $this->build_menu_page_inline_data());
 		}
 
 		/**
@@ -254,15 +254,15 @@ namespace wsc_v000000_dev
 
 			// Initialize the array of all plugin root namespaces for the core.
 
-			if(empty($GLOBALS[$this->___instance_config->core_ns.'_scripts_initialized_plugin_root_namespaces'])
-			   && ($GLOBALS[$this->___instance_config->core_ns.'_scripts_initialized_plugin_root_namespaces'] = TRUE)
-			) $data = 'var $'.$this->___instance_config->core_ns.'___plugin_root_namespaces = [];';
+			if(empty($GLOBALS[$this->instance->core_ns.'_scripts_initialized_plugin_root_namespaces'])
+			   && ($GLOBALS[$this->instance->core_ns.'_scripts_initialized_plugin_root_namespaces'] = TRUE)
+			) $data = 'var $'.$this->instance->core_ns.'___plugin_root_namespaces = [];';
 
 			// Plugin plugin root namespace; which is possibly the core also.
 
 			$data = !empty($data) ? $data."\n" : ''; // Appending?
-			$data .= '$'.$this->___instance_config->core_ns.'___plugin_root_namespaces.push'.
-			         '(\''.$this->©string->esc_js_sq($this->___instance_config->plugin_root_ns).'\');';
+			$data .= '$'.$this->instance->core_ns.'___plugin_root_namespaces.push'.
+			         '(\''.$this->©string->esc_js_sq($this->instance->plugin_root_ns).'\');';
 
 			return ($this->cache[__FUNCTION__] = $data);
 		}
@@ -272,19 +272,19 @@ namespace wsc_v000000_dev
 		 *
 		 * @return string Instance config for core inline data.
 		 */
-		protected function _build_instance_config_for_core_inline_data()
+		protected function _build_instance_for_core_inline_data()
 		{
 			if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
 
 			// Core instance config; for the core itself.
 
-			if(empty($GLOBALS[$this->___instance_config->core_ns.'_scripts_loaded_core_instance_config'])
-			   && ($GLOBALS[$this->___instance_config->core_ns.'_scripts_loaded_core_instance_config'] = TRUE)
-			) // Notice the call below pulls an instance from the core itself; i.e. `core()->___instance_config->for_js()`.
+			if(empty($GLOBALS[$this->instance->core_ns.'_scripts_loaded_core_instance'])
+			   && ($GLOBALS[$this->instance->core_ns.'_scripts_loaded_core_instance'] = TRUE)
+			) // Notice the call below pulls an instance from the core itself; i.e. `core()->instance->for_js()`.
 			{
-				$data = 'var $'.$this->___instance_config->core_ns.'___instance_config = {';
+				$data = 'var $'.$this->instance->core_ns.'___instance = {';
 
-				$data .= $this->©object->to_js(core()->___instance_config->for_js(), FALSE).',';
+				$data .= $this->©object->to_js(core()->instance->for_js(), FALSE).',';
 				$data .= "'wp_load_url':'".$this->©string->esc_js_sq($this->©url->to_wp_abs_dir_file($this->©file->wp_load()))."',";
 				$data .= "'core_dir_url':'".$this->©string->esc_js_sq($this->©url->to_core_dir_file())."',";
 
@@ -293,13 +293,12 @@ namespace wsc_v000000_dev
 			// Plugin instance config; which is possibly the core also.
 
 			$data = !empty($data) ? $data."\n" : ''; // Appending?
-			$data .= 'var $'.$this->___instance_config->plugin_root_ns.'___instance_config = {';
+			$data .= 'var $'.$this->instance->plugin_root_ns.'___instance = {';
 
-			$data .= $this->©object->to_js($this->___instance_config->for_js(TRUE), FALSE).',';
+			$data .= $this->©object->to_js($this->instance->for_js(TRUE), FALSE).',';
 			$data .= "'plugin_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_dir_file())."',";
 			$data .= "'plugin_data_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_data_dir_file())."',";
 			$data .= "'plugin_pro_dir_url':'".$this->©string->esc_js_sq($this->©url->to_plugin_pro_dir_file())."',";
-			$data .= "'has_pro':".(($this->©plugin->has_pro()) ? 'true' : 'false').",";
 
 			$data = rtrim($data, ',').'};'; // Trim and close curly bracket.
 
@@ -315,7 +314,7 @@ namespace wsc_v000000_dev
 		{
 			if(isset($this->cache[__FUNCTION__])) return $this->cache[__FUNCTION__];
 
-			$data = 'var $'.$this->___instance_config->plugin_root_ns.'___verifiers = {';
+			$data = 'var $'.$this->instance->plugin_root_ns.'___verifiers = {';
 
 			if(is_admin() && ($current_menu_page_slug_class_basename = $this->©menu_pages->is_plugin_page('', TRUE)))
 			{

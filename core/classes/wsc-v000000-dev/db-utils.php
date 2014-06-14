@@ -444,7 +444,7 @@ namespace wsc_v000000_dev
 			$this->check_arg_types('string:!empty', func_get_args());
 
 			$table_prefix  = $this->©db_table->prefix;
-			$plugin_prefix = $this->___instance_config->plugin_prefix;
+			$plugin_prefix = $this->instance->plugin_prefix;
 			$charset       = ($this->©db->charset) ? $this->©db->charset : 'utf8';
 			$collate       = ($this->©db->collate) ? $this->©db->collate : 'utf8_unicode_ci';
 
@@ -598,8 +598,8 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', '', 'integer', func_get_args());
 
-			$transient_prefix         = '_'.$this->___instance_config->plugin_prefix.'transient_';
-			$transient_timeout_prefix = '_'.$this->___instance_config->plugin_prefix.'transient_timeout_';
+			$transient_prefix         = '_'.$this->instance->plugin_prefix.'transient_';
+			$transient_timeout_prefix = '_'.$this->instance->plugin_prefix.'transient_timeout_';
 
 			$transient         = $transient_prefix.md5($key);
 			$transient_timeout = $transient_timeout_prefix.md5($key);
@@ -641,8 +641,8 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', func_get_args());
 
-			$transient_prefix         = '_'.$this->___instance_config->plugin_prefix.'transient_';
-			$transient_timeout_prefix = '_'.$this->___instance_config->plugin_prefix.'transient_timeout_';
+			$transient_prefix         = '_'.$this->instance->plugin_prefix.'transient_';
+			$transient_timeout_prefix = '_'.$this->instance->plugin_prefix.'transient_timeout_';
 
 			$transient         = $transient_prefix.md5($key);
 			$transient_timeout = $transient_timeout_prefix.md5($key);
@@ -680,8 +680,8 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', func_get_args());
 
-			$transient_prefix         = '_'.$this->___instance_config->plugin_prefix.'transient_';
-			$transient_timeout_prefix = '_'.$this->___instance_config->plugin_prefix.'transient_timeout_';
+			$transient_prefix         = '_'.$this->instance->plugin_prefix.'transient_';
+			$transient_timeout_prefix = '_'.$this->instance->plugin_prefix.'transient_timeout_';
 
 			$transient         = $transient_prefix.md5($key);
 			$transient_timeout = $transient_timeout_prefix.md5($key);
@@ -700,8 +700,8 @@ namespace wsc_v000000_dev
 		 */
 		public function cleanup_expired_transients()
 		{
-			$transient_prefix         = '_'.$this->___instance_config->plugin_prefix.'transient_';
-			$transient_timeout_prefix = '_'.$this->___instance_config->plugin_prefix.'transient_timeout_';
+			$transient_prefix         = '_'.$this->instance->plugin_prefix.'transient_';
+			$transient_timeout_prefix = '_'.$this->instance->plugin_prefix.'transient_timeout_';
 
 			$query = // Cleanup expired transients (for the current plugin).
 
@@ -737,8 +737,8 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('boolean', func_get_args());
 
-			$transient_prefix         = '_'.$this->___instance_config->plugin_prefix.'transient_';
-			$transient_timeout_prefix = '_'.$this->___instance_config->plugin_prefix.'transient_timeout_';
+			$transient_prefix         = '_'.$this->instance->plugin_prefix.'transient_';
+			$transient_timeout_prefix = '_'.$this->instance->plugin_prefix.'transient_timeout_';
 
 			if(!$confirmation) return 0; // Added security.
 

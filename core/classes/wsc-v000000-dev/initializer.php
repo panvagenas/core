@@ -76,6 +76,7 @@ namespace wsc_v000000_dev
 			$this->add_filter('pre_site_transient_update_plugins', '©plugins.pre_site_transient_update_plugins', 10000);
 
 			$this->after_setup_theme_hooks(); // Additional hooks/filters needed by an extender.
+			$this->do_action('after_setup_theme_hooks'); // Additional hooks/filters.
 		}
 
 		/**
@@ -93,9 +94,9 @@ namespace wsc_v000000_dev
 		 */
 		public function register_installer_hooks()
 		{
-			register_activation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.activation'));
-			register_deactivation_hook($this->___instance_config->plugin_dir_file_basename, array($this, '©installer.deactivation'));
-			register_uninstall_hook($this->___instance_config->plugin_dir_file_basename, $this->___instance_config->plugin_root_ns.'_uninstall');
+			register_activation_hook($this->instance->plugin_dir_file_basename, array($this, '©installer.activation'));
+			register_deactivation_hook($this->instance->plugin_dir_file_basename, array($this, '©installer.deactivation'));
+			register_uninstall_hook($this->instance->plugin_dir_file_basename, $this->instance->plugin_root_ns.'_uninstall');
 		}
 	}
 }

@@ -82,7 +82,7 @@ namespace # Global namespace.
 	class wsc__headers extends \wsc_v000000_dev\headers{}
 	class wsc__initializer extends \wsc_v000000_dev\initializer{}
 	class wsc__installer extends \wsc_v000000_dev\installer{}
-	class wsc__instance_config extends \wsc_v000000_dev\instance_config{}
+	class wsc__instance extends \wsc_v000000_dev\instance{}
 	class wsc__integers extends \wsc_v000000_dev\integers{}
 	class wsc__ips extends \wsc_v000000_dev\ips{}
 	class wsc__mail extends \wsc_v000000_dev\mail{}

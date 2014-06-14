@@ -17,7 +17,7 @@ namespace wsc_v000000_dev
 	if(!defined('WPINC'))
 		exit('Do NOT access this file directly: '.basename(__FILE__));
 
-	if(!class_exists('\\'.__NAMESPACE__.'\\instance_config'))
+	if(!class_exists('\\'.__NAMESPACE__.'\\instance'))
 	{
 		# --------------------------------------------------------------------------------------------------------------------------------
 		# WebSharks™ Core stub class; and an internal/namespaced alias.
@@ -40,7 +40,7 @@ namespace wsc_v000000_dev
 		 * @package WebSharks\Core
 		 * @since   130331
 		 */
-		final class instance_config // Used by almost all classes.
+		final class instance // Used by almost all classes.
 		{
 			# -----------------------------------------------------------------------------------------------------------------------------
 			# Protected/static properties (some are defined by the initializer).
@@ -71,8 +71,8 @@ namespace wsc_v000000_dev
 				if(static::$initialized)
 					return TRUE; // Initialized already.
 
-				if(!class_exists(stub::$core_ns_stub.'__instance_config'))
-					class_alias(__CLASS__, stub::$core_ns_stub.'__instance_config');
+				if(!class_exists(stub::$core_ns_stub.'__instance'))
+					class_alias(__CLASS__, stub::$core_ns_stub.'__instance');
 
 				return (static::$initialized = TRUE);
 			}
@@ -586,6 +586,6 @@ namespace wsc_v000000_dev
 		# Initialize the WebSharks™ Core instance config class.
 		# --------------------------------------------------------------------------------------------------------------------------------
 
-		instance_config::initialize(); // Also registers class alias.
+		instance::initialize(); // Also registers class alias.
 	}
 }

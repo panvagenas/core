@@ -118,7 +118,7 @@ namespace wsc_v000000_dev
 				static::add_special_class(stub::$core_ns.'\\deps', $core_ns_classes_dir.'/framework.php');
 				static::add_special_class(stub::$core_ns.'\\core', $core_ns_classes_dir.'/framework.php');
 				static::add_special_class(stub::$core_ns.'\\fw_constants', $core_ns_classes_dir.'/framework.php');
-				static::add_special_class(stub::$core_ns.'\\instance_config', $core_ns_classes_dir.'/framework.php');
+				static::add_special_class(stub::$core_ns.'\\instance', $core_ns_classes_dir.'/framework.php');
 				static::add_special_class(stub::$core_ns.'\\exception_handler', $core_ns_classes_dir.'/framework.php');
 				static::add_special_class(stub::$core_ns_stub, $core_ns_classes_dir.'/framework.php');
 

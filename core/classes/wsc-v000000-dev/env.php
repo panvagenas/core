@@ -432,8 +432,8 @@ namespace wsc_v000000_dev
 		{
 			$details = 'PHP v'.PHP_VERSION.
 			           ' :: WordPress® v'.WP_VERSION.
-			           ' :: '.$this->___instance_config->plugin_name.' v'.$this->___instance_config->plugin_version;
-			$details .= ($this->©plugin->has_pro()) ? ' :: + Pro Add-On' : '';
+			           ' :: '.$this->instance->plugin_name.' v'.$this->instance->plugin_version;
+			$details .= ($this->©plugin->has_pro_loaded()) ? ' :: + Pro Add-On' : '';
 
 			return $details;
 		}

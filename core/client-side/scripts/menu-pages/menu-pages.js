@@ -192,7 +192,7 @@
 				       return _.cache.$menu_page;
 
 			       return (_.cache.$menu_page // Current menu page.
-			               = $('.' + _.instance_config('plugin_root_ns_with_dashes') + '.menu-page'));
+			               = $('.' + _.instance('plugin_root_ns_with_dashes') + '.menu-page'));
 		       };
 
 		       _.$content_panels = function()

@@ -55,13 +55,13 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$this->import_json_form_field_config // Form field configuration.
 				= array('type'                => 'file', 'required' => TRUE,
@@ -130,6 +130,8 @@ namespace wsc_v000000_dev
 				'menu_pages.panels.community_forum.feed_url' => 'http://wordpress.org/support/rss',
 				'menu_pages.panels.news_kb.feed_url'         => 'http://make.wordpress.org/core/feed/',
 				'menu_pages.panels.videos.yt_playlist'       => 'PLBmUTJGsRqNKM--kwBeKJY9wOT-n7OhnC',
+
+				'packages.active'                            => array(),
 			);
 			$validators = array(
 				'encryption.key'                             => array('string:!empty'),
@@ -187,6 +189,8 @@ namespace wsc_v000000_dev
 				'menu_pages.panels.community_forum.feed_url' => array('string:!empty'),
 				'menu_pages.panels.news_kb.feed_url'         => array('string:!empty'),
 				'menu_pages.panels.videos.yt_playlist'       => array('string:!empty'),
+
+				'packages.active'                            => array('array'),
 			);
 			$this->setup($defaults, $validators);
 		}
@@ -234,8 +238,8 @@ namespace wsc_v000000_dev
 					$this->__('Options mismatch. If you add a new default option, please add a validator for it also.').
 					' '.sprintf($this->__('Got `%1$s` default options, `%2$s` validators. These should match up.'), count($defaults), count($validators))
 				);
-			if(!is_array($this->options = get_option($this->___instance_config->plugin_root_ns_stub.'__options')))
-				update_option($this->___instance_config->plugin_root_ns_stub.'__options', ($this->options = array()));
+			if(!is_array($this->options = get_option($this->instance->plugin_root_ns_stub.'__options')))
+				update_option($this->instance->plugin_root_ns_stub.'__options', ($this->options = array()));
 
 			$this->defaults   = $this->©string->ify_deep($this->©array->ify_deep($defaults));
 			$this->options    = array_merge($this->defaults, $this->options);
@@ -287,6 +291,8 @@ namespace wsc_v000000_dev
 		 * @return array The current array of options.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
+		 *
+		 * @TODO Updating or importing options should trigger package checks.
 		 */
 		public function update($new_options = array())
 		{
@@ -299,12 +305,12 @@ namespace wsc_v000000_dev
 				foreach($new_options as &$_new_option) // Variable by reference.
 					if(is_array($_new_option)) // Remove update markers and possible file info.
 						unset($_new_option['___update'], $_new_option['___file_info']);
-				unset($_new_option);
+				unset($_new_option); // Housekeeping.
 
 				$this->options = array_merge($this->options, $new_options);
 			}
 			$this->options = $this->validate(TRUE); // Full validation before updates.
-			update_option($this->___instance_config->plugin_root_ns_stub.'__options', $this->options);
+			update_option($this->instance->plugin_root_ns_stub.'__options', $this->options);
 			$this->©db_cache->purge(); // Updates indicate config changes (so we also purge the DB cache).
 
 			return $this->options; // All options (w/ updates applied).
@@ -680,7 +686,7 @@ namespace wsc_v000000_dev
 			if($confirmation) // Have confirmation?
 			{
 				$this->options = $this->defaults;
-				delete_option($this->___instance_config->plugin_root_ns_stub.'__options');
+				delete_option($this->instance->plugin_root_ns_stub.'__options');
 				return $this->options; // Default options.
 			}
 			return array(); // Failure (no confirmation).
@@ -769,9 +775,9 @@ namespace wsc_v000000_dev
 		 */
 		public function ®export()
 		{
-			$this->©env->prep_for_file_download();
+			$this->©env->prep_for_file_download(); // Misc. tweaks.
 			$this->©header->clean_status_type(200, 'application/json', TRUE);
-			$this->©header->content_disposition('attachment', $this->___instance_config->plugin_root_ns_with_dashes.'.json');
+			$this->©header->content_disposition('attachment', $this->instance->plugin_root_ns_with_dashes.'.json');
 
 			$options_for_export = $this->options; // Currently configured options.
 			$options_for_export = $this->substitute_deep($options_for_export);

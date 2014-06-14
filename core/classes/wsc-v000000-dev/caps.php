@@ -50,8 +50,8 @@ namespace wsc_v000000_dev
 
 			switch($custom_cap) // Custom capability mapper.
 			{
-				case 'manage_'.$this->___instance_config->plugin_root_ns;
-					$cap = $this->___instance_config->plugin_cap;
+				case 'manage_'.$this->instance->plugin_root_ns;
+					$cap = $this->instance->plugin_cap;
 					break; // Break switch loop.
 
 				case 'manage_user_profile_fields':

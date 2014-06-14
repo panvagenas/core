@@ -33,22 +33,22 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
-		 * @throws \exception If there is a missing and/or invalid `$___instance_config`.
+		 * @throws \exception If there is a missing and/or invalid `$instance`.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			if($___instance_config instanceof framework)
-				$plugin_root_ns = $___instance_config->___instance_config->plugin_root_ns;
-			else if(is_array($___instance_config) && !empty($___instance_config['plugin_root_ns']))
-				$plugin_root_ns = (string)$___instance_config['plugin_root_ns'];
+			if($instance instanceof framework)
+				$plugin_root_ns = $instance->instance->plugin_root_ns;
+			else if(is_array($instance) && !empty($instance['plugin_root_ns']))
+				$plugin_root_ns = (string)$instance['plugin_root_ns'];
 
 			if(empty($plugin_root_ns) || !isset($GLOBALS[$plugin_root_ns]) || !($GLOBALS[$plugin_root_ns] instanceof framework))
-				throw new \exception(sprintf(stub::__('Invalid `$___instance_config` to constructor: `%1$s`'),
-				                             print_r($___instance_config, TRUE))
+				throw new \exception(sprintf(stub::__('Invalid `$instance` to constructor: `%1$s`'),
+				                             print_r($instance, TRUE))
 				);
 			$this->plugin = $GLOBALS[$plugin_root_ns];
 		}

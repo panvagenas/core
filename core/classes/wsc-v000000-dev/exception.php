@@ -53,9 +53,9 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array    $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array    $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @param string          $code Optional error code (string, NO integers please).
 		 *
@@ -66,22 +66,22 @@ namespace wsc_v000000_dev
 		 *
 		 * @param null|\exception $previous Optional previous exception (if re-thrown).
 		 *
-		 * @throws \exception If there is a missing and/or invalid `$___instance_config`.
+		 * @throws \exception If there is a missing and/or invalid `$instance`.
 		 * @throws \exception A standard exception class; if any additional issues occur during this type of exception.
 		 *    This prevents endless exceptions, which may occur when/if we make use of a plugin instance.
 		 */
-		public function __construct($___instance_config = NULL, $code = 'exception', $data = NULL, $message = '', \exception $previous = NULL)
+		public function __construct($instance = NULL, $code = 'exception', $data = NULL, $message = '', \exception $previous = NULL)
 		{
 			try // We'll re-throw as an \exception if there are any issues here.
 			{
-				if($___instance_config instanceof framework)
-					$plugin_root_ns = $___instance_config->___instance_config->plugin_root_ns;
-				else if(is_array($___instance_config) && !empty($___instance_config['plugin_root_ns']))
-					$plugin_root_ns = (string)$___instance_config['plugin_root_ns'];
+				if($instance instanceof framework)
+					$plugin_root_ns = $instance->instance->plugin_root_ns;
+				else if(is_array($instance) && !empty($instance['plugin_root_ns']))
+					$plugin_root_ns = (string)$instance['plugin_root_ns'];
 
 				if(empty($plugin_root_ns) || !isset($GLOBALS[$plugin_root_ns]) || !($GLOBALS[$plugin_root_ns] instanceof framework))
-					throw new \exception(sprintf(stub::__('Invalid `$___instance_config` to constructor: `%1$s`'),
-					                             print_r($___instance_config, TRUE))
+					throw new \exception(sprintf(stub::__('Invalid `$instance` to constructor: `%1$s`'),
+					                             print_r($instance, TRUE))
 					);
 				$this->plugin = $GLOBALS[$plugin_root_ns];
 				$code         = ((string)$code) ? (string)$code : 'exception';
@@ -114,7 +114,7 @@ namespace wsc_v000000_dev
 			if(!$this->wp_debug_log || !$this->plugin->©env->is_in_wp_debug_log_mode())
 				return; // Logging NOT enabled. Stop here.
 
-			$log_dir  = $this->plugin->©dir->log(constant(get_class($this->plugin).'::private_type'), 'debug');
+			$log_dir  = $this->plugin->©dir->logs('debug', constant(get_class($this->plugin).'::private_type'));
 			$log_file = $this->plugin->©file->maybe_archive($log_dir.'/debug.log');
 
 			file_put_contents( // Log this exception!

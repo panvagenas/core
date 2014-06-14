@@ -777,7 +777,7 @@ namespace wsc_v000000_dev
 
 				unset($_keys, $_depth); // Housekeeping.
 			}
-			return (!empty($dot_keys)) ? $dot_keys : array();
+			return !empty($dot_keys) ? $dot_keys : array();
 		}
 
 		/**
@@ -804,7 +804,7 @@ namespace wsc_v000000_dev
 
 			$js = $this->©var->to_js($array); // Produces a JavaScript array `[]` or object `{}`.
 
-			return (!$encapsulate) ? ltrim(rtrim($js, '}]'), '{[') : $js;
+			return !$encapsulate ? ltrim(rtrim($js, '}]'), '{[') : $js;
 		}
 
 		/**

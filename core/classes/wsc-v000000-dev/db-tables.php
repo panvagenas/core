@@ -116,17 +116,17 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @extenders Other properties should be set by class extenders.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			// Other properties should be set by class extenders.
 
@@ -144,7 +144,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', func_get_args());
 
-			return $this->©db->prefix.$this->___instance_config->plugin_prefix.$table;
+			return $this->©db->prefix.$this->instance->plugin_prefix.$table;
 		}
 
 		/**

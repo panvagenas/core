@@ -62,22 +62,22 @@ namespace wsc_v000000_dev\menu_pages\panels
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @param \wsc_v000000_dev\menu_pages\menu_page
 		 *    $menu_page A menu page class instance.
 		 *
 		 * @throws \wsc_v000000_dev\exception If invalid types are passed through arguments list.
 		 */
-		public function __construct($___instance_config, $menu_page)
+		public function __construct($instance, $menu_page)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
-			$this->check_arg_types('', $this->___instance_config->core_ns_prefix.'\\menu_pages\\menu_page', func_get_args());
+			$this->check_arg_types('', $this->instance->core_ns_prefix.'\\menu_pages\\menu_page', func_get_args());
 
-			$this->slug      = $this->___instance_config->ns_class_basename;
+			$this->slug      = $this->instance->ns_class_basename;
 			$this->slug      = $this->©string->with_dashes($this->slug);
 			$this->menu_page = $menu_page;
 		}

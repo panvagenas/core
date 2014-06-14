@@ -322,290 +322,182 @@ namespace wsc_v000000_dev
 		/**
 		 * Get cache directory (public or private).
 		 *
-		 * @param string $type The type of cache directory (public or private).
-		 *    This MUST be passed using class constants {@link fw_constants::public_type} or {@link fw_constants::private_type}.
+		 * @return string See {@link data_sub()}
 		 *
-		 * @param string $sub_dir Optional cache sub-directory path.
-		 *
-		 * @return string Full path to a readable/writable cache directory, else an exception is thrown on failure.
-		 *    If the directory does NOT yet exist, it's created by this routine.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If an invalid `$type` is passed in. Use class constants please.
-		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
-		 * @throws exception If the requested cache directory is NOT readable/writable, or CANNOT be created for any reason.
+		 * @inheritdoc {@link data_sub()}
+		 * @see data_sub()
 		 */
-		public function cache($type, $sub_dir = '')
+		public function cache($sub_dir = '', $type = self::private_type)
 		{
-			$this->check_arg_types('string:!empty', 'string', func_get_args());
-
-			// Check cache directory type.
-
-			if(!in_array($type, array($this::public_type, $this::private_type), TRUE))
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
-					$this->__('Invalid cache type sub-directory. Expecting class contant for public or private type.').
-					' '.sprintf($this->__('Instead got: `%1$s`.'), $type)
-				);
-			// Creates a possible `$sub_dir` appendage.
-
-			if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
-			{
-				if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
-					throw $this->©exception(
-						$this->method(__FUNCTION__).'#relative_paths', get_defined_vars(),
-						$this->__('Expecting a sub-directory with NO relative paths.').
-						' '.sprintf($this->__('Instead got: `%1$s`.'), $sub_dir)
-					);
-				$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
-			}
-			// Clean these up and piece them together.
-
-			$cache_dir          = $this->n_seps($this->___instance_config->plugin_data_dir.'/cache');
-			$app_data_sub_dir   = ($type === $this::private_type && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
-			$cache_type_sub_dir = $this->n_seps($cache_dir.'/'.(($type === $this::private_type) ? 'private' : 'public').$app_data_sub_dir.$sub_dir);
-
-			// Need to create the `$cache_type_sub_dir`?
-
-			if(!is_dir($cache_type_sub_dir))
-			{
-				mkdir($cache_type_sub_dir, 0775, TRUE);
-				clearstatcache(); // Clear cache before checking again.
-
-				if(!is_dir($cache_type_sub_dir) || !is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
-					throw $this->©exception(
-						$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-						$this->__('Unable to create a readable/writable cache type sub-directory.').
-						' '.sprintf($this->__('Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
-					);
-				if($type === $this::private_type && !is_file($cache_dir.'/private/.htaccess'))
-					file_put_contents($cache_dir.'/private/.htaccess', 'deny from all');
-
-				return $cache_type_sub_dir; // Created successfully!
-			}
-			// Else it exists. Is `$cache_type_sub_dir` still readable/writable?
-
-			else if(!is_readable($cache_type_sub_dir) || !is_writable($cache_type_sub_dir))
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-					$this->__('Unable to find a readable/writable cache type sub-directory.').
-					' '.sprintf($this->__('Need this directory to be readable/writable please: `%1$s`.'), $cache_type_sub_dir)
-				);
-			return $cache_type_sub_dir; // Everything still OK. It's a good day in Eureka!
-
+			return $this->data_sub('cache/'.$sub_dir, $type);
 		}
 
 		/**
 		 * Empties and deletes a cache directory (public or private).
 		 *
-		 * @param string $type The type of cache directory (public or private).
-		 *    This MUST be passed using class constants {@link fw_constants::public_type} or {@link fw_constants::private_type}.
+		 * @return boolean See {@link delete_data_sub()}
 		 *
-		 * @param string $sub_dir Optional cache sub-directory path.
-		 *
-		 * @return boolean TRUE if the directory was successfully removed.
-		 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If an invalid `$type` is passed in. Use class constants please.
-		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
-		 *
-		 * @throws exception See: {@link cache()} for additional exceptions this may throw.
-		 * @throws exception See: {@link delete()} for additional exceptions this may throw.
+		 * @inheritdoc {@link delete_data_sub()}
+		 * @see delete_data_sub()
 		 */
-		public function delete_cache($type, $sub_dir = '')
+		public function delete_cache($sub_dir = '', $type = self::private_type)
 		{
-			$this->check_arg_types('string:!empty', 'string', func_get_args());
-
-			return $this->delete($this->cache($type, $sub_dir));
+			return $this->delete_data_sub('cache/'.$sub_dir, $type);
 		}
 
 		/**
-		 * Get log directory (public or private).
+		 * Get logs directory (public or private).
 		 *
-		 * @param string $type The type of log directory (public or private).
+		 * @return string See {@link data_sub()}
+		 *
+		 * @inheritdoc {@link data_sub()}
+		 * @see data_sub()
+		 */
+		public function logs($sub_dir = '', $type = self::private_type)
+		{
+			return $this->data_sub('logs/'.$sub_dir, $type);
+		}
+
+		/**
+		 * Empties and deletes a logs directory (public or private).
+		 *
+		 * @return boolean See {@link delete_data_sub()}
+		 *
+		 * @inheritdoc {@link delete_data_sub()}
+		 * @see delete_data_sub()
+		 */
+		public function delete_logs($sub_dir = '', $type = self::private_type)
+		{
+			return $this->delete_data_sub('logs/'.$sub_dir, $type);
+		}
+
+		/**
+		 * Get packages directory (public or private).
+		 *
+		 * @return string See {@link data_sub()}
+		 *
+		 * @inheritdoc {@link data_sub()}
+		 * @see data_sub()
+		 */
+		public function packages($sub_dir = '', $type = self::public_type)
+		{
+			return $this->data_sub('packages/'.$sub_dir, $type);
+		}
+
+		/**
+		 * Empties and deletes a packages directory (public or private).
+		 *
+		 * @return boolean See {@link delete_data_sub()}
+		 *
+		 * @inheritdoc {@link delete_data_sub()}
+		 * @see delete_data_sub()
+		 */
+		public function delete_packages($sub_dir = '', $type = self::public_type)
+		{
+			return $this->delete_data_sub('packages/'.$sub_dir, $type);
+		}
+
+		/**
+		 * Gets/creates a data sub-directory (public or private).
+		 *
+		 * @param string $sub_dir A data sub-directory name; or nested; e.g. `stuff` or `my/stuff`.
+		 *
+		 * @param string $type The type of data sub-directory (public or private). Defaults to {@link fw_constants::private_type}.
 		 *    This MUST be passed using class constants {@link fw_constants::public_type} or {@link fw_constants::private_type}.
 		 *
-		 * @param string $sub_dir Optional log sub-directory path.
-		 *
-		 * @return string Full path to a readable/writable log directory, else an exception is thrown on failure.
+		 * @return string Full path to a readable/writable data sub-directory, else an exception is thrown on failure.
 		 *    If the directory does NOT yet exist, it's created by this routine.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
+		 * @throws exception If `$sub_dir` is empty; or is a relative path (this is a NO-no, for security).
 		 * @throws exception If an invalid `$type` is passed in. Use class constants please.
-		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
-		 * @throws exception If the requested log directory is NOT readable/writable, or CANNOT be created for any reason.
+		 * @throws exception If the requested data sub-directory is NOT readable/writable, or CANNOT be created for any reason.
 		 */
-		public function log($type, $sub_dir = '')
+		public function data_sub($sub_dir, $type = self::private_type)
 		{
-			$this->check_arg_types('string:!empty', 'string', func_get_args());
+			$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
 
-			// Check log directory type.
+			// Creates the required `$sub_dir` appendage.
+
+			if(!($sub_dir = $this->©string->trim($this->n_seps($sub_dir), '', '/')))
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#empty', get_defined_vars(),
+					$this->__('Expecting a data sub-directory that is more than just slashes.').
+					' '.sprintf($this->__('Instead got: `%1$s`.'), $sub_dir)
+				);
+			if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#relative_paths', get_defined_vars(),
+					$this->__('Expecting a data sub-directory with NO relative paths.').
+					' '.sprintf($this->__('Instead got: `%1$s`.'), $sub_dir)
+				);
+			// Check data sub-directory type.
 
 			if(!in_array($type, array($this::public_type, $this::private_type), TRUE))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_type', get_defined_vars(),
-					$this->__('Invalid log type sub-directory. Expecting class contant for public or private type.').
+					$this->__('Invalid data sub-directory type. Expecting class contant for public or private type.').
 					' '.sprintf($this->__('Instead got: `%1$s`.'), $type)
 				);
-			// Creates a possible `$sub_dir` appendage.
-
-			if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
-			{
-				if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
-					throw $this->©exception(
-						$this->method(__FUNCTION__).'#relative_paths', get_defined_vars(),
-						$this->__('Expecting a sub-directory with NO relative paths.').
-						' '.sprintf($this->__('Instead got: `%1$s`.'), $sub_dir)
-					);
-				$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
-
-			}
 			// Clean these up and piece them together.
 
-			$logs_dir         = $this->n_seps($this->___instance_config->plugin_data_dir.'/logs');
-			$app_data_sub_dir = ($type === $this::private_type && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
-			$log_type_sub_dir = $this->n_seps($logs_dir.'/'.(($type === $this::private_type) ? 'private' : 'public').$app_data_sub_dir.$sub_dir);
+			$data_sub_dir      = $this->n_seps($this->instance->plugin_data_dir.'/'.$sub_dir);
+			$app_data_sub_dir  = ($type === $this::private_type && $this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
+			$data_sub_dir_type = $this->n_seps($data_sub_dir.'/'.(($type === $this::private_type) ? 'private' : 'public').$app_data_sub_dir);
 
-			// Need to create the `$log_type_sub_dir`?
+			// Need to create the `$data_sub_dir_type`?
 
-			if(!is_dir($log_type_sub_dir))
+			if(!is_dir($data_sub_dir_type))
 			{
-				mkdir($log_type_sub_dir, 0775, TRUE);
+				mkdir($data_sub_dir_type, 0755, TRUE);
 				clearstatcache(); // Clear cache before checking again.
 
-				if(!is_dir($log_type_sub_dir) || !is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
+				if(!is_dir($data_sub_dir_type) || !is_readable($data_sub_dir_type) || !is_writable($data_sub_dir_type))
 					throw $this->©exception(
 						$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-						$this->__('Unable to create a readable/writable log type sub-directory.').
-						' '.sprintf($this->__('Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
+						$this->__('Unable to create a readable/writable data sub-directory.').
+						' '.sprintf($this->__('Need this directory to be readable/writable please: `%1$s`.'), $data_sub_dir_type)
 					);
-				if($type === $this::private_type && !is_file($logs_dir.'/private/.htaccess'))
-					file_put_contents($logs_dir.'/private/.htaccess', 'deny from all');
+				if($type === $this::private_type && !is_file($data_sub_dir.'/private/.htaccess'))
+					file_put_contents($data_sub_dir.'/private/.htaccess', $this->htaccess_deny);
 
-				return $log_type_sub_dir; // Created successfully!
+				return $data_sub_dir_type; // Created successfully!
 			}
-			// Else it exists. Is `$log_type_sub_dir` still readable/writable?
+			// Else it exists. Is `$data_sub_dir_type` still readable/writable?
 
-			else if(!is_readable($log_type_sub_dir) || !is_writable($log_type_sub_dir))
+			else if(!is_readable($data_sub_dir_type) || !is_writable($data_sub_dir_type))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-					$this->__('Unable to find a readable/writable log type sub-directory.').
-					' '.sprintf($this->__('Need this directory to be readable/writable please: `%1$s`.'), $log_type_sub_dir)
+					$this->__('Unable to find a readable/writable data sub-directory.').
+					' '.sprintf($this->__('Need this directory to be readable/writable please: `%1$s`.'), $data_sub_dir_type)
 				);
-			return $log_type_sub_dir; // Everything still OK. It's a good day in Eureka!
+			return $data_sub_dir_type; // Everything still OK. It's a good day in Eureka!
 
 		}
 
 		/**
-		 * Empties and deletes a log directory (public or private).
+		 * Empties and deletes a data sub-directory (public or private).
 		 *
-		 * @param string $type The type of log directory (public or private).
+		 * @param string $sub_dir A data sub-directory name; or nested; e.g. `stuff` or `my/stuff`.
+		 *
+		 * @param string $type The type of data sub-directory (public or private). Defaults to {@link fw_constants::private_type}.
 		 *    This MUST be passed using class constants {@link fw_constants::public_type} or {@link fw_constants::private_type}.
 		 *
-		 * @param string $sub_dir Optional log sub-directory path.
-		 *
 		 * @return boolean TRUE if the directory was successfully removed.
 		 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
+		 * @throws exception If `$sub_dir` is empty; or is a relative path (this is a NO-no, for security).
 		 * @throws exception If an invalid `$type` is passed in. Use class constants please.
-		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
 		 *
-		 * @throws exception See: {@link log()} for additional exceptions this may throw.
+		 * @throws exception See: {@link data_sub()} for additional exceptions this may throw.
 		 * @throws exception See: {@link delete()} for additional exceptions this may throw.
 		 */
-		public function delete_log($type, $sub_dir = '')
+		public function delete_data_sub($sub_dir, $type = self::private_type)
 		{
-			$this->check_arg_types('string:!empty', 'string', func_get_args());
+			$this->check_arg_types('string:!empty', 'string:!empty', func_get_args());
 
-			return $this->delete($this->log($type, $sub_dir));
-		}
-
-		/**
-		 * Gets a private media directory.
-		 *
-		 * @param string $sub_dir Optional private media sub-directory path.
-		 *
-		 * @return string Full path to a private readable/writable media directory, else an exception is thrown on failure.
-		 *    If the directory does NOT yet exist, it's created by this routine.
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
-		 * @throws exception If the requested private media directory is NOT readable/writable, or CANNOT be created for any reason.
-		 */
-		public function private_media($sub_dir = '')
-		{
-			$this->check_arg_types('string', func_get_args());
-
-			// Creates a possible `$sub_dir` appendage.
-
-			if($sub_dir && ($sub_dir = $this->©strings->trim($this->n_seps($sub_dir), '', '/')))
-			{
-				if(strpos($sub_dir, '..') !== FALSE) // No relative paths.
-					throw $this->©exception(
-						$this->method(__FUNCTION__).'#relative_paths', get_defined_vars(),
-						$this->__('Expecting a sub-directory with NO relative paths.').
-						' '.sprintf($this->__('Instead got: `%1$s`.'), $sub_dir)
-					);
-				$sub_dir = '/'.$sub_dir; // Add prefix so it can be appended easily.
-
-			}
-			// Clean these up and piece them together.
-
-			$media_dir        = $this->n_seps($this->___instance_config->plugin_data_dir.'/media');
-			$app_data_sub_dir = ($this->©env->is_windows() && !$this->©env->is_apache()) ? '/app_data' : '';
-			$media_sub_dir    = $this->n_seps($media_dir.$app_data_sub_dir.$sub_dir);
-
-			// Need to create the `$media_sub_dir`?
-
-			if(!is_dir($media_sub_dir))
-			{
-				mkdir($media_sub_dir, 0775, TRUE);
-				clearstatcache(); // Clear cache before checking again.
-
-				if(!is_dir($media_sub_dir) || !is_readable($media_sub_dir) || !is_writable($media_sub_dir))
-					throw $this->©exception(
-						$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-						$this->__('Unable to create a private readable/writable `media` directory.').
-						' '.sprintf($this->__('Need this directory to be readable/writable please: `%1$s`.'), $media_sub_dir)
-					);
-				if(!is_file($media_dir.'/.htaccess'))
-					file_put_contents($media_dir.'/.htaccess', 'deny from all');
-
-				return $media_sub_dir; // Created successfully!
-			}
-			// Else it exists. Is `$media_sub_dir` still readable/writable?
-
-			else if(!is_readable($media_sub_dir) || !is_writable($media_sub_dir))
-				throw $this->©exception(
-					$this->method(__FUNCTION__).'#read_write_issues', get_defined_vars(),
-					$this->__('Unable to find a private readable/writable media directory.').
-					' '.sprintf($this->__('Need this directory to be readable/writable please: `%1$s`.'), $media_sub_dir)
-				);
-			return $media_sub_dir; // Everything still OK. It's a good day in Eureka!
-
-		}
-
-		/**
-		 * Empties and deletes a private media directory.
-		 *
-		 * @param string $sub_dir Optional media sub-directory path.
-		 *
-		 * @return boolean TRUE if the directory was successfully removed.
-		 *    Also returns TRUE if the directory is already non-existent (i.e. nothing to remove).
-		 *
-		 * @throws exception If invalid types are passed through arguments list.
-		 * @throws exception If `$sub_dir` is a relative path (this is a NO-no, for security).
-		 *
-		 * @throws exception See: {@link private_media()} for additional exceptions this may throw.
-		 * @throws exception See: {@link delete()} for additional exceptions this may throw.
-		 */
-		public function delete_private_media($sub_dir = '')
-		{
-			$this->check_arg_types('string', func_get_args());
-
-			return $this->delete($this->private_media($sub_dir));
+			return $this->delete($this->data_sub($sub_dir, $type));
 		}
 
 		/**
@@ -659,7 +551,6 @@ namespace wsc_v000000_dev
 					$this->__('Unable to remove a directory; cannot open, for some unknown reason.').
 					' '.sprintf($this->__('Make this directory readable/writable please: `%1$s`.'), $dir)
 				);
-
 			while(($_dir_file = readdir($_open_dir)) !== FALSE) // Recursively delete all sub-directories/files.
 			{
 				if($_dir_file !== '.' && $_dir_file !== '..') // Ignore directory dots.
@@ -1271,11 +1162,11 @@ namespace wsc_v000000_dev
 		 */
 		public function data_readable_writable()
 		{
-			$data_dir = $this->___instance_config->plugin_data_dir;
+			$data_dir = $this->instance->plugin_data_dir;
 
 			if(!is_dir($data_dir)) // Create if not exists.
 			{
-				@mkdir($data_dir, 0775, TRUE); // Including parents.
+				@mkdir($data_dir, 0755, TRUE); // Including parents.
 				clearstatcache(); // Clear stat cache for checks below.
 			}
 			if(is_dir($data_dir) && is_readable($data_dir) && is_writable($data_dir))
@@ -1292,16 +1183,16 @@ namespace wsc_v000000_dev
 		public function where_templates_may_reside()
 		{
 			$dirs = array(
-				$this->n_seps(get_stylesheet_directory()).'/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
-				$this->n_seps(get_template_directory()).'/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
+				$this->n_seps(get_stylesheet_directory()).'/'.$this->instance->plugin_root_ns_stub_with_dashes,
+				$this->n_seps(get_template_directory()).'/'.$this->instance->plugin_root_ns_stub_with_dashes,
 
-				$this->___instance_config->plugin_pro_dir.'/templates/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
-				$this->___instance_config->plugin_dir.'/templates/'.$this->___instance_config->plugin_root_ns_stub_with_dashes,
+				$this->instance->plugin_pro_dir.'/templates/'.$this->instance->plugin_root_ns_stub_with_dashes,
+				$this->instance->plugin_dir.'/templates/'.$this->instance->plugin_root_ns_stub_with_dashes,
 
-				$this->___instance_config->plugin_pro_dir.'/templates/', // Extends core; NOT intended for further customization.
-				$this->___instance_config->plugin_dir.'/templates/', // Extends core; NOT intended for further customization.
+				$this->instance->plugin_pro_dir.'/templates/', // Extends core; NOT intended for further customization.
+				$this->instance->plugin_dir.'/templates/', // Extends core; NOT intended for further customization.
 
-				$this->___instance_config->core_dir.'/templates/', // Default core template files.
+				$this->instance->core_dir.'/templates/', // Default core template files.
 			);
 			return $this->apply_filters(__FUNCTION__, $dirs);
 		}
@@ -1428,9 +1319,9 @@ namespace wsc_v000000_dev
 				'<p>'.
 				sprintf(
 					$this->__('Please create this directory: <code>%1$s</code>.'),
-					$this->©dirs->doc_root_path($this->___instance_config->plugin_data_dir)
+					$this->©dirs->doc_root_path($this->instance->plugin_data_dir)
 				).
-				' '.$this->__('You\'ll need to log in via FTP and set directory permissions to <code>775</code> (or higher).').
+				' '.$this->__('You\'ll need to log in via FTP and set directory permissions to <code>755</code> (or higher).').
 				' '.$this->__('Please use an application like <a href="http://filezilla-project.org/" target="_blank">FileZilla</a>.').
 				' '.$this->__('If you\'re unfamiliar with FTP, please watch <a href="http://www.youtube.com/watch?v=oq0oM2w9lcQ" target="_blank">this video tutorial</a>.').
 				'</p>'
@@ -1455,9 +1346,17 @@ namespace wsc_v000000_dev
 			if(!$confirmation)
 				return FALSE; // Added security.
 
-			$this->delete($this->___instance_config->plugin_data_dir);
+			$this->delete($this->instance->plugin_data_dir);
 
 			return TRUE;
 		}
+
+		/**
+		 * Apache `.htaccess` rules that deny public access to the contents of a directory.
+		 *
+		 * @var string `.htaccess` rules.
+		 */
+		public $htaccess_deny = "<IfModule authz_core_module>\n\tRequire all denied\n</IfModule>\n<IfModule !authz_core_module>\n\tdeny from all\n</IfModule>";
+
 	}
 }

@@ -62,12 +62,12 @@ namespace wsc_v000000_dev
 		public function default_menu_pages()
 		{
 			$main_page_slug // A standard in the core.
-				= $this->___instance_config->plugin_root_ns_stub_with_dashes;
+				= $this->instance->plugin_root_ns_stub_with_dashes;
 			// We want the menu page slug to come out the same in all versions.
 
 			return array(
 				$main_page_slug     => array(
-					'menu_title' => $this->___instance_config->plugin_name,
+					'menu_title' => $this->instance->plugin_name,
 					'icon'       => $this->©url->to_template_dir_file('/client-side/images/icon-16x16.png')
 				),
 				'-'.$main_page_slug => array(
@@ -94,7 +94,7 @@ namespace wsc_v000000_dev
 		 *    If this is an array, the array can also contain wildcard patterns (optional).
 		 *
 		 * @note The value of `$slugs`, whether it be a string or an array, should attempt to match ONLY the page slug itself; NOT the full prefixed value.
-		 *    Each page name for the current plugin is dynamically prefixed with `$this->___instance_config->plugin_root_ns_stub.'__[page_slug]`.
+		 *    Each page name for the current plugin is dynamically prefixed with `$this->instance->plugin_root_ns_stub.'__[page_slug]`.
 		 *    The prefix should be excluded from `$slugs` values. In other words, we're only testing for `[page_slug]` here.
 		 *
 		 * @param boolean      $return_slug_class_basename Optional. Defaults to a `FALSE` value.
@@ -112,14 +112,14 @@ namespace wsc_v000000_dev
 			$this->check_arg_types(array('string', 'array'), 'boolean', func_get_args());
 
 			if(is_admin() && $this->©string->¤is_not_empty($current_page = $this->©vars->_GET('page'))
-			   && preg_match('/^'.preg_quote($this->___instance_config->plugin_root_ns_stub_with_dashes, '/').'(?:\-\-(?P<slug>.+))?$/', $current_page, $page)
+			   && preg_match('/^'.preg_quote($this->instance->plugin_root_ns_stub_with_dashes, '/').'(?:\-\-(?P<slug>.+))?$/', $current_page, $page)
 			) // This regex pattern matches the plugin's root namespace stub with or without an additional sub-menu slug.
 			{
 				$page['slug'] = // Default value is the current plugin's root namespace stub.
-					$this->©string->is_not_empty_or($page['slug'], $this->___instance_config->plugin_root_ns_stub_with_dashes);
+					$this->©string->is_not_empty_or($page['slug'], $this->instance->plugin_root_ns_stub_with_dashes);
 
 				if($return_slug_class_basename) // If so, convert this into a string.
-					if($page['slug'] === $this->___instance_config->plugin_root_ns_stub_with_dashes)
+					if($page['slug'] === $this->instance->plugin_root_ns_stub_with_dashes)
 						$slug_class_basename = 'main_page'; // Convert slug to it's class.
 					else $slug_class_basename = $this->©string->with_underscores($page['slug']);
 
@@ -192,16 +192,16 @@ namespace wsc_v000000_dev
 					if($_menu_page['slug'] === 'update-sync' && $this->©env->disallows_file_mods())
 						continue; // Do NOT offer automatic updates when this is enabled please.
 
-					if($_menu_page['slug'] === $this->___instance_config->plugin_root_ns_stub_with_dashes)
+					if($_menu_page['slug'] === $this->instance->plugin_root_ns_stub_with_dashes)
 						$_menu_page['displayer'] = array($this, '©menu_pages__main_page.display'); // Special case handler.
 					else $_menu_page['displayer'] = array($this, '©menu_pages__'.$this->©string->with_underscores($_menu_page['slug']).'.display');
 
 					if(!$this->©string->is_not_empty($_menu_page['doc_title']))
-						$_menu_page['doc_title'] = $this->___instance_config->plugin_name;
+						$_menu_page['doc_title'] = $this->instance->plugin_name;
 
 					if(!$this->©string->is_not_empty($_menu_page['cap_required']))
 						$_menu_page['cap_required'] = // We can work this out dynamically.
-							$this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns,
+							$this->©caps->map('manage_'.$this->instance->plugin_root_ns,
 							                  'menu_pages__'.$this->©string->with_underscores($_menu_page['slug']));
 
 					if($this->©string->is_not_empty($_menu_page['is_under_slug'])) // Sub-menu page?
@@ -246,7 +246,7 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string', 'string', 'string', func_get_args());
 
-			$page_arg = array('page' => $this->___instance_config->plugin_root_ns_stub_with_dashes.(($slug) ? '--'.$slug : ''));
+			$page_arg = array('page' => $this->instance->plugin_root_ns_stub_with_dashes.(($slug) ? '--'.$slug : ''));
 			$url      = add_query_arg(urlencode_deep($page_arg), $this->©url->to_wp_self_admin_uri('/admin.php'));
 
 			if($content_panel_slug) // A specific slug? e.g. `#!content_panel_slug=quick-start-video`.

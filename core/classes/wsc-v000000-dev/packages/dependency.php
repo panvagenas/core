@@ -22,18 +22,7 @@ namespace wsc_v000000_dev\packages
 	 *
 	 * @assert ($GLOBALS[__NAMESPACE__])
 	 */
-	class dependency extends \wsc_v000000_dev\framework
+	class dependency extends package
 	{
-		/**
-		 * Constructor.
-		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
-		 */
-		public function __construct($___instance_config)
-		{
-			parent::__construct($___instance_config);
-		}
 	}
 }

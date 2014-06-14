@@ -68,8 +68,8 @@ $exception = $this->data->exception;
 
 								<hr />
 
-								<a class="opacity-fade-hover no-text-decor pull-right l-margin" style="float:right;" href="<?php echo esc_attr($this->©url->to_plugin_site_uri('/')); ?>" target="_blank" title="<?php echo esc_attr($this->___instance_config->plugin_name); ?> <?php echo esc_attr($this->_x('(Report Bug?)')); ?>">
-									<img src="<?php echo esc_attr($this->©url->to_template_dir_file('/client-side/images/icon-24x24.png')); ?>" alt="" title="<?php echo esc_attr($this->___instance_config->plugin_name); ?>" /> <i class="fa fa-bug"></i> <i class="fa fa-wordpress fa-2x"></i>
+								<a class="opacity-fade-hover no-text-decor pull-right l-margin" style="float:right;" href="<?php echo esc_attr($this->©url->to_plugin_site_uri('/')); ?>" target="_blank" title="<?php echo esc_attr($this->instance->plugin_name); ?> <?php echo esc_attr($this->_x('(Report Bug?)')); ?>">
+									<img src="<?php echo esc_attr($this->©url->to_template_dir_file('/client-side/images/icon-24x24.png')); ?>" alt="" title="<?php echo esc_attr($this->instance->plugin_name); ?>" /> <i class="fa fa-bug"></i> <i class="fa fa-wordpress fa-2x"></i>
 								</a>
 
 								<h3><i class="fa fa-lightbulb-o text-info"></i> <?php echo $this->__('Exception Message (Please Read)'); ?></h3>

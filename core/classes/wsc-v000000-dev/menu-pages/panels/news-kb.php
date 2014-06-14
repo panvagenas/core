@@ -27,16 +27,16 @@ namespace wsc_v000000_dev\menu_pages\panels
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's ``$instance``,
+		 *    or a new ``$instance`` array.
 		 *
 		 * @param \wsc_v000000_dev\menu_pages\menu_page
 		 *    $menu_page A menu page class instance.
 		 */
-		public function __construct($___instance_config, $menu_page)
+		public function __construct($instance, $menu_page)
 		{
-			parent::__construct($___instance_config, $menu_page);
+			parent::__construct($instance, $menu_page);
 
 			$this->heading_title = $this->__('Recent News / KB Articles');
 
@@ -44,7 +44,7 @@ namespace wsc_v000000_dev\menu_pages\panels
 
 				'<p>'. // Brief description.
 				'<img src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/kb-article-64x64.png')).'" class="pull-right l-margin" style="width:64px; height:64px;" alt="" />'.
-				sprintf($this->__('The most recent news &amp; knowledge base articles from %1$s'), esc_html($this->___instance_config->plugin_name)).
+				sprintf($this->__('The most recent news &amp; knowledge base articles from %1$s'), esc_html($this->instance->plugin_name)).
 				'</p>';
 
 			$this->content_body .= '<hr />';
@@ -78,7 +78,7 @@ namespace wsc_v000000_dev\menu_pages\panels
 			$this->content_body .= // Additional links.
 				'<p class="text-center no-b-margin">'.
 				sprintf($this->__('<a class="btn btn-default width-100" href="%1$s" target="_blank">%2$s Knowledge Base <i class="fa fa-external-link"></i></a>'),
-				        esc_attr($this->©url->to_plugin_site_uri('/kb-articles/')), esc_html($this->___instance_config->plugin_name)).
+				        esc_attr($this->©url->to_plugin_site_uri('/kb-articles/')), esc_html($this->instance->plugin_name)).
 				'</p>';
 		}
 	}

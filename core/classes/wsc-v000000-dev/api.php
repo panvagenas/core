@@ -55,8 +55,8 @@ namespace wsc_v000000_dev
 		final public function __construct()
 		{
 			$class        = get_class($this);
-			$core_ns      = core()->___instance_config->core_ns;
-			$core_ns_stub = core()->___instance_config->core_ns_stub;
+			$core_ns      = core()->instance->core_ns;
+			$core_ns_stub = core()->instance->core_ns_stub;
 
 			if($class === $core_ns.'\\core') // WebSharks™ Core internal class?
 			{
@@ -208,8 +208,8 @@ namespace wsc_v000000_dev
 			if(isset($framework)) return $framework;
 
 			$class        = get_called_class();
-			$core_ns      = core()->___instance_config->core_ns;
-			$core_ns_stub = core()->___instance_config->core_ns_stub;
+			$core_ns      = core()->instance->core_ns;
+			$core_ns_stub = core()->instance->core_ns_stub;
 
 			if($class === $core_ns.'\\core') // WebSharks™ Core internal class?
 			{

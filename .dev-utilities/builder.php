@@ -56,8 +56,8 @@ namespace wsc_dev_utilities
 	/*
 	 * Establish some important working variables (and validate).
 	 */
-	${__FILE__}['core_repo_dir']            = core()->___instance_config->local_core_repo_dir;
-	${__FILE__}['core_ns_stub_with_dashes'] = core()->___instance_config->core_ns_stub_with_dashes;
+	${__FILE__}['core_repo_dir']            = core()->instance->local_core_repo_dir;
+	${__FILE__}['core_ns_stub_with_dashes'] = core()->instance->core_ns_stub_with_dashes;
 	${__FILE__}['building']                 = core()->©string->is_not_empty(${__FILE__}['argv'][1]) ? 'plugin' : 'core';
 
 	${__FILE__}['current_core_version_branch']                  = core()->©command->git_current_branch(${__FILE__}['core_repo_dir']);
@@ -82,7 +82,7 @@ namespace wsc_dev_utilities
 		);
 	${__FILE__}['build_from_core_version_branch_with_underscores'] = core()->©string->with_underscores(${__FILE__}['build_from_core_version_branch']);
 	${__FILE__}['build_from_core_version_branch_with_dashes']      = core()->©string->with_dashes(${__FILE__}['build_from_core_version_branch']);
-	${__FILE__}['build_from_core_ns']                              = core()->___instance_config->core_ns_stub_v.${__FILE__}['build_from_core_version_branch_with_underscores'];
+	${__FILE__}['build_from_core_ns']                              = core()->instance->core_ns_stub_v.${__FILE__}['build_from_core_version_branch_with_underscores'];
 	${__FILE__}['build_from_core_ns_with_dashes']                  = core()->©string->with_dashes(${__FILE__}['build_from_core_ns']);
 
 	/*

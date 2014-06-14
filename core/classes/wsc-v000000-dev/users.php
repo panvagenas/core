@@ -165,9 +165,9 @@ namespace wsc_v000000_dev
 		/**
 		 * User object constructor. Please read carefully.
 		 *
-		 * @param object|array              $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array              $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @param null|integer              $user_id Defaults to NULL. A specific user?
 		 *    If this and `$by`, `$value` are all NULL, we construct an instance for the current user.
@@ -187,9 +187,9 @@ namespace wsc_v000000_dev
 		 * @throws exception If `$default_properties` contains invalid data types.
 		 * @throws exception If `$default_properties` contains undefined property keys.
 		 */
-		public function __construct($___instance_config, $user_id = NULL, $by = NULL, $value = NULL, $default_properties = array())
+		public function __construct($instance, $user_id = NULL, $by = NULL, $value = NULL, $default_properties = array())
 		{
-			parent::__construct($___instance_config); // Parent constructor.
+			parent::__construct($instance); // Parent constructor.
 
 			$this->check_arg_types('', array('null', 'integer'), array('null', 'string:!empty'),
 			                       array('null', 'string:!empty', 'integer:!empty', 'array:!empty'),

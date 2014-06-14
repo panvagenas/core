@@ -70,9 +70,9 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @param string       $file Template file name (relative path).
 		 *
@@ -94,9 +94,9 @@ namespace wsc_v000000_dev
 		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$file` is empty, or it CANNOT be located by `$this->©file->template()`.
 		 */
-		public function __construct($___instance_config, $file, $data = array(), $theme = '')
+		public function __construct($instance, $file, $data = array(), $theme = '')
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$this->check_arg_types('', 'string:!empty', array('array', 'object'), 'string', func_get_args());
 
@@ -269,12 +269,12 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
-			$classes[] = $this->___instance_config->core_ns_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes;
+			$classes[] = $this->instance->core_ns_with_dashes;
+			$classes[] = $this->instance->plugin_root_ns_with_dashes;
 
 			$classes[] = 'body'; // Simple body class.
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'-'.$for.'-body';
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'-'.$for.'-body';
+			$classes[] = $this->instance->core_ns_with_dashes.'-'.$for.'-body';
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'-'.$for.'-body';
 			$classes[] = $for.'-body'; // This one is the same (but without the leading prefix).
 			$classes[] = $for.'-'.$this->©file->to_css_class(basename($this->file)).'-body';
 			$classes[] = $this->©file->to_css_class(basename($this->file)).'-body';
@@ -304,15 +304,15 @@ namespace wsc_v000000_dev
 		{
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
-			$classes[] = $this->___instance_config->core_ns_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes;
+			$classes[] = $this->instance->core_ns_with_dashes;
+			$classes[] = $this->instance->plugin_root_ns_with_dashes;
 
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--t--'.$this->theme;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--t--'.$this->theme;
+			$classes[] = $this->instance->core_ns_with_dashes.'--t--'.$this->theme;
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'--t--'.$this->theme;
 
 			$classes[] = 'wrapper'; // Simple wrapper class.
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--'.$for.'--wrapper';
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--'.$for.'--wrapper';
+			$classes[] = $this->instance->core_ns_with_dashes.'--'.$for.'--wrapper';
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'--'.$for.'--wrapper';
 			$classes[] = $for.'--wrapper'; // This one is the same (but without the leading prefix).
 			$classes[] = $for.'--'.$this->©file->to_css_class(basename($this->file)).'--wrapper';
 			$classes[] = $this->©file->to_css_class(basename($this->file)).'--wrapper';
@@ -343,8 +343,8 @@ namespace wsc_v000000_dev
 			$this->check_arg_types('string:!empty', array('string', 'array'), 'string', func_get_args());
 
 			$classes[] = 'inner-wrap'; // Simple wrap class.
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--'.$for.'--inner-wrap';
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--'.$for.'--inner-wrap';
+			$classes[] = $this->instance->core_ns_with_dashes.'--'.$for.'--inner-wrap';
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'--'.$for.'--inner-wrap';
 			$classes[] = $for.'--inner-wrap'; // This one is the same (but without the leading prefix).
 			$classes[] = $for.'--'.$this->©file->to_css_class(basename($this->file)).'--inner-wrap';
 			$classes[] = $this->©file->to_css_class(basename($this->file)).'--inner-wrap';
@@ -373,7 +373,7 @@ namespace wsc_v000000_dev
 
 			ob_start(); // Open output buffer.
 
-			$this->©styles->print_styles($this->©styles->contextual_components($this->___instance_config->core_ns_with_dashes.'--'.$this->theme));
+			$this->©styles->print_styles($this->©styles->contextual_components($this->instance->core_ns_with_dashes.'--'.$this->theme));
 			echo '<style type="text/css">html{'.$this->©options->get('templates.stand_alone.bg_style').'}</style>'."\n";
 			echo $this->©php->evaluate($this->©options->get('templates.stand_alone.styles'))."\n";
 

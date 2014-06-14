@@ -70,9 +70,9 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @param string       $code Optional diagnostic code (to construct with a new diagnostic).
 		 *
@@ -88,9 +88,9 @@ namespace wsc_v000000_dev
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function __construct($___instance_config, $code = '', $data = NULL, $message = '', $log = self::log_enable)
+		public function __construct($instance, $code = '', $data = NULL, $message = '', $log = self::log_enable)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$this->check_arg_types('', 'string:!empty', '', 'string', 'string:!empty', func_get_args());
 
@@ -170,7 +170,7 @@ namespace wsc_v000000_dev
 			if(!$this->wp_debug_log || !$this->©env->is_in_wp_debug_log_mode())
 				return; // Logging NOT enabled. Stop here.
 
-			$log_dir  = $this->©dir->log($this::private_type, 'debug');
+			$log_dir  = $this->©dir->logs('debug', $this::private_type);
 			$log_file = $this->©file->maybe_archive($log_dir.'/debug.log');
 
 			file_put_contents( // Log this diagnostic!

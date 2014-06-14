@@ -102,7 +102,7 @@ namespace wsc_v000000_dev
 				);
 				$_key = $_cron_job['©class.method']; // Using this as: `$config[$_key]`.
 				list($_cron_job['©class'], $_cron_job['method']) = explode('.', $_cron_job['©class.method'], 2);
-				$_cron_job['event_hook'] = '_cron__'.$this->___instance_config->plugin_root_ns_stub.'__'.trim($_cron_job['©class'], '©').'__'.$_cron_job['method'];
+				$_cron_job['event_hook'] = '_cron__'.$this->instance->plugin_root_ns_stub.'__'.trim($_cron_job['©class'], '©').'__'.$_cron_job['method'];
 
 				$this->add_action($_cron_job['event_hook'], $_cron_job['©class.method']);
 

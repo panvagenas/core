@@ -89,15 +89,15 @@ namespace wsc_v000000_dev\menu_pages
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
-			$this->slug = $this->___instance_config->ns_class_basename;
+			$this->slug = $this->instance->ns_class_basename;
 			$this->slug = $this->©string->with_dashes($this->slug);
 
 			if($this->updates_options) // This updates options?
@@ -150,7 +150,7 @@ namespace wsc_v000000_dev\menu_pages
 		 */
 		public function add_panel($panel, $sidebar = FALSE, $active = FALSE)
 		{
-			$this->check_arg_types($this->___instance_config->core_ns_prefix.'\\menu_pages\\panels\\panel', 'boolean', 'boolean', func_get_args());
+			$this->check_arg_types($this->instance->core_ns_prefix.'\\menu_pages\\panels\\panel', 'boolean', 'boolean', func_get_args());
 
 			if(empty($panel->slug))
 				throw $this->©exception(
@@ -165,7 +165,7 @@ namespace wsc_v000000_dev\menu_pages
 			if($this->apply_filters('exclude_panel_by_slug', FALSE, $panel->slug))
 				return; // Filters can exclude panels.
 
-			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns,
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->instance->plugin_root_ns,
 			                                                'menu_pages__panel__'.$this->©string->with_underscores($panel->slug)))
 			) return; // Do NOT include; use lacks permission.
 
@@ -206,7 +206,7 @@ namespace wsc_v000000_dev\menu_pages
 			           '</span>'.
 
 			           '<a href="#" class="block-display no-text-decor cursor-pointer" name="'.esc_attr($panel->slug).'"'.
-			           ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-collapse').'"'.
+			           ' data-toggle="'.esc_attr($this->instance->core_ns_with_dashes.'-collapse').'"'.
 			           ' data-target="#'.esc_attr($class_id.' > .panel-collapse').'">'.$panel->heading_title.
 			           '</a>'.
 			           '</h4>';
@@ -218,7 +218,7 @@ namespace wsc_v000000_dev\menu_pages
 			if($panel->documentation)
 			{
 				$markup .= '<button class="btn btn-default btn-sm pull-right l-margin"'.
-				           ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'"'.
+				           ' data-toggle="'.esc_attr($this->instance->core_ns_with_dashes.'-modal').'"'.
 				           ' data-target="#'.esc_attr($class_id.'--documentation-modal-window').'">'.
 				           $this->__('Documentation').
 				           '</button>';
@@ -228,7 +228,7 @@ namespace wsc_v000000_dev\menu_pages
 				$markup .= '<div class="modal-content">';
 
 				$markup .= '<div class="modal-header">';
-				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'">&times;</button>';
+				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->instance->core_ns_with_dashes.'-modal').'">&times;</button>';
 				$markup .= '<h4 class="modal-title">'.$this->__('Documentation').'</h4>';
 				$markup .= '</div>';
 
@@ -249,7 +249,7 @@ namespace wsc_v000000_dev\menu_pages
 			else if($panel->yt_playlist)
 			{
 				$markup .= '<button class="btn btn-default btn-sm pull-right l-margin"'.
-				           ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'"'.
+				           ' data-toggle="'.esc_attr($this->instance->core_ns_with_dashes.'-modal').'"'.
 				           ' data-target="#'.esc_attr($class_id.'--yt-playlist-modal-window').'">'.
 				           $this->__('Video Tutorial').
 				           '</button>';
@@ -259,7 +259,7 @@ namespace wsc_v000000_dev\menu_pages
 				$markup .= '<div class="modal-content">';
 
 				$markup .= '<div class="modal-header">';
-				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'" aria-hidden="true">&times;</button>';
+				$markup .= '<button type="button" class="close" data-dismiss="'.esc_attr($this->instance->core_ns_with_dashes.'-modal').'" aria-hidden="true">&times;</button>';
 				$markup .= '<h4 class="modal-title">'.$this->__('Video Tutorial').'</h4>';
 				$markup .= '</div>';
 
@@ -335,23 +335,23 @@ namespace wsc_v000000_dev\menu_pages
 			if(!in_array(($current_menu_pages_theme = $this->©options->get('menu_pages.theme')), array_keys($this->©styles->themes()), TRUE))
 				$current_menu_pages_theme = $this->©options->get('menu_pages.theme', TRUE);
 
-			$classes[] = $this->___instance_config->core_ns_with_dashes;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes;
+			$classes[] = $this->instance->core_ns_with_dashes;
+			$classes[] = $this->instance->plugin_root_ns_with_dashes;
 
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--t--'.$current_menu_pages_theme;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--t--'.$current_menu_pages_theme;
+			$classes[] = $this->instance->core_ns_with_dashes.'--t--'.$current_menu_pages_theme;
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'--t--'.$current_menu_pages_theme;
 
 			$classes[] = 'menu-page'; // Simple `menu-page` class.
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--menu-page';
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--menu-page';
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--menu-page--'.$this->slug;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--menu-page--'.$this->slug;
+			$classes[] = $this->instance->core_ns_with_dashes.'--menu-page';
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'--menu-page';
+			$classes[] = $this->instance->core_ns_with_dashes.'--menu-page--'.$this->slug;
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'--menu-page--'.$this->slug;
 
 			$classes[] = 'wrapper'; // Simple `wrapper` class.
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--wrapper';
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--wrapper';
-			$classes[] = $this->___instance_config->core_ns_with_dashes.'--wrapper--'.$this->slug;
-			$classes[] = $this->___instance_config->plugin_root_ns_with_dashes.'--wrapper--'.$this->slug;
+			$classes[] = $this->instance->core_ns_with_dashes.'--wrapper';
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'--wrapper';
+			$classes[] = $this->instance->core_ns_with_dashes.'--wrapper--'.$this->slug;
+			$classes[] = $this->instance->plugin_root_ns_with_dashes.'--wrapper--'.$this->slug;
 
 			echo '<div class="'.esc_attr(implode(' ', $classes)).'">';
 			echo '<div class="inner-wrap">';
@@ -396,11 +396,11 @@ namespace wsc_v000000_dev\menu_pages
 		 */
 		public function display_header_control__restore_default_options()
 		{
-			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_pages__restore_default_options')))
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->instance->plugin_root_ns, 'menu_pages__restore_default_options')))
 				return; // Do NOT display here; use lacks permission.
 
 			echo '<button type="button" class="btn btn-warning pull-right l-margin" title="'.esc_attr($this->__('Restore Default Plugin Options')).'"'.
-			     ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'" data-target=".menu-page .restore-default-options.modal">'.
+			     ' data-toggle="'.esc_attr($this->instance->core_ns_with_dashes.'-modal').'" data-target=".menu-page .restore-default-options.modal">'.
 			     '<i class="fa fa-history"></i>'.
 			     '</button>';
 
@@ -410,7 +410,7 @@ namespace wsc_v000000_dev\menu_pages
 
 			echo '<div class="modal-header">';
 
-			echo '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'">&times;</button>';
+			echo '<button type="button" class="close" data-dismiss="'.esc_attr($this->instance->core_ns_with_dashes.'-modal').'">&times;</button>';
 			echo '<h4 class="modal-title">'.$this->__('Restore Default Plugin Options?').'</h4>';
 
 			echo '</div>';
@@ -425,7 +425,7 @@ namespace wsc_v000000_dev\menu_pages
 
 			echo '<div class="row t-margin">';
 			echo '<div class="col-md-6">';
-			echo '<button type="button" class="btn btn-danger pull-left" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'">'.
+			echo '<button type="button" class="btn btn-danger pull-left" data-dismiss="'.esc_attr($this->instance->core_ns_with_dashes.'-modal').'">'.
 			     '<i class="fa fa-times-circle"></i> '.$this->__('No, Cancel').
 			     '</button>';
 			echo '</div>';
@@ -455,11 +455,11 @@ namespace wsc_v000000_dev\menu_pages
 		 */
 		public function display_header_control__import_export_options()
 		{
-			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_pages__import_export_options')))
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->instance->plugin_root_ns, 'menu_pages__import_export_options')))
 				return; // Do NOT display here; use lacks permission.
 
 			echo '<button type="button" class="btn btn-primary pull-right l-margin" title="'.esc_attr($this->__('Import/Export Plugin Options')).'"'.
-			     ' data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'" data-target=".menu-page .import-export-options.modal">'.
+			     ' data-toggle="'.esc_attr($this->instance->core_ns_with_dashes.'-modal').'" data-target=".menu-page .import-export-options.modal">'.
 			     '<i class="fa fa-gears"></i>'.
 			     '</button>';
 
@@ -468,7 +468,7 @@ namespace wsc_v000000_dev\menu_pages
 			     '<div class="modal-content">';
 
 			echo '<div class="modal-header">'.
-			     '<button type="button" class="close" data-dismiss="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-modal').'">&times;</button>'.
+			     '<button type="button" class="close" data-dismiss="'.esc_attr($this->instance->core_ns_with_dashes.'-modal').'">&times;</button>'.
 			     '<h4 class="modal-title">'.$this->__('Import/Export Plugin Options?').'</h4>'.
 			     '</div>';
 
@@ -476,13 +476,13 @@ namespace wsc_v000000_dev\menu_pages
 
 			echo '<p class="clearfix">'.
 			     '<i class="fa fa-gears fa-5x pull-right l-margin"></i>'.
-			     sprintf($this->__('If you\'re using %1$s on multiple sites, import/export can be a HUGE time-saver.'), esc_html($this->___instance_config->plugin_name)).
-			     ' '.sprintf($this->__('Configure the plugin just once (on one installation); then export your <code>%1$s.json</code> configuration file for use as a starting point on new sites in the future.'), esc_html($this->___instance_config->plugin_root_ns_with_dashes)).
+			     sprintf($this->__('If you\'re using %1$s on multiple sites, import/export can be a HUGE time-saver.'), esc_html($this->instance->plugin_name)).
+			     ' '.sprintf($this->__('Configure the plugin just once (on one installation); then export your <code>%1$s.json</code> configuration file for use as a starting point on new sites in the future.'), esc_html($this->instance->plugin_root_ns_with_dashes)).
 			     '</p>';
 
 			echo '<ul class="nav nav-tabs">'.
-			     '<li class="active"><a href="#" data-target=".menu-page .import-export-options .tab-pane.import" data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-tab').'">'.$this->__('Import').'</a></li>'.
-			     '<li><a href="#" data-target=".menu-page .import-export-options .tab-pane.export" data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-tab').'">'.$this->__('Export').'</a></li>'.
+			     '<li class="active"><a href="#" data-target=".menu-page .import-export-options .tab-pane.import" data-toggle="'.esc_attr($this->instance->core_ns_with_dashes.'-tab').'">'.$this->__('Import').'</a></li>'.
+			     '<li><a href="#" data-target=".menu-page .import-export-options .tab-pane.export" data-toggle="'.esc_attr($this->instance->core_ns_with_dashes.'-tab').'">'.$this->__('Export').'</a></li>'.
 			     '</ul>';
 
 			echo '<div class="tab-content">';
@@ -490,7 +490,7 @@ namespace wsc_v000000_dev\menu_pages
 			echo '<div class="tab-pane active import">';
 
 			echo '<p class="em-t-margin">'.
-			     sprintf($this->__('Import a previously downloaded copy of your <code>%1$s.json</code> configuration file.'), esc_html($this->___instance_config->plugin_root_ns_with_dashes)).
+			     sprintf($this->__('Import a previously downloaded copy of your <code>%1$s.json</code> configuration file.'), esc_html($this->instance->plugin_root_ns_with_dashes)).
 			     $this->__(' Select the file from your computer and click the button to upload &amp; import.').
 			     '</p>';
 
@@ -515,7 +515,7 @@ namespace wsc_v000000_dev\menu_pages
 			echo '<div class="tab-pane export">';
 
 			echo '<p class="em-t-margin">'.
-			     sprintf($this->__('Click this button to export &amp; download the <code>%1$s.json</code> configuration file that contains your currently configured setings for %2$s.'), esc_html($this->___instance_config->plugin_root_ns_with_dashes), esc_html($this->___instance_config->plugin_name)).
+			     sprintf($this->__('Click this button to export &amp; download the <code>%1$s.json</code> configuration file that contains your currently configured setings for %2$s.'), esc_html($this->instance->plugin_root_ns_with_dashes), esc_html($this->instance->plugin_name)).
 			     '</p>';
 
 			$form_fields = $this->©form_fields(array('for_call' => '©options.®export'));
@@ -543,12 +543,12 @@ namespace wsc_v000000_dev\menu_pages
 		 */
 		public function display_header_control__update_theme()
 		{
-			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_pages__update_theme')))
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->instance->plugin_root_ns, 'menu_pages__update_theme')))
 				return; // Do NOT display here; use lacks permission.
 
 			echo '<div class="update-theme btn-group pull-right l-margin" title="'.esc_attr($this->__('Choose an Administrative Theme')).'">';
 
-			echo '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="'.esc_attr($this->___instance_config->core_ns_with_dashes.'-dropdown').'">'.
+			echo '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="'.esc_attr($this->instance->core_ns_with_dashes.'-dropdown').'">'.
 			     '<i class="fa fa-wordpress"></i> '.$this->__('Admin Theme').' <span class="caret"></span>'.
 			     '</button>';
 
@@ -575,7 +575,7 @@ namespace wsc_v000000_dev\menu_pages
 		 */
 		public function display_header_control__toggle_all_panels()
 		{
-			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->___instance_config->plugin_root_ns, 'menu_pages__toggle_all_panels')))
+			if(!$this->©user->wp->has_cap($this->©caps->map('manage_'.$this->instance->plugin_root_ns, 'menu_pages__toggle_all_panels')))
 				return; // Do NOT display here; use lacks permission.
 
 			echo '<button type="button" class="toggle-all-panels btn btn-default pull-right" title="'.esc_attr($this->__('Toggle All Panels On/Off')).'">'.
@@ -795,7 +795,7 @@ namespace wsc_v000000_dev\menu_pages
 		 */
 		public function display_sidebar_panels()
 		{
-			if(!$this->©plugin->has_pro())
+			if(!$this->©plugin->has_pro_active())
 				$this->add_sidebar_panel($this->©menu_pages__panels__pro_upgrade($this), TRUE);
 			$this->add_sidebar_panel($this->©menu_pages__panels__email_updates($this));
 			$this->add_sidebar_panel($this->©menu_pages__panels__news_kb($this));

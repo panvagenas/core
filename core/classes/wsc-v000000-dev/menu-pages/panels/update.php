@@ -27,32 +27,32 @@ namespace wsc_v000000_dev\menu_pages\panels
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's ``$instance``,
+		 *    or a new ``$instance`` array.
 		 *
 		 * @param \wsc_v000000_dev\menu_pages\menu_page
 		 *    $menu_page A menu page class instance.
 		 */
-		public function __construct($___instance_config, $menu_page)
+		public function __construct($instance, $menu_page)
 		{
-			parent::__construct($___instance_config, $menu_page);
+			parent::__construct($instance, $menu_page);
 
 			$call        = '©plugin.®update';
 			$form_fields = $this->©form_fields(array('for_call' => $call));
 
-			$this->heading_title = sprintf($this->__('%1$s Updater'), $this->___instance_config->plugin_name);
+			$this->heading_title = sprintf($this->__('%1$s Updater'), $this->instance->plugin_name);
 
 			$this->content_body = // Updates Framework to the latest version.
 
 				'<p>'. // Brief description.
 				'<img class="pull-right l-margin" src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/icon-128x128.png')).'" alt="" />'.
 				sprintf($this->__('This will automatically update your copy of the %1$s Framework to the latest available version. This update routine is powered by WordPress®. Depending on your configuration of WordPress® you might be asked for FTP credentials before the update will begin. The %1$s Framework (which is free) can also be updated from the plugins menu in WordPress®.'),
-				        esc_html($this->___instance_config->plugin_name)).
+				        esc_html($this->instance->plugin_name)).
 				'</p>'.
 				'<div class="alert alert-warning">'. // A friendly reminder.
 				sprintf($this->__('<i class="fa fa-support"></i> Please be sure to <strong>BACKUP</strong> your entire file structure <strong>and ALSO</strong> your MySQL database before updating any WordPress® component. Just to be safe <i class="fa fa-smile-o"></i>'),
-				        esc_html($this->___instance_config->plugin_name)).
+				        esc_html($this->instance->plugin_name)).
 				'</div>'.
 
 				'<form method="post" action="'.esc_attr($this->©menu_page->url($this->menu_page->slug, $this->slug)).'">'.
@@ -61,7 +61,7 @@ namespace wsc_v000000_dev\menu_pages\panels
 
 				'<div class="form-group no-b-margin">'.
 				$form_fields->markup(
-					'<i class="fa fa-magic"></i> '.sprintf($this->__('Update %1$s Framework'), $this->___instance_config->plugin_name),
+					'<i class="fa fa-magic"></i> '.sprintf($this->__('Update %1$s Framework'), $this->instance->plugin_name),
 					array('type' => 'submit', 'name' => 'update')
 				).
 				'</div>'.

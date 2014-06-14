@@ -58,13 +58,13 @@ namespace wsc_v000000_dev
 
 			) // Activation success! Everything TRUE here.
 			{
-				update_option($this->___instance_config->plugin_root_ns_stub.'__version', $this->___instance_config->plugin_version);
+				update_option($this->instance->plugin_root_ns_stub.'__version', $this->instance->plugin_version);
 				$this->©plugin->is_active_at_current_version($this::reconsider);
 
 				$this->©notice->enqueue( // A complete success.
 					'<p>'.
 					sprintf($this->__('%1$s was a complete success<em>!</em> Current version: <strong>%2$s</strong>.'),
-						(($reactivating) ? $this->__('Reactivation') : $this->__('Activation')), $this->___instance_config->plugin_version).
+						(($reactivating) ? $this->__('Reactivation') : $this->__('Activation')), $this->instance->plugin_version).
 					'</p>'
 				);
 			}
@@ -150,7 +150,7 @@ namespace wsc_v000000_dev
 			$this->©dirs->___uninstall___(TRUE);
 			deps::___uninstall___(TRUE);
 
-			delete_option($this->___instance_config->plugin_root_ns_stub.'__version');
+			delete_option($this->instance->plugin_root_ns_stub.'__version');
 			$this->©plugin->is_active_at_current_version($this::reconsider);
 		}
 

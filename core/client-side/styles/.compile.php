@@ -47,7 +47,7 @@ namespace wsc_dev_utilities
 	function compile_font_awesome()
 	{
 		$core                = core(); // WebSharks™ Core.
-		$core_ns_with_dashes = $core->___instance_config->core_ns_with_dashes;
+		$core_ns_with_dashes = $core->instance->core_ns_with_dashes;
 
 		$file     = $core->©dir->n_seps_up(__FILE__).'/core-fa.css';
 		$min_file = $core->©dir->n_seps_up(__FILE__).'/core-fa.min.css';
@@ -115,7 +115,7 @@ namespace wsc_dev_utilities
 		foreach($themes as $theme => $url)
 		{
 			$core                = core(); // WebSharks™ Core.
-			$core_ns_with_dashes = $core->___instance_config->core_ns_with_dashes;
+			$core_ns_with_dashes = $core->___instancinstancewith_dashes;
 
 			$file     = $core->©dir->n_seps_up(__FILE__, 3).'/templates/client-side/styles/themes/'.$theme.'/theme.css';
 			$min_file = $core->©dir->n_seps_up(__FILE__, 3).'/templates/client-side/styles/themes/'.$theme.'/theme.min.css';
@@ -206,7 +206,7 @@ namespace wsc_dev_utilities
 			$core                = core(); // WebSharks™ Core.
 			$tokens              = array(); // Initialize tokens.
 			$animations          = array(); // Initialize CSS animations.
-			$core_ns_with_dashes = $core->___instance_config->core_ns_with_dashes;
+			$core_ns_with_dashes = $core->instance->core_ns_with_dashes;
 			$css                 = preg_replace_callback('/(?P<keyframes>@(?:[\w\-]+?\-)?keyframes)\s*(?P<animation>[\w\-]+)\s*(?P<brackets>\{(?:[^{}]|(?&brackets))*?\})/is', function ($m) use (&$tokens, &$animations, $core_ns_with_dashes, $theme)
 			{
 				$animations[$m['animation']] = $core_ns_with_dashes.(($theme) ? '--t--'.$theme : '').'-'.$m['animation'];

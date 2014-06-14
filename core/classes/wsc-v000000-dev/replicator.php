@@ -82,9 +82,9 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor (initiates replication).
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @param string       $into_dir Optional. Defaults to an empty string.
 		 *    If this is supplied, the core will be replicated into this specific directory.
@@ -110,9 +110,9 @@ namespace wsc_v000000_dev
 		 * @throws exception If unable to replicate according to `$this->can_replicate`.
 		 * @throws exception See: `replicate()` method for further details.
 		 */
-		public function __construct($___instance_config, $into_dir = '', $update_dir = '', $version = '', $exclusions = array())
+		public function __construct($instance, $into_dir = '', $update_dir = '', $version = '', $exclusions = array())
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$this->check_arg_types('', 'string', 'string', 'string', 'array', func_get_args());
 
@@ -129,13 +129,13 @@ namespace wsc_v000000_dev
 				);
 			// Construct object properties.
 
-			$this->core_dir      = $this->___instance_config->core_dir;
-			$this->core_repo_dir = $this->___instance_config->local_core_repo_dir;
-			$this->into_dir      = ($into_dir) ? $this->©dir->n_seps($into_dir) : $this->___instance_config->local_core_repo_dir;
-			$this->version       = ($version) ? $version : $this->___instance_config->core_version;
+			$this->core_dir      = $this->instance->core_dir;
+			$this->core_repo_dir = $this->instance->local_core_repo_dir;
+			$this->into_dir      = ($into_dir) ? $this->©dir->n_seps($into_dir) : $this->instance->local_core_repo_dir;
+			$this->version       = ($version) ? $version : $this->instance->core_version;
 			$this->exclusions    = ($exclusions) ? $exclusions : array();
 
-			$this->new_core_ns_version             = $this->___instance_config->core_ns_stub_v.$this->©string->with_underscores($this->version);
+			$this->new_core_ns_version             = $this->instance->core_ns_stub_v.$this->©string->with_underscores($this->version);
 			$this->new_core_ns_version_with_dashes = $this->©string->with_dashes($this->new_core_ns_version);
 			$this->new_core_dir                    = $this->into_dir.'/'.$this->new_core_ns_version_with_dashes;
 
@@ -158,7 +158,7 @@ namespace wsc_v000000_dev
 			if(!$this->©string->is_plugin_version($this->version))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#invalid_version', get_defined_vars(),
-					sprintf($this->__('Invalid %1$s version: `%2$s`.'), $this->___instance_config->core_name, $this->version)
+					sprintf($this->__('Invalid %1$s version: `%2$s`.'), $this->instance->core_name, $this->version)
 				);
 			// Object construction & initial validation complete.
 
@@ -258,7 +258,7 @@ namespace wsc_v000000_dev
 				return; // Ignore this directory (it IS excluded).
 
 			if($dir !== $this->core_repo_dir) // Don't bypass the core repo directory itself.
-				if(preg_match('/\/'.preg_quote($this->___instance_config->core_ns_stub_with_dashes, '/').'\//', $dir.'/'))
+				if(preg_match('/\/'.preg_quote($this->instance->core_ns_stub_with_dashes, '/').'\//', $dir.'/'))
 					if(strpos($dir.'/', $this->new_core_dir.'/') !== 0) // Not inside new core directory?
 						return; // Past or present WebSharks™ Core directory.
 

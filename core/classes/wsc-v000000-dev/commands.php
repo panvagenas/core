@@ -84,15 +84,15 @@ namespace wsc_v000000_dev
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's `$___instance_config`,
-		 *    or a new `$___instance_config` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's `$instance`,
+		 *    or a new `$instance` array.
 		 *
 		 * @throws exception If invalid types are passed through arguments list.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config); // Construct instance.
+			parent::__construct($instance); // Construct instance.
 
 			$this->sass = 'sass --cache-location='.escapeshellarg($this->©dir->temp().'/.sass-cache');
 		}

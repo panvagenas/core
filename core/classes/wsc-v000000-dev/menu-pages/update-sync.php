@@ -27,13 +27,13 @@ namespace wsc_v000000_dev\menu_pages
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's ``$instance``,
+		 *    or a new ``$instance`` array.
 		 */
-		public function __construct($___instance_config)
+		public function __construct($instance)
 		{
-			parent::__construct($___instance_config);
+			parent::__construct($instance);
 
 			$this->heading_title           = $this->__('Plugin Updater');
 			$this->sub_heading_description = $this->__('Update to the latest version. It\'s quick &amp; easy<em>!</em>');
@@ -46,7 +46,7 @@ namespace wsc_v000000_dev\menu_pages
 		{
 			$this->add_content_panel($this->©menu_pages__panels__update($this), TRUE);
 
-			if($this->©plugin->has_pro()) // Allow for pro updates too.
+			if($this->©plugin->has_pro_active()) // Allow for pro updates too.
 				$this->add_content_panel($this->©menu_pages__panels__update_sync_pro($this));
 
 			parent::display_content_panels();

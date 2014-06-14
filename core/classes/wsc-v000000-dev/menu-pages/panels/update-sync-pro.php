@@ -27,16 +27,16 @@ namespace wsc_v000000_dev\menu_pages\panels
 		/**
 		 * Constructor.
 		 *
-		 * @param object|array $___instance_config Required at all times.
-		 *    A parent object instance, which contains the parent's ``$___instance_config``,
-		 *    or a new ``$___instance_config`` array.
+		 * @param object|array $instance Required at all times.
+		 *    A parent object instance, which contains the parent's ``$instance``,
+		 *    or a new ``$instance`` array.
 		 *
 		 * @param \wsc_v000000_dev\menu_pages\menu_page
 		 *    $menu_page A menu page class instance.
 		 */
-		public function __construct($___instance_config, $menu_page)
+		public function __construct($instance, $menu_page)
 		{
-			parent::__construct($___instance_config, $menu_page);
+			parent::__construct($instance, $menu_page);
 
 			$call        = '©plugin.®update_sync_pro';
 			$form_fields = $this->©form_fields(array('for_call' => $call));
@@ -46,22 +46,22 @@ namespace wsc_v000000_dev\menu_pages\panels
 			$password    = $this->©string->is_not_empty_or($data->password, '');
 			$credentials = $this->©plugin->get_site_credentials($username, $password);
 
-			$this->heading_title = sprintf($this->__('%1$s Pro Add-on (Update/Sync)'), $this->___instance_config->plugin_name);
+			$this->heading_title = sprintf($this->__('%1$s Pro Add-on (Update/Sync)'), $this->instance->plugin_name);
 
 			$this->content_body = // Updates the Pro add-on to the latest version.
 
 				'<p>'. // Brief description.
 				'<img class="pull-right l-margin" src="'.esc_attr($this->©url->to_template_dir_file('/client-side/images/icon-128x128-pro.png')).'" alt="" />'.
 				sprintf($this->__('This will update (synchronize) your copy of the %1$s Pro add-on; so that it matches your currently installed version of the %1$s Framework.'),
-				        esc_html($this->___instance_config->plugin_name)).
+				        esc_html($this->instance->plugin_name)).
 				'</p>'.
 				'<p>'. // Disclose that this routine will contact our remote update server.
 				sprintf($this->__('While this update routine is powered (in part) by WordPress®, it connects to <em>our</em> remote update server for authentication; and to provide the necessary files.'),
-				        esc_html($this->___instance_config->plugin_name)).
+				        esc_html($this->instance->plugin_name)).
 				'</p>'.
 				'<div class="alert alert-warning">'. // A friendly reminder.
 				sprintf($this->__('<i class="fa fa-support"></i> Please be sure to <strong>BACKUP</strong> your entire file structure <strong>and ALSO</strong> your MySQL database before updating any WordPress® component. Just to be safe <i class="fa fa-smile-o"></i>'),
-				        esc_html($this->___instance_config->plugin_name)).
+				        esc_html($this->instance->plugin_name)).
 				'</div>'.
 
 				'<form method="post" action="'.esc_attr($this->©menu_page->url($this->menu_page->slug, $this->slug)).'">'.
@@ -104,7 +104,7 @@ namespace wsc_v000000_dev\menu_pages\panels
 
 				'<div class="form-group no-b-margin">'.
 				$form_fields->markup(
-					'<i class="fa fa-magic"></i> '.sprintf($this->__('Update %1$s Pro Add-on'), $this->___instance_config->plugin_name),
+					'<i class="fa fa-magic"></i> '.sprintf($this->__('Update %1$s Pro Add-on'), $this->instance->plugin_name),
 					array('type' => 'submit', 'name' => 'update')
 				).
 				'</div>'.
