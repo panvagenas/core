@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="WSC XDebug" type="PhpLocalRunConfigurationType" factoryName="PHP Console" path="$PROJECT_DIR$/.dev-utilities/xdebug.php" scriptParameters=".~test.php">
+    <RunnerSettings RunnerId="PhpRunner" />
+    <RunnerSettings RunnerId="PhpScriptDebugRunner" />
+    <ConfigurationWrapper RunnerId="PhpRunner" />
+    <ConfigurationWrapper RunnerId="PhpScriptDebugRunner" />
+    <method />
+  </configuration>
+</component>

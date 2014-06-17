@@ -1,0 +1,782 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SHOW_STRUCTURE" value="true" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fb8da0f1-5626-44ae-a0ed-ced41bcd01ae" name="Default" comment="" />
+    <ignored path="websharks-core.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="ComposerSettings">
+    <pharPath>$USER_HOME$/DevTools/composer/composer.phar</pharPath>
+  </component>
+  <component name="CoverageOptionsProvider">
+    <option name="myActivateViewOnRun" value="false" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="websharks-core" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf />
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="true" />
+    </FindUsagesManager>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value=" " />
+      </list>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="gh-pages" />
+      </map>
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/user-utils.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/users.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/vars.php" />
+        <option value="$PROJECT_DIR$/websharks-core/client-side/scripts/core-libs/core.js" />
+        <option value="$PROJECT_DIR$/websharks-core/templates/exception.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/deps-x.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/functions.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/ips.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/env.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/no-cache.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/plugins.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/urls.php" />
+        <option value="$PROJECT_DIR$/.~dev-utilities/unit-test-cfg.xml" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/unit-tests/datesTest.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/dates.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/gmp.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/php.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/files.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/currencies.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/mail.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/packages/manager.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/packages/package.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/packages/dependency.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/packages.php" />
+        <option value="$PROJECT_DIR$/websharks-core/readme.txt" />
+        <option value="$PROJECT_DIR$/websharks-core/plugin.php" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/commands.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/dirs.php" />
+        <option value="$PROJECT_DIR$/.~dev-utilities/builder.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/dirs-files.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/replicator.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v140523/builder.php" />
+        <option value="$PROJECT_DIR$/websharks-core/licensing/gpl.txt" />
+        <option value="$PROJECT_DIR$/websharks-core/licensing/license.txt" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/options.php" />
+        <option value="$PROJECT_DIR$/websharks-core/includes/ides.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/api.php" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/framework.php" />
+        <option value="$PROJECT_DIR$/websharks-core/stub.php" />
+        <option value="$PROJECT_DIR$/.~dev-utilities/builder.xml" />
+        <option value="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/builder.php" />
+        <option value="$PROJECT_DIR$/.~dev-utilities/core.php" />
+        <option value="$PROJECT_DIR$/.~dev-utilities/xdebug-tests/index.php" />
+        <option value="$PROJECT_DIR$/.~dev-utilities/dev-key.php" />
+        <option value="$PROJECT_DIR$/.~dev-utilities/xdebug.php" />
+        <option value="$PROJECT_DIR$/.~dev-utilities/.~xdebug-tests/index.php" />
+        <option value="$PROJECT_DIR$/websharks-core/client-side/styles/compile.php" />
+        <option value="$PROJECT_DIR$/.dev-utilities/wp-globals.php" />
+        <option value="$PROJECT_DIR$/.dev-utilities/dev-key.php" />
+        <option value="$PROJECT_DIR$/.dev-utilities/unit-test-cfg.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="PhpDebugGeneral" ignore_connections_through_unregistered_servers="true" />
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP (Local)">
+    <include_path>
+      <path value="$USER_HOME$/DevTools/phpunit" />
+      <path value="$USER_HOME$/WordPress/wordpress" />
+    </include_path>
+  </component>
+  <component name="PhpXdebugProxy" ide_key="phpstorm" host="localhost" />
+  <component name="ProjectFrameBounds">
+    <option name="y" value="22" />
+    <option name="width" value="1360" />
+    <option name="height" value="742" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="JavaScriptLanguageLevel" value="ES5" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="options.lastSelected" value="Configurable.PHP.PHPUnit" />
+    <property name="JavaScriptPreferStrict" value="true" />
+    <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="recentsLimit" value="5" />
+    <property name="restartRequiresConfirmation" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/.~dev-utilities/.~xdebug-tests" />
+      <recent name="$PROJECT_DIR$/.~dev-utilities" />
+      <recent name="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev" />
+      <recent name="$PROJECT_DIR$/websharks-core/classes/websharks-core-v000000-dev/packages" />
+      <recent name="$PROJECT_DIR$/websharks-core" />
+    </key>
+  </component>
+  <component name="RunManager" selected="PHP Script.WSC XDebug">
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpBuiltInWebServerConfigurationType" factoryName="PHP Built-in Web Server">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpRemoteDebugRunConfigurationType" factoryName="PHP Remote Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpHttpRequestRunConfigurationType" factoryName="PHP HTTP Request">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
+      <method />
+    </configuration>
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="PHP Script.WSC XDebug" />
+      <item index="1" class="java.lang.String" itemvalue="PHPUnit.WSC Unit Tests" />
+    </list>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" Folders="1" Folder0="$USER_HOME$/PhpStorm/dictionaries" Dictionaries="0" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fb8da0f1-5626-44ae-a0ed-ced41bcd01ae" name="Default" comment="" />
+      <created>1398926480024</created>
+      <option name="number" value="Default" />
+      <updated>1398926480024</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Removing compressor class; not in HTML Compressor project.">
+      <created>1398927112554</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1398927112554</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Cleaning up commands class.">
+      <created>1398927625103</created>
+      <option name="number" value="00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1398927625103</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Cleaning up translation strings.">
+      <created>1398929796020</created>
+      <option name="number" value="00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1398929796020</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Ditching YUI Compressor file.">
+      <created>1398931027820</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1398931027820</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Removing json.js dependency.">
+      <created>1398934813139</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1398934813139</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Resolving inspection profile issues.">
+      <created>1398940488557</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1398940488557</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Adding apigen.neon config file for codex generation.">
+      <created>1398940825920</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1398940825920</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Updating README to include link to WSC Codex.">
+      <created>1399013183042</created>
+      <option name="number" value="00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1399013183042</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Updated to `esc_sql()`.">
+      <created>1399361685417</created>
+      <option name="number" value="00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1399361685417</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Updating date i18n methods.">
+      <created>1399867640252</created>
+      <option name="number" value="00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1399867640252</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Apache version detection and static improvements.">
+      <created>1399871828226</created>
+      <option name="number" value="00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1399871828226</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Apache version detection and static improvements.">
+      <created>1400219530672</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1400219530672</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Apache version detection and static improvements.">
+      <created>1400219602327</created>
+      <option name="number" value="00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1400219602327</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Beginning work on strip down.">
+      <created>1400503673110</created>
+      <option name="number" value="00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1400503673111</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400503918760</created>
+      <option name="number" value="00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1400503918760</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400504046283</created>
+      <option name="number" value="00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1400504046283</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400505232625</created>
+      <option name="number" value="00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1400505232625</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400507226233</created>
+      <option name="number" value="00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1400507226233</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400508988945</created>
+      <option name="number" value="00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1400508988945</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400509580304</created>
+      <option name="number" value="00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1400509580304</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400509742118</created>
+      <option name="number" value="00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1400509742118</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400510430093</created>
+      <option name="number" value="00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1400510430093</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400512095180</created>
+      <option name="number" value="00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1400512095180</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400513328894</created>
+      <option name="number" value="00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1400513328894</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400514065731</created>
+      <option name="number" value="00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1400514065731</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400740413540</created>
+      <option name="number" value="00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1400740413540</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400749585765</created>
+      <option name="number" value="00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1400749585765</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400751914570</created>
+      <option name="number" value="00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1400751914570</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400760062177</created>
+      <option name="number" value="00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1400760062177</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400760488307</created>
+      <option name="number" value="00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1400760488307</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400782876418</created>
+      <option name="number" value="00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1400782876418</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400813443647</created>
+      <option name="number" value="00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1400813443647</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400819051438</created>
+      <option name="number" value="00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1400819051438</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400821233117</created>
+      <option name="number" value="00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1400821233117</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400823631212</created>
+      <option name="number" value="00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1400823631212</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400826753664</created>
+      <option name="number" value="00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1400826753664</updated>
+    </task>
+    <task id="LOCAL-00037" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400828317056</created>
+      <option name="number" value="00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1400828317056</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400831228544</created>
+      <option name="number" value="00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1400831228554</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400838267029</created>
+      <option name="number" value="00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1400838267029</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Package manager framework; continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400839334914</created>
+      <option name="number" value="00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1400839334914</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400849371026</created>
+      <option name="number" value="00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1400849371026</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400849845067</created>
+      <option name="number" value="00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1400849845067</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400850986294</created>
+      <option name="number" value="00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1400850986294</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400851002815</created>
+      <option name="number" value="00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1400851002815</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400851193482</created>
+      <option name="number" value="00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1400851193482</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400851230179</created>
+      <option name="number" value="00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1400851230179</updated>
+    </task>
+    <task id="LOCAL-00047" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400851704303</created>
+      <option name="number" value="00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1400851704303</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400859820933</created>
+      <option name="number" value="00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1400859820933</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400862794237</created>
+      <option name="number" value="00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1400862794237</updated>
+    </task>
+    <task id="LOCAL-00050" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400863236555</created>
+      <option name="number" value="00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1400863236555</updated>
+    </task>
+    <task id="LOCAL-00051" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400863492037</created>
+      <option name="number" value="00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1400863492037</updated>
+    </task>
+    <task id="LOCAL-00052" summary="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2">
+      <created>1400863547288</created>
+      <option name="number" value="00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1400863547288</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Bump license to GPL v3&#10;https://github.com/WebSharks/core/issues/8">
+      <created>1400872266433</created>
+      <option name="number" value="00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1400872266434</updated>
+    </task>
+    <task id="LOCAL-00054" summary="Continuing work on package manager.&#10;https://github.com/WebSharks/core/issues/4">
+      <created>1400906482787</created>
+      <option name="number" value="00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1400906482787</updated>
+    </task>
+    <task id="LOCAL-00055" summary="Builder cleanup.">
+      <created>1400910547603</created>
+      <option name="number" value="00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1400910547603</updated>
+    </task>
+    <task id="LOCAL-00056" summary="New build option`submodule`.&#10;https://github.com/WebSharks/core/issues/9">
+      <created>1400929417237</created>
+      <option name="number" value="00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1400929417237</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Remove PHAR from repo, and have the build routine create it with a `.~` prefix to keep it local only. A release can include the binary instead.">
+      <created>1400930377930</created>
+      <option name="number" value="00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1400930377930</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Remove PHAR from repo, and have the build routine create it with a `.~` prefix to keep it local only. A release can include the binary instead.">
+      <created>1400930763301</created>
+      <option name="number" value="00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1400930763301</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Dev tools public; add to repo.">
+      <created>1401846799043</created>
+      <option name="number" value="00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1401846799043</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Bump.">
+      <created>1402969234979</created>
+      <option name="number" value="00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1402969234979</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
+    <servers />
+  </component>
+  <component name="TodoView" selected-index="4">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="22" width="1360" height="742" extended-state="6" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31895223" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32457495" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921174" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24962063" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928678" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3566009" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.49614793" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921174" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.48382127" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Floobits Chat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921174" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Phing Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32852808" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27272728" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="PHP-CGI Server" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32921174" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.52696455" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39721793" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+    <MESSAGE value="Removing compressor class; not in HTML Compressor project." />
+    <MESSAGE value="Cleaning up commands class." />
+    <MESSAGE value="Cleaning up translation strings." />
+    <MESSAGE value="Ditching YUI Compressor file." />
+    <MESSAGE value="Removing json.js dependency." />
+    <MESSAGE value="Resolving inspection profile issues." />
+    <MESSAGE value="Adding apigen.neon config file for codex generation." />
+    <MESSAGE value="Updating README to include link to WSC Codex." />
+    <MESSAGE value="Updated to `esc_sql()`." />
+    <MESSAGE value="Updating date i18n methods." />
+    <MESSAGE value="Apache version detection and static improvements." />
+    <MESSAGE value="Beginning work on strip down." />
+    <MESSAGE value="Package manager framework; continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2" />
+    <MESSAGE value="Continuing work on strip down.&#10;https://github.com/WebSharks/Core/issues/2" />
+    <MESSAGE value="Bump license to GPL v3&#10;https://github.com/WebSharks/core/issues/8" />
+    <MESSAGE value="Continuing work on package manager.&#10;https://github.com/WebSharks/core/issues/4" />
+    <MESSAGE value="Builder cleanup." />
+    <MESSAGE value="New build option`submodule`.&#10;https://github.com/WebSharks/core/issues/9" />
+    <MESSAGE value="Remove PHAR from repo, and have the build routine create it with a `.~` prefix to keep it local only. A release can include the binary instead." />
+    <MESSAGE value="Dev tools public; add to repo." />
+    <MESSAGE value="Bump." />
+    <option name="LAST_COMMIT_MESSAGE" value="Bump." />
+  </component>
+  <component name="WordPressConfiguration" enabled="true">
+    <wordpressPath>$USER_HOME$/WordPress/wordpress</wordpressPath>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$USER_HOME$/WordPress/wordpress/wp-includes/class-phpmailer.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="8153" max-vertical-offset="49065">
+          <caret line="569" column="20" selection-start-line="569" selection-start-column="20" selection-end-line="569" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/WordPress/wordpress/wp-includes/pluggable.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3278" max-vertical-offset="33120">
+          <caret line="464" column="43" selection-start-line="464" selection-start-column="43" selection-end-line="464" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/WordPress/wordpress/wp-admin/load-scripts.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="773" max-vertical-offset="2520">
+          <caret line="61" column="0" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/WordPress/wordpress/wp-admin/load-styles.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="698" max-vertical-offset="2385">
+          <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/WordPress/wordpress/wp-includes/plugin.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="6743" max-vertical-offset="13215">
+          <caret line="426" column="27" selection-start-line="426" selection-start-column="27" selection-end-line="426" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/WordPress/wordpress/wp-admin/options.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.61358315" vertical-offset="1973" max-vertical-offset="3915">
+          <caret line="149" column="52" selection-start-line="149" selection-start-column="52" selection-end-line="149" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/WordPress/wordpress/wp-includes/SimplePie/Parse/Date.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="5363" max-vertical-offset="14835">
+          <caret line="367" column="7" selection-start-line="367" selection-start-column="7" selection-end-line="367" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../html-compressor/html-compressor/licensing/gpl.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.024154589" vertical-offset="0" max-vertical-offset="10200">
+          <caret line="1" column="42" selection-start-line="0" selection-start-column="0" selection-end-line="674" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../ws-server-data/includes/ws-config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.15625" vertical-offset="190" max-vertical-offset="2625">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/standard_9.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.77796054" vertical-offset="15427" max-vertical-offset="16035">
+          <caret line="1060" column="16" selection-start-line="1060" selection-start-column="9" selection-end-line="1060" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/WordPress/wordpress/wp-includes/ms-functions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6102088" vertical-offset="21652" max-vertical-offset="37230">
+          <caret line="1461" column="19" selection-start-line="1461" selection-start-column="19" selection-end-line="1461" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/WordPress/wordpress/wp-includes/ms-default-filters.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33178654" vertical-offset="142" max-vertical-offset="1230">
+          <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
+
