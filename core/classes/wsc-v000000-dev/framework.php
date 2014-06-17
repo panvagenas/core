@@ -1878,6 +1878,11 @@ namespace wsc_v000000_dev
 			 * @param array|object $properties An associative array|object w/ object instance properties.
 			 *    Each property MUST already exist, and value types MUST match up.
 			 *
+			 * @param boolean      $typecast Optional. Defaults to a `FALSE` value.
+			 *    If `TRUE`, all values will be typecasted whenever possible.
+			 *    If `TRUE`, exceptions regarding invalid data types are bypassed since
+			 *       we are forcing the type via {@link \settype()} in this scenario.
+			 *
 			 * @throws exception If attempting to set a special property (e.g. `___*`).
 			 * @throws exception If attempting to set an undefined property (i.e. non-existent).
 			 * @throws exception If attempting to set a property value, which has a different value type.
@@ -1887,13 +1892,13 @@ namespace wsc_v000000_dev
 			 * @final May NOT be overridden by extenders.
 			 * @public Available for public usage.
 			 */
-			final public function set_properties($properties = array())
+			final public function set_properties($properties = array(), $typecast = FALSE)
 			{
 				$properties = (array)$properties;
 
 				foreach($properties as $_property => $_value)
 				{
-					if(strpos($_property, '___') === 0)
+					if(strpos($_property, '___') === 0 || $_property === 'instance')
 						throw $this->©exception( // Do NOT allow special properties here.
 							$this->method(__FUNCTION__).'#special_property', get_defined_vars(),
 							sprintf($this->__('Attempting to set special property: `%1$s`.'), $_property)
@@ -1903,15 +1908,18 @@ namespace wsc_v000000_dev
 							$this->method(__FUNCTION__).'#nonexistent_property', get_defined_vars(),
 							sprintf($this->__('Attempting to set nonexistent property: `%1$s`.'), $_property)
 						);
-					if(!is_null($this->$_property) && gettype($_value) !== gettype($this->$_property))
+					$_value_type    = gettype($_value);
+					$_property_type = gettype($this->$_property);
+
+					if(!$typecast && $_property_type !== 'NULL' && $_value_type !== $_property_type)
 						throw $this->©exception( // Invalid property type.
 							$this->method(__FUNCTION__).'#invalid_property_type', get_defined_vars(),
 							sprintf($this->__('Property type mismatch for property name: `%1$s`.'), $_property).
-							' '.sprintf($this->__('Should be `%1$s`, `%2$s` given.'), gettype($this->$_property), gettype($_value))
+							' '.sprintf($this->__('Should be `%1$s`, `%2$s` given.'), $_property_type, $_value_type)
 						);
-					$this->$_property = $_value; // Sets/updates existing property value.
+					$this->$_property = $typecast && $_property_type !== 'NULL' ? settype($_value, $_property_type) : $_value;
 				}
-				unset($_property, $_value); // A little housekeeping.
+				unset($_property, $_value, $_property_type, $_value_type); // A little housekeeping.
 			}
 
 			/**

@@ -90,8 +90,6 @@ namespace wsc_v000000_dev\packages
 			parent::__construct($instance);
 
 			$this->set_properties($properties);
-			// @TODO option values are always stringified; which will cause a problem here.
-
 			foreach($this->dependencies as &$_dependency)
 				$_dependency = $this->©package__dependency($_dependency);
 			unset($_dependency); // Housekeeping.

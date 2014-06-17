@@ -154,8 +154,7 @@ namespace wsc_v000000_dev
 
 			foreach($this->©options->get('packages.active') as $_package_slug => $_package)
 			{
-				$_package      = $this->©packages__package($_package);
-				$_package_file = $packages_dir.'/'.$_package->slug.'/package.php';
+				$_package_file = $packages_dir.'/'.$_package_slug.'/package.php';
 
 				if($is_in_wp_debug_mode)
 					require_once $_package_file;
