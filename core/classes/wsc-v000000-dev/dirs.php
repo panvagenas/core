@@ -253,7 +253,7 @@ namespace wsc_v000000_dev
 		 * @param boolean     $ignore_readme_files Optional. Defaults to a TRUE value.
 		 *    By default, we ignore README files (e.g. `readme.txt` and `readme.md`).
 		 *
-		 *    NOTE: Not matter what this is set to, we always ignore the WebSharks default ignore list.
+		 *    NOTE: No matter what this is set to, we always exclude our default globs.
 		 *       See: {@link dir_files::ignore()} for further details on this.
 		 *
 		 * @param null|string $___root_dir Do NOT pass this. For internal use only.
@@ -274,9 +274,9 @@ namespace wsc_v000000_dev
 
 			$checksums   = array(); // Initialize array.
 			$dir         = $this->n_seps((string)realpath($dir));
-			$___root_dir = (!isset($___root_dir)) ? $dir : $___root_dir;
+			$___root_dir = !isset($___root_dir) ? $dir : $___root_dir;
 
-			if(!$dir || !is_dir($dir) || !is_readable($dir) || !($handle = opendir($dir)))
+			if(!$dir || !is_dir($dir) || !is_readable($dir))
 				throw $this->©exception(
 					$this->method(__FUNCTION__).'#cannot_read_dir', NULL,
 					sprintf($this->__('Unable to read directory: `%1$s`'), $dir)
@@ -284,6 +284,11 @@ namespace wsc_v000000_dev
 			if($dir !== $___root_dir && $this->ignore($dir, $___root_dir))
 				return ''; // Ignoring this directory.
 
+			if(!($handle = opendir($dir)))
+				throw $this->©exception(
+					$this->method(__FUNCTION__).'#cannot_read_dir', NULL,
+					sprintf($this->__('Unable to open directory: `%1$s`'), $dir)
+				);
 			// Mark each directory in case it happens to be empty. We count empty directories too.
 			$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
 			$checksums[$relative_dir] = md5($relative_dir); // Relative directory checksum.

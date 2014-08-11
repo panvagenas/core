@@ -2155,13 +2155,15 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 	/**
 	 * Calculates the MD5 checksum for an entire directory recursively.
 	 *
-	 * @param string  $dir The directory we should begin with.
+	 * @param string      $dir The directory we should begin with.
 	 *
-	 * @param boolean $ignore_vcs_dirs Optional. Defaults to a TRUE value.
-	 *    By default, we ignore VCS directories (i.e. `.git`, `.svn`, `.bzr`).
+	 * @param boolean     $ignore_readme_files Optional. Defaults to a TRUE value.
+	 *    By default, we ignore README files (e.g. `readme.txt` and `readme.md`).
 	 *
-	 * @param string  $___root_dir Internal parameter. Defaults to an empty string, indicating the current `$dir`.
-	 *    Recursive calls to this method will automatically pass this value, indicating the main root directory value.
+	 *    NOTE: No matter what this is set to, we always exclude our default globs.
+	 *       See: {@link dir_files::ignore()} for further details on this.
+	 *
+	 * @param null|string $___root_dir Do NOT pass this. For internal use only.
 	 *
 	 * @return string An MD5 checksum established collectively, based on all directories/files.
 	 *
@@ -2169,34 +2171,41 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 	 *
 	 * @see wsc_v000000_dev\dirs::checksum()
 	 */
-	public function dir_checksum($dir, $ignore_vcs_dirs = TRUE, $___root_dir = '')
+	public function dir_checksum($dir, $ignore_readme_files = TRUE, $___root_dir = NULL)
 	{
-		if(!is_string($dir) || !$dir || !is_string($___root_dir))
-			throw new exception( // Fail here; detected invalid arguments.
-				sprintf($this->__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
-			);
+		if(!isset($___root_dir)) // Only for the initial caller.
+			if(!is_string($dir) || !$dir || !is_bool($ignore_readme_files) || (isset($___root_dir) && !is_string($___root_dir)))
+				throw new exception( // Fail here; detected invalid arguments.
+					sprintf($this->__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+				);
 		$checksums   = array(); // Initialize array.
 		$dir         = $this->n_dir_seps((string)realpath($dir));
-		$___root_dir = (!$___root_dir) ? $dir : $___root_dir;
+		$___root_dir = !isset($___root_dir) ? $dir : $___root_dir;
 
-		if(!$dir || !is_dir($dir) || !is_readable($dir) || !($handle = opendir($dir)))
+		if(!$dir || !is_dir($dir) || !is_readable($dir))
 			throw new exception(
 				sprintf($this->__('Unable to read directory: `%1$s`'), $dir)
 			);
-		if($ignore_vcs_dirs && in_array(basename($dir), array('.git', '.svn', '.bzr'), TRUE))
-			return ''; // Ignore this VCS directory.
+		if($dir !== $___root_dir && $this->ignore($dir, $___root_dir))
+			return ''; // Ignoring this directory.
 
+		if(!($handle = opendir($dir)))
+			throw new exception(
+				sprintf($this->__('Unable to open directory: `%1$s`'), $dir)
+			);
+		// Mark each directory in case it happens to be empty. We count empty directories too.
 		$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
 		$checksums[$relative_dir] = md5($relative_dir); // Establish relative directory checksum.
 
-		while(($entry = readdir($handle)) !== FALSE)
-			if($entry !== '.' && $entry !== '..') // Ignore single/double dots.
-				if($entry !== 'checksum.txt' || $dir !== $___root_dir) // Skip in root directory.
-				{
-					if(is_dir($dir.'/'.$entry))
-						$checksums[$relative_dir.'/'.$entry] = $this->dir_checksum($dir.'/'.$entry, $ignore_vcs_dirs, $___root_dir);
-					else $checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
-				}
+		while(($entry = readdir($handle)) !== FALSE) if($entry !== '.' && $entry !== '..') // Ignore dots.
+			if($entry !== 'checksum.txt' || $dir !== $___root_dir) // Skip `checksum.txt` in the root directory.
+			{
+				if(is_dir($dir.'/'.$entry)) // Recursively scan each sub-directory.
+					$checksums[$relative_dir.'/'.$entry] = $this->dir_checksum($dir.'/'.$entry, $ignore_readme_files, $___root_dir);
+
+				else if(!$this->ignore($dir.'/'.$entry, $___root_dir)) // If NOT ignoring this file.
+					$checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
+			}
 		closedir($handle); // Close directory handle now.
 
 		ksort($checksums, SORT_STRING); // In case order changes from one server to another.
