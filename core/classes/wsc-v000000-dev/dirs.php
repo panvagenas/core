@@ -250,11 +250,11 @@ namespace wsc_v000000_dev
 		 *    If this is TRUE, the `checksum.txt` file in the root directory will be updated accordingly.
 		 *    If the `checksum.txt` file does NOT exist yet, this routine will attempt to create it.
 		 *
-		 * @param boolean     $ignore_vcs_dirs Optional. Defaults to a TRUE value.
-		 *    By default, we ignore VCS directories (e.g. `.git`, `.svn` and `.bzr`).
-		 *
 		 * @param boolean     $ignore_readme_files Optional. Defaults to a TRUE value.
 		 *    By default, we ignore README files (e.g. `readme.txt` and `readme.md`).
+		 *
+		 *    NOTE: Not matter what this is set to, we always ignore the WebSharks default ignore list.
+		 *       See: {@link dir_files::ignore()} for further details on this.
 		 *
 		 * @param null|string $___root_dir Do NOT pass this. For internal use only.
 		 *
@@ -267,10 +267,10 @@ namespace wsc_v000000_dev
 		 *
 		 * @see deps_x_wsc_v000000_dev::dir_checksum()
 		 */
-		public function checksum($dir, $update_checksum_file = FALSE, $ignore_vcs_dirs = TRUE, $ignore_readme_files = TRUE, $___root_dir = NULL)
+		public function checksum($dir, $update_checksum_file = FALSE, $ignore_readme_files = TRUE, $___root_dir = NULL)
 		{
 			if(!isset($___root_dir)) // Only for the initial caller.
-				$this->check_arg_types('string:!empty', 'boolean', array('null', 'string'), func_get_args());
+				$this->check_arg_types('string:!empty', 'boolean', 'boolean', array('null', 'string'), func_get_args());
 
 			$checksums   = array(); // Initialize array.
 			$dir         = $this->n_seps((string)realpath($dir));
@@ -281,21 +281,24 @@ namespace wsc_v000000_dev
 					$this->method(__FUNCTION__).'#cannot_read_dir', NULL,
 					sprintf($this->__('Unable to read directory: `%1$s`'), $dir)
 				);
-			if($ignore_vcs_dirs && in_array(basename($dir), array('.git', '.svn', '.bzr'), TRUE))
-				return ''; // Ignore this VCS directory.
+			if($dir !== $___root_dir && $this->ignore($dir, $___root_dir))
+				return ''; // Ignoring this directory.
 
+			// Mark each directory in case it happens to be empty. We count empty directories too.
 			$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
 			$checksums[$relative_dir] = md5($relative_dir); // Relative directory checksum.
 
-			while(($entry = readdir($handle)) !== FALSE)
-				if($entry !== '.' && $entry !== '..') // Ignore single/double dots.
-					if($entry !== 'checksum.txt' || $dir !== $___root_dir) // Skip in root directory.
-						if(!$ignore_readme_files || !in_array(strtolower($entry), array('readme.txt', 'readme.md'), TRUE))
-						{
-							if(is_dir($dir.'/'.$entry))
-								$checksums[$relative_dir.'/'.$entry] = $this->checksum($dir.'/'.$entry, FALSE, $ignore_vcs_dirs, $ignore_readme_files, $___root_dir);
-							else $checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
-						}
+			// Scan each directory and include each file that it contains; except files we ignore.
+			while(($entry = readdir($handle)) !== FALSE) if($entry !== '.' && $entry !== '..') // Ignore dots.
+				if($entry !== 'checksum.txt' || $dir !== $___root_dir) // Skip `checksum.txt` in the root directory.
+					if(!$ignore_readme_files || !in_array(strtolower($entry), array('readme.txt', 'readme.md'), TRUE))
+					{
+						if(is_dir($dir.'/'.$entry)) // Recursively scan each sub-directory.
+							$checksums[$relative_dir.'/'.$entry] = $this->checksum($dir.'/'.$entry, FALSE, $ignore_readme_files, $___root_dir);
+
+						else if(!$this->ignore($dir.'/'.$entry, $___root_dir)) // If NOT ignoring this file.
+							$checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
+					}
 			closedir($handle); // Close directory handle now.
 
 			ksort($checksums, SORT_STRING); // In case order changes from one server to another.
