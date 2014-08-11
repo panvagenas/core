@@ -361,8 +361,8 @@ namespace wsc_v000000_dev
 		 * @return boolean TRUE if `$dir_file` has an extension of `$type`.
 		 *    Also TRUE if it has a specific extension in the optional `$extensions` array.
 		 *
-		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$dir_file` is empty.
+		 * @throws exception If invalid types are passed through arguments list.
 		 * @throws exception If `$type` is NOT empty; and it's unknown (e.g. an invalid type).
 		 */
 		public function has_extension($dir_file, $type = self::any_type, $extensions = array())
@@ -421,6 +421,8 @@ namespace wsc_v000000_dev
 		 * @see `/.gitignore` file in the WebSharks™ Core repo directory.
 		 *    This file is where we maintain a master list of all glob exclusion patterns.
 		 *    The default set of glob exclusion patterns in THIS routine should be updated if the master list changes.
+		 *
+		 * @see deps_x_wsc_v000000_dev::dir_file_ignore()
 		 */
 		public function ignore($dir_file, $from_dir_file = '', $globs = self::defaults, $extra_globs = array(), $globs_case_insensitive = NULL, $glob_x_flags = NULL)
 		{

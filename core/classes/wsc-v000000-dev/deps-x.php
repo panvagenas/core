@@ -2161,7 +2161,7 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 	 *    By default, we ignore README files (e.g. `readme.txt` and `readme.md`).
 	 *
 	 *    NOTE: No matter what this is set to, we always exclude our default globs.
-	 *       See: {@link dir_files::ignore()} for further details on this.
+	 *       See: {@link dir_file_ignore()} for further details on this.
 	 *
 	 * @param null|string $___root_dir Do NOT pass this. For internal use only.
 	 *
@@ -2186,7 +2186,7 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 			throw new exception(
 				sprintf($this->__('Unable to read directory: `%1$s`'), $dir)
 			);
-		if($dir !== $___root_dir && $this->ignore($dir, $___root_dir))
+		if($dir !== $___root_dir && $this->dir_file_ignore($dir))
 			return ''; // Ignoring this directory.
 
 		if(!($handle = opendir($dir)))
@@ -2197,20 +2197,50 @@ final class deps_x_wsc_v000000_dev #!stand-alone!# // MUST remain PHP v5.2 compa
 		$relative_dir             = preg_replace('/^'.preg_quote($___root_dir, '/').'(?:\/|$)/', '', $dir);
 		$checksums[$relative_dir] = md5($relative_dir); // Establish relative directory checksum.
 
+		// Scan each directory and include each file that it contains; except files we ignore.
 		while(($entry = readdir($handle)) !== FALSE) if($entry !== '.' && $entry !== '..') // Ignore dots.
 			if($entry !== 'checksum.txt' || $dir !== $___root_dir) // Skip `checksum.txt` in the root directory.
-			{
-				if(is_dir($dir.'/'.$entry)) // Recursively scan each sub-directory.
-					$checksums[$relative_dir.'/'.$entry] = $this->dir_checksum($dir.'/'.$entry, $ignore_readme_files, $___root_dir);
+				if(!$ignore_readme_files || !in_array(strtolower($entry), array('readme.txt', 'readme.md'), TRUE))
+				{
+					if(is_dir($dir.'/'.$entry)) // Recursively scan each sub-directory.
+						$checksums[$relative_dir.'/'.$entry] = $this->dir_checksum($dir.'/'.$entry, $ignore_readme_files, $___root_dir);
 
-				else if(!$this->ignore($dir.'/'.$entry, $___root_dir)) // If NOT ignoring this file.
-					$checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
-			}
+					else if(!$this->dir_file_ignore($dir.'/'.$entry)) // If NOT ignoring this file.
+						$checksums[$relative_dir.'/'.$entry] = md5($relative_dir.'/'.$entry.md5_file($dir.'/'.$entry));
+				}
 		closedir($handle); // Close directory handle now.
 
 		ksort($checksums, SORT_STRING); // In case order changes from one server to another.
 
 		return md5(implode('', $checksums));
+	}
+
+	/**
+	 * Determines if a directory/file should be ignored.
+	 *
+	 * @param string $dir_file The directory/file we are checking.
+	 *
+	 * @return boolean TRUE if the directory/file should be ignored; FALSE otherwise.
+	 *
+	 * @throws exception If invalid types are passed through arguments list.
+	 *
+	 * @see wsc_v000000_dev\dirs_files::ignore()
+	 */
+	public function dir_file_ignore($dir_file)
+	{
+		if(!is_string($dir_file) || !$dir_file)
+			throw new exception( // Fail here; detected invalid arguments.
+				sprintf($this->__('Invalid arguments: `%1$s`'), print_r(func_get_args(), TRUE))
+			);
+		if(!strlen($dir_file_basename = basename($dir_file)))
+			return TRUE; // Ignore, it has no basename.
+
+		foreach(explode(';', '.~*;*~;*.bak;.idea;*.iml;*.ipr;*.iws;*.sublime-workspace;*.sublime-project;.git;.gitignore;.gitattributes;CVS;.cvsignore;.svn;_svn;.bzr;.bzrignore;.hg;.hgignore;SCCS;RCS;$RECYCLE.BIN;Desktop.ini;Thumbs.db;ehthumbs.db;.Spotlight-V100;.AppleDouble;.LSOverride;.DS_Store;.Trashes;Icon'."\r".';._*;.elasticbeanstalk') as $_glob)
+			if(fnmatch($_glob, $dir_file_basename, FNM_CASEFOLD))
+				return TRUE; // Yes, we are ignoring this.
+		unset($_glob); // Housekeeping.
+
+		return FALSE; // Not ignoring (default behavior).
 	}
 
 	# --------------------------------------------------------------------------------------------------------------------------------------
