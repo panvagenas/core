@@ -443,7 +443,7 @@ namespace wsc_v000000_dev
 			 *
 			 * @protected Accessible only to self & extenders.
 			 */
-			protected static $instance_cache = array();
+			protected static $___instance_cache = array();
 
 			# --------------------------------------------------------------------------------------------------------------------------
 			# Dynamic class properties.
@@ -853,9 +853,9 @@ namespace wsc_v000000_dev
 				{
 					$cache_entry = $parent_instance->plugin_root_ns.$ns_class;
 
-					if(isset(static::$instance_cache[$cache_entry]))
+					if(isset(static::$___instance_cache[$cache_entry]))
 					{
-						$this->instance = static::$instance_cache[$cache_entry];
+						$this->instance = static::$___instance_cache[$cache_entry];
 						return; // Using cache. Nothing more to do here.
 					}
 					$this->instance = clone $parent_instance;
@@ -888,9 +888,9 @@ namespace wsc_v000000_dev
 				{
 					$cache_entry = $instance['plugin_root_ns'].$ns_class;
 
-					if(isset(static::$instance_cache[$cache_entry]))
+					if(isset(static::$___instance_cache[$cache_entry]))
 					{
-						$this->instance = static::$instance_cache[$cache_entry];
+						$this->instance = static::$___instance_cache[$cache_entry];
 						return; // Using cache (nothing more to do here).
 					}
 					$this->instance = new instance($instance);
@@ -1061,7 +1061,7 @@ namespace wsc_v000000_dev
 				$this->instance->plugin_stub_as_root_ns_with_dashes      = stub::with_dashes($this->instance->plugin_stub_as_root_ns);
 
 				// Now let's cache `$this->instance` for easy re-use.
-				static::$instance_cache[$cache_entry] = $this->instance;
+				static::$___instance_cache[$cache_entry] = $this->instance;
 
 				// Check global reference & load plugin (if applicable).
 				if(!isset($GLOBALS[$this->instance->plugin_root_ns])
