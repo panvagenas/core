@@ -4,6 +4,10 @@
 
 The WebSharks™ Core can be bundled into plugins created for WordPress®. It is most often distributed as a single GZIP compressed [PHP Archive](http://www.php.net/manual/en/intro.phar.php) file; found inside `/wsc.php.phar`. This file not only contains the entire WebSharks™ Core; but it is also a [webPhar-compatible archive](http://php.net/manual/en/phar.webphar.php) capable of serving both static and dynamic content through popular web servers like Apache®, Litespeed™, Windows® IIS; and other Apache-compatible web servers.
 
+----
+
+This project is now on Floobits too! [Watch us code](https://floobits.com/jaswsinc/ws-core/redirect) in real-time :-) <a href="https://floobits.com/jaswsinc/ws-core/redirect"><img alt="Floobits status" width="100" height="40" src="https://floobits.com/jaswsinc/ws-core.png" align="right" /></a>
+
 
 #### Incorporating the WebSharks™ Core into a plugin for WordPress®
 
